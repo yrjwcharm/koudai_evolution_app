@@ -1,5 +1,6 @@
-package com.evolutionapp;
-
+package com.licaimofang.app;
+import android.os.Bundle; // here
+import org.devio.rn.splashscreen.SplashScreen; // here
 import com.facebook.react.ReactActivity;
 
 public class MainActivity extends ReactActivity {
@@ -12,4 +13,10 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "EvolutionApp";
   }
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      SplashScreen.show(this,R.style.SplashScreenTheme);  // here
+      super.onCreate(savedInstanceState);
+  }
+
 }

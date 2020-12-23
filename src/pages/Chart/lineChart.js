@@ -20,7 +20,9 @@ class LineChartScreen extends PureComponent {
   onChange = tooltip => {
     console.log(tooltip);
   };
-
+  componentDidMount () {
+    console.log(this.props)
+  }
   render () {
     return (
       <ScrollView>

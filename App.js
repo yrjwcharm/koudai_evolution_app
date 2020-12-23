@@ -1,4 +1,10 @@
-// In App.js in a new project
+/*
+ * @Date: 2020-11-03 19:28:28
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2020-12-23 14:19:16
+ * @Description: 入口文件
+ */
 import * as React from 'react';
 import { Provider } from 'react-redux'
 import { StatusBar } from 'react-native';
@@ -7,6 +13,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { useColorScheme } from 'react-native-appearance';
 import AppStack from './src/routes'
 import configStore from './src/redux'
+
 import './src/common/appConfig'
 const MyTheme = {
   dark: true,
@@ -20,6 +27,7 @@ const MyTheme = {
   },
 };
 const { store, persistor } = configStore()
+
 function App () {
   const scheme = useColorScheme()
   React.useEffect(() => {

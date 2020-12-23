@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import { createStackNavigator, TransitionPresets } from "@react-navigation/stack";
 import TabScreen from './Tabbar'
 import DetailScreen from "../pages/Detail/index";
@@ -35,7 +35,6 @@ export default function AppStack () {
           return <BlurView style={{ position: 'absolute', bottom: 0, top: 0, width: deviceWidth, backgroundColor: 'rgba(255,255,255,0.8)' }} blurType="light"></BlurView>
         },
         headerStyle: {
-          // height: 64,
           backgroundColor: commonStyle.themeColor,
           shadowOpacity: 0,
           shadowOffset: {
@@ -50,8 +49,11 @@ export default function AppStack () {
       <Stack.Screen name="DetailScreen" component={DetailScreen} options={{
         headerShown: false,
       }} />
-      <Stack.Screen name="GesturePassword" component={GesturePassword} />
-      <Stack.Screen name="LineChart" component={LineChart} />
+      <Stack.Screen name="GesturePassword" component={GesturePassword} options={({ route }) => ({ title: route.params?.title ? route.params?.title : route.name })} />
+      <Stack.Screen name="LineChart" component={LineChart} options={{
+        ...TransitionPresets.ModalTransition,
+      }} />
     </ Stack.Navigator>
   )
 }
+
