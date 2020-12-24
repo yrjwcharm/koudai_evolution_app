@@ -1,3 +1,4 @@
+
 package com.licaimofang.app;
 
 import android.app.Application;
@@ -14,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import cn.jiguang.plugins.push.JPushModule; //jpush
 import com.theweflex.react.WeChatPackage; //微信
+import com.microsoft.codepush.react.CodePush; //热更新
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -29,13 +32,17 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-           packages.add(new WeChatPackage());  
+           packages.add(new WeChatPackage());
+          //  packages.add(new CodePush("deployment-key-here", MainApplication.this, BuildConfig.DEBUG))  
           return packages;
         }
-
         @Override
         protected String getJSMainModuleName() {
           return "index";
+        }
+        @Override
+        protected String getJSBundleFile() {
+         return CodePush.getJSBundleFile();
         }
       };
 
