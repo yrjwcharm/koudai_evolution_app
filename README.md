@@ -61,6 +61,7 @@ ios模拟器 commond+D   commond+R(刷新模拟器)
 
 
 
+
 ### 一、关于命名
 （1） 代码中命名均不能以下划线或美元符号开始，也不能以下划线或美元符号结束
     
@@ -79,17 +80,12 @@ export default class AnXinSharePage extends PureComponent {}
 constructor(props) {
     super(props);
     this.isFromNative = this.props.navigation.state.params ? false : true;
-    this.params = this.props.navigation.state.params || this.props.screenProps;
   }
     state = {
       /**
        * 分数
        */
       score: 200,
-      /**
-       * 百分比
-       */
-      percent: "20%",
     };
 ```
 （4）常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长,记得加注释便于后人理解 (如开户多个字段；多次出现的常量)
@@ -221,9 +217,6 @@ async getUserInfo() {
 ```
   static propTypes = {
     props: PropTypes.any,
-    isAdd: PropTypes.bool,
-    isShowRelationship: PropTypes.bool,
-    gender: PropTypes.number,
     authStatus: PropTypes.number
   }
   static defaultProps = {
@@ -243,70 +236,54 @@ async getUserInfo() {
 
 （4）尽量采用解构赋值的写法获取参数，不要使用xxxx.xxx.xxx的方式获取参数
 
- （5）**state变量应当事先在constructor()中声明,不涉及页面刷新的变量不应写入state中**
+ **(5) state变量应当事先在constructor()中声明,不涉及页面刷新的变量不应写入state中**
 
 ```
   constructor (props) {
     super(props)
     this.insurantId = ''
-    /**
-     * 表单数据
-     * @type {{}}
-     */
-    this.forms = {}
     this.joinEvalution = props.navigation.state.params.joinEvalution
   }
    state = {
       modalMeVisiable: false,
-      modalCoverVisiable: false,
-      modalErrorVisiable: false,
-      isLoading: false,
-      gender: 1,
-      errorMsg: '',
     }
 
 ```
-**(6) 开发中应尽量使用公共样式及组件，多次出现的模块应抽离出组件,自定义组件命名中必须包含Component**
+**(6) 开发中应尽量使用公共样式及组件，多次出现的模块应抽离出组件,减少维护成本**
 
-**(7) 当使用单一属性，或者全局样式属性时，推荐使用公共样式类**
 
 ######  关系到性能优化 
 
 
-**(8) 代码中函数绑定this，强制使用箭头函数,尽量不用bind手动绑定**
+**(7) 代码中函数绑定this，强制使用箭头函数,尽量不用bind手动绑定**
 
-**(9) 当组件使用样式属性达到三个或者三个以上时，必须使用StyleSheet来创建样式属性并进行引用（尽量不写行内样式）**
+**(8) 当组件使用样式属性达到三个或者三个以上时，必须使用StyleSheet来创建样式属性并进行引用（尽量不写行内样式）**
 
+**(9)列表开发时用Flatlist，不要直接循环**
 
-**(10)列表开发时用Flatlist，不要直接循环**
+**(10) 开发中多使用shouldComponentUpdate、React.memo、React.PureComponent减少re-render**
 
-**(11) 开发中多使用shouldComponentUpdate、React.memo、React.PureComponent减少re-render**
+**(11) 使用 React.Fragment 避免多层嵌套，减轻渲染压力**
 
-**(12) 使用 React.Fragment 避免多层嵌套，减轻渲染压力**
-（13）对象创建调用分离
 ```
 <>
 <Text>123</Text>
 <Text>123</Text>
 </>
 ```
+**(12)对象创建调用分离**
 
 #### 注释模版配置
 vscode安装koroFileheader插件
 ```
-  "fileheader.customMade": { //此为头部注释
-    "Description": "",
-    "Autor": "yhc",
-    "Date": "Do not edit",
-    "LastEditors": "yhc",
-    "LastEditTime": "Do not edit"
+ "fileheader.customMade": {
+    "Date": "Do not edit", // 文件创建时间(不变)
+    "Author": "yhc",
+    "LastEditors": "yhc", // 文件最后编辑者
+    "LastEditTime": "Do not edit", // 文件最后编辑时间
+    "Description": ""
   },
-  "fileheader.cursorMode": { //此为函数注释
-    "description": "",
-    "param": "",
-    "return": "",
-    "author": "yhc"
-  },
+ 
 ```
 #### eslint配置
 vscode全局安装eslint插件
@@ -319,6 +296,17 @@ vscode全局安装eslint插件
     "source.fixAll.eslint": true
   },
 ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
