@@ -59,6 +59,8 @@ ios模拟器 commond+D   commond+R(刷新模拟器)
 
 ## 开发规范
 
+
+
 ### 一、关于命名
 （1） 代码中命名均不能以下划线或美元符号开始，也不能以下划线或美元符号结束
     
@@ -90,7 +92,7 @@ constructor(props) {
       percent: "20%",
     };
 ```
-（4）常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长,记得加注释便于后人理解 (如开户，定义时间常量便于统一修改)
+（4）常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长,记得加注释便于后人理解 (如开户多个字段；多次出现的常量)
 
 ```
 export const FamilyMemberKey = {
@@ -106,30 +108,6 @@ export const FamilyMemberKey = {
    * 姓名
    */
   NAME: "name",
-  /**
-   * 性别
-   */
-  SEX: "gender",
-  /**
-   * 地址
-   */
-  ADDRESS: "address",
-  /**
-   * 生日
-   */
-  BIRTHDAY: "birthday",
-  /**
-   * 英文名
-   */
-  ENGNAME: "engName",
-  /**
-   * 手机号
-   */
-  MOBILE: "mobile",
-  /**
-   * 身高
-   */
-  HEIGHT: "height"
 }
 ```
 #### 二、关于代码格式化
@@ -139,21 +117,11 @@ export const FamilyMemberKey = {
 import {Image, ImageBackground, NativeModules, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {PureComponent} from 'react';
 import {StyleConfig} from "../../resources/style";
-import {SafeAreaView} from "react-navigation";
-import Button from 'react-native-button';
-import {XAnimatedProgress} from '@xyz/react-native-xprogress';
 ```
-（3）外部样式格式化，左括号必须强制换行，一个属性独占一行，以强制换行右括号结尾
+（2）外部样式格式化，左括号必须强制换行，一个属性独占一行，以强制换行右括号结尾
 
 ```
 const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-  },
-  messageStyle: {
-    marginTop: 65,
-    marginHorizontal: 43.5,
-  },
   progressViewStyle: {
     marginTop: 39,
     alignItems: "center"
@@ -167,7 +135,7 @@ const styles = StyleSheet.create({
   },
 });
 ```
-（4）少用行内样式，如果是组件属性则应换行展示
+（3）少用行内样式，如果是组件属性则应换行展示
 
 ```
   renderProgressView() {
@@ -181,22 +149,11 @@ const styles = StyleSheet.create({
           gradientEndColor="#ffffff"
           width={185}
           height={220}
-          dashOffset={533}
-          innerPath="M88,188 C88,188 13,163 13,75.5 C13,13 25.5,13 88,13 C150.5,13 163,13 163,75.5 C163,163 88,188 88,188 Z"
-          progressWidth={15}
-          shadowOffset={0}
-          outerTransformOne="translate(-212.000000, -482.000000)"
-          outerTransformTwo="translate(212.000000, 482.000000)"
-          innerTransformOne="translate(-217.000000, -487.000000)"
-          innerTransformTwo="translate(212.000000, 482.000000)"
-          startTransparent={1}
-          endTransparent={0.2}
-          children={this.renderChildView}/>
       </View>
     );
   }
 ```
-**（5）提交代码之前必须格式化代码和删除未使用的import**
+**（4）提交代码之前必须格式化代码和删除未使用的import**
 
 #### 三、关于代码注释
 （1）所有的类都必须添加创建者信息，以及类的说明
@@ -228,7 +185,6 @@ async getUserInfo() {
         }
         //是否实名认证
         const {authStatus} = this.userInfo;
-        this.setState({authStatus: authStatus});
     }
 }
 ```
@@ -247,9 +203,6 @@ async getUserInfo() {
         <PersonalDataView
                 props={this.props} 
                 isAdd={false}
-                isShowRelationship={this.state.insurantId ? true : false}
-                gender={this.state.gender}
-                authStatus={this.state.authStatus ? this.state.authStatus : -1}
         />
         {/*生活习惯*/}
         <LifeHabitView props={this.props}/>
@@ -257,12 +210,6 @@ async getUserInfo() {
         <JobInfoView props={this.props}/>
         {/*财务信息*/}
         <FinanceInfoView props={this.props}/>
-        <View style={{height: 44, alignItems: 'center', marginTop: 30}}>
-            <XLargeButton onPress={() => this.filterUpdate()}>保存</XLargeButton>
-        </View>
-        <View style={{alignItems: 'center', marginTop: 30, marginBottom: 40}}>
-            <Text style={styles.textStyle}>个人信息仅用于给你提供新一站服务时使用。</Text>
-        </View>
     </View>
 </ScrollView>
 ```
@@ -296,7 +243,7 @@ async getUserInfo() {
 
 （4）尽量采用解构赋值的写法获取参数，不要使用xxxx.xxx.xxx的方式获取参数
 
- (5)state变量应当事先在constructor()中声明,不涉及页面刷新的变量不应写入state中
+ （5）**state变量应当事先在constructor()中声明,不涉及页面刷新的变量不应写入state中**
 
 ```
   constructor (props) {
@@ -319,18 +266,30 @@ async getUserInfo() {
     }
 
 ```
-**(6)开发中应尽量使用公共样式及组件，多次出现的模块应抽离出组件,自定义组件命名中必须包含Component**
+**(6) 开发中应尽量使用公共样式及组件，多次出现的模块应抽离出组件,自定义组件命名中必须包含Component**
 
 **(7) 当使用单一属性，或者全局样式属性时，推荐使用公共样式类**
 
-######  关系到性能优化
-**(8)代码中函数绑定this，强制使用箭头函数,尽量不用bind手动绑定**
+######  关系到性能优化 
+
+
+**(8) 代码中函数绑定this，强制使用箭头函数,尽量不用bind手动绑定**
 
 **(9) 当组件使用样式属性达到三个或者三个以上时，必须使用StyleSheet来创建样式属性并进行引用（尽量不写行内样式）**
 
 
-**(10)长列表开发时用Flatlist，不要直接循环**
+**(10)列表开发时用Flatlist，不要直接循环**
 
+**(11) 开发中多使用shouldComponentUpdate、React.memo、React.PureComponent减少re-render**
+
+**(12) 使用 React.Fragment 避免多层嵌套，减轻渲染压力**
+（13）对象创建调用分离
+```
+<>
+<Text>123</Text>
+<Text>123</Text>
+</>
+```
 
 #### 注释模版配置
 vscode安装koroFileheader插件
@@ -342,7 +301,45 @@ vscode安装koroFileheader插件
     "LastEditors": "yhc",
     "LastEditTime": "Do not edit"
   },
+  "fileheader.cursorMode": { //此为函数注释
+    "description": "",
+    "param": "",
+    "return": "",
+    "author": "yhc"
+  },
 ```
+#### eslint配置
+vscode全局安装eslint插件
+
+
+```
+  在settings.json添加配置
+  
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

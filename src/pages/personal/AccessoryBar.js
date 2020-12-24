@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-12-23 16:39:50
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2020-12-24 18:15:24
+ * @Description:
+ */
 import {MaterialIcons} from 'react-native-vector-icons/MaterialIcons';
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
@@ -7,6 +14,7 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 //   pickImageAsync,
 //   takePictureAsync,
 // } from './mediaUtils'
+
 const Button = ({onPress = () => {}, size = 30, color = 'rgba(0,0,0,0.5)', ...props}) => (
     <TouchableOpacity onPress={onPress}>
         <MaterialIcons size={size} color={color} {...props} />
