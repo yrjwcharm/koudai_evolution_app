@@ -2,12 +2,11 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-24 17:12:10
+ * @LastEditTime: 2020-12-25 16:14:48
  * @Description: 首页
  */
 import * as React from 'react';
 import {View, Text, Button, Linking, Image} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useSelector, useDispatch} from 'react-redux';
 import {update} from '../../redux/actions/userInfo';
 import JPush from 'jpush-react-native';

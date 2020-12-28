@@ -1,7 +1,7 @@
 /** 公共样式表 **/
 
 import {Platform} from 'react-native';
-import {px as text} from '../utils/screenUtils';
+import {px as text} from '../utils/appUtil';
 export const commonStyle = {
     /** color **/
     // 常用颜色

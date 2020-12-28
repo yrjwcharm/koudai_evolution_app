@@ -2,19 +2,19 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-24 19:21:03
+ * @LastEditTime: 2020-12-25 16:33:15
  * @Description:头部组件
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform, StatusBar} from 'react-native';
-import {px as px2dp, isIphoneX} from '../utils/screenUtils';
+import {px as px2dp, isIphoneX} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
 import {commonStyle} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 const statusBar = Platform.select({
-    ios: isIphoneX() ? 46 : 20,
+    ios: isIphoneX ? 46 : 20,
     android: StatusBar.currentHeight,
 });
 const topbarHeight = Platform.OS == 'ios' ? 44 : 50;

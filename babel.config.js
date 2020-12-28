@@ -1,4 +1,9 @@
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
-  // plugins: ["transform-decorators-legacy"]
+    presets: ['module:metro-react-native-babel-preset'],
+    env: {
+        production: {
+            plugins: ['transform-remove-console'],
+        },
+    },
+    // plugins: ["transform-decorators-legacy"]
 };

@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-11-10 11:19:39
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2020-12-25 16:12:52
+ * @Description:
+ */
 import * as React from 'react';
 import {View, Text} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -9,7 +16,6 @@ const IconWithBadge = function ({badgeCount = 0, size = 25, color = 'red'}) {
             {badgeCount > 0 && (
                 <View
                     style={{
-                        // On React Native < 0.57 overflow outside of parent will not work on Android, see https://git.io/fhLJ8
                         position: 'absolute',
                         right: px(-6),
                         top: px(-3),
