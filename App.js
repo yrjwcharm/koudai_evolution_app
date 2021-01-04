@@ -1,13 +1,28 @@
+/*
+ * @Author: your name
+ * @Date: 2020-12-21 18:08:37
+ * @LastEditTime: 2020-12-23 18:57:22
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /koudai_evolution_app/App.js
+ */
 // In App.js in a new project
 import * as React from 'react';
 import { Provider } from 'react-redux'
-import { StatusBar } from 'react-native';
+import { StatusBar,Dimensions } from 'react-native';
 import { PersistGate } from 'redux-persist/integration/react'
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useColorScheme } from 'react-native-appearance';
 import AppStack from './src/routes'
 import configStore from './src/redux'
 import './src/common/appConfig'
+import EStyleSheet from 'react-native-extended-stylesheet';
+const { store, persistor } = configStore()
+const {width} = Dimensions.get('window');
+const rem = width > 340 ? 18 : 17;
+EStyleSheet.build({
+  $rem: rem,
+});
 const MyTheme = {
   dark: true,
   colors: {
@@ -19,7 +34,10 @@ const MyTheme = {
     notification: 'rgb(255, 69, 58)',
   },
 };
-const { store, persistor } = configStore()
+
+
+// calc styles
+
 function App () {
   const scheme = useColorScheme()
   React.useEffect(() => {
