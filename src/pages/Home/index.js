@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, Text, Button, ScrollView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 function HomeScreen ({ navigation }) {
-
   return (
     <ScrollView>
       <View style={{ height: 2000, alignItems: 'center', justifyContent: 'center' }}>

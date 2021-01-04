@@ -9,17 +9,18 @@ import {
   Animated,
   TouchableOpacity,
   TouchableNativeFeedback,
-  Platform
+  Platform,
+  StatusBar,
 } from 'react-native'
 import { px as px2dp, isIphoneX } from '../utils/screenUtils'
 import Icon from 'react-native-vector-icons/Feather';
 import { commonStyle } from '../common/commonStyle';
 import { useNavigation } from '@react-navigation/native';
 const statusBar = Platform.select({
-  ios: isIphoneX() ? 44 : 20,
-  android: 20,
+  ios: isIphoneX() ? 46 : 20,
+  android: StatusBar.currentHeight,
 });
-const topbarHeight = 44
+const topbarHeight = Platform.OS == 'ios' ? 44 : 50
 NavBar.propTypes = {
   title: PropTypes.string,
   leftIcon: PropTypes.string,

@@ -135,7 +135,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.evolutionapp"
+        applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -143,6 +143,16 @@ android {
         multiDexEnabled true //配置多个dex
         // renderscriptTargetApi 23
         // renderscriptSupportModeEnabled true
+        manifestPlaceholders = [
+                  JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
+                  JPUSH_CHANNEL: "developer-default"        //在此替换你的channel，也可使用默认的
+          ]
+      ndk {
+        abiFilters "armeabi-v7a","x86"
+       }
+    }
+    packagingOptions {
+      pickFirst "lib/arm64-v8a/librealm-jni.so"
     }
     splits {
         abi {
@@ -195,7 +205,10 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3' //配置多个dex
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-
+    implementation project(':jpush-react-native')  // 添加 jpush 依赖
+    implementation project(':jcore-react-native')  // 添加 jcore 依赖
+    implementation project(':react-native-wechat-lib') //微信
+    implementation project(':react-native-splash-screen') //启动页
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

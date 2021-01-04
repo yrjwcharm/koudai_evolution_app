@@ -1,12 +1,10 @@
 /*
- * @Author: your name
- * @Date: 2020-12-21 18:08:37
- * @LastEditTime: 2020-12-23 18:57:22
+ * @Date: 2020-11-03 19:28:28
+ * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: /koudai_evolution_app/App.js
+ * @LastEditTime: 2021-01-04 11:50:49
+ * @Description: 入口文件
  */
-// In App.js in a new project
 import * as React from 'react';
 import { Provider } from 'react-redux'
 import { StatusBar,Dimensions } from 'react-native';
@@ -15,6 +13,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { useColorScheme } from 'react-native-appearance';
 import AppStack from './src/routes'
 import configStore from './src/redux'
+
 import './src/common/appConfig'
 import EStyleSheet from 'react-native-extended-stylesheet';
 const { store, persistor } = configStore()
