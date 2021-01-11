@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-25 16:29:16
+ * @LastEditTime: 2021-01-06 21:56:36
  * @Description:路由表
  */
 import React from 'react';
@@ -12,7 +12,8 @@ import DetailScreen from '../pages/Detail/index';
 import GesturePassword from '../pages/personal/GesturePassword';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
-import {commonStyle} from '../common/commonStyle';
+import StickyScreen from '../pages/sticky';
+import {Colors} from '../common/commonStyle';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -26,7 +27,7 @@ export default function AppStack() {
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
-                    color: commonStyle.navTitleColor,
+                    color: Colors.navTitleColor,
                     fontSize: 16,
                 },
                 headerTitleAllowFontScaling: false,
@@ -49,7 +50,7 @@ export default function AppStack() {
                 //     );
                 // },
                 headerStyle: {
-                    backgroundColor: commonStyle.themeColor,
+                    backgroundColor: Colors.navBgColor,
                     shadowOpacity: 0,
                     shadowOffset: {
                         height: 0,
@@ -65,6 +66,7 @@ export default function AppStack() {
                     headerShown: false,
                 }}
             />
+            <Stack.Screen name="StickyScreen" component={StickyScreen} />
             <Stack.Screen
                 name="GesturePassword"
                 component={GesturePassword}

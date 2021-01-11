@@ -2,18 +2,21 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-25 16:34:56
- * @Description: 入口文件
+ * @LastEditTime: 2021-01-07 12:12:32
+ * @Description: app全局入口文件
  */
 import * as React from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Button} from 'react-native';
+import {StatusBar, Platform, BackHandler} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {useColorScheme} from 'react-native-appearance';
 import AppStack from './src/routes';
 import configStore from './src/redux';
 import CodePush from 'react-native-code-push';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {RootSiblingParent} from 'react-native-root-siblings';
+import {requestExternalStoragePermission} from './src/utils/appUtil';
 import './src/common/appConfig';
 const MyTheme = {
     dark: true,
@@ -66,12 +69,29 @@ function App() {
             },
         });
     };
+    let lastBackPressed = '';
+    const onBackAndroid = () => {
+        if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
+            BackHandler.exitApp(); //退出整个应用
+            return false;
+        }
+        lastBackPressed = Date.now(); //按第一次的时候，记录时间
+        // Toast.showInfo('再按一次退出应用');
+        return true;
+    };
     React.useEffect(() => {
         syncImmediate();
+        if (Platform.OS == 'android') {
+            requestExternalStoragePermission(); //申请读写权限
+        }
         console.log(__DEV__);
+        BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
+        };
     });
     return (
-        <>
+        <RootSiblingParent>
             <StatusBar
                 animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
                 hidden={false} //是否隐藏状态栏。
@@ -81,12 +101,14 @@ function App() {
             />
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
-                    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-                        <AppStack />
-                    </NavigationContainer>
+                    <SafeAreaProvider>
+                        <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+                            <AppStack />
+                        </NavigationContainer>
+                    </SafeAreaProvider>
                 </PersistGate>
             </Provider>
-        </>
+        </RootSiblingParent>
     );
 }
 

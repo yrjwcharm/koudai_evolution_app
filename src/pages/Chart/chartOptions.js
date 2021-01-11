@@ -44,7 +44,7 @@ F2.Animate.registerAnimation('lineUpdate', function(updateShape, animateCfg) {
   });
 `;
 
-const base = data => `
+const base = (data) => `
 chart =  new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
@@ -90,7 +90,7 @@ label: function label(text, index, total) {
 }
 });
 `;
-export const baseChart = data => `(function(){
+export const baseChart = (data) => `(function(){
     ${base(data)}
   chart.line().position('date*value');
   chart.point()
@@ -113,7 +113,7 @@ export const baseChart = data => `(function(){
 })();
 `;
 
-export const dynamicChart = data => `
+export const dynamicChart = (data) => `
 (function(){
     ${lineUpdate}
     ${base(data)}
@@ -134,7 +134,6 @@ export const dynamicChart = data => `
       chart.render();
 })();
 `;
-
 
 // chart.tooltip({
 //   custom: true,

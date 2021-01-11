@@ -2,8 +2,8 @@
  * @Date: 2020-11-04 15:30:56
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-24 19:12:33
- * @Description:
+ * @LastEditTime: 2021-01-06 10:37:42
+ * @Description: 全局配置及异常机型处理
  */
 import * as React from 'react';
 import {TextInput, Text, Platform} from 'react-native';

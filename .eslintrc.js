@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-12-28 11:53:00
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-07 16:29:22
+ * @Description: 
+ */
 // .eslintrc.js
 module.exports = {
   root: true,
@@ -14,5 +21,6 @@ module.exports = {
     'no-extend-native': [1, { 'exceptions': ['Date', 'String'] }],
     'no-control-regex': 0,  //允许正则表达式中的控制字符
     'eqeqeq': 'off',//允许使用双等号
+    'semi': 0,
   }
 };

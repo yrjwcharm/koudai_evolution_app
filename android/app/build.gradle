@@ -216,6 +216,7 @@ dependencies {
     implementation project(':jcore-react-native')  // 添加 jcore 依赖
     implementation project(':react-native-wechat-lib') //微信
     implementation project(':react-native-splash-screen') //启动页
+    implementation project(':react-native-fs') //文件读写
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

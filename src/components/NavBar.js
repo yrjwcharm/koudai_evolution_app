@@ -2,21 +2,18 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-25 16:33:15
+ * @LastEditTime: 2021-01-07 11:32:06
  * @Description:头部组件
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform, StatusBar} from 'react-native';
-import {px as px2dp, isIphoneX} from '../utils/appUtil';
+import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
+import {px as px2dp} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
-import {commonStyle} from '../common/commonStyle';
+import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
-const statusBar = Platform.select({
-    ios: isIphoneX ? 46 : 20,
-    android: StatusBar.currentHeight,
-});
+import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 const topbarHeight = Platform.OS == 'ios' ? 44 : 50;
 
 NavBar.propTypes = {
@@ -30,6 +27,7 @@ NavBar.propTypes = {
 
 export default function NavBar(props) {
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
     //返回
     const back = () => {
         navigation.goBack();
@@ -40,13 +38,13 @@ export default function NavBar(props) {
             if (Platform.OS === 'android') {
                 return (
                     <TouchableNativeFeedback onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(26)} color="#fff" />
+                        <Icon name={name} size={px2dp(26)} color={Colors.navTitleColor} />
                     </TouchableNativeFeedback>
                 );
             } else {
                 return (
                     <TouchableOpacity onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(26)} color="#fff" />
+                        <Icon name={name} size={px2dp(26)} color={Colors.navTitleColor} />
                     </TouchableOpacity>
                 );
             }
@@ -73,7 +71,7 @@ export default function NavBar(props) {
     };
 
     return (
-        <View style={[styles.topbar, props.style]}>
+        <View style={[styles.topbar, props.style, {paddingTop: insets.top, height: insets.top + topbarHeight}]}>
             {renderBtn('left')}
             <Animated.Text numberOfLines={1} style={[styles.title, props.titleStyle]}>
                 {props.title}
@@ -84,12 +82,11 @@ export default function NavBar(props) {
 }
 const styles = StyleSheet.create({
     topbar: {
-        height: topbarHeight + statusBar,
-        backgroundColor: commonStyle.themeColor,
+        backgroundColor: Colors.navBgColor,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: statusBar,
+        // paddingTop: statusBar,
     },
     btn: {
         width: 40,
@@ -98,7 +95,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        color: '#fff',
+        color: Colors.navTitleColor,
         fontWeight: 'bold',
         fontSize: px2dp(16),
     },

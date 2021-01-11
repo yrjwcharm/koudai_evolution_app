@@ -2,10 +2,10 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-25 16:28:19
- * @Description: 定义app常用工具和常量
+ * @LastEditTime: 2021-01-06 16:01:53
+ * @Description: 定义app常用工具类和常量
  */
-import {PixelRatio, Platform, Dimensions} from 'react-native';
+import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
 const deviceHeight = Dimensions.get('window').height; //设备的高度
 const deviceWidth = Dimensions.get('window').width; //设备的宽度
 let pixelRatio = PixelRatio.get();
@@ -41,5 +41,17 @@ function isIphoneX() {
             (deviceHeight === ELE_HEIGHT && deviceWidth === ELE_WIDTH))
     );
 }
+/**
+ * 申请安卓权限
+ */
+const requestExternalStoragePermission = async () => {
+    try {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+        return granted;
+    } catch (err) {
+        console.error('Failed to request permission ', err);
+        return null;
+    }
+};
 
-export {deviceWidth, deviceHeight, isIphoneX, px};
+export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission};
