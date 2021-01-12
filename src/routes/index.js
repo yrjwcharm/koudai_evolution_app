@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-06 21:56:36
+ * @LastEditTime: 2021-01-11 18:17:34
  * @Description:路由表
  */
 import React from 'react';
@@ -58,7 +58,9 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} />
+            <Stack.Screen name="Tab" component={TabScreen} options={{
+                    headerShown: false,
+                }}/>
             <Stack.Screen
                 name="DetailScreen"
                 component={DetailScreen}

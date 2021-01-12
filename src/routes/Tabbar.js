@@ -2,13 +2,13 @@
  * @Date: 2020-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-08 19:58:22
+ * @LastEditTime: 2021-01-11 18:18:58
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import IMScreen from '../pages/IM/index';
-import HomeScreen from '../pages/Home/index';
+import HomeScreen from '../pages/Assets/index';
 import IndexScreen from '../pages/Index/index';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 const Tab = createBottomTabNavigator();
@@ -44,10 +44,10 @@ export default function Tabbar() {
                 name="IndexScreen"
                 component={IndexScreen}
                 options={{
-                    tabBarLabel: '首页',
+                    tabBarLabel: '发现',
                 }}
             />
-            <Tab.Screen name="IMScreen" options={{ tabBarLabel: '发现'}} component={IMScreen} />
+            <Tab.Screen name="IMScreen" options={{ tabBarLabel: '魔方'}} component={IMScreen} />
             <Tab.Screen name="HomeScreen" options={{ tabBarLabel: '资产'}} component={HomeScreen} />
         </Tab.Navigator>
     );

@@ -79,7 +79,7 @@ PODS:
     - React
   - JWT (3.0.0-beta.12):
     - Base64 (~> 1.1.2)
-  - lottie-ios (3.1.8)
+  - lottie-ios (3.1.9)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
@@ -255,9 +255,9 @@ PODS:
     - React
   - react-native-blur (0.8.0):
     - React
-  - react-native-netinfo (5.9.7):
+  - react-native-netinfo (5.9.10):
     - React-Core
-  - react-native-safe-area-context (3.1.8):
+  - react-native-safe-area-context (3.1.9):
     - React-Core
   - react-native-splash-screen (3.2.0):
     - React
@@ -329,15 +329,15 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
-  - RNDeviceInfo (7.0.2):
+  - RNDeviceInfo (7.4.0):
     - React-Core
   - RNFS (2.16.6):
     - React
-  - RNGestureHandler (1.8.0):
-    - React
-  - RNReanimated (1.13.1):
-    - React
-  - RNScreens (2.12.0):
+  - RNGestureHandler (1.9.0):
+    - React-Core
+  - RNReanimated (1.13.2):
+    - React-Core
+  - RNScreens (2.16.1):
     - React-Core
   - RNVectorIcons (7.1.0):
     - React
@@ -548,7 +548,7 @@ SPEC CHECKSUMS:
   JCore: 465aa0c7f1c236b62e68b0e4a9893756b04b68c7
   JPush: 51863acbe5088aa3c15384fd80c7715a4eb3f8ef
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
-  lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
+  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
@@ -563,8 +563,8 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-appearance: fc2014516054585d531e07aa0b40ab0de1d2be85
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-netinfo: e36c1bb6df27ab84aa933679b3f5bbf9d180b18f
-  react-native-safe-area-context: 01158a92c300895d79dee447e980672dc3fb85a6
+  react-native-netinfo: 52cf0ee8342548a485e28f4b09e56b477567244d
+  react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-webview: ef8d30ecc5baf6bf7821690180c2f9bf2bdf00c0
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
@@ -580,16 +580,16 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: cb9a623793918c6699586281f0b51cbc38f046f9
   RNCClipboard: 5e299c6df8e0c98f3d7416b86ae563d3a9f768a3
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
-  RNDeviceInfo: a37a15a98822c31c3982cb28eba6d336ba4d0968
+  RNDeviceInfo: febcb25b09201a312c66c36ecc1f155c5a43eecc
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
-  RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
-  RNScreens: 4b488fdf9537bbce829e2910c8cce1d17f6d9be8
+  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
+  RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a5710eacc9d8bd7518ce164cd9efcf3d31e9f0c7
+PODFILE CHECKSUM: 6f8d700dcae8f398d8d855fead75a22a7f28a5cf
 
 COCOAPODS: 1.9.3

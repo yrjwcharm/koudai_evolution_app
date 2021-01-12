@@ -135,7 +135,7 @@ export default class MyModal extends Component {
                             )}
                         </View>
                     ) : (
-                        <Animatable.View animation="fadeIn">
+                        <Animatable.View animation="bounceIn">
                             {/* 图片弹窗 */}
                             <Image
                                 source={{
