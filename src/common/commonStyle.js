@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:39:41
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-14 18:13:06
  * @Description:主题及公共样式表
  */
 
@@ -61,6 +61,7 @@ export const Space = {
     borderWidth: text(0.5),
     // 分割线高度
     lineWidth: text(0.5),
+    modelPadding: text(20),
 };
 
 export const Font = {
@@ -101,5 +102,9 @@ export const Style = StyleSheet.create({
     flexAround: {
         justifyContent: 'space-around',
         alignItems: 'center',
+    },
+    modelPadding: {
+        marginHorizontal: text(20),
+        marginVertical: text(20),
     },
 });

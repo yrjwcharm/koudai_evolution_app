@@ -1,12 +1,24 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-08 14:20:49
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-14 18:49:21
  * @Description: 首页
  */
 import * as React from 'react';
-import {View, Text, Linking, Image, ScrollView} from 'react-native';
+import {
+    View,
+    Text,
+    Linking,
+    Image,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    Keyboard,
+    KeyboardAvoidingView,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {update} from '../../redux/actions/userInfo';
 import JPush from 'jpush-react-native';
@@ -14,8 +26,10 @@ import {px} from '../../utils/appUtil';
 import {PasswordModal} from '../../components/Password';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Button} from '../../components/Button';
-import {Modal, BottomModal} from '../../components/Modal';
+import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import {Space, Font, Style} from '../../common/commonStyle';
+import {px as text} from '../../utils/appUtil';
 function HomeScreen(props) {
     const {navigation} = props;
     const userInfo = useSelector((store) => store.userInfo);
@@ -57,11 +71,12 @@ function HomeScreen(props) {
             // Do something manually
             // ...
         });
-
+        verifyCodeModel.current.show();
         return unsubscribe;
     }, [navigation]);
     const password = React.useRef();
     const bottomModal = React.useRef(null);
+    const verifyCodeModel = React.useRef(null);
     /**
      * @description: 处理通过深度链接进入app
      * @param {*} event
@@ -100,12 +115,30 @@ function HomeScreen(props) {
                 <BottomModal ref={bottomModal} confirmText={'确认'}>
                     <Text>1111</Text>
                 </BottomModal>
-                <Button
+                <VerifyCodeModel ref={verifyCodeModel} confirmText={'确认'}>
+                    <KeyboardAvoidingView>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={Style.modelPadding}>
+                                <Text style={({fontSize: Font.textH2}, styles.desc_text)}>
+                                    验证码已发送至138****8888
+                                </Text>
+                                <View style={[Style.flexRowCenter, styles.wrap_input]}>
+                                    <TextInput style={styles.verify_input} placeholder="请输入验证码" />
+                                    <TouchableOpacity style={[styles.verify_button, Style.flexCenter]}>
+                                        <Text style={{color: '#fff', fontSize: text(12)}}>重新发送验证码</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </KeyboardAvoidingView>
+                </VerifyCodeModel>
+                {/* <Button
                     title="底部弹窗"
                     onPress={() => {
-                        bottomModal.current.show();
+                        verifyCodeModel.current.show();
                     }}
-                />
+                /> */}
+
                 <Button
                     title="密码弹窗"
                     onPress={() => {
@@ -150,4 +183,30 @@ function HomeScreen(props) {
         </ScrollView>
     );
 }
+const styles = StyleSheet.create({
+    desc_text: {
+        color: '#555B6C',
+        paddingBottom: text(12),
+    },
+    verify_input: {
+        backgroundColor: '#ccc',
+        flex: 1,
+        height: text(50),
+        borderTopLeftRadius: text(5),
+        borderBottomLeftRadius: text(5),
+        paddingLeft: text(20),
+    },
+    verify_button: {
+        backgroundColor: '#EF8743',
+        fontSize: Font.textH3,
+        height: text(50),
+        borderTopRightRadius: text(5),
+        borderBottomRightRadius: text(5),
+        paddingHorizontal: text(10),
+    },
+    wrap_input: {
+        width: '100%',
+        height: text(50),
+    },
+});
 export default HomeScreen;
