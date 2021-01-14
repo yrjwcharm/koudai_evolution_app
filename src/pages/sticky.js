@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 21:53:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-07 10:17:58
+ * @LastEditTime: 2021-01-14 11:04:20
  * @Description:
  */
 import React, {Component} from 'react';
@@ -14,7 +14,6 @@ export default class MovieListScreen extends Component {
         super(props);
         this.state = {
             movieList: [1, 2, 3, 4, 5, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
-
             scrollY: new Animated.Value(0),
             headHeight: -1,
         };

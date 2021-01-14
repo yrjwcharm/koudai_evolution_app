@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-06 17:35:37
+ * @LastEditTime: 2021-01-13 20:34:17
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -11,9 +11,11 @@ import Chart from 'react-native-f2chart';
 import data from './data.json';
 import {WebView} from 'react-native-webview';
 // import { Container, Title } from "../components";
-import {baseChart, dynamicChart} from './chartOptions';
+import {baseChart, dynamicChart, area, Pie} from './chartOptions';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import _ from 'lodash';
+
 class LineChartScreen extends PureComponent {
     state = {
         data,
@@ -31,7 +33,6 @@ class LineChartScreen extends PureComponent {
         this.props.navigation.addListener('beforeRemove', (e) => {
             // Prevent default behavior of leaving the screen
             e.preventDefault();
-            console.log('111');
             // Prompt the user before leaving the screen
             Alert.alert(
                 'Discard changes?',
@@ -48,11 +49,10 @@ class LineChartScreen extends PureComponent {
                 ],
             );
         });
-        console.log(this.props);
     }
     render() {
         return (
-            <SafeAreaView style={{flex: 1, backgroundColor: Colors.bgColor}}>
+            <>
                 <ScrollView>
                     <View>
                         <Text>基础折线图</Text>
@@ -77,12 +77,14 @@ class LineChartScreen extends PureComponent {
                             <Button title="全部" onPress={() => this.changeData(0)} />
                         </View>
                         <View style={{height: 350}}>
-                            <Chart data={this.state.data} initScript={dynamicChart(data)} webView={WebView} />
+                            <Chart data={this.state.data} initScript={area(data)} webView={WebView} />
                         </View>
                     </View>
+                    <View style={{height: 350}}>
+                        <Chart initScript={Pie()} webView={WebView} />
+                    </View>
                 </ScrollView>
-                <Text style={{backgroundColor: 'red', height: 40}}>1111</Text>
-            </SafeAreaView>
+            </>
         );
     }
 }

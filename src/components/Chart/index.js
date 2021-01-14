@@ -1,3 +1,10 @@
+/*
+ * @Date: 2021-01-14 14:11:08
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-14 14:15:07
+ * @Description:图表配置
+ */
 const lineUpdate = `
 F2.Animate.registerAnimation('lineUpdate', function(updateShape, animateCfg) {
     var cacheShape = updateShape.get('cacheShape'); // 该动画 shape 的前一个状态

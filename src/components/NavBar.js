@@ -2,11 +2,11 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-12 10:44:48
+ * @LastEditTime: 2021-01-14 11:46:43
  * @Description:头部组件
  */
 
-import React,{useRef} from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
 import {px as px2dp} from '../utils/appUtil';
@@ -23,12 +23,15 @@ NavBar.propTypes = {
     leftPress: PropTypes.func,
     rightPress: PropTypes.func,
     style: PropTypes.object,
-    titleStyle:PropTypes.object,
+    titleStyle: PropTypes.object,
 };
- function NavBar(props) {
+NavBar.defaultProps = {
+    title: '123',
+};
+function NavBar(props) {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
-    const navRef = useRef(null)
+    const navRef = useRef(null);
     //返回
     const back = () => {
         navigation.goBack();
@@ -70,23 +73,23 @@ NavBar.propTypes = {
             }
         }
     };
-    const {scrollY,style,titleStyle} = props;
-    let opacityPercent = scrollY / 50
-    if(navRef&&navRef.current){
+    const {scrollY, style, titleStyle} = props;
+    let opacityPercent = scrollY / 50;
+    if (navRef && navRef.current) {
         if (scrollY < 50) {
             navRef.current.setNativeProps({
-                style: {opacity: opacityPercent}
-            })
+                style: {opacity: opacityPercent},
+            });
         } else {
-           navRef.current.setNativeProps({
-                style: {opacity: 1}
-            })
+            navRef.current.setNativeProps({
+                style: {opacity: 1},
+            });
         }
     }
     return (
-        <View ref={navRef} style={[styles.topbar,style, {paddingTop: insets.top, height: insets.top + topbarHeight}]}>
+        <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: insets.top + topbarHeight}]}>
             {renderBtn('left')}
-            <Animated.Text numberOfLines={1} style={[styles.title,titleStyle]}>
+            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle]}>
                 {props.title}
             </Animated.Text>
             {renderBtn('right')}
@@ -99,8 +102,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        zIndex:10
-        // paddingTop: statusBar,
+        zIndex: 10,
     },
     btn: {
         width: 40,
@@ -114,4 +116,4 @@ const styles = StyleSheet.create({
         fontSize: px2dp(16),
     },
 });
-export default NavBar
+export default NavBar;

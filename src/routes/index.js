@@ -2,14 +2,14 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-11 18:17:34
+ * @LastEditTime: 2021-01-14 14:09:16
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabScreen from './Tabbar';
 import DetailScreen from '../pages/Detail/index';
-import GesturePassword from '../pages/personal/GesturePassword';
+import GesturePassword from '../pages/Personal/GesturePassword';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
@@ -58,9 +58,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} options={{
+            <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{
                     headerShown: false,
-                }}/>
+                }}
+            />
             <Stack.Screen
                 name="DetailScreen"
                 component={DetailScreen}

@@ -2,17 +2,16 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-12 13:15:04
+ * @LastEditTime: 2021-01-14 11:51:17
  * @Description: 定义app常用工具类和常量
  */
-import { PixelRatio, Platform, Dimensions, PermissionsAndroid, StatusBar, NativeModules } from 'react-native';
+import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
 const deviceHeight = Dimensions.get('window').height; //设备的高度
 const deviceWidth = Dimensions.get('window').width; //设备的宽度
 let pixelRatio = PixelRatio.get();
 const defaultPixel = 2; //iphone6的像素密度
 const w2 = 750 / defaultPixel;
 const h2 = 1334 / defaultPixel;
-const { StatusBarManager } = NativeModules;
 // iPhoneX
 const X_WIDTH = 375;
 const X_HEIGHT = 812;
@@ -55,16 +54,15 @@ const requestExternalStoragePermission = async () => {
     }
 };
 //获取安全区域高度
- function getStatusBarHeight() {
-    if (Platform.OS == 'ios') {
-        return new Promise((resolve)=>{
-            StatusBarManager.getHeight(statusBarHeight => {
-                resolve(statusBarHeight.height)
-            });
-        })
-       
-    } else {
-        return  StatusBar.currentHeight
-    }
-}
-export { deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission, getStatusBarHeight };
+// function getStatusBarHeight() {
+//     if (Platform.OS == 'ios') {
+//         return new Promise((resolve) => {
+//             StatusBarManager.getHeight((statusBarHeight) => {
+//                 resolve(statusBarHeight.height);
+//             });
+//         });
+//     } else {
+//         return StatusBar.currentHeight;
+//     }
+// }
+export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission};
