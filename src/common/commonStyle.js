@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-06 18:54:40
+ * @LastEditTime: 2021-01-14 15:39:41
  * @Description:主题及公共样式表
  */
 
@@ -85,6 +85,11 @@ export const Font = {
     placeholderFont: 13,
 };
 export const Style = StyleSheet.create({
+    flexRowCenter: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     flexCenter: {
         justifyContent: 'center',
         alignItems: 'center',

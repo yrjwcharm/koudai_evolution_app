@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-13 20:34:17
+ * @LastEditTime: 2021-01-14 14:39:48
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -11,14 +11,29 @@ import Chart from 'react-native-f2chart';
 import data from './data.json';
 import {WebView} from 'react-native-webview';
 // import { Container, Title } from "../components";
-import {baseChart, dynamicChart, area, Pie} from './chartOptions';
+import {baseChart, dynamicChart, area, pie} from './chartOptions';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import _ from 'lodash';
-
 class LineChartScreen extends PureComponent {
     state = {
         data,
+        dataPie: [
+            {
+                name: '股票类',
+                percent: 83.59,
+                a: '1',
+            },
+            {
+                name: '债券类',
+                percent: 2.17,
+                a: '1',
+            },
+            {
+                name: '现金类',
+                percent: 14.24,
+                a: '1',
+            },
+        ],
     };
     changeData = (num) => {
         this.setState({
@@ -56,9 +71,9 @@ class LineChartScreen extends PureComponent {
                 <ScrollView>
                     <View>
                         <Text>基础折线图</Text>
-                        <View style={{height: 350}}>
-                            <Chart onChange={this.onChange} initScript={baseChart(data)} webView={WebView} />
-                        </View>
+                        {/* <View style={{height: 350}}>
+                            <Chart onChange={this.onChange} initScript={baseChart(data)} />
+                        </View> */}
                     </View>
                     <View>
                         <Text>动态加载数据</Text>
@@ -77,11 +92,11 @@ class LineChartScreen extends PureComponent {
                             <Button title="全部" onPress={() => this.changeData(0)} />
                         </View>
                         <View style={{height: 350}}>
-                            <Chart data={this.state.data} initScript={area(data)} webView={WebView} />
+                            <Chart data={this.state.data} initScript={area(data)} />
                         </View>
                     </View>
                     <View style={{height: 350}}>
-                        <Chart initScript={Pie()} webView={WebView} />
+                        <Chart initScript={pie(this.state.data)} />
                     </View>
                 </ScrollView>
             </>

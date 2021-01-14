@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 14:09:16
+ * @LastEditTime: 2021-01-14 15:30:34
  * @Description:路由表
  */
 import React from 'react';
@@ -14,6 +14,7 @@ import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
+import Register from '../pages/Auth/Register'; //注册
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -63,6 +64,13 @@ export default function AppStack() {
                 component={TabScreen}
                 options={{
                     headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{
+                    title: '',
                 }}
             />
             <Stack.Screen
