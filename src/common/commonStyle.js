@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:39:41
+ * @LastEditTime: 2021-01-14 17:09:19
  * @Description:主题及公共样式表
  */
 
@@ -29,6 +29,8 @@ export const Colors = {
     borderColor: '#E2D4EA',
     // 链接颜色
     linkColor: '#0051CC',
+    // 输入框背景色
+    inputBg: '#F4F4F4',
     // 红色 涨、报错
     red: '#E74949',
     // 绿色 跌

@@ -2,15 +2,17 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:50:57
+ * @LastEditTime: 2021-01-14 18:17:41
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {Image, View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {px as text} from '../../../utils/appUtil';
 import CheckBox from '../../../components/CheckBox';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
+import WechatView from '../wechat';
+import InputView from '../input';
 export default class index extends Component {
     constructor(props) {
         super(props);
@@ -23,33 +25,30 @@ export default class index extends Component {
     jumpPage = () => {
         this.props.navigation.navigate('Login');
     };
+    weChatLogin = () => {};
     render() {
         return (
-            <View style={styles.LoginContent}>
-                <View style={styles.LoginInputTel}>
-                    {/* <Image source={require('../../assets/login/phone.png')} style={styles.LoginPhoneIcon} /> */}
-                    <TextInput
-                        onChangeText={(phoneNumber) => this.setState({phoneNumber})}
-                        value={this.state.text}
-                        placeholder="请输入您的手机号"
-                        placeholderTextColor="#BBBBBB"
-                        style={styles.input}
-                        maxLength={11}
-                        keyboardType={'number-pad'}
-                    />
-                </View>
-
+            <View style={styles.login_content}>
+                <Text style={styles.title}>欢迎注册理财魔方</Text>
+                <InputView
+                    title="手机号"
+                    onChangeText={(phoneNumber) => this.setState({phoneNumber})}
+                    value={this.state.phoneNumber}
+                    placeholder="请输入您的手机号"
+                    maxLength={11}
+                    keyboardType={'number-pad'}
+                />
                 <View style={{marginTop: text(20), flexDirection: 'row'}}>
                     <CheckBox
                         checked={this.state.check}
                         onChange={(check) => {
                             this.setState({
-                                check: !check,
+                                check,
                             });
                         }}
                     />
                     <Text style={styles.aggrement_text}>
-                        <Text style={{fontSize: text(12)}}>我已阅读并同意</Text>
+                        <Text style={styles.text}>我已阅读并同意</Text>
                         {/* {agreements.map((item, index) => {
                         return (
                             <Text
@@ -66,18 +65,19 @@ export default class index extends Component {
                 </View>
                 <Button title="立即注册" onPress={this.register} style={{marginVertical: text(20)}} />
                 <View style={Style.flexRowCenter}>
-                    <Text>已有账号</Text>
+                    <Text style={styles.text}>已有账号</Text>
                     <TouchableOpacity onPress={this.jumpPage} style={styles.toLogin}>
-                        <Text style={{color: Colors.btnColor}}>去登录</Text>
+                        <Text style={[styles.text, {color: Colors.btnColor}]}>去登录</Text>
                     </TouchableOpacity>
                 </View>
+                <WechatView weChatLogin={this.weChatLogin} />
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    LoginContent: {
+    login_content: {
         padding: text(23),
         flex: 1,
         backgroundColor: '#fff',
@@ -85,67 +85,15 @@ const styles = StyleSheet.create({
     toLogin: {
         marginLeft: 2,
     },
-
-    LoginInputTel: {
-        height: text(50),
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#F4F4F4',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        paddingHorizontal: text(14),
+    title: {
+        fontSize: text(22),
+        fontWeight: '500',
+        marginBottom: text(48),
+        marginTop: text(20),
     },
-    input: {
-        letterSpacing: 1,
-        color: '#000',
-        fontSize: text(16),
-        flex: 1,
-    },
-    LoginBtn: {
-        backgroundColor: '#0052CD',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 15,
-        marginTop: 20,
-        borderRadius: 10,
-    },
-    LoginBtnText: {
-        color: '#fff',
-    },
-    LoginIcon: {
-        width: text(45),
-        height: text(45),
-    },
-    Login: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        marginTop: text(120),
-    },
-    LoginWrap: {
-        flexDirection: 'row',
-        // alignItems: 'center'
-    },
-    LoginTitle: {
+    text: {
         color: '#666666',
         fontSize: 12,
-        marginBottom: 15,
-    },
-    LoginLine: {
-        borderColor: '#BBBBBB',
-        borderTopWidth: text(0.5),
-        borderStyle: 'solid',
-        width: 100,
-        position: 'relative',
-        top: text(5),
-        marginHorizontal: 10,
-    },
-    LoginDesc: {
-        color: '#333',
-        fontSize: 13,
-        marginTop: 10,
     },
     aggrement_text: {
         flex: 1,
