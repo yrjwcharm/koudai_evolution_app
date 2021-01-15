@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 10:48:32
+ * @LastEditTime: 2021-01-15 14:51:49
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -57,13 +57,14 @@ export default class index extends Component {
                     value={password}
                     placeholder="请输入您的登录密码"
                     textContentType="password"
+                    secureTextEntry={true}
                     clearButtonMode="while-editing"
                     keyboardType={'ascii-capable'}
                 />
                 <TouchableOpacity onPress={this.jumpPage} style={styles.forget_password}>
                     <Text style={[styles.text, {color: Colors.btnColor}]}>忘记密码</Text>
                 </TouchableOpacity>
-                <Button title="登录" disabled={btnClick} onPress={this.register} style={{marginVertical: text(20)}} />
+                <Button title="登录" disabled={btnClick} onPress={this.register} style={{marginVertical: text(26)}} />
                 <View style={Style.flexRowCenter}>
                     <TouchableOpacity
                         onPress={() => {
