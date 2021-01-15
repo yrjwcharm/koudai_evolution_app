@@ -2,10 +2,10 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-14 18:49:21
+ * @LastEditTime: 2021-01-15 11:00:06
  * @Description: 首页
  */
-import * as React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     View,
     Text,
@@ -30,10 +30,14 @@ import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
+import Input from '../../components/Input/input';
+import RBSheet from 'react-native-raw-bottom-sheet';
 function HomeScreen(props) {
+    // const refRBSheet = useRef();
     const {navigation} = props;
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
+    const [visible, setVisible] = useState(false);
     React.useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -71,9 +75,10 @@ function HomeScreen(props) {
             // Do something manually
             // ...
         });
-        verifyCodeModel.current.show();
+        // refRBSheet.current.open();
+        // verifyCodeModel.current.show();
         return unsubscribe;
-    }, [navigation]);
+    }, [navigation, visible]);
     const password = React.useRef();
     const bottomModal = React.useRef(null);
     const verifyCodeModel = React.useRef(null);
@@ -112,33 +117,43 @@ function HomeScreen(props) {
                         setPassword(p);
                     }}
                 />
+                {/* <RBSheet
+                    ref={refRBSheet}
+                    closeOnDragDown={true}
+                    closeOnPressMask={true}
+                    customStyles={{
+                        wrapper: {
+                            backgroundColor: 'transparent',
+                        },
+                        container: {
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                        },
+                        draggableIcon: {
+                            backgroundColor: '#000',
+                        },
+                    }}>
+                    <View style={Style.modelPadding}>
+                        <Text style={({fontSize: Font.textH2}, styles.desc_text)}>验证码已发送至138****8888</Text>
+                        <View style={[Style.flexRowCenter, styles.wrap_input]}>
+                            <TextInput style={styles.verify_input} placeholder="请输入验证码" />
+                            <TouchableOpacity style={[styles.verify_button, Style.flexCenter]}>
+                                <Text style={{color: '#fff', fontSize: text(12)}}>重新发送验证码</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </RBSheet>
+                */}
                 <BottomModal ref={bottomModal} confirmText={'确认'}>
                     <Text>1111</Text>
                 </BottomModal>
-                <VerifyCodeModel ref={verifyCodeModel} confirmText={'确认'}>
-                    <KeyboardAvoidingView>
-                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                            <View style={Style.modelPadding}>
-                                <Text style={({fontSize: Font.textH2}, styles.desc_text)}>
-                                    验证码已发送至138****8888
-                                </Text>
-                                <View style={[Style.flexRowCenter, styles.wrap_input]}>
-                                    <TextInput style={styles.verify_input} placeholder="请输入验证码" />
-                                    <TouchableOpacity style={[styles.verify_button, Style.flexCenter]}>
-                                        <Text style={{color: '#fff', fontSize: text(12)}}>重新发送验证码</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </KeyboardAvoidingView>
-                </VerifyCodeModel>
-                {/* <Button
+                <Button
                     title="底部弹窗"
                     onPress={() => {
                         verifyCodeModel.current.show();
                     }}
-                /> */}
-
+                />
+                <VerifyCodeModel ref={verifyCodeModel} mobile={'12321'}></VerifyCodeModel>
                 <Button
                     title="密码弹窗"
                     onPress={() => {
@@ -189,7 +204,7 @@ const styles = StyleSheet.create({
         paddingBottom: text(12),
     },
     verify_input: {
-        backgroundColor: '#ccc',
+        backgroundColor: '#F4F4F4',
         flex: 1,
         height: text(50),
         borderTopLeftRadius: text(5),
