@@ -2,20 +2,10 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 17:34:21
+ * @LastEditTime: 2021-01-15 20:58:56
  * @Description:app引导页
  */
-// import React, {Component} from 'react';
-// import {Text, View} from 'react-native';
-// export default class Index extends Component {
-//     render() {
-//         return (
-//             <View>
-//                 <Text>1111</Text>
-//             </View>
-//         );
-//     }
-// }
+
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 

@@ -2,7 +2,7 @@
  * @Date: 2020-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-11 18:18:58
+ * @LastEditTime: 2021-01-15 20:57:34
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -18,10 +18,10 @@ export default function Tabbar() {
             screenOptions={({route}) => ({
                 tabBarIcon: ({focused, color, size}) => {
                     if (route.name === 'IndexScreen') {
-                    if (focused) {
-                        return <AntDesign name="setting" size={size} color={color} />;
-                    }
-                    return <AntDesign name="home" size={size} color={color} />;
+                        if (focused) {
+                            return <AntDesign name="setting" size={size} color={color} />;
+                        }
+                        return <AntDesign name="home" size={size} color={color} />;
                     } else if (route.name === 'IMScreen') {
                         return <AntDesign name="cloudo" size={size} color={color} />;
                     } else if (route.name === 'HomeScreen') {
@@ -36,9 +36,9 @@ export default function Tabbar() {
                 // activeTintColor: 'tomato',
                 // inactiveTintColor: 'gray',
                 allowFontScaling: false,
-                labelStyle:{
-                    fontSize:16
-                }
+                labelStyle: {
+                    fontSize: 16,
+                },
             }}>
             <Tab.Screen
                 name="IndexScreen"
@@ -47,8 +47,8 @@ export default function Tabbar() {
                     tabBarLabel: '发现',
                 }}
             />
-            <Tab.Screen name="IMScreen" options={{ tabBarLabel: '魔方'}} component={IMScreen} />
-            <Tab.Screen name="HomeScreen" options={{ tabBarLabel: '资产'}} component={HomeScreen} />
+            <Tab.Screen name="IMScreen" options={{tabBarLabel: '魔方'}} component={IMScreen} />
+            <Tab.Screen name="HomeScreen" options={{tabBarLabel: '资产'}} component={HomeScreen} />
         </Tab.Navigator>
     );
 }

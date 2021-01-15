@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 19:53:08
+ * @LastEditTime: 2021-01-15 20:57:58
  * @Description:路由表
  */
 import React from 'react';
@@ -66,6 +66,13 @@ export default function AppStack() {
                 },
             }}>
             <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
                 name="TradeRedeem"
                 component={TradeRedeem}
                 options={{
@@ -79,13 +86,7 @@ export default function AppStack() {
                     title: '基金开户',
                 }}
             />
-            <Stack.Screen
-                name="Tab"
-                component={TabScreen}
-                options={{
-                    headerShown: false,
-                }}
-            />
+
             <Stack.Screen
                 name="AppGuide"
                 component={AppGuide}

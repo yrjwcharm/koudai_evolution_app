@@ -2,15 +2,13 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 19:31:02
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-15 20:07:43
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView} from 'react-native';
-import {RadioGroup, RadioButton} from 'react-native-flexi-radio-button';
-import FastImage from 'react-native-fast-image';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {px as text} from '../utils/appUtil';
-import {Space, Style, Colors, Font} from '../common/commonStyle';
+import {Style} from '../common/commonStyle';
 export default class Radio extends Component {
     static defaultProps = {
         checked: false,
@@ -29,7 +27,7 @@ export default class Radio extends Component {
         return (
             <View>
                 <TouchableOpacity style={[styles.radio_circle, Style.flexRowCenter]} onPress={this.toggle.bind(this)}>
-                    {this.state.checked && <View style={styles.radio_fill}></View>}
+                    {this.state.checked && <View style={styles.radio_fill} />}
                 </TouchableOpacity>
             </View>
         );

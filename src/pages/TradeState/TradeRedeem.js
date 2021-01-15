@@ -2,12 +2,11 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 19:25:10
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-15 20:06:14
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView} from 'react-native';
-import {RadioGroup, RadioButton} from 'react-native-flexi-radio-button';
 import FastImage from 'react-native-fast-image';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
@@ -71,7 +70,8 @@ export default class TradeRedeem extends Component {
                                             this.setState({
                                                 check,
                                             });
-                                        }}></Radio>
+                                        }}
+                                    />
                                 </View>
                             );
                         })}
