@@ -2,16 +2,16 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 18:17:41
+ * @LastEditTime: 2021-01-15 10:49:26
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {px as text} from '../../../utils/appUtil';
 import CheckBox from '../../../components/CheckBox';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
-import WechatView from '../wechat';
+import WechatView from '../wechatView';
 import InputView from '../input';
 export default class index extends Component {
     constructor(props) {
@@ -22,8 +22,8 @@ export default class index extends Component {
         };
     }
     register = () => {};
-    jumpPage = () => {
-        this.props.navigation.navigate('Login');
+    jumpPage = (nav) => {
+        this.props.navigation.navigate(nav);
     };
     weChatLogin = () => {};
     render() {
@@ -36,6 +36,7 @@ export default class index extends Component {
                     value={this.state.phoneNumber}
                     placeholder="请输入您的手机号"
                     maxLength={11}
+                    autoFocus={true}
                     keyboardType={'number-pad'}
                 />
                 <View style={{marginTop: text(20), flexDirection: 'row'}}>
@@ -66,7 +67,11 @@ export default class index extends Component {
                 <Button title="立即注册" onPress={this.register} style={{marginVertical: text(20)}} />
                 <View style={Style.flexRowCenter}>
                     <Text style={styles.text}>已有账号</Text>
-                    <TouchableOpacity onPress={this.jumpPage} style={styles.toLogin}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.jumpPage('Login');
+                        }}
+                        style={styles.toLogin}>
                         <Text style={[styles.text, {color: Colors.btnColor}]}>去登录</Text>
                     </TouchableOpacity>
                 </View>

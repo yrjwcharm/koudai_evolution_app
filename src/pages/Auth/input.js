@@ -2,20 +2,21 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 18:12:44
+ * @LastEditTime: 2021-01-14 19:09:40
  * @Description:
  */
 import React from 'react';
-import {Colors} from '../../common/commonStyle';
+import {Colors, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 export default function input(props) {
     return (
-        <View style={styles.login_input_tel}>
-            <Text style={styles.inputLeftText}>
-                {props.title} <Text style={{color: Colors.lightGrayColor}}>&nbsp;&nbsp;&nbsp;|</Text>
-            </Text>
-            <TextInput {...props} style={styles.input} />
+        <View style={[styles.login_input_tel, props.style]}>
+            <View style={{width: text(80)}}>
+                <Text style={styles.inputLeftText}>{props.title}</Text>
+                <Text style={styles.line}>|</Text>
+            </View>
+            <TextInput {...props} style={styles.input} underlineColorAndroid="transparent" />
         </View>
     );
 }
@@ -24,15 +25,19 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         color: '#4E556C',
     },
+    line: {
+        position: 'absolute',
+        color: Colors.lightGrayColor,
+        right: 0,
+    },
     login_input_tel: {
         height: text(50),
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: Colors.inputBg,
         borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        paddingHorizontal: text(14),
+        paddingHorizontal: text(20),
+        marginBottom: text(12),
     },
     input: {
         letterSpacing: 1,

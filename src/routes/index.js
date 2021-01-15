@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:30:34
+ * @LastEditTime: 2021-01-15 10:46:12
  * @Description:路由表
  */
 import React from 'react';
@@ -15,6 +15,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
 import Register from '../pages/Auth/Register'; //注册
+import Login from '../pages/Auth/Login'; //登录
+import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
+import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -69,6 +72,27 @@ export default function AppStack() {
             <Stack.Screen
                 name="Register"
                 component={Register}
+                options={{
+                    title: '',
+                }}
+            />
+            <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                    title: '',
+                }}
+            />
+            <Stack.Screen
+                name="WechatLogin"
+                component={WechatLogin}
+                options={{
+                    title: '',
+                }}
+            />
+            <Stack.Screen
+                name="SetLoginPassword"
+                component={SetLoginPassword}
                 options={{
                     title: '',
                 }}

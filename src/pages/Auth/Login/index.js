@@ -2,72 +2,75 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 18:18:59
+ * @LastEditTime: 2021-01-15 10:48:32
  * @Description: 登录
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {px as text} from '../../../utils/appUtil';
-import CheckBox from '../../../components/CheckBox';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
-import WechatView from '../wechat';
+import WechatView from '../wechatView';
 import InputView from '../input';
 export default class index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            phoneNumber: '',
+            mobile: '',
+            password: '',
             check: true,
+            btnClick: true,
         };
     }
     register = () => {};
-    jumpPage = () => {
-        this.props.navigation.navigate('Login');
+    jumpPage = (nav) => {
+        this.props.navigation.navigate(nav);
+    };
+    onChangeMobile = (mobile) => {
+        const {password} = this.state;
+        this.setState({mobile, btnClick: !(mobile.length >= 11 && password.length >= 6)});
+    };
+    onChangePassword = (password) => {
+        const {mobile} = this.state;
+        this.setState({password, btnClick: !(mobile.length >= 11 && password.length >= 6)});
     };
     weChatLogin = () => {};
     render() {
+        const {mobile, password, btnClick} = this.state;
         return (
             <View style={styles.login_content}>
-                <Text style={styles.title}>欢迎注册理财魔方</Text>
+                <Text style={styles.title}>手机号登录</Text>
                 <InputView
                     title="手机号"
-                    onChangeText={(phoneNumber) => this.setState({phoneNumber})}
-                    value={this.state.phoneNumber}
+                    onChangeText={this.onChangeMobile}
+                    value={mobile}
                     placeholder="请输入您的手机号"
                     maxLength={11}
+                    textContentType="telephoneNumber"
                     keyboardType={'number-pad'}
+                    autoFocus={true}
+                    clearButtonMode="while-editing"
                 />
-                <View style={{marginTop: text(20), flexDirection: 'row'}}>
-                    <CheckBox
-                        checked={this.state.check}
-                        onChange={(check) => {
-                            this.setState({
-                                check,
-                            });
-                        }}
-                    />
-                    <Text style={styles.aggrement_text}>
-                        <Text style={styles.text}>我已阅读并同意</Text>
-                        {/* {agreements.map((item, index) => {
-                        return (
-                            <Text
-                                onPress={() => {
-                                    this.props.navigation.navigate('Article', {title: item.title, type: item.id});
-                                }}
-                                style={{fontSize: text(12), color: commonStyle.themeColor}}
-                                key={index}>
-                                {item.title}
-                            </Text>
-                        );
-                    })} */}
-                    </Text>
-                </View>
-                <Button title="立即注册" onPress={this.register} style={{marginVertical: text(20)}} />
+                <InputView
+                    title="登录密码"
+                    onChangeText={this.onChangePassword}
+                    value={password}
+                    placeholder="请输入您的登录密码"
+                    textContentType="password"
+                    clearButtonMode="while-editing"
+                    keyboardType={'ascii-capable'}
+                />
+                <TouchableOpacity onPress={this.jumpPage} style={styles.forget_password}>
+                    <Text style={[styles.text, {color: Colors.btnColor}]}>忘记密码</Text>
+                </TouchableOpacity>
+                <Button title="登录" disabled={btnClick} onPress={this.register} style={{marginVertical: text(20)}} />
                 <View style={Style.flexRowCenter}>
-                    <Text style={styles.text}>已有账号</Text>
-                    <TouchableOpacity onPress={this.jumpPage} style={styles.toLogin}>
-                        <Text style={[styles.text, {color: Colors.btnColor}]}>去登录</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.jumpPage('Register');
+                        }}
+                        style={styles.toLogin}>
+                        <Text style={[styles.text, {color: Colors.btnColor}]}>立即注册</Text>
                     </TouchableOpacity>
                 </View>
                 <WechatView weChatLogin={this.weChatLogin} />
@@ -81,6 +84,9 @@ const styles = StyleSheet.create({
         padding: text(23),
         flex: 1,
         backgroundColor: '#fff',
+    },
+    forget_password: {
+        alignItems: 'flex-end',
     },
     toLogin: {
         marginLeft: 2,

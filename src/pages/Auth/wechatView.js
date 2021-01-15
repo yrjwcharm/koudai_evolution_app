@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 17:51:00
+ * @LastEditTime: 2021-01-15 10:52:26
  * @Description:
  */
 import React, {Component} from 'react';
@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import {Style, Colors} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 // export default class Wechat extends Component {
 //     static propTypes = {
 //         weChatLogin: Function,
@@ -35,6 +36,10 @@ import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 // }
 
 function Wechat(props) {
+    const navigation = useNavigation();
+    const weChatLogin = () => {
+        navigation.navigate('WechatLogin');
+    };
     return (
         <View style={[styles.Login, Style.flexCenter]}>
             <View style={styles.LoginWrap}>
@@ -42,16 +47,16 @@ function Wechat(props) {
                 <Text style={[styles.text, {marginBottom: 12}]}>其他登录方式</Text>
                 <View style={styles.LoginLine} />
             </View>
-            <TouchableOpacity onPress={props.weChatLogin}>
+            <TouchableOpacity onPress={weChatLogin}>
                 <Image source={require('../../assets/img/login/wechat_icon.png')} style={styles.LoginIcon} />
+                <Text style={styles.LoginDesc}>微信登录</Text>
             </TouchableOpacity>
-            <Text style={styles.LoginDesc}>微信登录</Text>
         </View>
     );
 }
-Wechat.propTypes = {
-    weChatLogin: PropTypes.func,
-};
+// Wechat.propTypes = {
+//     weChatLogin: PropTypes.func,
+// };
 
 export default Wechat;
 const styles = StyleSheet.create({

@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 17:09:19
+ * @LastEditTime: 2021-01-15 10:59:07
  * @Description:主题及公共样式表
  */
 
@@ -90,6 +90,10 @@ export const Style = StyleSheet.create({
     flexRowCenter: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    flexRow: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
     flexCenter: {
