@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-11 18:18:58
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-15 16:02:34
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -11,6 +11,7 @@ import IMScreen from '../pages/IM/index';
 import HomeScreen from '../pages/Assets/index';
 import IndexScreen from '../pages/Index/index';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import TradeRedeem from '../pages/TradeState/TradeRedeem';
 const Tab = createBottomTabNavigator();
 export default function Tabbar() {
     return (
@@ -18,10 +19,10 @@ export default function Tabbar() {
             screenOptions={({route}) => ({
                 tabBarIcon: ({focused, color, size}) => {
                     if (route.name === 'IndexScreen') {
-                    if (focused) {
-                        return <AntDesign name="setting" size={size} color={color} />;
-                    }
-                    return <AntDesign name="home" size={size} color={color} />;
+                        if (focused) {
+                            return <AntDesign name="setting" size={size} color={color} />;
+                        }
+                        return <AntDesign name="home" size={size} color={color} />;
                     } else if (route.name === 'IMScreen') {
                         return <AntDesign name="cloudo" size={size} color={color} />;
                     } else if (route.name === 'HomeScreen') {
@@ -36,19 +37,19 @@ export default function Tabbar() {
                 // activeTintColor: 'tomato',
                 // inactiveTintColor: 'gray',
                 allowFontScaling: false,
-                labelStyle:{
-                    fontSize:16
-                }
+                labelStyle: {
+                    fontSize: 16,
+                },
             }}>
             <Tab.Screen
-                name="IndexScreen"
-                component={IndexScreen}
+                name="TradeRedeem"
+                component={TradeRedeem}
                 options={{
                     tabBarLabel: '发现',
                 }}
             />
-            <Tab.Screen name="IMScreen" options={{ tabBarLabel: '魔方'}} component={IMScreen} />
-            <Tab.Screen name="HomeScreen" options={{ tabBarLabel: '资产'}} component={HomeScreen} />
+            <Tab.Screen name="IMScreen" options={{tabBarLabel: '魔方'}} component={IMScreen} />
+            <Tab.Screen name="HomeScreen" options={{tabBarLabel: '资产'}} component={HomeScreen} />
         </Tab.Navigator>
     );
 }
