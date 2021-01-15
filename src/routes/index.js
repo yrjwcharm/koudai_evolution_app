@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 10:46:12
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-15 16:07:17
  * @Description:路由表
  */
 import React from 'react';
@@ -18,6 +18,8 @@ import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
+import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
+import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -62,6 +64,20 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="TradeRedeem"
+                component={TradeRedeem}
+                options={{
+                    title: '赎回',
+                }}
+            />
+            <Stack.Screen
+                name="SetTradePassword"
+                component={SetTradePassword}
+                options={{
+                    title: '基金开户',
+                }}
+            />
             <Stack.Screen
                 name="Tab"
                 component={TabScreen}

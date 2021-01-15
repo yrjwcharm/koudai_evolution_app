@@ -6960,6 +6960,16 @@ react-native-f2chart@^1.1.0:
   resolved "https://registry.npm.taobao.org/react-native-f2chart/download/react-native-f2chart-1.1.0.tgz#6d23cb1aca05dd66c7555cd0ba133cc1c97ffdc3"
   integrity sha1-bSPLGsoF3WbHVVzQuhM8wcl//cM=
 
+react-native-fast-image@^8.3.4:
+  version "8.3.4"
+  resolved "https://registry.npm.taobao.org/react-native-fast-image/download/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"
+  integrity sha1-ee3KF34wMRsZ1Z/zNWJby+ImUNc=
+
+react-native-flexi-radio-button@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npm.taobao.org/react-native-flexi-radio-button/download/react-native-flexi-radio-button-0.2.2.tgz#a0180393c531ba3477722c6e42a31ceb1c11623b"
+  integrity sha1-oBgDk8UxujR3cixuQqMc6xwRYjs=
+
 react-native-fs@^2.16.6:
   version "2.16.6"
   resolved "https://registry.npm.taobao.org/react-native-fs/download/react-native-fs-2.16.6.tgz#2901789a43210a35a0ef0a098019bbef3af395fd"

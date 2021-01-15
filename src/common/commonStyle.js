@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 11:04:36
+ * @LastEditTime: 2021-01-15 18:03:21
  * @Description:主题及公共样式表
  */
 
@@ -26,7 +26,7 @@ export const Colors = {
     // 默认placeholder颜色
     placeholderColor: '#CCCCCC',
     // borderColor
-    borderColor: '#E2D4EA',
+    borderColor: '#DDDDDD',
     // 链接颜色
     linkColor: '#0051CC',
     // 输入框背景色
@@ -46,6 +46,9 @@ export const Colors = {
     navRightTitleColor: '#121D3A',
     iconGray: '#989898',
     iconBlack: '#262626',
+    defaultFontColor: '#292D39',
+    // 描述文字颜色
+    descColor: '#4E556C',
 };
 export const Space = {
     /** space **/
@@ -112,5 +115,14 @@ export const Style = StyleSheet.create({
     modelPadding: {
         marginHorizontal: text(20),
         marginVertical: text(20),
+    },
+    containerPadding: {
+        padding: text(20),
+        backgroundColor: '#F5F6F8',
+        flex: 1,
+    },
+    baselineAlign: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
     },
 });
