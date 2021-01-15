@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 11:01:52
+ * @LastEditTime: 2021-01-15 12:06:15
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -11,14 +11,20 @@ import InputView from '../input';
 import {px as text} from '../../../utils/appUtil';
 import {Style} from '../../../common/commonStyle';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import Agreements from '../../../components/Agreements';
+import {Button} from '../../../components/Button';
 export default class WechatLogin extends Component {
-    static propTypes = {
-        prop: PropTypes,
-    };
+    // static propTypes = {
+    //     prop: PropTypes,
+    // };
     state = {
         mobile: '',
+        check: true,
     };
-
+    /**获取短信验证码 */
+    getCode = () => {
+        this.props.navigation.navigate('SetLoginPassword');
+    };
     render() {
         const {mobile} = this.state;
         return (
@@ -45,6 +51,12 @@ export default class WechatLogin extends Component {
                     autoFocus={true}
                     clearButtonMode="while-editing"
                 />
+                <Agreements
+                    onChange={(check) => {
+                        this.setState({check});
+                    }}
+                />
+                <Button title="获取短信验证码" onPress={this.getCode} style={{marginTop: text(38)}} />
             </View>
         );
     }
@@ -58,8 +70,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: text(18),
         fontWeight: '500',
-        marginBottom: text(32),
-        marginTop: text(20),
+        marginVertical: text(31),
     },
     avatar: {
         width: text(40),
@@ -68,5 +79,6 @@ const styles = StyleSheet.create({
     welcome_title: {
         fontSize: text(22),
         fontWeight: '500',
+        marginLeft: text(11),
     },
 });

@@ -7,8 +7,5 @@
  */
 
 import Modal from './Modal';
-import BottomModal from './BottomModal'
-export{
-    BottomModal,
-    Modal
-} 
+import BottomModal from './BottomModal';
+export {BottomModal, Modal};
