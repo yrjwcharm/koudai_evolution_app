@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:01:02
+ * @LastEditTime: 2021-01-14 17:43:43
  * @Description:
  */
 import React from 'react';
@@ -22,14 +22,9 @@ class CheckBox extends React.Component {
             checked: props.checked,
         };
     }
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState({
-            checked: nextProps.checked,
-        });
-    }
     toggle() {
         this.setState({checked: !this.state.checked});
-        this.props.onChange(this.state.checked);
+        this.props.onChange(!this.state.checked);
     }
     render() {
         var source = 'checkbox-blank-circle-outline';

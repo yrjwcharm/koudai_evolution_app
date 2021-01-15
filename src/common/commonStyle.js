@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-14 18:13:06
+ * @LastEditTime: 2021-01-15 11:04:36
  * @Description:主题及公共样式表
  */
 
@@ -29,6 +29,8 @@ export const Colors = {
     borderColor: '#E2D4EA',
     // 链接颜色
     linkColor: '#0051CC',
+    // 输入框背景色
+    inputBg: '#F4F4F4',
     // 红色 涨、报错
     red: '#E74949',
     // 绿色 跌
@@ -89,6 +91,10 @@ export const Style = StyleSheet.create({
     flexRowCenter: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    flexRow: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
     flexCenter: {

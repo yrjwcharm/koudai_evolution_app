@@ -85,7 +85,7 @@ apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle" //热更新
 
 project.ext.vectoricons = [
-        iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'AntDesign.ttf','Entypo.ttf','EvilIcons.ttf','Ionicons.ttf','Foundation.ttf','Feather.ttf']
+        iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'AntDesign.ttf','Entypo.ttf','EvilIcons.ttf','Ionicons.ttf','Foundation.ttf','Feather.ttf','MaterialCommunityIcons.ttf']
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

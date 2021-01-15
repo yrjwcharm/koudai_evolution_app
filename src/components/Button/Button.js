@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-07 16:55:11
+ * @LastEditTime: 2021-01-14 19:41:14
  * @Description:通用按钮
  */
 import React from 'react';
@@ -23,7 +23,6 @@ class Button extends React.Component {
     }
     render() {
         const {type} = this.props;
-        console.log(this.props.type);
         return (
             <>
                 <TouchableHighlight
