@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 12:06:15
+ * @LastEditTime: 2021-01-15 15:24:56
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -20,13 +20,17 @@ export default class WechatLogin extends Component {
     state = {
         mobile: '',
         check: true,
+        btnClick: true,
     };
     /**获取短信验证码 */
     getCode = () => {
         this.props.navigation.navigate('SetLoginPassword');
     };
+    onChangeMobile = (mobile) => {
+        this.setState({mobile, btnClick: !(mobile.length >= 11)});
+    };
     render() {
-        const {mobile} = this.state;
+        const {mobile, btnClick} = this.state;
         return (
             <View style={styles.login_content}>
                 <View style={Style.flexRow}>
@@ -56,7 +60,12 @@ export default class WechatLogin extends Component {
                         this.setState({check});
                     }}
                 />
-                <Button title="获取短信验证码" onPress={this.getCode} style={{marginTop: text(38)}} />
+                <Button
+                    title="获取短信验证码"
+                    disabled={btnClick}
+                    onPress={this.getCode}
+                    style={{marginTop: text(38)}}
+                />
             </View>
         );
     }

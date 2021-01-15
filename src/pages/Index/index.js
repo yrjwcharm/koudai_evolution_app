@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 11:00:06
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-15 15:27:57
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -26,12 +26,10 @@ import {px} from '../../utils/appUtil';
 import {PasswordModal} from '../../components/Password';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Button} from '../../components/Button';
-import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
+import {Modal, BottomModal, VerifyCodeModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
-import Input from '../../components/Input/input';
-import RBSheet from 'react-native-raw-bottom-sheet';
 function HomeScreen(props) {
     // const refRBSheet = useRef();
     const {navigation} = props;
@@ -153,7 +151,7 @@ function HomeScreen(props) {
                         verifyCodeModel.current.show();
                     }}
                 />
-                <VerifyCodeModel ref={verifyCodeModel} mobile={'12321'}></VerifyCodeModel>
+                <VerifyCodeModal ref={verifyCodeModel} mobile={'12321'} />
                 <Button
                     title="密码弹窗"
                     onPress={() => {

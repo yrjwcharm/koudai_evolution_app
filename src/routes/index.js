@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 10:46:12
+ * @LastEditTime: 2021-01-15 17:01:40
  * @Description:路由表
  */
 import React from 'react';
@@ -14,6 +14,7 @@ import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
+import AppGuide from '../pages/Auth/AppGuide';
 import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
@@ -65,6 +66,13 @@ export default function AppStack() {
             <Stack.Screen
                 name="Tab"
                 component={TabScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="AppGuide"
+                component={AppGuide}
                 options={{
                     headerShown: false,
                 }}

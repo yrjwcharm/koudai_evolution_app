@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 19:09:40
+ * @LastEditTime: 2021-01-15 15:58:41
  * @Description:
  */
 import React from 'react';
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: Colors.inputBg,
-        borderRadius: 10,
+        borderRadius: text(6),
         paddingHorizontal: text(20),
         marginBottom: text(12),
     },
