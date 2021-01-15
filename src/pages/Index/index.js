@@ -1,12 +1,24 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-08 14:20:49
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-15 11:00:06
  * @Description: 首页
  */
-import * as React from 'react';
-import {View, Text, Linking, Image, ScrollView} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+    View,
+    Text,
+    Linking,
+    Image,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    Keyboard,
+    KeyboardAvoidingView,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {update} from '../../redux/actions/userInfo';
 import JPush from 'jpush-react-native';
@@ -14,12 +26,18 @@ import {px} from '../../utils/appUtil';
 import {PasswordModal} from '../../components/Password';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Button} from '../../components/Button';
-import {Modal, BottomModal} from '../../components/Modal';
+import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import {Space, Font, Style} from '../../common/commonStyle';
+import {px as text} from '../../utils/appUtil';
+import Input from '../../components/Input/input';
+import RBSheet from 'react-native-raw-bottom-sheet';
 function HomeScreen(props) {
+    // const refRBSheet = useRef();
     const {navigation} = props;
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
+    const [visible, setVisible] = useState(false);
     React.useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -57,11 +75,13 @@ function HomeScreen(props) {
             // Do something manually
             // ...
         });
-
+        // refRBSheet.current.open();
+        // verifyCodeModel.current.show();
         return unsubscribe;
-    }, [navigation]);
+    }, [navigation, visible]);
     const password = React.useRef();
     const bottomModal = React.useRef(null);
+    const verifyCodeModel = React.useRef(null);
     /**
      * @description: 处理通过深度链接进入app
      * @param {*} event
@@ -97,15 +117,43 @@ function HomeScreen(props) {
                         setPassword(p);
                     }}
                 />
+                {/* <RBSheet
+                    ref={refRBSheet}
+                    closeOnDragDown={true}
+                    closeOnPressMask={true}
+                    customStyles={{
+                        wrapper: {
+                            backgroundColor: 'transparent',
+                        },
+                        container: {
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                        },
+                        draggableIcon: {
+                            backgroundColor: '#000',
+                        },
+                    }}>
+                    <View style={Style.modelPadding}>
+                        <Text style={({fontSize: Font.textH2}, styles.desc_text)}>验证码已发送至138****8888</Text>
+                        <View style={[Style.flexRowCenter, styles.wrap_input]}>
+                            <TextInput style={styles.verify_input} placeholder="请输入验证码" />
+                            <TouchableOpacity style={[styles.verify_button, Style.flexCenter]}>
+                                <Text style={{color: '#fff', fontSize: text(12)}}>重新发送验证码</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </RBSheet>
+                */}
                 <BottomModal ref={bottomModal} confirmText={'确认'}>
                     <Text>1111</Text>
                 </BottomModal>
                 <Button
                     title="底部弹窗"
                     onPress={() => {
-                        bottomModal.current.show();
+                        verifyCodeModel.current.show();
                     }}
                 />
+                <VerifyCodeModel ref={verifyCodeModel} mobile={'12321'}></VerifyCodeModel>
                 <Button
                     title="密码弹窗"
                     onPress={() => {
@@ -150,4 +198,30 @@ function HomeScreen(props) {
         </ScrollView>
     );
 }
+const styles = StyleSheet.create({
+    desc_text: {
+        color: '#555B6C',
+        paddingBottom: text(12),
+    },
+    verify_input: {
+        backgroundColor: '#F4F4F4',
+        flex: 1,
+        height: text(50),
+        borderTopLeftRadius: text(5),
+        borderBottomLeftRadius: text(5),
+        paddingLeft: text(20),
+    },
+    verify_button: {
+        backgroundColor: '#EF8743',
+        fontSize: Font.textH3,
+        height: text(50),
+        borderTopRightRadius: text(5),
+        borderBottomRightRadius: text(5),
+        paddingHorizontal: text(10),
+    },
+    wrap_input: {
+        width: '100%',
+        height: text(50),
+    },
+});
 export default HomeScreen;
