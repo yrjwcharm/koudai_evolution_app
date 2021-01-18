@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 16:07:17
+ * @LastEditTime: 2021-01-18 11:19:17
  * @Description:路由表
  */
 import React from 'react';
@@ -20,6 +20,7 @@ import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
+import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -64,6 +65,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="TradeAdjust"
+                component={TradeAdjust}
+                options={{
+                    title: '调仓',
+                }}
+            />
             <Stack.Screen
                 name="TradeRedeem"
                 component={TradeRedeem}

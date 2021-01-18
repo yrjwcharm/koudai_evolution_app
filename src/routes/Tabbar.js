@@ -2,7 +2,7 @@
  * @Date: 2020-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 16:02:34
+ * @LastEditTime: 2021-01-18 11:20:34
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -11,7 +11,6 @@ import IMScreen from '../pages/IM/index';
 import HomeScreen from '../pages/Assets/index';
 import IndexScreen from '../pages/Index/index';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import TradeRedeem from '../pages/TradeState/TradeRedeem';
 const Tab = createBottomTabNavigator();
 export default function Tabbar() {
     return (
@@ -42,8 +41,8 @@ export default function Tabbar() {
                 },
             }}>
             <Tab.Screen
-                name="TradeRedeem"
-                component={TradeRedeem}
+                name="IndexScreen"
+                component={IndexScreen}
                 options={{
                     tabBarLabel: '发现',
                 }}
