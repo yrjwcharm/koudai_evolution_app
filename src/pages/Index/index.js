@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 11:00:06
+ * @LastEditTime: 2021-01-18 10:23:02
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -30,8 +30,6 @@ import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
-import Input from '../../components/Input/input';
-import RBSheet from 'react-native-raw-bottom-sheet';
 function HomeScreen(props) {
     // const refRBSheet = useRef();
     const {navigation} = props;

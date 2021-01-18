@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 15:50:24
+ * @LastEditTime: 2021-01-18 10:26:10
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput} from 'react-native';
@@ -12,8 +12,6 @@ import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
-import Header from '../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 export default class SetTradePassword extends Component {
     constructor(props) {
         super(props);
@@ -80,7 +78,7 @@ export default class SetTradePassword extends Component {
                                 // })
                             } else {
                                 Toast.show('两次设置的交易密码不一致');
-                                handelReset();
+                                this.handelReset();
                             }
                         } else {
                             this.setState({
