@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 20:57:58
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-17 17:57:03
  * @Description:路由表
  */
 import React from 'react';
@@ -21,6 +21,9 @@ import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
+import Agreement from '../pages/Common/Agreement'; // 用户协议
+import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
+import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -141,6 +144,21 @@ export default function AppStack() {
                 options={{
                     ...TransitionPresets.ModalTransition,
                 }}
+            />
+            <Stack.Screen
+                name="Agreement"
+                component={Agreement}
+                options={{ title: '用户协议' }}
+            />
+            <Stack.Screen
+                name="OpenPdf"
+                component={OpenPdf}
+                options={{ title: '' }}
+            />
+            <Stack.Screen
+                name="AssetsConfigDetail"
+                component={AssetsConfigDetail}
+                options={{ title: '资产配置详情' }}
             />
         </Stack.Navigator>
     );

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 15:27:57
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-17 17:56:48
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -192,6 +192,9 @@ function HomeScreen(props) {
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
+                <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} />
+                <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} />
+                <Button title="AssetsConfigDetail" onPress={() => navigation.navigate('AssetsConfigDetail', { amount: '2000' })} />
             </View>
         </ScrollView>
     );
