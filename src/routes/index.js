@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 21:24:21
+ * @LastEditTime: 2021-01-19 16:08:50
+=======
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-19 13:24:17
+>>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
  * @Description:路由表
  */
 import React from 'react';
@@ -25,6 +30,12 @@ import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份�
 import BankInfo from '../pages/CreateAccount/Account/bankInfo'; //开户银行卡信息
 import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
 import Camera from '../pages/CreateAccount/Account/camera'//身份证拍照
+import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
+import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
+import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
+import Agreement from '../pages/Common/Agreement'; // 用户协议
+import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
+import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -70,10 +81,24 @@ export default function AppStack() {
                 },
             }}>
             <Stack.Screen
-                name="Tab"
-                component={TabScreen}
+                name="PrivateCert"
+                component={PrivateCert}
                 options={{
-                    headerShown: false,
+                    title: '私募合格投资者认证',
+                }}
+            />
+            <Stack.Screen
+                name="PrivateProduct"
+                component={PrivateProduct}
+                options={{
+                    title: '私募产品',
+                }}
+            />
+            <Stack.Screen
+                name="TradeAdjust"
+                component={TradeAdjust}
+                options={{
+                    title: '调仓',
                 }}
             />
             <Stack.Screen
@@ -173,6 +198,21 @@ export default function AppStack() {
                 options={{
                     ...TransitionPresets.ModalTransition,
                 }}
+            />
+            <Stack.Screen
+                name="Agreement"
+                component={Agreement}
+                options={{ title: '用户协议' }}
+            />
+            <Stack.Screen
+                name="OpenPdf"
+                component={OpenPdf}
+                options={{ title: '' }}
+            />
+            <Stack.Screen
+                name="AssetsConfigDetail"
+                component={AssetsConfigDetail}
+                options={{ title: '资产配置详情' }}
             />
         </Stack.Navigator>
     );

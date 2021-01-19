@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 10:25:22
+ * @LastEditTime: 2021-01-19 16:09:36
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet,  TextInput} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
