@@ -217,6 +217,7 @@ dependencies {
     implementation project(':react-native-wechat-lib') //微信
     implementation project(':react-native-splash-screen') //启动页
     implementation project(':react-native-fs') //文件读写
+    implementation project(path: ':@react-native-community_viewpager')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

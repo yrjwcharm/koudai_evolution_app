@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 11:19:17
+ * @LastEditTime: 2021-01-19 12:20:38
  * @Description:路由表
  */
 import React from 'react';
@@ -21,6 +21,8 @@ import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
 import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
+import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
+import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -65,6 +67,20 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="PrivateCert"
+                component={PrivateCert}
+                options={{
+                    title: '私募合格投资者认证',
+                }}
+            />
+            <Stack.Screen
+                name="PrivateProduct"
+                component={PrivateProduct}
+                options={{
+                    title: '私募产品',
+                }}
+            />
             <Stack.Screen
                 name="TradeAdjust"
                 component={TradeAdjust}

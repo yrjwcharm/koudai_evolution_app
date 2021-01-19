@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 18:03:21
+ * @LastEditTime: 2021-01-18 18:14:21
  * @Description:主题及公共样式表
  */
 
@@ -105,11 +105,17 @@ export const Style = StyleSheet.create({
         alignItems: 'center',
     },
     flexBetween: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
     flexAround: {
         justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    flexEvenly: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     modelPadding: {
