@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 15:27:57
+ * @LastEditTime: 2021-01-18 18:08:19
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -162,6 +162,8 @@ function HomeScreen(props) {
                     title="普通弹窗"
                     onPress={() => {
                         Modal.show({
+                            confirm:false,
+                            
                             content: 'https://static.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
                         });
                     }}

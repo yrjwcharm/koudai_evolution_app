@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 15:50:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-18 10:25:22
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput} from 'react-native';
@@ -12,8 +12,6 @@ import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
-import Header from '../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 export default class SetTradePassword extends Component {
     constructor(props) {
         super(props);
@@ -23,13 +21,13 @@ export default class SetTradePassword extends Component {
             pwdMsg: '设置6位数字交易密码',
         };
     }
-    handelReset() {
+    handelReset = () => {
         this.setState({
             pwdFisrt: '',
             pwdMsg: '设置6位数字交易密码',
             password: '',
         });
-    }
+    };
     onTouchInput() {
         const isFocused = this.textInput.isFocused();
         if (!isFocused) {
@@ -48,7 +46,7 @@ export default class SetTradePassword extends Component {
                         this.onTouchInput();
                     }}
                     style={styles.box}>
-                    {this.state.password[index] ? <View style={styles.circle}></View> : <Text></Text>}
+                    {this.state.password[index] ? <View style={styles.circle} /> : <Text />}
                 </TouchableOpacity>,
             ),
         );
@@ -80,7 +78,7 @@ export default class SetTradePassword extends Component {
                                 // })
                             } else {
                                 Toast.show('两次设置的交易密码不一致');
-                                handelReset();
+                                this.handelReset();
                             }
                         } else {
                             this.setState({
@@ -128,7 +126,7 @@ export default class SetTradePassword extends Component {
                             }}
                         />
                         <Text
-                            onPress={this.handelReset.bind(this)}
+                            onPress={this.handelReset}
                             style={{
                                 fontSize: text(12),
                                 textAlign: 'center',

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-15 18:03:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-18 18:43:05
  * @Description:主题及公共样式表
  */
 
@@ -126,3 +126,4 @@ export const Style = StyleSheet.create({
         alignItems: 'flex-end',
     },
 });
+

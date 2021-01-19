@@ -99,7 +99,7 @@ export default class MyModal extends Component {
                             {/* 底部按钮 */}
                             {this.customBottomView ? (
                                 this.customBottomView
-                            ) : this.props.hasOwnProperty('confirm') ? (
+                            ) : this.props.confirm ? (
                                 <View style={styles.centerBottomBtns}>
                                     <TouchableOpacity
                                         style={[

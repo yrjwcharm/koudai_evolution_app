@@ -70,6 +70,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+    <string>我们将要打开相机</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>我们将要访问您的相册</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>方便您与投顾更好的沟通</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

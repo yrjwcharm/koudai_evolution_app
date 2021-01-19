@@ -2,12 +2,11 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 17:58:16
+ * @LastEditTime: 2021-01-19 14:07:43
  * @Description:
  */
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {Style, Colors} from '../../common/commonStyle';
+import {Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -75,9 +74,7 @@ function Wechat(props) {
         </View>
     );
 }
-// Wechat.propTypes = {
-//     weChatLogin: PropTypes.func,
-// };
+
 
 export default Wechat;
 const styles = StyleSheet.create({
