@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 19:41:14
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-19 15:30:22
  * @Description:通用按钮
  */
 import React from 'react';
@@ -17,12 +17,13 @@ class Button extends React.Component {
         textStyle: {},
         title: '按钮',
         type: 'primary', //按钮类型 primary重要 minor次要按钮
+        color: '#0046B1',
     };
     constructor(props) {
         super(props);
     }
     render() {
-        const {type} = this.props;
+        const {type, color} = this.props;
         return (
             <>
                 <TouchableHighlight
@@ -33,7 +34,7 @@ class Button extends React.Component {
                         this.props.style,
                         this.props.disabled && styles.disable,
                     ]}
-                    underlayColor={type == 'primary' ? '#0046B1' : '#F6F6F6'}
+                    underlayColor={type == 'primary' ? (color ? color : '#0046B1') : '#F6F6F6'}
                     disabled={this.props.disabled}>
                     <Text
                         style={[
