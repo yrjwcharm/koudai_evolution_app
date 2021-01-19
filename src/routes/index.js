@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 12:20:38
+ * @LastEditTime: 2021-01-19 13:24:17
  * @Description:路由表
  */
 import React from 'react';
@@ -14,6 +14,7 @@ import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
+import AppGuide from '../pages/Auth/AppGuide';
 import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
@@ -23,6 +24,9 @@ import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
 import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
 import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
 import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
+import Agreement from '../pages/Common/Agreement'; // 用户协议
+import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
+import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -102,9 +106,10 @@ export default function AppStack() {
                     title: '基金开户',
                 }}
             />
+
             <Stack.Screen
-                name="Tab"
-                component={TabScreen}
+                name="AppGuide"
+                component={AppGuide}
                 options={{
                     headerShown: false,
                 }}
@@ -156,6 +161,21 @@ export default function AppStack() {
                 options={{
                     ...TransitionPresets.ModalTransition,
                 }}
+            />
+            <Stack.Screen
+                name="Agreement"
+                component={Agreement}
+                options={{ title: '用户协议' }}
+            />
+            <Stack.Screen
+                name="OpenPdf"
+                component={OpenPdf}
+                options={{ title: '' }}
+            />
+            <Stack.Screen
+                name="AssetsConfigDetail"
+                component={AssetsConfigDetail}
+                options={{ title: '资产配置详情' }}
             />
         </Stack.Navigator>
     );

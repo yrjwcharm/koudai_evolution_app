@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 10:22:23
+ * @LastEditTime: 2021-01-19 13:26:17
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView} from 'react-native';

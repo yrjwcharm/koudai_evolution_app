@@ -2,7 +2,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-07 12:12:32
+ * @LastEditTime: 2021-01-15 17:38:16
  * @Description: app全局入口文件
  */
 import * as React from 'react';
@@ -17,6 +17,7 @@ import CodePush from 'react-native-code-push';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootSiblingParent} from 'react-native-root-siblings';
 import {requestExternalStoragePermission} from './src/utils/appUtil';
+import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 const MyTheme = {
     dark: true,
@@ -80,6 +81,9 @@ function App() {
         return true;
     };
     React.useEffect(() => {
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/polaris/').catch((error) => {
+            console.log(error);
+        });
         syncImmediate();
         if (Platform.OS == 'android') {
             requestExternalStoragePermission(); //申请读写权限

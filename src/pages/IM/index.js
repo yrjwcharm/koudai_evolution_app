@@ -2,7 +2,7 @@
  * @Date: 2020-12-21 16:15:45
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 15:27:44
+ * @LastEditTime: 2021-01-15 17:02:40
  * @Description:
  */
 import * as React from 'react';
@@ -17,13 +17,24 @@ function HomeScreen({navigation}) {
     const headerHeight = useHeaderHeight();
     console.log(headerHeight);
     const insets = useSafeAreaInsets();
-    const jump = () => {
-        navigation.navigate('Register');
+    const jump = (nav) => {
+        navigation.navigate(nav);
     };
     return (
         <View style={{flex: 1, justifyContent: 'space-between', alignItems: 'center'}}>
             <Text>This is top text.</Text>
-            <Button title="去注册" onPress={jump} />
+            <Button
+                title="去注册"
+                onPress={() => {
+                    jump('Register');
+                }}
+            />
+            <Button
+                title="引导页"
+                onPress={() => {
+                    jump('AppGuide');
+                }}
+            />
             <TextInput
                 style={{height: 40, width: 300, borderColor: 'gray', borderWidth: 1}}
                 allowFontScaling={false}

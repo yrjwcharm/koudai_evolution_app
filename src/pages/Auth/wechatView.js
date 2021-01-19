@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 10:52:26
+ * @LastEditTime: 2021-01-15 17:58:16
  * @Description:
  */
 import React, {Component} from 'react';
@@ -11,6 +11,8 @@ import {Style, Colors} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import * as WeChat from 'react-native-wechat-lib';
+import Toast from '../../components/Toast';
 // export default class Wechat extends Component {
 //     static propTypes = {
 //         weChatLogin: Function,
@@ -38,6 +40,25 @@ import {useNavigation} from '@react-navigation/native';
 function Wechat(props) {
     const navigation = useNavigation();
     const weChatLogin = () => {
+        WeChat.isWXAppInstalled().then((isInstalled) => {
+            if (isInstalled) {
+                let scope = 'snsapi_userinfo';
+                let state = '_' + +new Date();
+                Wechat.sendAuthRequest(scope, state).then((response) => {
+                    console.log(response);
+                });
+                try {
+                } catch (e) {
+                    if (e instanceof WeChat.WechatError) {
+                        console.error(e.stack);
+                    } else {
+                        throw e;
+                    }
+                }
+            } else {
+                Toast.show('请安装微信');
+            }
+        });
         navigation.navigate('WechatLogin');
     };
     return (

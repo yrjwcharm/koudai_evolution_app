@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 10:23:02
+ * @LastEditTime: 2021-01-19 13:25:59
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -26,7 +26,7 @@ import {px} from '../../utils/appUtil';
 import {PasswordModal} from '../../components/Password';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Button} from '../../components/Button';
-import {Modal, BottomModal, VerifyCodeModel} from '../../components/Modal';
+import {Modal, BottomModal, VerifyCodeModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -151,7 +151,7 @@ function HomeScreen(props) {
                         verifyCodeModel.current.show();
                     }}
                 />
-                <VerifyCodeModel ref={verifyCodeModel} mobile={'12321'}></VerifyCodeModel>
+                <VerifyCodeModal ref={verifyCodeModel} mobile={'12321'} />
                 <Button
                     title="密码弹窗"
                     onPress={() => {
@@ -192,6 +192,9 @@ function HomeScreen(props) {
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
+                <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} />
+                <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} />
+                <Button title="AssetsConfigDetail" onPress={() => navigation.navigate('AssetsConfigDetail', { amount: '2000' })} />
             </View>
         </ScrollView>
     );

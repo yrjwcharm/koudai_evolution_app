@@ -1,8 +1,8 @@
 import axios from 'axios';
-import qs from 'querystring';
+import qs from 'qs';
 import baseConfig from './config';
 import Storage from '../utils/storage';
-import Toast from '../../components/Toast/Toast';
+import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
@@ -10,7 +10,7 @@ import NetInfo from '@react-native-community/netinfo';
 //监控网络变化
 NetInfo.addEventListener((state) => {
     if (!state.isConnected) {
-        Toast.showInfo('网络已断开,请检查您的网络');
+        // Toast.showInfo('网络已断开,请检查您的网络');
     }
 });
 
@@ -75,9 +75,9 @@ export default class http {
     static async get(url, params, showLoading = true) {
         try {
             if (showLoading) {
-                Toast.showLoading('加载中...');
+                // Toast.showLoading('加载中...');
             }
-            if (!url.indexOf(http) > -1) {
+            if (!url.indexOf('http') > -1) {
                 axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
             }
             let query = await qs.stringify(params);
@@ -85,12 +85,12 @@ export default class http {
             if (!params) {
                 res = await axios.get(url);
                 if (showLoading) {
-                    Toast.hide();
+                    // Toast.hide();
                 }
             } else {
                 res = await axios.get(url + '?' + query);
                 if (showLoading) {
-                    Toast.hide();
+                    // Toast.hide();
                 }
             }
             return res;
@@ -101,16 +101,16 @@ export default class http {
         // }
     }
     static async post(url, params, showLoading = true) {
-        if (!url.indexOf(http) > -1) {
+        if (!url.indexOf('http') > -1) {
             axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
         }
         try {
             if (showLoading) {
-                Toast.showLoading('加载中...');
+                // Toast.showLoading('加载中...');
             }
             let res = await axios.post(url, params);
             if (showLoading) {
-                Toast.hide();
+                // Toast.hide();
             }
             return res;
         } catch (error) {
