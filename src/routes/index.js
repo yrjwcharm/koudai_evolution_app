@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 15:38:20
+ * @LastEditTime: 2021-01-20 11:44:58
  * @Description:路由表
  */
 import React from 'react';
@@ -23,10 +23,12 @@ import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置
 import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
 import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
 import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
-import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
+import PrivateCert from '../pages/Vip/PrivateCert'; //私募合格投资认证页面
+import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -71,6 +73,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="PrivateOrder"
+                component={PrivateOrder}
+                options={{
+                    title: '预约',
+                }}
+            />
             <Stack.Screen
                 name="PrivateProduct"
                 component={PrivateProduct}

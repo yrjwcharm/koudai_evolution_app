@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 18:14:21
+ * @LastEditTime: 2021-01-20 15:26:08
  * @Description:主题及公共样式表
  */
 
@@ -123,7 +123,7 @@ export const Style = StyleSheet.create({
         marginVertical: text(20),
     },
     containerPadding: {
-        padding: text(20),
+        padding: text(16),
         backgroundColor: '#F5F6F8',
         flex: 1,
     },

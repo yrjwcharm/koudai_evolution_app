@@ -94,6 +94,10 @@ PODS:
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
+  - Picker (4.3.7):
+    - Picker/Core (= 4.3.7)
+  - Picker/Core (4.3.7):
+    - React
   - RCTRequired (0.63.3)
   - RCTTypeSafety (0.63.3):
     - FBLazyVector (= 0.63.3)
@@ -412,6 +416,7 @@ DEPENDENCIES:
   - JCore (from `../node_modules/jcore-react-native`)
   - JPush (from `../node_modules/jpush-react-native`)
   - lottie-ios (from `../node_modules/lottie-ios`)
+  - Picker (from `../node_modules/react-native-picker`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - RCTWeChat (from `../node_modules/react-native-wechat-lib`)
@@ -501,6 +506,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/jpush-react-native"
   lottie-ios:
     :path: "../node_modules/lottie-ios"
+  Picker:
+    :path: "../node_modules/react-native-picker"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -615,6 +622,7 @@ SPEC CHECKSUMS:
   libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
   lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
+  Picker: 37554355aef82a532ea95b71b6eeba66bc86182b
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
   RCTWeChat: 289c92186c1f55716a6378af55388292d94b2d9e
