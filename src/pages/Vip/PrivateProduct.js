@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 12:15:37
+ * @LastEditTime: 2021-01-20 11:39:34
  */
 import React, {Component} from 'react';
 import {
@@ -21,12 +21,21 @@ import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
-import Table from '../../components/Table';
+// import Video from 'react-native-video';
+import Video from '../../components/Video';
 const deviceWidth = Dimensions.get('window').width;
+const url = 'https://static.licaimofang.com/wp-content/uploads/2020/05/zhinengthree.mp4';
 export default class PrivateProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            rate: 1,
+            volume: 1,
+            muted: false,
+            resizeMode: 'contain',
+            duration: 0.0,
+            currentTime: 0.0,
+            paused: false,
             label: ['重磅首发', '100万起投'],
             scroll_list: [
                 {
@@ -69,6 +78,9 @@ export default class PrivateProduct extends Component {
                         <Text style={{flex: 1}}>魔方量化黑天鹅1号</Text>
                         <Text>12692人观看</Text>
                     </View>
+                    <View style={[Style.flexCenter]}>
+                        <Video url={'https://static.licaimofang.com/wp-content/uploads/2020/05/zhinengthree.mp4'} />
+                    </View>
                 </>
             );
         } else if (index == 2) {
@@ -95,7 +107,7 @@ export default class PrivateProduct extends Component {
     render() {
         const {label, process_lines, scroll_list} = this.state;
         return (
-            <ScrollView style={Style.Container}>
+            <ScrollView style={styles.Container}>
                 <View style={[styles.Wrapper, Style.flexCenter]}>
                     <View style={Style.flexRow}>
                         <Text style={styles.card_title}>魔方FOF1号</Text>
@@ -215,5 +227,9 @@ const styles = StyleSheet.create({
     base_info_content: {
         flex: 1,
         color: Colors.descColor,
+    },
+    backgroundVideo: {
+        width: deviceWidth - 32,
+        height: 200,
     },
 });

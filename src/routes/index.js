@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:24:17
+ * @LastEditTime: 2021-01-19 15:38:20
  * @Description:路由表
  */
 import React from 'react';
@@ -72,19 +72,20 @@ export default function AppStack() {
                 },
             }}>
             <Stack.Screen
-                name="PrivateCert"
-                component={PrivateCert}
-                options={{
-                    title: '私募合格投资者认证',
-                }}
-            />
-            <Stack.Screen
                 name="PrivateProduct"
                 component={PrivateProduct}
                 options={{
                     title: '私募产品',
                 }}
             />
+            <Stack.Screen
+                name="PrivateCert"
+                component={PrivateCert}
+                options={{
+                    title: '私募合格投资者认证',
+                }}
+            />
+
             <Stack.Screen
                 name="TradeAdjust"
                 component={TradeAdjust}
@@ -162,21 +163,10 @@ export default function AppStack() {
                     ...TransitionPresets.ModalTransition,
                 }}
             />
-            <Stack.Screen
-                name="Agreement"
-                component={Agreement}
-                options={{ title: '用户协议' }}
-            />
-            <Stack.Screen
-                name="OpenPdf"
-                component={OpenPdf}
-                options={{ title: '' }}
-            />
-            <Stack.Screen
-                name="AssetsConfigDetail"
-                component={AssetsConfigDetail}
-                options={{ title: '资产配置详情' }}
-            />
+            <Stack.Screen name="Tab" component={TabScreen} />
+            <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
+            <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
+            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
         </Stack.Navigator>
     );
 }
