@@ -79,6 +79,7 @@ export const Font = {
 
     // 默认文字字体
     numFontFamily: 'DINAlternate-Bold',
+    numRegular: 'DIN-Regular',
     //特大字体
     largeFont: text(26),
     //金额输入框字体大小
