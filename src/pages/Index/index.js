@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
-<<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 18:08:19
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:25:59
->>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-20 10:52:21
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -199,9 +194,12 @@ function HomeScreen(props) {
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
-                <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} />
-                <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} />
+                {/* <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} /> */}
+                {/* <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} /> */}
                 <Button title="AssetsConfigDetail" onPress={() => navigation.navigate('AssetsConfigDetail', { amount: '2000' })} />
+                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
+                {/* <Button title="CommonProblem" onPress={() => navigation.navigate('CommonProblem')} /> */}
+                <Button title="RiskManagement" onPress={() => navigation.navigate('RiskManagement')} />
             </View>
         </ScrollView>
     );

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-01-18 16:17:52
+ * @LastEditTime: 2021-01-19 16:31:10
  * @LastEditors: Please set LastEditors
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -17,6 +17,9 @@ import { px as text, isIphoneX } from '../../utils/appUtil';
 import { Style, Colors, Space, Font } from '../../common/commonStyle';
 import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
+
+const RatioColor = [ '#E1645C', '#5687EB', '#ECB351', '#CC8FDD', '#E4C084', '#5DC162', '#DE79AE', '#967DF2', '#62B4C7', '#B8D27E', '#F18D60', '#5E71E8', '#EBDD69' ];
+
 export class AssetsConfigDetail extends Component {
   constructor(props) {
     super(props);
@@ -327,15 +330,19 @@ export class AssetsConfigDetail extends Component {
     //   this.props.navigation.setOptions({ title: res.result.title });
     // });
   };
+  // 点击快捷输入投资金额
   onLable = amount => {
     this.setState({ amount }, () => this.init());
   };
+  // 输入投资金额回调
   onChange = val => {
     this.setState({ amount: val }, () => this.init());
   };
+  // 手风琴展开回调
   updateSections = activeSections => {
     this.setState({ activeSections });
   };
+  // 手风琴内容渲染
   renderContent = section => {
     return (
       <>
@@ -358,11 +365,12 @@ export class AssetsConfigDetail extends Component {
       </>
     );
   };
+  // 手风琴头部渲染
   renderHeader = (section, index, isActive) => {
     return (
       <View style={[ styles.assets_l1, Style.flexBetween, { borderTopWidth: index === 0 ? 0 : Space.borderWidth } ]}>
         <View style={[ styles.leftPart, Style.flexRow ]}>
-          <View style={[ styles.circle, { backgroundColor: section.color } ]}></View>
+          <View style={[ styles.circle, { backgroundColor: RatioColor[index] } ]}></View>
           <Text style={[ styles.assets_l1_name ]}>{section.name}</Text>
         </View>
         <View style={[ styles.rightPart, Style.flexRow ]}>
@@ -407,7 +415,7 @@ export class AssetsConfigDetail extends Component {
               />
               <View style={[ styles.percent_bar, Style.flexRow ]}>
                 {
-                  deploy_detail.map(item => ( <View key={item.type} style={[ styles.barPart, { backgroundColor: item.color, width: `${(item.ratio*100).toFixed(2)}%` } ]}></View> ))
+                  deploy_detail.map((item, index) => ( <View key={item.type} style={[ styles.barPart, { backgroundColor: RatioColor[index], width: `${(item.ratio*100).toFixed(2)}%` } ]}></View> ))
                 }
               </View>
               <Text style={[ styles.deploy_text ]}>
@@ -424,7 +432,7 @@ export class AssetsConfigDetail extends Component {
                 renderHeader={this.renderHeader}
                 sections={deploy_detail}
                 touchableComponent={TouchableOpacity}
-                touchableProps={{ activeOpacity: 0.6 }}
+                touchableProps={{ activeOpacity: 1 }}
               />
             </View>
             <BottomDesc data={bottom} />

@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
  * @LastEditTime: 2021-01-19 16:08:50
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:24:17
->>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
  * @Description:路由表
  */
 import React from 'react';
@@ -36,6 +31,10 @@ import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
+import FundSafe from '../pages/Common/FundSafe'; // 资金安全
+import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
+import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
+import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -80,6 +79,10 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="TabScreen"
+                component={TabScreen}
+            />
             <Stack.Screen
                 name="PrivateCert"
                 component={PrivateCert}
@@ -213,6 +216,26 @@ export default function AppStack() {
                 name="AssetsConfigDetail"
                 component={AssetsConfigDetail}
                 options={{ title: '资产配置详情' }}
+            />
+            <Stack.Screen
+                name="FundSafe"
+                component={FundSafe}
+                options={{ title: '资金安全' }}
+            />
+            <Stack.Screen
+                name="TradeRules"
+                component={TradeRules}
+                options={{ title: '交易须知' }}
+            />
+            <Stack.Screen
+                name="CommonProblem"
+                component={CommonProblem}
+                options={{ title: '常见问题' }}
+            />
+            <Stack.Screen
+                name="RiskManagement"
+                component={RiskManagement}
+                options={{ title: '风险控制' }}
             />
         </Stack.Navigator>
     );

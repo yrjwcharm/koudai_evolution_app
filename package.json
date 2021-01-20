@@ -36,6 +36,7 @@
     "react-native-easy-chat-ui": "^0.4.13",
     "react-native-f2chart": "^1.1.0",
     "react-native-fast-image": "^8.3.4",
+    "react-native-fit-image": "^1.5.5",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-gesture-password": "^0.4.0",
@@ -76,16 +77,15 @@
     "react-test-renderer": "16.13.1",
     "redux-logger": "^3.0.6"
   },
-
-"resolutions": { 
-  "@react-native-community/viewpager": "^4.1.0"
-},
+  "resolutions": {
+    "@react-native-community/viewpager": "^4.1.0"
+  },
   "jest": {
     "preset": "react-native"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-  }
+    }
   }
 }
