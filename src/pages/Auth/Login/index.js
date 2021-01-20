@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 14:51:49
+ * @LastEditTime: 2021-01-19 18:31:45
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -55,6 +55,7 @@ export default class index extends Component {
                     title="登录密码"
                     onChangeText={this.onChangePassword}
                     value={password}
+                    maxLength={20}
                     placeholder="请输入您的登录密码"
                     textContentType="password"
                     secureTextEntry={true}

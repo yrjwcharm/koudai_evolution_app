@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 12:07:52
+ * @LastEditTime: 2021-01-20 13:15:26
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -36,6 +36,7 @@ export default class index extends Component {
                     placeholder="请输入您的手机号"
                     maxLength={11}
                     autoFocus={true}
+                    clearButtonMode="while-editing"
                     keyboardType={'number-pad'}
                 />
                 <Agreements

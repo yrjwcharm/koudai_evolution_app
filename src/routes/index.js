@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 16:08:50
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:24:17
->>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
+ * @LastEditTime: 2021-01-20 10:31:16
  * @Description:路由表
  */
 import React from 'react';
@@ -28,14 +23,15 @@ import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置
 import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
 import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
 import BankInfo from '../pages/CreateAccount/Account/bankInfo'; //开户银行卡信息
-import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
+import TradeRedeem from '../pages/Trade/TradeRedeem'; //赎回
 import Camera from '../pages/CreateAccount/Account/camera'//身份证拍照
-import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
+import TradeAdjust from '../pages/Trade/TradeAdjust'; //调仓
 import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
 import PrivateCert from '../pages/Vip/PrivateCert'; //合格投资认证页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
+import TradeBuy from '../pages/Trade/TradeBuy' //购买定投
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -56,21 +52,6 @@ export default function AppStack() {
                 gestureEnabled: true,
                 cardOverlayEnabled: true,
                 ...TransitionPresets.SlideFromRightIOS,
-                // headerTransparent: true, //实现模糊玻璃效果
-                // headerBackground: () => {
-                //     return (
-                //         <BlurView
-                //             style={{
-                //                 position: 'absolute',
-                //                 bottom: 0,
-                //                 top: 0,
-                //                 width: deviceWidth,
-                //                 backgroundColor: 'rgba(255,255,255,0.8)',
-                //             }}
-                //             blurType="light"
-                //         />
-                //     );
-                // },
                 headerStyle: {
                     backgroundColor: Colors.navBgColor,
                     shadowOpacity: 0,
@@ -80,6 +61,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+                <Stack.Screen
+                name="TabScreen"
+                component={TabScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
             <Stack.Screen
                 name="PrivateCert"
                 component={PrivateCert}
@@ -99,6 +87,14 @@ export default function AppStack() {
                 component={TradeAdjust}
                 options={{
                     title: '调仓',
+                }}
+            />
+            
+            <Stack.Screen
+                name="TradeBuy"
+                component={TradeBuy}
+                options={{
+                    title: '买入',
                 }}
             />
             <Stack.Screen

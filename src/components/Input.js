@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:49:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 20:57:24
+ * @LastEditTime: 2021-01-19 18:40:28
  * @Description:带lable的输入框
  */
 /**
@@ -12,7 +12,7 @@ import React, {Component} from 'react';
 import {px as text} from '../utils/appUtil';
 import PropTypes from 'prop-types';
 import {TextInput, View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Colors} from '../common/commonStyle';
+import {Colors, Font} from '../common/commonStyle';
 
 const styles = StyleSheet.create({
     center: {
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         color: Colors.defaultColor,
         letterSpacing: text(1),
+        fontFamily:Font.numFontFamily
     },
 });
 
@@ -74,7 +75,6 @@ class Input extends Component {
                     onFocus={this._onFocus}
                     style={[styles.input, textInputStyle]}
                     placeholderTextColor={placeholderTextColor}
-                    value={String(this.state.value)}
                     autoCorrect={false}
                     autoCapitalize={autoCapitalize}
                     underlineColorAndroid="transparent"

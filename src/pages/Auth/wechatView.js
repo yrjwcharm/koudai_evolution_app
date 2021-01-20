@@ -2,39 +2,17 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 14:07:43
- * @Description:
+ * @LastEditTime: 2021-01-19 16:17:54
+ * @Description: 微信登录
  */
-import React, {Component} from 'react';
+import React from 'react';
 import {Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
-// export default class Wechat extends Component {
-//     static propTypes = {
-//         weChatLogin: Function,
-//     };
-//     static defaultProps = {
-//         weChatLogin: () => {},
-//     };
-//     render() {
-//         return (
-//             <View style={[styles.Login, Style.flexCenter]}>
-//                 <View style={styles.LoginWrap}>
-//                     <View style={styles.LoginLine} />
-//                     <Text style={[styles.text, {marginBottom: 12}]}>其他登录方式</Text>
-//                     <View style={styles.LoginLine} />
-//                 </View>
-//                 <TouchableOpacity onPress={this.props.weChatLogin}>
-//                     <Image source={require('../../assets/img/login/wechat_icon.png')} style={styles.LoginIcon} />
-//                 </TouchableOpacity>
-//                 <Text style={styles.LoginDesc}>微信登录</Text>
-//             </View>
-//         );
-//     }
-// }
+
 
 function Wechat(props) {
     const navigation = useNavigation();

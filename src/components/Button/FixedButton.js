@@ -2,8 +2,8 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 21:00:09
- * @Description:
+ * @LastEditTime: 2021-01-19 21:13:25
+ * @Description: 固定按钮
  */
 import React, {Component} from 'react';
 import {StyleSheet, Keyboard, Animated} from 'react-native';
@@ -20,10 +20,10 @@ export default class FixedButton extends Component {
     }
     keyboardWillShow = (e) => {
         const {keyboardHeight} = this.state;
-        console.log(e);
         Animated.timing(keyboardHeight, {
             toValue: e.endCoordinates.height-(isIphoneX()?(34-px(8)):px(8)),
             duration: e.duration,
+            useNativeDriver:false,
         }).start();
     };
     keyboardWillHide = (e) => {
@@ -31,6 +31,7 @@ export default class FixedButton extends Component {
         Animated.timing(keyboardHeight, {
             toValue:  0,
             duration: e.duration,
+            useNativeDriver:false,
         }).start();
     };
     componentWillUnmount() {

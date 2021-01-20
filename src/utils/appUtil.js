@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 11:51:17
+ * @LastEditTime: 2021-01-20 11:45:25
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -53,6 +53,16 @@ const requestExternalStoragePermission = async () => {
         return null;
     }
 };
+//解析url 
+const resoveUrl=(url)=>{
+    if(url){
+       var arr= url.split('?')
+       if(arr[1]){
+
+       }
+       return 
+    }
+}
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -65,4 +75,4 @@ const requestExternalStoragePermission = async () => {
 //         return StatusBar.currentHeight;
 //     }
 // }
-export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission};
+export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission,resoveUrl};

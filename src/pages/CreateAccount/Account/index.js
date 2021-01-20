@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 16:07:29
+ * @LastEditTime: 2021-01-19 17:57:29
  * @Description:基金开户实名认证
  */
 import React, { Component } from 'react';
@@ -15,6 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { FixedButton } from '../../../components/Button';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
+import {formCheck} from '../../../utils/validator'
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +28,20 @@ export class index extends Component {
         };
     }
     jumpPage = (nav) => {
+        const {name,id_no} = this.state
+        var checkData = [
+            {
+              field: name,
+              text: "姓名不能为空"
+            },
+            {
+              field: id_no,
+              text: "身份证不能为空"
+            }
+          ];
+          if (!formCheck(checkData)) {
+            return
+          }
         this.props.navigation.navigate(nav);
     };
     _showPosition = () => {
@@ -63,9 +78,9 @@ export class index extends Component {
     render() {
         const { showMask } = this.state
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
-                <ScrollView scrollEnabled={false} style={{ padding: px(16) }}>
+                <ScrollView scrollEnabled={false} style={{ paddingHorizontal: px(16) }}>
                     <FastImage
                         style={styles.pwd_img}
                         source={require('../../../assets/img/account/first.png')}
@@ -94,6 +109,7 @@ export class index extends Component {
                                 onChange={(id_no) => {
                                     this.setState({ id_no });
                                 }}
+                                maxLength={18}
                                 inputStyle={{ flex: 1, borderBottomWidth: 0 }}
                                 returnKeyType={'next'}
                             />
@@ -125,16 +141,21 @@ export class index extends Component {
     }
 }
 const styles = StyleSheet.create({
+    con:{
+        flex:1,
+        backgroundColor:Colors.bgColor
+    },
     pwd_img: {
         width: '100%',
         height: px(55),
+        marginVertical:px(24)
     },
     card: {
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
         borderRadius: px(8),
         marginBottom: px(12),
-        marginTop: px(24),
+       
     },
     card_header: {
         flexDirection: 'row',

@@ -2,16 +2,10 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 15:21:03
+ * @LastEditTime: 2021-01-19 16:16:47
  * @Description: 银行卡选择
  */
-/*
- * @Date: 2021-01-08 11:43:44
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 11:13:57
- * @Description: 底部弹窗
- */
+
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { constants } from './util';

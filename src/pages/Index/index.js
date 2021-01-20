@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 18:08:19
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:25:59
->>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
+ * @LastEditTime: 2021-01-19 16:10:45
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
