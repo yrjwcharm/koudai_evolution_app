@@ -7042,6 +7042,13 @@ react-native-fast-image@^8.3.4:
   resolved "https://registry.npm.taobao.org/react-native-fast-image/download/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"
   integrity sha1-ee3KF34wMRsZ1Z/zNWJby+ImUNc=
 
+react-native-fit-image@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.npm.taobao.org/react-native-fit-image/download/react-native-fit-image-1.5.5.tgz#c660d1ad74b9dcaa1cba27a0d9c23837e000226c"
+  integrity sha1-xmDRrXS53Kocuieg2cI4N+AAImw=
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-fs@^2.16.6:
   version "2.16.6"
   resolved "https://registry.npm.taobao.org/react-native-fs/download/react-native-fs-2.16.6.tgz#2901789a43210a35a0ef0a098019bbef3af395fd"

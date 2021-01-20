@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 10:31:16
+ * @LastEditTime: 2021-01-20 14:37:48
  * @Description:路由表
  */
 import React from 'react';
@@ -32,6 +32,10 @@ import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
 import TradeBuy from '../pages/Trade/TradeBuy' //购买定投
+import FundSafe from '../pages/Common/FundSafe'; // 资金安全
+import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
+import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
+import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -67,6 +71,10 @@ export default function AppStack() {
                 options={{
                     headerShown: false,
                 }}
+            />
+            <Stack.Screen
+                name="TabScreen"
+                component={TabScreen}
             />
             <Stack.Screen
                 name="PrivateCert"
@@ -209,6 +217,26 @@ export default function AppStack() {
                 name="AssetsConfigDetail"
                 component={AssetsConfigDetail}
                 options={{ title: '资产配置详情' }}
+            />
+            <Stack.Screen
+                name="FundSafe"
+                component={FundSafe}
+                options={{ title: '资金安全' }}
+            />
+            <Stack.Screen
+                name="TradeRules"
+                component={TradeRules}
+                options={{ title: '交易须知' }}
+            />
+            <Stack.Screen
+                name="CommonProblem"
+                component={CommonProblem}
+                options={{ title: '常见问题' }}
+            />
+            <Stack.Screen
+                name="RiskManagement"
+                component={RiskManagement}
+                options={{ title: '风险控制' }}
             />
         </Stack.Navigator>
     );

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-18 17:30:03
+ * @LastEditTime: 2021-01-19 16:32:34
  * @LastEditors: Please set LastEditors
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -19,6 +19,7 @@ const FixedBtn = props => {
   const { btns, style } = props;
   const navigation = useNavigation();
   const bottomModal = useRef(null);
+  // 咨询弹窗内容渲染
   const renderContactContent = () => {
     return (
       <View style={[ styles.contactContainer ]}>
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: text(20),
   },
   contactBtn: {
-    marginRight: text(20),
+    paddingRight: text(20),
   },
   contactIcon: {
     width: text(24),
