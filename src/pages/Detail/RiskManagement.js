@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-01-20 14:30:40
+ * @LastEditTime: 2021-01-20 14:39:43
  * @LastEditors: Please set LastEditors
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -46,6 +46,14 @@ class RiskManagement extends Component {
               <View style={[ styles.tableCell, Style.flexCenter, { flex: 1 } ]}><Text style={[ styles.columnText, { color: Colors.green } ]}>-13.62%</Text></View>
               <View style={[ styles.tableCell, Style.flexCenter, { flex: 1, borderRightWidth: 0 } ]}><Text style={[ styles.columnText, { color: Colors.green } ]}>-33.62%</Text></View>
             </View>
+            <View style={[ styles.tabelRow, Style.flexRow ]}>
+              <View style={[ styles.tableCell, Style.flexCenter, { flex: 1.5 } ]}>
+                <Text style={[ styles.columnText ]}>股灾</Text>
+                <Text style={[ styles.columnText, { fontSize: Font.textSm, fontFamily: Font.numRegular } ]}>2020/05/23~2020/05/23</Text>
+              </View>
+              <View style={[ styles.tableCell, Style.flexCenter, { flex: 1 } ]}><Text style={[ styles.columnText, { color: Colors.green } ]}>-13.62%</Text></View>
+              <View style={[ styles.tableCell, Style.flexCenter, { flex: 1, borderRightWidth: 0 } ]}><Text style={[ styles.columnText, { color: Colors.green } ]}>-33.62%</Text></View>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -77,6 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: text(4),
     borderWidth: Space.borderWidth,
     borderColor: Colors.borderColor,
+    marginTop: Space.marginVertical,
   },
   tabelRow: {
     height: text(40),
@@ -97,6 +106,13 @@ const styles = StyleSheet.create({
     fontSize: Font.textH3,
     lineHeight: text(17),
     color: Colors.descColor,
+  },
+  riskNoticeWrap: {
+    margin: Space.marginAlign,
+    paddingHorizontal: Space.marginAlign,
+    paddingVertical: text(12),
+    backgroundColor: '#fff',
+    borderRadius: Space.borderRadius,
   },
 });
 
