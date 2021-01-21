@@ -2,13 +2,13 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 18:12:43
+ * @LastEditTime: 2021-01-21 19:46:53
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabScreen from './Tabbar';
-import DetailScreen from '../pages/Detail/index';
+import DetailScreen from '../pages/Portfolio/index';
 import GesturePassword from '../pages/Personal/GesturePassword';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
@@ -31,13 +31,13 @@ import PrivateCert from '../pages/Vip/PrivateCert'; //私募合格投资认证�
 import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
-import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
+import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
-import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
-import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
-import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
+import TradeRules from '../pages/Portfolio/TradeRules'; // 交易须知
+import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
+import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 const Stack = createStackNavigator();
 
@@ -70,7 +70,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} />
+            <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
 
             <Stack.Screen
                 name="TradeBuy"

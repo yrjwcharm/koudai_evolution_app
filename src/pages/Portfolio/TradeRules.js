@@ -1,14 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-01-21 11:50:46
- * @LastEditors: dx
+ * @LastEditTime: 2021-01-21 20:29:51
+ * @LastEditors: yhc
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import Tab from '../../components/TabBar';
 // import TabBar from '../../components/ScrollTab';
 import http from '../../services';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -414,7 +415,7 @@ class TradeRules extends Component {
     renderContent() {
         const {data} = this.state;
         return (
-            <View>
+            <View style={{paddingTop: 2}}>
                 {Object.keys(data).length > 0 && this.state.curIndex == 0 ? (
                     <View>
                         <Text style={[styles.title]}>赎回费率</Text>
@@ -744,13 +745,8 @@ class TradeRules extends Component {
                 {Object.keys(data).length > 0 && (
                     <ScrollableTabView
                         style={[styles.container]}
-                        renderTabBar={() => <DefaultTabBar />}
+                        renderTabBar={() => <Tab />}
                         initialPage={0}
-                        tabBarTextStyle={{fontSize: Font.textH2, lineHeight: text(20)}}
-                        tabBarActiveTextColor={Colors.brandColor}
-                        tabBarInactiveTextColor={'rgba(16, 26, 48, 0.65)'}
-                        tabBarBackgroundColor="#fff"
-                        tabBarUnderlineStyle={styles.underLine}
                         onChangeTab={(obj) => this.ChangeTab(obj.i)}>
                         {data.head.length > 0 &&
                             data.head.map((item, index) => {
