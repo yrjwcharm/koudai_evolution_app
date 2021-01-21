@@ -69,7 +69,7 @@ axios.interceptors.response.use(
             }
         });
         Promise.reject(err);
-    },
+    }
 );
 export default class http {
     static async get(url, params, showLoading = true) {

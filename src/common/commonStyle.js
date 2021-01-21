@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 18:43:05
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 18:14:21
->>>>>>> 3bd1e4a039062332d88d5e910f8939d257987ffd
+ * @LastEditTime: 2021-01-21 16:05:44
  * @Description:主题及公共样式表
  */
 
@@ -41,6 +36,8 @@ export const Colors = {
     // 绿色 跌
     green: '#4BA471',
     btnColor: '#0051CC',
+    //黄色
+    yellow: '#EB7121',
     //导航背景色
     navBgColor: '#FFF',
     // 导航title 颜色
@@ -138,4 +135,3 @@ export const Style = StyleSheet.create({
         alignItems: 'flex-end',
     },
 });
-

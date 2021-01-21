@@ -2,7 +2,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 17:38:16
+ * @LastEditTime: 2021-01-21 15:44:28
  * @Description: app全局入口文件
  */
 import * as React from 'react';
@@ -19,6 +19,7 @@ import {RootSiblingParent} from 'react-native-root-siblings';
 import {requestExternalStoragePermission} from './src/utils/appUtil';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
+GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest; //调试中可看到网络请求
 const MyTheme = {
     dark: true,
     colors: {

@@ -162,8 +162,8 @@ function HomeScreen(props) {
                     title="普通弹窗"
                     onPress={() => {
                         Modal.show({
-                            confirm:false,
-                            
+                            confirm: false,
+
                             content: 'https://static.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
                         });
                     }}
@@ -196,7 +196,10 @@ function HomeScreen(props) {
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
                 {/* <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} /> */}
                 {/* <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} /> */}
-                <Button title="AssetsConfigDetail" onPress={() => navigation.navigate('AssetsConfigDetail', { amount: '2000' })} />
+                <Button
+                    title="AssetsConfigDetail"
+                    onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}
+                />
                 <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
                 {/* <Button title="CommonProblem" onPress={() => navigation.navigate('CommonProblem')} /> */}
                 <Button title="RiskManagement" onPress={() => navigation.navigate('RiskManagement')} />

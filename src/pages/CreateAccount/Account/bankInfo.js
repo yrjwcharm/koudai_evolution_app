@@ -2,20 +2,20 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 18:50:17
+ * @LastEditTime: 2021-01-20 16:26:27
  * @Description:银行卡信息
  */
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, {Component} from 'react';
+import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { px } from '../../../utils/appUtil';
-import { Style, Colors } from '../../../common/commonStyle';
+import {px} from '../../../utils/appUtil';
+import {Style, Colors} from '../../../common/commonStyle';
 import Input from '../../../components/Input';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { FixedButton } from '../../../components/Button';
+import {FixedButton} from '../../../components/Button';
 import Agreements from '../../../components/Agreements';
-import { BankCardModal } from '../../../components/Modal'
-import { formCheck } from '../../../utils/validator'
+import {BankCardModal} from '../../../components/Modal';
+import {formCheck} from '../../../utils/validator';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ export class bankInfo extends Component {
             code: '', //验证码
             bank_no: '', //银行卡号
             bank_code: '', //银行代码
-            btnClick: true,//开户按钮是否能点击
+            btnClick: true, //开户按钮是否能点击
             verifyText: '获取验证码',
             second: 60,
             checked: true, //协议
@@ -32,55 +32,55 @@ export class bankInfo extends Component {
         };
     }
     confirm = () => {
-        const { phone, code, bank_code, bank_no, checked } = this.state;
+        const {phone, code, bank_code, bank_no, checked} = this.state;
         var checkData = [
             {
                 field: bank_no,
-                text: "银行卡号不能为空"
+                text: '银行卡号不能为空',
             },
             {
                 field: bank_code,
-                text: "请选择银行"
+                text: '请选择银行',
             },
 
             {
                 field: phone,
-                text: "手机号不能为空"
+                text: '手机号不能为空',
             },
             {
                 field: code,
-                text: "验证码不能为空"
+                text: '验证码不能为空',
             },
             {
                 field: checked,
-                text: "必须同意服务协议才能完成开户",
-                append: "!"
+                text: '必须同意服务协议才能完成开户',
+                append: '!',
             },
         ];
         if (!formCheck(checkData)) {
-            return
+            return;
         }
-    }
+    };
     sendCode = () => {
-        const { code_btn_click, phone, bank_code, bank_no } = this.state;
+        const {code_btn_click, phone, bank_code, bank_no} = this.state;
         if (code_btn_click) {
             var checkData = [
                 {
                     field: bank_no,
-                    text: "银行卡号不能为空"
+                    text: '银行卡号不能为空',
                 },
                 {
                     field: bank_code,
-                    text: "请选择银行"
+                    text: '请选择银行',
                 },
 
                 {
                     field: phone,
-                    text: "手机号不能为空"
+                    text: '手机号不能为空',
                 },
             ];
             if (!formCheck(checkData)) {
-                return
+                return;
             }
             this.timer();
         }
@@ -88,7 +88,7 @@ export class bankInfo extends Component {
     time = null;
     //倒计时函数
     timer = () => {
-        let { second } = this.state;
+        let {second} = this.state;
         this.setState({
             verifyText: second + '秒重发',
         });
@@ -111,8 +111,8 @@ export class bankInfo extends Component {
         }, 1000);
     };
     _showBankCard = () => {
-        this.bankCard.show()
-    }
+        this.bankCard.show();
+    };
     componentWillUnmount() {
         this.time && clearInterval(this.time);
     }
@@ -121,15 +121,22 @@ export class bankInfo extends Component {
     };
     onChangeBankNo = (value) => {
         this.setState({
-            bank_no: (value + '').replace(/\s/g, '').replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
-        })
-    }
+            bank_no: (value + '')
+                .replace(/\s/g, '')
+                .replace(/\D/g, '')
+                .replace(/(\d{4})(?=\d)/g, '$1 '),
+        });
+    };
     render() {
-        const { verifyText, bank_no } = this.state
+        const {verifyText, bank_no} = this.state;
         return (
             <View style={styles.con}>
-                <ScrollView scrollEnabled={false} style={{ paddingHorizontal: px(16) }}>
-                    <BankCardModal title="请选择银行卡" style={{ height: px(500) }} ref={(ref) => this.bankCard = ref} />
+                <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
+                    <BankCardModal
+                        title="请选择银行卡"
+                        style={{height: px(500)}}
+                        ref={(ref) => (this.bankCard = ref)}
+                    />
                     <FastImage
                         style={styles.pwd_img}
                         source={require('../../../assets/img/account/second.png')}
@@ -139,7 +146,7 @@ export class bankInfo extends Component {
                         <View style={styles.card_header}>
                             <Image
                                 source={require('../../../assets/img/account/cardMes.png')}
-                                style={{ width: px(22), resizeMode: 'contain' }}
+                                style={{width: px(22), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>银行卡信息</Text>
                         </View>
@@ -158,10 +165,10 @@ export class bankInfo extends Component {
                                 placeholder="请选择您银行"
                                 value={this.state.rname}
                                 onClick={this._showBankCard}
-                                inputStyle={{ flex: 1 }}
+                                inputStyle={{flex: 1}}
                                 returnKeyType={'done'}
                             />
-                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{ marginLeft: -14 }} />
+                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
                         </View>
                         <Input
                             label="手机号"
@@ -169,7 +176,7 @@ export class bankInfo extends Component {
                             keyboardType={'number-pad'}
                             maxLength={11}
                             onChange={(phone) => {
-                                this.setState({ phone });
+                                this.setState({phone});
                             }}
                         />
                         <View style={Style.flexRow}>
@@ -179,19 +186,22 @@ export class bankInfo extends Component {
                                 keyboardType={'number-pad'}
                                 maxLength={6}
                                 onChange={(phone) => {
-                                    this.setState({ phone });
+                                    this.setState({phone});
                                 }}
-                                inputStyle={{ flex: 1, borderBottomWidth: 0 }}
+                                inputStyle={{flex: 1, borderBottomWidth: 0}}
                             />
                             <View style={[styles.border]}>
-                                <TouchableOpacity onPress={this.sendCode}><Text style={{ color: Colors.btnColor }}>{verifyText}</Text></TouchableOpacity>
+                                <TouchableOpacity onPress={this.sendCode}>
+                                    <Text style={{color: Colors.btnColor}}>{verifyText}</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
-                    <Agreements onChange={(checked) => {
-                        this.setState({ checked });
-                    }} />
-
+                    <Agreements
+                        onChange={(checked) => {
+                            this.setState({checked});
+                        }}
+                    />
                 </ScrollView>
                 <FixedButton title={'立即开户'} onPress={this.confirm} />
             </View>
@@ -201,12 +211,12 @@ export class bankInfo extends Component {
 const styles = StyleSheet.create({
     con: {
         flex: 1,
-        backgroundColor: Colors.bgColor
+        backgroundColor: Colors.bgColor,
     },
     pwd_img: {
         width: '100%',
         height: px(55),
-        marginVertical: px(24)
+        marginVertical: px(24),
     },
     card: {
         backgroundColor: '#fff',
@@ -230,7 +240,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: px(0.5),
         width: px(84),
         alignItems: 'flex-end',
-        borderColor: Colors.borderColor
+        borderColor: Colors.borderColor,
     },
 });
 export default bankInfo;
