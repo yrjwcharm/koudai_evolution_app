@@ -2,12 +2,12 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
 <<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:25:11
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-21 21:01:42
 =======
 <<<<<<< Updated upstream
  * @LastEditors: dx
- * @LastEditTime: 2021-01-21 15:47:35
+ * @LastEditTime: 2021-01-21 17:54:35
 =======
  * @LastEditors: dx
  * @LastEditTime: 2021-01-20 18:48:07
@@ -204,14 +204,11 @@ function HomeScreen(props) {
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
                 <Button title="DynamicAdjustment" onPress={() => navigation.navigate('DynamicAdjustment')} />
-                <Button title="TradeProcessing" onPress={() => navigation.navigate('TradeProcessing')} />
+                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
                 <Button
                     title="AssetsConfigDetail"
                     onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}
                 />
-                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
-                {/* <Button title="CommonProblem" onPress={() => navigation.navigate('CommonProblem')} /> */}
-                <Button title="RiskManagement" onPress={() => navigation.navigate('RiskManagement')} />
             </View>
         </ScrollView>
     );

@@ -1,19 +1,20 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-21 17:45:00
+ * @LastEditTime: 2021-01-21 21:01:16
  * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, ScrollView, View, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services';
+import {Button} from '../../components/Button';
 
 const TradeProcessing = (props) => {
     const {txn_id, code} = props.route.params || {};
@@ -21,37 +22,37 @@ const TradeProcessing = (props) => {
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
     const [heightArr, setHeightArr] = useState([]);
-    let loop = 0;
-    let timer = null;
-    const init = (first) => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
-            // txn_id: '20210119A00163XS',
-            // code: '123456',
-            loop,
-        }).then((res) => {
-            setData(res.result);
-            if (res.result.finish || res.result.finish === -2) {
-                setFinish(true);
-            } else {
-                timer = setTimeout(() => {
-                    loop++;
-                    if (loop <= res.result.loop) {
-                        init();
-                    }
-                }, 1000);
-            }
-            first && navigation.setOptions({title: res.result.title});
-        });
-    };
     const onLayout = (index, e) => {
         const arr = [...heightArr];
         arr[index] = e.nativeEvent.layout.height;
         setHeightArr(arr);
     };
     useEffect(() => {
+        let loop = 0;
+        let timer = null;
+        const init = (first) => {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
+                // txn_id: '20210119A00163XS',
+                // code: '123456',
+                loop,
+            }).then((res) => {
+                setData(res.result);
+                if (res.result.finish || res.result.finish === -2) {
+                    setFinish(true);
+                } else {
+                    timer = setTimeout(() => {
+                        loop++;
+                        if (loop <= res.result.loop) {
+                            init();
+                        }
+                    }, 1000);
+                }
+                first && navigation.setOptions({title: res.result.title});
+            });
+        };
         init(true);
         return () => clearTimeout(timer);
-    }, []);
+    }, [navigation]);
     return (
         <ScrollView style={[styles.container]}>
             <Text style={[styles.title]}>购买进度明细</Text>
@@ -110,11 +111,7 @@ const TradeProcessing = (props) => {
                         );
                     })}
             </View>
-            {finish && (
-                <TouchableOpacity style={[styles.btn, Style.flexCenter]}>
-                    <Text style={[styles.btnText]}>{data.button.text}</Text>
-                </TouchableOpacity>
-            )}
+            {finish && <Button title={data.button.text} textStyle={styles.btnText} style={styles.btn} />}
         </ScrollView>
     );
 };
@@ -195,7 +192,6 @@ const styles = StyleSheet.create({
         marginVertical: text(32),
         borderRadius: text(6),
         height: text(44),
-        backgroundColor: Colors.brandColor,
     },
     btnText: {
         fontSize: text(15),
