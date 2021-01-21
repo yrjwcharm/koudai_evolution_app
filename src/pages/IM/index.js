@@ -2,7 +2,7 @@
  * @Date: 2020-12-21 16:15:45
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 17:02:40
+ * @LastEditTime: 2021-01-20 10:31:48
  * @Description:
  */
 import * as React from 'react';
@@ -33,6 +33,18 @@ function HomeScreen({navigation}) {
                 title="引导页"
                 onPress={() => {
                     jump('AppGuide');
+                }}
+            />
+            <Button
+                title="开户"
+                onPress={() => {
+                    jump('CreateAccount');
+                }}
+            />
+             <Button
+                title="去购买"
+                onPress={() => {
+                    jump('TradeBuy');
                 }}
             />
             <TextInput

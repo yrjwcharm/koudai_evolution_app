@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 10:16:41
+ * @LastEditTime: 2021-01-21 11:58:01
  * @Description:路由表
  */
 import React from 'react';
@@ -20,8 +20,12 @@ import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
-import TradeRedeem from '../pages/TradeState/TradeRedeem'; //赎回
-import TradeAdjust from '../pages/TradeState/TradeAdjust'; //调仓
+import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
+import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
+import BankInfo from '../pages/CreateAccount/Account/bankInfo'; //开户银行卡信息
+import TradeRedeem from '../pages/Trade/TradeRedeem'; //赎回
+import Camera from '../pages/CreateAccount/Account/camera'; //身份证拍照
+import TradeAdjust from '../pages/Trade/TradeAdjust'; //调仓
 import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
 import PrivateCert from '../pages/Vip/PrivateCert'; //私募合格投资认证页面
 import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
@@ -29,6 +33,12 @@ import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/TradeState/TradeFixedConfirm'; //定投确认页面
+import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
+import FundSafe from '../pages/Common/FundSafe'; // 资金安全
+import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
+import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
+import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
+import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -49,21 +59,6 @@ export default function AppStack() {
                 gestureEnabled: true,
                 cardOverlayEnabled: true,
                 ...TransitionPresets.SlideFromRightIOS,
-                // headerTransparent: true, //实现模糊玻璃效果
-                // headerBackground: () => {
-                //     return (
-                //         <BlurView
-                //             style={{
-                //                 position: 'absolute',
-                //                 bottom: 0,
-                //                 top: 0,
-                //                 width: deviceWidth,
-                //                 backgroundColor: 'rgba(255,255,255,0.8)',
-                //             }}
-                //             blurType="light"
-                //         />
-                //     );
-                // },
                 headerStyle: {
                     backgroundColor: Colors.navBgColor,
                     shadowOpacity: 0,
@@ -76,6 +71,15 @@ export default function AppStack() {
             <Stack.Screen
                 name="TradeFixedConfirm"
                 component={TradeFixedConfirm}
+                name="TabScreen"
+                component={TabScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="PrivateCert"
+                component={PrivateCert}
                 options={{
                     title: '定投计划确认',
                 }}
@@ -109,21 +113,50 @@ export default function AppStack() {
                     title: '调仓',
                 }}
             />
+
             <Stack.Screen
-                name="TradeRedeem"
-                component={TradeRedeem}
+                name="TradeBuy"
+                component={TradeBuy}
                 options={{
-                    title: '赎回',
+                    title: '买入',
                 }}
             />
+            <Stack.Screen
+                name="CreateAccount"
+                component={CreateAccount}
+                options={{
+                    title: '基金交易安全开户',
+                }}
+            />
+            <Stack.Screen
+                name="UploadID"
+                component={UploadID}
+                options={{
+                    title: '基金交易安全开户',
+                }}
+            />
+            <Stack.Screen
+                name="BankInfo"
+                component={BankInfo}
+                options={{
+                    title: '基金交易安全开户',
+                }}
+            />
+
             <Stack.Screen
                 name="SetTradePassword"
                 component={SetTradePassword}
                 options={{
-                    title: '基金开户',
+                    title: '基金交易安全开户',
                 }}
             />
-
+            <Stack.Screen
+                name="Camera"
+                component={Camera}
+                options={{
+                    title: '',
+                }}
+            />
             <Stack.Screen
                 name="AppGuide"
                 component={AppGuide}
@@ -166,6 +199,13 @@ export default function AppStack() {
                     headerShown: false,
                 }}
             />
+            <Stack.Screen
+                name="TradeRedeem"
+                component={TradeRedeem}
+                options={{
+                    title: '赎回',
+                }}
+            />
             <Stack.Screen name="StickyScreen" component={StickyScreen} />
             <Stack.Screen
                 name="GesturePassword"
@@ -183,6 +223,14 @@ export default function AppStack() {
             <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
             <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
+            <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
+            <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
+            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
+            <Stack.Screen name="FundSafe" component={FundSafe} options={{title: '资金安全'}} />
+            <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
+            <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
+            <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
+            <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
         </Stack.Navigator>
     );
 }

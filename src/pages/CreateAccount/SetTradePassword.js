@@ -2,11 +2,11 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-18 10:26:10
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-19 16:09:36
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet,  TextInput} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -21,13 +21,13 @@ export default class SetTradePassword extends Component {
             pwdMsg: '设置6位数字交易密码',
         };
     }
-    handelReset() {
+    handelReset = () => {
         this.setState({
             pwdFisrt: '',
             pwdMsg: '设置6位数字交易密码',
             password: '',
         });
-    }
+    };
     onTouchInput() {
         const isFocused = this.textInput.isFocused();
         if (!isFocused) {
@@ -46,7 +46,7 @@ export default class SetTradePassword extends Component {
                         this.onTouchInput();
                     }}
                     style={styles.box}>
-                    {this.state.password[index] ? <View style={styles.circle}></View> : <Text></Text>}
+                    {this.state.password[index] ? <View style={styles.circle} /> : <Text />}
                 </TouchableOpacity>,
             ),
         );
@@ -126,7 +126,7 @@ export default class SetTradePassword extends Component {
                             }}
                         />
                         <Text
-                            onPress={this.handelReset.bind(this)}
+                            onPress={this.handelReset}
                             style={{
                                 fontSize: text(12),
                                 textAlign: 'center',

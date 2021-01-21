@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:25:59
+<<<<<<< Updated upstream
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-20 14:37:55
+=======
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-20 18:48:07
+>>>>>>> Stashed changes
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -162,6 +167,7 @@ function HomeScreen(props) {
                     title="普通弹窗"
                     onPress={() => {
                         Modal.show({
+                            confirm: false,
                             content: 'https://static.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
                         });
                     }}
@@ -192,9 +198,15 @@ function HomeScreen(props) {
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
-                <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} />
-                <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} />
-                <Button title="AssetsConfigDetail" onPress={() => navigation.navigate('AssetsConfigDetail', { amount: '2000' })} />
+                {/* <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} /> */}
+                <Button title="TradeProcessing" onPress={() => navigation.navigate('TradeProcessing')} />
+                <Button
+                    title="AssetsConfigDetail"
+                    onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}
+                />
+                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
+                {/* <Button title="CommonProblem" onPress={() => navigation.navigate('CommonProblem')} /> */}
+                <Button title="RiskManagement" onPress={() => navigation.navigate('RiskManagement')} />
             </View>
         </ScrollView>
     );

@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 15:30:22
+ * @LastEditTime: 2021-01-21 11:59:14
  * @Description:通用按钮
  */
 import React from 'react';
@@ -13,6 +13,7 @@ import {Colors, Style} from '../../common/commonStyle';
 class Button extends React.Component {
     static defaultProps = {
         style: {},
+        onPress: () => {},
         disabled: false,
         textStyle: {},
         title: '按钮',
