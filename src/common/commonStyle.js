@@ -1,8 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 16:05:44
+ * @LastEditTime: 2021-01-21 17:23:48
  * @Description:主题及公共样式表
  */
 
@@ -126,12 +125,17 @@ export const Style = StyleSheet.create({
         marginVertical: text(20),
     },
     containerPadding: {
-        padding: text(20),
+        padding: text(16),
         backgroundColor: '#F5F6F8',
         flex: 1,
     },
     baselineAlign: {
         flexDirection: 'row',
         alignItems: 'flex-end',
+    },
+    columnAlign: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });

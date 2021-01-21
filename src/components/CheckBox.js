@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 17:43:43
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-19 15:31:45
  * @Description:
  */
 import React from 'react';
@@ -14,6 +14,8 @@ class CheckBox extends React.Component {
     static defaultProps = {
         checked: false,
         onChange: () => {},
+        color: '#0052CD',
+        style: {},
     };
 
     constructor(props) {
@@ -27,13 +29,14 @@ class CheckBox extends React.Component {
         this.props.onChange(!this.state.checked);
     }
     render() {
+        const {color} = this.props;
         var source = 'checkbox-blank-circle-outline';
         if (this.state.checked) {
             source = 'checkbox-marked-circle';
         }
-        var container = <Icon name={source} size={text(18)} color="#0052CD" />;
+        var container = <Icon name={source} size={text(18)} color={color ? color : '#0052CD'} />;
         return (
-            <TouchableHighlight onPress={this.toggle.bind(this)} underlayColor="white">
+            <TouchableHighlight onPress={this.toggle.bind(this)} underlayColor="white" style={this.props.style}>
                 {container}
             </TouchableHighlight>
         );

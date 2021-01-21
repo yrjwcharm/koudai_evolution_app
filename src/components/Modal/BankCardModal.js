@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions} from 'react-native';
+import {View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {constants} from './util';
 import {isIphoneX, px as text, deviceHeight as height, deviceWidth as width, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';

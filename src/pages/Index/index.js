@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 14:37:55
+ * @LastEditTime: 2021-01-21 17:25:11
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -163,7 +163,6 @@ function HomeScreen(props) {
                     onPress={() => {
                         Modal.show({
                             confirm: false,
-
                             content: 'https://static.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
                         });
                     }}
@@ -195,7 +194,7 @@ function HomeScreen(props) {
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
                 {/* <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} /> */}
-                {/* <Button title="OpenPdf" onPress={() => navigation.navigate('OpenPdf')} /> */}
+                <Button title="TradeProcessing" onPress={() => navigation.navigate('TradeProcessing')} />
                 <Button
                     title="AssetsConfigDetail"
                     onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}

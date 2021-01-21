@@ -1185,6 +1185,11 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/progress-view/download/@react-native-community/progress-view-1.2.3.tgz#73ee6498d3ff2ba3ac3df77553f04344e1534a52"
   integrity sha1-c+5kmNP/K6OsPfd1U/BDROFTSlI=
 
+"@react-native-community/slider@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.npm.taobao.org/@react-native-community/slider/download/@react-native-community/slider-3.0.3.tgz#830167fd757ba70ac638747ba3169b2dbae60330"
+  integrity sha1-gwFn/XV7pwrGOHR7oxabLbrmAzA=
+
 "@react-native-community/viewpager@^2.0.1", "@react-native-community/viewpager@^4.1.0":
   version "4.2.2"
   resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-4.2.2.tgz#e05d618829c589284326896c806200af90ae0986"
@@ -3303,6 +3308,11 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
+
+eme-encryption-scheme-polyfill@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/eme-encryption-scheme-polyfill/download/eme-encryption-scheme-polyfill-2.0.1.tgz#b080b01bffd74c75c9cf8044c1cabedf3b83954f"
+  integrity sha1-sICwG//XTHXJz4BEwcq+3zuDlU8=
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -5551,6 +5561,11 @@ jsx-ast-utils@^2.2.3:
     array-includes "^3.1.1"
     object.assign "^4.1.0"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/keymirror/download/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+  integrity sha1-kYiJ6hP40KQufFVyUO7nE63JXDU=
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npm.taobao.org/kind-of/download/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -7085,6 +7100,16 @@ react-native-iphone-x-helper@^1.3.0:
   resolved "https://registry.npm.taobao.org/react-native-iphone-x-helper/download/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha1-IMYD6aDnZf1vlzlmOL3rDlpgsBA=
 
+react-native-linear-gradient@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
+  integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
+
+react-native-orientation-locker@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.npm.taobao.org/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz#45d1c9e002496b8d286ec8932d6e3e7d341f9c85"
+  integrity sha1-RdHJ4AJJa40obsiTLW4+fTQfnIU=
+
 react-native-pdf@^6.2.2:
   version "6.2.2"
   resolved "https://registry.npm.taobao.org/react-native-pdf/download/react-native-pdf-6.2.2.tgz#a4e3fda4c5dc7300297948e862d6f60ebc9eede1"
@@ -7172,6 +7197,15 @@ react-native-vector-icons@^7.1.0:
     lodash.template "^4.5.0"
     prop-types "^15.7.2"
     yargs "^15.0.2"
+
+react-native-video@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.npm.taobao.org/react-native-video/download/react-native-video-5.1.1.tgz?cache=0&sync_timestamp=1610590457814&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-video%2Fdownload%2Freact-native-video-5.1.1.tgz#89a7989efeb8d404611c06154d1da227a745d7d8"
+  integrity sha1-iaeYnv641ARhHAYVTR2iJ6dF19g=
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.7.2"
+    shaka-player "^2.5.9"
 
 react-native-webview@^10.10.2:
   version "10.10.2"
@@ -7815,6 +7849,13 @@ setprototypeof@1.1.1:
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/setprototypeof/download/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha1-fpWsskqpL1iF4KvvW6ExMw1K5oM=
+
+shaka-player@^2.5.9:
+  version "2.5.19"
+  resolved "https://registry.npm.taobao.org/shaka-player/download/shaka-player-2.5.19.tgz#626226ad58d52ecb4e7f1424b818f75465940987"
+  integrity sha1-YmImrVjVLstOfxQkuBj3VGWUCYc=
+  dependencies:
+    eme-encryption-scheme-polyfill "^2.0.1"
 
 shebang-command@^1.2.0:
   version "1.2.0"
