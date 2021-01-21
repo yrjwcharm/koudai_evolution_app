@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-20 11:44:58
+ * @LastEditTime: 2021-01-21 10:16:41
  * @Description:路由表
  */
 import React from 'react';
@@ -28,7 +28,7 @@ import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
-
+import TradeFixedConfirm from '../pages/TradeState/TradeFixedConfirm'; //定投确认页面
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -73,6 +73,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
+            <Stack.Screen
+                name="TradeFixedConfirm"
+                component={TradeFixedConfirm}
+                options={{
+                    title: '定投计划确认',
+                }}
+            />
             <Stack.Screen
                 name="PrivateOrder"
                 component={PrivateOrder}

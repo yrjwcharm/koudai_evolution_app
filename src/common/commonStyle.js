@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-20 15:26:08
+ * @LastEditTime: 2021-01-21 11:18:07
  * @Description:主题及公共样式表
  */
 
@@ -130,5 +130,10 @@ export const Style = StyleSheet.create({
     baselineAlign: {
         flexDirection: 'row',
         alignItems: 'flex-end',
+    },
+    columnAlign: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
