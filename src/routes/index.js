@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 11:58:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-21 17:46:51
  * @Description:路由表
  */
 import React from 'react';
@@ -32,13 +32,14 @@ import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
-import TradeFixedConfirm from '../pages/TradeState/TradeFixedConfirm'; //定投确认页面
+import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
 import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
+import DynamicAdjustment from '../pages/Detail/DynamicAdjustment'; // 动态调仓
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -69,8 +70,6 @@ export default function AppStack() {
                 },
             }}>
             <Stack.Screen
-                name="TradeFixedConfirm"
-                component={TradeFixedConfirm}
                 name="TabScreen"
                 component={TabScreen}
                 options={{
@@ -231,6 +230,7 @@ export default function AppStack() {
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
+            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
         </Stack.Navigator>
     );
 }
