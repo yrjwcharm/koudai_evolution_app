@@ -2,8 +2,8 @@
  * @Date: 2020-12-28 11:53:01
  * @Author: yhc
 <<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-18 18:43:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-20 18:15:16
 =======
  * @LastEditors: xjh
  * @LastEditTime: 2021-01-18 18:14:21
@@ -138,4 +138,3 @@ export const Style = StyleSheet.create({
         alignItems: 'flex-end',
     },
 });
-
