@@ -1,98 +1,105 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-21 11:45:38
- * @LastEditors: dx
+ * @LastEditTime: 2021-01-22 11:48:31
+ * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
-
 const TradeProcessing = (props) => {
-    const {txn_id, code} = props.route.params || {};
+    const {txn_id} = props.route.params || {};
     const navigation = useNavigation();
     const [data, setData] = useState({});
-    const init = () => {
-        http.get('/trade/order/processing/20210101', {txn_id: '20210119A00163XS', code: '123456'}).then((res) => {
+    const [finish, setFinish] = useState(false);
+    const [heightArr, setHeightArr] = useState([]);
+    const verifyCodeModel = React.useRef(null);
+    const [bankInfo, setBankInfo] = useState('');
+    const [code, setCode] = useState('');
+    const [isSign, setSign] = useState(false);
+
+    let loop = 0;
+    let timer = null;
+    const init = (first) => {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
+            txn_id: '20210101B000001S',
+            loop,
+        }).then((res) => {
             setData(res.result);
-            res.result.loop === 1 && navigation.setOptions({title: res.result.title});
+            if (res.result.need_verify_code) {
+                verifyCodeModel.current.show();
+                signSendVerify();
+                return;
+            }
+            if (res.result.finish || res.result.finish === -2) {
+                setFinish(true);
+            } else {
+                timer = setTimeout(() => {
+                    loop++;
+                    if (loop <= res.result.loop) {
+                        init();
+                    }
+                }, 1000);
+            }
+            first && navigation.setOptions({title: res.result.title});
         });
     };
     const onLayout = (index, e) => {
-        console.log(index, e.nativeEvent.layout);
-        const tempItems = data.items;
-        tempItems[index].height = e.nativeEvent.layout.height;
-        setData({
-            ...data,
-            items: tempItems,
+        const arr = [...heightArr];
+        arr[index] = e.nativeEvent.layout.height;
+        setHeightArr(arr);
+    };
+    const signSendVerify = () => {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_send/20210101', {
+            txn_id: '20210101B000001S',
+        }).then((res) => {
+            setSign(true);
+            setBankInfo(res.result);
         });
     };
-    const items = [
-        {
-            k: '订单已受理',
-            v: '2020/07/07 15:23:03',
-            done: 1,
-            d: ['购买金额(元)：10,000.00', '支付银行卡：招商银行(8888)'],
-        },
-        {
-            k: '在玄元下单',
-            v: '2020/07/07 15:23:03',
-            done: -1,
-        },
-        {
-            k: '努力下单中，请稍后…',
-            v: '2020/07/07 15:23:03',
-            done: 0,
-        },
-    ];
-    useEffect(() => {
-        // init();
-        // const timer = setInterval(() => {
-        //     init();
-        // }, 1000);
-        // return () => clearInterval(timer);
-        setData({
-            title: '交易确认页',
-            loop: 1,
-            need_verify_code: false,
-            finish: false,
-            items: [
+    const modalCancelCallBack = () => {
+        if (isSign && bankInfo) {
+            let content = bankInfo.back_info.content;
+            setTimeout(() => {
+                Modal.show({content: content, confirm: true, confirmCallBack: confirmCallBack});
+            }, 500);
+        }
+    };
+    const confirmCallBack = () => {
+        this.props.navigation.navigate('Asset');
+    };
+    const onChangeText = (text) => {
+        setCode(text);
+        if (text.length == 6) {
+            http.post(
+                'http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_confirm/20210101',
                 {
-                    k: '订单已受理',
-                    v: '2020/07/07 15:23:03',
-                    done: 1,
-                    d: ['购买金额(元)：10,000.00', '支付银行卡：招商银行(8888)'],
+                    txn_id: bankInfo.txn_id,
+                    code: '123456',
                 },
-                {
-                    k: '在玄元下单',
-                    v: '2020/07/07 15:23:03',
-                    done: -1,
-                },
-                {
-                    k: '努力下单中，请稍后…',
-                    v: '2020/07/07 15:23:03',
-                    done: 0,
-                },
-            ],
-        });
-    }, []);
-    useEffect(() => {
-        const timer = setInterval(() => {
-            const randomNum = Math.round(2 * Math.random());
-            setData({
-                ...data,
-                items: [...data.items, items[randomNum]],
+            ).then((res) => {
+                if (res.code === '000000') {
+                    setSign(false);
+                    setTimeout(() => {
+                        verifyCodeModel.current.hide();
+                    }, 300);
+                } else {
+                }
             });
-        }, 1000);
-        return () => clearInterval(timer);
-    });
+        }
+    };
+    useEffect(() => {
+        init(true);
+        return () => clearTimeout(timer);
+    }, []);
     return (
         <ScrollView style={[styles.container]}>
             <Text style={[styles.title]}>购买进度明细</Text>
@@ -114,26 +121,36 @@ const TradeProcessing = (props) => {
                                             name={'circle-thin'}
                                             size={16}
                                             color={'#CCD0DB'}
-                                            style={{marginRight: text(2)}}
+                                            style={{
+                                                marginRight: text(2),
+                                                backgroundColor: Colors.bgColor,
+                                            }}
                                         />
                                     )}
                                 </View>
                                 <View style={[styles.contentBox]}>
+                                    <FontAwesome
+                                        name={'caret-left'}
+                                        color={'#fff'}
+                                        size={30}
+                                        style={styles.caret_sty}
+                                    />
                                     <View style={[styles.content]}>
                                         <View style={[styles.processTitle, Style.flexBetween]}>
-                                            <Text style={[styles.desc]}>{item.k}</Text>
+                                            <Text numberOfLines={1} style={[styles.desc]}>
+                                                {item.k}
+                                            </Text>
                                             <Text style={[styles.date]}>{item.v}</Text>
                                         </View>
-                                        {index === 0 && (
+                                        {item.d && item.d.length > 0 && (
                                             <View style={[styles.moreInfo]}>
-                                                {item.d &&
-                                                    item.d.map((val, i) => {
-                                                        return (
-                                                            <Text key={val} style={[styles.moreInfoText]}>
-                                                                {val}
-                                                            </Text>
-                                                        );
-                                                    })}
+                                                {item.d.map((val, i) => {
+                                                    return (
+                                                        <Text key={val} style={[styles.moreInfoText]}>
+                                                            {val}
+                                                        </Text>
+                                                    );
+                                                })}
                                             </View>
                                         )}
                                     </View>
@@ -142,7 +159,9 @@ const TradeProcessing = (props) => {
                                     <View
                                         style={[
                                             styles.line,
-                                            {height: item.height ? text(item.height - 3.5) : text(52)},
+                                            {
+                                                height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
+                                            },
                                         ]}
                                     />
                                 )}
@@ -150,6 +169,19 @@ const TradeProcessing = (props) => {
                         );
                     })}
             </View>
+            {finish && (
+                <TouchableOpacity style={[styles.btn, Style.flexCenter]}>
+                    <Text style={[styles.btnText]}>{data.button.text}</Text>
+                </TouchableOpacity>
+            )}
+
+            <VerifyCodeModal
+                ref={verifyCodeModel}
+                desc={bankInfo.content ? bankInfo.content : ''}
+                modalCancelCallBack={modalCancelCallBack}
+                onChangeText={onChangeText}
+                isSign={isSign}
+            />
         </ScrollView>
     );
 };
@@ -182,7 +214,6 @@ const styles = StyleSheet.create({
         marginRight: text(8),
         position: 'relative',
         zIndex: 2,
-        // backgroundColor: Colors.bgColor,
     },
     contentBox: {
         paddingLeft: text(6),
@@ -201,6 +232,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: Colors.defaultColor,
+        maxWidth: text(160),
     },
     date: {
         fontSize: Font.textSm,
@@ -210,6 +242,7 @@ const styles = StyleSheet.create({
     },
     moreInfo: {
         paddingLeft: Space.marginAlign,
+        marginTop: text(6),
     },
     moreInfoText: {
         fontSize: Font.textH3,
@@ -218,10 +251,28 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        top: text(29),
+        top: text(28),
         left: text(6.5),
         width: text(1),
         backgroundColor: '#CCD0DB',
+        zIndex: 1,
+    },
+    btn: {
+        marginHorizontal: text(80),
+        marginVertical: text(32),
+        borderRadius: text(6),
+        height: text(44),
+        backgroundColor: Colors.brandColor,
+    },
+    btnText: {
+        fontSize: text(15),
+        lineHeight: text(21),
+        color: '#fff',
+    },
+    caret_sty: {
+        position: 'absolute',
+        top: text(10),
+        left: text(-2),
         zIndex: 1,
     },
 });

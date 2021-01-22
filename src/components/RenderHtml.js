@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 11:11:54
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-21 15:28:34
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';

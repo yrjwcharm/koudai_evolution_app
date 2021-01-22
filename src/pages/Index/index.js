@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
-<<<<<<< Updated upstream
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 14:37:55
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-01-20 18:48:07
->>>>>>> Stashed changes
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-21 17:12:44
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';

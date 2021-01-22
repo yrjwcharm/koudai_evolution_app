@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 11:58:01
+ * @LastEditTime: 2021-01-21 18:08:59
  * @Description:路由表
  */
 import React from 'react';
@@ -26,13 +26,13 @@ import BankInfo from '../pages/CreateAccount/Account/bankInfo'; //开户银行�
 import TradeRedeem from '../pages/Trade/TradeRedeem'; //赎回
 import Camera from '../pages/CreateAccount/Account/camera'; //身份证拍照
 import TradeAdjust from '../pages/Trade/TradeAdjust'; //调仓
-import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
-import PrivateCert from '../pages/Vip/PrivateCert'; //私募合格投资认证页面
-import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
+import PrivateProduct from '../pages/PE/PrivateProduct'; //私募公告页面
+import PrivateCert from '../pages/PE/PrivateCert'; //私募合格投资认证页面
+import PrivateOrder from '../pages/PE/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
-import TradeFixedConfirm from '../pages/TradeState/TradeFixedConfirm'; //定投确认页面
+import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
 import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
@@ -44,8 +44,10 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
+            initialRouteName="TradeProcessing"
             screenOptions={{
                 // headerShown: false,
+
                 headerBackImage: () => {
                     return <Feather name="chevron-left" size={30} />;
                 },
@@ -68,51 +70,7 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen
-                name="TradeFixedConfirm"
-                component={TradeFixedConfirm}
-                name="TabScreen"
-                component={TabScreen}
-                options={{
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="PrivateCert"
-                component={PrivateCert}
-                options={{
-                    title: '定投计划确认',
-                }}
-            />
-            <Stack.Screen
-                name="PrivateOrder"
-                component={PrivateOrder}
-                options={{
-                    title: '预约',
-                }}
-            />
-            <Stack.Screen
-                name="PrivateProduct"
-                component={PrivateProduct}
-                options={{
-                    title: '私募产品',
-                }}
-            />
-            <Stack.Screen
-                name="PrivateCert"
-                component={PrivateCert}
-                options={{
-                    title: '私募合格投资者认证',
-                }}
-            />
-
-            <Stack.Screen
-                name="TradeAdjust"
-                component={TradeAdjust}
-                options={{
-                    title: '调仓',
-                }}
-            />
+            <Stack.Screen name="Tab" component={TabScreen} />
 
             <Stack.Screen
                 name="TradeBuy"
@@ -219,13 +177,45 @@ export default function AppStack() {
                     ...TransitionPresets.ModalTransition,
                 }}
             />
-            <Stack.Screen name="Tab" component={TabScreen} />
-            <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
-            <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
+            <Stack.Screen
+                name="TradeFixedConfirm"
+                component={TradeFixedConfirm}
+                options={{
+                    title: '定投计划确认',
+                }}
+            />
+            <Stack.Screen
+                name="PrivateOrder"
+                component={PrivateOrder}
+                options={{
+                    title: '预约',
+                }}
+            />
+            <Stack.Screen
+                name="PrivateProduct"
+                component={PrivateProduct}
+                options={{
+                    title: '私募产品',
+                }}
+            />
+            <Stack.Screen
+                name="PrivateCert"
+                component={PrivateCert}
+                options={{
+                    title: '私募合格投资者认证',
+                }}
+            />
+
+            <Stack.Screen
+                name="TradeAdjust"
+                component={TradeAdjust}
+                options={{
+                    title: '调仓',
+                }}
+            />
             <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
             <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
-            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
             <Stack.Screen name="FundSafe" component={FundSafe} options={{title: '资金安全'}} />
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />

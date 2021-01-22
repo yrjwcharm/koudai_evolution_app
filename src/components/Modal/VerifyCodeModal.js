@@ -1,40 +1,53 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 16:05:09
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-22 12:08:09
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {constants} from './util';
 import {px as text} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
-import {Space, Font, Style} from '../../common/commonStyle';
+import {Font, Style} from '../../common/commonStyle';
 import RBSheet from 'react-native-raw-bottom-sheet';
 const VerifyCodeModel = React.forwardRef((props, ref) => {
     const refRBSheet = useRef();
-    const [verifyText, setVerifyText] = useState('重新发送验证码');
-    const {mobile = '', title = '请输入手机验证码'} = props;
-    let time = 60;
+    const {title = '请输入手机验证码', desc = '验证码已发送至', isSign = false} = props;
+    const [defaultColor, setDefaultColor] = useState('#EF8743');
+    const [num, setNum] = useState(0); // 倒计时
+    var _time = 0;
     useEffect(() => {
+        sendCode();
         return () => {
-            clearInterval();
+            clearInterval(_time);
         };
     }, []);
     const sendCode = () => {
-        setVerifyText(time);
-        setInterval(() => {
-            if (time <= 1) {
-                return;
-            }
-            setVerifyText(time--);
+        setNum(60);
+        setDefaultColor('#999');
+        _time = setInterval(() => {
+            setDefaultColor('#999');
+            setNum((n) => {
+                if (n == 0) {
+                    clearInterval(_time);
+                    setDefaultColor('#EF8743');
+                    setNum('重新发送验证码');
+                    return;
+                }
+                return n - 1;
+            });
         }, 1000);
     };
     const hide = () => {
         refRBSheet.current.close();
+        setTimeout(() => {
+            props.modalCancelCallBack && props.modalCancelCallBack();
+        }, 500);
     };
+
     const show = () => {
         refRBSheet.current.open();
     };
@@ -70,16 +83,21 @@ const VerifyCodeModel = React.forwardRef((props, ref) => {
                         <Text style={styles.title}>{title}</Text>
                     </View>
                     <View style={Style.modelPadding}>
-                        <Text style={({fontSize: Font.textH2}, styles.desc_text)}>验证码已发送至{mobile}</Text>
+                        <Text style={({fontSize: Font.textH2}, styles.desc_text)}>{desc}</Text>
                         <View style={[Style.flexRowCenter, styles.wrap_input]}>
                             <TextInput
                                 style={styles.verify_input}
                                 maxLength={6}
                                 keyboardType={'number-pad'}
                                 placeholder="请输入验证码"
+                                onChangeText={(text) => {
+                                    props.onChangeText(text);
+                                }}
                             />
-                            <TouchableOpacity style={[styles.verify_button, Style.flexCenter]} onPress={sendCode}>
-                                <Text style={{color: '#fff', fontSize: text(12)}}>{verifyText}</Text>
+                            <TouchableOpacity
+                                style={[styles.verify_button, Style.flexCenter, {backgroundColor: defaultColor}]}
+                                onPress={sendCode}>
+                                <Text style={{color: '#fff', fontSize: text(12)}}>{num ? num : '重新发送验证码'}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -93,6 +111,7 @@ const styles = StyleSheet.create({
     desc_text: {
         color: '#555B6C',
         paddingBottom: text(12),
+        lineHeight: text(20),
     },
     verify_input: {
         backgroundColor: Colors.inputBg,
@@ -104,7 +123,6 @@ const styles = StyleSheet.create({
         fontSize: text(16),
     },
     verify_button: {
-        backgroundColor: '#EF8743',
         fontSize: Font.textH3,
         height: text(50),
         borderTopRightRadius: text(5),
