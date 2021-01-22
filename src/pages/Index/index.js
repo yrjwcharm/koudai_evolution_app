@@ -3,7 +3,7 @@
  * @Author: yhc
 <<<<<<< HEAD
  * @LastEditors: dx
- * @LastEditTime: 2021-01-21 21:01:42
+ * @LastEditTime: 2021-01-22 10:38:31
 =======
 <<<<<<< Updated upstream
  * @LastEditors: dx
@@ -204,7 +204,7 @@ function HomeScreen(props) {
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
                 <Button title="DynamicAdjustment" onPress={() => navigation.navigate('DynamicAdjustment')} />
-                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
+                <Button title="TradeProcessing" onPress={() => navigation.navigate('TradeProcessing')} />
                 <Button
                     title="AssetsConfigDetail"
                     onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}

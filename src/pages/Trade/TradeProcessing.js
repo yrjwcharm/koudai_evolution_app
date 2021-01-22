@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-21 21:01:16
+ * @LastEditTime: 2021-01-22 10:40:25
  * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -111,7 +111,9 @@ const TradeProcessing = (props) => {
                         );
                     })}
             </View>
-            {finish && <Button title={data.button.text} textStyle={styles.btnText} style={styles.btn} />}
+            {finish && (
+                <Button title={data.button.text} textStyle={styles.btnText} style={styles.btn} onPress={() => {}} />
+            )}
         </ScrollView>
     );
 };

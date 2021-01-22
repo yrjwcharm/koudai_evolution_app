@@ -2,13 +2,13 @@
  * @Date: 2021-01-20 10:35:46
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-01-21 21:05:23
+ * @LastEditTime: 2021-01-22 10:11:32
  * @Description: 自定义tabbar
  */
 
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
-import {Colors} from '../common/commonStyle';
+import {Colors, Space} from '../common/commonStyle';
 import {px} from '../utils/appUtil';
 const Button = (props) => {
     return (
@@ -54,7 +54,7 @@ export default class TabBar extends Component {
             height: 2,
             borderRadius: 2,
             backgroundColor: Colors.btnColor,
-            bottom: 2,
+            bottom: 6,
             left: deLen,
         };
 
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: Colors.borderColor,
-        borderTopWidth: 0.5,
+        // borderTopWidth: Space.borderWidth,
+        borderBottomWidth: Space.borderWidth,
         backgroundColor: '#fff',
     },
 
