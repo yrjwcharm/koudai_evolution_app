@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 14:50:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-25 15:25:07
  * @Description:路由表
  */
 import React from 'react';
@@ -47,12 +47,14 @@ import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
 
 import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
+import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
+import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="LargeAmount"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -78,7 +80,7 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} />
+            <Stack.Screen name="Tab" component={TabScreen} options={{headerShown: false}} />
             <Stack.Screen
                 name="TradeBuy"
                 component={TradeBuy}
@@ -233,6 +235,8 @@ export default function AppStack() {
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{title: '会存A'}} />
             <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
+            <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
+            <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
         </Stack.Navigator>
     );
 }

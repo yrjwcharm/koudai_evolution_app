@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-01-20 18:14:13
+ * @LastEditTime: 2021-01-23 10:33:07
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -391,9 +391,9 @@ export class AssetsConfigDetail extends Component {
                 </View>
                 <View style={[styles.rightPart, Style.flexRow]}>
                     <Text style={[styles.assets_l1_amount, styles.rightPart]}>{section.amount.toFixed(2)}</Text>
-                    <Text style={[styles.assets_l1_ratio, styles.rightPart]}>{`${(section.ratio * 100).toFixed(
-                        2,
-                    )}%`}</Text>
+                    <Text style={[styles.assets_l1_ratio, styles.rightPart]}>
+                        {`${(section.ratio * 100).toFixed(2)}%`}
+                    </Text>
                     <FontAwesome color={Colors.descColor} size={20} name={isActive ? 'angle-up' : 'angle-down'} />
                 </View>
             </View>

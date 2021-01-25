@@ -1,12 +1,12 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-25 14:53:15
- * @LastEditors: xjh
+ * @LastEditTime: 2021-01-25 15:21:11
+ * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,80 +28,89 @@ const TradeProcessing = (props) => {
     const [code, setCode] = useState('');
     const [isSign, setSign] = useState(false);
 
-    let loop = 0;
-    let timer = null;
-    const init = (first) => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
-            txn_id: '20210101B000001S',
-            loop,
-        }).then((res) => {
-            setData(res.result);
-            if (res.result.need_verify_code) {
-                verifyCodeModel.current.show();
-                signSendVerify();
-                return;
-            }
-            if (res.result.finish || res.result.finish === -2) {
-                setFinish(true);
-            } else {
-                timer = setTimeout(() => {
-                    loop++;
-                    if (loop <= res.result.loop) {
-                        init();
-                    }
-                }, 1000);
-            }
-            first && navigation.setOptions({title: res.result.title});
-        });
-    };
-    const onLayout = (index, e) => {
-        const arr = [...heightArr];
-        arr[index] = e.nativeEvent.layout.height;
-        setHeightArr(arr);
-    };
-    const signSendVerify = () => {
+    const loopRef = useRef(0);
+    const timerRef = useRef(null);
+    const init = useCallback(
+        (first) => {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
+                txn_id: '20210101B000001S',
+                loop: loopRef.current,
+            }).then((res) => {
+                setData(res.result);
+                if (res.result.need_verify_code) {
+                    verifyCodeModel.current.show();
+                    signSendVerify();
+                    return;
+                }
+                if (res.result.finish || res.result.finish === -2) {
+                    setFinish(true);
+                } else {
+                    timerRef.current = setTimeout(() => {
+                        loopRef.current++;
+                        if (loopRef.current <= res.result.loop) {
+                            init();
+                        }
+                    }, 1000);
+                }
+                first && navigation.setOptions({title: res.result.title});
+            });
+        },
+        [loopRef, timerRef, navigation, signSendVerify]
+    );
+    const onLayout = useCallback(
+        (index, e) => {
+            const arr = [...heightArr];
+            arr[index] = e.nativeEvent.layout.height;
+            setHeightArr(arr);
+        },
+        [heightArr]
+    );
+    const signSendVerify = useCallback(() => {
         http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_send/20210101', {
             txn_id: '20210101B000001S',
         }).then((res) => {
             setSign(true);
             setBankInfo(res.result);
         });
-    };
-    const modalCancelCallBack = () => {
+    }, []);
+    const modalCancelCallBack = useCallback(() => {
         if (isSign && bankInfo) {
             let content = bankInfo.back_info.content;
             setTimeout(() => {
                 Modal.show({content: content, confirm: true, confirmCallBack: confirmCallBack});
             }, 500);
         }
-    };
-    const confirmCallBack = () => {
-        this.props.navigation.navigate('Asset');
-    };
-    const onChangeText = (text) => {
-        setCode(text);
-        if (text.length == 6) {
-            http.post(
-                'http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_confirm/20210101',
-                {
-                    txn_id: bankInfo.txn_id,
-                    code: '123456',
-                }
-            ).then((res) => {
-                if (res.code === '000000') {
-                    setSign(false);
-                    setTimeout(() => {
-                        verifyCodeModel.current.hide();
-                    }, 300);
-                } else {
-                }
-            });
-        }
-    };
+    }, [bankInfo, isSign, confirmCallBack]);
+    const confirmCallBack = useCallback(() => {
+        navigation.navigate('Asset');
+    }, [navigation]);
+    const onChangeText = useCallback(
+        (value) => {
+            setCode(value);
+            if (value.length === 6) {
+                http.post(
+                    'http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_confirm/20210101',
+                    {
+                        txn_id: bankInfo.txn_id,
+                        code: '123456',
+                    }
+                ).then((res) => {
+                    if (res.code === '000000') {
+                        setSign(false);
+                        setTimeout(() => {
+                            verifyCodeModel.current.hide();
+                        }, 300);
+                    } else {
+                    }
+                });
+            }
+        },
+        [bankInfo.txn_id]
+    );
     useEffect(() => {
         init(true);
-        return () => clearTimeout(timer);
-    }, []);
+        return () => clearTimeout(timerRef.current);
+    }, [init, timerRef]);
     return (
         <ScrollView style={[styles.container]}>
             <Text style={[styles.title]}>购买进度明细</Text>
@@ -254,7 +263,7 @@ const styles = StyleSheet.create({
     line: {
         position: 'absolute',
         top: text(28),
-        left: text(6.5),
+        left: text(6.7),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,

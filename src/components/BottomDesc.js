@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-01-21 11:49:46
+ * @LastEditTime: 2021-01-25 20:08:47
  * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -14,7 +14,31 @@ import {Colors, Font, Space} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 
 const BottomDesc = (props) => {
-    const {data, style} = props;
+    const {style, type} = props;
+    const data = {
+        image:
+            type === 'xuanyuan'
+                ? 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_CMBC.png'
+                : 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_PABC.png',
+        desc: [
+            {
+                title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,
+            },
+            {
+                title: `基金销售资格证号:${type === 'xuanyuan' ? '000000803' : '000000378'}`,
+                btn:
+                    type === 'xuanyuan'
+                        ? {
+                              text: '详情',
+                              jump_to: 'FundSafe',
+                          }
+                        : '',
+            },
+            {
+                title: '市场有风险，投资需谨慎',
+            },
+        ],
+    };
     const navigation = useNavigation();
     return (
         <View style={[styles.con, style]}>
@@ -29,7 +53,7 @@ const BottomDesc = (props) => {
                         <View style={styles.item} key={index}>
                             {item.title && <Text style={styles.text}>{item.title}</Text>}
                             {item.btn && (
-                                <Text style={styles.button} onPress={() => navigation.navigate('CompanyIntro')}>
+                                <Text style={styles.button} onPress={() => navigation.navigate(item.btn.jump_to)}>
                                     {item.btn.text}
                                 </Text>
                             )}
@@ -67,8 +91,12 @@ const styles = StyleSheet.create({
 });
 
 BottomDesc.propTypes = {
-    data: PropTypes.object.isRequired,
+    type: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
+};
+BottomDesc.defaultProps = {
+    type: 'xuanyuan',
+    style: {},
 };
 
 export default BottomDesc;
