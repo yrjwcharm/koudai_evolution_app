@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 14:39:48
+ * @LastEditTime: 2021-01-21 18:34:43
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -21,17 +21,14 @@ class LineChartScreen extends PureComponent {
             {
                 name: '股票类',
                 percent: 83.59,
-                a: '1',
             },
             {
                 name: '债券类',
                 percent: 2.17,
-                a: '1',
             },
             {
                 name: '现金类',
                 percent: 14.24,
-                a: '1',
             },
         ],
     };
@@ -61,7 +58,7 @@ class LineChartScreen extends PureComponent {
                         // This will continue the action that had triggered the removal of the screen
                         onPress: () => this.props.navigation.dispatch(e.data.action),
                     },
-                ],
+                ]
             );
         });
     }

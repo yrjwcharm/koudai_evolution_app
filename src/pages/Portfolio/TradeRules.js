@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-01-21 11:50:46
+ * @LastEditTime: 2021-01-22 10:07:38
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
@@ -9,6 +9,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import Tab from '../../components/TabBar';
 // import TabBar from '../../components/ScrollTab';
 import http from '../../services';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -395,15 +396,17 @@ class TradeRules extends Component {
     render_limit() {
         const {data} = this.state;
         return (
-            <View>
-                {data.part5.length > 0 &&
-                    data.part5.map((item, index) => {
+            <View style={{backgroundColor: '#fff', paddingBottom: text(20)}}>
+                {data.part4.length > 0 &&
+                    data.part4.map((item, index) => {
                         return (
-                            <View style={styles.banklistWrap}>
-                                <Image source={{uri: item.bank_icon}} style={{width: text(20), height: text(20)}} />
+                            <View style={styles.banklistWrap} key={index + 'l'}>
+                                <Image source={{uri: item.bank_icon}} style={{width: text(28), height: text(28)}} />
                                 <View style={styles.banklistItem}>
-                                    <Text style={{textAlign: 'left', color: Colors.descColor}}>{item.name}</Text>
-                                    <Text style={{textAlign: 'right', flex: 1}}>{item.desc}</Text>
+                                    <Text style={{textAlign: 'left', color: Colors.descColor}}>{item.bank_name}</Text>
+                                    <Text style={{textAlign: 'right', flex: 1, color: Colors.descColor}}>
+                                        {item.single_limit}/{item.daily_limit}/{item.month_limit}
+                                    </Text>
                                 </View>
                             </View>
                         );
@@ -414,7 +417,7 @@ class TradeRules extends Component {
     renderContent() {
         const {data} = this.state;
         return (
-            <View>
+            <View style={{paddingTop: 2}}>
                 {Object.keys(data).length > 0 && this.state.curIndex == 0 ? (
                     <View>
                         <Text style={[styles.title]}>赎回费率</Text>
@@ -534,7 +537,7 @@ class TradeRules extends Component {
                                     })}
                             </View>
                         </View>
-                        <View style={styles.productInfoWrap}>
+                        <View style={[styles.productInfoWrap, {marginBottom: 0}]}>
                             <Text style={styles.productInfoTitle}>{data.part2.redeem.title}</Text>
                             <Image source={require('../../assets/img/line.png')} style={[styles.line]} />
                             <View style={styles.buyComfirmTime}>
@@ -654,7 +657,7 @@ class TradeRules extends Component {
                                     })}
                             </View>
                         </View>
-                        <View style={styles.productInfoWrap}>
+                        <View style={[styles.productInfoWrap, {marginBottom: 0}]}>
                             <Text style={styles.productInfoTitle}>{data.part3.redeem.title}</Text>
                             {data.part3.redeem.desc.length > 0 &&
                                 data.part3.redeem.desc.map((_i, index) => {
@@ -710,29 +713,7 @@ class TradeRules extends Component {
                         </View>
                     </View>
                 ) : null}
-                {Object.keys(data).length > 0 && this.state.curIndex == 3 ? (
-                    <View style={{backgroundColor: '#fff', paddingBottom: text(20)}}>
-                        {data.part4.length > 0 &&
-                            data.part4.map((item, index) => {
-                                return (
-                                    <View style={styles.banklistWrap} key={index + 'l'}>
-                                        <Image
-                                            source={{uri: item.bank_icon}}
-                                            style={{width: text(28), height: text(28)}}
-                                        />
-                                        <View style={styles.banklistItem}>
-                                            <Text style={{textAlign: 'left', color: Colors.descColor}}>
-                                                {item.bank_name}
-                                            </Text>
-                                            <Text style={{textAlign: 'right', flex: 1, color: Colors.descColor}}>
-                                                {item.single_limit}/{item.daily_limit}/{item.month_limit}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                );
-                            })}
-                    </View>
-                ) : null}
+                {Object.keys(data).length > 0 && this.state.curIndex == 3 ? this.render_limit() : null}
                 {Object.keys(data).length > 0 && data.bottom && <BottomDesc data={data.bottom} />}
             </View>
         );
@@ -744,18 +725,16 @@ class TradeRules extends Component {
                 {Object.keys(data).length > 0 && (
                     <ScrollableTabView
                         style={[styles.container]}
-                        renderTabBar={() => <DefaultTabBar />}
+                        renderTabBar={() => <Tab />}
                         initialPage={0}
-                        tabBarTextStyle={{fontSize: Font.textH2, lineHeight: text(20)}}
-                        tabBarActiveTextColor={Colors.brandColor}
-                        tabBarInactiveTextColor={'rgba(16, 26, 48, 0.65)'}
-                        tabBarBackgroundColor="#fff"
-                        tabBarUnderlineStyle={styles.underLine}
                         onChangeTab={(obj) => this.ChangeTab(obj.i)}>
                         {data.head.length > 0 &&
                             data.head.map((item, index) => {
                                 return (
-                                    <ScrollView tabLabel={item.title} key={index + 'head'}>
+                                    <ScrollView
+                                        style={{transform: [{translateY: text(-1.5)}]}}
+                                        tabLabel={item.title}
+                                        key={index + 'head'}>
                                         {this.renderContent()}
                                     </ScrollView>
                                 );

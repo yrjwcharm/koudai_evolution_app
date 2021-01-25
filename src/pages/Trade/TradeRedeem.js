@@ -120,7 +120,8 @@ export default class TradeRedeem extends Component {
                                     <Radio
                                         checked={this.state.check[index]}
                                         index={index}
-                                        onChange={() => this.radioChange(index)}></Radio>
+                                        onChange={() => this.radioChange(index)}
+                                    />
                                 </View>
                             );
                         })}

@@ -2,20 +2,20 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 17:57:29
+ * @LastEditTime: 2021-01-21 17:18:48
  * @Description:基金开户实名认证
  */
-import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import React, {Component} from 'react';
+import {Text, View, StyleSheet, Image, TouchableOpacity, Keyboard, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { px } from '../../../utils/appUtil';
-import { Style, Colors } from '../../../common/commonStyle';
+import {px} from '../../../utils/appUtil';
+import {Style, Colors} from '../../../common/commonStyle';
 import Input from '../../../components/Input';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { FixedButton } from '../../../components/Button';
+import {FixedButton} from '../../../components/Button';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
-import {formCheck} from '../../../utils/validator'
+import {formCheck} from '../../../utils/validator';
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -28,25 +28,25 @@ export class index extends Component {
         };
     }
     jumpPage = (nav) => {
-        const {name,id_no} = this.state
+        const {name, id_no} = this.state;
         var checkData = [
             {
-              field: name,
-              text: "姓名不能为空"
+                field: name,
+                text: '姓名不能为空',
             },
             {
-              field: id_no,
-              text: "身份证不能为空"
-            }
-          ];
-          if (!formCheck(checkData)) {
-            return
-          }
+                field: id_no,
+                text: '身份证不能为空',
+            },
+        ];
+        if (!formCheck(checkData)) {
+            return;
+        }
         this.props.navigation.navigate(nav);
     };
     _showPosition = () => {
         Keyboard.dismiss();
-        this.setState({ showMask: true })
+        this.setState({showMask: true});
         Picker.init({
             pickerTitleText: '请选择职业信息',
             pickerCancelBtnText: '取消',
@@ -60,27 +60,27 @@ export class index extends Component {
             pickerCancelBtnColor: [128, 137, 155, 1],
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.setState({ rname: pickedValue, showMask: false, rcode: this.state.identity.career[pickedIndex] })
+                this.setState({rname: pickedValue, showMask: false, rcode: this.state.identity.career[pickedIndex]});
             },
             onPickerCancel: () => {
-                this.setState({ showMask: false })
-            }
+                this.setState({showMask: false});
+            },
         });
         Picker.show();
-    }
+    };
     closePicker = () => {
         Picker.hide();
-        this.setState({ showMask: false })
-    }
+        this.setState({showMask: false});
+    };
     componentWillUnmount() {
-        this.closePicker()
+        this.closePicker();
     }
     render() {
-        const { showMask } = this.state
+        const {showMask} = this.state;
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
-                <ScrollView scrollEnabled={false} style={{ paddingHorizontal: px(16) }}>
+                <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
                     <FastImage
                         style={styles.pwd_img}
                         source={require('../../../assets/img/account/first.png')}
@@ -90,7 +90,7 @@ export class index extends Component {
                         <View style={styles.card_header}>
                             <Image
                                 source={require('../../../assets/img/account/personalMes.png')}
-                                style={{ width: px(22), resizeMode: 'contain' }}
+                                style={{width: px(22), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>基本信息</Text>
                         </View>
@@ -98,7 +98,7 @@ export class index extends Component {
                             label="姓名"
                             placeholder="请输入您的姓名"
                             onChange={(name) => {
-                                this.setState({ name });
+                                this.setState({name});
                             }}
                             returnKeyType={'next'}
                         />
@@ -107,15 +107,16 @@ export class index extends Component {
                                 label="身份证"
                                 placeholder="请输入您的身份证号"
                                 onChange={(id_no) => {
-                                    this.setState({ id_no });
+                                    this.setState({id_no});
                                 }}
                                 maxLength={18}
-                                inputStyle={{ flex: 1, borderBottomWidth: 0 }}
+                                inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 returnKeyType={'next'}
                             />
-                            <TouchableOpacity onPress={() => {
-                                this.jumpPage('UploadID')
-                            }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.jumpPage('UploadID');
+                                }}>
                                 <FontAwesome name={'camera'} size={18} color={'#000'} />
                             </TouchableOpacity>
                         </View>
@@ -126,36 +127,38 @@ export class index extends Component {
                                 placeholder="请选择您的职业"
                                 value={this.state.rname}
                                 onClick={this._showPosition}
-                                inputStyle={{ flex: 1, borderBottomWidth: 0 }}
+                                inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 returnKeyType={'done'}
                             />
-                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{ marginLeft: -14 }} />
+                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
                         </View>
                     </View>
                 </ScrollView>
-                <FixedButton title={'下一步'} onPress={() => {
-                    this.jumpPage('BankInfo')
-                }} />
+                <FixedButton
+                    title={'下一步'}
+                    onPress={() => {
+                        this.jumpPage('BankInfo');
+                    }}
+                />
             </View>
         );
     }
 }
 const styles = StyleSheet.create({
-    con:{
-        flex:1,
-        backgroundColor:Colors.bgColor
+    con: {
+        flex: 1,
+        backgroundColor: Colors.bgColor,
     },
     pwd_img: {
         width: '100%',
         height: px(55),
-        marginVertical:px(24)
+        marginVertical: px(24),
     },
     card: {
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
         borderRadius: px(8),
         marginBottom: px(12),
-       
     },
     card_header: {
         flexDirection: 'row',

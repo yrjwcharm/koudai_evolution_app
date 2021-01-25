@@ -2,7 +2,7 @@
  * @Date: 2021-01-05 16:10:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-07 18:09:10
+ * @LastEditTime: 2021-01-21 17:16:37
  * @Description: 底部弹窗式密码
  */
 import React from 'react';
@@ -17,13 +17,14 @@ const PasswordModal = React.forwardRef((props, ref) => {
     const {
         onDone, //输入完成回调
         clear = true,
-        backdrop,
+        backdrop = false,
         header,
         title = '请输入交易密码',
         tip = '忘记交易密码',
         tipProps,
         inputViewProps = {},
         keyboardProps = {},
+        onClose = () => {},
     } = props;
 
     const [password, setPassword] = React.useState('');
@@ -55,6 +56,7 @@ const PasswordModal = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(!visible);
+        onClose();
     };
 
     React.useImperativeHandle(ref, () => {
@@ -63,7 +65,6 @@ const PasswordModal = React.forwardRef((props, ref) => {
             hide: hide,
         };
     });
-
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             <View style={[styles.container, {backgroundColor: backdrop ? 'rgba(0,0,0,0.5)' : 'transparent'}]}>

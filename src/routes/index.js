@@ -2,13 +2,13 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 11:46:08
+ * @LastEditTime: 2021-01-25 14:50:44
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabScreen from './Tabbar';
-import DetailScreen from '../pages/Detail/index';
+import DetailScreen from '../pages/Portfolio/index';
 import GesturePassword from '../pages/Personal/GesturePassword';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
@@ -31,13 +31,13 @@ import PrivateCert from '../pages/PE/PrivateCert'; //私募合格投资认证页
 import PrivateOrder from '../pages/PE/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
-import AssetsConfigDetail from '../pages/Detail/AssetsConfigDetail'; // 资产配置详情
+import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
-import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
-import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
-import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
+import TradeRules from '../pages/Portfolio/TradeRules'; // 交易须知
+import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
+import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
@@ -46,6 +46,7 @@ import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
 import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平安)
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
 
+import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -231,6 +232,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{title: '会存A'}} />
+            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
         </Stack.Navigator>
     );
 }

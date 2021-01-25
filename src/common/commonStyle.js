@@ -35,6 +35,8 @@ export const Colors = {
     // 绿色 跌
     green: '#4BA471',
     btnColor: '#0051CC',
+    //黄色
+    yellow: '#EB7121',
     //导航背景色
     navBgColor: '#FFF',
     // 导航title 颜色

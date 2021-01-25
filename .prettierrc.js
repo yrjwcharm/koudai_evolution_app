@@ -1,10 +1,11 @@
 /*
- * @Date: 2020-11-03 19:28:28
+ * @Date: 2020-12-28 11:53:00
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2020-12-24 17:15:46
+ * @LastEditTime: 2021-01-21 11:29:40
  * @Description: 
  */
+
 // .prettierrc.js
 module.exports = {
   printWidth: 120, //一行的字符数，如果超过会进行换行，默认为80
@@ -14,4 +15,7 @@ module.exports = {
   singleQuote: true,    //字符串是否使用单引号，默认为false，使用双引号
   trailingComma: 'all',   //是否使用尾逗号，有三个可选值"<none|es5|all>"
   endOfLine: 'auto',
+  semi: true,//在代码尾部添加分号
+  singleQuote: true,//把双引号换成单引号
+  trailingComma: "es5"//在代码尾部添加逗号
 };

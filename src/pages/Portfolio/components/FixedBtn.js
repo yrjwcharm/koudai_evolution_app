@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-21 10:02:49
+ * @LastEditTime: 2021-01-22 10:24:43
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -57,7 +57,14 @@ const FixedBtn = (props) => {
                 <Image source={{uri: btns[0].icon}} style={[styles.contactIcon]} />
                 <Text style={[styles.contactText]}>{btns[0].title}</Text>
             </TouchableOpacity>
-            <Button title={btns[1].title} style={[styles.btn]} textStyle={[styles.btnText]} />
+            <Button
+                title={btns[1].title}
+                desc={btns[1].desc}
+                style={styles.btn}
+                textStyle={styles.btnText}
+                descStyle={styles.descText}
+                onPress={() => {}}
+            />
             <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />
         </View>
     );
@@ -66,7 +73,6 @@ const FixedBtn = (props) => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: text(60),
         backgroundColor: '#fff',
         paddingVertical: text(8),
         paddingHorizontal: text(20),
@@ -86,10 +92,19 @@ const styles = StyleSheet.create({
     },
     btn: {
         flex: 1,
+        height: text(50),
     },
     btnText: {
-        fontSize: text(14),
-        lineHeight: text(20),
+        fontSize: text(15),
+        lineHeight: text(21),
+        color: '#fff',
+    },
+    descText: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: '#fff',
+        opacity: 0.74,
+        marginTop: text(2),
     },
     contactContainer: {
         paddingTop: text(28),

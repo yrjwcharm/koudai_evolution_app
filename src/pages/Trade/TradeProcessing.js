@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-22 11:48:31
+ * @LastEditTime: 2021-01-25 14:53:15
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -15,6 +15,8 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
+import {Button} from '../../components/Button';
+
 const TradeProcessing = (props) => {
     const {txn_id} = props.route.params || {};
     const navigation = useNavigation();
@@ -84,7 +86,7 @@ const TradeProcessing = (props) => {
                 {
                     txn_id: bankInfo.txn_id,
                     code: '123456',
-                },
+                }
             ).then((res) => {
                 if (res.code === '000000') {
                     setSign(false);

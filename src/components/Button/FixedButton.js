@@ -21,17 +21,17 @@ export default class FixedButton extends Component {
     keyboardWillShow = (e) => {
         const {keyboardHeight} = this.state;
         Animated.timing(keyboardHeight, {
-            toValue: e.endCoordinates.height-(isIphoneX()?(34-px(8)):px(8)),
+            toValue: e.endCoordinates.height - (isIphoneX() ? 34 - px(8) : px(8)),
             duration: e.duration,
-            useNativeDriver:false,
+            useNativeDriver: false,
         }).start();
     };
     keyboardWillHide = (e) => {
         const {keyboardHeight} = this.state;
         Animated.timing(keyboardHeight, {
-            toValue:  0,
+            toValue: 0,
             duration: e.duration,
-            useNativeDriver:false,
+            useNativeDriver: false,
         }).start();
     };
     componentWillUnmount() {
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
         paddingTop: px(8),
         paddingHorizontal: px(16),
         width: deviceWidth,
-        paddingBottom:isIphoneX()?34:px(8),
+        paddingBottom: isIphoneX() ? 34 : px(8),
     },
 });
-

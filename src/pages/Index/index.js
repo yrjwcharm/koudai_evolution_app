@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 17:12:44
+ * @LastEditTime: 2021-01-25 14:53:50
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -193,15 +193,12 @@ function HomeScreen(props) {
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
                 <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
-                {/* <Button title="Agreement" onPress={() => navigation.navigate('Agreement', { type: 38 })} /> */}
+                <Button title="DynamicAdjustment" onPress={() => navigation.navigate('DynamicAdjustment')} />
                 <Button title="TradeProcessing" onPress={() => navigation.navigate('TradeProcessing')} />
                 <Button
                     title="AssetsConfigDetail"
                     onPress={() => navigation.navigate('AssetsConfigDetail', {amount: '2000'})}
                 />
-                <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
-                {/* <Button title="CommonProblem" onPress={() => navigation.navigate('CommonProblem')} /> */}
-                <Button title="RiskManagement" onPress={() => navigation.navigate('RiskManagement')} />
             </View>
         </ScrollView>
     );
