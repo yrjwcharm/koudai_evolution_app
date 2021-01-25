@@ -3,20 +3,21 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 12:18:06
+ * @LastEditTime: 2021-01-25 14:45:34
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common//commonStyle';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Button} from '../../components/Button';
+import {FixedButton} from '../../components/Button';
 import Toast from '../../components/Toast/';
 import Header from '../../components/NavBar';
 import Clipboard from '@react-native-community/clipboard';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import Notice from '../../components/Notice';
 const deviceWidth = Dimensions.get('window').width;
 const item = {
     bank_list: [
@@ -75,8 +76,9 @@ const LargeAmount = (props) => {
                 rightTextStyle={styles.right_sty}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={(Style.containerPadding, {padding: 0})}>
-                    <Text style={styles.yellow_sty}>{data.processing}</Text>
+                <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: 120})}>
+                    <Notice content={data.processing} isClose={true} />
+                    {/* <Text style={styles.yellow_sty}>{data.processing}</Text> */}
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
                         <Text style={styles.title_sty}>汇款流程</Text>
                         <View style={styles.process_wrap}>
@@ -98,7 +100,7 @@ const LargeAmount = (props) => {
                             />
                         </View>
                     </View>
-                    <ScrollView style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
+                    <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={styles.title_sty}>支持银行卡</Text>
                         <Text style={styles.desc_sty}>仅支持以下银行卡的转账汇款，否则资金将原</Text>
                         <>
@@ -107,7 +109,8 @@ const LargeAmount = (props) => {
                                     <TouchableOpacity
                                         style={[Style.flexRow, styles.list_sty]}
                                         key={_index + '_item'}
-                                        onPress={() => jumpPage(_item.url)}>
+                                        onPress={() => jumpPage(_item.url)}
+                                        activeOpacity={1}>
                                         <View style={[Style.flexRow, {flex: 1}]}>
                                             <Image
                                                 source={{uri: _item.bank_icon}}
@@ -122,7 +125,7 @@ const LargeAmount = (props) => {
                                 );
                             })}
                         </>
-                    </ScrollView>
+                    </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={[styles.title_sty, {paddingBottom: text(15)}]}>
                             魔方监管户<Text style={{color: '#E74949', fontSize: 12}}>(民生银行全程监管)</Text>
@@ -167,7 +170,7 @@ const LargeAmount = (props) => {
                         <Text style={{marginBottom: text(10), color: '#545968'}}>提示信息：</Text>
                         {tips.map((_i, _d) => {
                             return (
-                                <View style={{marginBottom: text(10)}}>
+                                <View style={{marginBottom: text(10)}} key={_d + '_i'}>
                                     <Text key={_i + _d} style={{lineHeight: text(18), color: '#545968'}}>
                                         {_i.title}
                                     </Text>
@@ -176,22 +179,20 @@ const LargeAmount = (props) => {
                             );
                         })}
                     </View>
-                    <Button title={data.button.text} style={styles.btn_sty} onPress={() => btnClick(data.button.url)} />
                 </ScrollView>
+            )}
+            {Object.keys(data).length > 0 && (
+                <FixedButton
+                    title={data.button.text}
+                    style={styles.btn_sty}
+                    onPress={() => btnClick(data.button.url)}
+                />
             )}
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    yellow_sty: {
-        color: '#EB7121',
-        backgroundColor: '#FFF5E5',
-        paddingHorizontal: Space.padding,
-        paddingVertical: text(5),
-        lineHeight: text(18),
-        fontSize: text(13),
-    },
     image_sty: {
         width: text(239),
         height: text(36),
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(15),
     },
     title_sty: {
-        color: Colors.defaultFontColor,
+        color: '#292D39',
         fontSize: Font.textH1,
         fontWeight: 'bold',
     },
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
         fontSize: text(14),
     },
     item_bottom_sty: {
-        color: Colors.navTitleColor,
+        color: '#121D3A',
         fontSize: text(14),
         paddingTop: text(6),
         fontWeight: 'bold',
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
     },
     btn_sty: {
         marginHorizontal: Space.padding,
-        marginBottom: '10%',
+        marginBottom: '20%',
     },
     right_sty: {
         paddingHorizontal: text(7),

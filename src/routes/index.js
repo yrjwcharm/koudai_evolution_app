@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 18:21:07
+ * @LastEditTime: 2021-01-25 11:46:08
  * @Description:路由表
  */
 import React from 'react';
@@ -43,13 +43,15 @@ import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
 import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
 import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
+import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平安)
+import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="MfbIntro"
+            initialRouteName="LargeAmount"
             screenOptions={{
                 // headerShown: false,
 
@@ -227,6 +229,8 @@ export default function AppStack() {
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
+            <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
+            <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{title: '会存A'}} />
         </Stack.Navigator>
     );
 }
