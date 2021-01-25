@@ -36,7 +36,7 @@ axios.interceptors.request.use(async (config) => {
         ts: new Date().getTime(),
         did: DeviceInfo.getUniqueId(),
         uid: uid,
-        ver: '1.0.6',
+        ver: '5.3.0',
         Authorization: token,
     };
     return config;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 15:28:34
+ * @LastEditTime: 2021-01-23 18:08:40
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -16,6 +16,7 @@ export default class RenderHtml extends Component {
     //   html: this.props.html
     // }
     render() {
+        const style = this.props.style;
         return (
             <HTML
                 ignoredStyles={[
@@ -31,7 +32,8 @@ export default class RenderHtml extends Component {
                 defaultTextProps={{
                     allowFontScaling: false,
                 }}
-                baseFontStyle={this.props.style}
+                style={this.props.style}
+                baseFontStyle={style}
                 source={{html: this.props.html}}
                 imagesMaxWidth={width - text(30)}
             />

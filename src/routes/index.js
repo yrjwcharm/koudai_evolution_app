@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-21 18:08:59
+ * @LastEditTime: 2021-01-23 18:21:07
  * @Description:路由表
  */
 import React from 'react';
@@ -39,12 +39,17 @@ import TradeRules from '../pages/Detail/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Detail/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Detail/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
+import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
+import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
+import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
+import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeProcessing"
+            initialRouteName="MfbIntro"
             screenOptions={{
                 // headerShown: false,
 
@@ -71,7 +76,6 @@ export default function AppStack() {
                 },
             }}>
             <Stack.Screen name="Tab" component={TabScreen} />
-
             <Stack.Screen
                 name="TradeBuy"
                 component={TradeBuy}
@@ -100,7 +104,6 @@ export default function AppStack() {
                     title: '基金交易安全开户',
                 }}
             />
-
             <Stack.Screen
                 name="SetTradePassword"
                 component={SetTradePassword}
@@ -205,7 +208,6 @@ export default function AppStack() {
                     title: '私募合格投资者认证',
                 }}
             />
-
             <Stack.Screen
                 name="TradeAdjust"
                 component={TradeAdjust}
@@ -221,6 +223,10 @@ export default function AppStack() {
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
+            <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
+            <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
+            <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
+            <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
         </Stack.Navigator>
     );
 }

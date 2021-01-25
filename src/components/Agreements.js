@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 12:01:01
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-23 14:10:33
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -13,7 +13,7 @@ import {px} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 function Agreements(props) {
     const navigation = useNavigation();
-    const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}} = props;
+    const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
     const jumpPage = (item) => {
         navigation.navigate('Article');
     };
@@ -29,9 +29,11 @@ function Agreements(props) {
     let container = <Icon name={source} size={px(18)} color="#0052CD" />;
     return (
         <View style={[{flexDirection: 'row'}, style]}>
-            <TouchableHighlight onPress={toggle} underlayColor="white">
-                {container}
-            </TouchableHighlight>
+            {!isHide && (
+                <TouchableHighlight onPress={toggle} underlayColor="white">
+                    {container}
+                </TouchableHighlight>
+            )}
             <Text style={styles.aggrement_text}>
                 <Text style={styles.text}>{title}</Text>
                 {data && data.length > 0

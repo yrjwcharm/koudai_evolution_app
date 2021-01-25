@@ -1,14 +1,14 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 11:46:43
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-23 16:10:39
  * @Description:头部组件
  */
 
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
+import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform, Text} from 'react-native';
 import {px as px2dp} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
@@ -24,6 +24,9 @@ NavBar.propTypes = {
     rightPress: PropTypes.func,
     style: PropTypes.object,
     titleStyle: PropTypes.object,
+    rightText: PropTypes.string,
+    rightTextStyle: PropTypes.object,
+    fontStyle: PropTypes.object,
 };
 NavBar.defaultProps = {
     title: '123',
@@ -48,7 +51,11 @@ function NavBar(props) {
             } else {
                 return (
                     <TouchableOpacity onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(26)} color={Colors.navTitleColor} />
+                        <Icon
+                            name={name}
+                            size={px2dp(26)}
+                            color={props.fontStyle ? props.fontStyle.color : 'Colors.navTitleColor'}
+                        />
                     </TouchableOpacity>
                 );
             }
@@ -68,6 +75,12 @@ function NavBar(props) {
                     name: props.rightIcon,
                     onPress: props.rightPress,
                 });
+            } else if (props.rightText) {
+                return (
+                    <TouchableOpacity style={props.rightTextStyle} onPress={props.rightPress}>
+                        <Text style={props.fontStyle ? props.fontStyle : styles.text_ty}>{props.rightText}</Text>
+                    </TouchableOpacity>
+                );
             } else {
                 return <View style={styles.btn} />;
             }
@@ -89,7 +102,7 @@ function NavBar(props) {
     return (
         <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: insets.top + topbarHeight}]}>
             {renderBtn('left')}
-            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle]}>
+            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
                 {props.title}
             </Animated.Text>
             {renderBtn('right')}
@@ -114,6 +127,9 @@ const styles = StyleSheet.create({
         color: Colors.navTitleColor,
         fontWeight: 'bold',
         fontSize: px2dp(16),
+    },
+    text_ty: {
+        // marginRight: px2dp(16),
     },
 });
 export default NavBar;
