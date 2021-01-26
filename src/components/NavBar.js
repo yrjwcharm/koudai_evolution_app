@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 15:04:00
+ * @LastEditTime: 2021-01-26 15:18:49
  * @Description:头部组件
  */
 
@@ -28,10 +28,10 @@ const topbarHeight = Platform.OS == 'ios' ? 44 : 50;
 //     rightTextStyle: PropTypes.object,
 //     fontStyle: PropTypes.object,
 // };
-NavBar.defaultProps = {
-    title: '123',
-};
-function NavBar(props) {
+// NavBar.defaultProps = {
+//     title: '123',
+// };
+const NavBar = React.forwardRef((props, ref) => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const navRef = useRef(null);
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 10,
-        paddingHorizontal: px(10),
+        paddingHorizontal: px2dp(10),
     },
     btn: {
         width: 40,

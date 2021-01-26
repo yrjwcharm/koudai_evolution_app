@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 14:41:05
+ * @LastEditTime: 2021-01-26 16:14:58
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -255,7 +255,7 @@ export class question extends Component {
     render() {
         const {translateY, opacity, questions, current, value, warn, inputBtnCanClick} = this.state;
         const current_ques = questions[current];
-        console.log(current_ques, current, warn);
+        // console.log(current_ques.style && current_ques.style.includes('invest_'));
         return (
             <>
                 <Header
@@ -295,9 +295,30 @@ export class question extends Component {
                                     {current_ques.title ? (
                                         <Text style={[styles.name, {marginBottom: px(32)}]}>{current_ques.title}</Text>
                                     ) : null}
-                                    {current_ques.name ? <Text style={styles.name}>{current_ques.name}</Text> : null}
+                                    {current_ques.name ? (
+                                        <Text
+                                            style={[
+                                                styles.name,
+                                                {
+                                                    fontSize:
+                                                        current_ques.style && current_ques.style.includes('invest_')
+                                                            ? px(21)
+                                                            : px(16),
+                                                },
+                                            ]}>
+                                            {current_ques.name}
+                                        </Text>
+                                    ) : null}
                                     {current_ques.remark ? (
-                                        <HTML style={styles.text} html={current_ques.remark} />
+                                        <HTML
+                                            style={[
+                                                styles.text,
+                                                current_ques.style &&
+                                                    current_ques.style.includes('invest_') &&
+                                                    styles.invest_text,
+                                            ]}
+                                            html={current_ques.remark}
+                                        />
                                     ) : null}
                                     {current_ques.tip ? (
                                         <TouchableOpacity style={[Style.flexRow, {marginTop: px(24)}]}>
@@ -311,16 +332,7 @@ export class question extends Component {
                                             <Text>输入年龄</Text>
                                         </View>
                                     ) : null}
-                                    {/* <View style={[styles.input_container, Style.flexRow]}>
-                                        <Text style={styles.input_icon}>¥</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={current_ques.value || value}
-                                            keyboardType={'number-pad'}
-                                            onChangeText={this.inputValue}
-                                        />
-                                        {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
-                                    </View> */}
+
                                     {current_ques.type == 3 ? (
                                         <>
                                             <View style={[styles.input_container, Style.flexRow]}>
@@ -458,6 +470,10 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         marginTop: px(8),
         color: Colors.red,
+    },
+    invest_text: {
+        fontSize: px(14),
+        color: Colors.darkGrayColor,
     },
 });
 
