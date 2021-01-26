@@ -1,20 +1,3 @@
-/*
- * @Date: 2020-11-06 12:07:23
- * @Author: yhc
-<<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:25:11
-=======
-<<<<<<< Updated upstream
- * @LastEditors: dx
- * @LastEditTime: 2021-01-21 15:47:35
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-01-20 18:48:07
->>>>>>> Stashed changes
->>>>>>> 269255f306f5d8fc90f74e7787ae55451f4a7950
- * @Description: 首页
- */
 import React, {useState, useEffect, useRef} from 'react';
 import {
     View,
@@ -28,6 +11,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     KeyboardAvoidingView,
+    StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {update} from '../../redux/actions/userInfo';

@@ -2,12 +2,12 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 15:44:28
+ * @LastEditTime: 2021-01-23 15:51:41
  * @Description: app全局入口文件
  */
 import * as React from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler} from 'react-native';
+import {StatusBar, Platform, BackHandler, NativeModules} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {useColorScheme} from 'react-native-appearance';
@@ -20,6 +20,8 @@ import {requestExternalStoragePermission} from './src/utils/appUtil';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest; //调试中可看到网络请求
+const {UIManager} = NativeModules;
+UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true); //启用安卓动画
 const MyTheme = {
     dark: true,
     colors: {

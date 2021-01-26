@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 19:46:53
+ * @LastEditTime: 2021-01-22 16:20:55
  * @Description:路由表
  */
 import React from 'react';
@@ -39,12 +39,13 @@ import TradeRules from '../pages/Portfolio/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
+import Question from '../pages/CustomPortfolio/question'; //问答投教
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="Question"
             screenOptions={{
                 // headerShown: false,
 
@@ -227,6 +228,7 @@ export default function AppStack() {
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
+            <Stack.Screen name="Question" component={Question} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

@@ -23,7 +23,7 @@ export default class Table extends Component {
         return (
             <View>
                 <View style={styles.ContainerHead}>
-                    <View style={[styles.HeadText]}></View>
+                    <View style={[styles.HeadText]} />
                     <Text style={styles.HeadText}>{head.percent || head.share}</Text>
                     <Text style={[styles.HeadText]}>{head.amount}</Text>
                 </View>
