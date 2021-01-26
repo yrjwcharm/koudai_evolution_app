@@ -1,22 +1,12 @@
 /*
- * @Description:
  * @Autor: xjh
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-20 15:30:22
+ * @Desc:私募预约
+ * @LastEditTime: 2021-01-22 14:34:21
  */
 import React, {Component} from 'react';
-import {
-    View,
-    Text,
-    Linking,
-    Image,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';

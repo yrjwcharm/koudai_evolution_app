@@ -1,9 +1,9 @@
 /*
- * @Description:
  * @Autor: xjh
  * @Date: 2021-01-19 12:19:22
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 15:30:38
+ * @Desc:私募合格投资者认证
+ * @LastEditTime: 2021-01-22 12:13:30
  */
 import React, {Component} from 'react';
 import {

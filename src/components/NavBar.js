@@ -2,14 +2,14 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-25 17:04:40
+ * @LastEditTime: 2021-01-26 15:04:00
  * @Description:头部组件
  */
 
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
-import {px as px2dp, px} from '../utils/appUtil';
+import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform, Text} from 'react-native';
+import {px as px2dp} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
@@ -18,17 +18,20 @@ const topbarHeight = Platform.OS == 'ios' ? 44 : 50;
 
 // NavBar.propTypes = {
 //     title: PropTypes.string,
-//     renderLeft: PropTypes.element, //自定义
-//     renderRight: PropTypes.element, //自定义
 //     leftIcon: PropTypes.string,
 //     rightIcon: PropTypes.string,
 //     leftPress: PropTypes.func,
 //     rightPress: PropTypes.func,
 //     style: PropTypes.object,
 //     titleStyle: PropTypes.object,
+//     rightText: PropTypes.string,
+//     rightTextStyle: PropTypes.object,
+//     fontStyle: PropTypes.object,
 // };
-
-const NavBar = React.forwardRef((props, ref) => {
+NavBar.defaultProps = {
+    title: '123',
+};
+function NavBar(props) {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const navRef = useRef(null);
@@ -54,7 +57,11 @@ const NavBar = React.forwardRef((props, ref) => {
             } else {
                 return (
                     <TouchableOpacity onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(28)} color={Colors.navTitleColor} />
+                        <Icon
+                            name={name}
+                            size={px2dp(26)}
+                            color={props.fontStyle ? props.fontStyle.color : 'Colors.navTitleColor'}
+                        />
                     </TouchableOpacity>
                 );
             }
@@ -80,6 +87,12 @@ const NavBar = React.forwardRef((props, ref) => {
                     name: props.rightIcon,
                     onPress: props.rightPress,
                 });
+            } else if (props.rightText) {
+                return (
+                    <TouchableOpacity style={props.rightTextStyle} onPress={props.rightPress}>
+                        <Text style={props.fontStyle ? props.fontStyle : styles.text_ty}>{props.rightText}</Text>
+                    </TouchableOpacity>
+                );
             } else {
                 return <View style={styles.btn} />;
             }
@@ -101,7 +114,7 @@ const NavBar = React.forwardRef((props, ref) => {
     return (
         <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}]}>
             {renderBtn('left')}
-            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle]}>
+            <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
                 {props.title}
             </Animated.Text>
             {renderBtn('right')}
@@ -126,6 +139,9 @@ const styles = StyleSheet.create({
         color: Colors.navTitleColor,
         fontWeight: 'bold',
         fontSize: px2dp(16),
+    },
+    text_ty: {
+        // marginRight: px2dp(16),
     },
 });
 export default NavBar;

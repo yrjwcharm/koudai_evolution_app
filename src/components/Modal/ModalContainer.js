@@ -50,6 +50,7 @@ export default class MyModal extends Component {
         }
     }
     cancle() {
+        this.setModalVisiable(false);
         setTimeout(() => {
             this.props.cancleCallBack && this.props.cancleCallBack();
         }, 100);

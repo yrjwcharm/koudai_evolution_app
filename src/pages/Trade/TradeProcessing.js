@@ -1,57 +1,116 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-21 17:45:00
+ * @LastEditTime: 2021-01-25 15:21:11
  * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
+import {Button} from '../../components/Button';
 
 const TradeProcessing = (props) => {
-    const {txn_id, code} = props.route.params || {};
+    const {txn_id} = props.route.params || {};
     const navigation = useNavigation();
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
     const [heightArr, setHeightArr] = useState([]);
-    let loop = 0;
-    let timer = null;
-    const init = (first) => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
-            // txn_id: '20210119A00163XS',
-            // code: '123456',
-            loop,
+    const verifyCodeModel = React.useRef(null);
+    const [bankInfo, setBankInfo] = useState('');
+    const [code, setCode] = useState('');
+    const [isSign, setSign] = useState(false);
+
+    const loopRef = useRef(0);
+    const timerRef = useRef(null);
+    const init = useCallback(
+        (first) => {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
+                txn_id: '20210101B000001S',
+                loop: loopRef.current,
+            }).then((res) => {
+                setData(res.result);
+                if (res.result.need_verify_code) {
+                    verifyCodeModel.current.show();
+                    signSendVerify();
+                    return;
+                }
+                if (res.result.finish || res.result.finish === -2) {
+                    setFinish(true);
+                } else {
+                    timerRef.current = setTimeout(() => {
+                        loopRef.current++;
+                        if (loopRef.current <= res.result.loop) {
+                            init();
+                        }
+                    }, 1000);
+                }
+                first && navigation.setOptions({title: res.result.title});
+            });
+        },
+        [loopRef, timerRef, navigation, signSendVerify]
+    );
+    const onLayout = useCallback(
+        (index, e) => {
+            const arr = [...heightArr];
+            arr[index] = e.nativeEvent.layout.height;
+            setHeightArr(arr);
+        },
+        [heightArr]
+    );
+    const signSendVerify = useCallback(() => {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_send/20210101', {
+            txn_id: '20210101B000001S',
         }).then((res) => {
-            setData(res.result);
-            if (res.result.finish || res.result.finish === -2) {
-                setFinish(true);
-            } else {
-                timer = setTimeout(() => {
-                    loop++;
-                    if (loop <= res.result.loop) {
-                        init();
-                    }
-                }, 1000);
-            }
-            first && navigation.setOptions({title: res.result.title});
+            setSign(true);
+            setBankInfo(res.result);
         });
-    };
-    const onLayout = (index, e) => {
-        const arr = [...heightArr];
-        arr[index] = e.nativeEvent.layout.height;
-        setHeightArr(arr);
-    };
+    }, []);
+    const modalCancelCallBack = useCallback(() => {
+        if (isSign && bankInfo) {
+            let content = bankInfo.back_info.content;
+            setTimeout(() => {
+                Modal.show({content: content, confirm: true, confirmCallBack: confirmCallBack});
+            }, 500);
+        }
+    }, [bankInfo, isSign, confirmCallBack]);
+    const confirmCallBack = useCallback(() => {
+        navigation.navigate('Asset');
+    }, [navigation]);
+    const onChangeText = useCallback(
+        (value) => {
+            setCode(value);
+            if (value.length === 6) {
+                http.post(
+                    'http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_confirm/20210101',
+                    {
+                        txn_id: bankInfo.txn_id,
+                        code: '123456',
+                    }
+                ).then((res) => {
+                    if (res.code === '000000') {
+                        setSign(false);
+                        setTimeout(() => {
+                            verifyCodeModel.current.hide();
+                        }, 300);
+                    } else {
+                    }
+                });
+            }
+        },
+        [bankInfo.txn_id]
+    );
     useEffect(() => {
         init(true);
-        return () => clearTimeout(timer);
-    }, []);
+        return () => clearTimeout(timerRef.current);
+    }, [init, timerRef]);
     return (
         <ScrollView style={[styles.container]}>
             <Text style={[styles.title]}>购买进度明细</Text>
@@ -73,11 +132,20 @@ const TradeProcessing = (props) => {
                                             name={'circle-thin'}
                                             size={16}
                                             color={'#CCD0DB'}
-                                            style={{marginRight: text(2), backgroundColor: Colors.bgColor}}
+                                            style={{
+                                                marginRight: text(2),
+                                                backgroundColor: Colors.bgColor,
+                                            }}
                                         />
                                     )}
                                 </View>
                                 <View style={[styles.contentBox]}>
+                                    <FontAwesome
+                                        name={'caret-left'}
+                                        color={'#fff'}
+                                        size={30}
+                                        style={styles.caret_sty}
+                                    />
                                     <View style={[styles.content]}>
                                         <View style={[styles.processTitle, Style.flexBetween]}>
                                             <Text numberOfLines={1} style={[styles.desc]}>
@@ -102,7 +170,9 @@ const TradeProcessing = (props) => {
                                     <View
                                         style={[
                                             styles.line,
-                                            {height: heightArr[index] ? text(heightArr[index] - 4) : text(52)},
+                                            {
+                                                height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
+                                            },
                                         ]}
                                     />
                                 )}
@@ -115,6 +185,14 @@ const TradeProcessing = (props) => {
                     <Text style={[styles.btnText]}>{data.button.text}</Text>
                 </TouchableOpacity>
             )}
+
+            <VerifyCodeModal
+                ref={verifyCodeModel}
+                desc={bankInfo.content ? bankInfo.content : ''}
+                modalCancelCallBack={modalCancelCallBack}
+                onChangeText={onChangeText}
+                isSign={isSign}
+            />
         </ScrollView>
     );
 };
@@ -185,7 +263,7 @@ const styles = StyleSheet.create({
     line: {
         position: 'absolute',
         top: text(28),
-        left: text(6.5),
+        left: text(6.7),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,
@@ -201,6 +279,12 @@ const styles = StyleSheet.create({
         fontSize: text(15),
         lineHeight: text(21),
         color: '#fff',
+    },
+    caret_sty: {
+        position: 'absolute',
+        top: text(10),
+        left: text(-2),
+        zIndex: 1,
     },
 });
 

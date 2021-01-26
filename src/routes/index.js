@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-22 16:20:55
+ * @LastEditTime: 2021-01-26 15:03:00
  * @Description:路由表
  */
 import React from 'react';
@@ -26,9 +26,9 @@ import BankInfo from '../pages/CreateAccount/Account/bankInfo'; //开户银行�
 import TradeRedeem from '../pages/Trade/TradeRedeem'; //赎回
 import Camera from '../pages/CreateAccount/Account/camera'; //身份证拍照
 import TradeAdjust from '../pages/Trade/TradeAdjust'; //调仓
-import PrivateProduct from '../pages/Vip/PrivateProduct'; //私募公告页面
-import PrivateCert from '../pages/Vip/PrivateCert'; //私募合格投资认证页面
-import PrivateOrder from '../pages/Vip/PrivateOrder'; //私募预约页面
+import PrivateProduct from '../pages/PE/PrivateProduct'; //私募公告页面
+import PrivateCert from '../pages/PE/PrivateCert'; //私募合格投资认证页面
+import PrivateOrder from '../pages/PE/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
@@ -40,6 +40,16 @@ import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
 import Question from '../pages/CustomPortfolio/question'; //问答投教
+import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
+import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
+import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
+import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
+import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平安)
+import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
+
+import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
+import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
+import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -71,14 +81,7 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen
-                name="Tab"
-                component={TabScreen}
-                options={{
-                    headerShown: false,
-                }}
-            />
-
+            <Stack.Screen name="Tab" component={TabScreen} options={{headerShown: false}} />
             <Stack.Screen
                 name="TradeBuy"
                 component={TradeBuy}
@@ -107,7 +110,6 @@ export default function AppStack() {
                     title: '基金交易安全开户',
                 }}
             />
-
             <Stack.Screen
                 name="SetTradePassword"
                 component={SetTradePassword}
@@ -212,7 +214,6 @@ export default function AppStack() {
                     title: '私募合格投资者认证',
                 }}
             />
-
             <Stack.Screen
                 name="TradeAdjust"
                 component={TradeAdjust}
@@ -229,6 +230,15 @@ export default function AppStack() {
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
             <Stack.Screen name="Question" component={Question} options={{headerShown: false}} />
+            <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
+            <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
+            <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
+            <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
+            <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
+            <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{title: '会存A'}} />
+            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
+            <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
+            <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
         </Stack.Navigator>
     );
 }

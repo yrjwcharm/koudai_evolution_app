@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:23:48
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-01-23 16:26:05
  * @Description:主题及公共样式表
  */
 
@@ -137,5 +137,9 @@ export const Style = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    descSty: {
+        color: '#9095A5',
+        fontSize: text(13),
     },
 });
