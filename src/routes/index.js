@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 15:03:00
+ * @LastEditTime: 2021-01-27 21:53:55
  * @Description:路由表
  */
 import React from 'react';
@@ -50,6 +50,8 @@ import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(�
 import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
 import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
 import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
+import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
+import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -239,6 +241,16 @@ export default function AppStack() {
             <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
+            <Stack.Screen
+                name="PlanHistory"
+                component={PlanHistory}
+                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+            />
+            <Stack.Screen
+                name="PlanResult"
+                component={PlanResult}
+                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+            />
         </Stack.Navigator>
     );
 }

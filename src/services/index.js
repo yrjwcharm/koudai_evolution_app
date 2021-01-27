@@ -8,11 +8,11 @@ import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
 
 //监控网络变化
-NetInfo.addEventListener((state) => {
-    if (!state.isConnected) {
-        // Toast.showInfo('网络已断开,请检查您的网络');
-    }
-});
+// NetInfo.addEventListener((state) => {
+//     if (!state.isConnected) {
+//         // Toast.showInfo('网络已断开,请检查您的网络');
+//     }
+// });
 
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
@@ -50,24 +50,24 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        NetInfo.fetch().then((state) => {
-            if (state.isConnected) {
-                //判断网络是否链接
-                // setTimeout(() => {
-                //   Toast.showInfo('服务器开小差了...')
-                // }, 100)
-            } else {
-                if (err && err.stack.indexOf('timeout') > -1) {
-                    // setTimeout(() => {
-                    //   Toast.showInfo('您的网络环境不稳定...')
-                    // }, 100)
-                } else {
-                    // setTimeout(() => {
-                    //   Toast.showInfo('网络请求失败,请检查您的网络')
-                    // }, 100)
-                }
-            }
-        });
+        // NetInfo.fetch().then((state) => {
+        //     if (state.isConnected) {
+        //         //判断网络是否链接
+        //         // setTimeout(() => {
+        //         //   Toast.showInfo('服务器开小差了...')
+        //         // }, 100)
+        //     } else {
+        //         if (err && err.stack.indexOf('timeout') > -1) {
+        //             // setTimeout(() => {
+        //             //   Toast.showInfo('您的网络环境不稳定...')
+        //             // }, 100)
+        //         } else {
+        //             // setTimeout(() => {
+        //             //   Toast.showInfo('网络请求失败,请检查您的网络')
+        //             // }, 100)
+        //         }
+        //     }
+        // });
         Promise.reject(err);
     }
 );

@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 16:14:58
+ * @LastEditTime: 2021-01-27 21:44:07
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -17,6 +17,9 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
+    Image,
+    Keyboard,
+    Vibration,
 } from 'react-native';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -40,11 +43,11 @@ export class question extends Component {
         //输入框提示
         warn: false,
         inputBtnCanClick: true,
+        //是否答完题目
+        finishTest: false,
     };
     //动画进行时不能点击下一题
     canNextClick = false;
-    //上一题
-    canPreviousClick = false;
     //接口耗时
     startTime = '';
     endTime = '';
@@ -73,7 +76,7 @@ export class question extends Component {
                         questionnaire_cate: data.result.questionnaire_cate,
                     },
                     () => {
-                        startAnimation && startAnimation();
+                        startAnimation && startAnimation(action);
                     }
                 );
             }
@@ -81,12 +84,17 @@ export class question extends Component {
     };
     handleViewRef = (ref) => (this.quesBtnView = ref);
     handleContentView = (ref) => (this.contentView = ref);
-    showAnimation = () => {
-        const {translateY, opacity} = this.state;
+    showAnimation = (action) => {
+        const {translateY, opacity, value, questions} = this.state;
         this.startTime = new Date().getTime();
-        this.setState({
-            current: ++this.state.current,
-        });
+        let _current = this.state.current + 1;
+        if (action == 'submit') {
+            this.setState({finishTest: true});
+        } else {
+            this.setState({
+                current: _current,
+            });
+        }
         setTimeout(() => {
             Animated.parallel([
                 Animated.timing(translateY, {
@@ -100,34 +108,42 @@ export class question extends Component {
                     useNativeDriver: false,
                 }),
             ]).start(() => {
-                this.quesBtnView &&
-                    this.quesBtnView.setNativeProps({
-                        opacity: 0,
+                //动画变化过程中将底部按钮变为透明
+
+                this.quesBtnView?.setNativeProps({
+                    opacity: 0,
+                });
+
+                this.contentView?.fadeInUp(500).then(() => {
+                    this.quesBtnView?.setNativeProps({
+                        opacity: 1,
                     });
-                this.contentView &&
-                    this.contentView.fadeInUp(500).then(() => {
-                        this.quesBtnView &&
-                            this.quesBtnView.setNativeProps({
-                                opacity: 1,
-                            });
-                        this.quesBtnView.fadeInRight(500);
-                    });
+                    this.quesBtnView.fadeInRight(500);
+                });
+                if (!value && questions[this.state.current].type == 3) {
+                    this.setState({inputBtnCanClick: false});
+                }
+                // 输入框动画结束后聚焦
+                setTimeout(() => {
+                    this.input?.focus();
+                }, 1200);
             });
             this.canNextClick = false;
         }, 500);
     };
 
     jumpNext = (option) => {
-        if (this.canNextClick) {
+        Keyboard.dismiss();
+        if (this.canNextClick || !this.state.inputBtnCanClick) {
             return;
         }
         this.canNextClick = true;
-        const {current, questions, translateY, offsetY, opacity, value} = this.state;
-        if (questions[current].tag == 'balance') {
-            if (!this.checkInput(value)) {
-                return;
-            }
+        Vibration.vibrate(10);
+        if (option.action == 'url') {
+            this.props.navigation.replace('PlanHistory');
+            return;
         }
+        const {translateY, offsetY, opacity} = this.state;
         this.reportResult(option);
         Animated.sequence([
             Animated.parallel([
@@ -149,17 +165,24 @@ export class question extends Component {
             if (option.action.includes('next_questionnaire')) {
                 this.getNextQuestion(option.next_questionnaire_cate, option.action, option.history, this.showAnimation);
             } else {
-                this.showAnimation();
+                this.showAnimation(option.action);
             }
         });
     };
     previous = () => {
-        if (this.canPreviousClick) {
+        Keyboard.dismiss();
+        if (this.canNextClick) {
             return;
         }
-        this.canPreviousClick = true;
-        const {translateY, offsetY, opacity, questions} = this.state;
-        this.setState({current: --this.state.current}, () => {
+        this.canNextClick = true;
+        Vibration.vibrate(10);
+        const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
+        let _current = this.state.current - 1;
+        //点击上一题按钮变为可点击
+        if (!inputBtnCanClick) {
+            this.setState({inputBtnCanClick: true});
+        }
+        this.setState({current: _current}, () => {
             this.setState({value: questions[this.state.current].value || ''});
         });
         LayoutAnimation.configureNext(
@@ -197,9 +220,32 @@ export class question extends Component {
                     }),
                 ]),
             ]).start(() => {
-                this.canPreviousClick = false;
+                this.canNextClick = false;
             });
         }, 500);
+    };
+    //答案汇总方法
+    handelTag = (option, tag, keyName) => {
+        const {questions, current, value} = this.state;
+        let list = [];
+        let previousTest = current - 1;
+        if (questions[current]?.tag == tag && previousTest >= 0) {
+            if (questions[previousTest].hasOwnProperty(keyName) && questions[previousTest][keyName].length > 0) {
+                list = list.concat(questions[previousTest][keyName]);
+                // 判断是否是修改状态
+                let findIndex = list.findIndex((item) => {
+                    return item.key == questions[current].name;
+                });
+                if (findIndex > -1) {
+                    list[findIndex] = {key: questions[current].name, val: value || option.content};
+                } else {
+                    list.push({key: questions[current].name, val: value || option.content});
+                }
+            } else {
+                list.push({key: questions[current].name, val: value || option.content});
+            }
+        }
+        return list;
     };
     //提交答案
     reportResult = (option) => {
@@ -207,7 +253,17 @@ export class question extends Component {
         const {summary_id, questions, current, questionnaire_cate, value} = this.state;
         //记录答案
         let ques = questions;
-        var newQues = Object.assign(ques[current], {answer: option.id, value});
+        let newQues = {};
+        let _profileList = this.handelTag(option, 'profile', 'profileList');
+        let _balanceList = this.handelTag(option, 'balance', 'balanceList');
+        let _complianceList = this.handelTag(option, 'compliance', 'complianceList');
+        newQues = Object.assign(ques[current], {
+            answer: option.id,
+            value,
+            profileList: _profileList,
+            balanceList: _balanceList,
+            complianceList: _complianceList,
+        });
         ques[current] = newQues;
         this.setState(
             {
@@ -249,13 +305,24 @@ export class question extends Component {
     };
     inputValue = (value) => {
         this.setState({value});
-
         this.checkInput(value);
     };
     render() {
-        const {translateY, opacity, questions, current, value, warn, inputBtnCanClick} = this.state;
+        const {translateY, opacity, questions, current, value, warn, inputBtnCanClick, finishTest} = this.state;
         const current_ques = questions[current];
-        // console.log(current_ques.style && current_ques.style.includes('invest_'));
+        let previousTest = current - 1;
+        let tagList = [];
+        if (previousTest >= 0 && current_ques.tag) {
+            if (current_ques.tag == 'profile') {
+                tagList = questions[previousTest].profileList;
+            }
+            if (current_ques.tag == 'balance') {
+                tagList = questions[previousTest].balanceList;
+            }
+            if (current_ques.tag == 'compliance') {
+                tagList = questions[previousTest].complianceList;
+            }
+        }
         return (
             <>
                 <Header
@@ -268,13 +335,17 @@ export class question extends Component {
                         </TouchableOpacity>
                     }
                     renderRight={
-                        <TouchableOpacity style={[styles.title_btn, {width: px(60)}]} onPress={this.previous}>
-                            <Text>上一题</Text>
-                        </TouchableOpacity>
+                        !finishTest &&
+                        current != 0 && (
+                            <TouchableOpacity style={[styles.title_btn, {width: px(60)}]} onPress={this.previous}>
+                                <Text>上一题</Text>
+                            </TouchableOpacity>
+                        )
                     }
                 />
                 {current_ques ? (
                     <ScrollView
+                        keyboardShouldPersistTaps="handled"
                         scrollEnabled={false}
                         style={{
                             backgroundColor: '#fff',
@@ -292,69 +363,201 @@ export class question extends Component {
                                 style={{transform: [{translateY}], opacity, marginTop: px(24)}}
                                 onLayout={this.onLayout}>
                                 <Animatable.View ref={this.handleContentView} animation="fadeInUp">
-                                    {current_ques.title ? (
-                                        <Text style={[styles.name, {marginBottom: px(32)}]}>{current_ques.title}</Text>
-                                    ) : null}
-                                    {current_ques.name ? (
-                                        <Text
-                                            style={[
-                                                styles.name,
-                                                {
-                                                    fontSize:
-                                                        current_ques.style && current_ques.style.includes('invest_')
-                                                            ? px(21)
-                                                            : px(16),
-                                                },
-                                            ]}>
-                                            {current_ques.name}
-                                        </Text>
-                                    ) : null}
-                                    {current_ques.remark ? (
-                                        <HTML
-                                            style={[
-                                                styles.text,
-                                                current_ques.style &&
-                                                    current_ques.style.includes('invest_') &&
-                                                    styles.invest_text,
-                                            ]}
-                                            html={current_ques.remark}
-                                        />
-                                    ) : null}
-                                    {current_ques.tip ? (
-                                        <TouchableOpacity style={[Style.flexRow, {marginTop: px(24)}]}>
-                                            <Icon name="exclamationcircleo" size={px(14)} color={Colors.btnColor} />
-                                            <Text style={styles.tip_text}>{current_ques.tip}</Text>
-                                        </TouchableOpacity>
-                                    ) : null}
-                                    {current_ques.type == 3 && current_ques.style == 'age_cursor' ? (
+                                    {!finishTest ? (
+                                        <>
+                                            {current_ques.risk_title ? (
+                                                <Text style={styles.risk_title}>{current_ques.risk_title}</Text>
+                                            ) : null}
+                                            {current_ques.title ? (
+                                                <Text style={[styles.name, {marginBottom: px(32)}]}>
+                                                    {current_ques.title}
+                                                </Text>
+                                            ) : null}
+                                            {tagList.length > 0
+                                                ? tagList.map((item, index) => {
+                                                      return (
+                                                          <View
+                                                              key={index}
+                                                              style={[Style.flexRow, {marginBottom: px(8)}]}>
+                                                              <Text style={[styles.name, {marginRight: px(16)}]}>
+                                                                  {item.key}
+                                                              </Text>
+                                                              <View style={[{flex: 1}, Style.flexRow]}>
+                                                                  <View style={styles.input_label}>
+                                                                      <Text style={styles.input_label_text}>
+                                                                          {item.val}
+                                                                      </Text>
+                                                                  </View>
+                                                              </View>
+                                                          </View>
+                                                      );
+                                                  })
+                                                : null}
+                                            {current_ques.name ? (
+                                                <Text
+                                                    style={[
+                                                        styles.name,
+                                                        {
+                                                            fontSize: current_ques?.style.includes('invest_')
+                                                                ? px(21)
+                                                                : px(16),
+                                                        },
+                                                    ]}>
+                                                    {current_ques.name}
+                                                </Text>
+                                            ) : null}
+                                            {/* 有目的的钱 */}
+                                            {current_ques?.style == 'invest_goal' ? (
+                                                current_ques?.desc.length > 0 ? (
+                                                    <View style={[Style.flexRow, {marginVertical: px(24)}]}>
+                                                        <Image
+                                                            style={styles.line}
+                                                            source={require('../../assets/img/account/line.png')}
+                                                        />
+                                                        <View
+                                                            style={{
+                                                                height: px(220),
+                                                                flexDirection: 'column',
+                                                                justifyContent: 'space-between',
+                                                            }}>
+                                                            {current_ques?.desc.map((_line, index) => {
+                                                                return (
+                                                                    <View key={index}>
+                                                                        <Text
+                                                                            style={[
+                                                                                styles.name,
+                                                                                {marginBottom: px(6)},
+                                                                            ]}>
+                                                                            {_line.title}
+                                                                        </Text>
+                                                                        <View style={Style.flexRow}>
+                                                                            {_line.labels
+                                                                                ? _line.labels.map((label, id) => {
+                                                                                      return (
+                                                                                          <View
+                                                                                              key={id}
+                                                                                              style={styles.lable}>
+                                                                                              <Text
+                                                                                                  style={{
+                                                                                                      color:
+                                                                                                          Colors.darkGrayColor,
+                                                                                                      fontSize: px(11),
+                                                                                                  }}>
+                                                                                                  {label}
+                                                                                              </Text>
+                                                                                          </View>
+                                                                                      );
+                                                                                  })
+                                                                                : null}
+                                                                        </View>
+                                                                    </View>
+                                                                );
+                                                            })}
+                                                        </View>
+                                                    </View>
+                                                ) : null
+                                            ) : current_ques?.desc.length > 0 ? (
+                                                // 无目的的钱
+                                                <>
+                                                    {current_ques.desc.map((item, index) => {
+                                                        return (
+                                                            <View
+                                                                key={index}
+                                                                style={[
+                                                                    Style.flexRow,
+                                                                    {
+                                                                        marginBottom:
+                                                                            index == current_ques.desc.length - 1
+                                                                                ? 0
+                                                                                : px(24),
+                                                                        marginTop: px(24),
+                                                                        alignItems: 'flex-start',
+                                                                    },
+                                                                ]}>
+                                                                <Image style={styles.icon} source={{uri: item.icon}} />
+                                                                <View style={{flex: 1, paddingTop: px(6)}}>
+                                                                    <View style={{marginBottom: px(8)}}>
+                                                                        <HTML style={styles.name} html={item.title} />
+                                                                    </View>
+                                                                    <HTML
+                                                                        style={styles.invest_text}
+                                                                        html={item.content}
+                                                                    />
+                                                                </View>
+                                                            </View>
+                                                        );
+                                                    })}
+                                                </>
+                                            ) : null}
+
+                                            {current_ques.content ? (
+                                                <HTML style={styles.text} html={current_ques.content} />
+                                            ) : null}
+                                            {current_ques.remark ? (
+                                                <View style={{marginTop: px(12)}}>
+                                                    <HTML style={styles.invest_text} html={current_ques.remark} />
+                                                </View>
+                                            ) : null}
+
+                                            {current_ques.tip ? (
+                                                <TouchableOpacity style={[Style.flexRow, {marginTop: px(16)}]}>
+                                                    <Icon
+                                                        name="exclamationcircleo"
+                                                        size={px(14)}
+                                                        color={Colors.btnColor}
+                                                    />
+                                                    <Text style={styles.tip_text}>{current_ques.tip}</Text>
+                                                </TouchableOpacity>
+                                            ) : null}
+                                            {/* {current_ques.type == 3 && current_ques.style == 'age_cursor' ? (
                                         <View style={{backgroundColor: 'red'}}>
                                             <Text>输入</Text>
                                             <Text>输入年龄</Text>
                                         </View>
-                                    ) : null}
-
-                                    {current_ques.type == 3 ? (
-                                        <>
-                                            <View style={[styles.input_container, Style.flexRow]}>
-                                                <Text style={styles.input_icon}>¥</Text>
-                                                <TextInput
-                                                    style={styles.input}
-                                                    value={value}
-                                                    keyboardType={'number-pad'}
-                                                    onChangeText={this.inputValue}
-                                                />
-                                            </View>
-                                            {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
+                                    ) : null} */}
+                                            {/* <>
+                                        <View style={[styles.input_container, Style.flexRow]}>
+                                            <Text style={styles.input_icon}>¥</Text>
+                                            <TextInput
+                                                style={styles.input}
+                                                value={value}
+                                                keyboardType={'number-pad'}
+                                                onChangeText={this.inputValue}
+                                            />
+                                        </View>
+                                        {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
+                                    </> */}
+                                            {current_ques.type == 3 ? (
+                                                <>
+                                                    <View style={[styles.input_container, Style.flexRow]}>
+                                                        <Text style={styles.input_icon}>¥</Text>
+                                                        <TextInput
+                                                            style={styles.input}
+                                                            value={value}
+                                                            ref={(ref) => {
+                                                                this.input = ref;
+                                                            }}
+                                                            keyboardType={'number-pad'}
+                                                            onChangeText={this.inputValue}
+                                                        />
+                                                    </View>
+                                                    {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
+                                                </>
+                                            ) : null}
                                         </>
-                                    ) : null}
+                                    ) : (
+                                        <Text style={[styles.name, {fontSize: px(20), lineHeight: px(28)}]}>
+                                            根据您的相关信息，正在为您定制养老计划…
+                                        </Text>
+                                    )}
                                 </Animatable.View>
                                 {/* 按钮 */}
-                                <Animatable.View
-                                    ref={this.handleViewRef}
-                                    animation="fadeInRight"
-                                    style={[styles.question_con, {opacity: 1}]}>
-                                    {current_ques.options &&
-                                        current_ques.options.map((option, index) => {
+                                {!finishTest ? (
+                                    <Animatable.View
+                                        ref={this.handleViewRef}
+                                        animation="fadeInRight"
+                                        style={[styles.question_con, {opacity: 1}]}>
+                                        {current_ques?.options.map((option, index) => {
                                             return (
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
@@ -365,24 +568,30 @@ export class question extends Component {
                                                     style={[
                                                         styles.ques_btn,
                                                         Style.flexCenter,
-                                                        current_ques.answer &&
-                                                            current_ques.answer == option.id &&
-                                                            styles.btn_active,
+                                                        current_ques.answer
+                                                            ? current_ques.answer == option.id
+                                                                ? styles.btn_active
+                                                                : styles.btn_unactive
+                                                            : null,
                                                         !inputBtnCanClick && styles.disabled,
                                                     ]}>
                                                     <Text
                                                         style={[
                                                             styles.btn_text,
-                                                            current_ques.answer &&
-                                                                current_ques.answer == option.id &&
-                                                                styles.btn_active,
+                                                            current_ques.answer
+                                                                ? current_ques.answer == option.id
+                                                                    ? styles.btn_active
+                                                                    : styles.btn_unactive_text
+                                                                : null,
+                                                            !inputBtnCanClick && styles.disabled,
                                                         ]}>
                                                         {option.content}
                                                     </Text>
                                                 </TouchableOpacity>
                                             );
                                         })}
-                                </Animatable.View>
+                                    </Animatable.View>
+                                ) : null}
                             </Animated.View>
                         </KeyboardAvoidingView>
                     </ScrollView>
@@ -417,7 +626,11 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         color: Colors.defaultColor,
         fontWeight: 'bold',
-        marginBottom: px(12),
+    },
+    risk_title: {
+        fontSize: px(14),
+        marginBottom: px(32),
+        color: Colors.darkGrayColor,
     },
     text: {
         lineHeight: px(22),
@@ -447,6 +660,13 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.btnColor,
         color: '#fff',
     },
+    btn_unactive: {
+        backgroundColor: '#fff',
+        borderColor: Colors.borderColor,
+    },
+    btn_unactive_text: {
+        color: Colors.darkGrayColor,
+    },
     btn_text: {
         fontSize: px(13),
         color: Colors.btnColor,
@@ -454,12 +674,14 @@ const styles = StyleSheet.create({
     input_container: {
         borderBottomWidth: 0.5,
         borderColor: '#0051CC',
+        marginTop: px(24),
     },
     input: {
         height: px(60),
         fontSize: px(40),
         flex: 1,
         marginLeft: px(8),
+        padding: 0,
         fontFamily: Font.numFontFamily,
     },
     input_icon: {
@@ -474,6 +696,42 @@ const styles = StyleSheet.create({
     invest_text: {
         fontSize: px(14),
         color: Colors.darkGrayColor,
+        lineHeight: px(20),
+    },
+    lable: {
+        paddingVertical: px(4),
+        paddingHorizontal: px(12),
+        backgroundColor: '#F5F6F8',
+        marginRight: px(6),
+        borderRadius: 4,
+    },
+    line: {
+        height: px(230),
+        width: px(46),
+        resizeMode: 'stretch',
+        marginRight: px(10),
+    },
+    icon: {
+        width: px(40),
+        height: px(32),
+        resizeMode: 'contain',
+        marginRight: px(18),
+    },
+    input_label: {
+        backgroundColor: '#F5F6F8',
+        borderRadius: 20,
+        paddingVertical: px(6),
+        paddingHorizontal: px(16),
+    },
+    input_label_text: {
+        color: Colors.defaultColor,
+        fontSize: px(13),
+        lineHeight: px(18),
+    },
+    disabled: {
+        backgroundColor: '#ddd',
+        borderColor: '#ddd',
+        color: '#fff',
     },
 });
 
