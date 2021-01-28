@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-28 17:49:39
+ * @LastEditTime: 2021-01-28 19:18:29
  * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -160,5 +160,5 @@ FixedBtn.propTypes = {
 FixedBtn.defaultProps = {
     style: {},
 };
-
+FixedBtn.btnHeight = isIphoneX() ? text(90) : text(66);
 export default FixedBtn;

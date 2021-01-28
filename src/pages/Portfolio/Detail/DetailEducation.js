@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 18:32:53
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:57:52
+ * @LastEditTime: 2021-01-28 19:20:58
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
@@ -21,12 +21,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import Header from '../../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function DetailEducation() {
+export default function DetailEducation(props) {
     const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');
     const [map, setMap] = useState({});
@@ -112,6 +111,7 @@ export default function DetailEducation() {
     };
     const chooseBtn = () => {};
     useEffect(() => {
+        console.log(props);
         setChartData(ChartData);
         pieData.map((item) => {
             map[item.name] = item.percent;
@@ -119,15 +119,15 @@ export default function DetailEducation() {
         });
     }, []);
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <>
+            <Header
+                title={'子女教育计划'}
+                leftIcon="chevron-left"
+                rightText={'重新规划'}
+                rightPress={rightPress}
+                rightTextStyle={styles.right_sty}
+            />
             <ScrollView>
-                <Header
-                    title={'子女教育计划'}
-                    leftIcon="chevron-left"
-                    rightText={'重新规划'}
-                    rightPress={rightPress}
-                    rightTextStyle={styles.right_sty}
-                />
                 <View style={styles.container_sty}>
                     <View style={[Style.flexBetween, styles.select_wrap_sty]}>
                         <Text style={styles.select_text_sty}>
@@ -387,7 +387,7 @@ export default function DetailEducation() {
                 </View>
             </ScrollView>
             <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
-        </SafeAreaView>
+        </>
     );
 }
 const styles = StyleSheet.create({
@@ -453,6 +453,7 @@ const styles = StyleSheet.create({
     },
     content_sty: {
         margin: Space.marginAlign,
+        paddingBottom: FixedBtn.btnHeight,
     },
     card_sty: {
         backgroundColor: '#fff',
