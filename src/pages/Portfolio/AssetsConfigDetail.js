@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-01-23 10:33:07
+ * @LastEditTime: 2021-01-27 18:54:46
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -338,9 +338,13 @@ export class AssetsConfigDetail extends Component {
                 ],
             },
         });
-        // http.get('/portfolio/asset_deploy/20210101', { amount, alloc_id, upid }).then((res) => {
-        //   this.setState({ data: res.result });
-        //   this.props.navigation.setOptions({ title: res.result.title });
+        // http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/portfolio/asset_deploy/20210101', {
+        //     amount,
+        //     alloc_id,
+        //     upid,
+        // }).then((res) => {
+        //     this.setState({data: res.result});
+        //     this.props.navigation.setOptions({title: res.result.title});
         // });
     };
     // 点击快捷输入投资金额
@@ -428,7 +432,7 @@ export class AssetsConfigDetail extends Component {
                                 placeholder={invest_form.placeholder}
                                 placeholderTextColor={Colors.darkGrayColor}
                                 onChangeText={this.onChange}
-                                style={[styles.input]}
+                                style={[styles.input, amount.length === 0 ? {fontSize: text(12)} : {}]}
                             />
                             <View style={[styles.percent_bar, Style.flexRow]}>
                                 {deploy_detail.map((item, index) => (
@@ -501,13 +505,14 @@ const styles = StyleSheet.create({
     },
     input: {
         height: text(50),
-        fontSize: text(13),
+        fontSize: text(18),
         borderWidth: text(1),
         borderColor: Colors.borderColor,
         backgroundColor: Colors.inputBg,
         color: Colors.defaultColor,
         borderRadius: Space.borderRadius,
         marginVertical: text(12),
+        padding: 0,
         paddingHorizontal: Space.marginAlign,
     },
     percent_bar: {
