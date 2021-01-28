@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 14:45:34
+ * @LastEditTime: 2021-01-25 14:57:00
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -51,7 +51,7 @@ const LargeAmount = (props) => {
             (res) => {
                 setData(res.result);
                 tips[2].tel = res.result.phone;
-            },
+            }
         );
     });
     const jumpPage = (url) => {
@@ -76,7 +76,7 @@ const LargeAmount = (props) => {
                 rightTextStyle={styles.right_sty}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: 120})}>
+                <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: text(120)})}>
                     <Notice content={data.processing} isClose={true} />
                     {/* <Text style={styles.yellow_sty}>{data.processing}</Text> */}
                     <View style={[{padding: Space.padding}, styles.card_sty]}>

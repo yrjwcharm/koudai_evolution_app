@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:26:17
+ * @LastEditTime: 2021-01-26 12:03:37
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView} from 'react-native';
@@ -40,8 +40,8 @@ export default class Radio extends Component {
 }
 const styles = StyleSheet.create({
     radio_circle: {
-        width: text(15),
-        height: text(15),
+        width: text(13),
+        height: text(13),
         borderRadius: 50,
         backgroundColor: 'transparent',
         borderColor: '#9095A5',

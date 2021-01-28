@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:26:41
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 11:36:30
+ * @LastEditTime: 2021-01-25 19:17:07
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -15,40 +15,28 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
-import Accordion from 'react-native-collapsible/Accordion';
-import BottomDesc from '../../components/BottomDesc';
+import Chart from 'react-native-f2chart';
+import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart';
+import ChartData from './data.json';
 
-export default function BankAssetsPA() {
+export default function BankAssetsPA(props) {
     const [data, setData] = useState({});
-    const [activeSections, setActiveSections] = useState([0]);
-    const updateSections = (activeSections) => setActiveSections(activeSections);
     const rightPress = () => {
         props.navigation.navigate(data.part4.url);
     };
-    const bottom = {
-        image: 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_CMBC.png',
-        desc: [
-            {
-                title: '基金销售服务由玄元保险提供',
-            },
-            {
-                title: '基金销售资格证号:000000803',
-                btn: {
-                    text: '详情',
-                    url: '/article_detail/79',
-                },
-            },
-            {
-                title: '市场有风险，投资需谨慎',
-            },
-        ],
-    };
+
     useEffect(() => {
         Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/wallet/holding/20210101').then((res) => {
             setData(res.result);
         });
+        console.log(ChartData);
     }, []);
-
+    const jumpPage = (url) => {
+        props.navigation.navigate(url);
+    };
+    const accountBtn = (url) => {
+        props.navigation.navigate(url);
+    };
     return (
         <SafeAreaView edges={['bottom']}>
             <Header
@@ -70,16 +58,49 @@ export default function BankAssetsPA() {
                             <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
                                 <View style={{flex: 1}}>
                                     <Text style={styles.top_text_sty}>日收益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data.part1.profit}</Text>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit}></Html>
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
                                     <Text style={styles.top_text_sty}>累计受益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data.part1.profit_acc}</Text>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc}></Html>
                                 </View>
+                                <View style={{flex: 1, textAlign: 'center'}}>
+                                    <Text style={styles.top_text_sty}>累计受益</Text>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc}></Html>
+                                </View>
+                            </View>
+                            <View style={styles.btn_wrap_sty}>
+                                <Button
+                                    title={data.btns[0].text}
+                                    style={styles.btn_st_sty}
+                                    textStyle={{color: '#333'}}
+                                    disables={data.btns[0].avail}
+                                    onPress={() => jumpPage(data.btns[0].url)}
+                                />
+                                <Button
+                                    title={data.btns[0].text}
+                                    style={{flex: 1}}
+                                    onPress={() => jumpPage(data.btns[1].url)}
+                                    disables={data.btns[1].avail}
+                                />
+                            </View>
+                        </View>
+                        <TouchableOpacity style={[Style.flexRow, styles.account_wrap_sty]} onPress={accountBtn}>
+                            <Text style={styles.account_sty}>我的电子账户</Text>
+                            <View style={[Style.flexRow, {minWidth: text(100)}]}>
+                                <Text style={[styles.account_sty, {textAlign: 'right', marginRight: text(5)}]}>
+                                    123.334.22
+                                </Text>
+                                <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                            </View>
+                        </TouchableOpacity>
+                        <View>
+                            <Text style={styles.title_sty}>7日年化</Text>
+                            <View style={{height: 350, backgroundColor: '#fff'}}>
+                                <Chart initScript={gradientArea(ChartData)} />
                             </View>
                         </View>
                     </View>
-                    <BottomDesc data={bottom} style={{paddingBottom: 100}} />
                 </ScrollView>
             )}
         </SafeAreaView>
@@ -112,12 +133,43 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         color: '#9095A5',
         textAlign: 'center',
+        marginBottom: text(8),
     },
     bottom_num_sty: {
         color: '#1F2432',
         fontSize: text(18),
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
-        marginTop: text(8),
+    },
+    btn_wrap_sty: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        // justifyContent: 'space-between',
+        marginTop: text(30),
+    },
+    btn_st_sty: {
+        flex: 1,
+        marginRight: text(10),
+        backgroundColor: '#fff',
+        borderWidth: 0.5,
+    },
+    account_wrap_sty: {
+        padding: text(15),
+        backgroundColor: '#fff',
+        marginTop: text(12),
+        borderRadius: text(10),
+    },
+    account_sty: {
+        color: Colors.defaultFontColor,
+        flex: 1,
+        fontWeight: 'bold',
+        fontFamily: Font.numFontFamily,
+    },
+    title_sty: {
+        fontSize: text(15),
+        color: Colors.defaultColor,
+        fontWeight: 'bold',
+        paddingBottom: text(10),
+        marginTop: text(20),
     },
 });

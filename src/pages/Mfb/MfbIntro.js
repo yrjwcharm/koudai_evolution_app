@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 11:16:38
+ * @LastEditTime: 2021-01-27 18:22:42
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -12,9 +12,10 @@ import {Font, Style} from '../../common/commonStyle';
 import Http from '../../services';
 import {px as text} from '../../utils/appUtil';
 
-export default function MfbIntro() {
+export default function MfbIntro(props) {
     const [data, setData] = useState({});
     useEffect(() => {
+        console.log(props);
         Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/wallet/intro/20210101').then((res) => {
             setData(res.result);
         });

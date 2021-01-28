@@ -138,7 +138,71 @@ export const dynamicChart = (data) => `
       chart.render();
 })();
 `;
+export const gradientArea = (data) => `
+(function(){
+const chart = new F2.Chart({
+  id: 'chart',
+  pixelRatio: window.devicePixelRatio
+});
+chart.source(${JSON.stringify(data)}, {
+  time: {
+    type: 'timeCat',
+    tickCount: 3,
+    range: [ 0, 1 ]
+  },
+  tem: {
+    tickCount: 5,
+    min: 0
+  }
+});
 
+chart.axis('date', {
+  label: function label(text, index, total) {
+    const textCfg = {};
+    if (index === 0) {
+      textCfg.textAlign = 'left';
+    } else if (index === total - 1) {
+      textCfg.textAlign = 'right';
+    }
+    return textCfg;
+  }
+});
+chart.tooltip({
+  showCrosshairs: true,
+  custom: true, // 自定义 tooltip 内容框
+  onChange: function onChange(obj) {
+    const legend = chart.get('legendController').legends.top[0];
+    const tooltipItems = obj.items;
+    const legendItems = legend.items;
+    const map = {};
+    legendItems.forEach(function(item) {
+      map[item.name] = item;
+    });
+    tooltipItems.forEach(function(item) {
+      const name = item.name;
+      const value = item.value;
+      if (map[name]) {
+        map[name].value = value;
+      }
+    });
+    legend.setItems(Object.values(map));
+  },
+  onHide: function onHide() {
+    const legend = chart.get('legendController').legends.top[0];
+    legend.setItems(chart.getLegendItems().country);
+  }
+});
+
+chart.area()
+  .position('type*value')
+  .color('l(90) 0:#E74949 1:#FEFAFA')
+  .shape('smooth');
+chart.line()
+  .position('type*value')
+  .color('l(90) 0:#E74949 1:#E74949')
+  .shape('smooth');
+chart.render()}
+)()`;
 export const area = (data) => `
 (function(){
   chart = new F2.Chart({

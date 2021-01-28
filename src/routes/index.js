@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 14:50:44
+ * @LastEditTime: 2021-01-28 17:35:29
  * @Description:路由表
  */
 import React from 'react';
@@ -45,14 +45,20 @@ import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
 import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
 import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平安)
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
-
+import ElectronicAccount from '../pages/BankPages/ElectronicAccount'; //电子账户
 import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
+import MfbIn from '../pages/Mfb/MfbIn'; //魔方宝充值
+import MfbOut from '../pages/Mfb/MfbOut'; //魔方宝提现
+import DetailAccount from '../pages/Portfolio/Detail/DetailAccount'; //短期账户详情页
+import DetailFixed from '../pages/Portfolio/Detail/DetailFixed'; //低估值详情页
+import DetailEducation from '../pages/Portfolio/Detail/DetailEducation'; //子女教育详情页
+import DetailProvideOrder from '../pages/Portfolio/Detail/DetailProvideOrder'; //养老计划详情页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="LargeAmount"
+            initialRouteName="MfbIndex"
             screenOptions={{
                 // headerShown: false,
 
@@ -231,8 +237,15 @@ export default function AppStack() {
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
-            <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{title: '会存A'}} />
+            <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
             <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
+            <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
+            <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
+            <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
+            <Stack.Screen name="DetailAccount" component={DetailAccount} options={{headerShown: false}} />
+            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: '低估值智能定投'}} />
+            <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
+            <Stack.Screen name="DetailProvideOrder" component={DetailProvideOrder} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

@@ -3,15 +3,13 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 15:35:03
+ * @LastEditTime: 2021-01-25 15:59:39
  */
 import React, {useEffect, memo} from 'react';
 import {View, ScrollView, StyleSheet, Linking, Alert, Dimensions} from 'react-native';
 import FitImage from 'react-native-fit-image';
-import {Colors, Space, Font, Style} from '../../common/commonStyle';
 import Agreement from '../../components/Agreements';
 import {FixedButton} from '../../components/Button';
-import FastImage from 'react-native-fast-image';
 import Toast from '../../components/Toast/';
 const deviceWidth = Dimensions.get('window').width;
 const LargeAmountIntro = (props) => {
