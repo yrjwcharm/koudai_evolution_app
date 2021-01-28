@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-27 21:44:07
+ * @LastEditTime: 2021-01-28 14:06:49
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -45,6 +45,8 @@ export class question extends Component {
         inputBtnCanClick: true,
         //是否答完题目
         finishTest: false,
+        //点击tag 回退的步数
+        previousCount: 0,
     };
     //动画进行时不能点击下一题
     canNextClick = false;
@@ -85,14 +87,15 @@ export class question extends Component {
     handleViewRef = (ref) => (this.quesBtnView = ref);
     handleContentView = (ref) => (this.contentView = ref);
     showAnimation = (action) => {
-        const {translateY, opacity, value, questions} = this.state;
+        const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
-        let _current = this.state.current + 1;
+        let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
         if (action == 'submit') {
             this.setState({finishTest: true});
         } else {
             this.setState({
                 current: _current,
+                previousCount: 0,
             });
         }
         setTimeout(() => {
@@ -169,7 +172,8 @@ export class question extends Component {
             }
         });
     };
-    previous = () => {
+
+    previous = (count = 1) => {
         Keyboard.dismiss();
         if (this.canNextClick) {
             return;
@@ -177,7 +181,7 @@ export class question extends Component {
         this.canNextClick = true;
         Vibration.vibrate(10);
         const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
-        let _current = this.state.current - 1;
+        let _current = this.state.current - count;
         //点击上一题按钮变为可点击
         if (!inputBtnCanClick) {
             this.setState({inputBtnCanClick: true});
@@ -226,12 +230,28 @@ export class question extends Component {
     };
     //答案汇总方法
     handelTag = (option, tag, keyName) => {
-        const {questions, current, value} = this.state;
+        const {questions, current, value, previousCount} = this.state;
         let list = [];
         let previousTest = current - 1;
+        let handleList = [];
+        //处理点击tag修改数据
         if (questions[current]?.tag == tag && previousTest >= 0) {
+            if (previousCount > 0) {
+                for (let i in questions) {
+                    if (questions[i].hasOwnProperty(keyName) && questions[i][keyName].length > 0) {
+                        handleList = handleList.concat(questions[i][keyName]);
+                        handleList.map((item) => {
+                            if (item.key == questions[current].name) {
+                                return (item.val = value || option.content);
+                            } else {
+                                return [];
+                            }
+                        });
+                    }
+                }
+            }
             if (questions[previousTest].hasOwnProperty(keyName) && questions[previousTest][keyName].length > 0) {
-                list = list.concat(questions[previousTest][keyName]);
+                list = list.concat(handleList.length > 0 ? handleList : questions[previousTest][keyName]);
                 // 判断是否是修改状态
                 let findIndex = list.findIndex((item) => {
                     return item.key == questions[current].name;
@@ -286,6 +306,12 @@ export class question extends Component {
             }
         );
     };
+    tagClick = (count) => {
+        this.setState({
+            previousCount: count,
+        });
+        this.previous(count);
+    };
     onLayout = (event) => {
         this.setState({offsetY: -event.nativeEvent.layout.y});
     };
@@ -312,6 +338,7 @@ export class question extends Component {
         const current_ques = questions[current];
         let previousTest = current - 1;
         let tagList = [];
+        // tag判断
         if (previousTest >= 0 && current_ques.tag) {
             if (current_ques.tag == 'profile') {
                 tagList = questions[previousTest].profileList;
@@ -337,7 +364,11 @@ export class question extends Component {
                     renderRight={
                         !finishTest &&
                         current != 0 && (
-                            <TouchableOpacity style={[styles.title_btn, {width: px(60)}]} onPress={this.previous}>
+                            <TouchableOpacity
+                                style={[styles.title_btn, {width: px(60)}]}
+                                onPress={() => {
+                                    this.previous(1);
+                                }}>
                                 <Text>上一题</Text>
                             </TouchableOpacity>
                         )
@@ -383,11 +414,15 @@ export class question extends Component {
                                                                   {item.key}
                                                               </Text>
                                                               <View style={[{flex: 1}, Style.flexRow]}>
-                                                                  <View style={styles.input_label}>
+                                                                  <TouchableOpacity
+                                                                      onPress={() => {
+                                                                          this.tagClick(tagList?.length - index);
+                                                                      }}
+                                                                      style={styles.input_label}>
                                                                       <Text style={styles.input_label_text}>
                                                                           {item.val}
                                                                       </Text>
-                                                                  </View>
+                                                                  </TouchableOpacity>
                                                               </View>
                                                           </View>
                                                       );

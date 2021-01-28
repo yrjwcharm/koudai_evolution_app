@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-27 21:53:55
+ * @LastEditTime: 2021-01-28 14:10:01
  * @Description:路由表
  */
 import React from 'react';
@@ -57,7 +57,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Question"
+            initialRouteName="PlanResult"
             screenOptions={{
                 // headerShown: false,
 
