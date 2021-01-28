@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-27 18:36:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-28 17:58:27
  */
 
 import React, {useEffect, useState} from 'react';
@@ -14,7 +14,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+import Chart from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';

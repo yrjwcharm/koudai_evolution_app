@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 17:34:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-28 17:58:39
  */
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Header from '../../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+import Chart from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import ListHeader from '../components/ListHeader';
@@ -41,7 +41,9 @@ export default function DetailAccount(props) {
         setChartData(num);
     };
     const jumpPage = (url) => {
-        if (!url) return;
+        if (!url) {
+            return;
+        }
         props.navigation.navigate(url);
     };
     useEffect(() => {

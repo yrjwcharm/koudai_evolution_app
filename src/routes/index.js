@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 17:37:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-28 17:55:21
  * @Description:路由表
  */
 import React from 'react';
@@ -66,7 +66,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="DetailEducation"
             screenOptions={{
                 // headerShown: false,
 

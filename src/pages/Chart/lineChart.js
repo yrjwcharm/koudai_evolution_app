@@ -2,12 +2,12 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 18:34:43
+ * @LastEditTime: 2021-01-28 18:00:07
  * @Description:
  */
 import React, {PureComponent} from 'react';
 import {Text, Button, View, ScrollView, Alert} from 'react-native';
-import Chart from 'react-native-f2chart';
+import Chart from '../../components/Chart';
 import data from './data.json';
 import {WebView} from 'react-native-webview';
 // import { Container, Title } from "../components";

@@ -1,15 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-26 17:43:49
- * @LastEditors: dx
+ * @LastEditTime: 2021-01-28 17:49:39
+ * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, isIphoneX} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
 import {useNavigation} from '@react-navigation/native';
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingVertical: text(8),
         paddingHorizontal: text(20),
+        paddingBottom: isIphoneX() ? 34 : 0,
     },
     contactBtn: {
         paddingRight: text(20),

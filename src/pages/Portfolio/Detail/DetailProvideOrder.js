@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 18:33:13
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-27 18:37:22
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-28 17:59:33
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
@@ -13,7 +13,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+// import Chart from 'react-native-f2chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';

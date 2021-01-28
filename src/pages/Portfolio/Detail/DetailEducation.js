@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 18:32:53
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 14:55:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-28 17:57:52
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
@@ -13,7 +13,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+import Chart from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';
@@ -293,7 +293,7 @@ export default function DetailEducation() {
                         </View>
                         {/* 表格 */}
                         <View>
-                            <View></View>
+                            <View />
                         </View>
                         <TouchableOpacity style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
                             <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
