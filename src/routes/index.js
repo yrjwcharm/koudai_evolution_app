@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 14:14:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-28 15:09:45
  * @Description:路由表
  */
 import React from 'react';
@@ -54,6 +54,7 @@ import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
 import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
+import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -255,6 +256,7 @@ export default function AppStack() {
                 component={PlanResult}
                 options={{headerShown: false, ...TransitionPresets.ModalTransition}}
             />
+            <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
         </Stack.Navigator>
     );
 }

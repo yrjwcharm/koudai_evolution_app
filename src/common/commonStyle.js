@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 16:26:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-28 11:04:40
  * @Description:主题及公共样式表
  */
 
@@ -76,6 +76,7 @@ export const Font = {
     // 默认文字字体
     numFontFamily: 'DINAlternate-Bold',
     numRegular: 'DIN-Regular',
+    numMedium: 'DIN-Medium',
     //特大字体
     largeFont: text(26),
     //金额输入框字体大小

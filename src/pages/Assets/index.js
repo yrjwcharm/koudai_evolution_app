@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-01-27 19:44:52
+ * @LastEditTime: 2021-01-28 15:12:12
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -90,7 +90,7 @@ function HomeScreen({navigation}) {
     const init = useCallback((refresh) => {
         refresh === 'refresh' && setRefreshing(true);
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/holding/20210101', {
-            uid: '1000000001',
+            // uid: '1000000001',
         }).then((res) => {
             setHoldingData(res.result);
             setRefreshing(false);
@@ -200,12 +200,12 @@ function HomeScreen({navigation}) {
     useEffect(() => {
         init();
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/common/20210101', {
-            uid: '1000000001',
+            // uid: '1000000001',
         }).then((res) => {
             setUserBasicInfo(res.result);
         });
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/notice/20210101', {
-            uid: '1000000001',
+            // uid: '1000000001',
         }).then((res) => {
             setNotice(res.result);
         });
@@ -266,7 +266,9 @@ function HomeScreen({navigation}) {
                     )}
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
-                        <Text style={styles.date}>{holdingData.summary ? holdingData.summary.date : 'YYYY-MM-DD'}</Text>
+                        <Text style={styles.date}>
+                            {holdingData.summary ? holdingData.summary.profit_date : 'YYYY-MM-DD'}
+                        </Text>
                         <TouchableOpacity onPress={toggleEye}>
                             <Ionicons
                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
