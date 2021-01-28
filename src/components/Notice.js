@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 14:46:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-25 15:28:20
  */
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -13,14 +13,6 @@ import {Space, Style} from '../common/commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 export default function Notice(props) {
     const [hide, setHide] = useState(false);
-    defaultProps = {
-        content: '',
-        isClose: false,
-    };
-    propTypes = {
-        content: PropTypes.string.isRequired,
-        isClose: PropTypes.bool,
-    };
     const closeNotice = () => {
         setHide(true);
     };
@@ -52,3 +44,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
+
+Notice.defaultProps = {
+    content: '',
+    isClose: false,
+};
+Notice.propTypes = {
+    content: PropTypes.string.isRequired,
+    isClose: PropTypes.bool,
+};

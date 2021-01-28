@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-22 10:24:43
+ * @LastEditTime: 2021-01-26 17:43:49
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -155,6 +155,9 @@ const styles = StyleSheet.create({
 FixedBtn.propTypes = {
     btns: PropTypes.arrayOf(PropTypes.object).isRequired,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
+};
+FixedBtn.defaultProps = {
+    style: {},
 };
 
 export default FixedBtn;

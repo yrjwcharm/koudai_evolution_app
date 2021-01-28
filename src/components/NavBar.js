@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 16:10:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-26 16:20:09
  * @Description:头部组件
  */
 
@@ -16,25 +16,31 @@ import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 const topbarHeight = Platform.OS == 'ios' ? 44 : 50;
 
-NavBar.propTypes = {
-    title: PropTypes.string,
-    leftIcon: PropTypes.string,
-    rightIcon: PropTypes.string,
-    leftPress: PropTypes.func,
-    rightPress: PropTypes.func,
-    style: PropTypes.object,
-    titleStyle: PropTypes.object,
-    rightText: PropTypes.string,
-    rightTextStyle: PropTypes.object,
-    fontStyle: PropTypes.object,
-};
-NavBar.defaultProps = {
-    title: '123',
-};
-function NavBar(props) {
+// NavBar.propTypes = {
+//     title: PropTypes.string,
+//     leftIcon: PropTypes.string,
+//     rightIcon: PropTypes.string,
+//     leftPress: PropTypes.func,
+//     rightPress: PropTypes.func,
+//     style: PropTypes.object,
+//     titleStyle: PropTypes.object,
+//     rightText: PropTypes.string,
+//     rightTextStyle: PropTypes.object,
+//     fontStyle: PropTypes.object,
+// };
+// NavBar.defaultProps = {
+//     title: '123',
+// };
+const NavBar = React.forwardRef((props, ref) => {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const navRef = useRef(null);
+    const navBarHeight = insets.top + topbarHeight;
+    React.useImperativeHandle(ref, () => {
+        return {
+            navBarHeight,
+        };
+    });
     //返回
     const back = () => {
         navigation.goBack();
@@ -45,7 +51,7 @@ function NavBar(props) {
             if (Platform.OS === 'android') {
                 return (
                     <TouchableNativeFeedback onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(26)} color={Colors.navTitleColor} />
+                        <Icon name={name} size={px2dp(28)} color={Colors.navTitleColor} />
                     </TouchableNativeFeedback>
                 );
             } else {
@@ -61,6 +67,9 @@ function NavBar(props) {
             }
         };
         if (pos == 'left') {
+            if (props.renderLeft) {
+                return <>{props.renderLeft}</>;
+            }
             if (props.leftIcon) {
                 return render({
                     name: props.leftIcon,
@@ -70,6 +79,9 @@ function NavBar(props) {
                 return <View style={styles.btn} />;
             }
         } else if (pos == 'right') {
+            if (props.renderRight) {
+                return <>{props.renderRight}</>;
+            }
             if (props.rightIcon) {
                 return render({
                     name: props.rightIcon,
@@ -100,7 +112,7 @@ function NavBar(props) {
         }
     }
     return (
-        <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: insets.top + topbarHeight}]}>
+        <View ref={navRef} style={[styles.topbar, style, {paddingTop: insets.top, height: navBarHeight}]}>
             {renderBtn('left')}
             <Animated.Text numberOfLines={1} style={[styles.title, titleStyle, props.fontStyle]}>
                 {props.title}
@@ -108,7 +120,7 @@ function NavBar(props) {
             {renderBtn('right')}
         </View>
     );
-}
+});
 const styles = StyleSheet.create({
     topbar: {
         backgroundColor: Colors.navBgColor,
@@ -116,12 +128,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 10,
+        paddingHorizontal: px2dp(10),
     },
     btn: {
         width: 40,
         height: 40,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     title: {
         color: Colors.navTitleColor,

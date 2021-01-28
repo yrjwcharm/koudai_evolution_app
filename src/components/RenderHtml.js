@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 18:08:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-26 16:31:19
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -28,11 +28,10 @@ export default class RenderHtml extends Component {
                     // 'default-src',
                     // 'loadingIndicatorSrc',
                 ]}
-                debug={true}
+                debug={false}
                 defaultTextProps={{
                     allowFontScaling: false,
                 }}
-                style={this.props.style}
                 baseFontStyle={style}
                 source={{html: this.props.html}}
                 imagesMaxWidth={width - text(30)}

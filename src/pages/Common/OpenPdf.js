@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 14:35:48
- * @LastEditTime: 2021-01-21 11:52:30
+ * @LastEditTime: 2021-01-28 15:08:04
  * @LastEditors: dx
  * @Description: 在APP里阅读PDF
  * @FilePath: /koudai_evolution_app/src/pages/Common/OpenPdf.js
@@ -36,7 +36,7 @@ export default class OpenPdf extends Component {
                         Linking.canOpenURL(uri)
                             .then((supported) => {
                                 if (!supported) {
-                                    return Toast.show('您的设备不支持该功能');
+                                    return Toast.show('您的设备不支持打开网址');
                                 }
                                 return Linking.openURL(uri);
                             })

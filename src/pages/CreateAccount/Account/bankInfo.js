@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 16:26:27
+ * @LastEditTime: 2021-01-22 16:18:04
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -16,6 +16,7 @@ import {FixedButton} from '../../../components/Button';
 import Agreements from '../../../components/Agreements';
 import {BankCardModal} from '../../../components/Modal';
 import {formCheck} from '../../../utils/validator';
+import Mask from '../../../components/Mask';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -131,6 +132,7 @@ export class bankInfo extends Component {
         const {verifyText, bank_no} = this.state;
         return (
             <View style={styles.con}>
+                {/* <Mask /> */}
                 <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
                     <BankCardModal
                         title="请选择银行卡"

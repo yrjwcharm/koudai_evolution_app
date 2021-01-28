@@ -78,6 +78,7 @@
 	<string>方便您与投顾更好的沟通</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>DIN-Medium.otf</string>
 		<string>DIN-Regular.otf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
