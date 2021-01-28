@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:26:41
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:59:23
+ * @LastEditTime: 2021-01-28 19:09:22
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -16,7 +16,7 @@ import Header from '../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
 import Chart from '../../components/Chart';
-import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart/index1';
+import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart/chartOptions';
 import ChartData from './data.json';
 
 export default function BankAssetsPA(props) {

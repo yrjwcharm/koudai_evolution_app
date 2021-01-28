@@ -7042,11 +7042,6 @@ react-native-easy-chat-ui@^0.4.13:
   dependencies:
     moment "^2.22.2"
 
-react-native-f2chart@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npm.taobao.org/react-native-f2chart/download/react-native-f2chart-1.1.0.tgz#6d23cb1aca05dd66c7555cd0ba133cc1c97ffdc3"
-  integrity sha1-bSPLGsoF3WbHVVzQuhM8wcl//cM=
-
 react-native-fast-image@^8.3.4:
   version "8.3.4"
   resolved "https://registry.npm.taobao.org/react-native-fast-image/download/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"
