@@ -1,9 +1,9 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 15:03:20
- * @Description:
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-27 19:44:52
+ * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
@@ -29,6 +29,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {deviceWidth, px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
+import NumText from '../../components/NumText';
 import BottomDesc from '../../components/BottomDesc';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import storage from '../../utils/storage';
@@ -88,7 +89,7 @@ function HomeScreen({navigation}) {
     }, []);
     const init = useCallback((refresh) => {
         refresh === 'refresh' && setRefreshing(true);
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/holding/20210101', {
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/holding/20210101', {
             uid: '1000000001',
         }).then((res) => {
             setHoldingData(res.result);
@@ -97,59 +98,59 @@ function HomeScreen({navigation}) {
     }, []);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
-        return (
+        return item.has_bought !== undefined && !item.has_bought ? (
+            <View style={Style.flexRow}>
+                <View style={{flex: 1}}>
+                    <Text style={[styles.accountName, {flex: 1}]}>{item.name}</Text>
+                    <Text style={[styles.topMenuTitle, {flex: 1, color: Colors.darkGrayColor}]}>{item.desc}</Text>
+                </View>
+                <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+            </View>
+        ) : (
             <View style={[Style.flexRow, {marginBottom: text(10)}]}>
                 <Text style={[styles.accountName, portfolios ? styles.portfoliosName : {}]}>{item.name}</Text>
-                {item.tag && <Text style={styles.tag}>{item.tag}</Text>}
+                {item.tag ? <Text style={styles.tag}>{item.tag}</Text> : null}
             </View>
         );
     }, []);
     // 渲染组合金额和收益
-    const renderProfit = useCallback((item, id) => {
-        const part1 = {
-            key: id === 11 ? item[0].key : '总金额',
-            val: id === 11 ? item[0].val : item.amount,
-        };
-        const part2 = {
-            key: id === 11 ? item[1].key : '累计收益',
-            val: id === 11 ? item[1].val : item.profit_acc,
-        };
-        return (
-            <View style={[styles.po_profit, Style.flexRow]}>
-                <View style={{flex: 1}}>
-                    <Text style={styles.po_profit_key}>{part1.key}</Text>
-                    <Text style={styles.po_profit_val}>{part1.val}</Text>
+    const renderProfit = useCallback(
+        (item, id) => {
+            const part1 = {
+                key: id === 11 ? '我的保额' : '总金额',
+                val: showEye === 'true' ? (id === 11 ? item.amount : item.amount) : '****',
+            };
+            const part2 = {
+                key: id === 11 ? '我的保单' : '累计收益',
+                val: showEye === 'true' ? (id === 11 ? item.count : item.profit_acc) : '****',
+            };
+            return (
+                <View style={[styles.po_profit, Style.flexRow]}>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.po_profit_key}>{part1.key}</Text>
+                        <Text style={styles.po_profit_val}>{part1.val}</Text>
+                    </View>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.po_profit_key}>{part2.key}</Text>
+                        {id === 11 || showEye === 'false' ? (
+                            <Text style={styles.po_profit_val}>{part2.val}</Text>
+                        ) : (
+                            <NumText style={styles.po_profit_val} text={`${part2.val}`} />
+                        )}
+                    </View>
                 </View>
-                <View style={{flex: 1}}>
-                    <Text style={styles.po_profit_key}>{part2.key}</Text>
-                    <Text
-                        style={[
-                            styles.po_profit_val,
-                            id === 11
-                                ? {}
-                                : {
-                                      color:
-                                          part2.val * 1 < 0
-                                              ? Colors.green
-                                              : part2.val * 1 === 0
-                                              ? Colors.defaultColor
-                                              : Colors.red,
-                                  },
-                        ]}>
-                        {part2.val}
-                    </Text>
-                </View>
-            </View>
-        );
-    }, []);
+            );
+        },
+        [showEye]
+    );
     // 渲染组合内容
     const renderPortfolios = useCallback(
         (item) => {
             return (
                 <>
-                    {item.portfolios.length === 1 ? (
+                    {(item.portfolios && item.portfolios.length === 1) || item.id === 11 ? (
                         <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
-                            {renderProfit(item.portfolios[0], item.id)}
+                            {renderProfit(item.id === 11 ? item : item.portfolios[0], item.id)}
                             <FontAwesome
                                 name={'angle-right'}
                                 size={20}
@@ -160,7 +161,7 @@ function HomeScreen({navigation}) {
                     ) : (
                         item.portfolios.map((po, i) => {
                             return (
-                                <TouchableOpacity key={`portfolio${i}`} style={Style.flexRow}>
+                                <TouchableOpacity key={`portfolio${po.poid}`} style={Style.flexRow}>
                                     <View
                                         style={[
                                             styles.portfolio,
@@ -179,6 +180,9 @@ function HomeScreen({navigation}) {
         },
         [renderTitle, renderProfit]
     );
+    const needAdjust = useCallback((item) => {
+        return item.portfolios.every((po) => po.adjust_status > 0);
+    }, []);
 
     useEffect(() => {
         navigation.addListener('focus', () => {
@@ -195,7 +199,7 @@ function HomeScreen({navigation}) {
     }, []);
     useEffect(() => {
         init();
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/common/20210101', {
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/common/20210101', {
             uid: '1000000001',
         }).then((res) => {
             setUserBasicInfo(res.result);
@@ -312,7 +316,10 @@ function HomeScreen({navigation}) {
                     {userBasicInfo.top_menus &&
                         userBasicInfo.top_menus.map((item, index) => {
                             return (
-                                <TouchableOpacity key={`menu1${index}`} style={[Style.flexCenter, {flex: 1}]}>
+                                <TouchableOpacity
+                                    onPress={() => index === 2 && navigation.navigate('HoldingFund')}
+                                    key={`menu1${index}`}
+                                    style={[Style.flexCenter, {flex: 1}]}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
@@ -329,26 +336,71 @@ function HomeScreen({navigation}) {
                 </View>
                 {holdingData.accounts &&
                     holdingData.accounts.map((item, index) => {
-                        return item.portfolios.length > 1 ? (
-                            <View
-                                key={`account${index}`}
-                                style={[
-                                    styles.account,
-                                    index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
-                                ]}>
-                                {renderTitle(item)}
-                                {renderPortfolios(item)}
-                            </View>
+                        return item.portfolios ? (
+                            item.portfolios.length > 1 ? (
+                                <View
+                                    key={`account${index}`}
+                                    style={[
+                                        styles.account,
+                                        index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        needAdjust(item) ? styles.needAdjust : {},
+                                    ]}>
+                                    {renderTitle(item)}
+                                    {renderPortfolios(item)}
+                                </View>
+                            ) : (
+                                <TouchableOpacity
+                                    key={`account${index}`}
+                                    style={[
+                                        styles.account,
+                                        index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        needAdjust(item) ? styles.needAdjust : {},
+                                    ]}>
+                                    {renderTitle(item.portfolios[0])}
+                                    {renderPortfolios(item)}
+                                </TouchableOpacity>
+                            )
                         ) : (
-                            <TouchableOpacity
-                                key={`account${index}`}
-                                style={[
-                                    styles.account,
-                                    index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
-                                ]}>
-                                {renderTitle(item.id === 11 ? item : item.portfolios[0])}
-                                {renderPortfolios(item)}
-                            </TouchableOpacity>
+                            <>
+                                {item.id === 12 ? (
+                                    <LinearGradient
+                                        colors={['#33436D', '#121D3A']}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 1, y: 0}}
+                                        key={`account${index}`}
+                                        style={[
+                                            styles.account,
+                                            index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                            {padding: 0},
+                                        ]}>
+                                        <TouchableOpacity
+                                            key={`account${index}`}
+                                            style={[{padding: Space.padding}, Style.flexRow]}>
+                                            <View style={[{flex: 1}, Style.flexRow]}>
+                                                <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
+                                                    {item.name}
+                                                </Text>
+                                                <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
+                                                    {item.desc}
+                                                </Text>
+                                            </View>
+                                            <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
+                                        </TouchableOpacity>
+                                    </LinearGradient>
+                                ) : (
+                                    item.id === 11 && (
+                                        <TouchableOpacity
+                                            key={`account${index}`}
+                                            style={[
+                                                styles.account,
+                                                index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                            ]}>
+                                            {renderTitle(item)}
+                                            {item.has_bought && renderPortfolios(item)}
+                                        </TouchableOpacity>
+                                    )
+                                )}
+                            </>
                         );
                     })}
                 {userBasicInfo.ia_info && (
@@ -548,6 +600,7 @@ const styles = StyleSheet.create({
         marginTop: text(-28),
         marginBottom: Space.marginVertical,
         marginHorizontal: Space.marginAlign,
+        paddingHorizontal: text(12),
         borderRadius: Space.borderRadius,
         height: text(80),
         backgroundColor: '#fff',
@@ -590,6 +643,10 @@ const styles = StyleSheet.create({
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
     },
+    needAdjust: {
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.red,
+    },
     accountName: {
         fontSize: Font.textH2,
         lineHeight: text(20),
@@ -601,6 +658,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(2),
         marginLeft: text(8),
         borderRadius: text(2),
+        backgroundColor: Colors.red,
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: '#fff',

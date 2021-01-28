@@ -1,14 +1,14 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-01-22 10:07:38
+ * @LastEditTime: 2021-01-26 10:27:11
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
-import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../components/TabBar';
 // import TabBar from '../../components/ScrollTab';
 import http from '../../services';
@@ -714,7 +714,7 @@ class TradeRules extends Component {
                     </View>
                 ) : null}
                 {Object.keys(data).length > 0 && this.state.curIndex == 3 ? this.render_limit() : null}
-                {Object.keys(data).length > 0 && data.bottom && <BottomDesc data={data.bottom} />}
+                <BottomDesc />
             </View>
         );
     }

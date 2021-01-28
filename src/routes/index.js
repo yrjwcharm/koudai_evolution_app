@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 14:10:01
+ * @LastEditTime: 2021-01-28 14:14:47
  * @Description:路由表
  */
 import React from 'react';
@@ -52,12 +52,14 @@ import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
 import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
 import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
 import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
+import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
+import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PlanResult"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -241,6 +243,8 @@ export default function AppStack() {
             <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
+            <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
+            <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
             <Stack.Screen
                 name="PlanHistory"
                 component={PlanHistory}

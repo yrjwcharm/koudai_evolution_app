@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 14:11:14
+ * @LastEditTime: 2021-01-28 14:15:00
  * @Description:规划结果页
  */
 
@@ -14,7 +14,7 @@ import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
 import http from '../../services';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 export default class planResult extends Component {
     state = {
         data: '',
@@ -52,7 +52,7 @@ export default class planResult extends Component {
                         source={require('../../assets/img/robot.png')}
                     />
                     <Animatable.View animation="fadeInUp">
-                        <LottieView source={require('../../assets/data/data.json')} autoPlay loop />
+                        {/* <LottieView source={require('../../assets/data/data.json')} autoPlay loop /> */}
                         {plan_list?.length > 0
                             ? plan_list.map((item, index) => {
                                   return (
