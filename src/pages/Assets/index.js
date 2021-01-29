@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-01-28 15:12:12
+ * @LastEditTime: 2021-01-29 19:10:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -345,6 +345,7 @@ function HomeScreen({navigation}) {
                                     style={[
                                         styles.account,
                                         index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}>
                                     {renderTitle(item)}
@@ -356,6 +357,7 @@ function HomeScreen({navigation}) {
                                     style={[
                                         styles.account,
                                         index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}>
                                     {renderTitle(item.portfolios[0])}
@@ -373,6 +375,7 @@ function HomeScreen({navigation}) {
                                         style={[
                                             styles.account,
                                             index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                            index === 0 ? {marginTop: Space.marginVertical} : {},
                                             {padding: 0},
                                         ]}>
                                         <TouchableOpacity
@@ -396,6 +399,7 @@ function HomeScreen({navigation}) {
                                             style={[
                                                 styles.account,
                                                 index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                                index === 0 ? {marginTop: Space.marginVertical} : {},
                                             ]}>
                                             {renderTitle(item)}
                                             {item.has_bought && renderPortfolios(item)}
@@ -431,7 +435,7 @@ function HomeScreen({navigation}) {
                             </TouchableOpacity>
                         );
                     })}
-                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
+                <View style={[styles.topMenu, Style.flexRow, {marginTop: Space.marginVertical}]}>
                     {userBasicInfo.bottom_menus &&
                         userBasicInfo.bottom_menus.map((item, index) => {
                             return (
@@ -619,7 +623,6 @@ const styles = StyleSheet.create({
     },
     centerCtrl: {
         marginHorizontal: Space.marginAlign,
-        marginBottom: Space.marginVertical,
         padding: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
@@ -693,7 +696,8 @@ const styles = StyleSheet.create({
         paddingVertical: text(12),
     },
     iaInfo: {
-        margin: Space.marginAlign,
+        marginHorizontal: Space.marginAlign,
+        marginTop: Space.marginVertical,
         paddingVertical: text(14),
         paddingLeft: text(12),
         paddingRight: Space.marginAlign,
@@ -707,7 +711,7 @@ const styles = StyleSheet.create({
     },
     article: {
         marginHorizontal: Space.marginAlign,
-        marginBottom: Space.marginVertical,
+        marginTop: Space.marginVertical,
         paddingVertical: text(14),
         paddingHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,

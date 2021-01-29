@@ -1180,7 +1180,7 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/progress-bar-android/download/@react-native-community/progress-bar-android-1.0.4.tgz#2601353b23a7ad76a59e5b0981e0b08c39902708"
   integrity sha1-JgE1OyOnrXalnlsJgeCwjDmQJwg=
 
-"@react-native-community/progress-view@^1.0.3":
+"@react-native-community/progress-view@^1.0.3", "@react-native-community/progress-view@^1.2.3":
   version "1.2.3"
   resolved "https://registry.npm.taobao.org/@react-native-community/progress-view/download/@react-native-community/progress-view-1.2.3.tgz#73ee6498d3ff2ba3ac3df77553f04344e1534a52"
   integrity sha1-c+5kmNP/K6OsPfd1U/BDROFTSlI=

@@ -31,7 +31,7 @@ const DailyProfit = ({poid}) => {
                 page,
             }).then((res) => {
                 first && navigation.setOptions({title: res.result.title || '收益明细'});
-                setIsMoreloading(res.result.next_page);
+                setIsMoreloading(res.result.has_more);
                 setRefreshing(false);
                 if (status === 'loadmore') {
                     setList((prevList) => [...prevList, ...(res.result.list || [])]);
