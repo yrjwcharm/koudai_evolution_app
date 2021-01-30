@@ -2,12 +2,13 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 18:18:19
+ * @LastEditTime: 2021-01-29 10:58:35
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
-import {StyleSheet, Platform} from 'react-native';
+import {StyleSheet, Platform, View, Text} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
+import * as chartOptions from './chartOptions';
 const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
@@ -22,7 +23,7 @@ const source = Platform.select({
 //     webView?: any,
 // };
 
-export default class Chart extends PureComponent {
+class Chart extends PureComponent {
     static defaultProps = {
         onChange: () => {},
         initScript: '',
@@ -79,3 +80,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
     },
 });
+
+export {Chart, chartOptions};

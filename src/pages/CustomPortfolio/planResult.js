@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:40:45
+ * @LastEditTime: 2021-01-29 12:11:39
  * @Description:规划结果页
  */
 
@@ -15,6 +15,8 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
 import http from '../../services';
 import LinearGradient from 'react-native-linear-gradient';
+import {Chart, chartOptions} from '../../components/Chart';
+
 const animation = [
     {
         type: 'top',
@@ -56,6 +58,9 @@ export default class planResult extends Component {
     componentDidMount() {
         http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/chart/20210101').then((data) => {
             this.setState({data: data.result});
+            this.animationTimer = setTimeout(() => {
+                this.setState({lableAnimation: false});
+            }, 3200);
             this.timer = setTimeout(() => {
                 for (let i in data.result.labels) {
                     if (animation[i].type == 'top') {
@@ -85,9 +90,6 @@ export default class planResult extends Component {
                     }
                 }
             }, 500);
-            this.animationTimer = setTimeout(() => {
-                this.setState({lableAnimation: false});
-            }, 3500);
         });
     }
     componentWillUnmount() {
@@ -99,7 +101,8 @@ export default class planResult extends Component {
         // this.props.navigation.replace('Question');
     };
     render() {
-        const {title, plan_list, button, labels} = this.state.data;
+        const {title, plan_list, button, labels, chart} = this.state.data;
+        console.log(chart);
         return (
             <>
                 <Header
@@ -122,7 +125,7 @@ export default class planResult extends Component {
                     }
                 />
 
-                {/* 重新规划 */}
+                {/* tag动画 */}
                 {this.state.lableAnimation ? (
                     <Animatable.View style={styles.animation_con}>
                         <View>
@@ -157,6 +160,7 @@ export default class planResult extends Component {
                         </View>
                     </Animatable.View>
                 ) : (
+                    //图表动画
                     <View style={styles.container}>
                         <Animatable.Image
                             animation="rotate"
@@ -164,56 +168,11 @@ export default class planResult extends Component {
                             source={require('../../assets/img/robot.png')}
                         />
                         <Animatable.View animation="fadeInUp">
-                            {plan_list?.length > 0
-                                ? plan_list.map((item, index) => {
-                                      return (
-                                          <View key={index} style={styles.card}>
-                                              <Text style={[styles.name, {marginBottom: px(20)}]}>{item.title}</Text>
-                                              <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                                  <Text style={styles.key}>目标金额</Text>
-                                                  <Text style={styles.plan_goal_amount}>{item.plan_goal_info.val}</Text>
-                                                  <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
-                                                      {item.plan_goal_info.unit}
-                                                  </Text>
-                                              </View>
-                                              {item.plan_type_list ? (
-                                                  <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                                      <Text style={styles.key}>投资方式</Text>
-                                                      <View style={[Style.flexRow, {flex: 1}]}>
-                                                          {item.plan_type_list.map((type, _index) => {
-                                                              return (
-                                                                  <View
-                                                                      style={[Style.flexRow, {marginRight: px(10)}]}
-                                                                      key={_index}>
-                                                                      <Text style={[styles.key, {marginRight: px(4)}]}>
-                                                                          {type.text}
-                                                                      </Text>
-                                                                      <Text style={styles.regular_text}>
-                                                                          {type.val}
-                                                                      </Text>
-                                                                      <Text>{type.unit}</Text>
-                                                                  </View>
-                                                              );
-                                                          })}
-                                                      </View>
-                                                  </View>
-                                              ) : null}
-                                              {item.plan_duration_info ? (
-                                                  <View style={Style.flexRow}>
-                                                      <Text style={styles.key}>计划时长</Text>
-                                                      <Text style={styles.regular_text}>
-                                                          {item.plan_duration_info.val}
-                                                      </Text>
-                                                      <Text style={{marginRight: px(8)}}>
-                                                          {item.plan_duration_info.unit}
-                                                      </Text>
-                                                      <Text style={styles.key}>{item.plan_duration_info.tip}</Text>
-                                                  </View>
-                                              ) : null}
-                                          </View>
-                                      );
-                                  })
-                                : null}
+                            {chart && (
+                                <View style={{height: 300, paddingHorizontal: px(10)}}>
+                                    <Chart initScript={chartOptions.baseChart(chart)} />
+                                </View>
+                            )}
                         </Animatable.View>
                         <Animatable.View animation="fadeInRight" style={[styles.question_con]}>
                             {button ? (
@@ -238,7 +197,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         backgroundColor: '#fff',
-        paddingHorizontal: px(20),
         paddingBottom: isIphoneX() ? 84 : 50,
     },
     name: {
@@ -250,7 +208,7 @@ const styles = StyleSheet.create({
     robot: {
         width: px(86),
         height: px(86),
-        marginLeft: px(-10),
+        marginLeft: px(10),
         marginBottom: px(14),
         position: 'relative',
         zIndex: 10,
@@ -317,7 +275,7 @@ const styles = StyleSheet.create({
     },
     lable: {
         borderRadius: px(25),
-        paddingVertical: px(2),
-        paddingHorizontal: px(6),
+        paddingVertical: px(3),
+        paddingHorizontal: px(7),
     },
 });

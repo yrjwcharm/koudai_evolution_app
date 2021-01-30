@@ -95,26 +95,47 @@ label: function label(text, index, total) {
 });
 `;
 export const baseChart = (data) => `(function(){
-    ${base(data)}
-  chart.line().position('date*value');
-  chart.point()
-  .position('date*value')
-  .size('tag', function(val) {
-    return val ? 4 : 0;
-  })
-  .style('tag', {
-    fill: function fill(val) {
-      if (val === 2) {
-        return '#518DFE';
-      } else if (val === 1) {
-        return '#F35833';
-      }
-    },
-    stroke: '#fff',
-    lineWidth: 1
+  const chart = new F2.Chart({
+    id: 'chart',
+    pixelRatio: window.devicePixelRatio,
+   
   });
+  chart.source(${JSON.stringify(data)});
+  chart.scale('date', {
+    tickCount: 5,
+    range: [ 0, 1 ]
+  });
+  chart.scale('value', {
+    tickCount: 5,
+    range: [ 0, 1 ],
+    formatter: function formatter(val) {
+      return (val/100).toFixed(2) + '%';
+    }
+  });
+
+  chart.axis('date', {
+    label: function label(text, index, total) {
+      const textCfg = {};
+      if (index === 0) {
+        textCfg.textAlign = 'left';
+      } else if (index === total - 1) {
+        textCfg.textAlign = 'right';
+      }
+      return textCfg;
+    }
+  });
+  chart.legend(false);
+  chart.tooltip(false);
+  chart.area()
+    .position('date*value')
+    .color('type', [ '#E74949', '#545968', '#FFC069' ])
+    .shape('smooth');
+  chart.line()
+    .position('date*value')
+    .color('type', [ '#E74949', '#545968', '#FFC069' ])
+    .shape('smooth');
   chart.render();
-})();
+})()
 `;
 
 export const dynamicChart = (data) => `

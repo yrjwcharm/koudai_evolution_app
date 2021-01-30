@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:55:21
+ * @LastEditTime: 2021-01-30 11:19:36
  * @Description:路由表
  */
 import React from 'react';
@@ -61,12 +61,13 @@ import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
+import TradeRecord from '../pages/Assets/TradeRecord'; //交易记录
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="DetailEducation"
+            initialRouteName="PlanResult"
             screenOptions={{
                 // headerShown: false,
 
@@ -270,6 +271,7 @@ export default function AppStack() {
                 options={{headerShown: false, ...TransitionPresets.ModalTransition}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
+            <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
         </Stack.Navigator>
     );
 }
