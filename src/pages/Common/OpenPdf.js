@@ -1,14 +1,12 @@
 /*
- * @Author: dx
  * @Date: 2021-01-15 14:35:48
- * @LastEditTime: 2021-01-28 15:08:04
+ * @Author: dx
  * @LastEditors: dx
+ * @LastEditTime: 2021-01-28 19:29:56
  * @Description: 在APP里阅读PDF
- * @FilePath: /koudai_evolution_app/src/pages/Common/OpenPdf.js
  */
 import React, {Component} from 'react';
 import {StyleSheet, Dimensions, View, Linking, Alert} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
 
@@ -17,16 +15,22 @@ export default class OpenPdf extends Component {
         super(props);
         this.state = {};
     }
+    componentDidMount() {
+        if (this.props.route.params && this.props.route.params.title) {
+            this.props.navigation.setOptions({title: this.props.route.params.title});
+        }
+    }
     render() {
+        const {url} = this.props.route.params || {};
         return (
             <View style={styles.container}>
                 <Pdf
-                    source={{uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
+                    source={{uri: url || 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
                     onLoadComplete={(numberOfPages, filePath) => {
                         console.log(numberOfPages, filePath);
                     }}
                     onPageChanged={(page) => {
-                        console.log(`current page: ${page}`);
+                        // console.log(`current page: ${page}`);
                     }}
                     onError={(error) => {
                         Toast.show(error);
@@ -59,5 +63,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
+        backgroundColor: '#fff',
     },
 });

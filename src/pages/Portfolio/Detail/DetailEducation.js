@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-01-27 18:32:53
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 19:20:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-29 16:43:49
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text} from '../../../utils/appUtil';
@@ -110,14 +110,18 @@ export default function DetailEducation(props) {
         setChartData(num);
     };
     const chooseBtn = () => {};
-    useEffect(() => {
-        console.log(props);
-        setChartData(ChartData);
+    const getPieData = useCallback(() => {
+        const mapData = {};
         pieData.map((item) => {
-            map[item.name] = item.percent;
-            setMap(map);
+            mapData[item.name] = item.percent;
         });
-    }, []);
+        setMap(mapData);
+    }, [pieData]);
+    useEffect(() => {
+        // console.log(props);
+        setChartData(ChartData);
+        getPieData();
+    }, [getPieData]);
     return (
         <>
             <Header

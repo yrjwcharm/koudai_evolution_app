@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-01-27 18:54:46
+ * @LastEditTime: 2021-01-28 17:51:22
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -407,9 +407,9 @@ export class AssetsConfigDetail extends Component {
         const {amount, activeSections, data} = this.state;
         const {invest_form, deploy_title, deploy_content, deploy_detail, bottom, btns} = data;
         return (
-            <SafeAreaView edges={['bottom']} style={styles.container}>
+            <>
                 {Object.keys(data).length > 0 && (
-                    <ScrollView style={{backgroundColor: Colors.bgColor}}>
+                    <ScrollView style={styles.container}>
                         <View style={styles.topPart}>
                             <View style={[Style.flexBetween, {flexDirection: 'row'}]}>
                                 <Text style={[styles.lableTitle]}>{invest_form.title}</Text>
@@ -469,7 +469,7 @@ export class AssetsConfigDetail extends Component {
                     </ScrollView>
                 )}
                 {btns && <FixedBtn btns={btns} />}
-            </SafeAreaView>
+            </>
         );
     }
 }
@@ -477,7 +477,7 @@ export class AssetsConfigDetail extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
     },
     topPart: {
         paddingHorizontal: Space.marginAlign,

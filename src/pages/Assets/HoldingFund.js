@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-28 14:39:52
+ * @LastEditTime: 2021-01-29 19:09:34
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -90,6 +90,9 @@ const HoldingFund = ({navigation}) => {
                                     item.funds.map((fund, i) => {
                                         return (
                                             <TouchableOpacity
+                                                onPress={() =>
+                                                    navigation.navigate({name: 'FundDetail', params: {code: fund.code}})
+                                                }
                                                 style={[
                                                     styles.fundContainer,
                                                     i === item.funds.length - 1 ? {marginBottom: 0} : {},
@@ -184,7 +187,7 @@ const HoldingFund = ({navigation}) => {
                 </View>
             </>
         );
-    }, [curTab, list, getColor]);
+    }, [curTab, list, getColor, navigation]);
 
     useEffect(() => {
         navigation.setOptions({

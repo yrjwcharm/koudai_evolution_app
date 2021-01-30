@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-30 11:19:36
+ * @LastEditTime: 2021-01-30 11:30:13
+=======
+ * @LastEditors: dx
+ * @LastEditTime: 2021-01-29 18:47:37
+>>>>>>> bd76913a23cf3222e1221664c2e74c3262313a4f
  * @Description:路由表
  */
 import React from 'react';
@@ -62,6 +67,8 @@ import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益�
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 import TradeRecord from '../pages/Assets/TradeRecord'; //交易记录
+import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
+import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -272,6 +279,8 @@ export default function AppStack() {
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
+            <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
+            <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
         </Stack.Navigator>
     );
 }
