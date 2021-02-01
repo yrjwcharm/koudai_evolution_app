@@ -38,7 +38,7 @@ F2.Animate.registerAnimation('lineUpdate', function(updateShape, animateCfg) {
       attrs: {
         points: newPoints
       },
-      duration: 800,
+      duration: 2000,
       easing: animateCfg.easing
     });
   });
@@ -129,11 +129,21 @@ export const baseChart = (data) => `(function(){
   chart.area()
     .position('date*value')
     .color('type', [ '#E74949', '#545968', '#FFC069' ])
-    .shape('smooth');
+    .shape('smooth').animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 2000
+      }
+    });
   chart.line()
     .position('date*value')
     .color('type', [ '#E74949', '#545968', '#FFC069' ])
-    .shape('smooth');
+    .shape('smooth').animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 2000
+      }
+    });
   chart.render();
 })()
 `;

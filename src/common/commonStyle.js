@@ -1,12 +1,12 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-01-28 11:04:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-01-30 15:33:35
  * @Description:主题及公共样式表
  */
 
 import {StyleSheet} from 'react-native';
-import {px as text} from '../utils/appUtil';
+import {px as text, px} from '../utils/appUtil';
 export const Colors = {
     /** color **/
 
@@ -60,6 +60,7 @@ export const Space = {
     marginAlign: text(16),
     // 内边距
     padding: text(16),
+    cardPadding: px(16),
     /** width **/
     //圆角
     borderRadius: text(8),

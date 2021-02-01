@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-29 12:11:39
+ * @LastEditTime: 2021-01-30 15:09:32
  * @Description:规划结果页
  */
 
@@ -16,7 +16,6 @@ import * as Animatable from 'react-native-animatable';
 import http from '../../services';
 import LinearGradient from 'react-native-linear-gradient';
 import {Chart, chartOptions} from '../../components/Chart';
-
 const animation = [
     {
         type: 'top',
@@ -53,7 +52,7 @@ const animation = [
 export default class planResult extends Component {
     state = {
         data: '',
-        lableAnimation: true,
+        lableAnimation: false,
     };
     componentDidMount() {
         http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/chart/20210101').then((data) => {
@@ -102,7 +101,6 @@ export default class planResult extends Component {
     };
     render() {
         const {title, plan_list, button, labels, chart} = this.state.data;
-        console.log(chart);
         return (
             <>
                 <Header
@@ -168,11 +166,43 @@ export default class planResult extends Component {
                             source={require('../../assets/img/robot.png')}
                         />
                         <Animatable.View animation="fadeInUp">
+                            <View style={[Style.flexBetween, {alignItems: 'flex-end', paddingHorizontal: px(20)}]}>
+                                <View>
+                                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                        <Text style={[styles.sm_radio, {fontSize: px(36), marginRight: px(9)}]}>
+                                            43.58%
+                                        </Text>
+                                        <View style={[Style.flexRow, {marginBottom: px(5)}]}>
+                                            <Icon name="arrowup" color={Colors.red} />
+                                            <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.desc_text}>近5年累计收益率</Text>
+                                </View>
+                                <View>
+                                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                        <Text style={[styles.sm_radio, {fontSize: px(24), marginRight: px(9)}]}>
+                                            43.58%
+                                        </Text>
+                                        <View style={[Style.flexRow]}>
+                                            <Icon name="arrowup" color={Colors.red} />
+                                            <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.desc_text}>近5年累计收益率</Text>
+                                </View>
+                            </View>
                             {chart && (
-                                <View style={{height: 300, paddingHorizontal: px(10)}}>
+                                <View style={{height: 300, paddingHorizontal: px(10), marginVertical: px(16)}}>
                                     <Chart initScript={chartOptions.baseChart(chart)} />
                                 </View>
                             )}
+                            <View style={styles.card}>
+                                <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                                    <Text style={styles.key}>目标年化收益率</Text>
+                                    <Text style={styles.plan_goal_amount}>10.12%</Text>
+                                </View>
+                            </View>
                         </Animatable.View>
                         <Animatable.View animation="fadeInRight" style={[styles.question_con]}>
                             {button ? (
@@ -215,6 +245,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     card: {
+        marginHorizontal: px(20),
         padding: px(16),
         shadowColor: '#28479E',
         backgroundColor: '#fff',
@@ -277,5 +308,14 @@ const styles = StyleSheet.create({
         borderRadius: px(25),
         paddingVertical: px(3),
         paddingHorizontal: px(7),
+    },
+    desc_text: {
+        fontSize: px(14),
+        color: Colors.darkGrayColor,
+        marginTop: px(4),
+    },
+    sm_radio: {
+        fontSize: px(14),
+        fontFamily: Font.numFontFamily,
     },
 });

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-22 16:18:04
+ * @LastEditTime: 2021-02-01 11:04:54
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -17,6 +17,7 @@ import Agreements from '../../../components/Agreements';
 import {BankCardModal} from '../../../components/Modal';
 import {formCheck} from '../../../utils/validator';
 import Mask from '../../../components/Mask';
+import http from '../../../services';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -30,7 +31,16 @@ export class bankInfo extends Component {
             second: 60,
             checked: true, //协议
             code_btn_click: true, //验证码按钮
+            bankList: [],
+            selectBank: '',
         };
+    }
+    componentDidMount() {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/bank_list/20210101').then(
+            (data) => {
+                this.setState({bankList: data.result});
+            }
+        );
     }
     confirm = () => {
         const {phone, code, bank_code, bank_no, checked} = this.state;
@@ -129,14 +139,18 @@ export class bankInfo extends Component {
         });
     };
     render() {
-        const {verifyText, bank_no} = this.state;
+        const {verifyText, bank_no, bankList, selectBank} = this.state;
         return (
             <View style={styles.con}>
                 {/* <Mask /> */}
                 <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
                     <BankCardModal
                         title="请选择银行卡"
+                        data={bankList}
                         style={{height: px(500)}}
+                        onDone={(data) => {
+                            this.setState({selectBank: data});
+                        }}
                         ref={(ref) => (this.bankCard = ref)}
                     />
                     <FastImage
@@ -165,7 +179,7 @@ export class bankInfo extends Component {
                                 label="银行"
                                 isUpdate={false}
                                 placeholder="请选择您银行"
-                                value={this.state.rname}
+                                value={selectBank.bank_name}
                                 onClick={this._showBankCard}
                                 inputStyle={{flex: 1}}
                                 returnKeyType={'done'}

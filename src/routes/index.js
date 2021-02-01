@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-30 11:30:13
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-01-29 18:47:37
->>>>>>> bd76913a23cf3222e1221664c2e74c3262313a4f
+ * @LastEditTime: 2021-02-01 19:42:36
  * @Description:路由表
  */
 import React from 'react';
@@ -69,12 +64,14 @@ import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 import TradeRecord from '../pages/Assets/TradeRecord'; //交易记录
 import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
 import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
+import Find from '../pages/Find'; //发现页
+import FindDetail from '../pages/Find/findDetail'; //发现详情页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PlanResult"
+            initialRouteName="Find"
             screenOptions={{
                 // headerShown: false,
 
@@ -281,6 +278,26 @@ export default function AppStack() {
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
+            <Stack.Screen name="Find" component={Find} options={{title: ''}} />
+            <Stack.Screen
+                name="FindDetail"
+                component={FindDetail}
+                options={{
+                    headerShown: false,
+                    // cardStyle: {backgroundColor: '#fff'},
+                    cardOverlayEnabled: false,
+                    ...TransitionPresets.ModalTransition,
+
+                    cardStyleInterpolator: ({current: {progress}}) => ({
+                        cardStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 0.5, 0.9, 1],
+                                outputRange: [0, 0.25, 0.7, 1],
+                            }),
+                        },
+                    }),
+                }}
+            />
         </Stack.Navigator>
     );
 }

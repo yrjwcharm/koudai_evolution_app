@@ -5645,6 +5645,11 @@ lodash._reinterpolate@^3.0.0:
   resolved "https://registry.npm.taobao.org/lodash._reinterpolate/download/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
   integrity sha1-DM8tiRZq8Ds2Y8eWU4t1rG4RTZ0=
 
+lodash.findlast@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.npm.taobao.org/lodash.findlast/download/lodash.findlast-4.6.0.tgz#ea8bb78cf2e7e7804fc8aeb7d1953e07fe31fbc8"
+  integrity sha1-6ou3jPLn54BPyK630ZU+B/4x+8g=
+
 lodash.frompairs@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npm.taobao.org/lodash.frompairs/download/lodash.frompairs-4.0.1.tgz#bc4e5207fa2757c136e573614e9664506b2b1bd2"
@@ -7094,6 +7099,13 @@ react-native-linear-gradient@^2.5.6:
   version "2.5.6"
   resolved "https://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
+
+react-native-magic-move@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.npm.taobao.org/react-native-magic-move/download/react-native-magic-move-0.6.6.tgz#e98c4f59ee4d2d6ae9ce087f8a91202347a6985c"
+  integrity sha1-6YxPWe5NLWrpzgh/ipEgI0emmFw=
+  dependencies:
+    lodash.findlast "^4.6.0"
 
 react-native-orientation-locker@^1.1.8:
   version "1.1.8"
