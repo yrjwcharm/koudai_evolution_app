@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 14:00:00
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-01 10:39:06
  * @Description:路由表
  */
 import React from 'react';
@@ -66,12 +66,18 @@ import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
 import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
 import FindDetail from '../pages/Find/findDetail'; //发现详情页
 import TradeRecordDetail from '../pages/Assets/TradeRecordDetail'; //交易记录详情
+import FundRanking from '../pages/Portfolio/FundRanking'; // 基金排名
+import FundTradeTime from '../pages/Portfolio/FundTradeTime'; // 交易时间说明
+import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
+import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
+import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
+import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRecordDetail"
+            initialRouteName="TabScreen"
             screenOptions={{
                 // headerShown: false,
 
@@ -278,7 +284,6 @@ export default function AppStack() {
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
-
             <Stack.Screen
                 name="FindDetail"
                 component={FindDetail}
@@ -298,6 +303,12 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: '交易订单详情'}} />
+            <Stack.Screen name="FundRanking" component={FundRanking} options={{title: '基金排名'}} />
+            <Stack.Screen name="FundTradeTime" component={FundTradeTime} options={{title: '交易时间说明'}} />
+            <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
+            <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
+            <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
+            <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
         </Stack.Navigator>
     );
 }

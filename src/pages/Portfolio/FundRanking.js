@@ -1,9 +1,9 @@
 /*
- * @Date: 2021-01-29 17:10:11
+ * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 09:58:47
- * @Description: 历史净值
+ * @LastEditTime: 2021-01-30 18:01:27
+ * @Description: 基金排名
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
@@ -12,69 +12,51 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 
-const HistoryNav = ({navigation, route}) => {
-    const [page, setPage] = useState(1);
+const FundRanking = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [hasMore, setHasMore] = useState(false);
-    const [header, setHeader] = useState([]);
-    const [list, setList] = useState([]);
+    const [header, setHeader] = useState(['期限', '累计涨跌幅', '同类排名']);
+    const [list, setList] = useState([
+        ['最近一周', '0.09%', '39/50'],
+        ['最近一月', '0.09%', '39/50'],
+        ['最近一季', '0.09%', '39/50'],
+        ['最近半年', '0.09%', '39/50'],
+        ['今年以来', '0.09%', '39/50'],
+        ['最近一年', '0.09%', '39/50'],
+        ['最近两年', '0.09%', '39/50'],
+        ['最近三年', '0.09%', '39/50'],
+    ]);
 
     const init = useCallback(
-        (status, first) => {
-            status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/nav/history/20210101', {
+        (first) => {
+            setRefreshing(true);
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/nav_rank/20210101', {
                 fund_code: (route.params && route.params.code) || '',
-                page,
             }).then((res) => {
                 setRefreshing(false);
-                setHasMore(res.result.has_more);
-                first && navigation.setOptions({title: res.result.title || '历史净值'});
-                first && setHeader(res.result.header);
-                if (status === 'refresh') {
-                    setList(res.result.list || []);
-                } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
-                }
+                first && navigation.setOptions({title: res.result.title || '基金排名'});
+                first && setHeader(res.result.header || []);
+                setList([...(res.result.list || [])]);
             });
         },
-        [navigation, route, page]
+        [navigation, route]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
-        setPage(1);
-    }, []);
-    // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+        init();
+    }, [init]);
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
                 <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
                 <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText]}>{header[2]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text>
+                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[2]}</Text>
             </View>
         );
     }, [header]);
-    // 渲染底部
-    const renderFooter = useCallback(() => {
-        return (
-            <>
-                {list.length > 0 && (
-                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
-                        {hasMore ? '正在加载...' : '暂无更多了'}
-                    </Text>
-                )}
-            </>
-        );
-    }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无历史净值数据'} />;
+        return <Empty text={'暂无基金排名数据'} />;
     }, []);
     // 渲染列表项
     const renderItem = useCallback(
@@ -82,15 +64,10 @@ const HistoryNav = ({navigation, route}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
-                    <Text style={[styles.itemText]}>{item[1]}</Text>
-                    <Text style={[styles.itemText]}>{item[2]}</Text>
-                    <Text
-                        style={[
-                            styles.itemText,
-                            {textAlign: 'right', color: getColor(item[3]), fontFamily: Font.numFontFamily},
-                        ]}>
-                        {parseFloat(item[3].replaceAll(',', '')) > 0 ? `+${item[3]}` : item[3]}
+                    <Text style={[styles.itemText, {color: getColor(item[1]), fontFamily: Font.numFontFamily}]}>
+                        {parseFloat(item[1].replaceAll(',', '')) > 0 ? `+${item[1]}` : item[1]}
                     </Text>
+                    <Text style={[styles.itemText, {textAlign: 'right', fontFamily: Font.numRegular}]}>{item[2]}</Text>
                 </View>
             );
         },
@@ -108,27 +85,19 @@ const HistoryNav = ({navigation, route}) => {
     }, []);
 
     useEffect(() => {
-        if (page === 1) {
-            init('refresh', true);
-        } else {
-            init('loadmore');
-        }
-    }, [page, init]);
+        // init();
+    }, [init]);
     return (
         <View style={styles.container}>
             <SectionList
                 sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
-                ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}
                 renderSectionHeader={renderHeader}
-                stickySectionHeadersEnabled
             />
         </View>
     );
@@ -163,9 +132,8 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontFamily: Font.numRegular,
         textAlign: 'center',
     },
 });
 
-export default HistoryNav;
+export default FundRanking;

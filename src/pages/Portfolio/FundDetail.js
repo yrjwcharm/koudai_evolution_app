@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-29 17:12:55
+ * @LastEditTime: 2021-02-01 10:39:34
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -11,7 +11,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Tab from '../../components/TabBar';
-import Chart from '../../components/Chart';
+import {Chart} from '../../components/Chart';
 import {baseChart} from './Detail/ChartOption';
 import ChartData from './Detail/data.json';
 import {px as text} from '../../utils/appUtil';
@@ -184,7 +184,11 @@ const FundDetail = ({navigation, route}) => {
                                 <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                             </TouchableOpacity>
                             <View style={styles.divider} />
-                            <TouchableOpacity style={[Style.flexBetween, styles.rankBox]}>
+                            <TouchableOpacity
+                                style={[Style.flexBetween, styles.rankBox]}
+                                onPress={() =>
+                                    navigation.navigate({name: 'FundRanking', params: {code: data.part1.code}})
+                                }>
                                 <View>
                                     <Text style={[styles.subTitle, {marginBottom: text(4)}]}>{'月度同类排名'}</Text>
                                     <Text style={styles.navText}>{data.part1.rank}</Text>
@@ -248,7 +252,14 @@ const FundDetail = ({navigation, route}) => {
                                                     }}
                                                     key={`${item.group}info${i}`}>
                                                     <TouchableOpacity
-                                                        style={[{paddingVertical: text(20)}, Style.flexBetween]}>
+                                                        style={[{paddingVertical: text(20)}, Style.flexBetween]}
+                                                        onPress={() =>
+                                                            v.val === 'T+1' &&
+                                                            navigation.navigate({
+                                                                name: 'FundAnnouncement',
+                                                                params: {code: data.part1.code},
+                                                            })
+                                                        }>
                                                         <Text style={styles.title}>{v.key}</Text>
                                                         <Text style={styles.groupVal}>
                                                             {Object.prototype.toString.call(v.val) ===

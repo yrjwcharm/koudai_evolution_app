@@ -2,11 +2,11 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-27 17:14:37
+ * @LastEditTime: 2021-02-01 09:53:40
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
-import {LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, LayoutAnimation, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -14,53 +14,46 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import Empty from '../../components/EmptyTip';
 
 const DailyProfit = ({poid}) => {
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
-    const [isMoreloading, setIsMoreloading] = useState(true);
+    const [hasMore, setHasMore] = useState(true);
     const [list, setList] = useState([]);
     const [activeSections, setActiveSections] = useState([0]);
     const [maxData, setMaxData] = useState(0);
     const init = useCallback(
         (status, first) => {
+            status === 'refresh' && setRefreshing(true);
             const url = poid ? '/profit/portfolio_daily/20210101' : '/profit/user_daily/20210101';
             http.get(`http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080${url}`, {
                 uid: '1000000001',
                 page,
             }).then((res) => {
                 first && navigation.setOptions({title: res.result.title || '收益明细'});
-                setIsMoreloading(res.result.has_more);
+                setHasMore(res.result.has_more);
                 setRefreshing(false);
                 if (status === 'loadmore') {
                     setList((prevList) => [...prevList, ...(res.result.list || [])]);
                 } else if (status === 'refresh') {
-                    setList([...(res.result.list || [])]);
+                    setList(res.result.list || []);
                 }
             });
         },
         [navigation, page, poid]
     );
-    // 下拉刷新回调
+    // 下拉刷新
     const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        init('refresh');
-    }, [init]);
-    const onScroll = useCallback(
-        (e) => {
-            const offsetY = e.nativeEvent.contentOffset.y; //滑动距离
-            const contentSizeHeight = e.nativeEvent.contentSize.height; //ScrollView contentSize高度
-            const oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //ScrollView高度
-            if (offsetY + oriageScrollHeight >= contentSizeHeight - 200) {
-                if (isMoreloading) {
-                    setPage((p) => p + 1);
-                    init('loadmore');
-                }
-            }
-        },
-        [init, isMoreloading]
-    );
+        setPage(1);
+    }, []);
+    // 上拉加载
+    const onEndReached = useCallback(() => {
+        if (hasMore) {
+            setPage((p) => p + 1);
+        }
+    }, [hasMore]);
     // 渲染收益更新说明头部
     const renderHeader = useCallback((section, index, isActive) => {
         return (
@@ -113,10 +106,88 @@ const DailyProfit = ({poid}) => {
             return Colors.red;
         }
     }, []);
+    // 渲染头部
+    const renderSectionHeader = useCallback(() => {
+        return (
+            <View style={{backgroundColor: Colors.bgColor}}>
+                <View style={styles.updateDesc}>
+                    <Accordion
+                        activeSections={activeSections}
+                        expandMultiple
+                        onChange={(indexes) => setActiveSections(indexes)}
+                        renderContent={renderTable}
+                        renderHeader={renderHeader}
+                        sections={[1]}
+                        touchableComponent={TouchableOpacity}
+                        touchableProps={{activeOpacity: 1}}
+                    />
+                </View>
+            </View>
+        );
+    }, [activeSections, renderHeader, renderTable]);
+    // 渲染底部
+    const renderFooter = useCallback(() => {
+        return (
+            <>
+                {list.length > 0 && (
+                    <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
+                        {hasMore ? '正在加载...' : '暂无更多了'}
+                    </Text>
+                )}
+            </>
+        );
+    }, [hasMore, list]);
+    // 渲染空数据状态
+    const renderEmpty = useCallback(() => {
+        return <Empty text={'暂无日收益数据'} />;
+    }, []);
+    // 渲染列表项
+    const renderItem = useCallback(
+        ({item, index}) => {
+            return (
+                <View
+                    style={[
+                        styles.incomeItem,
+                        {
+                            marginTop: index === 0 ? Space.marginVertical : 0,
+                            marginBottom: index === list.length - 1 ? 0 : text(12),
+                        },
+                    ]}>
+                    <View
+                        style={[
+                            styles.colorBar,
+                            Style.flexBetween,
+                            {
+                                width: Math.max(
+                                    text(105),
+                                    maxData === 0
+                                        ? 0
+                                        : (Math.abs(parseFloat(`${item.profit}`.replaceAll(',', ''))) / maxData) *
+                                              (deviceWidth - 32)
+                                ),
+                                maxWidth: '100%',
+                                backgroundColor: getColor(`${item.profit}`),
+                            },
+                        ]}>
+                        <Text style={styles.incomeText}>{item.date}</Text>
+                        <Text style={styles.incomeText}>
+                            {parseFloat(`${item.profit}`.replaceAll(',', '')) > 0 ? `+${item.profit}` : item.profit}
+                        </Text>
+                    </View>
+                    {item.fee ? <Text style={styles.feeText}>{item.fee}</Text> : null}
+                </View>
+            );
+        },
+        [list.length, maxData, getColor]
+    );
 
     useEffect(() => {
-        init('refresh', true);
-    }, [init]);
+        if (page === 1) {
+            init('refresh', true);
+        } else {
+            init('loadmore');
+        }
+    }, [page, init]);
     useEffect(() => {
         if (list.length > 0) {
             setMaxData(
@@ -138,62 +209,40 @@ const DailyProfit = ({poid}) => {
         }
     }, [list]);
     return (
-        <ScrollView
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            scrollEventThrottle={1000}
-            onScroll={onScroll}
-            style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            <View style={styles.updateDesc}>
-                <Accordion
-                    activeSections={activeSections}
-                    expandMultiple
-                    onChange={(indexes) => setActiveSections(indexes)}
-                    renderContent={renderTable}
-                    renderHeader={renderHeader}
-                    sections={[1]}
-                    touchableComponent={TouchableOpacity}
-                    touchableProps={{activeOpacity: 1}}
+        <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
+            {list.length > 0 ? (
+                <SectionList
+                    sections={[{title: 'list', data: list}]}
+                    initialNumToRender={20}
+                    keyExtractor={(item, index) => item + index}
+                    ListFooterComponent={renderFooter}
+                    ListEmptyComponent={renderEmpty}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.5}
+                    onRefresh={onRefresh}
+                    refreshing={refreshing}
+                    renderItem={renderItem}
+                    renderSectionHeader={renderSectionHeader}
+                    style={[{backgroundColor: '#fff'}]}
                 />
-            </View>
-            <View style={styles.incomeContainer}>
-                {list.map((item, index) => {
-                    return (
-                        <View
-                            key={`income${index}`}
-                            style={[styles.incomeItem, index === list.length - 1 ? {marginBottom: 0} : {}]}>
-                            <View
-                                style={[
-                                    styles.colorBar,
-                                    Style.flexBetween,
-                                    {
-                                        width: Math.max(
-                                            text(105),
-                                            maxData === 0
-                                                ? 0
-                                                : (Math.abs(parseFloat(`${item.profit}`.replaceAll(',', ''))) /
-                                                      maxData) *
-                                                      (deviceWidth - 32)
-                                        ),
-                                        maxWidth: '100%',
-                                        backgroundColor: getColor(`${item.profit}`),
-                                    },
-                                ]}>
-                                <Text style={styles.incomeText}>{item.date}</Text>
-                                <Text style={styles.incomeText}>
-                                    {parseFloat(`${item.profit}`.replaceAll(',', '')) > 0
-                                        ? `+${item.profit}`
-                                        : item.profit}
-                                </Text>
-                            </View>
-                            {item.fee ? <Text style={styles.feeText}>{item.fee}</Text> : null}
-                        </View>
-                    );
-                })}
-                <Text style={{textAlign: 'center', paddingTop: Space.padding}}>
-                    {isMoreloading ? '上拉查看更多' : '暂无更多了'}
-                </Text>
-            </View>
-        </ScrollView>
+            ) : (
+                <>
+                    <View style={styles.updateDesc}>
+                        <Accordion
+                            activeSections={activeSections}
+                            expandMultiple
+                            onChange={(indexes) => setActiveSections(indexes)}
+                            renderContent={renderTable}
+                            renderHeader={renderHeader}
+                            sections={[1]}
+                            touchableComponent={TouchableOpacity}
+                            touchableProps={{activeOpacity: 1}}
+                        />
+                    </View>
+                    {renderEmpty()}
+                </>
+            )}
+        </View>
     );
 };
 
@@ -239,6 +288,7 @@ const styles = StyleSheet.create({
     },
     incomeItem: {
         marginBottom: text(12),
+        marginHorizontal: Space.marginAlign,
         backgroundColor: Colors.bgColor,
     },
     colorBar: {
@@ -258,6 +308,13 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         color: Colors.descColor,
+    },
+    headerText: {
+        flex: 1,
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.darkGrayColor,
+        textAlign: 'center',
     },
 });
 
