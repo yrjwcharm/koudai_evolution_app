@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-01 19:36:45
+ * @LastEditTime: 2021-02-02 12:25:17
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -14,37 +14,49 @@ import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/Feather';
+import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 const FindDetail = (props) => {
-    const ZoomIn = {
-        0: {
-            scale: 0.9,
-        },
-        0.8: {
-            scale: 1.05,
-        },
-        1: {
-            scale: 1,
-        },
-    };
+    // const ZoomIn = {
+    //     0: {
+    //         scale: 0.9,
+    //     },
+    //     0.8: {
+    //         scale: 1.05,
+    //     },
+    //     1: {
+    //         scale: 1,
+    //     },
+    // };
     const containerRef = useRef(null);
+    const insets = useRef(useSafeAreaInsets()).current;
     return (
-        <View>
-            <ScrollView>
-                <Animatable.View ref={containerRef} animation={ZoomIn} duration={800} style={styles.container}>
+        <MagicMove.Scene>
+            <Animatable.View ref={containerRef} style={styles.container}>
+                <TouchableOpacity
+                    style={[styles.close_img, {top: insets.top}]}
+                    onPress={() => {
+                        containerRef?.current.fadeOutDown(100).then(() => {
+                            props.navigation.goBack();
+                        });
+                    }}>
+                    <FastImage
+                        style={{width: px(24), height: px(24)}}
+                        source={require('../../assets/img/find/close.png')}
+                    />
+                </TouchableOpacity>
+                <ScrollView>
                     {/* header */}
-
-                    <View
-                        style={[styles.recommend]}
-                        duration={600}
-                        id="logo"
-                        transition={MagicMove.Transition.shrinkAndGrow}>
+                    <MagicMove.View style={[styles.recommend]} id="logo" transition={MagicMove.Transition.morph}>
                         <FastImage
                             style={{
                                 height: px(350),
                             }}
                             source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片42.png'}}
                         />
-
+                        <View style={[styles.header, {top: insets.top + px(4)}]}>
+                            <Text style={styles.img_desc}>35+必备</Text>
+                            <Text style={styles.img_title}>美好生活提前储备</Text>
+                        </View>
                         <View
                             style={[
                                 styles.card,
@@ -57,13 +69,9 @@ const FindDetail = (props) => {
                                 style={{
                                     padding: Space.cardPadding,
                                 }}>
-                                <View style={Style.flexRow}>
-                                    <Text style={[styles.card_title, {fontSize: px(16)}]}>养老计划</Text>
-                                </View>
-                                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                                    <Text style={[styles.radio, {fontSize: px(26), marginTop: px(4)}]}>
-                                        132.87%~156.58%
-                                    </Text>
+                                <Text style={[styles.card_title, {fontSize: px(16)}]}>养老计划</Text>
+                                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                    <Text style={styles.radio}>132.87%~156.58%</Text>
                                     <TouchableOpacity>
                                         <LinearGradient
                                             start={{x: 0, y: 0.25}}
@@ -79,7 +87,7 @@ const FindDetail = (props) => {
 
                             <Text style={styles.tip_text}>已有 212,345 同龄人开启计划</Text>
                         </View>
-                    </View>
+                    </MagicMove.View>
 
                     <View style={{paddingHorizontal: px(16)}}>
                         <View style={{marginBottom: px(20)}}>
@@ -128,14 +136,7 @@ const FindDetail = (props) => {
                                 </View>
                             </View>
                         </View>
-                        <TouchableOpacity
-                            onPress={() => {
-                                containerRef?.current.fadeOutDown(300).then(() => {
-                                    props.navigation.goBack();
-                                });
-                            }}>
-                            <Text>返回</Text>
-                        </TouchableOpacity>
+
                         <View style={{marginBottom: px(20)}}>
                             <View
                                 style={[
@@ -163,7 +164,7 @@ const FindDetail = (props) => {
                                     <View style={[Style.flexRow, {marginVertical: px(15)}]}>
                                         <FastImage
                                             style={styles.ques_img}
-                                            source={require('../../assets/img/question.png')}
+                                            source={require('../../assets/img/find/question.png')}
                                         />
                                         <Text style={[styles.article_title, {marginBottom: 0}]}>
                                             投资一支基金和一个组合的区别？
@@ -171,7 +172,7 @@ const FindDetail = (props) => {
                                     </View>
                                     <View>
                                         <Text style={styles.article_content}>
-                                            <Text style={{color: Colors.defaultColor, fontWeight: '500'}}>
+                                            <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>
                                                 魔方回答：
                                             </Text>
                                             一支基金的风险是不可控的，只有基金组合投资到多个市场中，才可以进行市场风险对冲…
@@ -182,9 +183,9 @@ const FindDetail = (props) => {
                             </View>
                         </View>
                     </View>
-                </Animatable.View>
-            </ScrollView>
-        </View>
+                </ScrollView>
+            </Animatable.View>
+        </MagicMove.Scene>
     );
 };
 const styles = StyleSheet.create({
@@ -197,8 +198,9 @@ const styles = StyleSheet.create({
         marginBottom: px(20),
     },
     recommend_btn: {
-        paddingVertical: px(8),
-        paddingHorizontal: px(26),
+        height: px(32),
+        justifyContent: 'center',
+        paddingHorizontal: px(22),
         borderRadius: 20,
     },
     card: {
@@ -208,25 +210,28 @@ const styles = StyleSheet.create({
     },
     card_title: {
         fontSize: px(15),
-        fontWeight: '500',
+        fontWeight: '700',
         color: Colors.defaultColor,
         marginRight: px(12),
     },
     article_title: {
         fontSize: px(14),
-        fontWeight: '500',
+        fontWeight: '700',
         color: Colors.defaultColor,
         marginBottom: px(9),
     },
     radio: {
         color: Colors.red,
         fontFamily: Font.numFontFamily,
+        fontSize: px(24),
+        marginTop: px(6),
+        lineHeight: px(28),
     },
 
     btn_text: {
         fontSize: px(13),
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: '700',
     },
     light_text: {
         color: Colors.lightGrayColor,
@@ -234,11 +239,16 @@ const styles = StyleSheet.create({
         marginTop: px(4),
     },
     large_title: {
-        fontWeight: '500',
+        fontWeight: '700',
         fontSize: px(17),
         color: Colors.defaultColor,
     },
-
+    img_title: {
+        color: '#fff',
+        fontSize: px(26),
+        lineHeight: px(28),
+        fontWeight: '700',
+    },
     tip_text: {
         backgroundColor: '#FEF8EE',
         fontSize: px(13),
@@ -256,10 +266,24 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
         lineHeight: px(20),
     },
+    header: {
+        position: 'absolute',
+        paddingHorizontal: px(16),
+    },
+    img_desc: {
+        color: '#fff',
+        fontSize: px(14),
+        marginBottom: px(10),
+    },
     ques_img: {
         width: px(18),
         height: px(18),
         marginRight: px(8),
+    },
+    close_img: {
+        position: 'absolute',
+        right: px(16),
+        zIndex: 20,
     },
 });
 export default FindDetail;
