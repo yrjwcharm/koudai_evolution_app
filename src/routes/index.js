@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-02-01 10:39:06
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-03 16:53:06
  * @Description:路由表
  */
 import React from 'react';
@@ -72,12 +72,13 @@ import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
+import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TabScreen"
+            initialRouteName="TradeRecord"
             screenOptions={{
                 // headerShown: false,
 
@@ -88,7 +89,7 @@ export default function AppStack() {
                 headerTitleAlign: 'center',
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
-                    fontSize: 16,
+                    fontSize: px(18),
                 },
                 headerTitleAllowFontScaling: false,
                 gestureEnabled: true,

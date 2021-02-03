@@ -2,11 +2,11 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 12:25:17
+ * @LastEditTime: 2021-02-02 17:22:15
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -35,9 +35,11 @@ const FindDetail = (props) => {
                 <TouchableOpacity
                     style={[styles.close_img, {top: insets.top}]}
                     onPress={() => {
-                        containerRef?.current.fadeOutDown(100).then(() => {
-                            props.navigation.goBack();
-                        });
+                        Platform.OS == 'ios'
+                            ? containerRef?.current.fadeOutDown(300).then(() => {
+                                  props.navigation.goBack();
+                              })
+                            : props.navigation.goBack();
                     }}>
                     <FastImage
                         style={{width: px(24), height: px(24)}}

@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 15:45:51
+ * @LastEditTime: 2021-02-03 11:44:37
  * @Description:主题及公共样式表
  */
 
@@ -27,7 +27,7 @@ export const Colors = {
     // 默认placeholder颜色
     placeholderColor: '#CCCCCC',
     // borderColor
-    borderColor: '#DDDDDD',
+    borderColor: '#E2E4EA',
     // 链接颜色
     linkColor: '#0051CC',
     // 输入框背景色
@@ -36,6 +36,8 @@ export const Colors = {
     red: '#E74949',
     // 绿色 跌
     green: '#4BA471',
+    //橘色 确认中
+    orange: '#EB7121',
     btnColor: '#0051CC',
     //黄色
     yellow: '#EB7121',
@@ -145,5 +147,11 @@ export const Style = StyleSheet.create({
     descSty: {
         color: '#9095A5',
         fontSize: text(13),
+    },
+    tag: {
+        paddingHorizontal: px(7),
+        justifyContent: 'center',
+        borderRadius: 4,
+        height: px(20),
     },
 });

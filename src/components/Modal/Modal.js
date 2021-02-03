@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-07 18:46:00
+ * @LastEditTime: 2021-02-02 16:22:05
  * @Description:
  */
 /**
@@ -17,6 +17,7 @@
 import React from 'react';
 import RootSibling from 'react-native-root-siblings';
 import ModalRender from './ModalContainer';
+import Mask from '../Mask';
 let rootSibling = null;
 function destroy() {
     if (rootSibling) {
@@ -26,7 +27,14 @@ function destroy() {
 export default class Modal extends React.Component {
     static show(options) {
         destroy();
-        rootSibling = new RootSibling(<ModalRender {...options} isVisible={true} destroy={() => destroy()} />);
+        rootSibling = new RootSibling(
+            (
+                <>
+                    <Mask />
+                    <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
+                </>
+            )
+        );
         return rootSibling;
     }
     static close(options) {

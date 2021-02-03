@@ -1190,10 +1190,10 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/slider/download/@react-native-community/slider-3.0.3.tgz#830167fd757ba70ac638747ba3169b2dbae60330"
   integrity sha1-gwFn/XV7pwrGOHR7oxabLbrmAzA=
 
-"@react-native-community/viewpager@^2.0.1", "@react-native-community/viewpager@^4.1.0":
-  version "4.2.2"
-  resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-4.2.2.tgz#e05d618829c589284326896c806200af90ae0986"
-  integrity sha1-4F1hiCnFiShDJolsgGIAr5CuCYY=
+"@react-native-community/viewpager@2.0.2", "@react-native-community/viewpager@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-2.0.2.tgz#622b190294b1310c4825c98daeaee1c8443f7124"
+  integrity sha1-YisZApSxMQxIJcmNrq7hyEQ/cSQ=
 
 "@react-navigation/bottom-tabs@^5.10.6":
   version "5.11.3"
