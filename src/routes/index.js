@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 17:37:54
+ * @LastEditTime: 2021-02-01 11:10:33
  * @Description:路由表
  */
 import React from 'react';
@@ -61,12 +61,15 @@ import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
+import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
+import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
+import SetTarget from '../pages/Portfolio/SetTarget'; //低估值设置目标
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="SetTarget"
             screenOptions={{
                 // headerShown: false,
 
@@ -259,6 +262,9 @@ export default function AppStack() {
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
+            <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: '赎回银行产品'}} />
+            <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
+            <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
             <Stack.Screen
                 name="PlanHistory"
                 component={PlanHistory}

@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-25 11:26:41
- * @Description:
+ * @Description:银行持仓(平安)
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 19:17:07
+ * @LastEditTime: 2021-02-04 16:04:05
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';

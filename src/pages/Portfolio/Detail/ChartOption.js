@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 17:27:36
+ * @LastEditTime: 2021-01-30 13:41:53
  */
 import _ from 'lodash';
 export const baseChart = (data) => `(function(){
@@ -49,7 +49,6 @@ export const pie = (data, map) => `
       id: 'chart',
       pixelRatio: window.devicePixelRatio
     });
-   
     chart.source(${JSON.stringify(data)},{
       ratio: {
         formatter: function formatter(val) {

@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
- * @Description:
+ * @Description:长短期详情页
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 17:34:21
+ * @LastEditTime: 2021-02-04 16:02:40
  */
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
@@ -254,7 +254,7 @@ export default function DetailAccount(props) {
                     </View>
                 </ScrollView>
             ) : null}
-            <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} />
+            {/* <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} /> */}
         </SafeAreaView>
     );
 }
