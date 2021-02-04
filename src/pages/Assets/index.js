@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 09:57:46
+ * @LastEditTime: 2021-02-04 16:05:05
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -10,7 +10,6 @@ import {
     Animated,
     View,
     Text,
-    Button,
     ScrollView,
     StyleSheet,
     PermissionsAndroid,
@@ -20,8 +19,8 @@ import {
     LayoutAnimation,
     RefreshControl,
 } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -58,7 +57,7 @@ function HomeScreen({navigation}) {
     const fadeAnim = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     // 滚动回调
-    const _onScroll = (event) => {
+    const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
         if (y > 50) {
             StatusBar.setBarStyle('dark-content');
@@ -66,7 +65,7 @@ function HomeScreen({navigation}) {
             StatusBar.setBarStyle('light-content');
         }
         setScrollY(y);
-    };
+    }, []);
     // 隐藏系统消息
     const hideSystemMsg = useCallback(() => {
         Animated.timing(fadeAnim, {
@@ -93,6 +92,16 @@ function HomeScreen({navigation}) {
             // uid: '1000000001',
         }).then((res) => {
             setHoldingData(res.result);
+        });
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/common/20210101', {
+            // uid: '1000000001',
+        }).then((res) => {
+            setUserBasicInfo(res.result);
+        });
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/notice/20210101', {
+            // uid: '1000000001',
+        }).then((res) => {
+            setNotice(res.result);
             setRefreshing(false);
         });
     }, []);
@@ -184,31 +193,19 @@ function HomeScreen({navigation}) {
         return item.portfolios.every((po) => po.adjust_status > 0);
     }, []);
 
-    useEffect(() => {
-        navigation.addListener('focus', () => {
+    useFocusEffect(
+        useCallback(() => {
             StatusBar.setBarStyle('light-content');
-        });
-        navigation.addListener('blur', () => {
-            StatusBar.setBarStyle('dark-content');
-        });
-    }, [navigation]);
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
+    );
     useEffect(() => {
         storage.get('myAssetsEye').then((res) => {
             setShowEye(res ? res : 'true');
         });
-    }, []);
-    useEffect(() => {
         init();
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/common/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
-            setUserBasicInfo(res.result);
-        });
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/notice/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
-            setNotice(res.result);
-        });
     }, [init]);
 
     return (
@@ -225,7 +222,7 @@ function HomeScreen({navigation}) {
                 }}
             />
             <ScrollView
-                onScroll={_onScroll}
+                onScroll={onScroll}
                 scrollEventThrottle={16}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
                 <View style={[styles.assetsContainer]}>
@@ -439,7 +436,10 @@ function HomeScreen({navigation}) {
                     {userBasicInfo.bottom_menus &&
                         userBasicInfo.bottom_menus.map((item, index) => {
                             return (
-                                <TouchableOpacity key={`menu1${index}`} style={[Style.flexCenter, {flex: 1}]}>
+                                <TouchableOpacity
+                                    key={`menu1${index}`}
+                                    style={[Style.flexCenter, {flex: 1}]}
+                                    onPress={() => index === 3 && navigation.navigate('Settings')}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
@@ -447,13 +447,6 @@ function HomeScreen({navigation}) {
                         })}
                 </View>
                 <BottomDesc />
-                {/* <View style={{height: 2000, alignItems: 'center'}}>
-                    <Text style={{fontSize: 20}}>Home Scree111n</Text>
-                    <Text style={{fontSize: 30, color: 'red', fontFamily: 'DINAlternate-Bold'}}>88888%</Text>
-                    <Button title={'获取权限'} onPress={requestCameraPermission} />
-                    <AntDesign name="setting" size={18} color={'#00f'} />
-                    <Button title="Go to Details" onPress={() => navigation.navigate('DetailScreen')} />
-                </View> */}
             </ScrollView>
         </View>
     );

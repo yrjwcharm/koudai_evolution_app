@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:05:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-04 18:46:13
  * @Description:路由表
  */
 import React from 'react';
@@ -75,13 +75,17 @@ import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
+import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
+import Settings from '../pages/Assets/Settings'; // 个人设置
+import Profile from '../pages/Assets/Profile'; // 个人资料
+import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRecord"
+            initialRouteName="TabScreen"
             screenOptions={{
                 // headerShown: false,
 
@@ -316,6 +320,10 @@ export default function AppStack() {
             <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
+            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
+            <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
+            <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
+            <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
         </Stack.Navigator>
     );
 }
