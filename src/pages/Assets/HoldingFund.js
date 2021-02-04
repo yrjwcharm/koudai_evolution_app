@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-28 14:39:52
+ * @LastEditTime: 2021-01-30 14:29:08
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,6 +13,7 @@ import Tab from '../../components/TabBar';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import Empty from '../../components/EmptyTip';
 
 const RatioColor = [
     '#E1645C',
@@ -90,6 +91,9 @@ const HoldingFund = ({navigation}) => {
                                     item.funds.map((fund, i) => {
                                         return (
                                             <TouchableOpacity
+                                                onPress={() =>
+                                                    navigation.navigate({name: 'FundDetail', params: {code: fund.code}})
+                                                }
                                                 style={[
                                                     styles.fundContainer,
                                                     i === item.funds.length - 1 ? {marginBottom: 0} : {},
@@ -169,12 +173,7 @@ const HoldingFund = ({navigation}) => {
                             </View>
                         );
                     })}
-                    {list.length === 0 && (
-                        <View style={[styles.noData, Style.flexCenter]}>
-                            <Image source={require('../../assets/personal/noData.png')} style={styles.noDataImg} />
-                            <Text style={styles.noDataText}>{curTab === 0 ? '暂无持有中基金' : '暂无确认中基金'}</Text>
-                        </View>
-                    )}
+                    {list.length === 0 && <Empty text={curTab === 0 ? '暂无持有中基金' : '暂无确认中基金'} />}
                     {curTab === 0 && (
                         <TouchableOpacity style={[styles.historyHolding, Style.flexBetween]}>
                             <Text style={[styles.name, {fontWeight: '500'}]}>{'历史持有基金'}</Text>
@@ -184,7 +183,7 @@ const HoldingFund = ({navigation}) => {
                 </View>
             </>
         );
-    }, [curTab, list, getColor]);
+    }, [curTab, list, getColor, navigation]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -278,20 +277,6 @@ const styles = StyleSheet.create({
         marginVertical: text(28),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
-    },
-    noData: {
-        paddingVertical: text(110),
-    },
-    noDataImg: {
-        width: text(172),
-        height: text(96),
-        marginBottom: text(36),
-    },
-    noDataText: {
-        fontSize: Font.textH1,
-        lineHeight: text(22),
-        color: Colors.defaultColor,
-        fontWeight: '500',
     },
 });
 

@@ -3,20 +3,19 @@
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:02:40
+ * @LastEditTime: 2021-02-04 16:08:46
  */
-import React, {useEffect, useState, useLayoutEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, isIphoneX} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Header from '../../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+import {Chart} from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import ListHeader from '../components/ListHeader';
@@ -41,7 +40,9 @@ export default function DetailAccount(props) {
         setChartData(num);
     };
     const jumpPage = (url) => {
-        if (!url) return;
+        if (!url) {
+            return;
+        }
         props.navigation.navigate(url);
     };
     useEffect(() => {
@@ -54,7 +55,7 @@ export default function DetailAccount(props) {
     }, []);
 
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <>
             {Object.keys(data).length > 0 ? (
                 <Header
                     title={data.title}
@@ -65,7 +66,7 @@ export default function DetailAccount(props) {
                 />
             ) : null}
             {Object.keys(data).length > 0 ? (
-                <ScrollView style={{marginBottom: '10%'}}>
+                <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
@@ -254,8 +255,8 @@ export default function DetailAccount(props) {
                     </View>
                 </ScrollView>
             ) : null}
-            {/* <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} /> */}
-        </SafeAreaView>
+            <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} />
+        </>
     );
 }
 const styles = StyleSheet.create({

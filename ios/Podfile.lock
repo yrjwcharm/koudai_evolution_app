@@ -90,7 +90,6 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - lottie-ios (3.1.9)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
@@ -286,6 +285,8 @@ PODS:
     - React
   - react-native-pdf (6.2.2):
     - React-Core
+  - react-native-progress-view (1.2.3):
+    - React
   - react-native-safe-area-context (3.1.9):
     - React-Core
   - react-native-slider (3.0.3):
@@ -379,6 +380,8 @@ PODS:
     - React
   - RNGestureHandler (1.9.0):
     - React-Core
+  - RNMagicMove (0.6.6):
+    - React
   - RNReanimated (1.13.2):
     - React-Core
   - RNScreens (2.16.1):
@@ -425,7 +428,6 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - JCore (from `../node_modules/jcore-react-native`)
   - JPush (from `../node_modules/jpush-react-native`)
-  - lottie-ios (from `../node_modules/lottie-ios`)
   - Picker (from `../node_modules/react-native-picker`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -447,6 +449,7 @@ DEPENDENCIES:
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
+  - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
@@ -471,6 +474,7 @@ DEPENDENCIES:
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNMagicMove (from `../node_modules/react-native-magic-move`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -516,8 +520,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/jcore-react-native"
   JPush:
     :path: "../node_modules/jpush-react-native"
-  lottie-ios:
-    :path: "../node_modules/lottie-ios"
   Picker:
     :path: "../node_modules/react-native-picker"
   RCTRequired:
@@ -556,6 +558,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-orientation-locker"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
+  react-native-progress-view:
+    :path: "../node_modules/@react-native-community/progress-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -604,6 +608,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNMagicMove:
+    :path: "../node_modules/react-native-magic-move"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -636,7 +642,6 @@ SPEC CHECKSUMS:
   JPush: b389c8181b1a5f8978cd06a3811c76fbd848862c
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
-  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   Picker: 37554355aef82a532ea95b71b6eeba66bc86182b
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
@@ -657,6 +662,7 @@ SPEC CHECKSUMS:
   react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
   react-native-orientation-locker: f0ca1a8e5031dab6b74bfb4ab33a17ed2c2fcb0d
   react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
+  react-native-progress-view: 21b1e29e70c7559c16c9e0a04c4adc19fce6ede2
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
@@ -681,6 +687,7 @@ SPEC CHECKSUMS:
   RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNMagicMove: acc7d9dff86dd68588b01cb3515182e50b50b81c
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
@@ -692,4 +699,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6f8d700dcae8f398d8d855fead75a22a7f28a5cf
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.9.3

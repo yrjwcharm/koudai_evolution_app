@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     mask: {
         width: width,
         height: height,
-        backgroundColor: 'rgba(0,0,0,.5)',
+        backgroundColor: 'transparent',
         position: 'absolute',
         left: 0,
         top: 0,

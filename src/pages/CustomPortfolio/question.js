@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 14:06:49
+ * @LastEditTime: 2021-01-28 17:34:43
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -92,6 +92,9 @@ export class question extends Component {
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
         if (action == 'submit') {
             this.setState({finishTest: true});
+            setTimeout(() => {
+                this.props.navigation.navigate('PlanResult');
+            }, 2000);
         } else {
             this.setState({
                 current: _current,

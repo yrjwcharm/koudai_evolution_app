@@ -2,7 +2,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 15:02:42
+ * @LastEditTime: 2021-02-01 15:52:03
  * @Description: app全局入口文件
  */
 import * as React from 'react';
@@ -17,6 +17,7 @@ import CodePush from 'react-native-code-push';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootSiblingParent} from 'react-native-root-siblings';
 import {requestExternalStoragePermission} from './src/utils/appUtil';
+import * as MagicMove from 'react-native-magic-move';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest; //调试中可看到网络请求
@@ -106,15 +107,17 @@ function App() {
                 translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
                 barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
             />
-            <Provider store={store}>
-                <PersistGate loading={null} persistor={persistor}>
-                    <SafeAreaProvider>
-                        <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
-                            <AppStack />
-                        </NavigationContainer>
-                    </SafeAreaProvider>
-                </PersistGate>
-            </Provider>
+            <MagicMove.Provider>
+                <Provider store={store}>
+                    <PersistGate loading={null} persistor={persistor}>
+                        <SafeAreaProvider>
+                            <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+                                <AppStack />
+                            </NavigationContainer>
+                        </SafeAreaProvider>
+                    </PersistGate>
+                </Provider>
+            </MagicMove.Provider>
         </RootSiblingParent>
     );
 }

@@ -1,15 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-26 17:43:49
- * @LastEditors: dx
+ * @LastEditTime: 2021-01-30 11:13:39
+ * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, isIphoneX} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
 import {useNavigation} from '@react-navigation/native';
@@ -53,19 +53,25 @@ const FixedBtn = (props) => {
     };
     return (
         <View style={[styles.container, Style.flexRow, style]}>
-            <TouchableOpacity style={[styles.contactBtn, Style.flexCenter]} onPress={() => bottomModal.current.show()}>
-                <Image source={{uri: btns[0].icon}} style={[styles.contactIcon]} />
-                <Text style={[styles.contactText]}>{btns[0].title}</Text>
-            </TouchableOpacity>
-            <Button
-                title={btns[1].title}
-                desc={btns[1].desc}
-                style={styles.btn}
-                textStyle={styles.btnText}
-                descStyle={styles.descText}
-                onPress={() => {}}
-            />
-            <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />
+            {btns?.length > 0 ? (
+                <>
+                    <TouchableOpacity
+                        style={[styles.contactBtn, Style.flexCenter]}
+                        onPress={() => bottomModal.current.show()}>
+                        <Image source={{uri: btns[0].icon}} style={[styles.contactIcon]} />
+                        <Text style={[styles.contactText]}>{btns[0].title}</Text>
+                    </TouchableOpacity>
+                    <Button
+                        title={btns[1].title}
+                        desc={btns[1].desc}
+                        style={styles.btn}
+                        textStyle={styles.btnText}
+                        descStyle={styles.descText}
+                        onPress={() => {}}
+                    />
+                    <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />
+                </>
+            ) : null}
         </View>
     );
 };
@@ -76,6 +82,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingVertical: text(8),
         paddingHorizontal: text(20),
+        paddingBottom: isIphoneX() ? 34 : 0,
     },
     contactBtn: {
         paddingRight: text(20),
@@ -159,5 +166,5 @@ FixedBtn.propTypes = {
 FixedBtn.defaultProps = {
     style: {},
 };
-
+FixedBtn.btnHeight = isIphoneX() ? text(90) : text(66);
 export default FixedBtn;

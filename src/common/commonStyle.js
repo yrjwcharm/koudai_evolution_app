@@ -1,12 +1,12 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-01-28 11:04:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-03 11:44:37
  * @Description:主题及公共样式表
  */
 
 import {StyleSheet} from 'react-native';
-import {px as text} from '../utils/appUtil';
+import {px as text, px} from '../utils/appUtil';
 export const Colors = {
     /** color **/
 
@@ -16,6 +16,8 @@ export const Colors = {
     brandColor: '#0051CC',
     // 默认黑色字体颜色
     defaultColor: '#121D3A',
+    //浅黑色
+    lightBlackColor: '#555B6C',
     // 默认深灰色字体颜色
     darkGrayColor: '#80899B',
     // 默认浅灰色字体颜色
@@ -25,7 +27,7 @@ export const Colors = {
     // 默认placeholder颜色
     placeholderColor: '#CCCCCC',
     // borderColor
-    borderColor: '#DDDDDD',
+    borderColor: '#E2E4EA',
     // 链接颜色
     linkColor: '#0051CC',
     // 输入框背景色
@@ -34,6 +36,8 @@ export const Colors = {
     red: '#E74949',
     // 绿色 跌
     green: '#4BA471',
+    //橘色 确认中
+    orange: '#EB7121',
     btnColor: '#0051CC',
     //黄色
     yellow: '#EB7121',
@@ -60,6 +64,7 @@ export const Space = {
     marginAlign: text(16),
     // 内边距
     padding: text(16),
+    cardPadding: px(16),
     /** width **/
     //圆角
     borderRadius: text(8),
@@ -142,5 +147,11 @@ export const Style = StyleSheet.create({
     descSty: {
         color: '#9095A5',
         fontSize: text(13),
+    },
+    tag: {
+        paddingHorizontal: px(7),
+        justifyContent: 'center',
+        borderRadius: 4,
+        height: px(20),
     },
 });

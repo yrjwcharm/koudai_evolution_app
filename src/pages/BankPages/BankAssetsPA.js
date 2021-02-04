@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:26:41
  * @Description:银行持仓(平安)
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:04:05
+ * @LastEditTime: 2021-02-04 16:09:08
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -15,8 +15,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
-import Chart from 'react-native-f2chart';
-import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart';
+import Chart from '../../components/Chart';
+import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart/chartOptions';
 import ChartData from './data.json';
 
 export default function BankAssetsPA(props) {
@@ -50,7 +50,7 @@ export default function BankAssetsPA(props) {
             />
             {Object.keys(data).length > 0 && (
                 <ScrollView>
-                    <View style={styles.bg_sty}></View>
+                    <View style={styles.bg_sty} />
                     <View style={Style.containerPadding}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
                             <Text style={Style.descSty}>总金额(元){data.part1.date}</Text>
@@ -58,15 +58,15 @@ export default function BankAssetsPA(props) {
                             <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
                                 <View style={{flex: 1}}>
                                     <Text style={styles.top_text_sty}>日收益</Text>
-                                    <Html style={styles.bottom_num_sty} html={data.part1.profit}></Html>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit} />
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
                                     <Text style={styles.top_text_sty}>累计受益</Text>
-                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc}></Html>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc} />
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
                                     <Text style={styles.top_text_sty}>累计受益</Text>
-                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc}></Html>
+                                    <Html style={styles.bottom_num_sty} html={data.part1.profit_acc} />
                                 </View>
                             </View>
                             <View style={styles.btn_wrap_sty}>

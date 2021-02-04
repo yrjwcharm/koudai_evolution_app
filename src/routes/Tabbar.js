@@ -1,54 +1,97 @@
 /*
- * @Date: 2020-11-04 11:56:24
+ * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-19 13:24:36
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-02 11:20:58
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
+import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import IMScreen from '../pages/IM/index';
 import HomeScreen from '../pages/Assets/index';
-import IndexScreen from '../pages/Index/index';
+// import IndexScreen from '../pages/Index/index';
+import {px} from '../utils/appUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Find from '../pages/Find'; //发现页
+import {Colors} from '../common/commonStyle';
 const Tab = createBottomTabNavigator();
+const tabIconSize = px(24);
+
 export default function Tabbar() {
     return (
         <Tab.Navigator
             screenOptions={({route}) => ({
-                tabBarIcon: ({focused, color, size}) => {
-                    if (route.name === 'IndexScreen') {
+                tabBarIcon: ({focused}) => {
+                    if (route.name === 'Find') {
                         if (focused) {
-                            return <AntDesign name="setting" size={size} color={color} />;
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxianActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxian.png')}
+                                />
+                            );
                         }
-                        return <AntDesign name="home" size={size} color={color} />;
                     } else if (route.name === 'IMScreen') {
-                        return <AntDesign name="cloudo" size={size} color={color} />;
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/mofangActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/mofang.png')}
+                                />
+                            );
+                        }
                     } else if (route.name === 'HomeScreen') {
-                        return <AntDesign name="mail" size={size} color={color} />;
-                    } else if (route.name === 'setting') {
-                        return <AntDesign name="setting" size={size} color={color} />;
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/wodeActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/wode.png')}
+                                />
+                            );
+                        }
                     }
                 },
             })}
             backBehavior={'none'}
             tabBarOptions={{
-                // activeTintColor: 'tomato',
-                // inactiveTintColor: 'gray',
+                activeTintColor: Colors.btnColor,
+                inactiveTintColor: '#4E556C',
                 allowFontScaling: false,
                 labelStyle: {
-                    fontSize: 16,
+                    fontSize: px(12),
                 },
             }}>
             <Tab.Screen
-                name="IndexScreen"
-                component={IndexScreen}
+                name="Find"
+                component={Find}
                 options={{
                     tabBarLabel: '发现',
                 }}
             />
             <Tab.Screen name="IMScreen" options={{tabBarLabel: '魔方'}} component={IMScreen} />
-            <Tab.Screen name="HomeScreen" options={{tabBarLabel: '资产'}} component={HomeScreen} />
+            <Tab.Screen name="HomeScreen" options={{tabBarLabel: '我的'}} component={HomeScreen} />
         </Tab.Navigator>
     );
 }

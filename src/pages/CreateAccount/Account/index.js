@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:18:48
+ * @LastEditTime: 2021-01-30 18:36:01
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -16,6 +16,7 @@ import {FixedButton} from '../../../components/Button';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
 import {formCheck} from '../../../utils/validator';
+import http from '../../../services';
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +26,22 @@ export class index extends Component {
             rname: '', //职业名称
             rcode: '', //职业代码
             showMask: false,
+            careerList: [],
         };
+    }
+    componentDidMount() {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/career_list/20210101').then(
+            (data) => {
+                var career = data.result.career.filter((item) => {
+                    return item.code == data.result.default_career;
+                });
+                this.setState({
+                    careerList: data.result.career,
+                    rname: career[0].name,
+                    rcode: data.result.default_career,
+                });
+            }
+        );
     }
     jumpPage = (nav) => {
         const {name, id_no} = this.state;
@@ -44,6 +60,14 @@ export class index extends Component {
         }
         this.props.navigation.navigate(nav);
     };
+    careertData() {
+        const {careerList} = this.state;
+        var data = [];
+        for (var obj in careerList) {
+            data.push(careerList[obj].name);
+        }
+        return data;
+    }
     _showPosition = () => {
         Keyboard.dismiss();
         this.setState({showMask: true});
@@ -53,14 +77,14 @@ export class index extends Component {
             pickerConfirmBtnText: '确定',
             pickerBg: [255, 255, 255, 1],
             pickerToolBarBg: [249, 250, 252, 1],
-            pickerData: [1, 2, 3, 4],
+            pickerData: this.careertData(),
             pickerFontColor: [33, 33, 33, 1],
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.setState({rname: pickedValue, showMask: false, rcode: this.state.identity.career[pickedIndex]});
+                this.setState({rname: pickedValue, showMask: false, rcode: this.state.careerList[pickedIndex]});
             },
             onPickerCancel: () => {
                 this.setState({showMask: false});

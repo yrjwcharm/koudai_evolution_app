@@ -13,7 +13,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+// import Chart from 'react-native-f2chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';

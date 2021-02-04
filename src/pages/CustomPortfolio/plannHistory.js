@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-27 21:40:35
+ * @LastEditTime: 2021-01-30 18:38:37
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
     },
     card: {
         padding: px(16),
-        shadowColor: '#28479E',
         backgroundColor: '#fff',
         borderRadius: px(8),
+        shadowColor: '#28479E',
         shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.1,
         shadowRadius: 4,

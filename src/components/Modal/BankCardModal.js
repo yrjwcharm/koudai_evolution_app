@@ -2,14 +2,14 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-22 16:16:58
+ * @LastEditTime: 2021-02-01 11:09:06
  * @Description: 银行卡选择
  */
 
 import React from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {constants} from './util';
-import {isIphoneX, px as text, deviceHeight as height, deviceWidth as width, px} from '../../utils/appUtil';
+import {isIphoneX, px as text, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../../common/commonStyle';
@@ -30,7 +30,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
     } = props;
     const navigation = useNavigation();
     const [visible, setVisible] = React.useState(false);
-    const [select, setSelect] = React.useState(props.select || 0); //默认选中的银行卡
+    const [select, setSelect] = React.useState(props.select); //默认选中的银行卡
     const show = () => {
         setVisible(true);
     };
@@ -44,7 +44,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         setSelect(index);
         setTimeout(() => {
             hide();
-            onDone && onDone(index);
+            onDone && onDone(data[index]);
         }, 500);
     };
     const addCard = () => {
@@ -60,8 +60,8 @@ const BankCardModal = React.forwardRef((props, ref) => {
 
     return (
         <>
-            {/* <Mask /> */}
             <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
+                <Mask />
                 <View style={[styles.container]}>
                     <View style={[styles.con, style]}>
                         {header || (
@@ -72,10 +72,11 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 <Text style={styles.title}>{title}</Text>
                             </View>
                         )}
-                        <ScrollView style={{marginHorizontal: text(14)}}>
+                        <ScrollView style={{paddingHorizontal: text(14)}}>
                             {data.map((item, index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         key={index}
                                         style={[styles.bankCard]}
                                         onPress={() => {
@@ -91,7 +92,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                                 {item.limit_desc}
                                             </Text>
                                         </View>
-                                        {select == index && <Entypo name={'check'} size={14} color={'#0051CC'} />}
+                                        {select && select == index && (
+                                            <Entypo name={'check'} size={14} color={'#0051CC'} />
+                                        )}
                                     </TouchableOpacity>
                                 );
                             })}
@@ -119,6 +122,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
+        position: 'relative',
+        zIndex: 100,
     },
     con: {
         paddingBottom: isIphoneX() ? 34 : 0,

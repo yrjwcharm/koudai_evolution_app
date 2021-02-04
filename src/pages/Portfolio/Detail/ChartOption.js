@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-30 13:41:53
+ * @LastEditTime: 2021-02-04 16:08:58
  */
 import _ from 'lodash';
 export const baseChart = (data) => `(function(){

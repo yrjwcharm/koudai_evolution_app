@@ -3,9 +3,9 @@
  * @Date: 2021-01-27 18:32:53
  * @Description:子女教育详情页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-01 10:21:32
+ * @LastEditTime: 2021-02-04 16:08:17
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px, px as text} from '../../../utils/appUtil';
@@ -13,7 +13,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from 'react-native-f2chart';
+import Chart from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';
@@ -21,7 +21,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import Header from '../../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -124,24 +123,28 @@ export default function DetailEducation() {
         setChartData(num);
     };
     const chooseBtn = () => {};
-    useEffect(() => {
-        setChartData(ChartData);
-        let obj = {};
+    const getPieData = useCallback(() => {
+        const mapData = {};
         pieData.map((item) => {
-            obj[item.name] = item.ratio;
+            mapData[item.name] = item.percent;
         });
-        setMap(obj);
-    }, []);
+        setMap(mapData);
+    }, [pieData]);
+    useEffect(() => {
+        // console.log(props);
+        setChartData(ChartData);
+        getPieData();
+    }, [getPieData]);
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <>
+            <Header
+                title={'子女教育计划'}
+                leftIcon="chevron-left"
+                rightText={'重新规划'}
+                rightPress={rightPress}
+                rightTextStyle={styles.right_sty}
+            />
             <ScrollView>
-                <Header
-                    title={'子女教育计划'}
-                    leftIcon="chevron-left"
-                    rightText={'重新规划'}
-                    rightPress={rightPress}
-                    rightTextStyle={styles.right_sty}
-                />
                 <View style={styles.container_sty}>
                     <View style={[Style.flexBetween, styles.select_wrap_sty]}>
                         <Text style={styles.select_text_sty}>
@@ -400,7 +403,7 @@ export default function DetailEducation() {
                 </View>
             </ScrollView>
             <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
-        </SafeAreaView>
+        </>
     );
 }
 const styles = StyleSheet.create({
@@ -466,6 +469,7 @@ const styles = StyleSheet.create({
     },
     content_sty: {
         margin: Space.marginAlign,
+        paddingBottom: FixedBtn.btnHeight,
     },
     card_sty: {
         backgroundColor: '#fff',
