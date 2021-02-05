@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-02-01 09:57:46
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-04 16:36:44
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -26,7 +26,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text} from '../../utils/appUtil.js';
+import {deviceWidth, px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -229,7 +229,8 @@ function HomeScreen({navigation}) {
                 scrollEventThrottle={16}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
                 <View style={[styles.assetsContainer]}>
-                    <View style={[styles.header, Style.flexRow, {paddingTop: insets.top}]}>
+                    <View
+                        style={[styles.header, Style.flexRow, {paddingTop: insets.top + (isIphoneX() ? 0 : text(8))}]}>
                         <Image
                             source={
                                 userBasicInfo.user_info

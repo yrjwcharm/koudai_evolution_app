@@ -1,10 +1,9 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-01-21 11:53:36
- * @LastEditors: dx
- * @Description: In User Settings Edit
- * @FilePath: /koudai_evolution_app/src/pages/Detail/CommonProblem.js
+ * @LastEditTime: 2021-02-04 14:39:05
+ * @LastEditors: yhc
+ * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-03 16:53:06
+ * @LastEditTime: 2021-02-04 14:07:46
  * @Description:路由表
  */
 import React from 'react';
@@ -78,7 +78,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRecord"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 

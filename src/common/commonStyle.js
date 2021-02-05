@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-03 11:44:37
+ * @LastEditTime: 2021-02-04 15:14:17
  * @Description:主题及公共样式表
  */
 
@@ -153,5 +153,9 @@ export const Style = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 4,
         height: px(20),
+    },
+    more: {
+        fontSize: px(12),
+        color: Colors.btnColor,
     },
 });

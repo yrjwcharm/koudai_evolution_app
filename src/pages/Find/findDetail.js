@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 17:22:15
+ * @LastEditTime: 2021-02-04 15:23:28
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -13,8 +13,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
 import * as Animatable from 'react-native-animatable';
-import Icon from 'react-native-vector-icons/Feather';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
+import {QuestionCard, ArticleCard} from '../../components/Article';
 const FindDetail = (props) => {
     // const ZoomIn = {
     //     0: {
@@ -29,6 +29,20 @@ const FindDetail = (props) => {
     // };
     const containerRef = useRef(null);
     const insets = useRef(useSafeAreaInsets()).current;
+    const renderTitle = (title, more_text) => {
+        return (
+            <View
+                style={[
+                    Style.flexBetween,
+                    {
+                        marginBottom: px(16),
+                    },
+                ]}>
+                <Text style={styles.large_title}>{title}</Text>
+                {more_text ? <Text style={Style.more}>查看更多</Text> : null}
+            </View>
+        );
+    };
     return (
         <MagicMove.Scene>
             <Animatable.View ref={containerRef} style={styles.container}>
@@ -93,96 +107,13 @@ const FindDetail = (props) => {
 
                     <View style={{paddingHorizontal: px(16)}}>
                         <View style={{marginBottom: px(20)}}>
-                            <View
-                                style={[
-                                    Style.flexBetween,
-                                    {
-                                        marginBottom: px(16),
-                                    },
-                                ]}>
-                                <Text style={styles.large_title}>魔方谈养老</Text>
-                                <Text style={styles.more}>查看更多</Text>
-                            </View>
-                            <View
-                                style={[
-                                    styles.card,
-                                    {
-                                        padding: Space.cardPadding,
-                                        paddingBottom: px(12),
-                                    },
-                                ]}>
-                                <View style={[Style.flexRow]}>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.article_title}>为什么35岁要开始养老</Text>
-                                        <Text style={styles.article_content}>
-                                            当你亏了90%，你需要900%的收益率才可以赚回本金，所以说你需要控…
-                                            <Text style={styles.more}>全文</Text>
-                                        </Text>
-                                    </View>
-                                    <FastImage
-                                        style={styles.article_img}
-                                        source={{
-                                            uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片33.png',
-                                        }}
-                                    />
-                                </View>
-                                <View style={[Style.flexBetween, {marginTop: px(10)}]}>
-                                    <Text style={[styles.light_text, {marginTop: 0}]}>122,025人已阅读</Text>
-                                    <View style={Style.flexRow}>
-                                        <Icon name="thumbs-up" color={Colors.darkGrayColor} size={px(14)} />
-                                        <Text
-                                            style={{fontSize: px(12), color: Colors.darkGrayColor, marginLeft: px(4)}}>
-                                            11
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                            {renderTitle('魔方谈养老', '查看更多')}
 
+                            <ArticleCard />
+                        </View>
                         <View style={{marginBottom: px(20)}}>
-                            <View
-                                style={[
-                                    Style.flexBetween,
-                                    {
-                                        marginBottom: px(16),
-                                    },
-                                ]}>
-                                <Text style={styles.large_title}>魔方问答</Text>
-                                <Text style={styles.more}>查看更多</Text>
-                            </View>
-                            <View
-                                style={[
-                                    styles.card,
-                                    {
-                                        borderRadius: 8,
-                                        padding: Space.cardPadding,
-                                        paddingTop: px(20),
-                                    },
-                                ]}>
-                                <View>
-                                    <Text style={[styles.article_content, {fontSize: px(13)}]}>
-                                        理财魔方用户-高先生
-                                    </Text>
-                                    <View style={[Style.flexRow, {marginVertical: px(15)}]}>
-                                        <FastImage
-                                            style={styles.ques_img}
-                                            source={require('../../assets/img/find/question.png')}
-                                        />
-                                        <Text style={[styles.article_title, {marginBottom: 0}]}>
-                                            投资一支基金和一个组合的区别？
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.article_content}>
-                                            <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>
-                                                魔方回答：
-                                            </Text>
-                                            一支基金的风险是不可控的，只有基金组合投资到多个市场中，才可以进行市场风险对冲…
-                                            <Text style={styles.more}>全文</Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
+                            {renderTitle('魔方问答', '查看更多')}
+                            <QuestionCard />
                         </View>
                     </View>
                 </ScrollView>
@@ -216,12 +147,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         marginRight: px(12),
     },
-    article_title: {
-        fontSize: px(14),
-        fontWeight: '700',
-        color: Colors.defaultColor,
-        marginBottom: px(9),
-    },
+
     radio: {
         color: Colors.red,
         fontFamily: Font.numFontFamily,
@@ -254,20 +180,11 @@ const styles = StyleSheet.create({
     tip_text: {
         backgroundColor: '#FEF8EE',
         fontSize: px(13),
-        color: '#4E556C',
+        color: Colors.lightBlackColor,
         paddingHorizontal: px(16),
         paddingVertical: px(8),
     },
-    more: {
-        fontSize: px(12),
-        color: Colors.btnColor,
-    },
-    article_img: {width: px(84), height: px(63), borderRadius: 4, marginLeft: px(10)},
-    article_content: {
-        fontSize: px(12),
-        color: Colors.darkGrayColor,
-        lineHeight: px(20),
-    },
+
     header: {
         position: 'absolute',
         paddingHorizontal: px(16),
@@ -277,11 +194,7 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         marginBottom: px(10),
     },
-    ques_img: {
-        width: px(18),
-        height: px(18),
-        marginRight: px(8),
-    },
+
     close_img: {
         position: 'absolute',
         right: px(16),

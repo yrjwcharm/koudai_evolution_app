@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-01-26 16:20:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-04 16:20:48
  * @Description:头部组件
  */
 
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-const topbarHeight = Platform.OS == 'ios' ? 44 : 50;
+const topbarHeight = 44;
 
 // NavBar.propTypes = {
 //     title: PropTypes.string,
@@ -123,7 +123,7 @@ const NavBar = React.forwardRef((props, ref) => {
 });
 const styles = StyleSheet.create({
     topbar: {
-        backgroundColor: Colors.navBgColor,
+        backgroundColor: '#fff',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     title: {
         color: Colors.navTitleColor,
         fontWeight: 'bold',
-        fontSize: px2dp(16),
+        fontSize: px2dp(17),
     },
     text_ty: {
         // marginRight: px2dp(16),

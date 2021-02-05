@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-25 16:51:32
- * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 17:11:14
+ * @Description:银行常见问题
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-04 14:40:37
  */
 import React, {useState, TouchableOpacity} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -12,7 +12,7 @@ import {px as text} from '../utils/appUtil';
 import {Colors, Style} from '../common//commonStyle';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Html from '../components/RenderHtml';
-export default function question(props) {
+export default function Question(props) {
     const [activeSections, setActiveSections] = useState([0]);
     const updateSections = (activeSections) => setActiveSections(activeSections);
     const renderHeader = (section, index, isActive) => {
