@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-26 11:45:09
+ * @LastEditTime: 2021-01-29 10:53:14
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -20,35 +20,57 @@ class MfbIn extends Component {
         super(props);
         this.state = {
             data: '',
-            planData: '',
-            type: 0,
             amount: '',
             password: '',
             showMask: false,
             bankSelect: 0,
+            tips: '',
+            enable: false,
         };
     }
-    init() {
-        const {type} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/info/20210101', {type}).then(
-            (data) => {
-                this.setState({
-                    data: data.result,
-                    initialPage: data.result.tabs.type,
-                    type: data.result.tabs.type,
-                    has_tab: data.result.tabs.has_tab,
-                });
-            }
-        );
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/plan/20210101').then((data) => {
-            this.setState({planData: data.result});
+    UNSAFE_componentWillMount() {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/recharge/info/20210101').then((data) => {
+            this.setState({
+                data: data.result,
+            });
         });
     }
-    UNSAFE_componentWillMount() {
-        this.init();
-    }
     onInput = (amount) => {
-        this.setState({amount});
+        const {data, bankSelect} = this.state;
+        const pay_methods = data.pay_methods[bankSelect];
+
+        if (amount) {
+            if (amount < data.recharge_info.start_amount) {
+                const tips = '最低转入金额' + data.recharge_info.start_amount + '元';
+                this.setState({
+                    tips,
+                    enable: false,
+                });
+            } else if (amount > pay_methods.single_amount) {
+                const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
+                this.setState({
+                    tips,
+                    enable: false,
+                });
+            } else if (amount > pay_methods.left_amount) {
+                const tips = '由于银行卡单日限额，今日最多可转入金额为' + pay_methods.single_amount + '元';
+                this.setState({
+                    tips,
+                    enable: false,
+                });
+            } else {
+                this.setState({
+                    tips: '',
+                    enable: true,
+                });
+            }
+        } else {
+            const tips = '请输入转入金额';
+            this.setState({
+                tips,
+                enable: false,
+            });
+        }
     };
     submit = () => {
         this.passwordModal.show();
@@ -63,7 +85,28 @@ class MfbIn extends Component {
         this.bankCard.show();
         this.setState({showMask: true});
     };
-
+    submitData = () => {
+        this.setState(
+            {
+                password: this.state.password,
+            },
+            () => {
+                http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/recharge/do/20210101', {
+                    code: '000678',
+                    amount: this.state.amount,
+                    password: this.state.password,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        Modal.show({
+                            confirm: false,
+                            content: res.message,
+                        });
+                    } else {
+                    }
+                });
+            }
+        );
+    };
     render_bank() {
         const {data, bankSelect} = this.state;
         const {pay_methods, large_pay_method} = data;
@@ -80,10 +123,10 @@ class MfbIn extends Component {
                             />
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {pay_methods[bankSelect].bank_name}
+                                    {pay_methods[bankSelect]?.bank_name}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                    {pay_methods[bankSelect].limit_desc}
+                                    {pay_methods[bankSelect]?.limit_desc}
                                 </Text>
                             </View>
                             <TouchableOpacity onPress={this.changeBankCard}>
@@ -107,18 +150,18 @@ class MfbIn extends Component {
                                 <Image
                                     style={styles.bank_icon}
                                     source={{
-                                        uri: large_pay_method.bank_icon,
+                                        uri: large_pay_method?.bank_icon,
                                     }}
                                 />
                                 <View style={{flex: 1}}>
                                     <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                        {large_pay_method.bank_name}
+                                        {large_pay_method?.bank_name}
                                     </Text>
                                     <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                        {large_pay_method.limit_desc}
+                                        {large_pay_method?.limit_desc}
                                     </Text>
                                 </View>
-                                <TouchableOpacity style={[styles.yel_btn]} onPress={this.changeBankCard}>
+                                <TouchableOpacity style={[styles.yel_btn]}>
                                     <Text style={{color: Colors.yellow}}>
                                         去汇款
                                         <Icon name={'right'} size={px(12)} />
@@ -133,45 +176,42 @@ class MfbIn extends Component {
     }
     //购买
     render_buy() {
-        const {amount, data, type} = this.state;
-        const {buy_info, title, pay_methods} = data;
+        const {amount, data, tips} = this.state;
+        const {recharge_info, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}}>
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
                     }}
-                    onDone={(password) => {
-                        this.setState({password});
-                    }}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
+                    onDone={(password) => this.submitData(password)}
+                    onClose={() => {}}
                 />
                 <Text style={styles.title}>魔方宝</Text>
-                {buy_info ? (
-                    <View style={styles.buyCon}>
-                        <Text style={{fontSize: px(16), marginVertical: px(4)}}>{buy_info.title}</Text>
-                        <View style={styles.buyInput}>
-                            <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
+                <View style={styles.buyCon}>
+                    <Text style={{fontSize: px(16), marginVertical: px(4)}}>{recharge_info?.text}</Text>
+                    <View style={styles.buyInput}>
+                        <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
+                        <View style={{flex: 1}}>
                             <TextInput
                                 keyboardType="numeric"
                                 style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
-                                placeholder={buy_info.hidden_text}
+                                placeholder={recharge_info.placeholder}
                                 placeholderTextColor={Colors.lightGrayColor}
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
                                 value={amount}
                             />
-                            {amount.length > 0 && (
-                                <TouchableOpacity onPress={this.clearInput}>
-                                    <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
-                                </TouchableOpacity>
-                            )}
+                            <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
+                        {amount.length > 0 && (
+                            <TouchableOpacity onPress={this.clearInput}>
+                                <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
+                            </TouchableOpacity>
+                        )}
                     </View>
-                ) : null}
+                </View>
                 {/* 银行卡 */}
                 {this.render_bank()}
 
@@ -195,12 +235,14 @@ class MfbIn extends Component {
     }
 
     render() {
-        const {showMask, data} = this.state;
-        const {button} = data;
+        const {showMask, data, enable} = this.state;
+        const {button, recharge_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
-                {this.render_buy()}
-                {button && <FixedButton title={button.title} disabled={button.available == 0} onPress={this.submit} />}
+                {recharge_info && this.render_buy()}
+                {button && (
+                    <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
+                )}
                 {showMask && <Mask />}
             </View>
         );
@@ -220,10 +262,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(15),
     },
     buyInput: {
-        borderBottomWidth: 0.5,
-        borderColor: Colors.borderColor,
+        // borderBottomWidth: 0.5,
+        // borderColor: Colors.borderColor,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'baseline',
         marginTop: px(20),
         paddingBottom: px(13),
     },
@@ -231,7 +273,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: px(35),
         marginLeft: px(14),
-        letterSpacing: 2,
+        // letterSpacing: 2,
     },
     bankCard: {
         backgroundColor: '#fff',
@@ -269,6 +311,12 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 8,
         textAlign: 'center',
+    },
+    tips_sty: {
+        fontSize: px(12),
+        color: '#DC4949',
+        // paddingVertical: px(8),
+        marginLeft: px(14),
     },
 });
 

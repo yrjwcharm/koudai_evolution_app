@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-25 11:20:31
- * @Description:
+ * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 17:23:00
+ * @LastEditTime: 2021-02-04 16:03:44
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';

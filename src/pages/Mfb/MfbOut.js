@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-26 13:59:13
+ * @LastEditTime: 2021-01-29 17:15:32
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -16,71 +16,151 @@ import {PasswordModal} from '../../components/Password';
 import Radio from '../../components/Radio';
 import Mask from '../../components/Mask';
 import http from '../../services';
+import Toast from '../../components/Toast';
 class MfbOut extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: '',
-            planData: '',
-            type: 0,
             amount: '',
             password: '',
             showMask: false,
             bankSelect: 0,
-            check: [true, false],
-            selectData: [
-                {
-                    desc: '2小时内到账，单日限额2万元，今日可提现',
-                    title: '快速提现(无当日收益)',
-                },
-                {
-                    title: '普通提现',
-                    desc: '2小时内到账，单日限额2万元，今日可提现',
-                },
-            ],
+            check: [],
+            selectData: {},
+            optionChoose: 0,
+            tips: '',
+            enable: false,
         };
     }
-    init() {
-        const {type} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/info/20210101', {type}).then(
-            (data) => {
-                this.setState({
-                    data: data.result,
-                    initialPage: data.result.tabs.type,
-                    type: data.result.tabs.type,
-                    has_tab: data.result.tabs.has_tab,
-                });
-            }
-        );
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/plan/20210101').then((data) => {
-            this.setState({planData: data.result});
-        });
-    }
+
     UNSAFE_componentWillMount() {
-        this.init();
+        const selectData = this.state.selectData;
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/info/20210101').then((data) => {
+            selectData['comAmount'] = data.result.pay_methods[0].common_withdraw_amount;
+            selectData['comText'] = data.result.pay_methods[0].common_withdraw_subtext;
+            selectData['quickAmount'] = data.result.pay_methods[0].quick_withdraw_amount;
+            selectData['quickText'] = data.result.pay_methods[0].quick_withdraw_subtext;
+            const withdraw_options = data.result.withdraw_options;
+            this.state.check.push(withdraw_options[0].default, withdraw_options[1].default);
+            this.setState({
+                data: data.result,
+                selectData: selectData,
+                check: this.state.check,
+            });
+        });
     }
     onInput = (amount) => {
         this.setState({amount});
+        const {data, bankSelect} = this.state;
+        const pay_methods = data.pay_methods[bankSelect];
+        if (Number(amount)) {
+            //optionChoose==1快速提现
+            if (this.state.optionChoose === 1) {
+                if (amount > pay_methods.quick_withdraw_amount || amount > pay_methods?.left_amount) {
+                    const tips = '转出金额大于可转出金额';
+                    return this.setState({
+                        tips,
+                        enable: false,
+                    });
+                } else {
+                    return this.setState({
+                        tips: '',
+                        enable: true,
+                    });
+                }
+            } else if (this.state.optionChoose === 0) {
+                if (amount > pay_methods.quick_withdraw_amount || amount > pay_methods?.left_amount) {
+                    const tips = '转出金额大于可转出金额';
+                    return this.setState({
+                        tips,
+                        enable: false,
+                    });
+                } else {
+                    return this.setState({
+                        tips: '',
+                        enable: true,
+                    });
+                }
+            }
+        } else if (amount == 0) {
+            const tips = '转出金额不能为0';
+            this.setState({
+                tips,
+                enable: false,
+            });
+        } else {
+            const tips = '请输入转出金额';
+            this.setState({
+                tips,
+                enable: false,
+            });
+        }
     };
     submit = () => {
         this.passwordModal.show();
         this.setState({showMask: true});
     };
-    allAmount = () => {};
+    allAmount = () => {
+        //optionChoose==1快速提现
+        if (this.state.optionChoose === 1) {
+            this.setState({
+                amount: this.state.selectData.quickAmount.toString(),
+            });
+        } else {
+            this.setState({
+                amount: this.state.selectData.comAmount.toString(),
+            });
+        }
+        if (this.state.optionChoose === 1) {
+            this.setState({
+                amount: this.state.selectData.quickAmount.toString(),
+            });
+        } else {
+            this.setState({
+                amount: this.state.selectData.comAmount.toString(),
+            });
+        }
+    };
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
-        this.setState({showMask: true});
+        this.setState({
+            showMask: true,
+        });
     };
-    radioChange(index) {
+    radioChange(index, type) {
         let check = this.state.check;
         check = check.map((item) => false);
         check[index] = true;
         this.setState({
             check,
+            optionChoose: type,
         });
     }
-
+    getBankInfo(index, comAmount, comText, quickAmount, quickText) {
+        const selectData = this.state.selectData;
+        selectData['comAmount'] = comAmount;
+        selectData['comText'] = comText;
+        selectData['quickAmount'] = quickAmount;
+        selectData['quickText'] = quickText;
+        this.setState({
+            selectData: selectData,
+            bankSelect: index,
+        });
+    }
+    // 提交数据
+    submitData() {
+        this.setState({password: this.state.password}, () => {
+            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/do/20210101', {
+                code: '',
+                amount: this.state.amount,
+                password: this.state.password,
+            }).then((res) => {
+                props.navigation.navigate('asset');
+            });
+        });
+    }
     render_bank() {
         const {data, bankSelect} = this.state;
         const {pay_methods} = data;
@@ -92,18 +172,18 @@ class MfbOut extends Component {
                             <Image
                                 style={styles.bank_icon}
                                 source={{
-                                    uri: pay_methods[bankSelect].bank_icon,
+                                    uri: pay_methods[bankSelect]?.bank_icon,
                                 }}
                             />
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {pay_methods[bankSelect].bank_name}
+                                    {pay_methods[bankSelect]?.bank_name}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                    {pay_methods[bankSelect].limit_desc}
+                                    {pay_methods[bankSelect]?.limit_desc}
                                 </Text>
                             </View>
-                            <TouchableOpacity onPress={this.changeBankCard}>
+                            <TouchableOpacity onPress={() => this.changeBankCard()}>
                                 <Text style={{color: Colors.lightGrayColor}}>
                                     切换
                                     <Icon name={'right'} size={px(12)} />
@@ -116,44 +196,43 @@ class MfbOut extends Component {
         );
     }
     render_buy() {
-        const {amount, data} = this.state;
-        const {buy_info, title, pay_methods} = data;
+        const {amount, data, bankSelect, tips} = this.state;
+        const {withdraw_info, title, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}}>
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
                     }}
-                    onDone={(password) => {
-                        this.setState({password});
-                    }}
+                    onDone={(password) => this.submitData(password)}
                     onClose={() => {
                         this.setState({showMask: false});
                     }}
                 />
                 {this.render_bank()}
-                {buy_info ? (
-                    <View style={styles.buyCon}>
-                        <Text style={{fontSize: px(16), marginVertical: px(4)}}>{buy_info.title}</Text>
-                        <View style={styles.buyInput}>
-                            <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
+                <View style={styles.buyCon}>
+                    <Text style={{fontSize: px(16), marginVertical: px(4)}}>{withdraw_info.text}</Text>
+                    <View style={styles.buyInput}>
+                        <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
+                        <View style={{flex: 1}}>
                             <TextInput
                                 keyboardType="numeric"
                                 style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
-                                placeholder={'请输入提现金额'}
+                                placeholder={withdraw_info?.placeholder}
                                 placeholderTextColor={'#CCD0DB'}
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
                                 value={amount}
                             />
-
-                            <TouchableOpacity onPress={this.allAmount}>
-                                <Text style={{color: '#0051CC'}}>全部</Text>
-                            </TouchableOpacity>
+                            <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
+                        <TouchableOpacity onPress={this.allAmount}>
+                            <Text style={{color: '#0051CC'}}>{withdraw_info?.button.text}</Text>
+                        </TouchableOpacity>
                     </View>
-                ) : null}
+                </View>
+
                 {this.render_Radio()}
                 <BankCardModal
                     data={pay_methods || []}
@@ -163,19 +242,28 @@ class MfbOut extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(index) => {
-                        this.setState({bankSelect: index});
-                    }}
+                    onDone={(index) =>
+                        this.getBankInfo(
+                            index,
+                            pay_methods[index]?.common_withdraw_amount,
+                            pay_methods[index]?.common_withdraw_subtext,
+                            pay_methods[index]?.quick_withdraw_amount,
+                            pay_methods[index]?.quick_withdraw_subtext
+                        )
+                    }
                 />
             </ScrollView>
         );
     }
     render_Radio() {
-        const selectData = this.state.selectData;
+        const {withdraw_options} = this.state.data;
+        const {selectData} = this.state;
+
         return (
             <>
-                {!!selectData.length > 0 &&
-                    selectData.map((_item, index) => {
+                {withdraw_options &&
+                    !!withdraw_options.length > 0 &&
+                    withdraw_options.map((_item, index) => {
                         return (
                             <View
                                 key={index}
@@ -184,18 +272,20 @@ class MfbOut extends Component {
                                     styles.card_item,
                                     styles.card_select,
                                     {
-                                        borderBottomWidth: index < selectData.length - 1 ? 0.5 : 0,
+                                        borderBottomWidth: index < withdraw_options.length - 1 ? 0.5 : 0,
                                         borderColor: Colors.borderColor,
                                     },
                                 ]}>
                                 <Radio
                                     checked={this.state.check[index]}
                                     index={index}
-                                    onChange={() => this.radioChange(index)}
+                                    onChange={() => this.radioChange(index, _item.type)}
                                 />
                                 <View style={{flex: 1, paddingLeft: px(10)}}>
-                                    <Text style={{color: Colors.descColor, fontWeight: 'bold'}}>{_item.title}</Text>
-                                    <Text style={styles.desc_sty}>{_item.desc}</Text>
+                                    <Text style={{color: Colors.descColor, fontWeight: 'bold'}}>{_item.text}</Text>
+                                    <Text style={styles.desc_sty}>
+                                        {index == 0 ? selectData?.quickText : selectData?.comText}
+                                    </Text>
                                 </View>
                             </View>
                         );
@@ -204,13 +294,15 @@ class MfbOut extends Component {
         );
     }
     render() {
-        const {showMask, data} = this.state;
-        const {button} = data;
+        const {showMask, data, enable} = this.state;
+        const {button, withdraw_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
-                {this.render_buy()}
+                {withdraw_info && this.render_buy()}
 
-                {button && <FixedButton title={button.title} disabled={button.available == 0} onPress={this.submit} />}
+                {button && (
+                    <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
+                )}
                 {showMask && <Mask />}
             </View>
         );
@@ -234,7 +326,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderColor: Colors.borderColor,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'baseline',
         marginTop: px(20),
         paddingBottom: px(13),
     },
@@ -301,6 +393,12 @@ const styles = StyleSheet.create({
         color: '#9095A5',
         fontSize: px(12),
         marginTop: px(4),
+    },
+    tips_sty: {
+        fontSize: px(12),
+        color: '#DC4949',
+        // paddingVertical: px(8),
+        marginLeft: px(14),
     },
 });
 

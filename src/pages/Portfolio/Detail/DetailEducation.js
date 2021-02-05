@@ -1,14 +1,14 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-27 18:32:53
- * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-01-29 16:43:49
+ * @Description:子女教育详情页
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-04 16:08:17
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text} from '../../../utils/appUtil';
+import {px, px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -24,8 +24,8 @@ import Header from '../../../components/NavBar';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-export default function DetailEducation(props) {
+import Table from '../components/Table';
+export default function DetailEducation() {
     const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');
     const [map, setMap] = useState({});
@@ -43,24 +43,28 @@ export default function DetailEducation(props) {
     };
     const pieData = [
         {
-            const: 'const',
-            name: '交通出行',
-            percent: 20,
+            code: 11202,
+            name: '股票市场',
+            ratio: 0.7252,
+            percent: '72.52%',
         },
         {
-            const: 'const',
-            name: '饮食',
-            percent: 40,
+            code: 12101,
+            name: '债券市场',
+            ratio: 0.18159999999999998,
+            percent: '18.16%',
         },
         {
-            const: 'const',
-            name: '生活日用',
-            percent: 30,
+            code: 14001,
+            name: '商品市场',
+            ratio: 0.0713,
+            percent: '7.13%',
         },
         {
-            const: 'const',
-            name: '住房缴费',
-            percent: 10,
+            code: 13101,
+            name: '货币市场',
+            ratio: 0.0219,
+            percent: '2.19%',
         },
     ];
     const btns = [
@@ -104,6 +108,15 @@ export default function DetailEducation(props) {
         {title: '艺术大学', id: 1},
         {title: '海外留学', id: 2},
     ];
+    const table = {
+        head: ['子女教育计划', '子女教育计划', '子女教育计划'],
+        body: [
+            ['某教育基金', '某教育基金', '某教育基金'],
+            ['某教育基金', '某教育基金', '<span style="textAlign:center;">每月缴纳</br>18-22岁领取</span>'],
+            ['某教育基金', '某教育基金', '某教育基金'],
+            ['某教育基金', '某教育基金', '某教育基金'],
+        ],
+    };
     const rightPress = () => {};
     const changeTab = (num, period) => {
         setPeriod(period);
@@ -296,9 +309,7 @@ export default function DetailEducation(props) {
                             })}
                         </View>
                         {/* 表格 */}
-                        <View>
-                            <View />
-                        </View>
+                        <Table data={table} />
                         <TouchableOpacity style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
                             <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
                             <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
@@ -306,6 +317,7 @@ export default function DetailEducation(props) {
                             </Text>
                         </TouchableOpacity>
                     </View>
+                    {/* 饼图 */}
                     <View style={styles.card_sty}>
                         <ListHeader data={head} style={{paddingHorizontal: text(16)}} color={'#0051CC'} />
                         <View style={{height: 200}}>

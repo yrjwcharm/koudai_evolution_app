@@ -1,7 +1,12 @@
 /*
  * @Date: 2020-12-28 11:53:01
+<<<<<<< HEAD
  * @LastEditors: yhc
  * @LastEditTime: 2021-02-04 15:14:17
+=======
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-04 18:45:54
+>>>>>>> 177c05d678c1896ce9890e3bc7260cedf455c02d
  * @Description:主题及公共样式表
  */
 
@@ -73,6 +78,14 @@ export const Space = {
     // 分割线高度
     lineWidth: text(0.5),
     modelPadding: text(20),
+    // 外阴影
+    boxShadow: (color = '#E0E2E7', x = 0, y = text(2), opacity = 1, radius = text(8)) => ({
+        shadowColor: color,
+        shadowOffset: {width: x, height: y},
+        shadowOpacity: opacity,
+        shadowRadius: radius,
+        elevation: 10,
+    }),
 };
 
 export const Font = {

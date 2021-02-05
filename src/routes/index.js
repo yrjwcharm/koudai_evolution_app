@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 14:07:46
+ * @LastEditTime: 2021-02-05 16:40:29
  * @Description:路由表
  */
 import React from 'react';
@@ -61,6 +61,9 @@ import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
+import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
+import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
+import SetTarget from '../pages/Portfolio/SetTarget'; //低估值设置目标
 import TradeRecord from '../pages/Assets/TradeRecord'; //交易记录
 import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
 import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
@@ -72,13 +75,17 @@ import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
+import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
+import Settings from '../pages/Assets/Settings'; // 个人设置
+import Profile from '../pages/Assets/Profile'; // 个人资料
+import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="TabScreen"
             screenOptions={{
                 // headerShown: false,
 
@@ -271,6 +278,9 @@ export default function AppStack() {
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
+            <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: '赎回银行产品'}} />
+            <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
+            <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
             <Stack.Screen
                 name="PlanHistory"
                 component={PlanHistory}
@@ -310,6 +320,10 @@ export default function AppStack() {
             <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
+            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
+            <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
+            <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
+            <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
         </Stack.Navigator>
     );
 }

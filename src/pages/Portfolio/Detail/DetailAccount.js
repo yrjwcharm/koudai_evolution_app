@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
- * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-29 20:02:05
+ * @Description:长短期详情页
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-04 16:08:46
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
