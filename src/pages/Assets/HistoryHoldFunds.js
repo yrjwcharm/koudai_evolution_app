@@ -1,9 +1,9 @@
 /*
- * @Date: 2021-01-30 11:30:36
+ * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 16:38:41
- * @Description: 基金排名
+ * @LastEditTime: 2021-02-07 19:25:19
+ * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
@@ -12,53 +12,85 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 
-const FundRanking = ({navigation, route}) => {
+const HistoryHoldFunds = ({navigation, route}) => {
+    const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
+    const [hasMore, setHasMore] = useState(false);
     const [header, setHeader] = useState([]);
     const [list, setList] = useState([]);
 
     const init = useCallback(
-        (first) => {
-            setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/rank/20210101', {
-                fund_code: (route.params && route.params.code) || '',
+        (status, first) => {
+            status === 'refresh' && setRefreshing(true);
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/user_redeemed/20210101', {
+                page,
             }).then((res) => {
                 setRefreshing(false);
-                first && navigation.setOptions({title: res.result.title || '基金排名'});
-                first && setHeader(res.result.header || []);
-                setList([...(res.result.items || [])]);
+                setHasMore(res.result.has_more || false);
+                first && navigation.setOptions({title: res.result.title || '历史持有基金'});
+                first && setHeader(res.result.header);
+                if (status === 'refresh') {
+                    setList(res.result.list || []);
+                } else if (status === 'loadmore') {
+                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                }
             });
         },
-        [navigation, route]
+        [navigation, page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
-        init();
-    }, [init]);
+        setPage(1);
+    }, []);
+    // 上拉加载
+    const onEndReached = useCallback(() => {
+        if (hasMore) {
+            setPage((p) => p + 1);
+        }
+    }, [hasMore]);
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
                 <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[2]}</Text>
+                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[1]}</Text>
             </View>
         );
     }, [header]);
+    // 渲染底部
+    const renderFooter = useCallback(() => {
+        return (
+            <>
+                {list.length > 0 && (
+                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
+                        {hasMore ? '正在加载...' : '暂无更多了'}
+                    </Text>
+                )}
+            </>
+        );
+    }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无基金排名数据'} />;
+        return <Empty text={'暂无历史持有基金数据'} />;
     }, []);
     // 渲染列表项
     const renderItem = useCallback(
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
-                    <Text style={[styles.itemText, {color: getColor(item[1]), fontFamily: Font.numFontFamily}]}>
-                        {parseFloat(item[1].replaceAll(',', '')) > 0 ? `+${item[1]}` : item[1]}
+                    <View>
+                        <Text numberOfLines={1} style={[styles.itemText, {textAlign: 'left'}]}>
+                            {item.fund_name}
+                        </Text>
+                        <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.fund_code}</Text>
+                    </View>
+                    <Text
+                        style={[
+                            styles.itemText,
+                            {textAlign: 'right', color: getColor(item.profit_acc), fontFamily: Font.numFontFamily},
+                        ]}>
+                        {parseFloat(item.profit_acc.replaceAll(',', '')) > 0 ? `+${item.profit_acc}` : item.profit_acc}
                     </Text>
-                    <Text style={[styles.itemText, {textAlign: 'right', fontFamily: Font.numRegular}]}>{item[2]}</Text>
                 </View>
             );
         },
@@ -76,19 +108,27 @@ const FundRanking = ({navigation, route}) => {
     }, []);
 
     useEffect(() => {
-        init(true);
-    }, [init]);
+        if (page === 1) {
+            init('refresh', true);
+        } else {
+            init('loadmore');
+        }
+    }, [page, init]);
     return (
         <View style={styles.container}>
             <SectionList
                 sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
+                ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.1}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}
                 renderSectionHeader={renderHeader}
+                stickySectionHeadersEnabled
             />
         </View>
     );
@@ -123,8 +163,9 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
+        fontFamily: Font.numRegular,
         textAlign: 'center',
     },
 });
 
-export default FundRanking;
+export default HistoryHoldFunds;

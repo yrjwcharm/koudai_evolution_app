@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 16:40:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-07 18:32:50
  * @Description:路由表
  */
 import React from 'react';
@@ -60,6 +60,7 @@ import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
 import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
+import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
@@ -74,6 +75,7 @@ import FundTradeTime from '../pages/Portfolio/FundTradeTime'; // 交易时间说
 import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
+import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
 import Settings from '../pages/Assets/Settings'; // 个人设置
@@ -278,6 +280,7 @@ export default function AppStack() {
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
+            <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
             <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: '赎回银行产品'}} />
             <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
             <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
@@ -319,6 +322,7 @@ export default function AppStack() {
             <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
             <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
+            <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />

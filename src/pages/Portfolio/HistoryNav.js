@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 09:58:47
+ * @LastEditTime: 2021-02-07 17:51:38
  * @Description: 历史净值
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -22,7 +22,7 @@ const HistoryNav = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/nav/history/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/history/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {
@@ -100,10 +100,10 @@ const HistoryNav = ({navigation, route}) => {
     const getColor = useCallback((t) => {
         if (parseFloat(t.replaceAll(',', '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
-            return Colors.defaultColor;
-        } else {
+        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
             return Colors.red;
+        } else {
+            return Colors.defaultColor;
         }
     }, []);
 
@@ -123,7 +123,7 @@ const HistoryNav = ({navigation, route}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.1}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}

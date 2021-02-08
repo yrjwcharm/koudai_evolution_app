@@ -1,14 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-01-30 11:13:39
- * @LastEditors: yhc
+ * @LastEditTime: 2021-02-07 10:00:01
+ * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import Image from 'react-native-fast-image';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';

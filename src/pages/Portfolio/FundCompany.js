@@ -2,36 +2,30 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-30 18:42:27
+ * @LastEditTime: 2021-02-07 17:39:11
  * @Description: 基金公司
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import Toast from '../../components/Toast';
 
 const FundCompany = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [list, setList] = useState([
-        ['成立日期', '2004-01-05'],
-        ['注册资本', '1.50亿元'],
-        ['总经理', '过振华'],
-        ['公司邮箱', '--'],
-        ['公司电话', '010-2325 6277'],
-        ['客服电话', '010-2527 3466'],
-    ]);
+    const [list, setList] = useState([]);
 
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/company/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/company/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);
                 first && navigation.setOptions({title: res.result.title || '基金公司'});
-                setList([...(res.result.list || [])]);
+                setList([...(res.result || [])]);
             });
         },
         [navigation, route]
@@ -46,26 +40,57 @@ const FundCompany = ({navigation, route}) => {
             <View
                 key={index}
                 style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
-                <Text style={[styles.itemText, {textAlign: 'right'}]}>{item[1]}</Text>
+                <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.key}</Text>
+                <Text style={[styles.itemText, {textAlign: 'right'}]}>{item.val}</Text>
             </View>
         );
     }, []);
+    const jump = useCallback(
+        ({url}) => {
+            if (url) {
+                if (url.type === 1) {
+                    navigation.navigate({
+                        name: url.path,
+                        params: {...url.params, title: `旗下基金(${list[list.length - 1].val}支)`} || {},
+                    });
+                } else if (url.type === 2) {
+                    Linking.canOpenURL(url.path)
+                        .then((supported) => {
+                            if (!supported) {
+                                return Toast.show('您的设备不支持打开网址');
+                            }
+                            return Linking.openURL(url.path);
+                        })
+                        .catch((err) => Toast.show(err));
+                } else if (url.type === 3) {
+                    navigation.navigate({
+                        name: 'OpenPdf',
+                        params: {url: url.path},
+                    });
+                }
+            }
+        },
+        [navigation, list]
+    );
 
     useEffect(() => {
-        // init();
+        init(true);
     }, [init]);
     return (
         <ScrollView
             style={styles.container}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-            {list.map((item, index) => {
+            {list.slice(0, list.length - 1).map((item, index) => {
                 return renderItem(item, index);
             })}
-            <TouchableOpacity style={[styles.totalFunds, Style.flexBetween]}>
-                <Text style={styles.title}>{'旗下基金（144只）'}</Text>
-                <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-            </TouchableOpacity>
+            {list.length > 0 && (
+                <TouchableOpacity
+                    style={[styles.totalFunds, Style.flexBetween]}
+                    onPress={() => jump(list[list.length - 1])}>
+                    <Text style={styles.title}>{`${list[list.length - 1].key}（${list[list.length - 1].val}支）`}</Text>
+                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                </TouchableOpacity>
+            )}
         </ScrollView>
     );
 };

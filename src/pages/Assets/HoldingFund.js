@@ -2,10 +2,10 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-30 14:29:08
+ * @LastEditTime: 2021-02-07 18:41:54
  * @Description: 持有基金
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -36,22 +36,26 @@ const HoldingFund = ({navigation}) => {
     const [tabs, setTabs] = useState([]);
     const [curTab, setCurTab] = useState(0);
     const [list, setList] = useState([]);
+    const urlRef = useRef('');
 
     const init = useCallback(
         (first) => {
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/user_holding/20210101').then(
-                (res) => {
-                    setRefreshing(false);
-                    first && navigation.setOptions({title: res.result.title || '持有基金'});
-                    first && setTabs(res.result.tabs);
-                    setList(res.result.list);
-                }
-            );
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/user_holding/20210101', {
+                poid: 'X00F000003',
+                type: curTab + 1,
+            }).then((res) => {
+                setRefreshing(false);
+                first && navigation.setOptions({title: res.result.title || '持有基金'});
+                first && setTabs(res.result.tabs);
+                setList(res.result.list);
+                urlRef.current = res.result.url;
+            });
         },
-        [navigation]
+        [navigation, curTab]
     );
     const onChangeTab = useCallback((i) => {
         setCurTab(i);
+        setRefreshing(true);
     }, []);
     const getColor = useCallback((t) => {
         if (parseFloat(t.replaceAll(',', '')) < 0) {
@@ -77,15 +81,9 @@ const HoldingFund = ({navigation}) => {
                                 <View style={[styles.titleContainer, Style.flexRow]}>
                                     <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
                                     <Text style={[styles.name, {color: RatioColor[index], fontWeight: '500'}]}>
-                                        {item.type.split(' ')[0]}
+                                        {item.name}
                                     </Text>
-                                    <Text
-                                        style={[
-                                            styles.numStyle,
-                                            {color: RatioColor[index], fontFamily: Font.numMedium},
-                                        ]}>
-                                        {item.type.split(' ')[1]}
-                                    </Text>
+                                    <Text style={[styles.numStyle, {color: RatioColor[index]}]}>{item.percent}%</Text>
                                 </View>
                                 {item.funds &&
                                     item.funds.map((fund, i) => {
@@ -125,7 +123,7 @@ const HoldingFund = ({navigation}) => {
                                                                 ]}>
                                                                 {'占比'}
                                                             </Text>
-                                                            <Text style={[styles.numStyle]}>{fund.ratio}%</Text>
+                                                            <Text style={[styles.numStyle]}>{fund.percent}%</Text>
                                                         </View>
                                                         <View style={Style.flexRow}>
                                                             <Text
@@ -175,7 +173,11 @@ const HoldingFund = ({navigation}) => {
                     })}
                     {list.length === 0 && <Empty text={curTab === 0 ? '暂无持有中基金' : '暂无确认中基金'} />}
                     {curTab === 0 && (
-                        <TouchableOpacity style={[styles.historyHolding, Style.flexBetween]}>
+                        <TouchableOpacity
+                            style={[styles.historyHolding, Style.flexBetween]}
+                            onPress={() =>
+                                navigation.navigate({name: urlRef.current.path, params: urlRef.current.params})
+                            }>
                             <Text style={[styles.name, {fontWeight: '500'}]}>{'历史持有基金'}</Text>
                             <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                         </TouchableOpacity>

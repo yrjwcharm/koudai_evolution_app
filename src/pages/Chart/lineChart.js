@@ -1,13 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 18:00:07
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-07 10:54:26
  * @Description:
  */
 import React, {PureComponent} from 'react';
 import {Text, Button, View, ScrollView, Alert} from 'react-native';
-import Chart from '../../components/Chart';
+import {Chart} from '../../components/Chart';
 import data from './data.json';
 import {WebView} from 'react-native-webview';
 // import { Container, Title } from "../components";

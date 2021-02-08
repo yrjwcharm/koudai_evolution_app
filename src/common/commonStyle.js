@@ -1,12 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
-<<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 15:14:17
-=======
  * @LastEditors: dx
- * @LastEditTime: 2021-02-04 18:45:54
->>>>>>> 177c05d678c1896ce9890e3bc7260cedf455c02d
+ * @LastEditTime: 2021-02-07 18:19:43
  * @Description:主题及公共样式表
  */
 
