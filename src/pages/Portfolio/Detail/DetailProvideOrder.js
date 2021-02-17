@@ -12,21 +12,22 @@ import {px, px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import BottomDesc from '../../../components/BottomDesc';
-// import Chart from 'react-native-f2chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
+import BottomDesc from '../../../components/BottomDesc';
+import {Chart} from '../../../components/Chart';
 import Header from '../../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Table from '../components/Table';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function DetailProvideOrder() {
+    const [data, setData] = useState({});
     const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');
     const [map, setMap] = useState({});
@@ -125,235 +126,238 @@ export default function DetailProvideOrder() {
     };
     const chooseBtn = () => {};
     useEffect(() => {
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/purpose_invest_detail/20210101', {
+            upid: 1,
+        }).then((res) => {
+            setData(res.result);
+        });
+        setChartData(ChartData);
         setChartData(ChartData);
         let obj = {};
         pieData.map((item) => {
             obj[item.name] = item.ratio;
         });
         setMap(obj);
-    }, [map]);
+    }, []);
     return (
-        <SafeAreaView edges={['bottom']} style={{flex: 1}}>
-            <ScrollView>
-                <Header
-                    title={'子女教育计划'}
-                    leftIcon="chevron-left"
-                    rightText={'重新规划'}
-                    rightPress={rightPress}
-                    rightTextStyle={styles.right_sty}
-                />
-                <View style={styles.container_sty}>
-                    <View>
-                        <View style={Style.flexRow}>
-                            <Text style={{color: '#9AA1B2'}}>目标金额(元) </Text>
-                            <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
-                                <Text style={styles.age_text_sty}>60岁退休</Text>
+        <>
+            {Object.keys(data).length > 0 ? (
+                <View style={{flex: 1}}>
+                    <Header
+                        title={'子女教育计划'}
+                        leftIcon="chevron-left"
+                        rightText={data.top_button.title}
+                        rightPress={rightPress}
+                        rightTextStyle={styles.right_sty}
+                    />
+                    <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
+                        <View style={styles.container_sty}>
+                            <View>
+                                <View style={Style.flexRow}>
+                                    <Text style={{color: '#9AA1B2'}}>目标金额(元) </Text>
+                                    <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
+                                        <Text style={styles.age_text_sty}>60岁退休</Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.fund_input_sty}>98655.99</Text>
+                                <View style={{position: 'relative', marginTop: text(5)}}>
+                                    <FontAwesome
+                                        name={'caret-up'}
+                                        color={'#E9EAED'}
+                                        size={30}
+                                        style={{left: text(25), top: text(-18), position: 'absolute'}}
+                                    />
+                                    <LinearGradient
+                                        start={{x: 0, y: 0.25}}
+                                        end={{x: 0.8, y: 0.8}}
+                                        colors={['#E9EAED', '#F5F6F8']}
+                                        style={{borderRadius: text(25), marginBottom: text(7)}}>
+                                        <Text style={styles.tip_sty}>
+                                            总投入金额100,000.00元，目标收总投入金额100,000.00元
+                                        </Text>
+                                    </LinearGradient>
+                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                        <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
+                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
+                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            <Text style={styles.count_num_sty}>1,000,000</Text>
+                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                        </View>
+                                    </View>
+                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                        <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
+                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
+                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            <Text style={styles.count_num_sty}>1,000,000</Text>
+                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                        </View>
+                                    </View>
+                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                        <Text style={{color: '#545968'}}>投入年限</Text>
+                                        <TouchableOpacity style={Style.flexRow}>
+                                            <Text style={{color: '#545968'}}>14年</Text>
+                                            <AntDesign name={'down'} color={'#8D96AF'} size={12} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                        <Text style={styles.fund_input_sty}>98655.99</Text>
-                        <View style={{position: 'relative', marginTop: text(5)}}>
-                            <FontAwesome
-                                name={'caret-up'}
-                                color={'#E9EAED'}
-                                size={30}
-                                style={{left: text(25), top: text(-18), position: 'absolute'}}
-                            />
-                            <LinearGradient
-                                start={{x: 0, y: 0.25}}
-                                end={{x: 0.8, y: 0.8}}
-                                colors={['#E9EAED', '#F5F6F8']}
-                                style={{borderRadius: text(25), marginBottom: text(7)}}>
-                                <Text style={styles.tip_sty}>总投入金额100,000.00元，目标收总投入金额100,000.00元</Text>
-                            </LinearGradient>
-                            <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
-                                <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                    <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                    <Text style={styles.count_num_sty}>1,000,000</Text>
-                                    <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                        <View style={styles.content_sty}>
+                            <View style={styles.card_sty}>
+                                <Text style={styles.title_sty}>子女教育计划VS某教育金</Text>
+                                <View style={[Style.flexRow, {marginTop: text(16)}]}>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={styles.legend_title_sty}>2020-11</Text>
+                                        <Text style={styles.legend_desc_sty}>时间</Text>
+                                    </View>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>15.15%</Text>
+                                        <Text>
+                                            <MaterialCommunityIcons
+                                                name={'record-circle-outline'}
+                                                color={'#E74949'}
+                                                size={12}
+                                            />
+                                            <Text style={styles.legend_desc_sty}> 短期账户</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={styles.legend_title_sty}>8.12%</Text>
+                                        <Text>
+                                            <MaterialCommunityIcons
+                                                name={'record-circle-outline'}
+                                                color={'#545968'}
+                                                size={12}
+                                            />
+                                            <Text style={styles.legend_desc_sty}> 比较基准</Text>
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
-                                <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                    <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                    <Text style={styles.count_num_sty}>1,000,000</Text>
-                                    <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                <View style={{height: 300}}>
+                                    <Chart initScript={baseChart(chartData)} style={{width: '100%'}} />
                                 </View>
-                            </View>
-                            <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                <Text style={{color: '#545968'}}>投入年限</Text>
-                                <TouchableOpacity style={Style.flexRow}>
-                                    <Text style={{color: '#545968'}}>14年</Text>
-                                    <AntDesign name={'down'} color={'#8D96AF'} size={12} />
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: 50,
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginHorizontal: 20,
+                                    }}>
+                                    {year.map((_item, _index) => {
+                                        let num = _index * 10 + 10;
+                                        return (
+                                            <TouchableOpacity
+                                                key={_index + 'item'}
+                                                style={[
+                                                    styles.btn_sty,
+                                                    {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
+                                                ]}
+                                                onPress={() => changeTab(num, _item.period)}>
+                                                <Text
+                                                    style={{
+                                                        color: period == _item.period ? '#0051CC' : '#555B6C',
+                                                        fontSize: text(12),
+                                                    }}>
+                                                    {_item.title}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                                {/* 表格 */}
+                                <Table data={data.asset_compare.table} />
+                                <TouchableOpacity
+                                    style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
+                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                        {data.asset_compare.tip_info.title}
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.content_sty}>
-                    <View style={styles.card_sty}>
-                        <Text style={styles.title_sty}>子女教育计划VS某教育金</Text>
-                        <View style={[Style.flexRow, {marginTop: text(16)}]}>
-                            <View style={styles.legend_sty}>
-                                <Text style={styles.legend_title_sty}>2020-11</Text>
-                                <Text style={styles.legend_desc_sty}>时间</Text>
+                            {/* 饼图 */}
+                            <View style={styles.card_sty}>
+                                <ListHeader
+                                    data={data.asset_deploy.header}
+                                    style={{paddingHorizontal: text(16)}}
+                                    color={'#0051CC'}
+                                />
+                                <View style={{height: 200}}>
+                                    <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                </View>
                             </View>
-                            <View style={styles.legend_sty}>
-                                <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>15.15%</Text>
-                                <Text>
-                                    <MaterialCommunityIcons
-                                        name={'record-circle-outline'}
-                                        color={'#E74949'}
-                                        size={12}
-                                    />
-                                    <Text style={styles.legend_desc_sty}> 短期账户</Text>
-                                </Text>
-                            </View>
-                            <View style={styles.legend_sty}>
-                                <Text style={styles.legend_title_sty}>8.12%</Text>
-                                <Text>
-                                    <MaterialCommunityIcons
-                                        name={'record-circle-outline'}
-                                        color={'#545968'}
-                                        size={12}
-                                    />
-                                    <Text style={styles.legend_desc_sty}> 比较基准</Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={{height: 300}}>
-                            <Chart initScript={baseChart(chartData)} style={{width: '100%'}} />
-                        </View>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                height: 50,
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                marginHorizontal: 20,
-                            }}>
-                            {year.map((_item, _index) => {
-                                let num = _index * 10 + 10;
-                                return (
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.btn_sty,
-                                            {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
-                                        ]}
-                                        onPress={() => changeTab(num, _item.period)}>
-                                        <Text
+                            <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
+                                <ListHeader data={data.asset_strategy.header} style={{paddingHorizontal: text(16)}} />
+                                {data.asset_strategy.items.map((_s, _d) => {
+                                    return (
+                                        <View
                                             style={{
-                                                color: period == _item.period ? '#0051CC' : '#555B6C',
-                                                fontSize: text(12),
-                                            }}>
-                                            {_item.title}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                        {/* 表格 */}
-                        <Table data={table} />
-                        <TouchableOpacity style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
-                            <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                            <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                浮动收益是什么？
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    {/* 饼图 */}
-                    <View style={styles.card_sty}>
-                        <ListHeader data={head} style={{paddingHorizontal: text(16)}} color={'#0051CC'} />
-                        <View style={{height: 200}}>
-                            <Chart initScript={pie(pieData, map)} />
-                        </View>
-                    </View>
-                    <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                        <ListHeader data={head} style={{paddingHorizontal: text(16)}} />
-                        <View style={{flexDirection: 'row', alignItems: 'flex-start', marginTop: text(20)}}>
-                            <Image
-                                source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/icon_qthtz@2x.png',
-                                }}
-                                resizeMode="contain"
-                                style={{width: text(69), height: text(69), marginRight: text(10)}}
-                            />
-                            <View
-                                style={{
-                                    flex: 1,
-                                }}>
-                                <Text style={{color: '#111111'}}>周期目标策略</Text>
-                                <Text
+                                                flexDirection: 'row',
+                                                alignItems: 'flex-start',
+                                                marginTop: text(20),
+                                            }}
+                                            key={_d + '_s'}>
+                                            <Image
+                                                source={{
+                                                    uri: _s.icon,
+                                                }}
+                                                resizeMode="contain"
+                                                style={{width: text(69), height: text(69), marginRight: text(10)}}
+                                            />
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                }}>
+                                                <Text style={{color: '#111111'}}>{_s.title}</Text>
+                                                <Text
+                                                    style={{
+                                                        color: '#9AA1B2',
+                                                        fontSize: text(12),
+                                                        marginTop: text(8),
+                                                        lineHeight: text(16),
+                                                    }}>
+                                                    {_s.content}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    );
+                                })}
+                                <TouchableOpacity
                                     style={{
-                                        color: '#9AA1B2',
-                                        fontSize: text(12),
-                                        marginTop: text(8),
-                                        lineHeight: text(16),
+                                        flexDirection: 'row',
+                                        alignItems: 'baseline',
+                                        marginTop: text(16),
                                     }}>
-                                    在前期我们将为您配置更多的风险性产品，博在前期我们将为您配置更多的博在前期我们将为您配置更多的风险性产品
-                                </Text>
+                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                        {data.asset_strategy.tip_info.title}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
+                                {data.gather_info.map((_q, _w) => {
+                                    return (
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
+                                            ]}>
+                                            <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
+                                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        </View>
+                                    );
+                                })}
                             </View>
                         </View>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'flex-start',
-                                marginTop: text(20),
-                                borderBottomWidth: 0.5,
-                                borderColor: Colors.borderColor,
-                                paddingBottom: text(16),
-                            }}>
-                            <Image
-                                source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/icon_qthtz@2x.png',
-                                }}
-                                resizeMode="contain"
-                                style={{width: text(69), height: text(69), marginRight: text(10)}}
-                            />
-                            <View
-                                style={{
-                                    flex: 1,
-                                }}>
-                                <Text style={{color: '#111111'}}>周期目标策略</Text>
-                                <Text
-                                    style={{
-                                        color: '#9AA1B2',
-                                        fontSize: text(12),
-                                        marginTop: text(8),
-                                        lineHeight: text(16),
-                                    }}>
-                                    在前期我们将为您配置更多的风险性产品，博在前期我们将为您配置更多的博在前期我们将为您配置更多的风险性产品
-                                </Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity
-                            style={{
-                                flexDirection: 'row',
-                                alignItems: 'baseline',
-                                marginTop: text(16),
-                            }}>
-                            <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                            <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                我想了解更详细的投资策略
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
-                        <View style={Style.flexRow}>
-                            <Text style={{flex: 1, paddingVertical: text(20)}}>资金安全</Text>
-                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
-                        </View>
-                    </View>
+                    </ScrollView>
+                    <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
                 </View>
-            </ScrollView>
-            <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
-        </SafeAreaView>
+            ) : null}
+        </>
     );
 }
 const styles = StyleSheet.create({
     right_sty: {
-        marginRight: text(16),
         color: '#1F2432',
     },
     container_sty: {

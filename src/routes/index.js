@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:05:36
+ * @LastEditTime: 2021-02-17 10:34:42
  * @Description:路由表
  */
 import React from 'react';
@@ -75,13 +75,16 @@ import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
+import PlanDetail from '../pages/Portfolio/PlanDetail'; //计划详情
+import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
+
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRecord"
+            initialRouteName="DetailProvideOrder"
             screenOptions={{
                 // headerShown: false,
 
@@ -316,6 +319,8 @@ export default function AppStack() {
             <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
+            <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
+            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{title: '定投计划'}} />
         </Stack.Navigator>
     );
 }

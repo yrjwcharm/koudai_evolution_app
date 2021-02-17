@@ -3,7 +3,7 @@
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-30 17:03:12
+ * @LastEditTime: 2021-02-17 10:32:38
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -35,9 +35,9 @@ export default function Table(props) {
                     ]}>
                     <Text style={styles.text_align_sty}></Text>
                     <Text style={styles.text_align_sty}></Text>
-                    <Text style={styles.text_align_sty}>{data?.head[2]}</Text>
+                    <Text style={styles.text_align_sty}>{data?.th[2]}</Text>
                 </View>
-                {data?.body.map((_item, _index) => {
+                {data?.tr_list.map((_item, _index) => {
                     return (
                         <View
                             style={[
@@ -45,8 +45,8 @@ export default function Table(props) {
                                 {
                                     backgroundColor: _index % 2 == 0 ? 'fff' : '#F5F6F8',
                                     height: px(40),
-                                    borderBottomLeftRadius: _index == data?.body.length - 1 ? 6 : 0,
-                                    borderBottomRightRadius: _index == data?.body.length - 1 ? 6 : 0,
+                                    borderBottomLeftRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
+                                    borderBottomRightRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
                                 },
                             ]}
                             key={_index + '_item'}>
@@ -70,9 +70,9 @@ export default function Table(props) {
                     locations={[0, 0.8]}
                     style={{borderTopRightRadius: 10, borderTopLeftRadius: 10}}
                     colors={['#FFD6D6', '#FFF1F1']}>
-                    <Text style={{padding: px(13), paddingTop: px(17), textAlign: 'center'}}>{data.head[1]}</Text>
+                    <Text style={{padding: px(13), paddingTop: px(17), textAlign: 'center'}}>{data.th[1]}</Text>
                 </LinearGradient>
-                {data.body.map((_i, _d) => {
+                {data.tr_list.map((_i, _d) => {
                     return (
                         <Text
                             style={[
@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
     ab_table_sty: {
         position: 'absolute',
         top: '6%',
-        left: '37%',
+        left: '35%',
         shadowColor: '#FFE6E4',
         shadowOffset: {h: 10, w: 10},
         shadowRadius: 10,
         shadowOpacity: 1,
-        width: '37%',
+        width: '42%',
     },
     ab_text_sty: {
         padding: px(14),
