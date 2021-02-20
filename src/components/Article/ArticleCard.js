@@ -2,12 +2,12 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 20:12:05
+ * @LastEditTime: 2021-02-07 18:37:42
  * @Description:首页发现页文章卡片
  */
 
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -22,37 +22,57 @@ const shadow = {
     x: 0,
     y: 6,
 };
-export default function ArticleCard() {
+export default function ArticleCard({data = ''}) {
     return (
         <BoxShadow setting={shadow}>
             <View style={styles.card}>
                 <View style={Style.flexRow}>
                     <View style={{flex: 1}}>
                         <Text numberOfLines={1} style={styles.article_title}>
-                            不控制回撤的收益率就是耍流氓
+                            {data?.title}
                         </Text>
-                        <Text numberOfLines={2} style={styles.article_content}>
-                            当你亏了90%，你需要900%的收益率才可以赚回本金，所以说你需要控…
-                            <Text style={Style.more}>全文</Text>
-                        </Text>
+                        {data?.detail ? (
+                            <Text numberOfLines={2} style={styles.article_content}>
+                                {data?.detail}
+                                <Text style={Style.more}>全文</Text>
+                            </Text>
+                        ) : (
+                            <Text style={{height: px(40)}} />
+                        )}
                     </View>
                     <FastImage
                         style={styles.article_img}
                         source={{
-                            uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片33.png',
+                            uri: data?.cover,
                         }}
                     />
                 </View>
                 <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <Text style={[styles.light_text]}>122,025人已阅读</Text>
-                    <View style={Style.flexRow}>
-                        <FastImage
-                            resizeMode={FastImage.resizeMode.contain}
-                            style={styles.zan_img}
-                            source={require('../../assets/img/article/zan.png')}
-                        />
-                        <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(4)}}>11</Text>
-                    </View>
+                    <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            console.log('123');
+                        }}>
+                        <View style={Style.flexRow}>
+                            {data?.like_status == 1 ? (
+                                <FastImage
+                                    resizeMode={FastImage.resizeMode.contain}
+                                    style={styles.zan_img}
+                                    source={require('../../assets/img/article/zanActive.png')}
+                                />
+                            ) : (
+                                <FastImage
+                                    resizeMode={FastImage.resizeMode.contain}
+                                    style={styles.zan_img}
+                                    source={require('../../assets/img/article/zan.png')}
+                                />
+                            )}
+
+                            <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(4)}}>
+                                {data?.like_num}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </BoxShadow>

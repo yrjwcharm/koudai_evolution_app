@@ -41,7 +41,7 @@ function HomeScreen({navigation}) {
                     jump('CreateAccount');
                 }}
             />
-             <Button
+            <Button
                 title="去购买"
                 onPress={() => {
                     jump('TradeBuy');

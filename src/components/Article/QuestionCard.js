@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 14:35:10
+ * @LastEditTime: 2021-02-07 19:14:09
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -23,47 +23,38 @@ const shadow = {
     style: {marginBottom: px(12)},
 };
 
-export default function QuestionCard() {
+export default function QuestionCard({data = []}) {
     return (
         <>
-            <BoxShadow setting={shadow}>
-                <View style={styles.ques_card}>
-                    <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
-                    <Text style={styles.article_content}>理财魔方用户-高先生</Text>
-                    <View style={[Style.flexRow, {marginVertical: px(15), alignItems: 'flex-start'}]}>
-                        <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
-                        <Text numberOfLines={2} style={styles.article_title}>
-                            等我65岁时，真的没有养老金可领吗等我65岁时，真的没有养老金可领吗,？
-                        </Text>
-                    </View>
-                    <View style={styles.content}>
-                        <Text style={[styles.article_content, {fontSize: px(12)}]}>
-                            <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>魔方回答：</Text>
-                            一支基金的风险是不可控的，只有基金组合投资到多个市场中 ，行市场风险…
-                            <Text style={Style.more}>全文</Text>
-                        </Text>
-                    </View>
-                </View>
-            </BoxShadow>
-            <BoxShadow setting={shadow}>
-                <View style={styles.ques_card}>
-                    <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
-                    <Text style={styles.article_content}>理财魔方用户-高先生</Text>
-                    <View style={[Style.flexRow, {marginVertical: px(15), alignItems: 'flex-start'}]}>
-                        <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
-                        <Text numberOfLines={2} style={styles.article_title}>
-                            等我65岁时，真的没有养老金可领吗？有养老金可领吗
-                        </Text>
-                    </View>
-                    <View style={styles.content}>
-                        <Text style={[styles.article_content, {fontSize: px(12)}]}>
-                            <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>魔方回答：</Text>
-                            一支基金的风险是不可控的，只有基金组合投资到多个市场中 ，行市场风险…
-                            <Text style={Style.more}>全文</Text>
-                        </Text>
-                    </View>
-                </View>
-            </BoxShadow>
+            {data.map((item, index) => {
+                return (
+                    <BoxShadow setting={shadow} key={index}>
+                        <View style={styles.ques_card}>
+                            <FastImage
+                                style={styles.big_ques}
+                                source={require('../../assets/img/article/big_ques.png')}
+                            />
+                            <Text style={styles.article_content}>{item?.username}</Text>
+                            <View style={[Style.flexRow, {marginVertical: px(14), alignItems: 'flex-start'}]}>
+                                <FastImage
+                                    style={styles.ques_img}
+                                    source={require('../../assets/img/find/question.png')}
+                                />
+                                <Text numberOfLines={2} style={styles.article_title}>
+                                    {item?.question_info?.title}
+                                </Text>
+                            </View>
+                            <View style={styles.content}>
+                                <Text style={[styles.article_content, {fontSize: px(12)}]}>
+                                    <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>魔方回答：</Text>
+                                    {item?.question_info?.answer_content}
+                                    <Text style={Style.more}>全文</Text>
+                                </Text>
+                            </View>
+                        </View>
+                    </BoxShadow>
+                );
+            })}
         </>
     );
 }
@@ -81,6 +72,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: Colors.defaultColor,
         lineHeight: px(20),
+        height: px(44),
     },
     article_content: {
         fontSize: px(13),

@@ -1190,7 +1190,7 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/slider/download/@react-native-community/slider-3.0.3.tgz#830167fd757ba70ac638747ba3169b2dbae60330"
   integrity sha1-gwFn/XV7pwrGOHR7oxabLbrmAzA=
 
-"@react-native-community/viewpager@2.0.2", "@react-native-community/viewpager@^2.0.1":
+"@react-native-community/viewpager@^2.0.1", "@react-native-community/viewpager@^2.0.2":
   version "2.0.2"
   resolved "https://registry.npm.taobao.org/@react-native-community/viewpager/download/@react-native-community/viewpager-2.0.2.tgz#622b190294b1310c4825c98daeaee1c8443f7124"
   integrity sha1-YisZApSxMQxIJcmNrq7hyEQ/cSQ=

@@ -2,14 +2,14 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 16:40:29
+ * @LastEditTime: 2021-02-07 17:38:56
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabScreen from './Tabbar';
 import DetailScreen from '../pages/Portfolio/index';
-import GesturePassword from '../pages/Personal/GesturePassword';
+import IM from '../pages/IM/im';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
@@ -85,7 +85,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TabScreen"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -204,11 +204,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="StickyScreen" component={StickyScreen} />
-            <Stack.Screen
-                name="GesturePassword"
-                component={GesturePassword}
-                options={({route}) => ({title: route.params?.title ? route.params?.title : route.name})}
-            />
+            <Stack.Screen name="IM" component={IM} options={{title: '在线客服'}} />
             <Stack.Screen
                 name="LineChart"
                 component={LineChart}
