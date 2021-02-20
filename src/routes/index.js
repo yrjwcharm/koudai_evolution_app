@@ -2,14 +2,14 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 10:37:45
+ * @LastEditTime: 2021-02-20 10:53:09
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabScreen from './Tabbar';
 import DetailScreen from '../pages/Portfolio/index';
-import GesturePassword from '../pages/Personal/GesturePassword';
+import IM from '../pages/IM/im';
 import LineChart from '../pages/Chart/lineChart.js';
 import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
@@ -60,6 +60,7 @@ import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
 import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
+import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
@@ -74,6 +75,7 @@ import FundTradeTime from '../pages/Portfolio/FundTradeTime'; // 交易时间说
 import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
 import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
+import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import PlanDetail from '../pages/Portfolio/PlanDetail'; //计划详情
 import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
@@ -81,13 +83,17 @@ import ChildrenHome from '../pages/Assets/ChildrenHome'; //持仓页
 import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 
+import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
+import Settings from '../pages/Assets/Settings'; // 个人设置
+import Profile from '../pages/Assets/Profile'; // 个人资料
+import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="RemindMessage"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -206,11 +212,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="StickyScreen" component={StickyScreen} />
-            <Stack.Screen
-                name="GesturePassword"
-                component={GesturePassword}
-                options={({route}) => ({title: route.params?.title ? route.params?.title : route.name})}
-            />
+            <Stack.Screen name="IM" component={IM} options={{title: '在线客服'}} />
             <Stack.Screen
                 name="LineChart"
                 component={LineChart}
@@ -280,6 +282,7 @@ export default function AppStack() {
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
+            <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
             <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: '赎回银行产品'}} />
             <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
             <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
@@ -321,12 +324,17 @@ export default function AppStack() {
             <Stack.Screen name="FundScale" component={FundScale} options={{title: '基金规模'}} />
             <Stack.Screen name="FundManager" component={FundManager} options={{title: '基金经理'}} />
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
+            <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
             <Stack.Screen name="FixedPlan" component={FixedPlan} options={{title: '定投计划'}} />
             <Stack.Screen name="ChildrenHome" component={ChildrenHome} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
+            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
+            <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
+            <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
+            <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
         </Stack.Navigator>
     );
 }

@@ -2,18 +2,17 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 11:20:58
+ * @LastEditTime: 2021-02-04 15:21:05
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import IMScreen from '../pages/IM/index';
-import HomeScreen from '../pages/Assets/index';
+import Home from '../pages/Assets/index';
 // import IndexScreen from '../pages/Index/index';
 import {px} from '../utils/appUtil';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Find from '../pages/Find'; //发现页
+import Index from '../pages/MofangIndex'; //魔方首页
 import {Colors} from '../common/commonStyle';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(24);
@@ -39,7 +38,7 @@ export default function Tabbar() {
                                 />
                             );
                         }
-                    } else if (route.name === 'IMScreen') {
+                    } else if (route.name === 'Index') {
                         if (focused) {
                             return (
                                 <FastImage
@@ -55,7 +54,7 @@ export default function Tabbar() {
                                 />
                             );
                         }
-                    } else if (route.name === 'HomeScreen') {
+                    } else if (route.name === 'Home') {
                         if (focused) {
                             return (
                                 <FastImage
@@ -90,8 +89,8 @@ export default function Tabbar() {
                     tabBarLabel: '发现',
                 }}
             />
-            <Tab.Screen name="IMScreen" options={{tabBarLabel: '魔方'}} component={IMScreen} />
-            <Tab.Screen name="HomeScreen" options={{tabBarLabel: '我的'}} component={HomeScreen} />
+            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
+            <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
         </Tab.Navigator>
     );
 }

@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:18:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 10:51:49
+ * @LastEditTime: 2021-02-07 16:15:32
  * @Description: 基金公告
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -17,36 +17,12 @@ const FundAnnouncement = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const [list, setList] = useState([
-        {
-            title:
-                '申万菱信沪深300指数增强C:申万菱信基金管理有限公司关于旗下部分基金新增招商银行招赢通为代销机构的公告',
-            url: 'http://news.windin.com/bulletin/93008860.pdf?mediatype=03&&pkid=93008860&&id=121059264',
-        },
-        {
-            title: '申万菱信沪深300指数增强C:关于旗下部分基金参加中国银行开展的费率优惠活动的公告',
-            url: 'http://news.windin.com/bulletin/92706614.pdf?mediatype=03&&pkid=92706614&&id=120948374',
-        },
-        {
-            title: '申万菱信沪深300指数增强C:关于旗下部分基金参加平安银行开展的费率优惠活动的公告',
-            url: 'http://news.windin.com/bulletin/92706712.pdf?mediatype=03&&pkid=92706712&&id=120948568',
-        },
-        {
-            title:
-                '申万菱信沪深300指数增强C:申万菱信基金管理有限公司关于提请投资者更新过期身份证件或一代身份证件及对直销渠道未及时更新相关信息的客户限制办理部分业务的提示性公告',
-            url: 'http://news.windin.com/bulletin/92578629.pdf?mediatype=03&&pkid=92578629&&id=120921680',
-        },
-        {
-            title:
-                '申万菱信沪深300指数增强C:申万菱信基金管理有限公司关于提请网上直销渠道个人投资者及时上传身份证件影印件及完善更新身份信息的第二次提示性公告',
-            url: 'http://news.windin.com/bulletin/92578718.pdf?mediatype=03&&pkid=92578718&&id=120921852',
-        },
-    ]);
+    const [list, setList] = useState([]);
 
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/announcement/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/announcements/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {
@@ -92,7 +68,8 @@ const FundAnnouncement = ({navigation, route}) => {
     const renderItem = useCallback(
         ({item, index, separators}) => {
             return (
-                <TouchableOpacity onPress={() => navigation.navigate({name: 'OpenPdf', params: {url: item.url}})}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate({name: 'OpenPdf', params: {url: item.url, title: item.title}})}>
                     <View style={[Style.flexRow, styles.item]}>
                         <Text numberOfLines={3} style={[styles.itemText]}>
                             {item.title}
@@ -107,9 +84,9 @@ const FundAnnouncement = ({navigation, route}) => {
 
     useEffect(() => {
         if (page === 1) {
-            // init('refresh', true);
+            init('refresh', true);
         } else {
-            // init('loadmore');
+            init('loadmore');
         }
     }, [page, init]);
     return (
@@ -122,7 +99,7 @@ const FundAnnouncement = ({navigation, route}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.1}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}

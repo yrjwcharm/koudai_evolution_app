@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 18:52:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-29 19:05:54
+ * @LastEditTime: 2021-02-03 20:49:50
  * @Description: 数据空的时候提示组件
  */
 import React, {PureComponent} from 'react';
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: px(16),
-        marginTop: px(36),
+        marginTop: px(20),
         fontWeight: '500',
     },
 });

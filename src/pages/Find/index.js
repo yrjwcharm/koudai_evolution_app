@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-03 16:11:29
+ * @LastEditTime: 2021-02-05 15:44:21
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -21,6 +21,9 @@ const Index = (props) => {
     // let scrollingRight = '';
     // let lastx = '';
     // const snapScroll = useRef(null);
+    const jumpPage = () => {
+        props.navigation.navigate('FindDetail');
+    };
     return (
         <>
             <Header renderLeft={<Text style={styles.header_title}>今日推荐</Text>} />
@@ -35,9 +38,7 @@ const Index = (props) => {
                         <MagicMove.View id="logo" transition={MagicMove.Transition.morph}>
                             <TouchableOpacity
                                 activeOpacity={1}
-                                onPress={() => {
-                                    props.navigation.navigate('FindDetail');
-                                }}
+                                onPress={jumpPage}
                                 style={[styles.recommend, styles.card]}>
                                 <View style={[styles.header]}>
                                     <Text style={styles.img_desc}>35+必备</Text>
@@ -64,7 +65,7 @@ const Index = (props) => {
                                             ]}>
                                             132.87%~156.58%
                                         </Text>
-                                        <TouchableOpacity>
+                                        <TouchableOpacity onPress={jumpPage}>
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
                                                 end={{x: 0, y: 0.8}}
@@ -110,7 +111,7 @@ const Index = (props) => {
                                 showsPagination={false}
                                 horizontal={true}
                                 height={200}
-                                // decelerationRate={'fast'}
+                                decelerationRate={0.99}
                                 snapToInterval={px(214)}
                                 // ref={snapScroll}
                                 // onResponderRelease={() => {

@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-03 11:44:37
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-07 18:19:43
  * @Description:主题及公共样式表
  */
 
@@ -73,6 +73,14 @@ export const Space = {
     // 分割线高度
     lineWidth: text(0.5),
     modelPadding: text(20),
+    // 外阴影
+    boxShadow: (color = '#E0E2E7', x = 0, y = text(2), opacity = 1, radius = text(8)) => ({
+        shadowColor: color,
+        shadowOffset: {width: x, height: y},
+        shadowOpacity: opacity,
+        shadowRadius: radius,
+        elevation: 10,
+    }),
 };
 
 export const Font = {
@@ -153,5 +161,9 @@ export const Style = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 4,
         height: px(20),
+    },
+    more: {
+        fontSize: px(12),
+        color: Colors.btnColor,
     },
 });
