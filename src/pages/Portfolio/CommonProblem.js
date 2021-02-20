@@ -1,12 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-02-04 14:39:05
- * @LastEditors: yhc
+ * @LastEditTime: 2021-02-07 10:01:40
+ * @LastEditors: dx
  * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Image, ScrollView, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import Image from 'react-native-fast-image';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 16:40:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-07 10:10:02
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -13,12 +13,12 @@ import {
     ScrollView,
     StyleSheet,
     PermissionsAndroid,
-    Image,
     TouchableOpacity,
     StatusBar,
     LayoutAnimation,
     RefreshControl,
 } from 'react-native';
+import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -234,7 +234,7 @@ function HomeScreen({navigation}) {
                                     ? {uri: userBasicInfo.user_info.avatar}
                                     : require('../../assets/personal/usercenter.png')
                             }
-                            style={styles.headImg}
+                            style={[styles.headImg, userBasicInfo.user_info ? {} : {borderWidth: 0}]}
                         />
                         <Text style={styles.username}>
                             {userBasicInfo.user_info ? userBasicInfo.user_info.name : '****'}

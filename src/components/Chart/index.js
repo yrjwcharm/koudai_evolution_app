@@ -1,14 +1,15 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-29 10:58:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-07 14:54:50
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
 import {StyleSheet, Platform, View, Text} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
+import _ from 'lodash';
 const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
@@ -38,7 +39,7 @@ class Chart extends PureComponent {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         const {data} = this.props;
-        if (data !== nextProps.data) {
+        if (!_.isEqual(data, nextProps.data)) {
             this.update(nextProps.data);
         }
     }
@@ -51,9 +52,10 @@ class Chart extends PureComponent {
         const {
             nativeEvent: {data},
         } = event;
-        const {onChange} = this.props;
+        const {onChange, onHide} = this.props;
         const tooltip = JSON.parse(data);
-        onChange(tooltip);
+        tooltip.type === 'onChange' && onChange && onChange(tooltip.obj);
+        tooltip.type === 'onHide' && onHide && onHide(tooltip.obj);
     };
 
     render() {

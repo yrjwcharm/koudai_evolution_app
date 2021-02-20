@@ -2,10 +2,10 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-04 18:44:03
+ * @LastEditTime: 2021-02-05 10:43:06
  * @Description: 投诉建议
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {Animated, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -29,7 +29,8 @@ const ComplaintsAdvices = () => {
     const [sort, setSort] = useState(sortList[0]);
     const [content, setContent] = useState('');
     const [showMask, setShowMask] = useState(false);
-    const [keyboardHeight] = useState(new Animated.Value(0));
+    const keyboardHeight = useRef(new Animated.Value(0)).current;
+    const leftHeight = useRef(0);
     // 显示选择器
     const showPicker = useCallback(() => {
         Keyboard.dismiss();
@@ -62,8 +63,9 @@ const ComplaintsAdvices = () => {
     // 键盘调起
     const keyboardWillShow = useCallback(
         (e) => {
+            const value = e.endCoordinates.height - (isIphoneX() ? 34 : 0) - leftHeight.current + 16;
             Animated.timing(keyboardHeight, {
-                toValue: e.endCoordinates.height - (isIphoneX() ? 34 - text(8) : text(8)),
+                toValue: value > 0 ? value : 0,
                 duration: e.duration,
                 useNativeDriver: false,
             }).start();
@@ -118,7 +120,9 @@ const ComplaintsAdvices = () => {
         };
     }, [keyboardWillShow, keyboardWillHide]);
     return (
-        <View style={[styles.container]}>
+        <Animated.View
+            style={[styles.container, {bottom: keyboardHeight}]}
+            onLayout={(e) => (leftHeight.current = e.nativeEvent.layout.height - text(379.5))}>
             {showMask && <Mask onClick={hidePicker} />}
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 <View style={styles.partBox}>
@@ -176,7 +180,7 @@ const ComplaintsAdvices = () => {
                 </View>
                 <Button style={styles.btn} title={'提交'} />
             </ScrollView>
-        </View>
+        </Animated.View>
     );
 };
 
@@ -184,6 +188,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        position: 'relative',
     },
     partBox: {
         marginTop: Space.marginVertical,

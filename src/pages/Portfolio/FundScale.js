@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:08:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 10:11:33
+ * @LastEditTime: 2021-02-07 15:02:32
  * @Description: 基金规模
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,12 +21,15 @@ const FundScale = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/volume/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/volume/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);
                 first && navigation.setOptions({title: res.result.title || '基金规模'});
-                setList([...(res.result.list || [])]);
+                setList([
+                    ['基金规模', res.result.volume],
+                    ['成立日期', res.result.reg_date],
+                ]);
             });
         },
         [navigation, route]
@@ -48,7 +51,7 @@ const FundScale = ({navigation, route}) => {
     }, []);
 
     useEffect(() => {
-        // init();
+        init(true);
     }, [init]);
     return (
         <ScrollView
