@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-01-22 14:34:21
+ * @LastEditTime: 2021-02-19 18:31:47
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
@@ -86,7 +86,7 @@ export default class PrivateOrder extends Component {
                     <View style={[Style.flexRow, styles.card_list]}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Text style={styles.card_label}>打款时间</Text>
-                            <TouchableOpacity onPress={() => this._showDatePicker()}>
+                            <TouchableOpacity onPress={_showDatePicker}>
                                 <Text>{currentDate}</Text>
                             </TouchableOpacity>
                         </View>

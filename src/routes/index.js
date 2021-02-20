@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-17 10:34:42
+ * @LastEditTime: 2021-02-20 10:37:45
  * @Description:路由表
  */
 import React from 'react';
@@ -77,6 +77,9 @@ import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import PlanDetail from '../pages/Portfolio/PlanDetail'; //计划详情
 import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
+import ChildrenHome from '../pages/Assets/ChildrenHome'; //持仓页
+import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
+import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
@@ -84,7 +87,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="DetailProvideOrder"
+            initialRouteName="RemindMessage"
             screenOptions={{
                 // headerShown: false,
 
@@ -321,6 +324,9 @@ export default function AppStack() {
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
             <Stack.Screen name="FixedPlan" component={FixedPlan} options={{title: '定投计划'}} />
+            <Stack.Screen name="ChildrenHome" component={ChildrenHome} options={{headerShown: false}} />
+            <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
+            <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
         </Stack.Navigator>
     );
 }
