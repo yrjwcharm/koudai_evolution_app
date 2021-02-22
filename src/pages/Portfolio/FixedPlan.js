@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
- * @Description:
+ * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-05 17:39:02
+ * @LastEditTime: 2021-02-22 12:10:48
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
