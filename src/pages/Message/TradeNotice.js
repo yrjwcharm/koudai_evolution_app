@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 14:39:39
+ * @LastEditTime: 2021-02-20 17:18:49
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';

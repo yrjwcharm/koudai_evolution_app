@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 16:40:46
+ * @LastEditTime: 2021-02-22 11:14:51
  * @Description:路由表
  */
 import React from 'react';
@@ -90,13 +90,15 @@ import Profile from '../pages/Assets/Profile'; // 个人资料
 import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import PrivateRedeem from '../pages/PE/PrivateRedeem'; // 私募赎回
 import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
+import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
+import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateApply"
+            initialRouteName="StrategyMaHongMan"
             screenOptions={{
                 // headerShown: false,
 
@@ -342,6 +344,8 @@ export default function AppStack() {
             <Stack.Screen name="ActivityNotice" component={ActivityNotice} options={{headerShown: false}} />
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
+            <Stack.Screen name="DetailMaHongMan" component={DetailMaHongMan} options={{headerShown: false}} />
+            <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
         </Stack.Navigator>
     );
 }
