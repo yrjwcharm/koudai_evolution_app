@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 15:34:12
+ * @LastEditTime: 2021-02-22 16:43:50
  * @Description:路由表
  */
 import React from 'react';
@@ -92,13 +92,14 @@ import PrivateRedeem from '../pages/PE/PrivateRedeem'; // 私募赎回
 import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
 import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
 import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
+import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateProduct"
+            initialRouteName="PrivateAssets"
             screenOptions={{
                 // headerShown: false,
 
@@ -346,6 +347,7 @@ export default function AppStack() {
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
             <Stack.Screen name="DetailMaHongMan" component={DetailMaHongMan} options={{headerShown: false}} />
             <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
+            <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }
