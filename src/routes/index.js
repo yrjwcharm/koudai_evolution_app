@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 16:43:50
+ * @LastEditTime: 2021-02-23 10:09:06
  * @Description:路由表
  */
 import React from 'react';
@@ -99,7 +99,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateAssets"
+            initialRouteName="TradeRedeem"
             screenOptions={{
                 // headerShown: false,
 

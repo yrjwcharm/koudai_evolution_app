@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 18:24:23
+ * @LastEditTime: 2021-02-22 19:01:25
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
