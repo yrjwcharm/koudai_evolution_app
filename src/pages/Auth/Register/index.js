@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 19:16:57
+ * @LastEditTime: 2021-02-23 13:32:43
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -25,6 +25,7 @@ export default class index extends Component {
         };
     }
     register = () => {
+        global.LogTool('Register');
         const {mobile} = this.state;
         http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/mobile_available/20210101', {mobile}).then(
             (res) => {
@@ -40,7 +41,8 @@ export default class index extends Component {
         this.setState({mobile, btnClick: !(mobile.length >= 11)});
     };
     jumpPage = (nav) => {
-        this.props.navigation.navigate(nav);
+        global.LogTool();
+        this.props.navigation.replace(nav);
     };
     render() {
         const {btnClick, mobile} = this.state;

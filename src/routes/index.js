@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 11:10:24
+ * @LastEditTime: 2021-02-23 12:00:31
  * @Description:路由表
  */
 import React from 'react';
@@ -100,7 +100,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRedeem"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 

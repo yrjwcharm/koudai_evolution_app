@@ -1,13 +1,14 @@
+/* eslint-disable no-undef */
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 10:55:39
+ * @LastEditTime: 2021-02-23 18:22:58
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler, NativeModules} from 'react-native';
+import {StatusBar, Platform, BackHandler, NativeModules, Linking} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {useColorScheme} from 'react-native-appearance';
@@ -20,7 +21,8 @@ import {requestExternalStoragePermission} from './src/utils/appUtil';
 import * as MagicMove from 'react-native-magic-move';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
-GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest; //调试中可看到网络请求
+import './src/utils/LogTool';
+global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 const {UIManager} = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true); //启用安卓动画
 const MyTheme = {
@@ -99,6 +101,36 @@ function App() {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
         };
     });
+    // const prefix = Linking.makeUrl('/');
+    const linking = {
+        // prefixes: [prefix],
+        config: {
+            screens: {
+                Login: {
+                    path: 'login',
+                },
+                HomeStack: {
+                    path: 'stack',
+                    initialRouteName: 'Home',
+                    screens: {
+                        Home: 'home',
+                        Profile: {
+                            path: 'user/:id/:age',
+                            parse: {
+                                id: (id) => `there, ${id}`,
+                                age: Number,
+                            },
+                            stringify: {
+                                id: (id) => id.replace('there, ', ''),
+                            },
+                        },
+                    },
+                },
+                Settings: 'settings',
+            },
+        },
+    };
+    let ts = new Date().getTime();
     return (
         <RootSiblingParent>
             <StatusBar
@@ -115,24 +147,27 @@ function App() {
                             <NavigationContainer
                                 theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
                                 ref={navigationRef}
-                                onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
-                                onStateChange={async () => {
+                                onReady={() => {
+                                    // console.log(object)
+                                    global.refName = navigationRef.current.getCurrentRoute().name;
+                                    return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
+                                }}
+                                onStateChange={() => {
+                                    var staytime = new Date().getTime() - ts;
+                                    ts = new Date().getTime();
                                     const previousRouteName = routeNameRef.current;
                                     const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                    console.log(previousRouteName, currentRouteName);
+                                    console.log(navigationRef.current.getRootState().lenght);
+                                    global.previousRouteName = previousRouteName;
+                                    // global.currentRouteName = currentRouteName;
                                     if (previousRouteName !== currentRouteName) {
-                                        // The line below uses the expo-firebase-analytics tracker
-                                        // https://docs.expo.io/versions/latest/sdk/firebase-analytics/
-                                        // Change this line to use another Mobile analytics SDK
-                                        // await analytics().logScreenView({
-                                        //     screen_name: currentRouteName,
-                                        //     screen_class: currentRouteName,
-                                        // });
+                                        LogTool('jump', null, null, currentRouteName, previousRouteName, null, null);
+                                        LogTool('staytime', null, null, previousRouteName, null, staytime);
                                     }
-
                                     // Save the current route name for later comparison
                                     routeNameRef.current = currentRouteName;
-                                }}>
+                                }}
+                                linking={linking}>
                                 <AppStack />
                             </NavigationContainer>
                         </SafeAreaProvider>

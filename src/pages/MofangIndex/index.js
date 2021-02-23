@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 19:16:13
+ * @LastEditTime: 2021-02-23 17:07:55
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -18,6 +18,7 @@ import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
+import {NavigationContainer, LinkingOptions, useLinkTo} from '@react-navigation/native';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -44,6 +45,7 @@ const RenderTitle = (props) => {
 
 const Index = (props) => {
     const inset = useRef(useSafeAreaInsets()).current;
+    const linkTo = useLinkTo();
     const [data, setData] = useState(null);
     const getData = useCallback(() => {
         http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/home/detail/20210101').then((res) => {
@@ -54,6 +56,7 @@ const Index = (props) => {
         getData();
     }, [getData]);
     const jumpPage = (url, params) => {
+        // linkTo('/login');
         props.navigation.navigate(url, params);
     };
     return (
@@ -68,6 +71,7 @@ const Index = (props) => {
                     <TouchableOpacity
                         onPress={() => {
                             jumpPage('Register');
+                            global.LogTool();
                         }}>
                         <Text style={Style.more}>登录/注册</Text>
                     </TouchableOpacity>
