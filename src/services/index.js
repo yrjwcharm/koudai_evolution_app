@@ -19,15 +19,18 @@ axios.interceptors.request.use(async (config) => {
     //拦截器处理
     var token = '';
     var uid = '';
-
+    var utid = '';
     let result = await Storage.get('loginStatus');
     if (result) {
         token = result.access_token;
         uid = result.uid;
+        utid = result.utid;
     }
-
     config.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Content-Type': config.headers['Content-Type'],
+        ...config.headers,
+        // Origin: 'http://localhost:8081/',
         Authorization: token,
     };
     config.params = {
@@ -35,7 +38,8 @@ axios.interceptors.request.use(async (config) => {
         app: 'p_a',
         ts: new Date().getTime(),
         did: DeviceInfo.getUniqueId(),
-        uid: uid,
+        uid,
+        utid,
         ver: '5.3.0',
         Authorization: token,
     };
@@ -72,7 +76,7 @@ axios.interceptors.response.use(
     }
 );
 export default class http {
-    static async get(url, params, showLoading = true) {
+    static async get(url, params, config, showLoading = true) {
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');
@@ -89,6 +93,7 @@ export default class http {
                 }
             } else {
                 res = await axios.get(url + '?' + query);
+
                 if (showLoading) {
                     // Toast.hide();
                 }
@@ -100,15 +105,20 @@ export default class http {
         }
         // }
     }
-    static async post(url, params, showLoading = true) {
+    static async post(url, params, config, showLoading = true) {
         if (!url.indexOf('http') > -1) {
             axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
         }
+        console.log(config);
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');
             }
-            let res = await axios.post(url, params);
+            let res = await axios.post(
+                url,
+                params,
+                config || {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+            );
             if (showLoading) {
                 // Toast.hide();
             }

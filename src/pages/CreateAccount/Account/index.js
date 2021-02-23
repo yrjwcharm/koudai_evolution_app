@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-30 18:36:01
+ * @LastEditTime: 2021-02-22 15:45:12
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -17,6 +17,7 @@ import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
 import {formCheck} from '../../../utils/validator';
 import http from '../../../services';
+import Toast from '../../../components/Toast';
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +45,10 @@ export class index extends Component {
         );
     }
     jumpPage = (nav) => {
-        const {name, id_no} = this.state;
+        this.props.navigation.navigate(nav);
+    };
+    jumpBank = (nav) => {
+        const {name, id_no, rcode, rname} = this.state;
         var checkData = [
             {
                 field: name,
@@ -58,7 +62,21 @@ export class index extends Component {
         if (!formCheck(checkData)) {
             return;
         }
-        this.props.navigation.navigate(nav);
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/open_account/check/20210101', {
+            id_no,
+            name,
+        }).then((res) => {
+            if (res.code == '000000') {
+                this.props.navigation.navigate(nav, {
+                    name,
+                    id_no,
+                    rname,
+                    rcode,
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
     };
     careertData() {
         const {careerList} = this.state;
@@ -82,9 +100,9 @@ export class index extends Component {
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
-            wheelFlex: [1, 1],
+            wheelFlex: [1, 1, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.setState({rname: pickedValue, showMask: false, rcode: this.state.careerList[pickedIndex]});
+                this.setState({rname: pickedValue[0], showMask: false, rcode: this.state.careerList[pickedIndex]});
             },
             onPickerCancel: () => {
                 this.setState({showMask: false});
@@ -100,7 +118,8 @@ export class index extends Component {
         this.closePicker();
     }
     render() {
-        const {showMask} = this.state;
+        const {showMask, name, id_no, rname} = this.state;
+        // console.log(rname);
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
@@ -124,6 +143,7 @@ export class index extends Component {
                             onChange={(name) => {
                                 this.setState({name});
                             }}
+                            value={name}
                             returnKeyType={'next'}
                         />
                         <View style={[Style.flexRow, styles.border]}>
@@ -133,6 +153,7 @@ export class index extends Component {
                                 onChange={(id_no) => {
                                     this.setState({id_no});
                                 }}
+                                value={id_no}
                                 maxLength={18}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 returnKeyType={'next'}
@@ -149,10 +170,9 @@ export class index extends Component {
                                 label="职业信息"
                                 isUpdate={false}
                                 placeholder="请选择您的职业"
-                                value={this.state.rname}
+                                value={rname}
                                 onClick={this._showPosition}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}
-                                returnKeyType={'done'}
                             />
                             <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
                         </View>
@@ -161,7 +181,7 @@ export class index extends Component {
                 <FixedButton
                     title={'下一步'}
                     onPress={() => {
-                        this.jumpPage('BankInfo');
+                        this.jumpBank('BankInfo');
                     }}
                 />
             </View>

@@ -2,19 +2,19 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 15:58:41
+ * @LastEditTime: 2021-02-22 19:01:19
  * @Description:
  */
 import React from 'react';
 import {Colors, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, px} from '../../utils/appUtil';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 export default function input(props) {
     return (
         <View style={[styles.login_input_tel, props.style]}>
-            <View style={{width: text(80)}}>
+            <View style={styles.lable}>
                 <Text style={styles.inputLeftText}>{props.title}</Text>
-                <Text style={styles.line}>|</Text>
+                <View style={styles.line} />
             </View>
             <TextInput {...props} style={styles.input} underlineColorAndroid="transparent" />
         </View>
@@ -25,10 +25,11 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         color: '#4E556C',
     },
+    lable: {width: text(80), justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'},
     line: {
-        position: 'absolute',
-        color: Colors.lightGrayColor,
-        right: 0,
+        backgroundColor: Colors.lightGrayColor,
+        width: px(1),
+        height: px(12),
     },
     login_input_tel: {
         height: text(50),

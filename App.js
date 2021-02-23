@@ -2,10 +2,10 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-01 15:52:03
+ * @LastEditTime: 2021-02-23 10:55:39
  * @Description: app全局入口文件
  */
-import * as React from 'react';
+import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
 import {StatusBar, Platform, BackHandler, NativeModules} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -44,7 +44,8 @@ let codePushOptions = {
 };
 function App() {
     const scheme = useColorScheme();
-
+    const navigationRef = useRef();
+    const routeNameRef = useRef();
     //如果有更新的提示
     const syncImmediate = () => {
         CodePush.sync({
@@ -111,7 +112,27 @@ function App() {
                 <Provider store={store}>
                     <PersistGate loading={null} persistor={persistor}>
                         <SafeAreaProvider>
-                            <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+                            <NavigationContainer
+                                theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+                                ref={navigationRef}
+                                onReady={() => (routeNameRef.current = navigationRef.current.getCurrentRoute().name)}
+                                onStateChange={async () => {
+                                    const previousRouteName = routeNameRef.current;
+                                    const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                    console.log(previousRouteName, currentRouteName);
+                                    if (previousRouteName !== currentRouteName) {
+                                        // The line below uses the expo-firebase-analytics tracker
+                                        // https://docs.expo.io/versions/latest/sdk/firebase-analytics/
+                                        // Change this line to use another Mobile analytics SDK
+                                        // await analytics().logScreenView({
+                                        //     screen_name: currentRouteName,
+                                        //     screen_class: currentRouteName,
+                                        // });
+                                    }
+
+                                    // Save the current route name for later comparison
+                                    routeNameRef.current = currentRouteName;
+                                }}>
                                 <AppStack />
                             </NavigationContainer>
                         </SafeAreaProvider>

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-07 19:05:08
+ * @LastEditTime: 2021-02-22 19:16:13
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {QuestionCard, ArticleCard} from '../../components/Article';
 import Swiper from 'react-native-swiper';
+import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
@@ -45,26 +46,41 @@ const Index = (props) => {
     const inset = useRef(useSafeAreaInsets()).current;
     const [data, setData] = useState(null);
     const getData = useCallback(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/home/detail/20210101').then((data) => {
-            setData(data.result);
+        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/home/detail/20210101').then((res) => {
+            setData(res.result);
         });
     }, []);
     useEffect(() => {
         getData();
     }, [getData]);
+    const jumpPage = (url, params) => {
+        props.navigation.navigate(url, params);
+    };
     return (
         <>
+            {/* header */}
             <View style={[styles.header, {paddingTop: inset.top + (isIphoneX() ? 0 : px(8))}]}>
                 <View style={Style.flexBetween}>
                     <View style={Style.flexRow}>
                         <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
                         <Text style={styles.header_title}>理财魔方</Text>
                     </View>
-                    {/* <Text style={Style.more}>登录/注册</Text> */}
-                    <FastImage
-                        style={{width: px(24), height: px(24)}}
-                        source={require('../../assets/img/index/message.png')}
-                    />
+                    <TouchableOpacity
+                        onPress={() => {
+                            jumpPage('Register');
+                        }}>
+                        <Text style={Style.more}>登录/注册</Text>
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity
+                        onPress={() => {
+                            jumpPage('RemindMessage');
+                        }}>
+                        <View style={styles.new_message} />
+                        <FastImage
+                            style={{width: px(24), height: px(24)}}
+                            source={require('../../assets/img/index/message.png')}
+                        />
+                    </TouchableOpacity> */}
                 </View>
                 <Text style={styles.title_desc}>您的智能基金组合专家</Text>
             </View>
@@ -249,16 +265,20 @@ const Index = (props) => {
                             snapToInterval={px(298)}
                             decelerationRate={0.99}
                             showsHorizontalScrollIndicator={false}>
-                            {data?.comment_list?.map((comment, index) => (
+                            {data?.comment_list?.map((comment) => (
                                 <BoxShadow
-                                    key={index}
+                                    key={comment.id}
                                     setting={{
                                         ...shadow,
                                         width: px(282),
                                         height: px(168),
                                         style: {marginRight: px(16)},
                                     }}>
-                                    <View style={[styles.about_our, styles.common_card]}>
+                                    <TouchableOpacity
+                                        style={[styles.about_our, styles.common_card]}
+                                        onPress={() => {
+                                            jumpPage('MessageBoard', {id: comment.id});
+                                        }}>
                                         <View style={Style.flexRow}>
                                             <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
                                             <View style={{flex: 1}}>
@@ -275,32 +295,8 @@ const Index = (props) => {
                                         <Text style={styles.about_text} numberOfLines={4}>
                                             {comment.content}
                                         </Text>
-
-                                        <View style={[Style.flexRow, styles.zan]}>
-                                            {comment?.like_status == 1 ? (
-                                                <FastImage
-                                                    resizeMode={FastImage.resizeMode.contain}
-                                                    style={styles.zan_img}
-                                                    source={require('../../assets/img/article/zanActive.png')}
-                                                />
-                                            ) : (
-                                                <FastImage
-                                                    resizeMode={FastImage.resizeMode.contain}
-                                                    style={styles.zan_img}
-                                                    source={require('../../assets/img/article/zan.png')}
-                                                />
-                                            )}
-
-                                            <Text
-                                                style={{
-                                                    fontSize: px(12),
-                                                    color: Colors.lightBlackColor,
-                                                    marginLeft: px(4),
-                                                }}>
-                                                {comment.like_num}
-                                            </Text>
-                                        </View>
-                                    </View>
+                                        <Praise comment={comment} id={comment.id} style={styles.zan} />
+                                    </TouchableOpacity>
                                 </BoxShadow>
                             ))}
                         </ScrollView>
@@ -507,13 +503,20 @@ const styles = StyleSheet.create({
         bottom: px(12),
         right: px(16),
     },
-    zan_img: {
-        width: px(12),
-        height: px(12),
-    },
+
     avatar_name: {
         fontSize: px(13),
         color: Colors.lightBlackColor,
         marginBottom: px(6),
+    },
+    new_message: {
+        width: px(6),
+        height: px(6),
+        borderRadius: px(3),
+        backgroundColor: 'red',
+        position: 'absolute',
+        right: px(1),
+        top: px(3),
+        zIndex: 10,
     },
 });

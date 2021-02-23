@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 17:57:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-08 11:21:48
+ * @LastEditTime: 2021-02-22 18:20:31
  * @Description:
  */
 import React, {Component} from 'react';
@@ -21,7 +21,16 @@ class Toast extends Component {
                 <ToastContainer {...options} visible={true}>
                     {message}
                 </ToastContainer>
-            ),
+            )
+        );
+    };
+    static showLoading = (message = '正在加载中...', options) => {
+        return new RootSiblings(
+            (
+                <ToastContainer {...options} loading={true} visible={true}>
+                    {message}
+                </ToastContainer>
+            )
         );
     };
 
@@ -30,7 +39,7 @@ class Toast extends Component {
             toast.destroy();
         } else {
             console.warn(
-                `Toast.hide expected a \`RootSiblings\` instance as argument.\nBut got \`${typeof toast}\` instead.`,
+                `Toast.hide expected a \`RootSiblings\` instance as argument.\nBut got \`${typeof toast}\` instead.`
             );
         }
     };

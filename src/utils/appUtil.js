@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 11:45:25
+ * @LastEditTime: 2021-02-22 14:06:09
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -53,16 +53,36 @@ const requestExternalStoragePermission = async () => {
         return null;
     }
 };
-//解析url 
-const resoveUrl=(url)=>{
-    if(url){
-       var arr= url.split('?')
-       if(arr[1]){
-
-       }
-       return 
+/**
+ * @description: 格式化数字 每三位增加逗号
+ * @param {*} formaNum
+ * @return {*} 格式化后的字符串
+ */
+const formaNum = (num) => {
+    var num = (num || 0).toString(),
+        result = '';
+    while (num.length > 3) {
+        result = ',' + num.slice(-3) + result;
+        num = num.slice(0, num.length - 3);
     }
-}
+    if (num) {
+        result = num + result;
+    }
+    return result;
+};
+//手机号脱敏处理
+const handlePhone = (mobile) => {
+    return mobile ? mobile.replace(/(\d{3})\d*(\d{4})/, '$1****$2') : '';
+};
+//解析url
+const resoveUrl = (url) => {
+    if (url) {
+        var arr = url.split('?');
+        if (arr[1]) {
+        }
+        return;
+    }
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -75,4 +95,4 @@ const resoveUrl=(url)=>{
 //         return StatusBar.currentHeight;
 //     }
 // }
-export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission,resoveUrl};
+export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission, formaNum, handlePhone};

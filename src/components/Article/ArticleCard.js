@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-07 18:37:42
+ * @LastEditTime: 2021-02-20 11:41:18
  * @Description:首页发现页文章卡片
  */
 
@@ -12,6 +12,7 @@ import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {BoxShadow} from 'react-native-shadow';
+import Praise from '../Praise';
 const shadow = {
     width: deviceWidth - px(32),
     height: px(125),
@@ -49,11 +50,9 @@ export default function ArticleCard({data = ''}) {
                 </View>
                 <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                     <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            console.log('123');
-                        }}>
-                        <View style={Style.flexRow}>
+
+                    <Praise comment={data} />
+                    {/* <View style={Style.flexRow}>
                             {data?.like_status == 1 ? (
                                 <FastImage
                                     resizeMode={FastImage.resizeMode.contain}
@@ -71,8 +70,7 @@ export default function ArticleCard({data = ''}) {
                             <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(4)}}>
                                 {data?.like_num}
                             </Text>
-                        </View>
-                    </TouchableOpacity>
+                        </View> */}
                 </View>
             </View>
         </BoxShadow>

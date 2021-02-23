@@ -2,17 +2,19 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 16:37:10
+ * @LastEditTime: 2021-02-22 14:09:09
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputView from '../input';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, handlePhone} from '../../../utils/appUtil';
 import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
 import {Colors} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
 import {Style, Font} from '../../../common/commonStyle';
+import http from '../../../services/';
+import Toast from '../../../components/Toast';
 export default class WechatLogin extends Component {
     static propTypes = {
         prop: PropTypes,
@@ -28,10 +30,38 @@ export default class WechatLogin extends Component {
     componentDidMount() {
         this.sendCode();
     }
+    register = () => {
+        const {code, password} = this.state;
+        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/auth/user/register/20210101', {
+            mobile: this.props.route?.params?.mobile,
+            verify_code: code,
+            password,
+        }).then((res) => {
+            if (res.code == '000000') {
+                Toast.show('注册成功', {
+                    onHidden: () => {
+                        //跳转
+                    },
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
     sendCode = () => {
         const {code_btn_click} = this.state;
         if (code_btn_click) {
             this.timer();
+            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/send_verify_code/20210101', {
+                mobile: this.props.route?.params?.mobile,
+            }).then((res) => {
+                if (res.code == '000000') {
+                    Toast.show('验证码发送成功');
+                    this.timer();
+                } else {
+                    Toast.show(res.message);
+                }
+            });
         }
     };
     time = null;
@@ -76,7 +106,7 @@ export default class WechatLogin extends Component {
         return (
             <View style={styles.login_content}>
                 <Text style={styles.title}>欢迎注册理财魔方</Text>
-                <Text style={styles.title_desc}>验证码已发送至138****8888</Text>
+                <Text style={styles.title_desc}>验证码已发送至{handlePhone(this.props.route?.params?.mobile)}</Text>
                 <View style={[Style.flexRowCenter, styles.code_view]}>
                     <InputView
                         title="验证码"

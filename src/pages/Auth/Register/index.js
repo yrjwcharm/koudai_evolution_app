@@ -2,37 +2,55 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-20 13:15:26
+ * @LastEditTime: 2021-02-22 19:16:57
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {px as text} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
 import InputView from '../input';
 import Agreements from '../../../components/Agreements';
+import http from '../../../services/';
+import Toast from '../../../components/Toast';
 export default class index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            phoneNumber: '',
+            mobile: '',
             check: true,
+            btnClick: true,
         };
     }
-    register = () => {};
+    register = () => {
+        const {mobile} = this.state;
+        http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/mobile_available/20210101', {mobile}).then(
+            (res) => {
+                if (res.code === '000000') {
+                    this.props.navigation.navigate('SetLoginPassword', {mobile});
+                } else {
+                    Toast.show(res.message);
+                }
+            }
+        );
+    };
+    onChangeMobile = (mobile) => {
+        this.setState({mobile, btnClick: !(mobile.length >= 11)});
+    };
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
     };
     render() {
+        const {btnClick, mobile} = this.state;
         return (
-            <View style={styles.login_content}>
+            <ScrollView style={styles.login_content}>
                 <Text style={styles.title}>请输入短信验证码</Text>
                 <InputView
                     title="手机号"
-                    onChangeText={(phoneNumber) => this.setState({phoneNumber})}
-                    value={this.state.phoneNumber}
+                    onChangeText={this.onChangeMobile}
+                    value={mobile}
                     placeholder="请输入您的手机号"
                     maxLength={11}
                     autoFocus={true}
@@ -44,7 +62,12 @@ export default class index extends Component {
                         this.setState({check});
                     }}
                 />
-                <Button title="立即注册" onPress={this.register} style={{marginVertical: text(26)}} />
+                <Button
+                    title="立即注册"
+                    disabled={btnClick}
+                    onPress={this.register}
+                    style={{marginVertical: text(26)}}
+                />
                 <View style={Style.flexRowCenter}>
                     <Text style={styles.text}>已有账号</Text>
                     <TouchableOpacity
@@ -56,7 +79,7 @@ export default class index extends Component {
                     </TouchableOpacity>
                 </View>
                 <WechatView />
-            </View>
+            </ScrollView>
         );
     }
 }

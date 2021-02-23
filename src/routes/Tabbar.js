@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 15:21:05
+ * @LastEditTime: 2021-02-23 10:45:30
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -20,6 +20,7 @@ const tabIconSize = px(24);
 export default function Tabbar() {
     return (
         <Tab.Navigator
+            initialRouteName="Index"
             screenOptions={({route}) => ({
                 tabBarIcon: ({focused}) => {
                     if (route.name === 'Find') {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-01 11:04:54
+ * @LastEditTime: 2021-02-22 14:47:47
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import {FixedButton} from '../../../components/Button';
 import Agreements from '../../../components/Agreements';
 import {BankCardModal} from '../../../components/Modal';
 import {formCheck} from '../../../utils/validator';
-import Mask from '../../../components/Mask';
+import Toast from '../../../components/Toast';
 import http from '../../../services';
 export class bankInfo extends Component {
     constructor(props) {
@@ -25,7 +25,6 @@ export class bankInfo extends Component {
             phone: '', //手机号
             code: '', //验证码
             bank_no: '', //银行卡号
-            bank_code: '', //银行代码
             btnClick: true, //开户按钮是否能点击
             verifyText: '获取验证码',
             second: 60,
@@ -42,15 +41,20 @@ export class bankInfo extends Component {
             }
         );
     }
+    /**
+     * @description: 开户
+     * @param {*} confirm
+     * @return {*}
+     */
     confirm = () => {
-        const {phone, code, bank_code, bank_no, checked} = this.state;
+        const {phone, code, selectBank, bank_no, checked} = this.state;
         var checkData = [
             {
                 field: bank_no,
                 text: '银行卡号不能为空',
             },
             {
-                field: bank_code,
+                field: selectBank.bank_code,
                 text: '请选择银行',
             },
 
@@ -71,9 +75,34 @@ export class bankInfo extends Component {
         if (!formCheck(checkData)) {
             return;
         }
+        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/bind_confirm/20210101', {
+            phone,
+            code,
+            bank_no: bank_no.replaceAll(' ', ''),
+            bank_code: selectBank.bank_code,
+            id_no: this.props.route?.params?.id_no,
+            name: this.props.route?.params?.name,
+            rcode: this.props.route?.params?.rcode,
+            rname: this.props.route?.params?.rname,
+        }).then((res) => {
+            if (res.code == '000000') {
+                Toast.show('开户成功', {
+                    onHidden: () => {
+                        console.log('1123123213');
+                    },
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
     };
+    /**
+     * @description: 发送验证码
+     * @param {*} sendCode
+     * @return {*}
+     */
     sendCode = () => {
-        const {code_btn_click, phone, bank_code, bank_no} = this.state;
+        const {code_btn_click, phone, selectBank, bank_no} = this.state;
         if (code_btn_click) {
             var checkData = [
                 {
@@ -81,7 +110,7 @@ export class bankInfo extends Component {
                     text: '银行卡号不能为空',
                 },
                 {
-                    field: bank_code,
+                    field: selectBank.bank_code,
                     text: '请选择银行',
                 },
 
@@ -93,7 +122,17 @@ export class bankInfo extends Component {
             if (!formCheck(checkData)) {
                 return;
             }
-            this.timer();
+            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/send_verify_code/20210101', {
+                mobile: phone,
+                operation: 'open_acct',
+            }).then((res) => {
+                if (res.code == '000000') {
+                    Toast.show('验证码发送成功');
+                    this.timer();
+                } else {
+                    Toast.show(res.message);
+                }
+            });
         }
     };
     time = null;
@@ -130,7 +169,21 @@ export class bankInfo extends Component {
     jumpPage = () => {
         this.props.navigation.navigate('BankInfo');
     };
+    /**
+     * @description: 回填银行信息，格式化
+     * @param {*} onChangeBankNo
+     * @return {*}
+     */
     onChangeBankNo = (value) => {
+        if (value && value.length > 11) {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/match/bank_card_info/20210101', {
+                bank_no: this.state.bank_no.replaceAll(' ', ''),
+            }).then((res) => {
+                this.setState({
+                    selectBank: res.result,
+                });
+            });
+        }
         this.setState({
             bank_no: (value + '')
                 .replace(/\s/g, '')
@@ -201,8 +254,8 @@ export class bankInfo extends Component {
                                 placeholder="请输入验证码"
                                 keyboardType={'number-pad'}
                                 maxLength={6}
-                                onChange={(phone) => {
-                                    this.setState({phone});
+                                onChange={(code) => {
+                                    this.setState({code});
                                 }}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}
                             />

@@ -2,16 +2,18 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 18:31:45
+ * @LastEditTime: 2021-02-22 18:52:46
  * @Description: 登录
  */
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import {px as text} from '../../../utils/appUtil';
+import {View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {px as text, px} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
 import InputView from '../input';
+import http from '../../../services/';
+import Storage from '../../../utils/storage';
 export default class index extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +24,15 @@ export default class index extends Component {
             btnClick: true,
         };
     }
-    register = () => {};
+    login = () => {
+        const {mobile, password} = this.state;
+        http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {mobile, password}).then(
+            (res) => {
+                Storage.save('loginStatus', res.result);
+                // this.props.navigation.goBack();
+            }
+        );
+    };
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
     };
@@ -38,8 +48,9 @@ export default class index extends Component {
     render() {
         const {mobile, password, btnClick} = this.state;
         return (
-            <View style={styles.login_content}>
+            <ScrollView scrollEnabled={false} style={styles.login_content}>
                 <Text style={styles.title}>手机号登录</Text>
+
                 <InputView
                     title="手机号"
                     onChangeText={this.onChangeMobile}
@@ -62,21 +73,30 @@ export default class index extends Component {
                     clearButtonMode="while-editing"
                     keyboardType={'ascii-capable'}
                 />
-                <TouchableOpacity onPress={this.jumpPage} style={styles.forget_password}>
-                    <Text style={[styles.text, {color: Colors.btnColor}]}>忘记密码</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.jumpPage('CreateAccount');
+                    }}
+                    style={styles.forget_password}>
+                    <Text style={[styles.text, {color: Colors.btnColor, height: text(30)}]}>忘记密码</Text>
                 </TouchableOpacity>
-                <Button title="登录" disabled={btnClick} onPress={this.register} style={{marginVertical: text(26)}} />
+                <Button
+                    title="登录"
+                    disabled={btnClick}
+                    onPress={this.login}
+                    style={{marginBottom: text(26), marginTop: px(10)}}
+                />
                 <View style={Style.flexRowCenter}>
                     <TouchableOpacity
                         onPress={() => {
-                            this.jumpPage('Register');
+                            this.props.navigation.replace('Register');
                         }}
                         style={styles.toLogin}>
                         <Text style={[styles.text, {color: Colors.btnColor}]}>立即注册</Text>
                     </TouchableOpacity>
                 </View>
                 <WechatView weChatLogin={this.weChatLogin} />
-            </View>
+            </ScrollView>
         );
     }
 }

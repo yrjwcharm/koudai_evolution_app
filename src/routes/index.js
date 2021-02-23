@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 10:53:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-22 19:16:22
  * @Description:路由表
  */
 import React from 'react';
@@ -82,11 +82,11 @@ import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
 import ChildrenHome from '../pages/Assets/ChildrenHome'; //持仓页
 import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
-
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
 import Settings from '../pages/Assets/Settings'; // 个人设置
 import Profile from '../pages/Assets/Profile'; // 个人资料
 import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
+import MessageBoard from '../pages/MofangIndex/MessageBoard'; //用户留言详情
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
@@ -335,6 +335,7 @@ export default function AppStack() {
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
+            <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
         </Stack.Navigator>
     );
 }

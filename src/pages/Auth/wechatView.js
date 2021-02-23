@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 16:17:54
+ * @LastEditTime: 2021-02-22 19:20:56
  * @Description: 微信登录
  */
 import React from 'react';
@@ -13,7 +13,6 @@ import {useNavigation} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
 
-
 function Wechat(props) {
     const navigation = useNavigation();
     const weChatLogin = () => {
@@ -21,7 +20,7 @@ function Wechat(props) {
             if (isInstalled) {
                 let scope = 'snsapi_userinfo';
                 let state = '_' + +new Date();
-                Wechat.sendAuthRequest(scope, state).then((response) => {
+                WeChat.sendAuthRequest(scope, state).then((response) => {
                     console.log(response);
                 });
                 try {
@@ -36,7 +35,7 @@ function Wechat(props) {
                 Toast.show('请安装微信');
             }
         });
-        navigation.navigate('WechatLogin');
+        // navigation.navigate('WechatLogin');
     };
     return (
         <View style={[styles.Login, Style.flexCenter]}>
@@ -52,7 +51,6 @@ function Wechat(props) {
         </View>
     );
 }
-
 
 export default Wechat;
 const styles = StyleSheet.create({

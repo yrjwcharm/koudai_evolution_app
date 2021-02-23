@@ -2,12 +2,12 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-01 11:09:06
+ * @LastEditTime: 2021-02-22 17:56:41
  * @Description: 银行卡选择
  */
 
 import React from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import {View, Text, Modal, TouchableOpacity, StyleSheet, Image, TouchableHighlight, FlatList} from 'react-native';
 import {constants} from './util';
 import {isIphoneX, px as text, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -45,11 +45,10 @@ const BankCardModal = React.forwardRef((props, ref) => {
         setTimeout(() => {
             hide();
             onDone && onDone(data[index]);
-        }, 500);
+        }, 200);
     };
     const addCard = () => {
         hide();
-        console.log(navigation);
     };
     React.useImperativeHandle(ref, () => {
         return {
@@ -57,7 +56,30 @@ const BankCardModal = React.forwardRef((props, ref) => {
             hide: hide,
         };
     });
-
+    const renderItem = ({item, index}) => {
+        return (
+            item && (
+                <TouchableHighlight
+                    underlayColor="#f5f5f5"
+                    style={[styles.bankCard]}
+                    onPress={() => {
+                        confirmClick(index);
+                    }}>
+                    <>
+                        <Image style={styles.bank_icon} source={{uri: item.bank_icon}} />
+                        <View style={{flex: 1}}>
+                            <Text style={[{marginBottom: 8}, styles.text]}>
+                                {item?.bank_name}
+                                <Text>{item?.bank_no}</Text>
+                            </Text>
+                            <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc}</Text>
+                        </View>
+                        {select == index ? <Entypo name={'check'} size={14} color={'#0051CC'} /> : null}
+                    </>
+                </TouchableHighlight>
+            )
+        );
+    };
     return (
         <>
             <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
@@ -72,33 +94,25 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 <Text style={styles.title}>{title}</Text>
                             </View>
                         )}
-                        <ScrollView style={{paddingHorizontal: text(14)}}>
-                            {data.map((item, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={1}
-                                        key={index}
-                                        style={[styles.bankCard]}
-                                        onPress={() => {
-                                            confirmClick(index);
-                                        }}>
-                                        <Image style={styles.bank_icon} source={{uri: item.bank_icon}} />
-                                        <View style={{flex: 1}}>
-                                            <Text style={[{marginBottom: 8}, styles.text]}>
-                                                {item.bank_name}
-                                                {item.bank_no && <Text>({item.bank_no})</Text>}
-                                            </Text>
-                                            <Text style={{color: '#80899B', fontSize: text(11)}}>
-                                                {item.limit_desc}
-                                            </Text>
-                                        </View>
-                                        {select && select == index && (
-                                            <Entypo name={'check'} size={14} color={'#0051CC'} />
-                                        )}
-                                    </TouchableOpacity>
-                                );
-                            })}
-                            <TouchableOpacity style={[styles.bankCard]} onPress={addCard}>
+                        <View style={{paddingHorizontal: text(14)}}>
+                            <FlatList
+                                data={data}
+                                renderItem={renderItem}
+                                keyExtractor={(item, index) => index.toString()}
+                                ItemSeparatorComponent={() => {
+                                    return <View style={{height: 0.5, backgroundColor: Colors.lineColor}} />;
+                                }}
+                            />
+
+                            <TouchableOpacity
+                                style={[
+                                    styles.bankCard,
+                                    {
+                                        borderTopColor: Colors.borderColor,
+                                        borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
+                                    },
+                                ]}
+                                onPress={addCard}>
                                 <Image
                                     style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
                                     source={{
@@ -110,7 +124,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 </View>
                                 <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
                             </TouchableOpacity>
-                        </ScrollView>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -164,8 +178,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: text(62),
         justifyContent: 'space-between',
-        borderBottomColor: Colors.borderColor,
-        borderBottomWidth: constants.borderWidth,
+
         // overflow: 'hidden'
     },
     bank_icon: {

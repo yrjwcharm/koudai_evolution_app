@@ -10,8 +10,9 @@ import {
     TouchableWithoutFeedback,
     Easing,
     Keyboard,
+    ActivityIndicator,
 } from 'react-native';
-import {px} from '../../utils/appUtil'
+import {px} from '../../utils/appUtil';
 const TOAST_MAX_WIDTH = 0.8;
 const TOAST_ANIMATION_DURATION = 200;
 
@@ -36,8 +37,8 @@ let styles = StyleSheet.create({
     },
     containerStyle: {
         paddingVertical: px(18),
-        paddingHorizontal:px(30),
-        padding:10,
+        paddingHorizontal: px(30),
+        padding: 10,
         backgroundColor: '#1E1F20',
         opacity: 0.8,
         borderRadius: 5,
@@ -83,6 +84,7 @@ class ToastContainer extends Component {
         onHidden: PropTypes.func,
         onShow: PropTypes.func,
         onShown: PropTypes.func,
+        looading: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -95,6 +97,7 @@ class ToastContainer extends Component {
         delay: 0,
         hideOnPress: true,
         keyboardAvoiding: true,
+        loading: false,
     };
 
     constructor() {
@@ -178,7 +181,7 @@ class ToastContainer extends Component {
                 if (finished) {
                     this._animating = !finished;
                     this.props.onShown && this.props.onShown(this.props.siblingManager);
-                    if (this.props.duration > 0) {
+                    if (this.props.duration > 0 && !this.props.loading) {
                         this._hideTimeout = setTimeout(() => this._hide(), this.props.duration);
                     }
                 }
@@ -251,6 +254,11 @@ class ToastContainer extends Component {
                         ]}
                         pointerEvents="none"
                         ref={(ele) => (this._root = ele)}>
+                        {this.props.loading ? (
+                            <View style={{marginBottom: px(10)}}>
+                                <ActivityIndicator />
+                            </View>
+                        ) : null}
                         <Text style={[styles.textStyle, props.textStyle, props.textColor && {color: props.textColor}]}>
                             {this.props.children}
                         </Text>

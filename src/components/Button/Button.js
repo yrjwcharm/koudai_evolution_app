@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-01-22 10:34:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-22 16:26:37
  * @Description:通用按钮
  */
 import React from 'react';
@@ -52,14 +52,7 @@ class Button extends React.Component {
                     underlayColor={type == 'primary' ? (color ? color : '#0046B1') : '#F6F6F6'}
                     disabled={disabled}>
                     <View style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
-                        <Text
-                            style={[
-                                type == 'primary' ? styles.Text : styles.minorText,
-                                textStyle,
-                                disabled && styles.disable,
-                            ]}>
-                            {title}
-                        </Text>
+                        <Text style={[type == 'primary' ? styles.Text : styles.minorText, textStyle]}>{title}</Text>
                         {desc ? <Text style={[descStyle || {}]}>{desc}</Text> : null}
                     </View>
                 </TouchableHighlight>
@@ -91,9 +84,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
     },
     disable: {
-        backgroundColor: '#EEEFF0',
-        color: '#9095A5',
-        borderWidth: 0,
+        backgroundColor: '#c2d5f0',
     },
 });
 export default Button;

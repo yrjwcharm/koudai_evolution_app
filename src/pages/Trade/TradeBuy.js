@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:17:10
+ * @LastEditTime: 2021-02-22 18:08:36
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -17,6 +17,8 @@ import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
 import http from '../../services';
+import Picker from 'react-native-picker';
+import HTML from '../../components/RenderHtml';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -35,32 +37,76 @@ class TradeBuy extends Component {
             password: '',
             configExpand: false, //买入明细是否展开
             showMask: false,
-            bankSelect: 0,
+            bankSelect: '', //选中的银行卡
+            upid: this.props.route?.params?.upid || 1,
+            currentDate: '', //定投日期
+            nextday: '',
         };
     }
     init() {
-        const {type} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/info/20210101', {type}).then(
+        const {type, upid} = this.state;
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/info/20210101', {type, upid}).then(
             (data) => {
                 this.setState({
                     data: data.result,
-                    initialPage: data.result.tabs.type,
+                    // initialPage: data.result.tabs.type,
                     type: data.result.tabs.type,
                     has_tab: data.result.tabs.has_tab,
+                    bankSelect: data.result.pay_methods[0],
+                    currentDate: data.result.period_info.current_date,
+                    nextday: data.result.period_info.nextday,
                 });
+                this.plan(data.result.buy_info.initial_amount);
             }
         );
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/buy/plan/20210101').then((data) => {
+    }
+    submit = (password) => {
+        const {upid, planData, amount, bankSelect} = this.state;
+        const {buy_id} = planData;
+        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/do/20210101', {
+            upid,
+            buy_id,
+            amount,
+            password,
+            trade_method: bankSelect?.pay_type,
+            pay_method: bankSelect?.pay_method || '',
+        }).then((res) => {
+            console.log(res);
+        });
+    };
+    /**
+     * @description:购买计划 生产buyid
+     * @param {*} plan
+     * @return {*}
+     */
+    plan = (amount) => {
+        const params = {
+            amount,
+            pay_method: this.state.bankSelect?.pay_method,
+            upid: this.state.upid,
+        };
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/plan/20210101', params).then((data) => {
             this.setState({planData: data.result});
         });
-    }
-    UNSAFE_componentWillMount() {
-        this.init();
-    }
+    };
+
+    /**
+     * @description: 金额输入
+     * @param {*} onInput
+     * @return {*}
+     */
     onInput = (amount) => {
         this.setState({amount});
+        if (amount > this.state.data.buy_info.initial_amount) {
+            this.plan(amount);
+        }
     };
-    submit = () => {
+    /**
+     * @description: 购买按钮
+     * @param {*} passwordInput
+     * @return {*}
+     */
+    passwordInput = () => {
         this.passwordModal.show();
         this.setState({showMask: true});
     };
@@ -73,7 +119,51 @@ class TradeBuy extends Component {
         this.bankCard.show();
         this.setState({showMask: true});
     };
-
+    //处理日期数据
+    _createDateData() {
+        const {date_items} = this.state.data.period_info;
+        var data = [];
+        for (var i in date_items) {
+            var obj = {};
+            var second = [];
+            for (var j in date_items[i].val) {
+                second.push(date_items[i].val[j]);
+            }
+            obj[date_items[i].key] = second;
+            data.push(obj);
+        }
+        return data;
+    }
+    // 打开日期选择 视图
+    _showDatePicker() {
+        this.setState({showMask: true});
+        Picker.init({
+            pickerTitleText: '定投周期',
+            pickerCancelBtnText: '取消',
+            pickerConfirmBtnText: '确定',
+            pickerBg: [255, 255, 255, 1],
+            pickerData: this._createDateData(),
+            pickerFontColor: [33, 33, 33, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            wheelFlex: [1, 1],
+            onPickerConfirm: (pickedValue) => {
+                this.setState({showMask: false, currentDate: pickedValue});
+                http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/nextday/20210101', {
+                    cycle: pickedValue[0],
+                    timing: pickedValue[1],
+                }).then((res) => {
+                    this.setState({nextday: res.result.nextday});
+                });
+            },
+            onPickerCancel: () => {
+                this.setState({showMask: false});
+            },
+        });
+        Picker.show();
+    }
     changeBuyStatus = (obj) => {
         // Picker.hide()
         this.setState({type: obj.i}, () => {
@@ -169,15 +259,15 @@ class TradeBuy extends Component {
                             <Image
                                 style={styles.bank_icon}
                                 source={{
-                                    uri: pay_methods[bankSelect].bank_icon,
+                                    uri: bankSelect?.bank_icon,
                                 }}
                             />
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {pay_methods[bankSelect].bank_name}
+                                    {bankSelect?.bank_name}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                    {pay_methods[bankSelect].limit_desc}
+                                    {bankSelect?.limit_desc}
                                 </Text>
                             </View>
                             <TouchableOpacity onPress={this.changeBankCard}>
@@ -227,6 +317,7 @@ class TradeBuy extends Component {
     }
     //定投周期
     render_autoTime() {
+        const {nextday} = this.state;
         return (
             <TouchableOpacity style={styles.auto_time} onPress={() => this._showDatePicker()} activeOpacity={1}>
                 <View style={[Style.flexBetween, {marginBottom: px(8)}]}>
@@ -238,15 +329,13 @@ class TradeBuy extends Component {
                         <Icon name={'right'} size={px(12)} color={Colors.lightGrayColor} />
                     </View>
                 </View>
-                <Text style={{color: Colors.darkGrayColor, fontSize: px(12)}}>
-                    下次扣款时间：2020-03-04 遇非交易日顺延
-                </Text>
+                <Text style={{color: Colors.darkGrayColor, fontSize: px(12), lineHeight: px(17)}}>{nextday}</Text>
             </TouchableOpacity>
         );
     }
     //购买
     render_buy() {
-        const {amount, data, type} = this.state;
+        const {amount, data, type, planData} = this.state;
         const {buy_info, title, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}}>
@@ -254,9 +343,7 @@ class TradeBuy extends Component {
                     ref={(ref) => {
                         this.passwordModal = ref;
                     }}
-                    onDone={(password) => {
-                        this.setState({password});
-                    }}
+                    onDone={this.submit}
                     onClose={() => {
                         this.setState({showMask: false});
                     }}
@@ -269,12 +356,10 @@ class TradeBuy extends Component {
                             <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                             <TextInput
                                 keyboardType="numeric"
-                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
+                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numMedium : null}]}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.lightGrayColor}
-                                onChangeText={(value) => {
-                                    this.onInput(value);
-                                }}
+                                onChangeText={this.onInput}
                                 value={amount}
                             />
                             {amount.length > 0 && (
@@ -283,13 +368,15 @@ class TradeBuy extends Component {
                                 </TouchableOpacity>
                             )}
                         </View>
-                        <Text>1111</Text>
-                        {/* {
-           planData.fee_text && <View style={styles.ratio}>
-             <View style={[styles.circle, { backgroundColor: tip ? '#EA514E' : "#80899B" }]} />
-             {tip && tip !== '' ? <Text style={styles.error_tip}>{tip}</Text> : <HTML html={planData.fee_text} />}
-           </View>
-         } */}
+
+                        <View style={styles.tip}>
+                            {planData.fee_text ? (
+                                <HTML
+                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                    html={planData?.fee_text}
+                                />
+                            ) : null}
+                        </View>
                     </View>
                 ) : null}
                 {/* 银行卡 */}
@@ -304,11 +391,12 @@ class TradeBuy extends Component {
                     onClose={() => {
                         this.setState({showMask: false});
                     }}
+                    select={0}
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(index) => {
-                        this.setState({bankSelect: index});
+                    onDone={(select) => {
+                        this.setState({bankSelect: select});
                     }}
                 />
             </ScrollView>
@@ -336,7 +424,9 @@ class TradeBuy extends Component {
                     this.render_buy()
                 )}
 
-                {button && <FixedButton title={button.title} disabled={button.available == 0} onPress={this.submit} />}
+                {button && (
+                    <FixedButton title={button.title} disabled={button.available == 0} onPress={this.passwordInput} />
+                )}
                 {showMask && <Mask />}
             </View>
         );
@@ -351,8 +441,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(15),
     },
     buyInput: {
-        borderBottomWidth: 0.5,
-        borderColor: Colors.borderColor,
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: px(20),
@@ -363,6 +451,13 @@ const styles = StyleSheet.create({
         fontSize: px(35),
         marginLeft: px(14),
         letterSpacing: 2,
+        padding: 0,
+    },
+    tip: {
+        height: px(33),
+        justifyContent: 'center',
+        borderTopWidth: 0.5,
+        borderColor: Colors.borderColor,
     },
     bankCard: {
         backgroundColor: '#fff',
@@ -373,7 +468,7 @@ const styles = StyleSheet.create({
         width: px(28),
         height: px(28),
         marginRight: px(9),
-        resizeMode: 'contain',
+        // resizeMode: 'contain',
     },
     config: {
         flexDirection: 'row',
@@ -409,10 +504,11 @@ const styles = StyleSheet.create({
         marginRight: px(6),
     },
     auto_time: {
-        padding: px(15),
+        paddingHorizontal: px(16),
         backgroundColor: '#fff',
         height: px(70),
         marginBottom: px(12),
+        justifyContent: 'center',
     },
     yel_btn: {
         paddingVertical: px(5),

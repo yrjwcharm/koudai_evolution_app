@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-02-07 10:10:02
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-20 12:04:59
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -288,7 +288,7 @@ function HomeScreen({navigation}) {
                             {holdingData.summary && showEye === 'true' ? holdingData.summary.amount : '****'}
                         </Text>
                     </View>
-                    {notice.trade && (
+                    {notice?.trade && (
                         <TouchableOpacity style={[styles.tradeNotice, Style.flexCenter]}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
                             <View style={[styles.noticeBox, Style.flexRow]}>
