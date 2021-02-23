@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 19:16:22
+ * @LastEditTime: 2021-02-23 11:10:24
  * @Description:路由表
  */
 import React from 'react';
@@ -82,18 +82,25 @@ import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
 import ChildrenHome from '../pages/Assets/ChildrenHome'; //持仓页
 import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
+import TradeNotice from '../pages/Message/TradeNotice'; //交易通知
+import ActivityNotice from '../pages/Message/ActivityNotice'; //活动通知
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
 import Settings from '../pages/Assets/Settings'; // 个人设置
 import Profile from '../pages/Assets/Profile'; // 个人资料
 import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import MessageBoard from '../pages/MofangIndex/MessageBoard'; //用户留言详情
+import PrivateRedeem from '../pages/PE/PrivateRedeem'; // 私募赎回
+import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
+import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
+import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
+import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
 import {px} from '../utils/appUtil';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="TradeRedeem"
             screenOptions={{
                 // headerShown: false,
 
@@ -238,7 +245,7 @@ export default function AppStack() {
                 name="PrivateProduct"
                 component={PrivateProduct}
                 options={{
-                    title: '私募产品',
+                    headerShown: false,
                 }}
             />
             <Stack.Screen
@@ -336,6 +343,13 @@ export default function AppStack() {
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
             <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
+            <Stack.Screen name="TradeNotice" component={TradeNotice} options={{headerShown: false}} />
+            <Stack.Screen name="ActivityNotice" component={ActivityNotice} options={{headerShown: false}} />
+            <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
+            <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
+            <Stack.Screen name="DetailMaHongMan" component={DetailMaHongMan} options={{headerShown: false}} />
+            <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
+            <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

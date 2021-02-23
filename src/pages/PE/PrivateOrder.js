@@ -3,20 +3,36 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-02-19 18:31:47
+ * @LastEditTime: 2021-02-22 15:32:56
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common//commonStyle';
+import {Colors, Style} from '../../common//commonStyle';
 import {px as text} from '../../utils/appUtil';
-import Html from '../../components/RenderHtml';
 import Picker from 'react-native-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {FixedButton} from '../../components/Button';
+import Http from '../../services';
+import {Toast} from '../../components/Toast';
 export default class PrivateOrder extends Component {
     constructor(props) {
         super(props);
         this.state = {
             currentDate: this._getCurrentDate(),
+            amount: '',
+            phone: '',
+            data: {
+                order_id: 2212,
+                quote: {
+                    name: '魔方FOF1号',
+                    start_amount: '1000000.00',
+                    inc_amount: '100000.00',
+                    title: '申请额度',
+                    month: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    phone: '188****7859',
+                },
+                title: '预约',
+            },
         };
     }
     _getCurrentDate() {
@@ -27,6 +43,9 @@ export default class PrivateOrder extends Component {
         dateDay = dateDay.padStart(2, '0');
         let time = month + '月' + dateDay + '日';
         return time;
+    }
+    componentDidMount() {
+        this.setState({amount: this.state.data.quote.start_amount, phone: this.state.data.quote.phone});
     }
     _showDatePicker = () => {
         var year = '';
@@ -43,14 +62,7 @@ export default class PrivateOrder extends Component {
             pickerConfirmBtnText: '确定',
             selectedValue: [month + '月', day + '日'],
             pickerBg: [255, 255, 255, 1],
-            pickerData: [
-                {
-                    1: [1, 2, 3, 4],
-                },
-                {
-                    2: [5, 6, 7, 8],
-                },
-            ],
+            pickerData: this.state.data.quote.month,
             pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 // var year = pickedValue[0].substring(0, pickedValue[0].length - 1);
@@ -66,37 +78,69 @@ export default class PrivateOrder extends Component {
         });
         Picker.show();
     };
+    onInput = (text) => {
+        this.setState({
+            amount: text,
+        });
+    };
+    submitOrder = () => {
+        const {data, amount, currentDate} = this.state;
+        Http.post('/pe/do_appointment/20210101', {
+            order_id: data.order_id,
+            amount: amount,
+            date: currentDate,
+            mobile: this.state.data.quote.phone,
+        }).then((res) => {
+            if (res.code === '000000') {
+                Toast.show('预约成功');
+            }
+        });
+    };
     render() {
-        const {currentDate} = this.state;
+        const {currentDate, data, amount, phone} = this.state;
         return (
             <View style={Style.containerPadding}>
                 <View style={styles.card_wrap}>
                     <View style={[Style.flexRow, styles.card_list]}>
                         <Text style={styles.card_label}>预约产品</Text>
-                        <TextInput
-                            placeholder="100万起投，10万递增"
-                            value="安志理财魔方私募对冲FOF1号"
-                            style={{flex: 1}}
-                        />
+                        <TextInput placeholder="产品名称" value={data.quote.name} style={{flex: 1}} />
                     </View>
                     <View style={[Style.flexRow, styles.card_list]}>
                         <Text style={styles.card_label}>投资金额</Text>
-                        <TextInput placeholder="100万起投，10万递增" keyboardType={'number-pad'} style={{flex: 1}} />
+                        <TextInput
+                            placeholder="100万起投，10万递增"
+                            keyboardType={'number-pad'}
+                            style={{flex: 1}}
+                            value={amount}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    amount: text,
+                                });
+                            }}
+                        />
                     </View>
-                    <View style={[Style.flexRow, styles.card_list]}>
+                    <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Text style={styles.card_label}>打款时间</Text>
-                            <TouchableOpacity onPress={_showDatePicker}>
-                                <Text>{currentDate}</Text>
-                            </TouchableOpacity>
+                            <Text>{currentDate}</Text>
                         </View>
                         <AntDesign name={'right'} color={'#B8C1D3'} />
-                    </View>
+                    </TouchableOpacity>
                     <View style={[Style.flexRow, styles.card_list, {borderBottomWidth: 0}]}>
                         <Text style={styles.card_label}>手机号</Text>
-                        <TextInput placeholder="请输入预约手机号" keyboardType={'number-pad'} style={{flex: 1}} />
+                        <TextInput
+                            placeholder="请输入预约手机号"
+                            keyboardType={'number-pad'}
+                            style={{flex: 1}}
+                            value={phone}
+                            maxLength={11}
+                            onChangeText={(phone) => {
+                                this.setState({phone});
+                            }}
+                        />
                     </View>
                 </View>
+                <FixedButton title={'立即申请'} style={{backgroundColor: '#CEA26B'}} onPress={this.submitOrder} />
             </View>
         );
     }

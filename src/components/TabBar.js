@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:35:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 15:04:23
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-22 17:30:22
  * @Description: 自定义tabbar
  */
 
@@ -23,8 +23,12 @@ export default class TabBar extends Component {
         super(props);
         this.state = {};
     }
-    renderTab(name, page, isTabActive, onPressHandler) {
-        const textColor = isTabActive ? Colors.btnColor : Colors.darkGrayColor;
+    renderTab = (name, page, isTabActive, onPressHandler) => {
+        const textColor = isTabActive
+            ? this.props.btnColor
+                ? this.props.btnColor
+                : Colors.btnColor
+            : Colors.darkGrayColor;
         const fontSize = isTabActive ? px(15) : px(14);
         return (
             <Button
@@ -41,7 +45,7 @@ export default class TabBar extends Component {
                 </View>
             </Button>
         );
-    }
+    };
     _renderUnderline() {
         const containerWidth = this.props.containerWidth;
         const numberOfTabs = this.props.tabs.length;
@@ -53,7 +57,7 @@ export default class TabBar extends Component {
             width: underlineWidth,
             height: 2,
             borderRadius: 2,
-            backgroundColor: Colors.btnColor,
+            backgroundColor: this.props.btnColor ? this.props.btnColor : Colors.btnColor,
             bottom: 6,
             left: deLen,
         };

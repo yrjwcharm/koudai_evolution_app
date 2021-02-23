@@ -1,17 +1,18 @@
 /*
- * @Description:
+ * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 16:09:36
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-22 12:00:16
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet,  TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
+import Http from '../../services';
 export default class SetTradePassword extends Component {
     constructor(props) {
         super(props);
@@ -47,8 +48,8 @@ export default class SetTradePassword extends Component {
                     }}
                     style={styles.box}>
                     {this.state.password[index] ? <View style={styles.circle} /> : <Text />}
-                </TouchableOpacity>,
-            ),
+                </TouchableOpacity>
+            )
         );
         return <View style={styles.box_con}>{box}</View>;
     }
@@ -65,17 +66,22 @@ export default class SetTradePassword extends Component {
                     } else {
                         if (this.state.pwdFisrt !== '') {
                             if (this.state.pwdFisrt == this.state.password) {
-                                // http.post('/common/passport/xy_account/set_trade_password/20200808', { password: this.state.password, poid: this.state.poid, fr: this.state.fr }).then((data) => {
-                                //   if (data.code === '000000') {
-                                //     Toast.showInfo(data.message)
-                                //     this.timerOut = setTimeout(() => {
-                                //       this.props.getUserInfo()
-                                //       this.props.navigation.replace(data.result.jump_name, { title: this.props.navigation.state.params.title, ...data.result.params })
-                                //     }, 1000)
-                                //   } else {
-                                //     Toast.showWarn(data.message)
-                                //   }
-                                // })
+                                Http.post(
+                                    'http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/set_trade_password/20210101',
+                                    {password: this.state.password, poid: this.state.poid, fr: this.state.fr}
+                                ).then((data) => {
+                                    if (data.code === '000000') {
+                                        Toast.show(data.message);
+                                        setTimeout(() => {
+                                            // this.props.getUserInfo()
+                                            this.props.navigation.replace(data.result.jump_name, {
+                                                ...data.result.params,
+                                            });
+                                        }, 1000);
+                                    } else {
+                                        Toast.show(data.message);
+                                    }
+                                });
                             } else {
                                 Toast.show('两次设置的交易密码不一致');
                                 this.handelReset();
@@ -89,7 +95,7 @@ export default class SetTradePassword extends Component {
                         }
                     }
                 }
-            },
+            }
         );
     }
     render() {

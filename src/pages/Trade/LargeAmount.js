@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 14:57:00
+ * @LastEditTime: 2021-02-22 12:03:50
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -19,23 +19,7 @@ import Clipboard from '@react-native-community/clipboard';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Notice from '../../components/Notice';
 const deviceWidth = Dimensions.get('window').width;
-const item = {
-    bank_list: [
-        {
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/gongshang.png',
-            title: '建设银行(尾号8888）',
-        },
-        {
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/gongshang.png',
-            title: '建设银行(尾号8888）',
-        },
-        {
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2016/04/gongshang.png',
-            title: '使用新卡汇款',
-            url: 'ass',
-        },
-    ],
-};
+
 const tips = [
     {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款。'},
     {title: '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝。'},
@@ -64,7 +48,7 @@ const LargeAmount = (props) => {
         Toast.show('复制成功！');
     };
     const rightPress = () => {
-        props.navigation.navigate('TradeProcessing');
+        props.navigation.navigate('LargeAmountIntro');
     };
     return (
         <SafeAreaView edges={['bottom']}>
