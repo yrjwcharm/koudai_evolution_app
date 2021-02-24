@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-02-24 15:24:17
+ * @LastEditTime: 2021-02-24 17:06:50
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
@@ -21,18 +21,7 @@ export default class PrivateOrder extends Component {
             currentDate: this._getCurrentDate(),
             amount: '',
             phone: '',
-            data: {
-                order_id: 2212,
-                quote: {
-                    name: '魔方FOF1号',
-                    start_amount: '1000000.00',
-                    inc_amount: '100000.00',
-                    title: '申请额度',
-                    month: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-                    phone: '188****7859',
-                },
-                title: '预约',
-            },
+            data: {},
         };
     }
     _getCurrentDate() {
@@ -45,7 +34,15 @@ export default class PrivateOrder extends Component {
         return time;
     }
     componentDidMount() {
-        this.setState({amount: this.state.data.quote.start_amount, phone: this.state.data.quote.phone});
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/appointment_detail/20210101', {
+            fund_code: 'SGX499',
+        }).then((res) => {
+            this.setState({
+                data: res.result,
+                amount: res.result.quote.start_amount,
+                phone: res.result.quote.phone,
+            });
+        });
     }
     _showDatePicker = () => {
         var year = '';
@@ -85,7 +82,7 @@ export default class PrivateOrder extends Component {
     };
     submitOrder = () => {
         const {data, amount, currentDate} = this.state;
-        Http.post('/pe/do_appointment/20210101', {
+        Http.post('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/do_appointment/20210101', {
             order_id: data.order_id,
             amount: amount,
             date: currentDate,
@@ -100,47 +97,56 @@ export default class PrivateOrder extends Component {
         const {currentDate, data, amount, phone} = this.state;
         return (
             <View style={Style.containerPadding}>
-                <View style={styles.card_wrap}>
-                    <View style={[Style.flexRow, styles.card_list]}>
-                        <Text style={styles.card_label}>预约产品</Text>
-                        <TextInput placeholder="产品名称" value={data.quote.name} style={{flex: 1}} />
-                    </View>
-                    <View style={[Style.flexRow, styles.card_list]}>
-                        <Text style={styles.card_label}>投资金额</Text>
-                        <TextInput
-                            placeholder="100万起投，10万递增"
-                            keyboardType={'number-pad'}
-                            style={{flex: 1}}
-                            value={amount}
-                            onChangeText={(text) => {
-                                this.setState({
-                                    amount: text,
-                                });
-                            }}
-                        />
-                    </View>
-                    <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
-                        <View style={[Style.flexRow, {flex: 1}]}>
-                            <Text style={styles.card_label}>打款时间</Text>
-                            <Text>{currentDate}</Text>
+                {Object.keys(data).length > 0 && (
+                    <View style={styles.card_wrap}>
+                        <View style={[Style.flexRow, styles.card_list]}>
+                            <Text style={styles.card_label}>预约产品</Text>
+                            <TextInput placeholder="产品名称" value={data.quote.name} style={{flex: 1}} />
                         </View>
-                        <AntDesign name={'right'} color={'#B8C1D3'} />
-                    </TouchableOpacity>
-                    <View style={[Style.flexRow, styles.card_list, {borderBottomWidth: 0}]}>
-                        <Text style={styles.card_label}>手机号</Text>
-                        <TextInput
-                            placeholder="请输入预约手机号"
-                            keyboardType={'number-pad'}
-                            style={{flex: 1}}
-                            value={phone}
-                            maxLength={11}
-                            onChangeText={(phone) => {
-                                this.setState({phone});
-                            }}
-                        />
+                        <View style={[Style.flexRow, styles.card_list]}>
+                            <Text style={styles.card_label}>投资金额</Text>
+                            <TextInput
+                                placeholder="100万起投，10万递增"
+                                keyboardType={'number-pad'}
+                                style={{flex: 1}}
+                                value={amount}
+                                onChangeText={(text) => {
+                                    this.setState({
+                                        amount: text,
+                                    });
+                                }}
+                            />
+                        </View>
+                        <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Text style={styles.card_label}>打款时间</Text>
+                                <Text>{currentDate}</Text>
+                            </View>
+                            <AntDesign name={'right'} color={'#B8C1D3'} />
+                        </TouchableOpacity>
+                        <View style={[Style.flexRow, styles.card_list, {borderBottomWidth: 0}]}>
+                            <Text style={styles.card_label}>手机号</Text>
+                            <TextInput
+                                placeholder="请输入预约手机号"
+                                keyboardType={'number-pad'}
+                                style={{flex: 1}}
+                                value={phone}
+                                maxLength={11}
+                                onChangeText={(phone) => {
+                                    this.setState({phone});
+                                }}
+                            />
+                        </View>
                     </View>
-                </View>
-                <FixedButton title={'立即申请'} style={{backgroundColor: '#CEA26B'}} onPress={this.submitOrder} />
+                )}
+                {Object.keys(data).length > 0 && (
+                    <FixedButton
+                        title={'立即申请'}
+                        style={{backgroundColor: '#CEA26B'}}
+                        onPress={this.submitOrder}
+                        color={'#CEA26B'}
+                    />
+                )}
             </View>
         );
     }

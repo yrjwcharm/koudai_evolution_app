@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 16:24:14
-=======
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 12:00:31
->>>>>>> e75703b110fbb3ba0ed034e68ff5ffebc22c60f3
+ * @LastEditTime: 2021-02-24 18:22:31
  * @Description:路由表
  */
 import React from 'react';
@@ -106,7 +101,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="TradeFixedConfirm"
             screenOptions={{
                 // headerShown: false,
 
@@ -340,7 +335,7 @@ export default function AppStack() {
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
-            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{title: '定投计划'}} />
+            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{headerShown: false}} />
             <Stack.Screen name="ChildrenHome" component={ChildrenHome} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />

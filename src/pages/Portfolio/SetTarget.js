@@ -3,7 +3,7 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:00:59
+ * @LastEditTime: 2021-02-24 18:18:17
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
@@ -19,9 +19,11 @@ export default function SetTarget(props) {
         SetValue(val);
     };
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/position/goal_detail/20210101').then((res) => {
-            console.log(res);
-        });
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/trade/fix_invest/target_info/20210101').then(
+            (res) => {
+                console.log(res);
+            }
+        );
     }, [props.navigation]);
     return (
         <View style={styles.container}>

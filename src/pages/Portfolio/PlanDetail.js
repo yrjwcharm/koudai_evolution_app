@@ -3,10 +3,10 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-05 14:55:59
+ * @LastEditTime: 2021-02-24 17:42:03
  */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import Slider from './components/Slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
@@ -18,18 +18,18 @@ export default function PlanDetail(props) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        Http.get('/trade/fix_invest/list/20210101').then((res) => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/invest_plan/list/20210101').then((res) => {
             setData(res.result);
         });
     });
     const jumpPage = (url, params) => {
-        props.navigation.navigate(url, params);
+        // props.navigation.navigate(url, params);
     };
     return (
-        <View style={Style.containerPadding}>
+        <ScrollView style={Style.containerPadding}>
             {Object.keys(data).length > 0 &&
-                data.list.length > 0 &&
-                data.list.map((_item, _index) => {
+                data.length > 0 &&
+                data.map((_item, _index) => {
                     return (
                         <TouchableOpacity style={styles.card_sty} key={_index + '_item'} onPress={jumpPage()}>
                             <View
@@ -37,30 +37,37 @@ export default function PlanDetail(props) {
                                     Style.flexBetween,
                                     {borderBottomWidth: 0.5, borderColor: Colors.borderColor, paddingBottom: text(10)},
                                 ]}>
-                                <Text style={[styles.title_sty, {color: _item.available == 1 ? '' : '#9AA1B2'}]}>
-                                    {_item.title}
+                                <Text style={[styles.title_sty, {color: _item?.available == 1 ? '' : '#9AA1B2'}]}>
+                                    {_item?.title}
                                 </Text>
-                                <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                <Text style={{color: '#9AA1B2'}}>
+                                    {_item?.status_text ? _item?.status_text : null}
+                                    <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                </Text>
                             </View>
                             <View style={[Style.flexBetween, {marginTop: text(8)}]}>
-                                {_item.map((_i, _d) => {
+                                {_item?.items.map((_i, _d) => {
                                     return (
                                         <View>
-                                            <Text style={styles.desc_sty}>{_i.key}</Text>
-                                            <Text style={styles.num_sty}>{_i.val}</Text>
+                                            <Text style={styles.desc_sty}>{_i?.key}</Text>
+                                            <Text style={[styles.num_sty, {textAlign: _d == 1 ? 'right' : 'left'}]}>
+                                                {_i?.val}
+                                            </Text>
                                         </View>
                                     );
                                 })}
                             </View>
-                            <View style={styles.gray_wrap}>
-                                <Text style={{fontSize: text(12), color: '#9AA1B2', lineHeight: text(18)}}>
-                                    下次扣款：2012-01-25将从银行卡25将从银行卡25将从银行卡
-                                </Text>
-                            </View>
+                            {_item?.notice && (
+                                <View style={styles.gray_wrap}>
+                                    <Text style={{fontSize: text(12), color: '#9AA1B2', lineHeight: text(18)}}>
+                                        {_item?.notice}
+                                    </Text>
+                                </View>
+                            )}
                         </TouchableOpacity>
                     );
                 })}
-        </View>
+        </ScrollView>
     );
 }
 const styles = StyleSheet.create({
