@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-02-22 16:34:21
+ * @LastEditTime: 2021-02-24 16:21:15
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -15,6 +15,9 @@ import Header from '../../components/NavBar';
 import Video from '../../components/Video';
 import FitImage from 'react-native-fit-image';
 import {FixedButton} from '../../components/Button';
+import Http from '../../services';
+import TabBar from '../../components/TabBar.js';
+import {Modal} from '../../components/Modal';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default class PrivateProduct extends Component {
@@ -22,63 +25,26 @@ export default class PrivateProduct extends Component {
         super(props);
         this.state = {
             process_lines: ['<span style="color:#fff;opacity:0.6">总额度(元)</span>5000万'],
-            data: {
-                title: '魔方FOF1号',
-                fund_name: '魔方FOF1号',
-                fund_code: 'SGX499',
-                fund_stage: '预约中',
-                fund_remark: '产品亮点：一键投资多个顶级私募',
-                tags: ['高端用户专享', ' 百万起投', '低风险高收益'],
-                introduce: [
-                    'https://static.licaimofang.com/wp-content/uploads/2019/08/11811566543757_.pic_hd.png',
-                    'https://static.licaimofang.com/wp-content/uploads/2020/05/20200526140622.png',
-                    'https://static.licaimofang.com/wp-content/uploads/2019/08/11831566543773_.pic_hd.png',
-                ],
-                tabs: [
-                    {
-                        type: 'baseInfo',
-                        title: '基本信息',
-                        content: [
-                            {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-                            {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-                        ],
-                    },
-                    {
-                        type: 'video',
-                        title: '路演视频',
-                        content: {
-                            title: '魔方私募对冲FOF1号路演视频',
-                            subtitle: '107845人观看',
-                            video: 'https://static.licaimofang.com/wp-content/themes/mf-themes/media/simu.mp4',
-                        },
-                    },
-                    {
-                        type: 'notice',
-                        title: '公告',
-                        content: [
-                            {
-                                title: '魔方私募对冲FOF1号产品成立公告',
-                                publish_at: '2019-09-06',
-                                url: 'https://static.licaimofang.com/wp-content/uploads/2019/09/产品成立公告.pdf',
-                            },
-                        ],
-                    },
-                ],
-                tips: [],
-                button: {
-                    text: '开始预约',
-                    avail: 1,
-                    url: '/fofapply?fr=apply&ids=10&code=SGX499&accountid=SGX499',
-                    countdown: '',
-                },
-            },
+            data: {},
         };
+    }
+    componentDidMount() {
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/product_detail/20210101', {
+            fund_code: 'SGX499',
+        }).then((res) => {
+            this.setState({
+                data: res.result,
+            });
+        });
     }
     renderContent = (index, data) => {
         if (index === 0) {
             return (
                 <View style={{backgroundColor: '#fff'}}>
-                    {data.content.map((_c, _idx) => {
+                    <View style={{paddingHorizontal: text(16)}}>
+                        <Html html={data.content} />
+                    </View>
+                    {/* {data.content.map((_c, _idx) => {
                         return (
                             <View
                                 key={_idx + '_c'}
@@ -92,10 +58,15 @@ export default class PrivateProduct extends Component {
                                     },
                                 ]}>
                                 <Text style={styles.base_info_title}>{_c.title}</Text>
-                                <Html style={styles.base_info_content} html={_c.desc} />
+                                <Html
+                                    style={styles.base_info_content}
+                                    html={
+                                        "<div style='display:flex;align-items:center;justify-content:space-between' >\n  <span>基金名称</span>\n  <p>安志魔方量化对冲私募证券投资基金FOF1号</p>\n</div>\n"
+                                    }
+                                />
                             </View>
                         );
-                    })}
+                    })} */}
                 </View>
             );
         } else if (index === 1) {
@@ -131,67 +102,84 @@ export default class PrivateProduct extends Component {
             );
         }
     };
+    submitOrder = () => {
+        const {data} = this.state;
+        Modal.show({
+            title: data.tip.title,
+            content: data.tip.content,
+            confirm: true,
+            confirmText: data.tip.button[0].title,
+            cancleText: data.tip.button[1].title,
+            confirmCallBack: () => {
+                this.props.navigation.navigate(this.state.data.button.url);
+            },
+        });
+    };
     render() {
         const {label, process_lines, scroll_list, data} = this.state;
         return (
-            <View style={styles.Container}>
-                <Header
-                    title={data.title}
-                    leftIcon="chevron-left"
-                    style={{backgroundColor: '#D7AF74'}}
-                    fontStyle={{color: '#fff'}}
-                />
-                <ScrollView style={{marginBottom: btnHeight}}>
-                    <View style={[styles.Wrapper, Style.flexCenter]}>
-                        <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
-                            <Text style={styles.card_title}>{data.fund_name}</Text>
-                            <View style={styles.card_tag}>
-                                <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>{data.fund_stage}</Text>
-                            </View>
-                        </View>
-                        <Text style={styles.card_desc}>{data.fund_remark}</Text>
-                        <View style={Style.flexRow}>
-                            {data.tags.map((_label, _index) => {
-                                return (
-                                    <Text key={_index} style={styles.card_label}>
-                                        {_label}
-                                    </Text>
-                                );
-                            })}
-                        </View>
-                        <View style={styles.process_outer}>
-                            <View style={styles.process_inner}></View>
-                        </View>
-                        <View style={[Style.flexBetween, {width: deviceWidth - 60}]}>
-                            <Html html={process_lines[0]} style={{color: '#fff', fontWeight: 'bold'}} />
-                            <Html html={process_lines[0]} style={{color: '#fff', fontWeight: 'bold'}} />
-                        </View>
-                    </View>
-                    <View>
-                        {data.introduce.map((_img, _i) => {
-                            return <FitImage key={_i + '_img'} source={{uri: _img}} resizeMode="contain" />;
-                        })}
-                    </View>
-                    <ScrollableTabView
-                        renderTabBar={() => <DefaultTabBar />}
-                        initialPage={0}
-                        tabBarTextStyle={styles.textBarStyle}
-                        tabBarActiveTextColor={'#D7AF74'}
-                        tabBarInactiveTextColor={'#545968'}
-                        tabBarBackgroundColor="#fff"
-                        // onChangeTab={(obj) => { this.setState({ curtime: obj.ref.props.tabLabel }, () => { this.init() }) }}
-                        tabBarUnderlineStyle={styles.underLine}>
-                        {data.tabs.map((item, index) => {
-                            return (
-                                <View tabLabel={item.title} key={index + 'tab'}>
-                                    {this.renderContent(index, item)}
+            <>
+                {Object.keys(data).length > 0 && (
+                    <View style={styles.Container}>
+                        <Header
+                            title={data.title}
+                            leftIcon="chevron-left"
+                            style={{backgroundColor: '#D7AF74'}}
+                            fontStyle={{color: '#fff'}}
+                        />
+                        <ScrollView style={{marginBottom: btnHeight}}>
+                            <View style={[styles.Wrapper, Style.flexCenter]}>
+                                <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
+                                    <Text style={styles.card_title}>{data.fund_name}</Text>
+                                    <View style={styles.card_tag}>
+                                        <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>{data.fund_stage}</Text>
+                                    </View>
                                 </View>
-                            );
-                        })}
-                    </ScrollableTabView>
-                </ScrollView>
-                <FixedButton title={data.button.text} style={{backgroundColor: '#CEA26B'}} onPress={this.submitOrder} />
-            </View>
+                                <Text style={styles.card_desc}>{data.fund_remark}</Text>
+                                <View style={Style.flexRow}>
+                                    {data.tags.map((_label, _index) => {
+                                        return (
+                                            <Text key={_index} style={styles.card_label}>
+                                                {_label}
+                                            </Text>
+                                        );
+                                    })}
+                                </View>
+                                <View style={styles.process_outer}>
+                                    <View style={styles.process_inner}></View>
+                                </View>
+                                <View style={[Style.flexBetween, {width: deviceWidth - 60}]}>
+                                    <Html html={process_lines[0]} style={{color: '#fff', fontWeight: 'bold'}} />
+                                    <Html html={process_lines[0]} style={{color: '#fff', fontWeight: 'bold'}} />
+                                </View>
+                            </View>
+                            <View>
+                                {data.introduce.map((_img, _i) => {
+                                    return <FitImage key={_i + '_img'} source={{uri: _img}} resizeMode="contain" />;
+                                })}
+                            </View>
+                            <ScrollableTabView
+                                renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
+                                initialPage={0}
+                                tabBarActiveTextColor={'#D7AF74'}
+                                tabBarInactiveTextColor={'#545968'}>
+                                {data.tabs.map((item, index) => {
+                                    return (
+                                        <View tabLabel={item.title} key={index + 'tab'}>
+                                            {this.renderContent(index, item)}
+                                        </View>
+                                    );
+                                })}
+                            </ScrollableTabView>
+                        </ScrollView>
+                        <FixedButton
+                            title={data.button.text}
+                            style={{backgroundColor: '#CEA26B'}}
+                            onPress={this.submitOrder}
+                        />
+                    </View>
+                )}
+            </>
         );
     }
 }

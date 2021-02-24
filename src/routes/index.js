@@ -1,10 +1,3 @@
-/*
- * @Date: 2020-12-23 16:39:50
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 18:44:39
- * @Description:路由表
- */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
@@ -44,7 +37,7 @@ import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
 import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
 import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
-import BankAssets from '../pages/BankPages/bankAssets'; //银行持仓页(除平安)
+import BankAssets from '../pages/BankPages/BankAssets'; //银行持仓页(除平安)
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
 import ElectronicAccount from '../pages/BankPages/ElectronicAccount'; //电子账户
 import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
@@ -95,6 +88,7 @@ import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马�
 import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
 import {px} from '../utils/appUtil';
+import BankList from '../pages/BankPages/BankList'; //银行列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -350,6 +344,7 @@ export default function AppStack() {
             <Stack.Screen name="DetailMaHongMan" component={DetailMaHongMan} options={{headerShown: false}} />
             <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
+            <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
         </Stack.Navigator>
     );
 }

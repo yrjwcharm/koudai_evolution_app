@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
- * @LastEditors: dx
- * @LastEditTime: 2021-01-25 15:28:20
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-23 17:44:30
  */
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -18,7 +18,7 @@ export default function Notice(props) {
     };
     return (
         <>
-            {!hide && (
+            {!hide && props.content ? (
                 <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                     <Text style={styles.yellow_sty}>{props.content}</Text>
                     {props.isClose && (
@@ -27,7 +27,7 @@ export default function Notice(props) {
                         </TouchableOpacity>
                     )}
                 </View>
-            )}
+            ) : null}
         </>
     );
 }

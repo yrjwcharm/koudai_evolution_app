@@ -3,10 +3,10 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 11:40:15
+ * @LastEditTime: 2021-02-24 10:36:16
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Linking} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
@@ -18,11 +18,16 @@ export default function RemindMessage() {
         setHide(true);
     };
     useEffect(() => {}, []);
+
+    // Linking.openURL('app-settings:')
+    //   .catch((err) => console.log('error', err));
     return (
         <View>
             {!hide && (
                 <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                    <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
+                    <TouchableOpacity>
+                        <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}>
                         <Text
