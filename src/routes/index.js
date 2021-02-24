@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 14:57:43
+ * @LastEditTime: 2021-02-24 16:14:47
  * @Description:路由表
  */
 import React from 'react';
@@ -101,7 +101,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateCert"
+            initialRouteName="PrivateProduct"
             screenOptions={{
                 // headerShown: false,
 

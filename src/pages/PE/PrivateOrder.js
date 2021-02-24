@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-02-22 15:32:56
+ * @LastEditTime: 2021-02-24 15:24:17
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';

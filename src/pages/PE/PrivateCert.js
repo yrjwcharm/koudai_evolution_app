@@ -3,20 +3,10 @@
  * @Date: 2021-01-19 12:19:22
  * @LastEditors: xjh
  * @Desc:私募合格投资者认证
- * @LastEditTime: 2021-02-24 15:11:03
+ * @LastEditTime: 2021-02-24 16:16:36
  */
 import React, {Component} from 'react';
-import {
-    View,
-    Text,
-    Linking,
-    Image,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-} from 'react-native';
+import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -24,7 +14,7 @@ import CheckBox from '../../components/CheckBox';
 import {Button, FixedButton} from '../../components/Button';
 import Http from '../../services';
 import Toast from '../../components/Toast';
-import {Modal} from '../../components/Modal';
+
 const deviceWidth = Dimensions.get('window').width;
 
 export default class PrivateCert extends Component {
@@ -47,16 +37,7 @@ export default class PrivateCert extends Component {
                 fund_code: 'SGX499',
             }).then((res) => {
                 if (res.code === '000000') {
-                } else {
-                    Modal.show({
-                        title: '风险等级不匹配',
-                        content:
-                            '您的风险评测结果为：XX，本基金的风险等级为XXXX，根据适当性要求，本人主动申请查看该基金内容',
-                        confirm: true,
-                        confirmCallBack: () => {
-                            this.props.navigation.navigate(this.state.data.button.url);
-                        },
-                    });
+                    this.props.navigation.navigate(this.state.data.button.url);
                 }
             });
         } else {
@@ -87,7 +68,7 @@ export default class PrivateCert extends Component {
                                     source={require('../../assets/img/fof/leading.png')}
                                     style={styles.leading_sty}
                                 />
-                                <Html html={data.desc} style={{lineHeight: 24, color: Colors.darkGrayColor}} />
+                                <Html html={data?.desc} style={{lineHeight: 24, color: Colors.darkGrayColor}} />
                             </View>
                         </View>
                         <View style={styles.card_wrap}>
@@ -102,7 +83,7 @@ export default class PrivateCert extends Component {
                                     color={'#CEA26B'}
                                     style={{marginTop: 3, marginRight: text(5)}}
                                 />
-                                <Html style={styles.check_text} html={data.items[0].text} />
+                                <Html style={styles.check_text} html={data?.items[0]?.text} />
                             </View>
                             <View style={[Style.flexRow, styles.check_nd]}>
                                 <CheckBox
@@ -111,7 +92,7 @@ export default class PrivateCert extends Component {
                                     color={'#CEA26B'}
                                     style={{marginRight: text(5)}}
                                 />
-                                <Text style={{lineHeight: text(18)}}>{data.items[1].text}</Text>
+                                <Text style={{lineHeight: text(18)}}>{data?.items[1]?.text}</Text>
                             </View>
                         </View>
                     </View>
