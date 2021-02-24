@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 11:29:02
+ * @LastEditTime: 2021-02-23 18:55:50
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -15,6 +15,7 @@ import {Button} from '../../../components/Button';
 import {Style, Font} from '../../../common/commonStyle';
 import http from '../../../services/';
 import Toast from '../../../components/Toast';
+import Storage from '../../../utils/storage';
 export default class WechatLogin extends Component {
     static propTypes = {
         prop: PropTypes,
@@ -37,11 +38,14 @@ export default class WechatLogin extends Component {
             verify_code: code,
             password,
         }).then((res) => {
-            if (res.code == '000000') {
-                Toast.show('注册成功', {
-                    onHidden: () => {
-                        this.props.navigation.goBack(2);
-                    },
+            if (res.code === '000000') {
+                Toast.show('注册成功');
+                http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {
+                    mobile: this.props.route?.params?.mobile,
+                    password,
+                }).then((data) => {
+                    this.props.navigation.goBack(2);
+                    Storage.save('loginStatus', data.result);
                 });
             } else {
                 Toast.show(res.message);
@@ -105,14 +109,14 @@ export default class WechatLogin extends Component {
         console.log(code_btn_click);
         return (
             <View style={styles.login_content}>
-                <Text style={styles.title}>欢迎注册理财魔方</Text>
+                <Text style={styles.title}>请输入短信验证码</Text>
                 <Text style={styles.title_desc}>验证码已发送至{handlePhone(this.props.route?.params?.mobile)}</Text>
                 <View style={[Style.flexRowCenter, styles.code_view]}>
                     <InputView
                         title="验证码"
                         onChangeText={this.onChangeCode}
                         value={code}
-                        placeholder="请输入验证码"
+                        placeholder="验证码"
                         maxLength={6}
                         keyboardType={'number-pad'}
                         autoFocus={true}

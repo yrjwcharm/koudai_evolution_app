@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 17:07:55
+ * @LastEditTime: 2021-02-24 18:08:01
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -18,6 +18,7 @@ import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
+import BottomDesc from '../../components/BottomDesc';
 import {NavigationContainer, LinkingOptions, useLinkTo} from '@react-navigation/native';
 const shadow = {
     color: '#E3E6EE',
@@ -337,6 +338,7 @@ const Index = (props) => {
                             </View>
                         </BoxShadow>
                     </View>
+                    <BottomDesc />
                 </LinearGradient>
             </ScrollView>
         </>

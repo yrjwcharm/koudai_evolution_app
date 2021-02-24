@@ -2,12 +2,12 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 19:20:56
+ * @LastEditTime: 2021-02-23 19:08:40
  * @Description: 微信登录
  */
 import React from 'react';
-import {Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {Style, Colors} from '../../common/commonStyle';
+import {px as text, px} from '../../utils/appUtil';
 import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#666666',
-        fontSize: 12,
+        fontSize: px(12),
     },
     LoginLine: {
-        borderColor: '#BBBBBB',
+        borderColor: Colors.lineColor,
         borderTopWidth: 0.5,
         borderStyle: 'solid',
         width: 100,
@@ -82,5 +82,6 @@ const styles = StyleSheet.create({
     LoginIcon: {
         width: text(45),
         height: text(45),
+        marginTop: px(10),
     },
 });

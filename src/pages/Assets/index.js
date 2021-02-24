@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-20 12:04:59
+ * @LastEditTime: 2021-02-24 18:17:47
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -254,7 +254,7 @@ function HomeScreen({navigation}) {
                     </View>
                     <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                     <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
-                    {!hideMsg && notice.system && (
+                    {!hideMsg && notice?.system && (
                         <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
                             <Text style={styles.systemMsgText}>{notice.system}</Text>
                             <TouchableOpacity style={styles.closeSystemMsg} onPress={hideSystemMsg}>

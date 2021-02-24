@@ -2,7 +2,7 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 17:56:41
+ * @LastEditTime: 2021-02-24 16:44:45
  * @Description: 银行卡选择
  */
 
@@ -17,6 +17,7 @@ import Mask from '../Mask';
 import {useNavigation} from '@react-navigation/native';
 const BankCardModal = React.forwardRef((props, ref) => {
     const {
+        type = '', //type为show时是展示
         backdrop = true,
         header,
         title = '请选择付款方式',
@@ -41,6 +42,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
     };
 
     const confirmClick = (index) => {
+        if (type == 'show') {
+            return;
+        }
         setSelect(index);
         setTimeout(() => {
             hide();
@@ -104,26 +108,29 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 }}
                             />
 
-                            <TouchableOpacity
-                                style={[
-                                    styles.bankCard,
-                                    {
-                                        borderTopColor: Colors.borderColor,
-                                        borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
-                                    },
-                                ]}
-                                onPress={addCard}>
-                                <Image
-                                    style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
-                                    source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2020/09/yinhangka.png',
-                                    }}
-                                />
-                                <View style={{flex: 1}}>
-                                    <Text style={styles.text}>添加新银行卡</Text>
-                                </View>
-                                <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
-                            </TouchableOpacity>
+                            {type == 'show' ? null : (
+                                <TouchableOpacity
+                                    style={[
+                                        styles.bankCard,
+                                        {
+                                            borderTopColor: Colors.borderColor,
+                                            borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
+                                        },
+                                    ]}
+                                    onPress={addCard}>
+                                    <Image
+                                        style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
+                                        source={{
+                                            uri:
+                                                'https://static.licaimofang.com/wp-content/uploads/2020/09/yinhangka.png',
+                                        }}
+                                    />
+                                    <View style={{flex: 1}}>
+                                        <Text style={styles.text}>添加新银行卡</Text>
+                                    </View>
+                                    <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
+                                </TouchableOpacity>
+                            )}
                         </View>
                     </View>
                 </View>

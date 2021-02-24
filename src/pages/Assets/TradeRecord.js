@@ -2,17 +2,17 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-03 16:41:58
+ * @LastEditTime: 2021-02-24 15:25:16
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
-import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import http from '../../services/index.js';
 import EmptyTip from '../../components/EmptyTip';
 import {Colors, Style, Font} from '../../common/commonStyle.js';
-import {px} from '../../utils/appUtil.js';
+import {px, tagColor} from '../../utils/appUtil.js';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const TradeRecord = ({route, nvaigation}) => {
     const [page, setPage] = useState(1);
@@ -75,24 +75,7 @@ const TradeRecord = ({route, nvaigation}) => {
             return Colors.defaultColor;
         }
     };
-    const tagColor = (type) => {
-        if (type == 4) {
-            return {
-                text_color: Colors.green,
-                bg_color: '#EDF7EC',
-            };
-        } else if (type == 6) {
-            return {
-                text_color: Colors.btnColor,
-                bg_color: '#EFF5FF',
-            };
-        } else {
-            return {
-                text_color: Colors.red,
-                bg_color: '#FFF2F2',
-            };
-        }
-    };
+
     const ListFooterComponent = () => {
         return (
             <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>

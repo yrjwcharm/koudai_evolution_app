@@ -2,14 +2,14 @@
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-20 15:57:26
+ * @LastEditTime: 2021-02-24 18:23:00
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
-import {Text, StyleSheet, View, ImageBackground} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 import http from '../../services/index.js';
 import {px} from '../../utils/appUtil';
-import {Colors, Style, Font} from '../../common/commonStyle';
+import {Colors, Style} from '../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Praise from '../../components/Praise';
 const MessageBoard = (props) => {
@@ -43,10 +43,12 @@ const MessageBoard = (props) => {
                 {comment?.content}
             </Text>
             <View style={{alignItems: 'flex-end', margin: px(20)}}>
-                <Praise
-                    id={props?.route?.params?.id}
-                    comment={{like_status: comment?.like_status, like_num: comment?.like_num}}
-                />
+                {comment && (
+                    <Praise
+                        id={props?.route?.params?.id}
+                        comment={{like_status: comment?.like_status, like_num: comment?.like_num}}
+                    />
+                )}
             </View>
         </View>
     );
