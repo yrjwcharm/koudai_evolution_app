@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 14:09:09
+ * @LastEditTime: 2021-02-23 11:29:02
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -40,7 +40,7 @@ export default class WechatLogin extends Component {
             if (res.code == '000000') {
                 Toast.show('注册成功', {
                     onHidden: () => {
-                        //跳转
+                        this.props.navigation.goBack(2);
                     },
                 });
             } else {

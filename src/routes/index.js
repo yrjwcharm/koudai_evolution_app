@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 16:14:47
+ * @LastEditTime: 2021-02-24 16:24:14
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-23 12:00:31
+>>>>>>> e75703b110fbb3ba0ed034e68ff5ffebc22c60f3
  * @Description:路由表
  */
 import React from 'react';
@@ -101,7 +106,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateProduct"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 

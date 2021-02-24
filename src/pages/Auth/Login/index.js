@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 18:52:46
+ * @LastEditTime: 2021-02-23 11:27:22
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -14,6 +14,7 @@ import WechatView from '../wechatView';
 import InputView from '../input';
 import http from '../../../services/';
 import Storage from '../../../utils/storage';
+import Toast from '../../../components/Toast';
 export default class index extends Component {
     constructor(props) {
         super(props);
@@ -28,8 +29,12 @@ export default class index extends Component {
         const {mobile, password} = this.state;
         http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {mobile, password}).then(
             (res) => {
+                Toast.show('登录成功', {
+                    onHidden: () => {
+                        this.props.navigation.goBack();
+                    },
+                });
                 Storage.save('loginStatus', res.result);
-                // this.props.navigation.goBack();
             }
         );
     };
