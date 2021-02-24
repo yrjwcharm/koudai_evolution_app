@@ -3,189 +3,219 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:03:44
+ * @LastEditTime: 2021-02-24 14:53:26
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import {Colors, Font, Style} from '../../common//commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {Colors, Font, Style} from '../../common/commonStyle';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {BottomModal} from '../../components/Modal';
 import Notice from '../../components/Notice';
 import FitImage from 'react-native-fit-image';
 import Question from '../../components/Question';
-export default function bankAssets(props) {
+import {Button} from '../../components/Button';
+const btnHeight = isIphoneX() ? text(110) : text(86);
+export default function BankAssets(props) {
     const [data, setData] = useState({});
     const disable = true;
     const bottomModal = React.useRef(null);
     const [activeSections, setActiveSections] = useState([0]);
     const updateSections = (activeSections) => setActiveSections(activeSections);
-    const rightPress = () => {
-        props.navigation.navigate(data.part4.url);
+    const rightPress = (url) => {
+        props.navigation.navigate(url.path, url.params);
     };
-    const qs = {
-        title: '常见问题',
-        rows: [
-            {
-                k: '1.理财魔方为什么可以销售银行存款产品？',
-                v:
-                    '银行存款产品和服务是各家银行直接提供的，理财魔方作为信息展示平台，并提供存款产品开户、存入、取出的入口。用户存款存入和取出是直接在银行开通的银行电子账户中完成的。',
-            },
-            {
-                k: '2.享存6个月是什么？',
-                v:
-                    '一、自动派息：到达派息期后，利息自动转入电子账户，本金自动续存到一下周期。最长存期5年，按到期利率（4.71%）计息，补足剩余利息。</br>二、快速到账。您在申请提前支取、解约时，资金快速到账。',
-            },
-            {
-                k: '3.收益如何计算？何时到账？',
-                v:
-                    '在享存账户购买当日即开始计算收益，次日支取即会获得收益，当日支取无收益。到达派息期后，利息自动转入电子账户，本金自动续存到一下周期。最长存期5年，按到期利率（4.71%）计息，补足剩余利息。',
-            },
-            {
-                k: '4.有资金需求时，如何支取？',
-                v:
-                    '在享存账户购买当日即开始计算收益，次日支取即会获得收益，当日支取无收益。到达派息期后，利息自动转入电子账户，本金自动续存到一下周期。最长存期5年，按到期利率（4.71%）计息，补足剩余利息。',
-            },
-            {
-                k: '5.什么是存款保险？',
-                v:
-                    '存款保险又称存款保障，是指国家通过立法的形式，设立专门的存款保险基金，明确当个别金融机构经营出现问题时，依照规定对存款人进行及时偿付，保障存款人权益。',
-            },
-            {
-                k: '6.存款保险保障范围是什么？',
-                v:
-                    '根据存款保险条例，存款保险覆盖所有吸收存款的银行业金融机构，包括在我国境内设立的商业银行、农村合作银行、农村信用合作社等。 被保险存款包括投保机构吸收的人民币存款和外币存款。但是，金融机构同业存款、投保机构的高级管理人员在本投保机构的存款以及存款保险基金管理机构规定不予保险的其他存款除外。',
-            },
-            {
-                k: '7.存款保险偿付限额是多少？',
-                v:
-                    '根据存款保险条例，存款保险实行限额偿付，最高偿付限额为人民币50万元。同一存款人在同一家投保机构所有被保险存款账户的存款本金和利息合并计算的资金数额在最高偿付限额以内的，实行全额偿付；超出最高偿付限额的部分，依法从投保机构清算财产中受偿。',
-            },
-            {
-                k: '8.存款人需要交纳保费吗？',
-                v:
-                    '不需要。存款保险作为国家金融安全网的一部分，其资金来源主要是金融机构按规定交纳的保费。收取保费的主要目的是为了加强对金融机构的市场约束，促使银行审慎经营和健康发展。',
-            },
-            {
-                k: '9.什么情况下存款保险进行偿付？',
-                v:
-                    '根据存款保险条例，当出现下列情形时，存款人有权要求存款保险基金管理机构使用存款保险基金偿付被保险存款：存款保险基金管理机构担任投保机构的接管组织；存款保险基金管理机构实施被撤销投保机构的清算；人民法院裁定受理对投保机构的破产申请；经国务院批准的其他情形。为了保障偿付的及时性，充分保护存款人的权益，条例规定，存款保险基金管理机构应当在上述情形发生之日起7个工作日内足额偿付存款。',
-            },
-        ],
-    };
-    const content = [
-        {
-            type: 'text',
-            text: '支取利息=支取金额X派息期内实际持有时间X活期利率/360',
-            title: '计算规则',
-        },
-        {
-            type: 'img',
-            img: 'https://static.licaimofang.com/wp-content/uploads/2020/01/20200106124810xc.png',
-            title: '产品对比',
-        },
-    ];
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/wallet/holding/20210101').then((res) => {
+        Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/bank/asset/detail/20210101', {
+            ...props.route.params,
+        }).then((res) => {
             setData(res.result);
         });
-    }, []);
+    }, [props.navigation]);
     const reasonShow = () => {
         bottomModal.current.show();
     };
-    const accountBtn = (url) => {
-        props.navigation.navigate(url);
+    const accountBtn = () => {
+        props.navigation.navigate('');
+    };
+    const jumpTo = (url) => {
+        console.log(url);
+        props.navigation.navigate('BankRedeem', url.params);
     };
     return (
-        <SafeAreaView edges={['bottom']}>
-            <Header
-                title={'会存A'}
-                leftIcon="chevron-left"
-                rightText={'交易记录'}
-                rightPress={rightPress}
-                rightTextStyle={styles.right_sty}
-                fontStyle={{color: '#000'}}
-                style={{backgroundColor: '#fff'}}
-            />
-            <Notice content={'消息通知通知通知，内容内容内容'} isClose={true} />
+        <View style={{paddingBottom: btnHeight, flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{marginBottom: 120}}>
-                    <View style={[styles.card_sty, Style.flexCenter]}>
-                        <View style={Style.flexRowCenter}>
-                            <Text style={Style.descSty}>总资产(元)</Text>
-                            <TouchableOpacity onPress={reasonShow}>
-                                <AntDesign
-                                    name={'questioncircleo'}
-                                    color={'#666666'}
-                                    size={13}
-                                    style={{marginLeft: text(5)}}
-                                />
-                            </TouchableOpacity>
+                <View>
+                    <Header
+                        title={data.title}
+                        leftIcon="chevron-left"
+                        rightText={'交易记录'}
+                        rightPress={() => rightPress(data.top_right_btn.url)}
+                        rightTextStyle={styles.right_sty}
+                        fontStyle={{color: '#000'}}
+                        titleStyle={{marginLeft: text(16)}}
+                        style={{backgroundColor: '#fff'}}
+                    />
+                    <Notice content={data.processing} isClose={true} />
+                    {Object.keys(data).length > 0 && (
+                        <ScrollView>
+                            <View style={[styles.card_sty, Style.flexCenter]}>
+                                <View style={Style.flexRowCenter}>
+                                    <Text style={Style.descSty}>{data.asset.amount.k}</Text>
+                                    <TouchableOpacity onPress={reasonShow}>
+                                        <AntDesign
+                                            name={'questioncircleo'}
+                                            color={'#666666'}
+                                            size={13}
+                                            style={{marginLeft: text(5)}}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={styles.amount_sty}>{data.asset.amount.v}</Text>
+                                <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
+                                    <View style={{flex: 1}}>
+                                        <Text style={styles.top_text_sty}>{data.asset.principal.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset.principal.v}</Text>
+                                    </View>
+                                    <View style={{flex: 1, textAlign: 'center'}}>
+                                        <Text style={styles.top_text_sty}>{data.asset.profit.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset.profit.v}</Text>
+                                    </View>
+                                    <View style={{flex: 1, textAlign: 'center'}}>
+                                        <Text style={styles.top_text_sty}>{data.asset.profit_acc.k}</Text>
+                                        <Text style={styles.bottom_num_sty}>{data.asset.profit_acc.v}</Text>
+                                    </View>
+                                </View>
+                                <TouchableOpacity
+                                    disabled={data.button.avail == 0}
+                                    style={{
+                                        backgroundColor: data.button.avail == 0 ? '#DDDDDD' : '#0051CC',
+                                        borderRadius: text(25),
+                                        marginVertical: text(20),
+                                    }}
+                                    onPress={() => jumpTo(data.button.url)}>
+                                    <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[Style.flexRow, styles.account_wrap_sty]}
+                                    onPress={() => accountBtn(data?.elec_account?.url)}>
+                                    <Text style={styles.account_sty}>
+                                        {data.elec_account.title}({data?.elec_account?.balance})
+                                    </Text>
+                                    <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                </TouchableOpacity>
+                            </View>
+                            {/* 取出 */}
+                            {data?.shares &&
+                                data.shares.map((_s, _index) => {
+                                    return (
+                                        <View style={styles.card_out_sty}>
+                                            <View style={{flex: 1}}>
+                                                <Text>{_s.title}</Text>
+                                                <View
+                                                    style={{
+                                                        marginTop: text(10),
+                                                        flexDirection: 'row',
+                                                    }}>
+                                                    {_s.data.map((_d, _index) => {
+                                                        return (
+                                                            <View style={{flex: 1}}>
+                                                                <Text
+                                                                    style={[styles.top_text_sty, {textAlign: 'left'}]}>
+                                                                    {_d.k}
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.bottom_num_sty,
+                                                                        {textAlign: 'left'},
+                                                                    ]}>
+                                                                    {_d.v}
+                                                                </Text>
+                                                            </View>
+                                                        );
+                                                    })}
+                                                </View>
+                                            </View>
+                                            <TouchableOpacity
+                                                disabled={_s.button.avail == 0}
+                                                style={{
+                                                    backgroundColor: _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',
+                                                    borderRadius: text(25),
+                                                    marginVertical: text(20),
+                                                }}
+                                                onPress={() => jumpTo(_s.button.url)}>
+                                                <Text
+                                                    style={[
+                                                        styles.btn_text_sty,
+                                                        {paddingHorizontal: text(10), fontSize: text(12)},
+                                                    ]}>
+                                                    {_s.button.text}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    );
+                                })}
+
+                            {data?.interest && (
+                                <View style={styles.content_sty}>
+                                    <Text style={styles.title_sty}>{data.interest.title}</Text>
+                                    <Text>{data.interest.desc}</Text>
+                                    {data.interest.images.map((_img, _index) => {
+                                        return (
+                                            <View>
+                                                <Text style={[styles.title_sty, {marginTop: text(12)}]}>{_img.k}</Text>
+                                                <FitImage
+                                                    source={{
+                                                        uri: _img.v,
+                                                    }}
+                                                    resizeMode="contain"
+                                                />
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            )}
+
+                            <View style={[styles.content_sty, {marginVertical: text(12)}]}>
+                                <Text style={styles.title_sty}>{data.faq.title}</Text>
+                                <Question data={data.faq.rows} />
+                            </View>
+                            <View style={{paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                                {data.contact.map((_c, _d) => {
+                                    return (
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                styles.list_sty,
+                                                {
+                                                    borderBottomWidth: _d < data.contact.length - 1 ? 0.5 : 0,
+                                                    borderColor: Colors.borderColor,
+                                                },
+                                            ]}
+                                            key={_d + '_c'}>
+                                            <Text style={{flex: 1}}>{_c.key}</Text>
+                                            <Text>{_c.val}</Text>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        </ScrollView>
+                    )}
+                    <BottomModal ref={bottomModal} confirmText={'确认'}>
+                        <View style={{padding: text(16)}}>
+                            <Html
+                                html={
+                                    '总金额：<br>账户总金额 = 当前本金+当前支取收益， 总金额=所有账户总金额之和<br><br>日收益：<br>账户D日收益 = D日日末总金额 - D日购买本金  + D日赎回本金之和 + D日赎回利息之和 -  (D减1日日末总金额)<br>其中日末总金额=日末本金+计息后日末当前支取收益<br>D日收益 = 各账户D日收益之和<br><br>累计收益：<br>账户累计收益 = 该账户历次支取收益之和 + 当前支取收益<br>累计收益 = 各个账户累计收益之和 （含已经清仓的账户）'
+                                }
+                            />
                         </View>
-                        <Text style={styles.amount_sty}>{data.part1.amount}</Text>
-                        <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.top_text_sty}>本金金额</Text>
-                                <Text style={styles.bottom_num_sty}>{data.part1.profit}</Text>
-                            </View>
-                            <View style={{flex: 1, textAlign: 'center'}}>
-                                <Text style={styles.top_text_sty}>昨日受益</Text>
-                                <Text style={styles.bottom_num_sty}>{data.part1.profit_acc}</Text>
-                            </View>
-                            <View style={{flex: 1, textAlign: 'center'}}>
-                                <Text style={styles.top_text_sty}>累计受益</Text>
-                                <Text style={styles.bottom_num_sty}>{data.part1.profit_acc}</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity
-                            style={{
-                                backgroundColor: disable ? '#DDDDDD' : '#0051CC',
-                                borderRadius: text(25),
-                                marginVertical: text(20),
-                            }}>
-                            <Text style={styles.btn_text_sty}>已售空</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[Style.flexRow, styles.account_wrap_sty]} onPress={accountBtn}>
-                            <Text style={styles.account_sty}>我的电子账户(123.334.22元)</Text>
-                            <AntDesign name={'right'} color={'#4E556C'} size={12} />
-                        </TouchableOpacity>
-                    </View>
-                    {content.map((_i, _d) => {
-                        return (
-                            <View style={styles.content_sty}>
-                                <Text style={styles.title_sty}>{_i.title}</Text>
-                                {_i.type == 'text' && <Text>{_i.text}</Text>}
-                                {_i.type == 'img' && (
-                                    <FitImage
-                                        source={{
-                                            uri: _i.img,
-                                        }}
-                                        resizeMode="contain"
-                                    />
-                                )}
-                            </View>
-                        );
-                    })}
-                    <View style={[styles.content_sty, {marginVertical: text(12)}]}>
-                        <Text style={styles.title_sty}>{qs.title}</Text>
-                        <Question data={qs.rows} />
-                    </View>
-                    <View>
-                        <View style={[Style.flexRow, styles.list_sty]}>
-                            <Text style={{flex: 1}}>魔方客服电话</Text>
-                            <Text>400-080-8208</Text>
-                        </View>
-                    </View>
-                </ScrollView>
+                    </BottomModal>
+                </View>
             )}
-            <BottomModal ref={bottomModal} confirmText={'确认'}>
-                <Text>弹窗内容</Text>
-            </BottomModal>
-        </SafeAreaView>
+        </View>
     );
 }
 const styles = StyleSheet.create({
@@ -196,7 +226,7 @@ const styles = StyleSheet.create({
     card_sty: {
         backgroundColor: '#fff',
         paddingTop: text(25),
-        marginBottom: text(12),
+        // marginBottom: text(12),
     },
     amount_sty: {
         color: '#333',
@@ -220,6 +250,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         paddingVertical: text(6),
         paddingHorizontal: text(20),
+        fontSize: text(13),
     },
     account_sty: {
         color: '#333333',
@@ -227,6 +258,7 @@ const styles = StyleSheet.create({
     },
     account_wrap_sty: {
         borderTopWidth: 0.5,
+        borderBottomWidth: 0.5,
         borderColor: Colors.borderColor,
         padding: text(15),
     },
@@ -242,7 +274,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     list_sty: {
+        paddingVertical: text(16),
+    },
+    card_out_sty: {
         backgroundColor: '#fff',
         padding: text(16),
+        flexDirection: 'row',
+        margin: text(16),
+        marginBottom: 0,
+        borderRadius: text(10),
     },
 });

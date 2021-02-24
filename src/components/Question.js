@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 16:51:32
  * @Description:银行常见问题
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 14:40:37
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-24 14:15:32
  */
 import React, {useState, TouchableOpacity} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -24,7 +24,11 @@ export default function Question(props) {
         );
     };
     const renderContent = (section) => {
-        return <Html style={styles.content_text_sty} html={section.v} />;
+        return (
+            <View style={{flex: 1}}>
+                <Html style={styles.content_text_sty} html={section.v} />
+            </View>
+        );
     };
     return (
         <View>
@@ -54,6 +58,7 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
         lineHeight: text(20),
         textAlign: 'justify',
+        flexDirection: 'row',
     },
     header_sty: {
         paddingBottom: text(4),

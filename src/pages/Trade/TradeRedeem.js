@@ -3,28 +3,20 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-23 11:06:42
+ * @LastEditTime: 2021-02-23 12:12:04
  */
 import React, {Component} from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Image,
-    TextInput,
-    ScrollView,
-    TabBarIOS,
-    Dimensions,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Table from '../../components/Table';
-import {Button, FixedButton} from '../../components/Button';
+import {FixedButton} from '../../components/Button';
 import Http from '../../services/';
+import BottomDesc from '../../components/BottomDesc';
+import {Modal} from '../../components/Modal';
+import {PasswordModal} from '../../components/Password';
 const deviceWidth = Dimensions.get('window').width;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -36,6 +28,9 @@ export default class TradeRedeem extends Component {
             inputValue: '',
             toggleList: false,
             btnClick: false,
+            showMask: false,
+            password: '',
+            trade_method: 0,
             tableData: {
                 head: {percent: '当前持仓金额', amount: '赎回金额'},
                 body: [
@@ -47,7 +42,6 @@ export default class TradeRedeem extends Component {
         };
     }
     componentDidMount() {
-        // this.InterfacePlan();
         Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/info/20210101', {
             poid: 'VV00000065',
         }).then((res) => {
@@ -65,7 +59,7 @@ export default class TradeRedeem extends Component {
             });
         });
     }
-    radioChange(index) {
+    radioChange(index, type) {
         let check = this.state.check;
         // const lastIndex = check.indexOf(true);
         check = check.map((item) => false);
@@ -75,6 +69,7 @@ export default class TradeRedeem extends Component {
         check[index] = true;
         this.setState({
             check,
+            trade_method: type,
         });
     }
     pressChange(percent) {
@@ -91,13 +86,31 @@ export default class TradeRedeem extends Component {
     getPlanInfo() {
         Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
             percent: this.state.inputValue / 100,
-            trade_method: 1,
-            poid: '',
+            trade_method: this.state.trade_method,
+            poid: 'VV00000065',
         }).then((res) => {});
     }
-    submitData() {
-        console.log(this.state.inputValue);
-    }
+    passwordInput = () => {
+        this.passwordModal.show();
+        this.setState({showMask: true});
+    };
+    submitData = (password) => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/do/20210101', {
+            redeemid: 12,
+            password,
+            percent: this.state.inputValue / 100,
+            trade_method: this.state.trade_method,
+            poid: 'VV00000065',
+        }).then((res) => {
+            if (res.code === '000000') {
+                this.props.navigation.navigate(this.state.data.button.url);
+            } else {
+                Modal.show({
+                    content: res.message,
+                });
+            }
+        });
+    };
     onChange = (text) => {
         if (text > 0) {
             this.getPlanInfo();
@@ -144,7 +157,7 @@ export default class TradeRedeem extends Component {
                                     <Radio
                                         checked={this.state.check[index]}
                                         index={index}
-                                        onChange={() => this.radioChange(index, _item.bank_id)}
+                                        onChange={() => this.radioChange(index, _item.pay_type)}
                                     />
                                 </View>
                             );
@@ -214,13 +227,23 @@ export default class TradeRedeem extends Component {
                                 </View>
                             )}
                         </View>
+                        <PasswordModal
+                            ref={(ref) => {
+                                this.passwordModal = ref;
+                            }}
+                            onDone={this.submitData}
+                            onClose={() => {
+                                this.setState({showMask: false});
+                            }}
+                        />
+                        <BottomDesc />
                     </ScrollView>
                 )}
                 {!!data && (
                     <FixedButton
                         title={data?.button?.text}
                         disabled={data?.button?.avail == 0 || btnClick == false}
-                        onPress={this.submitData}
+                        onPress={this.passwordInput}
                     />
                 )}
             </View>
