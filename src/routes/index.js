@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 15:20:27
+ * @LastEditTime: 2021-02-25 19:01:35
  * @Description:路由表
  */
 import React from 'react';
@@ -107,12 +107,13 @@ import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金�
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
 import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
+import ExperienceGoldTrade from '../pages/ExperienceGold/Trade'; //体验金购买
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="ExperienceGoldResult"
+            initialRouteName="TradeAdjust"
             screenOptions={{
                 // headerShown: false,
 
@@ -399,6 +400,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
+            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
         </Stack.Navigator>
     );
 }
