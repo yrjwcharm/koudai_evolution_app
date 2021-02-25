@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 17:07:55
+ * @LastEditTime: 2021-02-25 11:12:04
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -18,6 +18,7 @@ import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
+import BottomDesc from '../../components/BottomDesc';
 import {NavigationContainer, LinkingOptions, useLinkTo} from '@react-navigation/native';
 const shadow = {
     color: '#E3E6EE',
@@ -62,7 +63,7 @@ const Index = (props) => {
     return (
         <>
             {/* header */}
-            <View style={[styles.header, {paddingTop: inset.top + (isIphoneX() ? 0 : px(8))}]}>
+            <View style={[styles.header, {paddingTop: inset.top + px(8)}]}>
                 <View style={Style.flexBetween}>
                     <View style={Style.flexRow}>
                         <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
@@ -280,6 +281,7 @@ const Index = (props) => {
                                     }}>
                                     <TouchableOpacity
                                         style={[styles.about_our, styles.common_card]}
+                                        activeOpacity={0.8}
                                         onPress={() => {
                                             jumpPage('MessageBoard', {id: comment.id});
                                         }}>
@@ -337,6 +339,7 @@ const Index = (props) => {
                             </View>
                         </BoxShadow>
                     </View>
+                    <BottomDesc />
                 </LinearGradient>
             </ScrollView>
         </>

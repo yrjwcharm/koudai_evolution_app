@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-20 15:02:53
+ * @LastEditTime: 2021-02-24 18:23:12
  * @Description:点赞模块
  */
 
@@ -14,8 +14,8 @@ import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 export default function Praise(props) {
     const {style, comment, id} = props;
-    const [like, setLike] = useState(comment?.like_status);
-    const [num, setNum] = useState(comment?.like_num);
+    const [like, setLike] = useState(comment.like_status);
+    const [num, setNum] = useState(comment.like_num);
     const postLike = useCallback((id, _like) => {
         http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/comment/like/20210101', {id, like: _like});
     }, []);

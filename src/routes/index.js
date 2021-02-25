@@ -2,19 +2,19 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 14:44:05
+ * @LastEditTime: 2021-02-25 14:53:18
  * @Description:路由表
  */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
 import DetailScreen from '../pages/Portfolio/index';
 import IM from '../pages/IM/im';
 import LineChart from '../pages/Chart/lineChart.js';
-import Feather from 'react-native-vector-icons/Feather';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
-import AppGuide from '../pages/Auth/AppGuide';
+import AppGuide from '../pages/Auth/AppGuide'; //引导页
 import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录

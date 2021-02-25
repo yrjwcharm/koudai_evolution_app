@@ -2,15 +2,25 @@
  * @Date: 2021-01-18 20:37:31
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 11:25:35
+ * @LastEditTime: 2021-02-25 11:48:50
  * @Description: 相机扫描
  */
 import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, View, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {px as px2dp, deviceWidth as width, deviceHeight as height, px} from '../../../utils/appUtil';
+import Icon from 'react-native-vector-icons/AntDesign';
 const color = '#61A8FF';
 export default class camera extends Component {
+    takePicture = async () => {
+        if (this.camera) {
+            const options = {quality: 0.5, base64: true};
+            const data = await this.camera.takePictureAsync(options);
+            DeviceEventEmitter.emit('EventType', data.uri);
+            this.props.navigation.goBack();
+            console.log(data.uri);
+        }
+    };
     render() {
         return (
             <View style={{flex: 1}}>
@@ -70,6 +80,11 @@ export default class camera extends Component {
                             }}
                         />
                     </View>
+                    <TouchableOpacity
+                        onPress={this.takePicture}
+                        style={{position: 'absolute', zIndex: 100, bottom: px2dp(160), left: width / 2 - px(30)}}>
+                        <Icon name={'camerao'} size={px(60)} color="#fff" />
+                    </TouchableOpacity>
                     <View style={{flex: 1, backgroundColor: 'rgba(30, 31, 32, 0.8)', alignItems: 'center'}} />
                 </View>
             </View>

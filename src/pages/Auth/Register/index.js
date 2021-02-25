@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 13:32:43
+ * @LastEditTime: 2021-02-23 19:04:56
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -15,6 +15,7 @@ import InputView from '../input';
 import Agreements from '../../../components/Agreements';
 import http from '../../../services/';
 import Toast from '../../../components/Toast';
+import FastImage from 'react-native-fast-image';
 export default class index extends Component {
     constructor(props) {
         super(props);
@@ -48,7 +49,13 @@ export default class index extends Component {
         const {btnClick, mobile} = this.state;
         return (
             <ScrollView style={styles.login_content}>
-                <Text style={styles.title}>请输入短信验证码</Text>
+                <View style={[Style.flexRow, {marginBottom: text(36), marginTop: text(20)}]}>
+                    <FastImage
+                        style={{width: text(42), height: text(42), marginRight: text(8)}}
+                        source={require('../../../assets/img/login/registerLogo.png')}
+                    />
+                    <Text style={styles.title}>欢迎注册理财魔方</Text>
+                </View>
                 <InputView
                     title="手机号"
                     onChangeText={this.onChangeMobile}
@@ -98,8 +105,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: text(22),
         fontWeight: '500',
-        marginBottom: text(48),
-        marginTop: text(20),
     },
     text: {
         color: '#666666',

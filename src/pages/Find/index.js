@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 15:44:21
+ * @LastEditTime: 2021-02-23 19:17:53
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -13,6 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
 import Header from '../../components/NavBar';
+import BottomDesc from '../../components/BottomDesc';
 const Index = (props) => {
     const [data, SetData] = useState([]);
     useEffect(() => {
@@ -190,6 +191,7 @@ const Index = (props) => {
                             </View>
                         </View>
                     </View>
+                    <BottomDesc />
                 </View>
             </ScrollView>
         </>

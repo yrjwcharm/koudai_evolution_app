@@ -1,12 +1,12 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-02-07 18:19:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-24 18:10:53
  * @Description:主题及公共样式表
  */
 
 import {StyleSheet} from 'react-native';
-import {px as text, px} from '../utils/appUtil';
+import {px as text} from '../utils/appUtil';
 export const Colors = {
     /** color **/
 
@@ -64,7 +64,7 @@ export const Space = {
     marginAlign: text(16),
     // 内边距
     padding: text(16),
-    cardPadding: px(16),
+    cardPadding: text(16),
     /** width **/
     //圆角
     borderRadius: text(8),
@@ -157,13 +157,14 @@ export const Style = StyleSheet.create({
         fontSize: text(13),
     },
     tag: {
-        paddingHorizontal: px(7),
+        paddingHorizontal: text(7),
         justifyContent: 'center',
         borderRadius: 4,
-        height: px(20),
+        height: 20,
     },
     more: {
-        fontSize: px(12),
+        fontSize: text(12),
         color: Colors.btnColor,
     },
 });
+console.log(text(12), 123123);

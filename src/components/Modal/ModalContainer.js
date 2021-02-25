@@ -1,6 +1,6 @@
 import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Image} from 'react-native';
 import React, {Component} from 'react';
-import {deviceWidth as width, deviceHeight as height, px as text} from '../../utils/appUtil';
+import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'PingFangSC-Semibold',
         fontSize: text(16),
+        lineHeight: px(25),
         fontWeight: '500',
         color: Colors.defaultColor,
         paddingTop: text(18),
@@ -204,8 +205,9 @@ const styles = StyleSheet.create({
         fontSize: text(14),
     },
     contentCon: {
-        paddingVertical: text(14),
+        paddingTop: text(12),
+        paddingBottom: px(20),
         paddingHorizontal: text(8),
     },
-    contentText: {fontSize: text(14), color: Colors.darkGrayColor, lineHeight: text(20)},
+    contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},
 });

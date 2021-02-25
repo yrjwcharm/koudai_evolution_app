@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 14:06:09
+ * @LastEditTime: 2021-02-24 18:13:43
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -74,14 +74,47 @@ const formaNum = (num) => {
 const handlePhone = (mobile) => {
     return mobile ? mobile.replace(/(\d{3})\d*(\d{4})/, '$1****$2') : '';
 };
-//解析url
-const resoveUrl = (url) => {
-    if (url) {
-        var arr = url.split('?');
-        if (arr[1]) {
-        }
-        return;
+//处理tag 颜色
+//3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
+const tagColor = (type) => {
+    if (type == 4) {
+        return {
+            text_color: '#4BA471',
+            bg_color: '#EDF7EC',
+        };
+    } else if (type == 6) {
+        return {
+            text_color: '#0051CC',
+            bg_color: '#EFF5FF',
+        };
+    } else {
+        return {
+            text_color: '#E74949',
+            bg_color: '#FFF2F2',
+        };
     }
+};
+// -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
+const getTradeColor = (type) => {
+    var color = '';
+    switch (type) {
+        case -1:
+            color = '#E74949';
+            break;
+        case 1:
+            color = '#EB7121';
+            break;
+        case 6:
+            color = '#4BA471';
+            break;
+        case 7:
+            color = '#EB7121';
+            break;
+        default:
+            color = '#9095A5';
+            break;
+    }
+    return color;
 };
 //获取安全区域高度
 // function getStatusBarHeight() {
@@ -95,4 +128,14 @@ const resoveUrl = (url) => {
 //         return StatusBar.currentHeight;
 //     }
 // }
-export {deviceWidth, deviceHeight, isIphoneX, px, requestExternalStoragePermission, formaNum, handlePhone};
+export {
+    deviceWidth,
+    deviceHeight,
+    isIphoneX,
+    px,
+    requestExternalStoragePermission,
+    formaNum,
+    handlePhone,
+    tagColor,
+    getTradeColor,
+};
