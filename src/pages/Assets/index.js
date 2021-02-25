@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 11:06:26
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-25 14:56:09
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -88,6 +88,7 @@ function HomeScreen({navigation}) {
     }, []);
     const init = useCallback((refresh) => {
         refresh === 'refresh' && setRefreshing(true);
+        refresh === 'refresh' && setHideMsg(false);
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/holding/20210101', {
             // uid: '1000000001',
         }).then((res) => {
@@ -273,7 +274,9 @@ function HomeScreen({navigation}) {
                                 color={'rgba(255, 255, 255, 0.8)'}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.experienceGold, Style.flexRow]}>
+                        <TouchableOpacity
+                            style={[styles.experienceGold, Style.flexRow]}
+                            onPress={() => navigation.navigate('ExperienceGold')}>
                             <Image
                                 source={require('../../assets/personal/jinbi.png')}
                                 style={{width: text(15), height: text(15)}}

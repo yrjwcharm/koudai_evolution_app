@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 14:53:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-25 14:55:55
  * @Description:路由表
  */
 import React from 'react';
@@ -94,6 +94,16 @@ import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
 import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
 import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
+import ContactUs from '../pages/Assets/ContactUs'; // 联系我们
+import PasswordManagement from '../pages/Assets/PasswordManagement'; // 密码管理
+import ResetLoginPwd from '../pages/Assets/ResetLoginPwd'; // 重设登录密码
+import TradePwdManagement from '../pages/Assets/TradePwdManagement'; // 交易密码管理
+import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码
+import ForgotTradePwd from '../pages/Assets/ForgotTradePwd'; // 找回交易密码
+import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
+import BankCard from '../pages/Assets/BankCard'; // 银行卡
+import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
+import ExperienceGold from '../pages/Assets/ExperienceGold'; // 体验金首页
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
 const Stack = createStackNavigator();
@@ -352,6 +362,37 @@ export default function AppStack() {
             <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
+            <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />
+            <Stack.Screen name="PasswordManagement" component={PasswordManagement} options={{title: '密码管理'}} />
+            <Stack.Screen name="ResetLoginPwd" component={ResetLoginPwd} options={{title: '重设登录密码'}} />
+            <Stack.Screen name="TradePwdManagement" component={TradePwdManagement} options={{title: '交易密码管理'}} />
+            <Stack.Screen name="ModifyTradePwd" component={ModifyTradePwd} options={{title: '修改交易密码'}} />
+            <Stack.Screen name="ForgotTradePwd" component={ForgotTradePwd} options={{title: '找回交易密码'}} />
+            <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
+            <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
+            <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
+            <Stack.Screen
+                name="ExperienceGold"
+                component={ExperienceGold}
+                options={{
+                    headerBackImage: () => {
+                        return <Feather name="chevron-left" size={30} color={'#fff'} />;
+                    },
+                    headerStyle: {
+                        backgroundColor: '#D4AC6F',
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        fontSize: px(18),
+                        lineHeight: px(25),
+                        color: '#fff',
+                    },
+                    title: '理财魔方体验金',
+                }}
+            />
         </Stack.Navigator>
     );
 }

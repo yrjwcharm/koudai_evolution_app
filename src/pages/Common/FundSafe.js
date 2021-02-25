@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 17:58:51
- * @LastEditTime: 2021-01-21 11:51:32
+ * @LastEditTime: 2021-02-18 18:22:53
  * @LastEditors: dx
  * @Description: 资金安全
  * @FilePath: /koudai_evolution_app/src/pages/Common/FundSafe.js
@@ -50,7 +50,7 @@ class FundSafe extends Component {
         return (
             <ScrollView style={[styles.container]} scrollIndicatorInsets={{right: 1}}>
                 {data &&
-                    data.images.map((item, index) => {
+                    data.images?.map((item, index) => {
                         return <FitImage key={index} source={{uri: item}} />;
                     })}
             </ScrollView>

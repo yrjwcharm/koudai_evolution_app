@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-04 16:13:49
+ * @LastEditTime: 2021-02-18 11:42:20
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,7 +16,7 @@ import http from '../../services/index.js';
 const Settings = ({navigation}) => {
     const [data, setData] = useState([
         [
-            {key: '密码管理', val: '', type: 'link', jump_to: ''},
+            {key: '密码管理', val: '', type: 'link', jump_to: 'PasswordManagement'},
             {key: '账号注销', val: '', type: 'link', jump_to: ''},
         ],
         [
@@ -24,7 +24,7 @@ const Settings = ({navigation}) => {
             {key: '分享理财魔方', val: '', type: 'link', jump_to: ''},
         ],
         [
-            {key: '欢迎页', val: '', type: 'link', jump_to: ''},
+            {key: '联系我们', val: '', type: 'link', jump_to: 'ContactUs'},
             {key: '鼓励一下', val: '', type: 'link', jump_to: ''},
             {key: '投诉建议', val: '', type: 'link', jump_to: 'ComplaintsAdvices'},
             {key: '关于理财魔方', val: '当前版本：5.2.9', type: 'link', jump_to: ''},

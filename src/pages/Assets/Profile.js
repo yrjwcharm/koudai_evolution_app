@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-04 15:31:37
+ * @LastEditTime: 2021-02-23 10:31:04
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -30,6 +30,7 @@ const Profile = ({navigation}) => {
                 key: '绑定微信',
                 val: '去绑定',
                 type: 'link',
+                jump_to: '',
             },
             {
                 key: '身份认证',
@@ -41,6 +42,7 @@ const Profile = ({navigation}) => {
                 key: '银行卡管理',
                 val: '6张',
                 type: 'link',
+                jump_to: 'BankCardList',
             },
         ],
         [
@@ -49,26 +51,31 @@ const Profile = ({navigation}) => {
                 val: '稳健型',
                 type: 'link',
                 desc: '已过期，请重新测试',
+                jump_to: '',
             },
             {
                 key: '家庭可投资资产',
                 val: '10-50万',
                 type: 'link',
+                jump_to: '',
             },
             {
                 key: '月收入',
                 val: '10,000',
                 type: 'link',
+                jump_to: '',
             },
             {
                 key: '月支出',
                 val: '5,000',
                 type: 'link',
+                jump_to: '',
             },
             {
                 key: '投资经验',
                 val: '3年',
                 type: 'link',
+                jump_to: '',
             },
             {
                 key: '投资偏好',
@@ -78,10 +85,17 @@ const Profile = ({navigation}) => {
         ],
     ]);
 
+    const onPress = useCallback(
+        (item) => {
+            navigation.navigate(item.jump_to);
+        },
+        [navigation]
+    );
+
     useEffect(() => {
-        // http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/user_info/20210101', {}).then((res) => {
-        //     console.log(res);
-        // });
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/user_info/20210101', {}).then((res) => {
+            console.log(res);
+        });
     }, []);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
@@ -93,7 +107,9 @@ const Profile = ({navigation}) => {
                                 return (
                                     <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>
                                         {item.type === 'link' ? (
-                                            <TouchableOpacity style={[Style.flexBetween, {height: text(56)}]}>
+                                            <TouchableOpacity
+                                                style={[Style.flexBetween, {height: text(56)}]}
+                                                onPress={() => onPress(item)}>
                                                 <Text style={styles.title}>{item.key}</Text>
                                                 <View style={Style.flexRow}>
                                                     {item.desc ? (
