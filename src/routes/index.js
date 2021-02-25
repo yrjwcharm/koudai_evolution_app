@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 18:22:31
+ * @LastEditTime: 2021-02-25 14:44:05
  * @Description:路由表
  */
 import React from 'react';
@@ -101,7 +101,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeFixedConfirm"
+            initialRouteName="DetailFixed"
             screenOptions={{
                 // headerShown: false,
 
@@ -283,7 +283,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
             <Stack.Screen name="DetailAccount" component={DetailAccount} options={{headerShown: false}} />
-            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: '低估值智能定投'}} />
+            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />
             <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
             <Stack.Screen name="DetailProvideOrder" component={DetailProvideOrder} options={{headerShown: false}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />

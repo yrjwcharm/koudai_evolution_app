@@ -3,54 +3,79 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 18:18:17
+ * @LastEditTime: 2021-02-25 14:08:06
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import Slider from './components/Slider';
+// import Slider from '@react-native-community/slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
+import Slider from 'react-native-slider';
 import Http from '../../services';
 import {Button} from '../../components/Button';
+import {Toast} from '../../components/Toast';
 const deviceWidth = Dimensions.get('window').width;
 export default function SetTarget(props) {
-    const [value, SetValue] = useState(2);
-    const AfterChange = (val) => {
-        SetValue(val);
+    const [data, setData] = useState({});
+    const [num, setNum] = useState();
+    const [target, setTarget] = useState('');
+    const onChange = (val) => {
+        setNum(Number(val));
     };
+    var timer;
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/trade/fix_invest/target_info/20210101').then(
-            (res) => {
-                console.log(res);
-            }
-        );
-    }, [props.navigation]);
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/target_info/20210101', {
+            target_id: target,
+        }).then((res) => {
+            setData(res.result);
+            setNum(res.result.target_info.default * 100);
+        });
+        return clearTimeout(timer);
+    }, []);
+    const confirmData = () => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/set/invest_target/20210101', {
+            target: num,
+            possible: data.target_info.possible,
+        }).then((res) => {
+            Toast.show(data.message);
+            timer = setTimeout(() => {
+                // props.navigation.navigate(data.button.url);
+            }, 2000);
+            setTarget(res.result.target_id);
+        });
+    };
     return (
-        <View style={styles.container}>
-            <Text style={{textAlign: 'center', color: Colors.defaultColor}}>目标受益率</Text>
-            <Text style={styles.ratio_sty}>15.00%</Text>
-            <Text style={styles.desc_sty}>根据对应指数历史数据，参考实现概率80%</Text>
-            <View style={{marginVertical: text(24)}}>
-                <Slider
-                    height={40}
-                    min={0}
-                    max={30}
-                    defaultValue={0}
-                    step={1}
-                    maximumTrackTintColor="#CCCCCC"
-                    minimumTrackTintColor="#0051CC"
-                    processHeight={6}
-                    style={{marginTop: 40}}
-                    onAfterChange={AfterChange}
-                    thumbSize={25}
-                    width={deviceWidth - text(84)}
-                />
-            </View>
-            <Text style={styles.tips_sty}>
-                风险提示：目标实现概率、产品收益率随市场风险提示：目标实现概率、产品收益率随市场
-            </Text>
-            <Button title="确认" style={{marginTop: text(30)}} />
-        </View>
+        <>
+            {Object.keys(data).length > 0 && (
+                <View style={styles.container}>
+                    <Text style={{textAlign: 'center', color: Colors.defaultColor}}>{data.target_info.title}</Text>
+                    <Text style={styles.ratio_sty}>{num}%</Text>
+                    <Text style={styles.desc_sty}>{data.target_info.desc}</Text>
+                    <View style={{marginVertical: text(24)}}>
+                        <Slider
+                            value={num}
+                            onValueChange={onChange}
+                            maximumValue={data.target_info.max * 100}
+                            minimumValue={data.target_info.min * 100}
+                            step={1}
+                            style={styles.slider}
+                            minimumTrackTintColor={'#0051CC'}
+                            maximumTrackTintColor={'#CCCCCC'}
+                            thumbTintColor={'#ffffff'}
+                            thumbStyle={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: 30,
+                                borderWidth: text(5),
+                                borderColor: '#0051CC',
+                            }}
+                        />
+                    </View>
+                    <Text style={styles.tips_sty}>{data.notice}</Text>
+                    <Button title={data.button.text} style={{marginTop: text(30)}} onPress={confirmData} />
+                </View>
+            )}
+        </>
     );
 }
 const styles = StyleSheet.create({
@@ -76,5 +101,8 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         lineHeight: text(16),
         color: '#9AA1B2',
+    },
+    slider: {
+        width: deviceWidth - text(84),
     },
 });
