@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-02-25 14:55:55
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-25 15:20:27
  * @Description:路由表
  */
 import React from 'react';
@@ -103,15 +103,16 @@ import ForgotTradePwd from '../pages/Assets/ForgotTradePwd'; // 找回交易密�
 import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
 import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
-import ExperienceGold from '../pages/Assets/ExperienceGold'; // 体验金首页
+import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金详情
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
+import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="DetailFixed"
+            initialRouteName="ExperienceGoldResult"
             screenOptions={{
                 // headerShown: false,
 
@@ -372,8 +373,8 @@ export default function AppStack() {
             <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
             <Stack.Screen
-                name="ExperienceGold"
-                component={ExperienceGold}
+                name="ExperienceGoldDetail"
+                component={ExperienceGoldDetail}
                 options={{
                     headerBackImage: () => {
                         return <Feather name="chevron-left" size={30} color={'#fff'} />;
@@ -392,6 +393,11 @@ export default function AppStack() {
                     },
                     title: '理财魔方体验金',
                 }}
+            />
+            <Stack.Screen
+                name="ExperienceGoldResult"
+                component={ExperienceGoldResult}
+                options={{title: '体验金提现'}}
             />
         </Stack.Navigator>
     );

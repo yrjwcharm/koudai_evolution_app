@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 15:37:25
  * @LastEditors: xjh
  * @Description: 定投确认页
- * @LastEditTime: 2021-02-24 18:56:31
+ * @LastEditTime: 2021-02-25 15:33:32
  */
 import React, {Component} from 'react';
 import {
@@ -61,13 +61,25 @@ export default class TradeFixedConfirm extends Component {
                 {Object.keys(data).length > 0 && (
                     <>
                         <View style={styles.top_sty}>
-                            <Ionicons
-                                name={'checkmark-circle'}
-                                color={'#4BA471'}
-                                size={50}
-                                style={{paddingBottom: text(17)}}
+                            {data.is_success == true ? (
+                                <Ionicons
+                                    name={'checkmark-circle'}
+                                    color={'#4BA471'}
+                                    size={50}
+                                    style={{paddingBottom: text(17)}}
+                                />
+                            ) : (
+                                <Ionicons
+                                    name={'md-close-circle-sharp'}
+                                    color={'#DC4949'}
+                                    size={50}
+                                    style={{paddingBottom: text(17)}}
+                                />
+                            )}
+                            <Html
+                                style={[styles.title_sty, {color: data.is_success ? '#4BA471' : '#DC4949'}]}
+                                html={data.content}
                             />
-                            <Html style={styles.title_sty} html={data.content} />
                         </View>
                         <View style={styles.content_sty}>
                             {data.is_success == false && <Text style={styles.desc_sty}>{data.items}</Text>}

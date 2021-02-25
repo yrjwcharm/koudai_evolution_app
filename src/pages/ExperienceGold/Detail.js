@@ -1,10 +1,11 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-02-25 14:31:02
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-25 15:15:45
  * @Description: 体验金首页
  */
+
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
