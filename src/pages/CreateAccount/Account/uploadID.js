@@ -2,11 +2,20 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 10:49:46
+ * @LastEditTime: 2021-02-25 11:47:59
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, PermissionsAndroid, Platform} from 'react-native';
+import {
+    Text,
+    View,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    PermissionsAndroid,
+    Platform,
+    DeviceEventEmitter,
+} from 'react-native';
 import {px, deviceWidth, requestExternalStoragePermission} from '../../../utils/appUtil';
 import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
@@ -25,6 +34,12 @@ export class uploadID extends Component {
     showPop = (clickIndex) => {
         this.setState({showTypePop: true, clickIndex});
     };
+    componentDidMount() {
+        this.subscription = DeviceEventEmitter.addListener('EventType', (param) => {
+            console.log(param);
+            // 刷新界面等
+        });
+    }
     openPicker = () => {
         const {clickIndex} = this.state;
         const options = {

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 10:53:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-25 11:05:38
  * @Description:头部组件
  */
 
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-const topbarHeight = 44;
+const topbarHeight = px2dp(44);
 
 // NavBar.propTypes = {
 //     title: PropTypes.string,

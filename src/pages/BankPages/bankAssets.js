@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 14:53:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-25 10:57:58
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -34,7 +34,7 @@ export default function BankAssets(props) {
         }).then((res) => {
             setData(res.result);
         });
-    }, [props.navigation]);
+    }, [props.route]);
     const reasonShow = () => {
         bottomModal.current.show();
     };

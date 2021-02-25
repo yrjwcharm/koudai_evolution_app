@@ -94,7 +94,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="UploadID"
             screenOptions={{
                 // headerShown: false,
 
