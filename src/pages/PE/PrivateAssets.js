@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 16:20:45
+ * @LastEditTime: 2021-02-27 13:58:47
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -171,8 +171,8 @@ export default function PrivateAssets(props) {
                                 </View>
                             );
                         })}
-                        <TouchableOpacity style={styles.text_sty} onPress={props.navigation.navigate('AssetNav')}>
-                            更多净值
+                        <TouchableOpacity style={styles.text_sty} onPress={() => props.navigation.navigate('AssetNav')}>
+                            <Text>更多净值</Text>
                             <AntDesign name={'right'} size={12} color={'#9095A5'} />
                         </TouchableOpacity>
                     </View>
