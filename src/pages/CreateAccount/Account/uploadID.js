@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 11:47:59
+ * @LastEditTime: 2021-02-26 11:04:08
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -21,13 +21,15 @@ import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Modal, SelectModal} from '../../../components/Modal';
-import http from '../../../services/';
+import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
+import upload from '../../../services/upload';
+import Toast from '../../../components/Toast';
 const typeArr = ['从相册中获取', '拍照'];
 export class uploadID extends Component {
     state = {
         canClick: true,
-        frontSource: {},
-        behindSource: {},
+        frontSource: '',
+        behindSource: '',
         showTypePop: false,
         clickIndex: '',
     };
@@ -36,16 +38,17 @@ export class uploadID extends Component {
     };
     componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('EventType', (param) => {
-            console.log(param);
             // 刷新界面等
         });
     }
+    //打开相册
     openPicker = () => {
         const {clickIndex} = this.state;
         const options = {
             maxWidth: px(310),
             // maxHeight: px(190),
         };
+
         launchImageLibrary(options, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -54,33 +57,19 @@ export class uploadID extends Component {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-                const source = {uri: response.uri};
-                // if (Platform.OS === 'android') {
-                //     source = res.uri;
-                // } else {
-                //     source = res.uri.replace('file://','');
-                // }
-                const formData = new FormData();
-                // 文件类型根据对应的后端接口改变！！！
-                let file = {uri: source, type: 'multipart/form-data', name: response.fileName};
-                formData.append('file', file);
-                let params = {
-                    formData,
-                };
-                http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/identity/upload/20210101', params, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }).then((res) => {
-                    console.log(res);
+                upload(response, (res) => {
+                    console.log(res.code == '000000', res.code);
+                    if (res.code == '000000') {
+                        Toast.show('上传成功');
+                    }
                 });
                 if (clickIndex == 1) {
                     this.setState({
-                        frontSource: source,
+                        frontSource: response.uri,
                     });
                 } else {
                     this.setState({
-                        behindSource: source,
+                        behindSource: response.uri,
                     });
                 }
             }
@@ -90,32 +79,52 @@ export class uploadID extends Component {
     onClickChoosePicture = async () => {
         try {
             if (Platform.OS == 'android') {
-                let res = await requestExternalStoragePermission();
-                if (res == 'granted') {
-                    this.openPicker();
-                }
+                requestExternalStoragePermission(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    this.openPicker,
+                    this.blockCal
+                );
             } else {
-                this.openPicker();
+                requestExternalStoragePermission(PERMISSIONS.IOS.PHOTO_LIBRARY, this.openPicker, this.blockCal);
             }
         } catch (err) {
             console.warn(err);
         }
     };
-
-    jumpPage = () => {
-        // 从相机中选择
-        if (Platform.OS == 'android') {
-            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA).then((res) => {
-                if (res !== 'granted') {
-                    Modal.show({
-                        content: '相机权限没打开,请在手机的“设置”选项中,允许访问您的摄像头',
-                    });
-                } else {
-                    this.props.navigation.navigate('Camera');
-                }
-            });
-        } else {
-            this.props.navigation.navigate('Camera');
+    //权限提示弹窗
+    blockCal = () => {
+        Modal.show({
+            title: '权限申请',
+            content: '权限没打开,请前往手机的“设置”选项中,允许该权限',
+            confirm: true,
+            confirmText: '前往',
+            confirmCallBack: () => {
+                openSettings().catch(() => console.warn('cannot open settings'));
+            },
+        });
+    };
+    // 从相机中选择
+    takePic = () => {
+        try {
+            if (Platform.OS == 'android') {
+                requestExternalStoragePermission(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    () => {
+                        this.props.navigation.navigate('Camera');
+                    },
+                    this.blockCal
+                );
+            } else {
+                requestExternalStoragePermission(
+                    PERMISSIONS.IOS.CAMERA,
+                    () => {
+                        this.props.navigation.navigate('Camera');
+                    },
+                    this.blockCal
+                );
+            }
+        } catch (err) {
+            console.warn(err);
         }
     };
     render() {
@@ -128,7 +137,7 @@ export class uploadID extends Component {
                         if (i == 0) {
                             this.onClickChoosePicture();
                         } else {
-                            this.jumpPage();
+                            this.takePic();
                         }
                     }}
                     show={showTypePop}
@@ -148,11 +157,7 @@ export class uploadID extends Component {
                         }}
                         activeOpacity={1}>
                         <Image
-                            source={
-                                frontSource.uri
-                                    ? {uri: frontSource.uri}
-                                    : require('../../../assets/img/account/Id1.png')
-                            }
+                            source={frontSource ? {uri: frontSource} : require('../../../assets/img/account/Id1.png')}
                             style={styles.id_image}
                         />
                     </TouchableOpacity>
@@ -162,24 +167,18 @@ export class uploadID extends Component {
                         }}
                         activeOpacity={1}>
                         <Image
-                            source={
-                                behindSource.uri
-                                    ? {uri: behindSource.uri}
-                                    : require('../../../assets/img/account/Id2.png')
-                            }
+                            source={behindSource ? {uri: behindSource} : require('../../../assets/img/account/Id2.png')}
                             style={styles.id_image}
                         />
                     </TouchableOpacity>
                 </View>
-                <View>
-                    <Text style={styles.title}>上传要求</Text>
-                    <Image style={styles.tip_img} source={require('../../../assets/img/account/idTip.png')} />
-                </View>
+                <Text style={styles.title}>上传要求</Text>
+                <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
                 <FixedButton
                     title={'下一步'}
                     disabled={canClick}
                     onPress={() => {
-                        this.jumpPage('BankInfo');
+                        this.takePic('BankInfo');
                     }}
                 />
             </View>
@@ -202,12 +201,17 @@ const styles = StyleSheet.create({
     title: {
         fontSize: Font.textH1,
         fontWeight: '500',
+        marginTop: px(10),
     },
     id_image: {
         height: px(190),
         width: px(310),
         marginBottom: px(14),
         borderRadius: px(8),
+    },
+    tip_img: {
+        width: deviceWidth - px(32),
+        resizeMode: 'contain',
     },
 });
 export default uploadID;

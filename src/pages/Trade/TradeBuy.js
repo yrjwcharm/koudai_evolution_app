@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 18:08:36
+ * @LastEditTime: 2021-02-26 18:51:24
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -19,6 +19,7 @@ import Mask from '../../components/Mask';
 import http from '../../services';
 import Picker from 'react-native-picker';
 import HTML from '../../components/RenderHtml';
+import Toast from '../../components/Toast/Toast.js';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -43,26 +44,46 @@ class TradeBuy extends Component {
             nextday: '',
         };
     }
-    init() {
-        const {type, upid} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/info/20210101', {type, upid}).then(
-            (data) => {
-                this.setState({
-                    data: data.result,
-                    // initialPage: data.result.tabs.type,
-                    type: data.result.tabs.type,
-                    has_tab: data.result.tabs.has_tab,
-                    bankSelect: data.result.pay_methods[0],
-                    currentDate: data.result.period_info.current_date,
-                    nextday: data.result.period_info.nextday,
-                });
-                this.plan(data.result.buy_info.initial_amount);
-            }
-        );
+    componentDidMount() {
+        this.getTab();
     }
+    getTab = () => {
+        const {upid} = this.state;
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/set_tabs/20210101', {upid}).then((data) => {
+            console.log(data);
+            this.setState({
+                type: data.result.active,
+                has_tab: data.result.has_tab,
+            });
+            this.init(data.result.active);
+        });
+    };
+    init = (_type) => {
+        const {type, upid} = this.state;
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/info/20210101', {
+            type: _type || type,
+            upid,
+        }).then((res) => {
+            if (res.code === '000000') {
+                this.setState({
+                    data: res.result,
+                    bankSelect: res.result?.pay_methods[0],
+                    currentDate: res.result?.period_info?.current_date,
+                    nextday: res.result?.period_info?.nextday,
+                });
+                this.plan(res.result.buy_info.initial_amount);
+            }
+        });
+    };
+    /**
+     * @description: 购买提交
+     * @param {*}
+     * @return {*}
+     */
     submit = (password) => {
         const {upid, planData, amount, bankSelect} = this.state;
         const {buy_id} = planData;
+        let toast = Toast.showLoading();
         http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/do/20210101', {
             upid,
             buy_id,
@@ -71,7 +92,12 @@ class TradeBuy extends Component {
             trade_method: bankSelect?.pay_type,
             pay_method: bankSelect?.pay_method || '',
         }).then((res) => {
-            console.log(res);
+            Toast.hide(toast);
+            if (res.code === '000000') {
+                this.props.navigation.navigate('TradeProcessing', res.result);
+            } else {
+                Toast.show(res.message);
+            }
         });
     };
     /**
@@ -119,6 +145,10 @@ class TradeBuy extends Component {
         this.bankCard.show();
         this.setState({showMask: true});
     };
+    //跳转
+    jumpPage = (nav, param) => {
+        this.props.navigation.navigate(nav, param);
+    };
     //处理日期数据
     _createDateData() {
         const {date_items} = this.state.data.period_info;
@@ -165,10 +195,12 @@ class TradeBuy extends Component {
         Picker.show();
     }
     changeBuyStatus = (obj) => {
-        // Picker.hide()
         this.setState({type: obj.i}, () => {
             this.init();
         });
+        // this.setState({type: obj.i}, () => {
+        //     this.init();
+        // });
     };
     //买入明细
     render_config() {
@@ -208,7 +240,7 @@ class TradeBuy extends Component {
                             {body &&
                                 body.map((item, index) => {
                                     return (
-                                        <View key={item.color}>
+                                        <View key={index}>
                                             <View style={[Style.flexBetween, {marginBottom: px(14)}]}>
                                                 <View style={[Style.flexRow, {width: px(162)}]}>
                                                     <View style={[styles.circle, {backgroundColor: item.color}]} />
@@ -227,7 +259,7 @@ class TradeBuy extends Component {
                                                 item.funds.map((fund, _index) => {
                                                     return (
                                                         <View
-                                                            key={_index}
+                                                            key={fund.name}
                                                             style={[Style.flexBetween, {marginBottom: px(14)}]}>
                                                             <Text style={[styles.config_title_desc, {width: px(162)}]}>
                                                                 {fund.name}
@@ -302,7 +334,11 @@ class TradeBuy extends Component {
                                         {large_pay_method.limit_desc}
                                     </Text>
                                 </View>
-                                <TouchableOpacity style={[styles.yel_btn]} onPress={this.changeBankCard}>
+                                <TouchableOpacity
+                                    style={[styles.yel_btn]}
+                                    onPress={() => {
+                                        this.jumpPage('LargeAmount');
+                                    }}>
                                     <Text style={{color: Colors.yellow}}>
                                         去汇款
                                         <Icon name={'right'} size={px(12)} />
@@ -385,7 +421,14 @@ class TradeBuy extends Component {
                 {type == 0 && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
-                <Text style={{color: Colors.darkGrayColor}}>点击确认购买即代表您已知悉该基金组合的</Text>
+                {type == 0 && (
+                    <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
+                        点击确认购买即代表您已知悉该基金组合的
+                        <Text style={{color: Colors.btnColor}}>产品概要</Text>和
+                        <Text style={{color: Colors.btnColor}}>基金组合协议</Text>
+                        等相关内容
+                    </Text>
+                )}
                 <BankCardModal
                     data={pay_methods || []}
                     onClose={() => {
@@ -404,15 +447,15 @@ class TradeBuy extends Component {
     }
 
     render() {
-        const {showMask, data, initialPage, has_tab} = this.state;
+        const {showMask, data, type, has_tab} = this.state;
         const {button} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
                 {has_tab ? (
                     <ScrollableTabView
                         onChangeTab={this.changeBuyStatus}
-                        renderTabBar={() => <TabBar />}
-                        initialPage={initialPage}>
+                        initialPage={type}
+                        renderTabBar={() => <TabBar />}>
                         <View tabLabel="购买" style={{flex: 1}}>
                             {this.render_buy()}
                         </View>
@@ -423,9 +466,8 @@ class TradeBuy extends Component {
                 ) : (
                     this.render_buy()
                 )}
-
                 {button && (
-                    <FixedButton title={button.title} disabled={button.available == 0} onPress={this.passwordInput} />
+                    <FixedButton title={button.text} disabled={button.avail == 0} onPress={this.passwordInput} />
                 )}
                 {showMask && <Mask />}
             </View>
@@ -517,6 +559,11 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: 8,
         textAlign: 'center',
+    },
+    aggrement: {
+        color: Colors.darkGrayColor,
+        fontSize: px(12),
+        lineHeight: px(17),
     },
 });
 

@@ -205,8 +205,8 @@ const styles = StyleSheet.create({
         fontSize: text(14),
     },
     contentCon: {
-        paddingTop: text(12),
-        paddingBottom: px(20),
+        paddingTop: text(18),
+        paddingBottom: px(18),
         paddingHorizontal: text(8),
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},

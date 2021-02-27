@@ -2,11 +2,13 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 18:13:43
+ * @LastEditTime: 2021-02-25 14:56:00
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
+import {check, RESULTS, request, openSettings} from 'react-native-permissions';
 const deviceHeight = Dimensions.get('window').height; //设备的高度
+
 const deviceWidth = Dimensions.get('window').width; //设备的宽度
 let pixelRatio = PixelRatio.get();
 const defaultPixel = 2; //iphone6的像素密度
@@ -42,15 +44,61 @@ function isIphoneX() {
     );
 }
 /**
- * 申请安卓权限
+ * 判断权限申请
  */
-const requestExternalStoragePermission = async () => {
-    try {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-        return granted;
-    } catch (err) {
-        console.error('Failed to request permission ', err);
-        return null;
+const requestExternalStoragePermission = async (permission, grantedCallback, blockCallBack) => {
+    if (Platform.OS == 'ios') {
+        check(permission)
+            .then((result) => {
+                console.log(result);
+                switch (result) {
+                    case RESULTS.UNAVAILABLE:
+                        console.log('This feature is not available (on this device / in this context)');
+                        break;
+                    case RESULTS.DENIED:
+                        request(permission).then((res) => {
+                            console.log(res);
+                        });
+                        console.log('The permission has not been requested / is denied but requestable');
+                        break;
+                    case RESULTS.LIMITED:
+                        console.log('The permission is limited: some actions are possible');
+                        break;
+                    case RESULTS.GRANTED:
+                        console.log('The permission is granted');
+                        grantedCallback();
+                        break;
+                    case RESULTS.BLOCKED:
+                        blockCallBack
+                            ? blockCallBack()
+                            : openSettings().catch(() => console.warn('cannot open settings'));
+                        console.log('The permission is denied and not requestable anymore');
+                        break;
+                }
+            })
+            .catch((error) => {
+                // …
+            });
+    } else {
+        try {
+            let granted = await PermissionsAndroid.check(permission);
+            console.log(granted);
+            if (!granted) {
+                const res = await PermissionsAndroid.request(permission);
+                if (res !== 'granted') {
+                    blockCallBack ? blockCallBack() : openSettings().catch(() => console.warn('cannot open settings'));
+                } else {
+                    console.log('The permission is granted');
+                    grantedCallback();
+                }
+            } else {
+                console.log('The permission is granted');
+                grantedCallback();
+            }
+        } catch (err) {
+            console.error('Failed to request permission ', err);
+            return null;
+        }
     }
 };
 /**

@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 11:27:22
+ * @LastEditTime: 2021-02-26 11:29:39
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -29,12 +29,16 @@ export default class index extends Component {
         const {mobile, password} = this.state;
         http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {mobile, password}).then(
             (res) => {
-                Toast.show('登录成功', {
-                    onHidden: () => {
-                        this.props.navigation.goBack();
-                    },
-                });
-                Storage.save('loginStatus', res.result);
+                if (res.code === '000000') {
+                    Toast.show('登录成功', {
+                        onHidden: () => {
+                            this.props.navigation.goBack();
+                        },
+                    });
+                    Storage.save('loginStatus', res.result);
+                } else {
+                    Toast.show(res.message);
+                }
             }
         );
     };

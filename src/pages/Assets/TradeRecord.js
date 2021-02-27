@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 15:25:16
+ * @LastEditTime: 2021-02-26 14:23:22
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -145,7 +145,7 @@ const TradeRecord = ({route, nvaigation}) => {
                 data={data}
                 ListEmptyComponent={!loading && <EmptyTip text="暂无交易记录" />}
                 renderItem={renderItem}
-                ListFooterComponent={!loading && data.length > 0 && ListFooterComponent}
+                ListFooterComponent={!loading && data?.length > 0 && ListFooterComponent}
                 keyExtractor={(item, index) => index.toString()}
                 onEndReachedThreshold={0.2}
                 onEndReached={onLoadMore}
