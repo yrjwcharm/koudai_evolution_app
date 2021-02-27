@@ -3,9 +3,9 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 15:17:22
+ * @LastEditTime: 2021-02-26 16:20:45
  */
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -20,61 +20,19 @@ import {FixedButton} from '../../components/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NumText from '../../components/NumText';
 import Http from '../../services';
+import {Modal, SelectModal} from '../../components/Modal';
+import {PasswordModal} from '../../components/Password';
+import {BottomModal} from '../../components/Modal';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
 export default function PrivateAssets(props) {
     const [showEye, setShowEye] = useState('true');
-    const [data, setData] = useState({
-        // tabs: [
-        //     {
-        //         type: 'baseInfo',
-        //         title: '基本信息',
-        //         content: [
-        //             {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-        //             {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-        //         ],
-        //     },
-        //     {
-        //         type: 'video',
-        //         title: '路演视频',
-        //         content: {
-        //             title: '魔方私募对冲FOF1号路演视频',
-        //             subtitle: '107845人观看',
-        //             video: 'https://static.licaimofang.com/wp-content/themes/mf-themes/media/simu.mp4',
-        //         },
-        //     },
-        //     {
-        //         type: 'notice',
-        //         title: '公告',
-        //         content: [
-        //             {
-        //                 title: '魔方私募对冲FOF1号产品成立公告',
-        //                 publish_at: '2019-09-06',
-        //                 url: 'https://static.licaimofang.com/wp-content/uploads/2019/09/产品成立公告.pdf',
-        //             },
-        //         ],
-        //     },
-        // ],
-        // tab_list: [
-        //     {
-        //         title: '净值',
-        //         table: {
-        //             head: ['日期', '单位净值', '累计净值', '涨跌幅'],
-        //             body: [
-        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
-        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
-        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
-        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
-        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
-        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
-        //             ],
-        //         },
-        //     },
-        //     {title: '风险指标'},
-        // ],
-    });
+    const [data, setData] = useState({});
+    const passwordModal = useRef(null);
+    const bottomModal = React.useRef(null);
     const [left, setLeft] = useState('100%');
+    const [qa, setQa] = useState({});
     const rightPress = () => {
         props.navigation.navigate('TradeRecord');
     };
@@ -84,15 +42,7 @@ export default function PrivateAssets(props) {
             storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
         });
     }, []);
-    const getColor = useCallback(() => {
-        if (parseFloat(text.replaceAll(',', '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(text.replaceAll(',', '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, [text]);
+
     useEffect(() => {
         Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/asset_detail/20210101', {
             fund_code: 'SGX499',
@@ -100,6 +50,28 @@ export default function PrivateAssets(props) {
             setData(res.result);
         });
     }, []);
+    const redeemBtn = () => {
+        Modal.show({
+            confirm: true,
+            content: data.buttons[1].pop.content,
+            title: data.buttons[1].pop.title,
+            confirmText: '继续赎回',
+            confirmCallBack: passwordInput,
+        });
+    };
+    const passwordInput = () => {
+        passwordModal.show();
+        setShowMask(true);
+    };
+    const submitData = () => {
+        //赎回提交记录
+    };
+    const tipShow = (q, a) => {
+        qa['q'] = q;
+        qa['a'] = a;
+        setQa(qa);
+        bottomModal.current.show();
+    };
     const renderContent = (index, data) => {
         console.log(data);
         if (index === 0) {
@@ -142,7 +114,7 @@ export default function PrivateAssets(props) {
             return (
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={[Style.flexRow, {backgroundColor: '#F7F8FA'}]}>
-                        {data.table.head.map((_head, _index) => {
+                        {data?.table?.th?.map((_head, _index) => {
                             return (
                                 <Text
                                     style={[
@@ -151,7 +123,7 @@ export default function PrivateAssets(props) {
                                             textAlign:
                                                 _index == 0
                                                     ? 'left'
-                                                    : _index == data.table.head.length - 1
+                                                    : _index == data.table.th.length - 1
                                                     ? 'right'
                                                     : 'center',
                                             color: '#9095A5',
@@ -165,7 +137,7 @@ export default function PrivateAssets(props) {
                         })}
                     </View>
                     <View>
-                        {data.table.body.slice(0, 4).map((_body, _index) => {
+                        {data?.table?.tr_list?.slice(0, 6).map((_body, _index) => {
                             return (
                                 <View
                                     key={_index + '_body'}
@@ -186,23 +158,57 @@ export default function PrivateAssets(props) {
                                                         flex: _i == 0 ? 1 : 0,
                                                         color:
                                                             _i == _body.length - 1
-                                                                ? parseFloat(_td.replaceAll(',', '')) < 0
+                                                                ? parseFloat(_td.text.replaceAll(',', '')) < 0
                                                                     ? Colors.green
                                                                     : Colors.red
                                                                 : '',
                                                     },
                                                 ]}>
-                                                {_td}
+                                                {_td.text}
                                             </Text>
                                         );
                                     })}
                                 </View>
                             );
                         })}
-                        <Text style={styles.text_sty}>
+                        <TouchableOpacity style={styles.text_sty} onPress={props.navigation.navigate('AssetNav')}>
                             更多净值
                             <AntDesign name={'right'} size={12} color={'#9095A5'} />
-                        </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <Text style={styles.list_item_sty}>{data.table.th}</Text>
+                    <View>
+                        {data?.table?.tr_list?.map((_tr, _index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={[Style.flexRow, {backgroundColor: _index % 2 == 0 ? '#fff' : '#F7F8FA'}]}
+                                    onPress={() => tipShow(_tr.q, _tr.a)}>
+                                    <Text
+                                        style={[
+                                            styles.list_item_sty,
+                                            {
+                                                color: '#121D3A',
+                                                flex: 1,
+                                                backgroundColor: 'transparent',
+                                            },
+                                        ]}
+                                        key={_index + '_tr1'}>
+                                        {_tr.text}
+                                    </Text>
+                                    <AntDesign
+                                        name={'questioncircleo'}
+                                        size={15}
+                                        color={'#9095A5'}
+                                        style={{marginRight: text(16)}}
+                                    />
+                                </TouchableOpacity>
+                            );
+                        })}
                     </View>
                 </View>
             );
@@ -211,7 +217,7 @@ export default function PrivateAssets(props) {
     return (
         <View style={{flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <View>
+                <>
                     <Header
                         title={data.title}
                         leftIcon="chevron-left"
@@ -221,7 +227,7 @@ export default function PrivateAssets(props) {
                         rightPress={() => rightPress()}
                         rightTextStyle={styles.right_sty}
                     />
-                    <ScrollView>
+                    <ScrollView style={{marginBottom: btnHeight}}>
                         <View style={styles.assets_card_sty}>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                                 <View>
@@ -235,58 +241,72 @@ export default function PrivateAssets(props) {
                                             />
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>4,364,000.70</Text>
+                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
+                                        {data?.total_amount}
+                                    </Text>
                                 </View>
                                 <View>
                                     <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
                                         <Text style={styles.profit_text_sty}>日收益</Text>
-                                        <Text style={styles.profit_num_sty}>-220.00</Text>
+                                        <Text style={styles.profit_num_sty}>{data?.total_share}</Text>
                                     </View>
                                     <View style={Style.flexRow}>
                                         <Text style={styles.profit_text_sty}>累计收益</Text>
-                                        <Text style={styles.profit_num_sty}>-220.00</Text>
+                                        <Text style={styles.profit_num_sty}>{data?.profit_acc}</Text>
                                     </View>
                                 </View>
                             </View>
                         </View>
-                        {/* <ScrollableTabView
+                        <ScrollableTabView
                             renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                             initialPage={0}
                             style={{marginBottom: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
                             tabBarInactiveTextColor={'#545968'}>
-                            {data.tabs1.map((item, index) => {
+                            {data?.tabs1.map((item, index) => {
                                 return (
-                                    <View tabLabel={item.title} key={index + 'tab'}>
+                                    <View tabLabel={item?.title} key={index + 'tab'}>
                                         {renderContent(index, item)}
                                     </View>
                                 );
                             })}
-                        </ScrollableTabView> */}
-                        {/* <ScrollableTabView
+                        </ScrollableTabView>
+                        <ScrollableTabView
                             renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                             initialPage={0}
                             style={{marginBottom: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
                             tabBarInactiveTextColor={'#545968'}>
-                            {data.tabs2.map((item, index) => {
+                            {data?.tabs2?.map((item, index) => {
                                 return (
-                                    <View tabLabel={item.title} key={index + 'tab'}>
+                                    <View tabLabel={item?.title} key={index + 'tab'}>
                                         {renderItem(index, item)}
                                     </View>
                                 );
                             })}
-                        </ScrollableTabView> */}
-                        {data.cards.map((_item, _index) => {
+                        </ScrollableTabView>
+                        {data?.cards?.map((_item, _index) => {
                             return (
                                 <TouchableOpacity style={styles.list_sty} key={_index + '_item'}>
-                                    <Text style={{flex: 1}}>{_item.text}</Text>
+                                    <Text style={{flex: 1}}>{_item?.text}</Text>
                                     <AntDesign name={'right'} size={12} color={'#9095A5'} />
                                 </TouchableOpacity>
                             );
                         })}
                     </ScrollView>
-                    {/* <View
+                    <PasswordModal
+                        onDone={submitData}
+                        onClose={() => {
+                            setShowMask(false);
+                        }}
+                    />
+                    <BottomModal ref={bottomModal} confirmText={'确认'}>
+                        <View style={{padding: text(16)}}>
+                            <Text style={[styles.tips_sty, {marginBottom: text(10)}]}>{qa?.q}</Text>
+                            <Text style={styles.tips_sty}>{qa?.a}</Text>
+                        </View>
+                    </BottomModal>
+                    <View
                         style={[
                             Style.flexRow,
                             {
@@ -302,14 +322,15 @@ export default function PrivateAssets(props) {
                             style={[
                                 styles.button_sty,
                                 {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)},
-                            ]}>
-                            <Text style={{textAlign: 'center', color: '#545968'}}>申请赎回</Text>
+                            ]}
+                            onPress={redeemBtn}>
+                            <Text style={{textAlign: 'center', color: '#545968'}}>{data?.buttons[1]?.text}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}>
-                            <Text style={{textAlign: 'center', color: '#fff'}}>追加购买</Text>
+                            <Text style={{textAlign: 'center', color: '#fff'}}>{data?.buttons[0]?.text}</Text>
                         </TouchableOpacity>
-                    </View> */}
-                </View>
+                    </View>
+                </>
             )}
         </View>
     );
@@ -351,7 +372,7 @@ const styles = StyleSheet.create({
     table_title_sty: {
         width: text(90),
         paddingHorizontal: text(16),
-        paddingVertical: text(9),
+        paddingVertical: text(12),
     },
     text_sty: {
         textAlign: 'center',
@@ -368,5 +389,17 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: text(10),
         paddingVertical: text(12),
+    },
+    list_item_sty: {
+        fontSize: text(13),
+        color: '#9095A5',
+        textAlign: 'center',
+        paddingVertical: text(12),
+        backgroundColor: '#F7F8FA',
+    },
+    tips_sty: {
+        color: '#545968',
+        fontSize: text(13),
+        lineHeight: text(18),
     },
 });

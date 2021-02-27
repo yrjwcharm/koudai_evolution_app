@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 14:57:16
+ * @LastEditTime: 2021-02-26 18:39:27
  * @Description:路由表
  */
 import React from 'react';
@@ -108,12 +108,13 @@ import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
 import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
 import ExperienceGoldTrade from '../pages/ExperienceGold/Trade'; //体验金购买
+import AssetNav from '../pages/PE/AssetNav'; //私募净值
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PrivateAssets"
+            initialRouteName="TradeRecord"
             screenOptions={{
                 // headerShown: false,
 
@@ -401,6 +402,7 @@ export default function AppStack() {
                 options={{title: '体验金提现'}}
             />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
+            <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
         </Stack.Navigator>
     );
 }

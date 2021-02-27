@@ -3,13 +3,13 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 17:11:27
+ * @LastEditTime: 2021-02-26 18:15:18
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -32,9 +32,8 @@ const PrivateApply = (props) => {
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
-                txn_id: '20210101B000001S',
-                loop: loopRef.current,
+            http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/redeem/20210101', {
+                fund_code: 'SGX499',
             }).then((res) => {
                 setData(res.result);
             });
@@ -57,28 +56,17 @@ const PrivateApply = (props) => {
         <View style={[styles.container]}>
             <View style={[styles.processContainer]}>
                 {Object.keys(data).length > 0 &&
-                    data.items.map((item, index) => {
+                    data.flow_list.map((item, index) => {
                         return (
                             <View key={index} style={[styles.processItem]} onLayout={(e) => onLayout(index, e)}>
                                 <View style={[styles.icon, Style.flexCenter]}>
-                                    {(item.done === 1 || item.done === -1) && (
-                                        <Ionicons
-                                            name={item.done === 1 ? 'checkmark-circle' : 'close-circle'}
-                                            size={17}
-                                            color={item.done === 1 ? Colors.green : Colors.red}
-                                        />
-                                    )}
-                                    {item.done === 0 && (
-                                        <FontAwesome
-                                            name={'circle-thin'}
-                                            size={16}
-                                            color={'#CCD0DB'}
-                                            style={{
-                                                marginRight: text(2),
-                                                backgroundColor: Colors.bgColor,
-                                            }}
-                                        />
-                                    )}
+                                    <MaterialCommunityIcons
+                                        name={item.status === 1 ? 'check-circle' : 'checkbox-blank-circle'}
+                                        size={20}
+                                        color={
+                                            item.status === 1 ? Colors.green : item.status === 2 ? '#4BA471' : '#CCD0DB'
+                                        }
+                                    />
                                 </View>
                                 <View style={[styles.contentBox]}>
                                     <FontAwesome
@@ -90,23 +78,19 @@ const PrivateApply = (props) => {
                                     <View style={[styles.content]}>
                                         <View style={[styles.processTitle, Style.flexBetween]}>
                                             <Text numberOfLines={1} style={[styles.desc]}>
-                                                {item.k}
+                                                {item.key}
                                             </Text>
+                                            <TouchableOpacity
+                                                onPress={() => props.navigation.navigate('PrivateRedeem')}>
+                                                <Text style={{color: '#0051CC'}}>{item?.button?.text}</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                        {item.d && item.d.length > 0 && (
-                                            <View style={[styles.moreInfo]}>
-                                                {item.d.map((val, i) => {
-                                                    return (
-                                                        <Text key={val} style={[styles.moreInfoText]}>
-                                                            {val}
-                                                        </Text>
-                                                    );
-                                                })}
-                                            </View>
-                                        )}
+                                        <View style={[styles.moreInfo]}>
+                                            <Text style={[styles.moreInfoText]}>{item.vals}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                                {index !== data.items.length - 1 && (
+                                {index !== data.flow_list.length - 1 && (
                                     <View
                                         style={[
                                             styles.line,
@@ -191,7 +175,7 @@ const styles = StyleSheet.create({
     line: {
         position: 'absolute',
         top: text(28),
-        left: text(6.7),
+        left: text(8),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,
