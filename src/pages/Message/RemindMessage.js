@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 10:36:16
+ * @LastEditTime: 2021-02-27 16:39:26
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Linking} from 'react-native';
@@ -12,92 +12,122 @@ import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-export default function RemindMessage() {
+export default function RemindMessage({navigation}) {
+    const [data, setData] = useState({});
     const [hide, setHide] = useState(false);
     const closeNotice = () => {
         setHide(true);
     };
-    useEffect(() => {}, []);
-
+    useEffect(() => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/message/index/20210101').then((res) => {
+            setData(res.result);
+        });
+    }, []);
+    const jumpTo = (url, params) => {
+        navigation.navigate(url, params);
+    };
     // Linking.openURL('app-settings:')
     //   .catch((err) => console.log('error', err));
     return (
-        <View>
-            {!hide && (
-                <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                    <TouchableOpacity>
-                        <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}>
-                        <Text
+        <>
+            {Object.keys(data).length > 0 && (
+                <View>
+                    {!hide && data?.notice && (
+                        <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
+                            <Text style={styles.yellow_sty}>{data.notice.text}</Text>
+                            <TouchableOpacity
+                                style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: text(13),
+                                        paddingHorizontal: text(10),
+                                        paddingVertical: text(5),
+                                    }}>
+                                    {data.notice.button.text}
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => closeNotice()}>
+                                <AntDesign name={'close'} size={12} color={'#EB7121'} />
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    <View style={{padding: text(16)}}>
+                        <TouchableOpacity
+                            style={styles.im_card_sty}
+                            onPress={() => jumpTo(data.service.jump_url, data.service.params)}>
+                            <Image
+                                source={{
+                                    uri: data.service.icon,
+                                }}
+                                resizeMode="contain"
+                                style={{width: text(40), height: text(40)}}
+                            />
+                            <View style={{marginLeft: text(20), flex: 1}}>
+                                <Text style={styles.title_sty}>{data.service.title}</Text>
+                                <Text style={styles.desc_sty} numberOfLines={1}>
+                                    {data.service.content}
+                                </Text>
+                            </View>
+                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.im_card_sty}
+                            onPress={() => jumpTo(data.point.jump_url, data.point.params)}>
+                            <Image
+                                source={{
+                                    uri: data.point.icon,
+                                }}
+                                resizeMode="contain"
+                                style={{width: text(40), height: text(40)}}
+                            />
+                            <View style={{marginLeft: text(20), flex: 1}}>
+                                <Text style={styles.title_sty}>{data.point.title}</Text>
+                                <Text style={styles.desc_sty} numberOfLines={1}>
+                                    {data.point.content}
+                                </Text>
+                            </View>
+                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+
+                        <View
                             style={{
-                                color: '#fff',
-                                fontSize: text(13),
-                                paddingHorizontal: text(10),
-                                paddingVertical: text(5),
+                                backgroundColor: '#fff',
+                                borderRadius: text(10),
+                                marginTop: text(16),
+                                paddingHorizontal: text(16),
                             }}>
-                            开启
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => closeNotice()}>
-                        <AntDesign name={'close'} size={12} color={'#EB7121'} />
-                    </TouchableOpacity>
+                            {data.message_list.map((_item, _index) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.list_card_sty,
+                                            {borderBottomWidth: _index < data.message_list.length - 1 ? 0.5 : 0},
+                                        ]}
+                                        key={_index + '_item'}
+                                        onPress={jumpTo(_item.jump_url, _item.params)}>
+                                        <Image
+                                            source={{
+                                                uri: _item.icon,
+                                            }}
+                                            resizeMode="contain"
+                                            style={{width: text(40), height: text(40)}}
+                                        />
+                                        <View style={{marginLeft: text(20), flex: 1}}>
+                                            <Text style={styles.title_sty}>{_item.title}</Text>
+                                            <Text style={styles.desc_sty} numberOfLines={1}>
+                                                {_item.content}
+                                            </Text>
+                                        </View>
+                                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    </View>
                 </View>
             )}
-            <View style={{padding: text(16)}}>
-                <View style={styles.im_card_sty}>
-                    <Image
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/02/在线客服@2x.png'}}
-                        resizeMode="contain"
-                        style={{width: text(40), height: text(40)}}
-                    />
-                    <View style={{marginLeft: text(20), flex: 1}}>
-                        <Text style={styles.title_sty}>在线客服</Text>
-                        <Text style={styles.desc_sty} numberOfLines={1}>
-                            如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈
-                        </Text>
-                    </View>
-                    <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                </View>
-                <View
-                    style={{
-                        backgroundColor: '#fff',
-                        borderRadius: text(10),
-                        marginTop: text(16),
-                        paddingHorizontal: text(16),
-                    }}>
-                    <View style={[styles.list_card_sty]}>
-                        <Image
-                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/02/在线客服@2x.png'}}
-                            resizeMode="contain"
-                            style={{width: text(40), height: text(40)}}
-                        />
-                        <View style={{marginLeft: text(20), flex: 1}}>
-                            <Text style={styles.title_sty}>在线客服</Text>
-                            <Text style={styles.desc_sty} numberOfLines={1}>
-                                如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈
-                            </Text>
-                        </View>
-                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                    </View>
-                    <View style={styles.list_card_sty}>
-                        <Image
-                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/02/在线客服@2x.png'}}
-                            resizeMode="contain"
-                            style={{width: text(40), height: text(40)}}
-                        />
-                        <View style={{marginLeft: text(20), flex: 1}}>
-                            <Text style={styles.title_sty}>在线客服</Text>
-                            <Text style={styles.desc_sty} numberOfLines={1}>
-                                如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈如果你有bug相关的内容也可以在问题反馈
-                            </Text>
-                        </View>
-                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                    </View>
-                </View>
-            </View>
-        </View>
+        </>
     );
 }
 const styles = StyleSheet.create({
