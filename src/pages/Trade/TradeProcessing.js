@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-01-25 15:21:11
- * @LastEditors: dx
+ * @LastEditTime: 2021-02-27 11:50:57
+ * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -32,8 +32,8 @@ const TradeProcessing = (props) => {
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/order/processing/20210101', {
-                txn_id: '20210101B000001S',
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/order/processing/20210101', {
+                txn_id: txn_id,
                 loop: loopRef.current,
             }).then((res) => {
                 setData(res.result);
@@ -55,7 +55,7 @@ const TradeProcessing = (props) => {
                 first && navigation.setOptions({title: res.result.title});
             });
         },
-        [loopRef, timerRef, navigation, signSendVerify]
+        [loopRef, timerRef, navigation, signSendVerify, txn_id]
     );
     const onLayout = useCallback(
         (index, e) => {
@@ -67,12 +67,12 @@ const TradeProcessing = (props) => {
     );
     const signSendVerify = useCallback(() => {
         http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_send/20210101', {
-            txn_id: '20210101B000001S',
+            txn_id: txn_id,
         }).then((res) => {
             setSign(true);
             setBankInfo(res.result);
         });
-    }, []);
+    }, [txn_id]);
     const modalCancelCallBack = useCallback(() => {
         if (isSign && bankInfo) {
             let content = bankInfo.back_info.content;
@@ -82,7 +82,7 @@ const TradeProcessing = (props) => {
         }
     }, [bankInfo, isSign, confirmCallBack]);
     const confirmCallBack = useCallback(() => {
-        navigation.navigate('Asset');
+        navigation.navigate('Home');
     }, [navigation]);
     const onChangeText = useCallback(
         (value) => {

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 11:12:04
+ * @LastEditTime: 2021-02-26 11:25:34
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -76,16 +76,16 @@ const Index = (props) => {
                         }}>
                         <Text style={Style.more}>登录/注册</Text>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity
+                    <TouchableOpacity
                         onPress={() => {
-                            jumpPage('RemindMessage');
+                            jumpPage('TradeBuy');
                         }}>
                         <View style={styles.new_message} />
                         <FastImage
                             style={{width: px(24), height: px(24)}}
                             source={require('../../assets/img/index/message.png')}
                         />
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                 </View>
                 <Text style={styles.title_desc}>您的智能基金组合专家</Text>
             </View>

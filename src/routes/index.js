@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 18:39:27
+ * @LastEditTime: 2021-02-27 11:47:17
  * @Description:路由表
  */
 import React from 'react';
@@ -114,7 +114,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeRecord"
+            initialRouteName="TradeBuy"
             screenOptions={{
                 // headerShown: false,
 

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 18:22:58
+ * @LastEditTime: 2021-02-26 14:00:29
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -92,9 +92,9 @@ function App() {
             console.log(error);
         });
         syncImmediate();
-        if (Platform.OS == 'android') {
-            requestExternalStoragePermission(); //申请读写权限
-        }
+        // if (Platform.OS == 'android') {
+        //     requestExternalStoragePermission(); //申请读写权限
+        // }
         console.log(__DEV__);
         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
         return () => {
@@ -157,7 +157,6 @@ function App() {
                                     ts = new Date().getTime();
                                     const previousRouteName = routeNameRef.current;
                                     const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                    console.log(navigationRef.current.getRootState().lenght);
                                     global.previousRouteName = previousRouteName;
                                     // global.currentRouteName = currentRouteName;
                                     if (previousRouteName !== currentRouteName) {

@@ -6,14 +6,26 @@ import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
 import NetInfo from '@react-native-community/netinfo';
-
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded',
+// };
 //监控网络变化
 // NetInfo.addEventListener((state) => {
 //     if (!state.isConnected) {
 //         // Toast.showInfo('网络已断开,请检查您的网络');
 //     }
 // });
-
+axios.defaults.transformRequest = [
+    function (data) {
+        let ret = '';
+        for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+        }
+        return ret;
+    },
+];
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
     //拦截器处理
@@ -26,13 +38,7 @@ axios.interceptors.request.use(async (config) => {
         uid = result.uid;
         utid = result.utid;
     }
-    config.headers = {
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-        // 'Content-Type': config.headers['Content-Type'],
-        ...config.headers,
-        // Origin: 'http://localhost:8081/',
-        Authorization: token,
-    };
+    config.headers.Authorization = token;
     config.params = {
         ...config.data,
         app: 'p_a',
@@ -105,20 +111,15 @@ export default class http {
         }
         // }
     }
-    static async post(url, params, config, showLoading = true) {
+    static async post(url, params, showLoading = true) {
         if (!url.indexOf('http') > -1) {
             axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
         }
-        console.log(config);
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');
             }
-            let res = await axios.post(
-                url,
-                params,
-                config || {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
-            );
+            let res = await axios.post(url, params);
             if (showLoading) {
                 // Toast.hide();
             }
