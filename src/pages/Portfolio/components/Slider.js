@@ -3,11 +3,12 @@
  * @Date: 2021-02-01 11:22:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-01 19:14:20
+ * @LastEditTime: 2021-02-25 13:09:25
  */
 import React from 'react';
 import {Dimensions, View, Image, StyleSheet, PanResponder, Text} from 'react-native';
 import PropTypes from 'prop-types';
+import {px, px as text} from '../../../utils/appUtil';
 
 const styles = StyleSheet.create({
     container: {
@@ -40,7 +41,7 @@ export default class Slider extends React.Component {
 
     static defaultProps = {
         height: 60,
-        width: ScreenWidth,
+        width: ScreenWidth - text(84),
         onChange: () => {},
         onAfterChange: () => {},
         defaultValue: 0,
@@ -78,7 +79,7 @@ export default class Slider extends React.Component {
 
         this.setState({
             process,
-            processWidth: ScreenWidth - thumbSize,
+            processWidth: ScreenWidth - text(84) - thumbSize,
         });
     }
 

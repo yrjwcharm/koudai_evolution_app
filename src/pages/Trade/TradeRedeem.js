@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-23 12:12:04
+ * @LastEditTime: 2021-02-25 19:00:47
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -31,20 +31,14 @@ export default class TradeRedeem extends Component {
             showMask: false,
             password: '',
             trade_method: 0,
-            tableData: {
-                head: {percent: '当前持仓金额', amount: '赎回金额'},
-                body: [
-                    {name: '货币', percent: '20', amount: '3.45'},
-                    {name: '货币', percent: '20', amount: '3.45'},
-                    {name: '货币', percent: '20', amount: '3.45'},
-                ],
-            },
+            tableData: {},
         };
     }
     componentDidMount() {
         Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/info/20210101', {
             poid: 'VV00000065',
         }).then((res) => {
+            this.getPlanInfo();
             if (res.result.pay_methods.default === 1) {
                 this.setState({
                     check: [false, true],
@@ -56,6 +50,20 @@ export default class TradeRedeem extends Component {
             }
             this.setState({
                 data: res.result,
+            });
+        });
+    }
+    getPlanInfo() {
+        const {tableData} = this.state;
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
+            percent: this.state.inputValue / 100,
+            trade_method: this.state.trade_method,
+            poid: 'VV00000065',
+        }).then((res) => {
+            tableData['head'] = res.result.header;
+            tableData['body'] = res.result.body;
+            this.setState({
+                tableData,
             });
         });
     }
@@ -83,13 +91,7 @@ export default class TradeRedeem extends Component {
             toggleList: !toggleList,
         });
     }
-    getPlanInfo() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
-            percent: this.state.inputValue / 100,
-            trade_method: this.state.trade_method,
-            poid: 'VV00000065',
-        }).then((res) => {});
-    }
+
     passwordInput = () => {
         this.passwordModal.show();
         this.setState({showMask: true});
@@ -200,13 +202,13 @@ export default class TradeRedeem extends Component {
                                 <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
                                     {data?.redeem_info?.redeem_text}
                                 </Text>
-                                <AntDesign name={toggleList ? 'down' : 'up'} size={12} color={'#9095A5'} />
+                                <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
                             </TouchableOpacity>
-                            {toggleList && (
+                            {toggleList && Object.keys(tableData).length > 0 && (
                                 <View>
                                     <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
                                         <Text style={styles.head_sty}></Text>
-                                        <Text style={styles.head_sty}>{tableData.head.percent}</Text>
+                                        <Text style={styles.head_sty}>{tableData.head.amount_total}</Text>
                                         <Text style={styles.head_sty}>{tableData.head.amount}</Text>
                                     </View>
                                     <View>
@@ -218,7 +220,7 @@ export default class TradeRedeem extends Component {
                                                     <Text style={[styles.body_sty, {textAlign: 'left'}]}>
                                                         {_item.name}
                                                     </Text>
-                                                    <Text style={styles.body_sty}>{_item.percent}</Text>
+                                                    <Text style={styles.body_sty}>{_item.amount_total}</Text>
                                                     <Text style={styles.body_sty}>{_item.amount}</Text>
                                                 </View>
                                             );

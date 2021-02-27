@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-19 17:31:15
+ * @LastEditTime: 2021-02-26 10:37:25
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -12,19 +12,19 @@ import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {baseChart, histogram, pie} from '../../pages/Portfolio/Detail/ChartOption';
+import {baseChart, histogram, pie} from '../Portfolio/Detail/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ChartData from '../../pages/Portfolio/Detail/data.json';
+import ChartData from '../Portfolio/Detail/data.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
-import FixedBtn from '../../pages/Portfolio/components/FixedBtn';
+import FixedBtn from '../Portfolio/components/FixedBtn';
 import Header from '../../components/NavBar';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
 const deviceWidth = Dimensions.get('window').width;
 
-export default function ChildrenHome() {
+export default function PortfolioAssets() {
     const [data, setData] = useState();
     const [showEye, setShowEye] = useState('true');
     const [left, setLeft] = useState('100%');

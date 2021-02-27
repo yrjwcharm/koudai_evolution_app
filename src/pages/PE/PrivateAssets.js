@@ -3,9 +3,9 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 19:01:25
+ * @LastEditTime: 2021-02-26 15:17:22
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -19,62 +19,65 @@ import FitImage from 'react-native-fit-image';
 import {FixedButton} from '../../components/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NumText from '../../components/NumText';
+import Http from '../../services';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
-export default function PrivateAssets() {
+export default function PrivateAssets(props) {
     const [showEye, setShowEye] = useState('true');
     const [data, setData] = useState({
-        tabs: [
-            {
-                type: 'baseInfo',
-                title: '基本信息',
-                content: [
-                    {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-                    {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
-                ],
-            },
-            {
-                type: 'video',
-                title: '路演视频',
-                content: {
-                    title: '魔方私募对冲FOF1号路演视频',
-                    subtitle: '107845人观看',
-                    video: 'https://static.licaimofang.com/wp-content/themes/mf-themes/media/simu.mp4',
-                },
-            },
-            {
-                type: 'notice',
-                title: '公告',
-                content: [
-                    {
-                        title: '魔方私募对冲FOF1号产品成立公告',
-                        publish_at: '2019-09-06',
-                        url: 'https://static.licaimofang.com/wp-content/uploads/2019/09/产品成立公告.pdf',
-                    },
-                ],
-            },
-        ],
-        tab_list: [
-            {
-                title: '净值',
-                table: {
-                    head: ['日期', '单位净值', '累计净值', '涨跌幅'],
-                    body: [
-                        ['2020/07/16', 1.23, 1.234, '+1.24'],
-                        ['2020/07/16', 1.23, 1.234, '-1.24'],
-                        ['2020/07/16', 1.23, 1.234, '+1.24'],
-                        ['2020/07/16', 1.23, 1.234, '-1.24'],
-                        ['2020/07/16', 1.23, 1.234, '+1.24'],
-                        ['2020/07/16', 1.23, 1.234, '-1.24'],
-                    ],
-                },
-            },
-            {title: '风险指标'},
-        ],
+        // tabs: [
+        //     {
+        //         type: 'baseInfo',
+        //         title: '基本信息',
+        //         content: [
+        //             {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
+        //             {title: '基本信息', desc: '安志魔方量化对冲私募证券投资基金FOF1号'},
+        //         ],
+        //     },
+        //     {
+        //         type: 'video',
+        //         title: '路演视频',
+        //         content: {
+        //             title: '魔方私募对冲FOF1号路演视频',
+        //             subtitle: '107845人观看',
+        //             video: 'https://static.licaimofang.com/wp-content/themes/mf-themes/media/simu.mp4',
+        //         },
+        //     },
+        //     {
+        //         type: 'notice',
+        //         title: '公告',
+        //         content: [
+        //             {
+        //                 title: '魔方私募对冲FOF1号产品成立公告',
+        //                 publish_at: '2019-09-06',
+        //                 url: 'https://static.licaimofang.com/wp-content/uploads/2019/09/产品成立公告.pdf',
+        //             },
+        //         ],
+        //     },
+        // ],
+        // tab_list: [
+        //     {
+        //         title: '净值',
+        //         table: {
+        //             head: ['日期', '单位净值', '累计净值', '涨跌幅'],
+        //             body: [
+        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
+        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
+        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
+        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
+        //                 ['2020/07/16', 1.23, 1.234, '+1.24'],
+        //                 ['2020/07/16', 1.23, 1.234, '-1.24'],
+        //             ],
+        //         },
+        //     },
+        //     {title: '风险指标'},
+        // ],
     });
     const [left, setLeft] = useState('100%');
-    const rightPress = () => {};
+    const rightPress = () => {
+        props.navigation.navigate('TradeRecord');
+    };
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
             setShowEye(show === 'true' ? 'false' : 'true');
@@ -90,6 +93,13 @@ export default function PrivateAssets() {
             return Colors.red;
         }
     }, [text]);
+    useEffect(() => {
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/asset_detail/20210101', {
+            fund_code: 'SGX499',
+        }).then((res) => {
+            setData(res.result);
+        });
+    }, []);
     const renderContent = (index, data) => {
         console.log(data);
         if (index === 0) {
@@ -200,94 +210,107 @@ export default function PrivateAssets() {
     };
     return (
         <View style={{flex: 1}}>
-            <Header
-                title={'魔方FOF'}
-                leftIcon="chevron-left"
-                style={{backgroundColor: '#D7AF74'}}
-                fontStyle={{color: '#fff'}}
-                rightText={'交易记录'}
-                rightPress={() => rightPress()}
-                rightTextStyle={styles.right_sty}
-            />
-            <ScrollView>
-                <View style={styles.assets_card_sty}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <View>
-                            <View style={[Style.flexRow, {marginBottom: text(15)}]}>
-                                <Text style={styles.profit_text_sty}>总金额(元)</Text>
-                                <TouchableOpacity onPress={toggleEye}>
-                                    <Ionicons
-                                        name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
-                                        size={16}
-                                        color={'rgba(255, 255, 255, 0.8)'}
-                                    />
+            {Object.keys(data).length > 0 && (
+                <View>
+                    <Header
+                        title={data.title}
+                        leftIcon="chevron-left"
+                        style={{backgroundColor: '#D7AF74'}}
+                        fontStyle={{color: '#fff'}}
+                        rightText={'交易记录'}
+                        rightPress={() => rightPress()}
+                        rightTextStyle={styles.right_sty}
+                    />
+                    <ScrollView>
+                        <View style={styles.assets_card_sty}>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <View>
+                                    <View style={[Style.flexRow, {marginBottom: text(15)}]}>
+                                        <Text style={styles.profit_text_sty}>总金额(元)</Text>
+                                        <TouchableOpacity onPress={toggleEye}>
+                                            <Ionicons
+                                                name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                                size={16}
+                                                color={'rgba(255, 255, 255, 0.8)'}
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>4,364,000.70</Text>
+                                </View>
+                                <View>
+                                    <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
+                                        <Text style={styles.profit_text_sty}>日收益</Text>
+                                        <Text style={styles.profit_num_sty}>-220.00</Text>
+                                    </View>
+                                    <View style={Style.flexRow}>
+                                        <Text style={styles.profit_text_sty}>累计收益</Text>
+                                        <Text style={styles.profit_num_sty}>-220.00</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        {/* <ScrollableTabView
+                            renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
+                            initialPage={0}
+                            style={{marginBottom: text(16)}}
+                            tabBarActiveTextColor={'#D7AF74'}
+                            tabBarInactiveTextColor={'#545968'}>
+                            {data.tabs1.map((item, index) => {
+                                return (
+                                    <View tabLabel={item.title} key={index + 'tab'}>
+                                        {renderContent(index, item)}
+                                    </View>
+                                );
+                            })}
+                        </ScrollableTabView> */}
+                        {/* <ScrollableTabView
+                            renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
+                            initialPage={0}
+                            style={{marginBottom: text(16)}}
+                            tabBarActiveTextColor={'#D7AF74'}
+                            tabBarInactiveTextColor={'#545968'}>
+                            {data.tabs2.map((item, index) => {
+                                return (
+                                    <View tabLabel={item.title} key={index + 'tab'}>
+                                        {renderItem(index, item)}
+                                    </View>
+                                );
+                            })}
+                        </ScrollableTabView> */}
+                        {data.cards.map((_item, _index) => {
+                            return (
+                                <TouchableOpacity style={styles.list_sty} key={_index + '_item'}>
+                                    <Text style={{flex: 1}}>{_item.text}</Text>
+                                    <AntDesign name={'right'} size={12} color={'#9095A5'} />
                                 </TouchableOpacity>
-                            </View>
-                            <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>4,364,000.70</Text>
-                        </View>
-                        <View>
-                            <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
-                                <Text style={styles.profit_text_sty}>日收益</Text>
-                                <Text style={styles.profit_num_sty}>-220.00</Text>
-                            </View>
-                            <View style={Style.flexRow}>
-                                <Text style={styles.profit_text_sty}>累计收益</Text>
-                                <Text style={styles.profit_num_sty}>-220.00</Text>
-                            </View>
-                        </View>
-                    </View>
+                            );
+                        })}
+                    </ScrollView>
+                    {/* <View
+                        style={[
+                            Style.flexRow,
+                            {
+                                paddingBottom: isIphoneX() ? 34 : text(8),
+                                backgroundColor: '#fff',
+                                paddingHorizontal: text(16),
+                                paddingTop: text(10),
+                                position: 'absolute',
+                                bottom: 0,
+                            },
+                        ]}>
+                        <TouchableOpacity
+                            style={[
+                                styles.button_sty,
+                                {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)},
+                            ]}>
+                            <Text style={{textAlign: 'center', color: '#545968'}}>申请赎回</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}>
+                            <Text style={{textAlign: 'center', color: '#fff'}}>追加购买</Text>
+                        </TouchableOpacity>
+                    </View> */}
                 </View>
-                <ScrollableTabView
-                    renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
-                    initialPage={0}
-                    style={{marginBottom: text(16)}}
-                    tabBarActiveTextColor={'#D7AF74'}
-                    tabBarInactiveTextColor={'#545968'}>
-                    {data.tabs.map((item, index) => {
-                        return (
-                            <View tabLabel={item.title} key={index + 'tab'}>
-                                {renderContent(index, item)}
-                            </View>
-                        );
-                    })}
-                </ScrollableTabView>
-                <ScrollableTabView
-                    renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
-                    initialPage={0}
-                    style={{marginBottom: text(16)}}
-                    tabBarActiveTextColor={'#D7AF74'}
-                    tabBarInactiveTextColor={'#545968'}>
-                    {data.tab_list.map((item, index) => {
-                        return (
-                            <View tabLabel={item.title} key={index + 'tab'}>
-                                {renderItem(index, item)}
-                            </View>
-                        );
-                    })}
-                </ScrollableTabView>
-                <TouchableOpacity style={styles.list_sty}>
-                    <Text style={{flex: 1}}>产品档案</Text>
-                    <AntDesign name={'right'} size={12} color={'#9095A5'} />
-                </TouchableOpacity>
-            </ScrollView>
-            <View
-                style={[
-                    Style.flexRow,
-                    {
-                        paddingBottom: isIphoneX() ? 34 : px(8),
-                        backgroundColor: '#fff',
-                        paddingHorizontal: text(16),
-                        paddingTop: text(10),
-                    },
-                ]}>
-                <TouchableOpacity
-                    style={[styles.button_sty, {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)}]}>
-                    <Text style={{textAlign: 'center', color: '#545968'}}>申请赎回</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}>
-                    <Text style={{textAlign: 'center', color: '#fff'}}>追加购买</Text>
-                </TouchableOpacity>
-            </View>
+            )}
         </View>
     );
 }

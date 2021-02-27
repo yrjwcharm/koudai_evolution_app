@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-20 10:34:14
+ * @LastEditTime: 2021-02-25 14:29:00
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -47,6 +47,15 @@ export default function FixedUpdate() {
         });
         Picker.show();
     };
+    useEffect(() => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/update/invest_plan/20210101', {}).then(
+            (res) => {
+                this.setState({
+                    data: res.result,
+                });
+            }
+        );
+    });
     return (
         <>
             <View style={styles.wrap_sty}>

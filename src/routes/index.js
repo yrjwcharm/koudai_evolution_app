@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-12-23 16:39:50
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-27 11:33:13
+ * @Description:路由表
+ */
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
@@ -72,7 +79,7 @@ import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
 import PlanDetail from '../pages/Portfolio/PlanDetail'; //计划详情
 import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
-import ChildrenHome from '../pages/Assets/ChildrenHome'; //持仓页
+import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import TradeNotice from '../pages/Message/TradeNotice'; //交易通知
@@ -87,14 +94,26 @@ import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
 import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
 import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
+import ContactUs from '../pages/Assets/ContactUs'; // 联系我们
+import PasswordManagement from '../pages/Assets/PasswordManagement'; // 密码管理
+import ResetLoginPwd from '../pages/Assets/ResetLoginPwd'; // 重设登录密码
+import TradePwdManagement from '../pages/Assets/TradePwdManagement'; // 交易密码管理
+import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码
+import ForgotTradePwd from '../pages/Assets/ForgotTradePwd'; // 找回交易密码
+import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
+import BankCard from '../pages/Assets/BankCard'; // 银行卡
+import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
+import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金详情
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
+import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
+import ExperienceGoldTrade from '../pages/ExperienceGold/Trade'; //体验金购买
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="PrivateAssets"
             screenOptions={{
                 // headerShown: false,
 
@@ -276,7 +295,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
             <Stack.Screen name="DetailAccount" component={DetailAccount} options={{headerShown: false}} />
-            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: '低估值智能定投'}} />
+            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />
             <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
             <Stack.Screen name="DetailProvideOrder" component={DetailProvideOrder} options={{headerShown: false}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
@@ -328,8 +347,8 @@ export default function AppStack() {
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
-            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{title: '定投计划'}} />
-            <Stack.Screen name="ChildrenHome" component={ChildrenHome} options={{headerShown: false}} />
+            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{headerShown: false}} />
+            <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
@@ -345,6 +364,43 @@ export default function AppStack() {
             <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
+            <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />
+            <Stack.Screen name="PasswordManagement" component={PasswordManagement} options={{title: '密码管理'}} />
+            <Stack.Screen name="ResetLoginPwd" component={ResetLoginPwd} options={{title: '重设登录密码'}} />
+            <Stack.Screen name="TradePwdManagement" component={TradePwdManagement} options={{title: '交易密码管理'}} />
+            <Stack.Screen name="ModifyTradePwd" component={ModifyTradePwd} options={{title: '修改交易密码'}} />
+            <Stack.Screen name="ForgotTradePwd" component={ForgotTradePwd} options={{title: '找回交易密码'}} />
+            <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
+            <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
+            <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
+            <Stack.Screen
+                name="ExperienceGoldDetail"
+                component={ExperienceGoldDetail}
+                options={{
+                    headerBackImage: () => {
+                        return <Feather name="chevron-left" size={30} color={'#fff'} />;
+                    },
+                    headerStyle: {
+                        backgroundColor: '#D4AC6F',
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        fontSize: px(18),
+                        lineHeight: px(25),
+                        color: '#fff',
+                    },
+                    title: '理财魔方体验金',
+                }}
+            />
+            <Stack.Screen
+                name="ExperienceGoldResult"
+                component={ExperienceGoldResult}
+                options={{title: '体验金提现'}}
+            />
+            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
         </Stack.Navigator>
     );
 }

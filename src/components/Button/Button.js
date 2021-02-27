@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 16:26:37
+ * @LastEditors: dx
+ * @LastEditTime: 2021-02-25 14:56:21
  * @Description:通用按钮
  */
 import React from 'react';
@@ -16,6 +16,7 @@ class Button extends React.Component {
         style: PropTypes.object.isRequired,
         onPress: PropTypes.func.isRequired,
         disabled: PropTypes.bool,
+        disabledColor: PropTypes.string,
         textStyle: PropTypes.object,
         descStyle: PropTypes.object,
         title: PropTypes.string.isRequired,
@@ -27,6 +28,7 @@ class Button extends React.Component {
         style: {},
         onPress: () => {},
         disabled: false,
+        disabledColor: '#c2d5f0',
         textStyle: {},
         descStyle: {},
         title: '按钮',
@@ -38,7 +40,7 @@ class Button extends React.Component {
         super(props);
     }
     render() {
-        const {type, color, onPress, style, disabled, textStyle, descStyle, title, desc} = this.props;
+        const {type, color, onPress, style, disabled, disabledColor, textStyle, descStyle, title, desc} = this.props;
         return (
             <>
                 <TouchableHighlight
@@ -47,7 +49,7 @@ class Button extends React.Component {
                         Style.flexCenter,
                         type == 'primary' ? styles.ButtonStyle : styles.minorButtonStyle,
                         style,
-                        disabled && styles.disable,
+                        disabled && {backgroundColor: disabledColor, borderColor: disabledColor},
                     ]}
                     underlayColor={type == 'primary' ? (color ? color : '#0046B1') : '#F6F6F6'}
                     disabled={disabled}>

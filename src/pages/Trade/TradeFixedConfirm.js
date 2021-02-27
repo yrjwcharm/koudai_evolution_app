@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 15:37:25
  * @LastEditors: xjh
  * @Description: 定投确认页
- * @LastEditTime: 2021-01-22 12:25:51
+ * @LastEditTime: 2021-02-25 15:33:32
  */
 import React, {Component} from 'react';
 import {
@@ -23,67 +23,97 @@ import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Button} from '../../components/Button';
-// checkmark-circle  close-circle-sharp   circle-thin
+import Http from '../../services';
 export default class TradeFixedConfirm extends Component {
     constructor(props) {
         super(props);
         this.state = {
             viewHeight: '',
-            data: [
-                {title: '第一笔定投扣款将在 XX月XX日进行'},
-                {title: '第一笔定投扣款将在 XX月XX日进行'},
-                {title: '第一笔定投扣款将在 XX月XX日进行第一笔定投扣款将在 XX月XX日进行'},
-                {title: '第一笔定投扣款将在 XX月XX日进行'},
-            ],
+            data: {},
+            heightArr: [],
         };
     }
-
     onLayout = (index, event) => {
-        const data = this.state.data;
-        data[index].height = event.nativeEvent.layout.height;
+        const arr = [...this.state.heightArr];
+        const {data} = this.state;
+        arr[index] = event.nativeEvent.layout.height;
+        console.log(data);
         this.setState({
-            data,
+            heightArr: arr,
         });
     };
-
+    componentDidMount() {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/result/20210101', {}).then(
+            (res) => {
+                this.setState({
+                    data: res.result,
+                });
+            }
+        );
+    }
+    jumpTo() {
+        this.props.navigation.navigate(data.button.url);
+    }
     render() {
-        const {data, viewHeight} = this.state;
+        const {data, viewHeight, heightArr} = this.state;
         return (
             <View style={styles.container}>
-                <View style={styles.top_sty}>
-                    <Ionicons name={'checkmark-circle'} color={'#4BA471'} size={50} style={{paddingBottom: text(17)}} />
-                    <Html style={styles.title_sty} html={'您的定投计划设置成功！'} />
-                </View>
-                <View style={styles.content_sty}>
-                    {
-                        <Text style={styles.desc_sty}>
-                            错误原因错误原因错误原因错误原因，错误原错误原因错误原因错误原因错误原因，错误原
-                        </Text>
-                    }
-                    {data.length > 0 &&
-                        data.map((_item, _index) => {
-                            return (
-                                <View
-                                    style={{flexDirection: 'row'}}
-                                    onLayout={(event) => this.onLayout(_index, event)}
-                                    key={_index + '_item'}>
-                                    <View style={styles.list_wrap} key={_index + '_item'}>
-                                        <View style={styles.circle_sty} />
-                                        <Text style={styles.item_sty}>{_item.title}</Text>
-                                    </View>
-                                    {_index !== data.length - 1 && (
-                                        <Text
-                                            style={[
-                                                styles.line_sty,
-                                                {height: _item.height ? text(_item.height - 5) : text(31)},
-                                            ]}
-                                        />
-                                    )}
-                                </View>
-                            );
-                        })}
-                    <Button title={'完成'} style={styles.btn_sty} />
-                </View>
+                {Object.keys(data).length > 0 && (
+                    <>
+                        <View style={styles.top_sty}>
+                            {data.is_success == true ? (
+                                <Ionicons
+                                    name={'checkmark-circle'}
+                                    color={'#4BA471'}
+                                    size={50}
+                                    style={{paddingBottom: text(17)}}
+                                />
+                            ) : (
+                                <Ionicons
+                                    name={'md-close-circle-sharp'}
+                                    color={'#DC4949'}
+                                    size={50}
+                                    style={{paddingBottom: text(17)}}
+                                />
+                            )}
+                            <Html
+                                style={[styles.title_sty, {color: data.is_success ? '#4BA471' : '#DC4949'}]}
+                                html={data.content}
+                            />
+                        </View>
+                        <View style={styles.content_sty}>
+                            {data.is_success == false && <Text style={styles.desc_sty}>{data.items}</Text>}
+                            {data.items.length > 0 &&
+                                data.items.map((_item, _index) => {
+                                    return (
+                                        <View
+                                            style={{flexDirection: 'row'}}
+                                            onLayout={(event) => this.onLayout(_index, event)}
+                                            key={_index + '_item'}>
+                                            <View style={styles.list_wrap} key={_index + '_item'}>
+                                                <View style={styles.circle_sty} />
+                                                <Html style={styles.item_sty} html={_item} />
+                                            </View>
+
+                                            {_index !== data.items.length - 1 && (
+                                                <Text
+                                                    style={[
+                                                        styles.line_sty,
+                                                        {
+                                                            height: heightArr[_index]
+                                                                ? text(heightArr[_index] - 5)
+                                                                : text(31),
+                                                        },
+                                                    ]}
+                                                />
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                            <Button title={data.button.text} style={styles.btn_sty} onPress={this.jumpTo} />
+                        </View>
+                    </>
+                )}
             </View>
         );
     }
@@ -119,11 +149,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         zIndex: 4,
         position: 'relative',
+        marginRight: text(5),
     },
     line_sty: {
         backgroundColor: '#E2E4EA',
         position: 'absolute',
-        top: text(20),
+        top: text(15),
         left: text(3.5),
         width: text(1),
         zIndex: -1,

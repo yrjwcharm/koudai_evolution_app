@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:58:27
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-02-25 14:44:33
  */
 
 import React, {useEffect, useState} from 'react';
@@ -14,152 +14,164 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import Chart from '../../../components/Chart';
+import {Chart} from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
 import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
+import Header from '../../../components/NavBar';
 export default function DetailAccount() {
+    const [data, setData] = useState({});
     const [chartData, setChartData] = useState();
     const imgList = [
         'https://static.licaimofang.com/wp-content/uploads/2021/01/step.png',
         'https://static.licaimofang.com/wp-content/uploads/2021/01/profile.png',
         'https://static.licaimofang.com/wp-content/uploads/2021/01/implementation.png',
     ];
-    const btns = [
-        {
-            title: '咨询',
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2020/12/zixun.png',
-            url: '',
-            subs: [
-                {
-                    icon: 'https://static.licaimofang.com/wp-content/uploads/2020/04/xing_zhuang_@2x1.png',
-                    title: '电话咨询专家',
-                    desc: '与专家电话，问题解答更明白',
-                    recommend: 0,
-                    btn: {
-                        title: '拨打电话',
-                    },
-                    type: 'tel',
-                    sno: '4000808208',
-                },
-                {
-                    icon: 'https://static.licaimofang.com/wp-content/uploads/2020/04/xing_zhuang_@2x2.png',
-                    title: '在线咨询',
-                    desc: '专家在线解决问题，10秒内回复',
-                    recommend: 0,
-                    btn: {
-                        title: '立即咨询',
-                    },
-                    type: 'im',
-                },
-            ],
-        },
-        {
-            title: '立即购买',
-            icon: '',
-            url: '/trade/ym_trade_state?state=buy&id=7&risk=4&amount=2000',
-            desc: '已有1377380人加入',
-        },
-    ];
-
     useEffect(() => {
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/fix_invest_detail/20210101').then(
+            (res) => {
+                setData(res.result);
+            }
+        );
         setChartData(ChartData);
     }, []);
+    const jumpTo = () => {};
     return (
         <>
-            <ScrollView style={{marginBottom: 100, flex: 1}}>
-                <View style={[styles.container_sty]}>
-                    <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
-                        适合大部分投资者的高收益理财产品
-                    </Text>
-                    <Text style={{paddingTop: text(16), paddingBottom: text(8)}}>
-                        <Text style={styles.amount_sty}>7.58%</Text>
-                        <Text style={styles.radio_sty}> 近两年年化收益率</Text>
-                    </Text>
-                    <View style={Style.flexRowCenter}>
-                        <View style={styles.label_sty}>
-                            <Text style={{color: '#266EFF', fontSize: text(11)}}>优秀固守</Text>
-                        </View>
-                        <View style={styles.label_sty}>
-                            <Text style={{color: '#266EFF', fontSize: text(11)}}>优秀固守</Text>
+            {Object.keys(data).length > 0 ? <Header title={data.title} leftIcon="chevron-left" /> : null}
+            {Object.keys(data).length > 0 && (
+                <ScrollView style={{marginBottom: 100, flex: 1}}>
+                    <View style={[styles.container_sty]}>
+                        <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
+                            {data.ratio_info.title}
+                        </Text>
+                        <Text style={{paddingTop: text(16), paddingBottom: text(8)}}>
+                            <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
+                            <Text style={styles.radio_sty}> {data.ratio_info.ratio_desc}</Text>
+                        </Text>
+                        <View style={Style.flexRowCenter}>
+                            {data.ratio_info.label.map((_label, _index) => {
+                                return (
+                                    <View style={styles.label_sty} key={_index + 'label'}>
+                                        <Text style={{color: '#266EFF', fontSize: text(11)}}>{_label}</Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
-                </View>
-                <View style={{height: 330, backgroundColor: '#fff'}}>
-                    <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
-                        <View style={{marginLeft: text(16), width: text(70), alignSelf: 'baseline'}}>
-                            <Text
-                                style={[styles.legend_title_sty, {fontSize: text(13), fontFamily: Font.numFontFamily}]}>
-                                2020-11-12
-                            </Text>
-                        </View>
-                        <View style={styles.legend_sty}>
-                            <Text>
-                                <Ionicons name={'square'} color={'#E74949'} size={10} />
-                                <Text style={styles.legend_desc_sty}>
-                                    低估值智能定投
-                                    <Text
-                                        style={[
-                                            styles.legend_title_sty,
-                                            {color: '#E74949', fontFamily: Font.numFontFamily},
-                                        ]}>
-                                        +15.15%
-                                    </Text>
+                    <View style={{height: 330, backgroundColor: '#fff'}}>
+                        <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
+                            <View style={{marginLeft: text(16), width: text(70), alignSelf: 'baseline'}}>
+                                <Text
+                                    style={[
+                                        styles.legend_title_sty,
+                                        {fontSize: text(13), fontFamily: Font.numFontFamily},
+                                    ]}>
+                                    2020-11-12
                                 </Text>
-                            </Text>
-                        </View>
-                        <View style={styles.legend_sty}>
-                            <Text>
-                                <Ionicons name={'square'} color={'#C8A77A'} size={10} />
-                                <Text style={styles.legend_desc_sty}>
-                                    比较基准{' '}
-                                    <Text style={[styles.legend_title_sty, {fontFamily: Font.numFontFamily}]}>
-                                        8.12%
-                                    </Text>
-                                </Text>
-                            </Text>
-                        </View>
-                    </View>
-                    <Chart initScript={baseChart(chartData)} />
-                </View>
-                <View style={{paddingHorizontal: Space.padding}}>
-                    <View>
-                        {imgList.map((_i, _d) => {
-                            return <FitImage source={{uri: _i}} resizeMode="contain" style={{marginTop: text(16)}} />;
-                        })}
-                    </View>
-                    <View style={styles.assets_wrap_sty}>
-                        <View style={[Style.flexRow, {padding: text(15)}]}>
-                            <Text style={styles.title_sty}>
-                                资产配置{' '}
-                                <Text style={{color: '#4E556C', fontSize: text(13)}}>优选A股基金，跟踪大盘</Text>
-                            </Text>
-                        </View>
-                        <View style={{paddingHorizontal: text(6)}}>
-                            <View style={[Style.flexBetween, styles.head_sty]}>
-                                <Text style={styles.head_title_sty}>基金名称</Text>
-                                <Text style={styles.head_title_sty}>配比</Text>
                             </View>
-                            <View style={[Style.flexBetween, styles.content_warp_sty]}>
-                                <View>
-                                    <Text style={styles.content_title_sty}>鹏华空天军工指数(LOF)A</Text>
-                                    <Text style={{color: '#9397A3', fontSize: text(11)}}>(160643)</Text>
+                            <View style={styles.legend_sty}>
+                                <Text>
+                                    <Ionicons name={'square'} color={'#E74949'} size={10} />
+                                    <Text style={styles.legend_desc_sty}>
+                                        低估值智能定投
+                                        <Text
+                                            style={[
+                                                styles.legend_title_sty,
+                                                {color: '#E74949', fontFamily: Font.numFontFamily},
+                                            ]}>
+                                            +15.15%
+                                        </Text>
+                                    </Text>
+                                </Text>
+                            </View>
+                            <View style={styles.legend_sty}>
+                                <Text>
+                                    <Ionicons name={'square'} color={'#C8A77A'} size={10} />
+                                    <Text style={styles.legend_desc_sty}>
+                                        比较基准{' '}
+                                        <Text style={[styles.legend_title_sty, {fontFamily: Font.numFontFamily}]}>
+                                            8.12%
+                                        </Text>
+                                    </Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <Chart initScript={baseChart(chartData)} />
+                    </View>
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        <View>
+                            {imgList.map((_i, _d) => {
+                                return (
+                                    <FitImage source={{uri: _i}} resizeMode="contain" style={{marginTop: text(16)}} />
+                                );
+                            })}
+                        </View>
+                        <View style={styles.assets_wrap_sty}>
+                            <View style={[Style.flexRow, {padding: text(15)}]}>
+                                <Text style={styles.title_sty}>
+                                    {data.asset_deploy.header.title}
+                                    <Text style={{color: '#4E556C', fontSize: text(13)}}>
+                                        {data.asset_deploy.header.tip}
+                                    </Text>
+                                </Text>
+                            </View>
+                            <View style={{paddingHorizontal: text(6)}}>
+                                <View style={[Style.flexBetween, styles.head_sty]}>
+                                    <Text style={styles.head_title_sty}>{data.asset_deploy.th.name}</Text>
+                                    <Text style={styles.head_title_sty}>{data.asset_deploy.th.ratio}</Text>
                                 </View>
-                                <Text style={[styles.content_title_sty, {fontFamily: Font.numFontFamily}]}>6.64%</Text>
+                                {data.asset_deploy.items.map((_a, _index) => {
+                                    const borderBottom = _index < data.asset_deploy.items.length - 1 ? 0.5 : 0;
+                                    return (
+                                        <View
+                                            style={[
+                                                Style.flexBetween,
+                                                styles.content_warp_sty,
+                                                {borderBottomWidth: borderBottom},
+                                            ]}
+                                            key={_index + '_a'}>
+                                            <View>
+                                                <Text style={styles.content_title_sty}>{_a.name}</Text>
+                                                <Text style={{color: '#9397A3', fontSize: text(11)}}>({_a.code})</Text>
+                                            </View>
+                                            <Text style={[styles.content_title_sty, {fontFamily: Font.numFontFamily}]}>
+                                                {_a.percent}
+                                            </Text>
+                                        </View>
+                                    );
+                                })}
                             </View>
                         </View>
-                    </View>
-                    <View style={[styles.card_sty, {paddingVertical: 0}]}>
-                        <View style={Style.flexRow}>
-                            <Text style={{flex: 1, paddingVertical: text(20), color: '#545968'}}>资金安全</Text>
-                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                        <View style={[styles.card_sty, {paddingVertical: 0}]}>
+                            {data.gather_info.map((_g, _index) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[
+                                            Style.flexRow,
+                                            {
+                                                borderBottomWidth: _index < data.gather_info.length - 1 ? 0.5 : 0,
+                                                borderColor: Colors.borderColor,
+                                            },
+                                        ]}
+                                        key={_index + '_g'}
+                                        onPress={jumpTo}>
+                                        <Text style={{flex: 1, paddingVertical: text(20), color: '#545968'}}>
+                                            {_g.title}
+                                        </Text>
+                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
                     </View>
-                </View>
-            </ScrollView>
-            <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
+                </ScrollView>
+            )}
+            {Object.keys(data).length > 0 && (
+                <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} activeOpacity={1} />
+            )}
         </>
     );
 }
@@ -239,7 +251,6 @@ const styles = StyleSheet.create({
         paddingTop: text(13),
         paddingHorizontal: text(9),
         paddingBottom: text(9),
-        borderBottomWidth: 0.5,
         borderColor: Colors.borderColor,
     },
     content_title_sty: {
