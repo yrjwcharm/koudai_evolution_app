@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-01-25 20:08:47
+ * @LastEditTime: 2021-02-26 10:20:51
  * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -41,7 +41,7 @@ const BottomDesc = (props) => {
     };
     const navigation = useNavigation();
     return (
-        <View style={[styles.con, style]}>
+        <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
             {data.image && (
                 <View style={styles.item}>
                     <Image source={{uri: data.image}} style={[styles.img]} />

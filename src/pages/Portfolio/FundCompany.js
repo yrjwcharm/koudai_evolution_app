@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 17:39:11
+ * @LastEditTime: 2021-03-01 20:24:50
  * @Description: 基金公司
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -12,8 +12,10 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 
 const FundCompany = ({navigation, route}) => {
+    const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
 
@@ -45,33 +47,6 @@ const FundCompany = ({navigation, route}) => {
             </View>
         );
     }, []);
-    const jump = useCallback(
-        ({url}) => {
-            if (url) {
-                if (url.type === 1) {
-                    navigation.navigate({
-                        name: url.path,
-                        params: {...url.params, title: `旗下基金(${list[list.length - 1].val}支)`} || {},
-                    });
-                } else if (url.type === 2) {
-                    Linking.canOpenURL(url.path)
-                        .then((supported) => {
-                            if (!supported) {
-                                return Toast.show('您的设备不支持打开网址');
-                            }
-                            return Linking.openURL(url.path);
-                        })
-                        .catch((err) => Toast.show(err));
-                } else if (url.type === 3) {
-                    navigation.navigate({
-                        name: 'OpenPdf',
-                        params: {url: url.path},
-                    });
-                }
-            }
-        },
-        [navigation, list]
-    );
 
     useEffect(() => {
         init(true);

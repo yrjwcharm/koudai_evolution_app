@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-02-25 14:56:09
+ * @LastEditTime: 2021-03-01 20:21:29
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -33,6 +33,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import storage from '../../utils/storage';
 import http from '../../services/index.js';
+import {useJump} from '../../components/hooks';
 
 const requestCameraPermission = async () => {
     try {
@@ -56,6 +57,7 @@ function HomeScreen({navigation}) {
     const [notice, setNotice] = useState({});
     const fadeAnim = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
+    const jump = useJump();
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -171,7 +173,10 @@ function HomeScreen({navigation}) {
                     ) : (
                         item.portfolios.map((po, i) => {
                             return (
-                                <TouchableOpacity key={`portfolio${po.poid}`} style={Style.flexRow}>
+                                <TouchableOpacity
+                                    key={`portfolio${po.poid}`}
+                                    style={Style.flexRow}
+                                    onPress={() => jump(po.url)}>
                                     <View
                                         style={[
                                             styles.portfolio,
@@ -188,7 +193,7 @@ function HomeScreen({navigation}) {
                 </>
             );
         },
-        [renderTitle, renderProfit]
+        [renderTitle, renderProfit, jump]
     );
     const needAdjust = useCallback((item) => {
         return item.portfolios.every((po) => po.adjust_status > 0);
@@ -240,7 +245,8 @@ function HomeScreen({navigation}) {
                             {userBasicInfo.user_info ? userBasicInfo.user_info.name : '****'}
                         </Text>
                         {userBasicInfo.member_info && Object.keys(userBasicInfo.member_info).length > 0 && (
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate({name: 'MemberCenter', params: {level: 0}})}>
                                 <LinearGradient
                                     colors={['#FFF6E8', '#FFE1B8']}
                                     start={{x: 0, y: 0}}
@@ -265,7 +271,7 @@ function HomeScreen({navigation}) {
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
                         <Text style={styles.date}>
-                            {holdingData.summary ? holdingData.summary.profit_date : 'YYYY-MM-DD'}
+                            {holdingData?.summary ? holdingData.summary.profit_date : 'YYYY-MM-DD'}
                         </Text>
                         <TouchableOpacity onPress={toggleEye}>
                             <Ionicons
@@ -276,7 +282,7 @@ function HomeScreen({navigation}) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.experienceGold, Style.flexRow]}
-                            onPress={() => navigation.navigate('ExperienceGold')}>
+                            onPress={() => navigation.navigate('ExperienceGoldDetail')}>
                             <Image
                                 source={require('../../assets/personal/jinbi.png')}
                                 style={{width: text(15), height: text(15)}}
@@ -287,7 +293,7 @@ function HomeScreen({navigation}) {
                     </View>
                     <View>
                         <Text style={[styles.amount]}>
-                            {holdingData.summary && showEye === 'true' ? holdingData.summary.amount : '****'}
+                            {holdingData?.summary && showEye === 'true' ? holdingData.summary.amount : '****'}
                         </Text>
                     </View>
                     {notice?.trade && (
@@ -303,13 +309,13 @@ function HomeScreen({navigation}) {
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>累计收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData.summary && showEye === 'true' ? holdingData.summary.profit_acc : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData.summary.profit_acc : '****'}
                             </Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>日收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData.summary && showEye === 'true' ? holdingData.summary.profit : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData.summary.profit : '****'}
                             </Text>
                         </View>
                     </View>
@@ -319,8 +325,8 @@ function HomeScreen({navigation}) {
                         userBasicInfo.top_menus.map((item, index) => {
                             return (
                                 <TouchableOpacity
-                                    onPress={() => index === 2 && navigation.navigate('HoldingFund')}
-                                    key={`menu1${index}`}
+                                    onPress={() => jump(item.url)}
+                                    key={`topmenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1}]}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
@@ -336,12 +342,12 @@ function HomeScreen({navigation}) {
                         }
                     </Text>
                 </View>
-                {holdingData.accounts &&
+                {holdingData?.accounts &&
                     holdingData.accounts.map((item, index) => {
                         return item.portfolios ? (
                             item.portfolios.length > 1 ? (
                                 <View
-                                    key={`account${index}`}
+                                    key={`account${item.id}`}
                                     style={[
                                         styles.account,
                                         index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -353,13 +359,14 @@ function HomeScreen({navigation}) {
                                 </View>
                             ) : (
                                 <TouchableOpacity
-                                    key={`account${index}`}
+                                    key={`account${item.id}`}
                                     style={[
                                         styles.account,
                                         index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
                                         index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
-                                    ]}>
+                                    ]}
+                                    onPress={() => jump(item.portfolios[0].url)}>
                                     {renderTitle(item.portfolios[0])}
                                     {renderPortfolios(item)}
                                 </TouchableOpacity>
@@ -371,16 +378,14 @@ function HomeScreen({navigation}) {
                                         colors={['#33436D', '#121D3A']}
                                         start={{x: 0, y: 0}}
                                         end={{x: 1, y: 0}}
-                                        key={`account${index}`}
+                                        key={`account${item.id}`}
                                         style={[
                                             styles.account,
                                             index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
                                             index === 0 ? {marginTop: Space.marginVertical} : {},
                                             {padding: 0},
                                         ]}>
-                                        <TouchableOpacity
-                                            key={`account${index}`}
-                                            style={[{padding: Space.padding}, Style.flexRow]}>
+                                        <TouchableOpacity style={[{padding: Space.padding}, Style.flexRow]}>
                                             <View style={[{flex: 1}, Style.flexRow]}>
                                                 <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
                                                     {item.name}
@@ -395,7 +400,7 @@ function HomeScreen({navigation}) {
                                 ) : (
                                     item.id === 11 && (
                                         <TouchableOpacity
-                                            key={`account${index}`}
+                                            key={`account${item.id}`}
                                             style={[
                                                 styles.account,
                                                 index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -440,9 +445,9 @@ function HomeScreen({navigation}) {
                         userBasicInfo.bottom_menus.map((item, index) => {
                             return (
                                 <TouchableOpacity
-                                    key={`menu1${index}`}
+                                    key={`bottommenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1}]}
-                                    onPress={() => index === 3 && navigation.navigate('Settings')}>
+                                    onPress={() => jump(item.url)}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>

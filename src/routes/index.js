@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 16:56:17
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-01 14:06:01
  * @Description:路由表
  */
 import React from 'react';
@@ -104,6 +104,10 @@ import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
 import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
 import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金详情
+import MemberCenter from '../pages/Assets/MemberCenter'; // 会员中心
+import MemberSystem from '../pages/Assets/MemberSystem'; // 魔方会员体系
+import MemberService from '../pages/Assets/MemberService'; // 会员专属服务
+import GetRationalValue from '../pages/Assets/GetRationalValue'; // 信任值获取方法
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
 import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
@@ -114,7 +118,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="ActivityNotice"
+            initialRouteName="TabScreen"
             screenOptions={{
                 // headerShown: false,
 
@@ -403,6 +407,10 @@ export default function AppStack() {
             />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
+            <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
+            <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
+            <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
+            <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
         </Stack.Navigator>
     );
 }

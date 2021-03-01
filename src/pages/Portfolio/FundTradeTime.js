@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-30 16:26:00
+ * @LastEditTime: 2021-02-27 16:37:46
  * @Description: 交易时间说明
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,25 +13,19 @@ import http from '../../services/index.js';
 
 const FundTradeTime = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [header, setHeader] = useState([]);
-    const [list, setList] = useState([
-        ['上周五15:00 ~ 周一15:00', '周二'],
-        ['周一15:00 ~ 周二15:00', '周三'],
-        ['周二15:00 ~ 周三15:00', '周四'],
-        ['周三15:00 ~ 周四15:00', '周五'],
-        ['周四15:00 ~ 周五15:00', '下周一'],
-    ]);
+    const [buy, setBuy] = useState({});
+    const [redeem, setRedeem] = useState({});
 
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/trade_timing/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/trade_time/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);
                 first && navigation.setOptions({title: res.result.title || '交易时间说明'});
-                first && setHeader(res.result.header || []);
-                setList([...(res.result.list || [])]);
+                setBuy(res.result.buy);
+                setRedeem(res.result.redeem);
             });
         },
         [navigation, route]
@@ -44,11 +38,11 @@ const FundTradeTime = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{'交易申请时间'}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{'申购确认'}</Text>
+                <Text style={[styles.headerText, {textAlign: 'left'}]}>{buy.table?.head[0]}</Text>
+                <Text style={[styles.headerText, {textAlign: 'right'}]}>{buy.table?.head[1]}</Text>
             </View>
         );
-    }, []);
+    }, [buy]);
     // 渲染列表项
     const renderItem = useCallback((item, index) => {
         return (
@@ -62,24 +56,20 @@ const FundTradeTime = ({navigation, route}) => {
     }, []);
 
     useEffect(() => {
-        // init();
+        init(true);
     }, [init]);
     return (
         <ScrollView
             style={styles.container}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             {renderHeader()}
-            {list.map((item, index) => {
+            {buy.table?.rows.map((item, index) => {
                 return renderItem(item, index);
             })}
             <View style={[Style.flexRow, styles.header, {marginTop: text(24)}]}>
                 <Text style={[styles.headerText, {textAlign: 'left'}]}>{'赎回确认时间'}</Text>
             </View>
-            <Text style={styles.desc}>
-                {
-                    '大部分基金会在3个工作日内将赎回款划到原银行卡中。工作日15:00之前提交交易按照当日收市后公布的净值成交，15:00之后提交的交易将按照下一个交易日的净值成交'
-                }
-            </Text>
+            <Text style={styles.desc}>{redeem.desc}</Text>
         </ScrollView>
     );
 };

@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 14:23:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-28 15:04:17
+ * @LastEditTime: 2021-02-27 18:21:50
  * @Description: 基金查询
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -12,7 +12,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
 
-const FundSearching = () => {
+const FundSearching = ({route}) => {
     const [data, setData] = useState({});
     // 打开查询网址
     const openSite = useCallback((site) => {
@@ -26,10 +26,12 @@ const FundSearching = () => {
             .catch((err) => Alert(err));
     }, []);
     useEffect(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/fund/search/20210101').then((res) => {
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/searching/20210101', {
+            ...route.params,
+        }).then((res) => {
             setData(res.result);
         });
-    }, []);
+    }, [route]);
     return (
         Object.keys(data).length > 0 && (
             <ScrollView scrollIndicatorInsets={{right: 1}} style={styles.container}>
@@ -51,7 +53,7 @@ const FundSearching = () => {
                                 </View>
                                 <View style={[Style.flexRow, styles.contentItem]}>
                                     <Text style={styles.contentKey}>{'查询流程'}</Text>
-                                    <Text style={styles.procedure}>{item.procedure}</Text>
+                                    <Text style={styles.procedure}>{item.process}</Text>
                                 </View>
                             </View>
                         );
@@ -103,6 +105,7 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
         flex: 1,
         transform: [{translateY: text(-2)}],
+        textAlign: 'justify',
     },
 });
 

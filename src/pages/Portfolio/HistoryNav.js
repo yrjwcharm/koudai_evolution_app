@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 17:51:38
+ * @LastEditTime: 2021-02-27 18:15:20
  * @Description: 历史净值
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -53,10 +53,18 @@ const HistoryNav = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText]}>{header[2]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text>
+                {header.map((item, index) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {header[index]}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, [header]);
@@ -81,16 +89,19 @@ const HistoryNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
-                    <Text style={[styles.itemText]}>{item[1]}</Text>
-                    <Text style={[styles.itemText]}>{item[2]}</Text>
-                    <Text
-                        style={[
-                            styles.itemText,
-                            {textAlign: 'right', color: getColor(item[3]), fontFamily: Font.numFontFamily},
-                        ]}>
-                        {parseFloat(item[3].replaceAll(',', '')) > 0 ? `+${item[3]}` : item[3]}
-                    </Text>
+                    {item.map((value, idx) => {
+                        return (
+                            <Text
+                                style={[
+                                    styles.itemText,
+                                    idx === 0 ? {textAlign: 'left'} : {},
+                                    idx === item.length - 1 ? {textAlign: 'right'} : {},
+                                    idx === 3 ? {color: getColor(item[3]), fontFamily: Font.numFontFamily} : {},
+                                ]}>
+                                {item[idx]}
+                            </Text>
+                        );
+                    })}
                 </View>
             );
         },
@@ -98,6 +109,9 @@ const HistoryNav = ({navigation, route}) => {
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
         if (parseFloat(t.replaceAll(',', '')) < 0) {
             return Colors.green;
         } else if (parseFloat(t.replaceAll(',', '')) > 0) {
