@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 16:06:28
+ * @LastEditTime: 2021-03-01 14:33:06
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -19,7 +19,6 @@ import {FixedButton} from '../../components/Button';
 export default function ElectronicAccount(props) {
     const [data, setData] = useState({});
     const [num, setNum] = useState('6579976588086535678');
-    const list = ['更换绑定银行卡', '跟换手机号', '更新身份证信息'];
     useEffect(() => {
         Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/bank/elec_account/20210101', {
             bank_code: 'ZBB',

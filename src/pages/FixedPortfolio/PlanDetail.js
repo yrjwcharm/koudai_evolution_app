@@ -3,11 +3,11 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 17:42:03
+ * @LastEditTime: 2021-03-01 14:44:39
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import Slider from './components/Slider';
+import Slider from '../Portfolio/components/Slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';

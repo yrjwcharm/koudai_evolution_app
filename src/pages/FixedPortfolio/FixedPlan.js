@@ -7,14 +7,14 @@
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
-import Slider from './components/Slider';
+import Slider from '../Portfolio/components/Slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import {Button, FixedButton} from '../../components/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
-import FixedBtn from './components/FixedBtn';
+import FixedBtn from '../Portfolio/components/FixedBtn';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan() {
     const [data, setData] = useState({});

@@ -1,14 +1,14 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-01-28 17:59:52
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-01 14:34:41
+ * @LastEditors: xjh
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
  */
 import React, {Component} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import Chart from '../../components/Chart';
+import {Chart} from '../../components/Chart';
 import data from '../Chart/data.json';
 // import {area} from '../Chart/chartOptions';
 import Html from '../../components/RenderHtml';

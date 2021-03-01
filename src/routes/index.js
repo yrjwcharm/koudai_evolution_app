@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 16:56:17
+ * @LastEditTime: 2021-03-01 14:58:41
  * @Description:路由表
  */
 import React from 'react';
@@ -35,7 +35,7 @@ import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资�
 import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
-import TradeRules from '../pages/Portfolio/TradeRules'; // 交易须知
+import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
@@ -64,12 +64,12 @@ import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
 import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
-import SetTarget from '../pages/Portfolio/SetTarget'; //低估值设置目标
-import TradeRecord from '../pages/Assets/TradeRecord'; //交易记录
+import SetTarget from '../pages/FixedPortfolio/SetTarget'; //低估值设置目标
+import TradeRecord from '../pages/Trade/TradeRecord'; //交易记录
 import FundDetail from '../pages/Portfolio/FundDetail'; // 基金详情
 import HistoryNav from '../pages/Portfolio/HistoryNav'; // 历史净值
 import FindDetail from '../pages/Find/findDetail'; //发现详情页
-import TradeRecordDetail from '../pages/Assets/TradeRecordDetail'; //交易记录详情
+import TradeRecordDetail from '../pages/Trade/TradeRecordDetail'; //交易记录详情
 import FundRanking from '../pages/Portfolio/FundRanking'; // 基金排名
 import FundTradeTime from '../pages/Portfolio/FundTradeTime'; // 交易时间说明
 import FundScale from '../pages/Portfolio/FundScale'; // 基金规模
@@ -77,10 +77,10 @@ import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
-import PlanDetail from '../pages/Portfolio/PlanDetail'; //计划详情
-import FixedPlan from '../pages/Portfolio/FixedPlan'; //定投计划
+import PlanDetail from '../pages/FixedPortfolio/PlanDetail'; //计划详情
+import FixedPlan from '../pages/FixedPortfolio/FixedPlan'; //定投计划
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
-import FixedUpdate from '../pages/Portfolio/FixedUpdate'; //定投修改
+import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import TradeNotice from '../pages/Message/TradeNotice'; //交易通知
 import ActivityNotice from '../pages/Message/ActivityNotice'; //活动通知
@@ -114,7 +114,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="ActivityNotice"
+            initialRouteName="PlanDetail"
             screenOptions={{
                 // headerShown: false,
 

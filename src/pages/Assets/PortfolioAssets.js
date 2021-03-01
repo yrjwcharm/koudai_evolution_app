@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 16:23:45
+ * @LastEditTime: 2021-03-01 14:27:55
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -30,7 +30,7 @@ export default function PortfolioAssets({navigation}) {
     const [data, setData] = useState({});
     const [card, setCard] = useState({});
     const [chart, setChart] = useState({});
-    const [showEye, setShowEye] = useState('true');
+    const [showEye, setShowEye] = useState(true);
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
     const [period, setPeriod] = useState('y1');
@@ -74,8 +74,8 @@ export default function PortfolioAssets({navigation}) {
 
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
-            setShowEye(show === 'true' ? 'false' : 'true');
-            storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
+            setShowEye(!show);
+            storage.save('myAssetsEye', show);
         });
     }, []);
     const jumpTo = (url) => {
@@ -95,28 +95,35 @@ export default function PortfolioAssets({navigation}) {
                     {data.processing_info && <Notice content={data.processing_info} />}
                     <ScrollView style={{marginBottom: btnHeight}}>
                         <View style={styles.assets_card_sty}>
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View
+                                style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
                                 <View>
                                     <View style={[Style.flexRow, {marginBottom: text(15)}]}>
                                         <Text style={styles.profit_text_sty}>总金额(元)</Text>
                                         <TouchableOpacity onPress={toggleEye}>
                                             <Ionicons
-                                                name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                                name={showEye === true ? 'eye-outline' : 'eye-off-outline'}
                                                 size={16}
                                                 color={'rgba(255, 255, 255, 0.8)'}
                                             />
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>{data.amount}</Text>
+                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
+                                        {showEye ? data.amount : '***'}
+                                    </Text>
                                 </View>
                                 <View>
                                     <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
                                         <Text style={styles.profit_text_sty}>日收益</Text>
-                                        <Text style={styles.profit_num_sty}>{data.profit}</Text>
+                                        <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : ''}]}>
+                                            {showEye ? data.profit : '***'}
+                                        </Text>
                                     </View>
                                     <View style={Style.flexRow}>
                                         <Text style={styles.profit_text_sty}>累计收益</Text>
-                                        <Text style={styles.profit_num_sty}>{data.profit_acc}</Text>
+                                        <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : ''}]}>
+                                            {showEye ? data.profit_acc : '***'}
+                                        </Text>
                                     </View>
                                 </View>
                             </View>
@@ -206,7 +213,11 @@ export default function PortfolioAssets({navigation}) {
                                                         borderWidth: _index == 0 ? 0.5 : 0,
                                                         borderRadius: text(6),
                                                         backgroundColor:
-                                                            _index != 0 && _button.avail !== 0 ? '#0051CC' : '#C7D8F0',
+                                                            _button.avail !== 0
+                                                                ? '#0051CC'
+                                                                : _index == 0
+                                                                ? '#eee'
+                                                                : '#C7D8F0',
                                                         flex: 1,
 
                                                         marginRight:
