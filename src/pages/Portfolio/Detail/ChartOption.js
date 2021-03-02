@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:08:58
+ * @LastEditTime: 2021-03-01 18:40:56
  */
 import _ from 'lodash';
 export const baseChart = (data) => `(function(){
@@ -33,7 +33,7 @@ export const baseChart = (data) => `(function(){
   });
   chart.area()
     .position('year*value')
-    .color('type')
+    .color('l(0) 0:#F2C587 0.5:#E74949 1:#E74949')
     .shape('smooth');
   chart.line()
     .position('year*value')

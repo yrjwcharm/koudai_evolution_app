@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-29 17:15:32
+ * @LastEditTime: 2021-03-01 18:31:33
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -42,7 +42,8 @@ class MfbOut extends Component {
             selectData['quickAmount'] = data.result.pay_methods[0].quick_withdraw_amount;
             selectData['quickText'] = data.result.pay_methods[0].quick_withdraw_subtext;
             const withdraw_options = data.result.withdraw_options;
-            this.state.check.push(withdraw_options[0].default, withdraw_options[1].default);
+            this.state.check.push(withdraw_options[0].default);
+            if (withdraw_options.length > 1) this.state.check.push(withdraw_options[1].default);
             this.setState({
                 data: data.result,
                 selectData: selectData,
@@ -150,17 +151,17 @@ class MfbOut extends Component {
         });
     }
     // 提交数据
-    submitData() {
+    submitData = () => {
         this.setState({password: this.state.password}, () => {
             http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/do/20210101', {
                 code: '',
                 amount: this.state.amount,
                 password: this.state.password,
             }).then((res) => {
-                props.navigation.navigate('asset');
+                this.props.navigation.navigate('TradeProcessing', res.result.txn_id);
             });
         });
-    }
+    };
     render_bank() {
         const {data, bankSelect} = this.state;
         const {pay_methods} = data;

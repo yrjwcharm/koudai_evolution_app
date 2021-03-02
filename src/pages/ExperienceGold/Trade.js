@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 18:31:41
+ * @LastEditTime: 2021-03-02 12:10:09
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -27,7 +27,7 @@ export default function Trade(props) {
         setExpand(!expand);
     };
     const passwordInput = () => {
-        passwordModal.show();
+        passwordModal.current.show();
         setShowMark(true);
     };
     const submitData = () => {};
@@ -105,6 +105,7 @@ export default function Trade(props) {
                 style={{marginHorizontal: text(16), backgroundColor: '#D4AC6F', marginTop: text(20)}}
             />
             <PasswordModal
+                ref={passwordModal}
                 onDone={submitData}
                 onClose={() => {
                     setShowMark(false);

@@ -23,7 +23,7 @@ export default function MfbIndex(props) {
     const [activeSections, setActiveSections] = useState([0]);
     const updateSections = (activeSections) => setActiveSections(activeSections);
     const rightPress = () => {
-        props.navigation.navigate(data.part4.url);
+        props.navigation.navigate('TradeRecord');
     };
     useEffect(() => {
         Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/wallet/holding/20210101').then((res) => {

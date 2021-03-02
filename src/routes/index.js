@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 14:58:41
+ * @LastEditTime: 2021-03-02 16:39:45
  * @Description:路由表
  */
 import React from 'react';
@@ -109,12 +109,15 @@ import BankList from '../pages/BankPages/BankList'; //银行列表
 import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
 import ExperienceGoldTrade from '../pages/ExperienceGold/Trade'; //体验金购买
 import AssetNav from '../pages/PE/AssetNav'; //私募净值
+import ProductIntro from '../pages/Portfolio/Detail/ProductIntro'; //产品说明页
+import BankWithdraw from '../pages/BankPages/BankWithdraw'; //银行提现
+import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智能组合
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="PlanDetail"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -403,6 +406,9 @@ export default function AppStack() {
             />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
+            <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
+            <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
+            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投智能组合'}} />
         </Stack.Navigator>
     );
 }

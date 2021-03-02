@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 19:00:47
+ * @LastEditTime: 2021-03-01 15:38:45
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -17,6 +17,7 @@ import Http from '../../services/';
 import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
+import Picker from 'react-native-picker';
 const deviceWidth = Dimensions.get('window').width;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -52,6 +53,9 @@ export default class TradeRedeem extends Component {
                 data: res.result,
             });
         });
+    }
+    componentWillUnmount() {
+        Picker.hide();
     }
     getPlanInfo() {
         const {tableData} = this.state;
@@ -122,6 +126,30 @@ export default class TradeRedeem extends Component {
             text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             this.setState({inputValue: text, btnClick: true});
         }
+    };
+    selectAge = () => {
+        Picker.init({
+            pickerTitleText: '您赎回的原因？',
+            pickerCancelBtnText: '取消',
+            pickerConfirmBtnText: '确定',
+            selectedValue: [1],
+            pickerBg: [255, 255, 255, 1],
+            pickerData: [
+                '收益不好',
+                '需要用钱',
+                '最近行情不好',
+                'APP体验不好',
+                '投资顾问服务不满意',
+                '转投其他产品',
+                '其他',
+            ],
+            pickerFontColor: [33, 33, 33, 1],
+            onPickerConfirm: (pickedValue, pickedIndex) => {
+                console.log(pickedValue, pickedIndex);
+                this.passwordInput();
+            },
+        });
+        Picker.show();
     };
     render() {
         const {data, tableData, toggleList, btnClick} = this.state;
@@ -245,7 +273,7 @@ export default class TradeRedeem extends Component {
                     <FixedButton
                         title={data?.button?.text}
                         disabled={data?.button?.avail == 0 || btnClick == false}
-                        onPress={this.passwordInput}
+                        onPress={this.selectAge}
                     />
                 )}
             </View>

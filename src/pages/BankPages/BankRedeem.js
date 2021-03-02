@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-29 18:58:14
+ * @LastEditTime: 2021-03-01 17:00:21
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -27,24 +27,51 @@ class BankRedeem extends Component {
             showMask: false,
             tips: '',
             enable: false,
+            items: [],
         };
     }
 
     UNSAFE_componentWillMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/info/20210101').then((data) => {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/info/20210101', {
+            asset_code: 'BK.SX0001H',
+        }).then((data) => {
             this.setState({
                 data: data.result,
+                items: data.result.redeem_info.items,
             });
         });
     }
-    onInput = (amount) => {
-        this.setState({amount});
+    onInput = (val) => {
+        const {data, amount, tips} = this.state;
+        this.getPlanInfo();
+        if (amount > data.amount) {
+            this.setState({
+                tips: `'最大可支取金额为' + ${data.amount} + '元'`,
+                enable: false,
+            });
+        } else if (data.min_amount && amount < data.amount && data.amount - amount < data.min_amount) {
+            this.setState({
+                amount: data.amount.toString(),
+                tips: `支取后剩余金额小于最低可持有金额${data.min_amount}元, 将进行全部赎回`,
+                enable: false,
+            });
+        } else {
+            this.setState({
+                tips: '',
+                amount: val,
+                enable: true,
+            });
+        }
     };
     submit = () => {
         this.passwordModal.show();
         this.setState({showMask: true});
     };
-    allAmount = () => {};
+    allAmount = () => {
+        this.setState({
+            amount: this.state.data.amount.toString(),
+        });
+    };
 
     // 提交数据
     submitData() {
@@ -58,12 +85,19 @@ class BankRedeem extends Component {
             });
         });
     }
-
+    getPlanInfo() {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
+            asset_code: 'BK.SX0001H',
+        }).then((res) => {
+            this.setState({
+                items: res.result.part3.items,
+            });
+        });
+    }
     render_buy() {
-        const {amount, data, tips} = this.state;
-        const {withdraw_info} = data;
+        const {amount, data, tips, items} = this.state;
         return (
-            <ScrollView style={{color: Colors.bgColor}}>
+            <ScrollView style={{color: Colors.bgColor, flex: 1}}>
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
@@ -73,19 +107,23 @@ class BankRedeem extends Component {
                         this.setState({showMask: false});
                     }}
                 />
-                <View style={[Style.flexBetween, {paddingHorizontal: px(16), paddingTop: px(12)}]}>
-                    <Text style={Style.descSty}>当前持仓(元) 200.52</Text>
-                    <Text style={Style.descSty}>本金金额(元) 100.52</Text>
+                <View style={[Style.flexBetween, {paddingHorizontal: px(16), padding: px(12)}]}>
+                    <Text style={Style.descSty}>
+                        {data.header[0][0]} {data.header[0][1]}
+                    </Text>
+                    <Text style={Style.descSty}>
+                        {data.header[1][0]} {data.header[1][1]}
+                    </Text>
                 </View>
                 <View style={styles.buyCon}>
-                    <Text style={{fontSize: px(16), marginVertical: px(4)}}>{withdraw_info.text}</Text>
+                    <Text style={{fontSize: px(16), marginVertical: px(4)}}>{data.redeem_info.text}</Text>
                     <View style={styles.buyInput}>
                         <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                         <View style={{flex: 1}}>
                             <TextInput
                                 keyboardType="numeric"
                                 style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
-                                placeholder={withdraw_info?.placeholder}
+                                placeholder={data.redeem_info?.hidden_text}
                                 placeholderTextColor={'#CCD0DB'}
                                 onChangeText={(value) => {
                                     this.onInput(value);
@@ -95,27 +133,32 @@ class BankRedeem extends Component {
                             <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
                         <TouchableOpacity onPress={this.allAmount}>
-                            <Text style={{color: '#0051CC'}}>{withdraw_info?.button.text}</Text>
+                            <Text style={{color: '#0051CC'}}>{data.redeem_info?.btn}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-
                 <View style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
-                    <View style={styles.amount_wrap}>
-                        <Text style={Style.descSty}>预估银行利息金额</Text>
-                        <Text style={Style.descSty}>12.43</Text>
-                    </View>
+                    {items.length > 0 &&
+                        items.map((_item, _index) => {
+                            return (
+                                <View style={styles.amount_wrap} key={_index + '_item'}>
+                                    <Text style={styles.desc_sty}>{_item[0]}</Text>
+                                    <Text style={styles.desc_sty}>{_item[1]}</Text>
+                                </View>
+                            );
+                        })}
                 </View>
+                <Text style={[Style.descSty, {padding: px(14)}]}>{data.feeText}</Text>
             </ScrollView>
         );
     }
 
     render() {
         const {showMask, data, enable} = this.state;
-        const {button, withdraw_info} = data;
+        const {button} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
-                {withdraw_info && this.render_buy()}
+                {Object.keys(data).length > 0 && this.render_buy()}
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
@@ -176,6 +219,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingVertical: px(16),
+    },
+    desc_sty: {
+        color: '#545968',
+        fontSize: px(13),
     },
 });
 

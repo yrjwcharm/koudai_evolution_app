@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:08:46
+ * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
@@ -17,6 +17,7 @@ import Header from '../../../components/NavBar';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import {baseChart, histogram, pie} from './ChartOption';
+import {baseAreaChart} from '../components/ChartOption';
 import ChartData from './data.json';
 import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
@@ -25,8 +26,10 @@ import FixedBtn from '../components/FixedBtn';
 export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y1');
-    const rightPress = () => {};
+    const [period, setPeriod] = useState();
+    const rightPress = () => {
+        props.navigation.navigate('ProductIntro');
+    };
     const year = [
         {title: '近1年', period: 'y1'},
         {title: '近3年', period: 'y3'},
@@ -37,7 +40,6 @@ export default function DetailAccount(props) {
 
     const changeTab = (num, period) => {
         setPeriod(period);
-        setChartData(num);
     };
     const jumpPage = (url) => {
         if (!url) {
@@ -50,9 +52,171 @@ export default function DetailAccount(props) {
             upid: 1,
         }).then((res) => {
             setData(res.result);
+            setPeriod(res.result.period);
         });
-        setChartData(ChartData);
-    }, []);
+        setChartData([
+            {
+                date: '2021-01-29',
+                type: '本基金',
+                value: 0.0054,
+            },
+            {
+                date: '2021-01-29',
+                type: '同类平均',
+                value: 0.0037,
+            },
+            {
+                date: '2021-02-01',
+                type: '本基金',
+                value: 0.0154,
+            },
+            {
+                date: '2021-02-01',
+                type: '同类平均',
+                value: 0.0132,
+            },
+            {
+                date: '2021-02-02',
+                type: '本基金',
+                value: 0.007,
+            },
+            {
+                date: '2021-02-02',
+                type: '同类平均',
+                value: 0.0037,
+            },
+            {
+                date: '2021-02-03',
+                type: '本基金',
+                value: -0.0004,
+            },
+            {
+                date: '2021-02-03',
+                type: '同类平均',
+                value: -0.0022,
+            },
+            {
+                date: '2021-02-04',
+                type: '本基金',
+                value: -0.0079,
+            },
+            {
+                date: '2021-02-04',
+                type: '同类平均',
+                value: -0.0132,
+            },
+            {
+                date: '2021-02-05',
+                type: '本基金',
+                value: -0.0165,
+            },
+            {
+                date: '2021-02-05',
+                type: '同类平均',
+                value: -0.0169,
+            },
+            {
+                date: '2021-02-08',
+                type: '本基金',
+                value: -0.0107,
+            },
+            {
+                date: '2021-02-08',
+                type: '同类平均',
+                value: -0.0096,
+            },
+            {
+                date: '2021-02-09',
+                type: '本基金',
+                value: 0.0001,
+            },
+            {
+                date: '2021-02-09',
+                type: '同类平均',
+                value: -0.0013,
+            },
+            {
+                date: '2021-02-10',
+                type: '本基金',
+                value: 0.0008,
+            },
+            {
+                date: '2021-02-10',
+                type: '同类平均',
+                value: -0.0006,
+            },
+            {
+                date: '2021-02-18',
+                type: '本基金',
+                value: -0.0278,
+            },
+            {
+                date: '2021-02-18',
+                type: '同类平均',
+                value: -0.0312,
+            },
+            {
+                date: '2021-02-19',
+                type: '本基金',
+                value: -0.0313,
+            },
+            {
+                date: '2021-02-19',
+                type: '同类平均',
+                value: -0.033,
+            },
+            {
+                date: '2021-02-22',
+                type: '本基金',
+                value: -0.0216,
+            },
+            {
+                date: '2021-02-22',
+                type: '同类平均',
+                value: -0.0222,
+            },
+            {
+                date: '2021-02-23',
+                type: '本基金',
+                value: -0.0125,
+            },
+            {
+                date: '2021-02-23',
+                type: '同类平均',
+                value: -0.0162,
+            },
+            {
+                date: '2021-02-24',
+                type: '本基金',
+                value: -0.0144,
+            },
+            {
+                date: '2021-02-24',
+                type: '同类平均',
+                value: -0.0178,
+            },
+            {
+                date: '2021-02-25',
+                type: '本基金',
+                value: -0.0251,
+            },
+            {
+                date: '2021-02-25',
+                type: '同类平均',
+                value: -0.0301,
+            },
+            {
+                date: '2021-02-26',
+                type: '本基金',
+                value: -0.0378,
+            },
+            {
+                date: '2021-02-26',
+                type: '同类平均',
+                value: -0.0426,
+            },
+        ]);
+    }, [period]);
 
     return (
         <>
@@ -100,7 +264,14 @@ export default function DetailAccount(props) {
                                 </Text>
                             </View>
                         </View>
-                        <Chart initScript={baseChart(chartData)} />
+                        <Chart
+                            initScript={baseAreaChart(
+                                chartData,
+                                ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor],
+                                true
+                            )}
+                            data={chartData}
+                        />
                         <View
                             style={{
                                 flexDirection: 'row',
