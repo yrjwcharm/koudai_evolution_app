@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-07 19:14:09
+ * @LastEditTime: 2021-02-27 17:10:29
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {
     width: deviceWidth - px(32),
-    height: px(190),
+    height: px(168),
     color: '#E3E6EE',
     border: 14,
     radius: 10,
@@ -27,9 +27,10 @@ export default function QuestionCard({data = []}) {
     return (
         <>
             {data.map((item, index) => {
+                let height = item?.question_info?.title.length > 18 ? px(190) : px(168);
                 return (
-                    <BoxShadow setting={shadow} key={index}>
-                        <View style={styles.ques_card}>
+                    <BoxShadow setting={{...shadow, height}} key={index}>
+                        <View style={[styles.ques_card, {height}]}>
                             <FastImage
                                 style={styles.big_ques}
                                 source={require('../../assets/img/article/big_ques.png')}
@@ -72,7 +73,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: Colors.defaultColor,
         lineHeight: px(20),
-        height: px(44),
     },
     article_content: {
         fontSize: px(13),
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
         lineHeight: px(20),
     },
     content: {
-        fontSize: px(12),
         backgroundColor: '#F5F6FA',
         padding: px(10),
         borderRadius: 8,
@@ -97,7 +96,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: Space.cardPadding,
         paddingTop: px(20),
-        height: px(190),
         // marginBottom: px(12),
     },
 });

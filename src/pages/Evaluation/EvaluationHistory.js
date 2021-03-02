@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-30 18:38:37
+ * @LastEditTime: 2021-03-02 15:05:01
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -13,6 +13,8 @@ import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
 import http from '../../services';
+import QuestionBtn from './components/QuestionBtn';
+import Robot from './components/Robot';
 export class planningHistory extends Component {
     state = {
         data: '',
@@ -43,11 +45,7 @@ export class planningHistory extends Component {
                 />
                 {/* 重新规划 */}
                 <View style={styles.container}>
-                    <Animatable.Image
-                        animation="rotate"
-                        style={[styles.robot]}
-                        source={require('../../assets/img/robot.png')}
-                    />
+                    <Robot />
                     {title ? <Text style={styles.name}>{title}</Text> : null}
                     <Animatable.View animation="fadeInUp">
                         {plan_list && plan_list.length > 0
@@ -97,18 +95,15 @@ export class planningHistory extends Component {
                               })
                             : null}
                     </Animatable.View>
-                    <Animatable.View animation="fadeInRight" style={[styles.question_con]}>
-                        {button ? (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    this.jumpNext(button.url);
-                                }}
-                                style={[styles.ques_btn, Style.flexCenter]}>
-                                <Text style={[styles.btn_text]}>{button.text}</Text>
-                            </TouchableOpacity>
-                        ) : null}
-                    </Animatable.View>
+                    {button && (
+                        <QuestionBtn
+                            onPress={() => {
+                                this.jumpNext(button.url);
+                            }}
+                            style={{marginTop: px(16)}}
+                            button={button}
+                        />
+                    )}
                 </View>
             </>
         );
@@ -128,15 +123,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: px(24),
     },
-    robot: {
-        width: px(86),
-        height: px(86),
-        marginLeft: px(-10),
-        marginBottom: px(14),
-        position: 'relative',
-        zIndex: 10,
-        backgroundColor: '#fff',
-    },
+
     card: {
         padding: px(16),
         backgroundColor: '#fff',
@@ -163,24 +150,6 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         fontFamily: Font.numFontFamily,
         marginRight: 1,
-    },
-    question_con: {
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        marginTop: px(32),
-    },
-    ques_btn: {
-        borderRadius: px(19),
-        borderWidth: 1,
-        borderColor: Colors.btnColor,
-        height: px(34),
-        paddingHorizontal: px(24),
-        minWidth: px(126),
-        marginBottom: px(12),
-    },
-    btn_text: {
-        fontSize: px(13),
-        color: Colors.btnColor,
     },
 });
 

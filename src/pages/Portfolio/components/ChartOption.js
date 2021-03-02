@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-02-07 16:45:04
  * @Description: 基金相关图表配置
  */
-export const baseAreaChart = (data, colors = null, percent = false) => `
+export const baseAreaChart = (data, colors = null, percent = false, tofixed = 2) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
@@ -21,7 +21,7 @@ export const baseAreaChart = (data, colors = null, percent = false) => `
     tickCount: 5,
     range: [ 0, 1 ],
     formatter: (value) => {
-      return ${percent ? '(value * 100).toFixed(2) + "%"' : 'value'};
+      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
   });
   chart.axis('date', {
@@ -79,7 +79,7 @@ export const baseAreaChart = (data, colors = null, percent = false) => `
 })();
 `;
 
-export const baseLineChart = (data, colors = null, percent = false) => `
+export const baseLineChart = (data, colors = null, percent = false, tofixed = 2) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
@@ -95,7 +95,7 @@ export const baseLineChart = (data, colors = null, percent = false) => `
     tickCount: 5,
     range: [ 0, 1 ],
     formatter: (value) => {
-      return ${percent ? '(value * 100).toFixed(2) + "%"' : 'value'};
+      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
   });
   chart.axis('date', {

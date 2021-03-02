@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-08 15:47:24
+ * @LastEditTime: 2021-03-01 20:25:44
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -14,103 +14,91 @@ import Tab from '../../components/TabBar';
 import {Chart} from '../../components/Chart';
 import {baseAreaChart, baseLineChart} from './components/ChartOption';
 import Toast from '../../components/Toast';
-import ChartData from './Detail/data.json';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import {useJump} from '../../components/hooks';
 
 const FundDetail = ({navigation, route}) => {
+    const jump = useJump();
     const [data, setData] = useState({});
     const [chart1, setChart1] = useState({});
     const [chart2, setChart2] = useState({});
+    const [chart3, setChart3] = useState({});
     const [curTab, setCurTab] = useState(0);
     const [period, setPeriod] = useState('m1');
-    const [avg_inc, setAvgInc] = useState('');
-    const [date, setDate] = useState('');
-    const [fund_inc, setFundInc] = useState('');
+    const [summary, setSummary] = useState([]);
 
     const init = useCallback(() => {
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/detail/20210101', {
-            fund_code: route.params.code,
-            // fund_code: '000217',
+            fund_code: route.params?.code,
+            // fund_code: '006322',
         }).then((res) => {
             setData(res.result);
         });
     }, [route]);
     const getChart1 = useCallback(() => {
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/inc/20210101', {
-            fund_code: route.params.code,
-            // fund_code: '000217',
+            fund_code: route.params?.code,
+            // fund_code: '006322',
             period,
         }).then((res) => {
             setChart1(res.result);
-            setAvgInc(res.result.avg_inc);
-            setDate(res.result.date);
-            setFundInc(res.result.fund_inc);
+            setSummary(res.result.summary);
         });
     }, [route, period]);
     const getChart2 = useCallback(() => {
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/trend/20210101', {
-            fund_code: route.params.code,
-            // fund_code: '000217',
+            fund_code: route.params?.code,
+            // fund_code: '006322',
             period,
         }).then((res) => {
             setChart2(res.result);
+            setSummary(res.result.summary);
+        });
+    }, [route, period]);
+    const getChart3 = useCallback(() => {
+        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/monetary/20210101', {
+            fund_code: route.params?.code,
+            // fund_code: '006322',
+            period,
+        }).then((res) => {
+            setChart3(res.result);
+            setSummary(res.result.summary);
         });
     }, [route, period]);
     const onChangeTab = useCallback((i) => {
         setCurTab(i);
         setPeriod('m1');
     }, []);
-    const jump = useCallback(
-        ({url, group}) => {
-            if (url) {
-                if (url.type === 1) {
-                    navigation.navigate({name: url.path, params: url.params || {}});
-                } else if (url.type === 2) {
-                    Linking.canOpenURL(url.path)
-                        .then((supported) => {
-                            if (!supported) {
-                                return Toast.show('您的设备不支持打开网址');
-                            }
-                            return Linking.openURL(url.path);
-                        })
-                        .catch((err) => Toast.show(err));
-                } else if (url.type === 3) {
-                    navigation.navigate({
-                        name: 'OpenPdf',
-                        params: {url: url.path, title: `${data.part1.fund.name}${group}`},
-                    });
-                }
-            }
-        },
-        [navigation, data]
-    );
     const renderChart = useCallback(() => {
         return (
             <>
                 <View style={[Style.flexRow]}>
-                    <View style={styles.legendItem}>
-                        <Text style={styles.legendTitle}>{date}</Text>
-                        <Text style={styles.legendDesc}>时间</Text>
-                    </View>
-                    <View style={styles.legendItem}>
-                        <Text style={[styles.legendTitle, {color: getColor(fund_inc)}]}>{fund_inc}</Text>
-                        <Text>
-                            <FontAwesome5 name={'dot-circle'} color={Colors.red} size={12} />
-                            <Text style={styles.legendDesc}> 本基金</Text>
-                        </Text>
-                    </View>
-                    <View style={styles.legendItem}>
-                        <Text style={[styles.legendTitle, {color: getColor(avg_inc)}]}>{avg_inc}</Text>
-                        <Text>
-                            <FontAwesome5 name={'dot-circle'} color={Colors.descColor} size={12} />
-                            <Text style={styles.legendDesc}> 同类平均</Text>
-                        </Text>
-                    </View>
+                    {summary.map((item, index) => {
+                        return (
+                            <View key={item.key} style={styles.legendItem}>
+                                <Text style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}>
+                                    {item.val}
+                                </Text>
+                                <View style={Style.flexRow}>
+                                    {index !== 0 && (
+                                        <FontAwesome5
+                                            name={'dot-circle'}
+                                            color={index === 1 ? Colors.red : Colors.descColor}
+                                            size={12}
+                                        />
+                                    )}
+                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                        {item.key}
+                                    </Text>
+                                </View>
+                            </View>
+                        );
+                    })}
                 </View>
                 <View style={{height: 260}}>
-                    {data.part2 && data.part2.length === 2 ? (
+                    {data.part1 && !data.part1.fund.is_monetary ? (
                         <>
                             {curTab === 0 ? (
                                 <Chart
@@ -122,7 +110,7 @@ const FundDetail = ({navigation, route}) => {
                                 />
                             ) : (
                                 <Chart
-                                    initScript={baseLineChart(chart2.chart, [Colors.red], true)}
+                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
                                     data={chart2.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
@@ -132,8 +120,8 @@ const FundDetail = ({navigation, route}) => {
                         </>
                     ) : (
                         <Chart
-                            initScript={baseLineChart(chart2.chart, [Colors.red, Colors.lightBlackColor], true)}
-                            data={chart2.chart}
+                            initScript={baseLineChart(chart3.chart, [Colors.red, Colors.lightBlackColor], true)}
+                            data={chart3.chart}
                             onChange={onChartChange}
                             onHide={onHide}
                             style={{width: '100%'}}
@@ -161,14 +149,14 @@ const FundDetail = ({navigation, route}) => {
             </>
         );
     }, [
+        data.part1,
         data.part2,
         curTab,
         period,
         chart1.chart,
         chart2.chart,
-        avg_inc,
-        date,
-        fund_inc,
+        chart3.chart,
+        summary,
         getColor,
         onChartChange,
         onHide,
@@ -190,12 +178,31 @@ const FundDetail = ({navigation, route}) => {
         ({items}) => {
             // console.log(items);
             if (curTab === 0) {
-                setAvgInc(items[1] && items[1].value);
-                setDate(items[0] && items[0].title);
-                setFundInc(items[0] && items[0].value);
+                setSummary((prev) => [
+                    {
+                        ...prev[0],
+                        val: items[0]?.title,
+                    },
+                    {
+                        ...prev[1],
+                        val: items[0]?.value,
+                    },
+                    {
+                        ...prev[2],
+                        val: items[1]?.value,
+                    },
+                ]);
             } else {
-                setDate(items[0] && items[0].title);
-                setFundInc(items[0] && items[0].value);
+                setSummary((prev) => [
+                    {
+                        ...prev[0],
+                        val: items[0]?.title,
+                    },
+                    {
+                        ...prev[1],
+                        val: items[0]?.value,
+                    },
+                ]);
             }
         },
         [curTab]
@@ -204,16 +211,16 @@ const FundDetail = ({navigation, route}) => {
     const onHide = useCallback(
         ({items}) => {
             if (curTab === 0) {
-                setAvgInc(chart1.avg_inc);
-                setDate(chart1.date);
-                setFundInc(chart1.fund_inc);
+                if (data.part1 && !data.part1.fund.is_monetary) {
+                    setSummary(chart1.summary);
+                } else {
+                    setSummary(chart3.summary);
+                }
             } else {
-                setAvgInc(chart2.avg_inc);
-                setDate(chart2.date);
-                setFundInc(chart2.fund_inc);
+                setSummary(chart2.summary);
             }
         },
-        [curTab, chart1, chart2]
+        [data.part1, curTab, chart1.summary, chart2.summary, chart3.summary]
     );
 
     useEffect(() => {
@@ -221,15 +228,15 @@ const FundDetail = ({navigation, route}) => {
     }, [init]);
     useEffect(() => {
         if (curTab === 0) {
-            if (data.part2 && data.part2.length === 2) {
+            if (data.part1 && !data.part1.fund.is_monetary) {
                 getChart1();
             } else {
-                getChart2();
+                getChart3();
             }
         } else {
             getChart2();
         }
-    }, [data, curTab, getChart1, getChart2]);
+    }, [data.part1, curTab, getChart1, getChart2, getChart3]);
     return (
         Object.keys(data).length > 0 && (
             <ScrollView style={styles.container} scrollIndicatorInsets={{right: 1}}>
@@ -247,10 +254,7 @@ const FundDetail = ({navigation, route}) => {
                                 style={[
                                     styles.inc_yearly,
                                     {
-                                        color:
-                                            parseFloat(data.part1.yield ? data.part1.yield.val : 0) >= 0
-                                                ? Colors.red
-                                                : Colors.green,
+                                        color: getColor(data.part1.yield?.val),
                                     },
                                 ]}>
                                 {data.part1.yield && data.part1.yield.val}
@@ -347,7 +351,7 @@ const FundDetail = ({navigation, route}) => {
                                         <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                                     </TouchableOpacity>
                                 )}
-                                {item.items.length > 1 && (
+                                {item.items.length >= 1 && (
                                     <View style={[{paddingHorizontal: Space.padding}]}>
                                         <Text
                                             style={[

@@ -1,5 +1,13 @@
+/*
+ * @Date: 2021-02-27 11:31:53
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-02-27 14:37:09
+ * @Description:
+ */
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
+import Toast from '../components/Toast';
 const upload = (params, succ, failed) => {
     const PATH = Platform.OS === 'android' ? params.uri : params.uri.replace('file:///', '');
     RNFetchBlob.fetch(
@@ -19,10 +27,10 @@ const upload = (params, succ, failed) => {
     )
         .then((resp) => {
             console.log(resp, 'resp');
-            succ && succ(resp.data);
+            succ && succ(JSON.parse(resp.data));
         })
         .catch((err) => {
-            console.log(err, 'err');
+            Toast.show(err);
             failed && failed();
         });
 };

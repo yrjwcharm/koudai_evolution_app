@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-28 17:34:43
+ * @LastEditTime: 2021-03-02 15:20:24
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -23,12 +23,16 @@ import {
 } from 'react-native';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px, isIphoneX, deviceHeight as height} from '../../utils/appUtil';
+import {px, isIphoneX, deviceHeight as height, deviceWidth} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import * as Animatable from 'react-native-animatable';
 import HTML from '../../components/RenderHtml';
 import http from '../../services';
+import Ruler from '../../components/AnimateRuler';
+import QuestionBtn from './components/QuestionBtn';
+import Robot from './components/Robot';
 const bottom = isIphoneX() ? 84 : 50;
+const defaultAge = 25;
 export class question extends Component {
     state = {
         questions: [],
@@ -47,6 +51,7 @@ export class question extends Component {
         finishTest: false,
         //点击tag 回退的步数
         previousCount: 0,
+        loading_text: '',
     };
     //动画进行时不能点击下一题
     canNextClick = false;
@@ -59,6 +64,9 @@ export class question extends Component {
                 this.getNextQuestion();
             });
         });
+    }
+    componentWillUnmount() {
+        this.clearValueTimer && clearTimeout(this.clearValueTimer);
     }
     getNextQuestion = (questionnaire_cate, action, history, startAnimation) => {
         const {summary_id, questions, current} = this.state;
@@ -93,7 +101,7 @@ export class question extends Component {
         if (action == 'submit') {
             this.setState({finishTest: true});
             setTimeout(() => {
-                this.props.navigation.navigate('PlanResult');
+                this.props.navigation.replace('EvaluationResult');
             }, 2000);
         } else {
             this.setState({
@@ -126,8 +134,12 @@ export class question extends Component {
                     });
                     this.quesBtnView.fadeInRight(500);
                 });
-                if (!value && questions[this.state.current].type == 3) {
-                    this.setState({inputBtnCanClick: false});
+                if (questions[this.state.current].style == 'age_cursor') {
+                    this.setState({value: defaultAge, inputBtnCanClick: true});
+                } else {
+                    if (!value && questions[this.state.current].type == 3) {
+                        this.setState({inputBtnCanClick: false});
+                    }
                 }
                 // 输入框动画结束后聚焦
                 setTimeout(() => {
@@ -291,7 +303,6 @@ export class question extends Component {
         this.setState(
             {
                 questions: ques,
-                value: '',
             },
             () => {
                 //问题id
@@ -305,7 +316,17 @@ export class question extends Component {
                     questionnaire_cate,
                     latency: this.endTime - this.startTime,
                 };
-                http.post('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/report/20210101', params);
+                http.post(
+                    'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/report/20210101',
+                    params
+                ).then((res) => {
+                    if (option.action == 'submit') {
+                        this.setState({loading_text: res?.result?.loading_text});
+                    }
+                });
+                this.clearValueTimer = setTimeout(() => {
+                    this.setState({value: ''});
+                }, 200);
             }
         );
     };
@@ -332,12 +353,26 @@ export class question extends Component {
         }
         return true;
     };
-    inputValue = (value) => {
+    inputValue = (value, type) => {
         this.setState({value});
-        this.checkInput(value);
+        if (type && type == 'age') {
+            this.setState({inputBtnCanClick: true});
+        } else {
+            this.checkInput(value);
+        }
     };
     render() {
-        const {translateY, opacity, questions, current, value, warn, inputBtnCanClick, finishTest} = this.state;
+        const {
+            translateY,
+            opacity,
+            questions,
+            current,
+            value,
+            warn,
+            inputBtnCanClick,
+            finishTest,
+            loading_text,
+        } = this.state;
         const current_ques = questions[current];
         let previousTest = current - 1;
         let tagList = [];
@@ -388,11 +423,7 @@ export class question extends Component {
                             keyboardVerticalOffset={100}
                             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                             style={[styles.container, {height: height - this.header.navBarHeight - bottom}]}>
-                            <Animatable.Image
-                                animation="rotate"
-                                style={[styles.robot]}
-                                source={require('../../assets/img/robot.png')}
-                            />
+                            <Robot />
                             <Animated.View
                                 style={{transform: [{translateY}], opacity, marginTop: px(24)}}
                                 onLayout={this.onLayout}>
@@ -547,25 +578,22 @@ export class question extends Component {
                                                     <Text style={styles.tip_text}>{current_ques.tip}</Text>
                                                 </TouchableOpacity>
                                             ) : null}
-                                            {/* {current_ques.type == 3 && current_ques.style == 'age_cursor' ? (
-                                        <View style={{backgroundColor: 'red'}}>
-                                            <Text>输入</Text>
-                                            <Text>输入年龄</Text>
-                                        </View>
-                                    ) : null} */}
-                                            {/* <>
-                                        <View style={[styles.input_container, Style.flexRow]}>
-                                            <Text style={styles.input_icon}>¥</Text>
-                                            <TextInput
-                                                style={styles.input}
-                                                value={value}
-                                                keyboardType={'number-pad'}
-                                                onChangeText={this.inputValue}
-                                            />
-                                        </View>
-                                        {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
-                                    </> */}
-                                            {current_ques.type == 3 ? (
+                                            {current_ques.style == 'age_cursor' ? (
+                                                <Ruler
+                                                    width={deviceWidth - px(32)}
+                                                    height={170}
+                                                    onChangeValue={(age) => {
+                                                        this.inputValue(age, 'age');
+                                                    }}
+                                                    step={2}
+                                                    defaultValue={value || 25}
+                                                    minimum={18}
+                                                    maximum={100}
+                                                    unit="岁"
+                                                />
+                                            ) : null}
+
+                                            {current_ques.style == 'input_money' ? (
                                                 <>
                                                     <View style={[styles.input_container, Style.flexRow]}>
                                                         <Text style={styles.input_icon}>¥</Text>
@@ -579,13 +607,18 @@ export class question extends Component {
                                                             onChangeText={this.inputValue}
                                                         />
                                                     </View>
+                                                    {!warn && value.length > 4 ? (
+                                                        <Text style={{fontSize: px(16), color: Colors.lightGrayColor}}>
+                                                            {value / 10000}万
+                                                        </Text>
+                                                    ) : null}
                                                     {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
                                                 </>
                                             ) : null}
                                         </>
                                     ) : (
                                         <Text style={[styles.name, {fontSize: px(20), lineHeight: px(28)}]}>
-                                            根据您的相关信息，正在为您定制养老计划…
+                                            {loading_text}
                                         </Text>
                                     )}
                                 </Animatable.View>
@@ -597,35 +630,29 @@ export class question extends Component {
                                         style={[styles.question_con, {opacity: 1}]}>
                                         {current_ques?.options.map((option, index) => {
                                             return (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
+                                                <QuestionBtn
                                                     key={index}
+                                                    button={{text: option.content}}
                                                     onPress={() => {
                                                         this.jumpNext(option);
                                                     }}
                                                     style={[
-                                                        styles.ques_btn,
-                                                        Style.flexCenter,
                                                         current_ques.answer
                                                             ? current_ques.answer == option.id
                                                                 ? styles.btn_active
                                                                 : styles.btn_unactive
                                                             : null,
                                                         !inputBtnCanClick && styles.disabled,
-                                                    ]}>
-                                                    <Text
-                                                        style={[
-                                                            styles.btn_text,
-                                                            current_ques.answer
-                                                                ? current_ques.answer == option.id
-                                                                    ? styles.btn_active
-                                                                    : styles.btn_unactive_text
-                                                                : null,
-                                                            !inputBtnCanClick && styles.disabled,
-                                                        ]}>
-                                                        {option.content}
-                                                    </Text>
-                                                </TouchableOpacity>
+                                                    ]}
+                                                    textStyle={[
+                                                        current_ques.answer
+                                                            ? current_ques.answer == option.id
+                                                                ? styles.btn_active
+                                                                : styles.btn_unactive_text
+                                                            : null,
+                                                        !inputBtnCanClick && styles.disabled,
+                                                    ]}
+                                                />
                                             );
                                         })}
                                     </Animatable.View>
@@ -651,15 +678,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    robot: {
-        width: px(86),
-        height: px(86),
-        marginLeft: px(-10),
-        marginBottom: px(-10),
-        position: 'relative',
-        zIndex: 10,
-        backgroundColor: '#fff',
-    },
+
     name: {
         fontSize: px(16),
         color: Colors.defaultColor,
@@ -685,15 +704,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         marginTop: px(32),
     },
-    ques_btn: {
-        borderRadius: px(19),
-        borderWidth: 1,
-        borderColor: Colors.btnColor,
-        height: px(34),
-        paddingHorizontal: px(24),
-        minWidth: px(126),
-        marginBottom: px(12),
-    },
+
     btn_active: {
         backgroundColor: Colors.btnColor,
         color: '#fff',
@@ -705,14 +716,12 @@ const styles = StyleSheet.create({
     btn_unactive_text: {
         color: Colors.darkGrayColor,
     },
-    btn_text: {
-        fontSize: px(13),
-        color: Colors.btnColor,
-    },
+
     input_container: {
         borderBottomWidth: 0.5,
         borderColor: '#0051CC',
         marginTop: px(24),
+        marginBottom: px(8),
     },
     input: {
         height: px(60),
@@ -728,7 +737,6 @@ const styles = StyleSheet.create({
     },
     warn_text: {
         fontSize: px(16),
-        marginTop: px(8),
         color: Colors.red,
     },
     invest_text: {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 18:51:24
+ * @LastEditTime: 2021-02-27 11:53:08
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -129,10 +129,11 @@ class TradeBuy extends Component {
     };
     /**
      * @description: 购买按钮
-     * @param {*} passwordInput
+     * @param {*} buyClick
      * @return {*}
      */
-    passwordInput = () => {
+    buyClick = () => {
+        global.LogTool('buy');
         this.passwordModal.show();
         this.setState({showMask: true});
     };
@@ -466,9 +467,7 @@ class TradeBuy extends Component {
                 ) : (
                     this.render_buy()
                 )}
-                {button && (
-                    <FixedButton title={button.text} disabled={button.avail == 0} onPress={this.passwordInput} />
-                )}
+                {button && <FixedButton title={button.text} disabled={button.avail == 0} onPress={this.buyClick} />}
                 {showMask && <Mask />}
             </View>
         );

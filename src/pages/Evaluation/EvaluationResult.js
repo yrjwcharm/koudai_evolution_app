@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-30 15:09:32
+ * @LastEditTime: 2021-03-02 15:05:17
  * @Description:规划结果页
  */
 
@@ -16,6 +16,8 @@ import * as Animatable from 'react-native-animatable';
 import http from '../../services';
 import LinearGradient from 'react-native-linear-gradient';
 import {Chart, chartOptions} from '../../components/Chart';
+import QuestionBtn from './components/QuestionBtn';
+import Robot from './components/Robot';
 const animation = [
     {
         type: 'top',
@@ -97,7 +99,7 @@ export default class planResult extends Component {
     }
     jumpNext = (url) => {
         Vibration.vibrate(10);
-        // this.props.navigation.replace('Question');
+        this.props.navigation.replace(url);
     };
     render() {
         const {title, plan_list, button, labels, chart} = this.state.data;
@@ -160,11 +162,7 @@ export default class planResult extends Component {
                 ) : (
                     //图表动画
                     <View style={styles.container}>
-                        <Animatable.Image
-                            animation="rotate"
-                            style={[styles.robot]}
-                            source={require('../../assets/img/robot.png')}
-                        />
+                        <Robot />
                         <Animatable.View animation="fadeInUp">
                             <View style={[Style.flexBetween, {alignItems: 'flex-end', paddingHorizontal: px(20)}]}>
                                 <View>
@@ -204,18 +202,12 @@ export default class planResult extends Component {
                                 </View>
                             </View>
                         </Animatable.View>
-                        <Animatable.View animation="fadeInRight" style={[styles.question_con]}>
-                            {button ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        this.jumpNext(button.url);
-                                    }}
-                                    style={[styles.ques_btn, Style.flexCenter]}>
-                                    <Text style={[styles.btn_text]}>{button.text}</Text>
-                                </TouchableOpacity>
-                            ) : null}
-                        </Animatable.View>
+                        <QuestionBtn
+                            style={{marginTop: px(16)}}
+                            onPress={() => {
+                                this.jumpNext('DetailProvideOrder');
+                            }}
+                        />
                     </View>
                 )}
             </>
@@ -235,15 +227,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: px(24),
     },
-    robot: {
-        width: px(86),
-        height: px(86),
-        marginLeft: px(10),
-        marginBottom: px(14),
-        position: 'relative',
-        zIndex: 10,
-        backgroundColor: '#fff',
-    },
+
     card: {
         marginHorizontal: px(20),
         padding: px(16),
@@ -267,29 +251,7 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
         marginRight: px(12),
     },
-    regular_text: {
-        fontSize: px(16),
-        fontFamily: Font.numFontFamily,
-        marginRight: 1,
-    },
-    question_con: {
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        marginTop: px(32),
-    },
-    ques_btn: {
-        borderRadius: px(19),
-        borderWidth: 1,
-        borderColor: Colors.btnColor,
-        height: px(34),
-        paddingHorizontal: px(24),
-        minWidth: px(126),
-        marginBottom: px(12),
-    },
-    btn_text: {
-        fontSize: px(13),
-        color: Colors.btnColor,
-    },
+
     lable_text: {
         color: '#fff',
         fontSize: px(12),

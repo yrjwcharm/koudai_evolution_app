@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 18:10:53
+ * @LastEditTime: 2021-02-27 16:43:31
  * @Description:主题及公共样式表
  */
 
@@ -69,9 +69,9 @@ export const Space = {
     //圆角
     borderRadius: text(8),
     // 边框线宽度
-    borderWidth: text(0.5),
+    borderWidth: 0.5,
     // 分割线高度
-    lineWidth: text(0.5),
+    lineWidth: 0.5,
     modelPadding: text(20),
     // 外阴影
     boxShadow: (color = '#E0E2E7', x = 0, y = text(2), opacity = 1, radius = text(8)) => ({

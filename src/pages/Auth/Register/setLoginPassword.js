@@ -2,14 +2,14 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 18:55:50
+ * @LastEditTime: 2021-02-27 16:12:55
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputView from '../input';
 import {px as text, handlePhone} from '../../../utils/appUtil';
-import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
+import {View, Text, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
 import {Colors} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
 import {Style, Font} from '../../../common/commonStyle';
@@ -108,7 +108,7 @@ export default class WechatLogin extends Component {
         const {code, password, btnClick, verifyText, code_btn_click} = this.state;
         console.log(code_btn_click);
         return (
-            <View style={styles.login_content}>
+            <ScrollView style={styles.login_content}>
                 <Text style={styles.title}>请输入短信验证码</Text>
                 <Text style={styles.title_desc}>验证码已发送至{handlePhone(this.props.route?.params?.mobile)}</Text>
                 <View style={[Style.flexRowCenter, styles.code_view]}>
@@ -148,7 +148,7 @@ export default class WechatLogin extends Component {
                     onPress={this.register}
                     style={{marginVertical: text(26)}}
                 />
-            </View>
+            </ScrollView>
         );
     }
 }

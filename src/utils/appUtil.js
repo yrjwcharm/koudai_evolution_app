@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 14:56:00
+ * @LastEditTime: 2021-03-02 11:21:23
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -50,14 +50,17 @@ const requestExternalStoragePermission = async (permission, grantedCallback, blo
     if (Platform.OS == 'ios') {
         check(permission)
             .then((result) => {
-                console.log(result);
                 switch (result) {
                     case RESULTS.UNAVAILABLE:
                         console.log('This feature is not available (on this device / in this context)');
                         break;
                     case RESULTS.DENIED:
                         request(permission).then((res) => {
-                            console.log(res);
+                            if (res == 'blocked') {
+                                blockCallBack
+                                    ? blockCallBack()
+                                    : openSettings().catch(() => console.warn('cannot open settings'));
+                            }
                         });
                         console.log('The permission has not been requested / is denied but requestable');
                         break;
@@ -164,6 +167,12 @@ const getTradeColor = (type) => {
     }
     return color;
 };
+const parseAmount = (value) => {
+    if (value.length > 4) {
+        return value / 10000 + '万';
+    }
+    return value;
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -186,4 +195,5 @@ export {
     handlePhone,
     tagColor,
     getTradeColor,
+    parseAmount,
 };

@@ -2,11 +2,11 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 11:25:34
+ * @LastEditTime: 2021-03-01 17:11:12
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, RefreshControl} from 'react-native';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,7 +19,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
-import {NavigationContainer, LinkingOptions, useLinkTo} from '@react-navigation/native';
+import {NavigationContainer, LinkingOptions, useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -48,18 +48,33 @@ const Index = (props) => {
     const inset = useRef(useSafeAreaInsets()).current;
     const linkTo = useLinkTo();
     const [data, setData] = useState(null);
-    const getData = useCallback(() => {
+    const isFocused = useIsFocused();
+
+    const [refreshing, setRefreshing] = useState(false);
+    const getData = useCallback((params) => {
+        params == 'refresh' && setRefreshing(true);
         http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/home/detail/20210101').then((res) => {
             setData(res.result);
+            setRefreshing(false);
         });
     }, []);
     useEffect(() => {
-        getData();
-    }, [getData]);
+        const unsubscribe = props.navigation.addListener('tabPress', (e) => {
+            isFocused && getData('refresh');
+        });
+        return unsubscribe;
+    }, [getData, props.navigation, isFocused]);
     const jumpPage = (url, params) => {
         // linkTo('/login');
         props.navigation.navigate(url, params);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            console.log('123');
+            getData();
+        }, [getData])
+    );
     return (
         <>
             {/* header */}
@@ -89,17 +104,21 @@ const Index = (props) => {
                 </View>
                 <Text style={styles.title_desc}>您的智能基金组合专家</Text>
             </View>
-            <ScrollView style={{backgroundColor: Colors.bgColor}}>
+            <ScrollView
+                style={{backgroundColor: Colors.bgColor}}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
                 <LinearGradient
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 1}}
                     colors={['#fff', Colors.bgColor]}
                     style={styles.container}>
                     <View style={styles.swiper}>
-                        {data?.banner_list && (
+                        {data?.banner_list ? (
                             <Swiper
                                 height={px(120)}
                                 autoplay
+                                loadMinimal={true}
                                 removeClippedSubviews={false}
                                 autoplayTimeout={4}
                                 paginationStyle={{
@@ -115,7 +134,7 @@ const Index = (props) => {
                                     ...styles.dotStyle,
                                 }}>
                                 {data?.banner_list?.map((banner, index) => (
-                                    <TouchableOpacity key={index}>
+                                    <TouchableOpacity key={index} activeOpacity={0.8}>
                                         <FastImage
                                             style={styles.slide}
                                             source={{
@@ -125,10 +144,10 @@ const Index = (props) => {
                                     </TouchableOpacity>
                                 ))}
                             </Swiper>
-                        )}
+                        ) : null}
                     </View>
-                    {/* 安全保障 */}
 
+                    {/* 安全保障 */}
                     <View style={[Style.flexBetween, {marginBottom: px(20)}]}>
                         <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
                             <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
@@ -198,7 +217,7 @@ const Index = (props) => {
                                         已有<Text style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>1234</Text>
                                         人开启
                                     </Text>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity activeOpacity={0.8}>
                                         <LinearGradient
                                             start={{x: 0, y: 0.25}}
                                             end={{x: 0, y: 0.8}}
@@ -248,7 +267,7 @@ const Index = (props) => {
                     {/* 推荐阅读 */}
                     {data?.article_info && (
                         <View style={{marginBottom: px(20)}}>
-                            <RenderTitle title={'推荐阅读'} more_text={'更多文章'} />
+                            <RenderTitle title={'推荐阅读'} />
                             <ArticleCard data={data?.article_info} />
                         </View>
                     )}
@@ -309,18 +328,73 @@ const Index = (props) => {
                     </View>
                     <View style={{marginBottom: px(20)}}>
                         <RenderTitle title={'关于理财魔方'} />
-                        <BoxShadow setting={{...shadow, height: px(135)}}>
+                        {/* 安全保障 */}
+
+                        <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
+                            <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
+                                <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
+                                    <View>
+                                        <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                                            <FastImage
+                                                resizeMode={FastImage.resizeMode.contain}
+                                                style={{width: px(24), height: px(24)}}
+                                                source={require('../../assets/img/index/anquan.png')}
+                                            />
+                                            <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
+                                        </View>
+                                        <Text style={styles.light_text}>证监会批准持牌机构</Text>
+                                    </View>
+                                    <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
+                                </View>
+                            </BoxShadow>
+                            <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
+                                <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
+                                    <View>
+                                        <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                                            <FastImage
+                                                resizeMode={FastImage.resizeMode.contain}
+                                                style={{width: px(24), height: px(24)}}
+                                                source={require('../../assets/img/index/anquan.png')}
+                                            />
+                                            <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
+                                        </View>
+                                        <Text style={styles.light_text}>证监会批准持牌机构</Text>
+                                    </View>
+                                    <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
+                                </View>
+                            </BoxShadow>
+                        </View>
+                        <BoxShadow setting={{...shadow, height: px(191)}}>
                             <View style={{borderRadius: px(6), overflow: 'hidden'}}>
                                 <ImageBackground
-                                    style={[Style.flexRow, {height: px(52), paddingLeft: px(16)}]}
+                                    style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
                                     source={require('../../assets/img/index/aboutOur.png')}>
-                                    <Text style={{fontSize: px(11), color: '#fff'}}>
+                                    <View>
+                                        <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                            <Text style={styles.large_num}>200</Text>
+                                            <Text style={styles.num_unit}>亿元</Text>
+                                        </View>
+                                        <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                            累计基金交易额超过
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                            <Text style={styles.large_num}>200</Text>
+                                            <Text style={styles.num_unit}>%</Text>
+                                        </View>
+                                        <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                            累计基金交易额超过
+                                        </Text>
+                                    </View>
+                                    <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
+                                    {/* <Text style={{fontSize: px(11), color: '#fff'}}>
                                         {data?.about_info?.header.map((text, index) => (
                                             <Text key={index} style={text.type == 'number' ? styles.about_num : null}>
                                                 {text.content}
                                             </Text>
                                         ))}
-                                    </Text>
+                                    </Text> */}
                                 </ImageBackground>
                                 <View
                                     style={[
@@ -328,8 +402,17 @@ const Index = (props) => {
                                         {backgroundColor: '#fff', justifyContent: 'space-evenly', height: px(83)},
                                     ]}>
                                     {data?.about_info?.items?.map((item, index) => (
-                                        <View key={index} style={{alignItems: 'center'}}>
+                                        <View key={index} style={{alignItems: 'flex-start'}}>
                                             <FastImage source={{uri: item.icon}} style={styles.icon} />
+                                            <Text
+                                                style={{
+                                                    color: Colors.defaultColor,
+                                                    fontWeight: 'bold',
+                                                    fontSize: px(14),
+                                                    marginBottom: px(6),
+                                                }}>
+                                                {item.name}
+                                            </Text>
                                             <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
                                                 {item.name}
                                             </Text>
@@ -339,6 +422,7 @@ const Index = (props) => {
                             </View>
                         </BoxShadow>
                     </View>
+
                     <BottomDesc />
                 </LinearGradient>
             </ScrollView>
@@ -473,7 +557,7 @@ const styles = StyleSheet.create({
     icon: {
         width: px(24),
         height: px(24),
-        marginBottom: px(8),
+        marginBottom: px(4),
     },
     about_num: {
         fontFamily: Font.numFontFamily,
@@ -525,5 +609,16 @@ const styles = StyleSheet.create({
         right: px(1),
         top: px(3),
         zIndex: 10,
+    },
+    large_num: {
+        fontSize: px(28),
+        fontFamily: Font.numMedium,
+        color: '#fff',
+        marginRight: px(4),
+    },
+    num_unit: {
+        fontSize: px(14),
+        color: '#fff',
+        marginTop: px(10),
     },
 });

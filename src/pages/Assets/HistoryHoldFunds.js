@@ -2,11 +2,11 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 19:25:19
+ * @LastEditTime: 2021-02-26 14:34:47
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {SectionList, StyleSheet, Text, View} from 'react-native';
+import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
@@ -22,7 +22,8 @@ const HistoryHoldFunds = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/user_redeemed/20210101', {
+            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/user_redeemed/20210101', {
+                poid: route.params?.poid || 'X00F000003',
                 page,
             }).then((res) => {
                 setRefreshing(false);
@@ -36,7 +37,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
                 }
             });
         },
-        [navigation, page]
+        [navigation, route, page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
@@ -77,12 +78,14 @@ const HistoryHoldFunds = ({navigation, route}) => {
     const renderItem = useCallback(
         ({item, index}) => {
             return (
-                <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate({name: 'FundDetail', params: {code: item.code}})}
+                    style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <View>
                         <Text numberOfLines={1} style={[styles.itemText, {textAlign: 'left'}]}>
-                            {item.fund_name}
+                            {item.name}
                         </Text>
-                        <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.fund_code}</Text>
+                        <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.code}</Text>
                     </View>
                     <Text
                         style={[
@@ -91,7 +94,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
                         ]}>
                         {parseFloat(item.profit_acc.replaceAll(',', '')) > 0 ? `+${item.profit_acc}` : item.profit_acc}
                     </Text>
-                </View>
+                </TouchableOpacity>
             );
         },
         [getColor]
