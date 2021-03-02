@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-01 14:06:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-02 15:23:00
  * @Description:路由表
  */
 import React from 'react';
@@ -53,7 +53,7 @@ import MfbOut from '../pages/Mfb/MfbOut'; //魔方宝提现
 import DetailAccount from '../pages/Portfolio/Detail/DetailAccount'; //短期账户详情页
 import DetailFixed from '../pages/Portfolio/Detail/DetailFixed'; //低估值详情页
 import DetailEducation from '../pages/Portfolio/Detail/DetailEducation'; //子女教育详情页
-import DetailProvideOrder from '../pages/Portfolio/Detail/DetailProvideOrder'; //养老计划详情页
+import DetailRetiredPlan from '../pages/Portfolio/Detail/DetailRetiredPlan'; //养老计划详情页
 import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
 import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
 import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
@@ -118,7 +118,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TabScreen"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -302,7 +302,7 @@ export default function AppStack() {
             <Stack.Screen name="DetailAccount" component={DetailAccount} options={{headerShown: false}} />
             <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />
             <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
-            <Stack.Screen name="DetailProvideOrder" component={DetailProvideOrder} options={{headerShown: false}} />
+            <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{headerShown: false}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
