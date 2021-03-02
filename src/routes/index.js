@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 15:23:00
+ * @LastEditTime: 2021-03-02 15:28:16
  * @Description:路由表
  */
 import React from 'react';
@@ -39,7 +39,7 @@ import TradeRules from '../pages/Portfolio/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
 import TradeProcessing from '../pages/Trade/TradeProcessing'; // 交易确认页
-import Question from '../pages/CustomPortfolio/question'; //问答投教
+import Evaluation from '../pages/Evaluation/Evaluation'; //问答投教
 import LargeAmount from '../pages/Trade/LargeAmount'; //大额转账
 import LargeAmountIntro from '../pages/Trade/LargeAmountIntro'; //大额转账说明
 import MfbIndex from '../pages/Mfb/MfbIndex'; //魔方宝详情页
@@ -56,8 +56,8 @@ import DetailEducation from '../pages/Portfolio/Detail/DetailEducation'; //子�
 import DetailRetiredPlan from '../pages/Portfolio/Detail/DetailRetiredPlan'; //养老计划详情页
 import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
 import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
-import PlanHistory from '../pages/CustomPortfolio/plannHistory'; //规划历史
-import PlanResult from '../pages/CustomPortfolio/planResult'; //规划结果页
+import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //规划历史
+import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
@@ -118,7 +118,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="Evaluation"
             screenOptions={{
                 // headerShown: false,
 
@@ -288,7 +288,7 @@ export default function AppStack() {
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
-            <Stack.Screen name="Question" component={Question} options={{headerShown: false}} />
+            <Stack.Screen name="Evaluation" component={Evaluation} options={{headerShown: false}} />
             <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
@@ -312,13 +312,13 @@ export default function AppStack() {
             <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
             <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
             <Stack.Screen
-                name="PlanHistory"
-                component={PlanHistory}
+                name="EvaluationHistory"
+                component={EvaluationHistory}
                 options={{headerShown: false, ...TransitionPresets.ModalTransition}}
             />
             <Stack.Screen
-                name="PlanResult"
-                component={PlanResult}
+                name="EvaluationResult"
+                component={EvaluationResult}
                 options={{headerShown: false, ...TransitionPresets.ModalTransition}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />

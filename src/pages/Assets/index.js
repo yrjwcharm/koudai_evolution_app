@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-01 20:21:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-02 15:26:27
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -35,18 +35,6 @@ import storage from '../../utils/storage';
 import http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
 
-const requestCameraPermission = async () => {
-    try {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log('You can use the camera');
-        } else {
-            console.log('Camera permission denied');
-        }
-    } catch (err) {
-        console.warn(err);
-    }
-};
 function HomeScreen({navigation}) {
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
@@ -309,13 +297,13 @@ function HomeScreen({navigation}) {
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>累计收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData.summary.profit_acc : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit_acc : '****'}
                             </Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>日收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData.summary.profit : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit : '****'}
                             </Text>
                         </View>
                     </View>
@@ -343,14 +331,14 @@ function HomeScreen({navigation}) {
                     </Text>
                 </View>
                 {holdingData?.accounts &&
-                    holdingData.accounts.map((item, index) => {
+                    holdingData?.accounts.map((item, index) => {
                         return item.portfolios ? (
                             item.portfolios.length > 1 ? (
                                 <View
                                     key={`account${item.id}`}
                                     style={[
                                         styles.account,
-                                        index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
                                         index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}>
@@ -362,7 +350,7 @@ function HomeScreen({navigation}) {
                                     key={`account${item.id}`}
                                     style={[
                                         styles.account,
-                                        index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                        index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
                                         index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}
@@ -381,7 +369,7 @@ function HomeScreen({navigation}) {
                                         key={`account${item.id}`}
                                         style={[
                                             styles.account,
-                                            index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                            index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
                                             index === 0 ? {marginTop: Space.marginVertical} : {},
                                             {padding: 0},
                                         ]}>
@@ -403,7 +391,7 @@ function HomeScreen({navigation}) {
                                             key={`account${item.id}`}
                                             style={[
                                                 styles.account,
-                                                index === holdingData.accounts.length - 1 ? {marginBottom: 0} : {},
+                                                index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
                                                 index === 0 ? {marginTop: Space.marginVertical} : {},
                                             ]}>
                                             {renderTitle(item)}

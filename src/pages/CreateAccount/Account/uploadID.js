@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 11:04:08
+ * @LastEditTime: 2021-02-27 15:07:15
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -37,43 +37,62 @@ export class uploadID extends Component {
         this.setState({showTypePop: true, clickIndex});
     };
     componentDidMount() {
-        this.subscription = DeviceEventEmitter.addListener('EventType', (param) => {
+        this.subscription = DeviceEventEmitter.addListener('EventType', (uri) => {
+            this.uri = uri;
+            if (this.uri) {
+                console.log('1234');
+                this.uploadImage({uri, type: 'image/png', name: 'name'});
+            }
             // 刷新界面等
         });
     }
-    //打开相册
-    openPicker = () => {
+    componentWillUnmount() {
+        DeviceEventEmitter.removeListener(this.subscription);
+    }
+    showImg = (uri) => {
         const {clickIndex} = this.state;
-        const options = {
-            maxWidth: px(310),
-            // maxHeight: px(190),
-        };
-
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
+        if (clickIndex == 1) {
+            this.setState({
+                frontSource: uri,
+            });
+        } else {
+            this.setState({
+                behindSource: uri,
+            });
+        }
+    };
+    uploadImage = (response) => {
+        let toast = Toast.showLoading('正在上传');
+        upload(response, (res) => {
+            Toast.hide(toast);
+            this.uri = '';
+            if (res.code == '000000') {
+                Toast.show('上传成功');
             } else {
-                upload(response, (res) => {
-                    console.log(res.code == '000000', res.code);
-                    if (res.code == '000000') {
-                        Toast.show('上传成功');
-                    }
-                });
-                if (clickIndex == 1) {
-                    this.setState({
-                        frontSource: response.uri,
-                    });
-                } else {
-                    this.setState({
-                        behindSource: response.uri,
-                    });
-                }
+                Toast.show(res.message);
             }
         });
+        this.showImg(response.uri);
+    };
+    //打开相册
+    openPicker = () => {
+        const options = {
+            width: px(300),
+            height: px(190),
+        };
+        setTimeout(() => {
+            launchImageLibrary(options, (response) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else {
+                    this.uploadImage(response);
+                }
+            });
+        }, 100);
     };
     // 选择图片或相册
     onClickChoosePicture = async () => {
@@ -110,7 +129,7 @@ export class uploadID extends Component {
                 requestExternalStoragePermission(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
                     () => {
-                        this.props.navigation.navigate('Camera');
+                        this.props.navigation.navigate('Camera', {index: this.state.clickIndex});
                     },
                     this.blockCal
                 );
@@ -118,7 +137,7 @@ export class uploadID extends Component {
                 requestExternalStoragePermission(
                     PERMISSIONS.IOS.CAMERA,
                     () => {
-                        this.props.navigation.navigate('Camera');
+                        this.props.navigation.navigate('Camera', {index: this.state.clickIndex});
                     },
                     this.blockCal
                 );
@@ -206,11 +225,14 @@ const styles = StyleSheet.create({
     id_image: {
         height: px(190),
         width: px(310),
+        // resizeMode: 'contain',
         marginBottom: px(14),
         borderRadius: px(8),
     },
     tip_img: {
+        marginTop: px(16),
         width: deviceWidth - px(32),
+        height: px(80),
         resizeMode: 'contain',
     },
 });

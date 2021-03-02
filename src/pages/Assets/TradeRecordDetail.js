@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 18:10:40
+ * @LastEditTime: 2021-02-27 15:49:58
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -16,14 +16,18 @@ import Icon from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
+import {PasswordModal} from '../../components/Password';
+import Toast from '../../components/Toast';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
+    const {txn_id = '20200707A08888XA', type = 3} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [data, setData] = useState();
     const [showMask, setShowMask] = useState(false);
     const bankCardRef = useRef();
+    const passwordModal = useRef();
     const cardLayout = (index, e) => {
         const arr = [...heightArr];
         arr[index] = e.nativeEvent.layout.height;
@@ -32,9 +36,9 @@ const TradeRecordDetail = (props) => {
     useEffect(() => {});
     const getData = useCallback(() => {
         http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/order/detail/20210101', {
-            txn_id: '20200707A08888XA',
+            txn_id: txn_id,
             uid: 1000000002,
-            type: 3,
+            type: type,
         }).then((res) => {
             setData(res.result);
             props.navigation.setOptions({
@@ -51,16 +55,32 @@ const TradeRecordDetail = (props) => {
             });
             setShowMore(expand);
         });
-    }, [props.navigation]);
+    }, [props.navigation, txn_id, type]);
     useEffect(() => {
         getData();
     }, [getData, props.navigation]);
-
+    // 撤单
+    const cancleTxn = (password) => {
+        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/order/cancel/20210101', {
+            password,
+            txn_id,
+        }).then((res) => {
+            if (res.code == '000000') {
+                Toast.show('撤单成功！');
+                getData();
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
     const handleCancel = () => {
         Modal.show({
             title: '确认撤单',
             content: '撤单后需要重新进行购买，撤单金额需要T+1日到账，确认要撤单吗？',
             confirm: true,
+            confirmCallBack: () => {
+                passwordModal.current.show();
+            },
         });
     };
     const handleMore = (index) => {
@@ -75,6 +95,15 @@ const TradeRecordDetail = (props) => {
     return (
         <ScrollView style={styles.container}>
             <View style={[styles.header, Style.flexCenter]}>
+                <PasswordModal
+                    ref={passwordModal}
+                    onDone={(password) => {
+                        cancleTxn(password);
+                    }}
+                    onClose={() => {
+                        this.setState({showMask: false});
+                    }}
+                />
                 {showMask && <Mask />}
                 <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                     <View

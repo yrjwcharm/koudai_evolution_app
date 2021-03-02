@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 14:00:29
+ * @LastEditTime: 2021-02-27 11:49:16
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -158,7 +158,7 @@ function App() {
                                     const previousRouteName = routeNameRef.current;
                                     const currentRouteName = navigationRef.current.getCurrentRoute().name;
                                     global.previousRouteName = previousRouteName;
-                                    // global.currentRouteName = currentRouteName;
+                                    global.currentRouteName = currentRouteName;
                                     if (previousRouteName !== currentRouteName) {
                                         LogTool('jump', null, null, currentRouteName, previousRouteName, null, null);
                                         LogTool('staytime', null, null, previousRouteName, null, staytime);
