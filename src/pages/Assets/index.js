@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 15:26:27
+ * @LastEditTime: 2021-03-02 17:03:14
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -12,7 +12,6 @@ import {
     Text,
     ScrollView,
     StyleSheet,
-    PermissionsAndroid,
     TouchableOpacity,
     StatusBar,
     LayoutAnimation,
@@ -162,6 +161,7 @@ function HomeScreen({navigation}) {
                         item.portfolios.map((po, i) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     key={`portfolio${po.poid}`}
                                     style={Style.flexRow}
                                     onPress={() => jump(po.url)}>
@@ -189,18 +189,16 @@ function HomeScreen({navigation}) {
 
     useFocusEffect(
         useCallback(() => {
+            init();
+            storage.get('myAssetsEye').then((res) => {
+                setShowEye(res ? res : 'true');
+            });
             StatusBar.setBarStyle('light-content');
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [])
+        }, [init])
     );
-    useEffect(() => {
-        storage.get('myAssetsEye').then((res) => {
-            setShowEye(res ? res : 'true');
-        });
-        init();
-    }, [init]);
 
     return (
         <View style={styles.container}>
@@ -234,6 +232,7 @@ function HomeScreen({navigation}) {
                         </Text>
                         {userBasicInfo.member_info && Object.keys(userBasicInfo.member_info).length > 0 && (
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 onPress={() => navigation.navigate({name: 'MemberCenter', params: {level: 0}})}>
                                 <LinearGradient
                                     colors={['#FFF6E8', '#FFE1B8']}
@@ -251,7 +250,7 @@ function HomeScreen({navigation}) {
                     {!hideMsg && notice?.system && (
                         <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
                             <Text style={styles.systemMsgText}>{notice.system}</Text>
-                            <TouchableOpacity style={styles.closeSystemMsg} onPress={hideSystemMsg}>
+                            <TouchableOpacity style={styles.closeSystemMsg} activeOpacity={0.8} onPress={hideSystemMsg}>
                                 <EvilIcons name={'close'} size={22} color={Colors.yellow} />
                             </TouchableOpacity>
                         </Animated.View>
@@ -347,7 +346,8 @@ function HomeScreen({navigation}) {
                                 </View>
                             ) : (
                                 <TouchableOpacity
-                                    key={`account${item.id}`}
+                                    key={`account0${item.id}`}
+                                    activeOpacity={0.8}
                                     style={[
                                         styles.account,
                                         index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -360,13 +360,12 @@ function HomeScreen({navigation}) {
                                 </TouchableOpacity>
                             )
                         ) : (
-                            <>
+                            <View key={`account1${item.id}`}>
                                 {item.id === 12 ? (
                                     <LinearGradient
                                         colors={['#33436D', '#121D3A']}
                                         start={{x: 0, y: 0}}
                                         end={{x: 1, y: 0}}
-                                        key={`account${item.id}`}
                                         style={[
                                             styles.account,
                                             index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -388,7 +387,6 @@ function HomeScreen({navigation}) {
                                 ) : (
                                     item.id === 11 && (
                                         <TouchableOpacity
-                                            key={`account${item.id}`}
                                             style={[
                                                 styles.account,
                                                 index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -399,7 +397,7 @@ function HomeScreen({navigation}) {
                                         </TouchableOpacity>
                                     )
                                 )}
-                            </>
+                            </View>
                         );
                     })}
                 {userBasicInfo.ia_info && (

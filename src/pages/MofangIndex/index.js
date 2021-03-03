@@ -2,11 +2,20 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-01 17:11:12
+ * @LastEditTime: 2021-03-02 16:21:28
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground, RefreshControl} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    ScrollView,
+    ImageBackground,
+    RefreshControl,
+    Platform,
+} from 'react-native';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -71,7 +80,6 @@ const Index = (props) => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('123');
             getData();
         }, [getData])
     );
@@ -118,7 +126,7 @@ const Index = (props) => {
                             <Swiper
                                 height={px(120)}
                                 autoplay
-                                loadMinimal={true}
+                                loadMinimal={Platform.OS == 'ios' ? true : false}
                                 removeClippedSubviews={false}
                                 autoplayTimeout={4}
                                 paginationStyle={{

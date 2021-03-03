@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 11:49:16
+ * @LastEditTime: 2021-03-02 19:06:02
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -22,6 +22,7 @@ import * as MagicMove from 'react-native-magic-move';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 import './src/utils/LogTool';
+import Toast from './src/components/Toast';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 const {UIManager} = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true); //启用安卓动画
@@ -84,12 +85,12 @@ function App() {
             return false;
         }
         lastBackPressed = Date.now(); //按第一次的时候，记录时间
-        // Toast.showInfo('再按一次退出应用');
+        Toast.show('再按一次退出应用');
         return true;
     };
     React.useEffect(() => {
-        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/polaris/').catch((error) => {
-            console.log(error);
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/').catch((error) => {
+            console.log(error, '通用链接');
         });
         syncImmediate();
         // if (Platform.OS == 'android') {
