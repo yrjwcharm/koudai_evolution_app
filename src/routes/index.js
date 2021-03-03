@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 17:11:56
+ * @LastEditTime: 2021-03-03 10:26:59
  * @Description:路由表
  */
 import React from 'react';
@@ -121,7 +121,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="TransferAccount"
             screenOptions={{
                 // headerShown: false,
 

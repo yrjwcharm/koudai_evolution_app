@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 12:10:09
+ * @LastEditTime: 2021-03-03 11:39:10
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -15,10 +15,11 @@ import HTML from '../../components/RenderHtml';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 
 export default function Trade(props) {
     const passwordModal = useRef(null);
-    const [showMask, setShowMark] = useState(false);
+    const [showMask, setShowMask] = useState(false);
     const [expand, setExpand] = useState(true);
     const [data, setData] = useState();
     const jumpTo = () => {};
@@ -28,7 +29,7 @@ export default function Trade(props) {
     };
     const passwordInput = () => {
         passwordModal.current.show();
-        setShowMark(true);
+        setShowMask(true);
     };
     const submitData = () => {};
     useEffect(() => {
@@ -108,9 +109,10 @@ export default function Trade(props) {
                 ref={passwordModal}
                 onDone={submitData}
                 onClose={() => {
-                    setShowMark(false);
+                    setShowMask(false);
                 }}
             />
+            {showMask && <Mask />}
         </View>
     );
 }

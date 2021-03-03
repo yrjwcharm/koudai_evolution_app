@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 14:36:53
+ * @LastEditTime: 2021-03-03 11:36:51
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -17,6 +17,7 @@ import BottomDesc from '../../components/BottomDesc';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default class TradeAdjust extends Component {
     constructor() {
@@ -257,6 +258,7 @@ export default class TradeAdjust extends Component {
                             <Html html={data?.fee_desc} style={styles.tips_sty} />
                         </View>
                         <BottomDesc />
+                        {showMask && <Mask />}
                     </ScrollView>
                 )}
 

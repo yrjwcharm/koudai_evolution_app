@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 16:16:34
+ * @LastEditTime: 2021-03-03 11:39:42
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -13,84 +13,163 @@ import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FastImage from 'react-native-fast-image';
-import Clipboard from '@react-native-community/clipboard';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
+import Icon from 'react-native-vector-icons/AntDesign';
+import Mask from '../../components/Mask';
 
-export default function TransferAccount() {
+export default function TransferAccount({navigation}) {
+    const [data, setData] = useState({});
     const [show, setShow] = useState(false);
+    const [mask, setMask] = useState(false);
+    const passwordModal = useRef(null);
     const toggle = () => {
         setShow(!show);
     };
+    useEffect(() => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/price/transfer/20210101').then((res) => {
+            setData(res.result);
+        });
+    }, [navigation]);
+    const passwordInput = () => {
+        passwordModal.current.show();
+        setMask(true);
+    };
+    const submit = () => {};
     return (
         <>
-            <ScrollView>
-                <View style={styles.card_sty}>
-                    <Text style={styles.title_sty}>低估值智能定投</Text>
-                    <View style={[Style.flexRow, {paddingVertical: text(12)}]}>
-                        <Image
-                            source={require('../../assets/img/transfer.png')}
-                            style={{width: text(18), height: text(18)}}
+            {Object.keys(data).length > 0 && (
+                <ScrollView>
+                    <View style={styles.card_sty}>
+                        <Text style={styles.title_sty}>{data.trans_info.from}</Text>
+                        <View style={[Style.flexRow, {paddingVertical: text(12)}]}>
+                            <Image
+                                source={require('../../assets/img/transfer.png')}
+                                style={{width: text(18), height: text(18)}}
+                            />
+                            <Text style={{color: '#9AA1B2', fontSize: text(12), marginHorizontal: text(5)}}>
+                                {data.trans_info.trans}
+                            </Text>
+                            <Text style={{height: text(0.5), backgroundColor: '#DDDDDD', flex: 1}}></Text>
+                        </View>
+                        <Text style={styles.title_sty}>{data.trans_info.to}</Text>
+                    </View>
+                    <View style={[styles.card_sty, {paddingBottom: text(10)}]}>
+                        <Text style={{fontSize: Font.textH1}}>{data.buy_info.text}</Text>
+                        <View style={[Style.flexRow, styles.num_wrap_sty]}>
+                            <Text style={{fontSize: text(20), fontWeight: 'bold'}}>¥</Text>
+                            <Text style={styles.num_sty}>{data.buy_info.amount}</Text>
+                        </View>
+                        <Html
+                            style={{color: '#9095A5', fontSize: Font.textH3, paddingTop: text(10)}}
+                            html={data.buy_info.fee_text}
                         />
-                        <Text style={{color: '#9AA1B2', fontSize: text(12), marginHorizontal: text(5)}}>转化为</Text>
-                        <Text style={{height: text(0.5), backgroundColor: '#DDDDDD', flex: 1}}></Text>
                     </View>
-                    <Text style={styles.title_sty}>智能组合</Text>
-                </View>
-                <View style={[styles.card_sty, {paddingBottom: text(10)}]}>
-                    <Text style={{fontSize: Font.textH1}}>预估转化金额</Text>
-                    <View style={[Style.flexRow, styles.num_wrap_sty]}>
-                        <Text style={{fontSize: text(20), fontWeight: 'bold'}}>¥</Text>
-                        <Text style={styles.num_sty}>50,000.00</Text>
-                    </View>
-                    <Text style={{color: '#9095A5', fontSize: Font.textH3, paddingTop: text(10)}}>
-                        估算费用:421.03元（节省231.38元）
-                    </Text>
-                </View>
-                <TouchableOpacity style={[styles.card_sty, {flexDirection: 'row'}]} onPress={toggle} activeOpacity={1}>
-                    <Text style={{flex: 1}}>转换后持仓详情</Text>
-                    <AntDesign size={12} color={'#9095A5'} name={show ? 'up' : 'down'} />
-                </TouchableOpacity>
-                {show && (
-                    <View
-                        style={{
-                            paddingBottom: text(15),
-                            backgroundColor: '#fff',
-                            paddingHorizontal: text(15),
-                        }}>
-                        <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
-                            <View>
-                                <View style={[Style.flexRow]}>
-                                    <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
-                                        <View style={[styles.circle]}></View>
-                                        <Text style={{color: '#9AA1B2', fontSize: text(12)}}>哈哈哈哈哈</Text>
-                                    </View>
-                                    <Text style={styles.content_head_title}>11111</Text>
-                                    <Text style={styles.content_head_title}>1111</Text>
-                                </View>
+                    <TouchableOpacity
+                        style={[styles.card_sty, {flexDirection: 'row'}]}
+                        onPress={toggle}
+                        activeOpacity={1}>
+                        <Text style={{flex: 1}}>{data.buy_info.buy_text}</Text>
+                        <AntDesign size={12} color={'#9095A5'} name={show ? 'up' : 'down'} />
+                    </TouchableOpacity>
+                    {show && (
+                        <View
+                            style={{
+                                paddingBottom: text(15),
+                                backgroundColor: '#fff',
+                                paddingHorizontal: text(15),
+                            }}>
+                            <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
+                                {data.fund_compare.fund_list.map((_item, _index) => {
+                                    return (
+                                        <View key={_index + '_item'}>
+                                            <View style={[Style.flexRow]}>
+                                                <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
+                                                    <View style={[styles.circle]}></View>
+                                                    <Text style={{color: _item.color, fontSize: text(12)}}>
+                                                        {_item.title}
+                                                    </Text>
+                                                </View>
+                                                <Text style={styles.content_head_title}>
+                                                    {data.fund_compare.header.ratio_src}
+                                                </Text>
+                                                <Text style={styles.content_head_title}>
+                                                    {data.fund_compare.header.ratio_dst}
+                                                </Text>
+                                            </View>
 
-                                <View style={Style.flexRow}>
-                                    <Text style={[styles.content_item_text, {flex: 1, textAlign: 'left'}]}>
-                                        哈哈哈哈哈
-                                    </Text>
-                                    <Text style={styles.content_item_text}>1111</Text>
-                                    <Text style={styles.content_item_text}>1111</Text>
-                                </View>
+                                            {_item.funds.map((_i, _d) => {
+                                                const _color =
+                                                    _i.compare == 'gt'
+                                                        ? Colors.red
+                                                        : _i.compare == 'lt'
+                                                        ? Colors.green
+                                                        : '#4E556C';
+                                                return (
+                                                    <View style={Style.flexRow} key={_i + _d}>
+                                                        <Text
+                                                            style={[
+                                                                styles.content_item_text,
+                                                                {flex: 1, textAlign: 'left'},
+                                                            ]}>
+                                                            {_i?.name}
+                                                        </Text>
+                                                        <Text style={styles.content_item_text}>{_i?.ratio_src}</Text>
+                                                        <View
+                                                            style={[
+                                                                Style.flexRow,
+                                                                {
+                                                                    width: text(90),
+                                                                    justifyContent: 'flex-end',
+                                                                    paddingTop: text(15),
+                                                                },
+                                                            ]}>
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: Font.textH3,
+
+                                                                    color: _color,
+                                                                }}>
+                                                                {_i?.ratio_dst}
+                                                            </Text>
+                                                            {_i.compare != 'et' && (
+                                                                <Icon
+                                                                    name={_i?.compare == 'gt' ? 'arrowup' : 'arrowdown'}
+                                                                    color={_color}
+                                                                />
+                                                            )}
+                                                        </View>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    );
+                                })}
                             </View>
                         </View>
+                    )}
+                    <View style={{margin: text(16)}}>
+                        {data.notice.map((_n, _i) => {
+                            return (
+                                <Html
+                                    style={{color: '#9095A5', fontSize: text(12), lineHeight: text(18)}}
+                                    key={_i + '_n'}
+                                    html={_n}
+                                />
+                            );
+                        })}
                     </View>
-                )}
-                <View style={{margin: text(16)}}>
-                    <Html
-                        html={
-                            '1.预估转化金额根据上一个交易日净值估算预估转化金额根据上一个交易日净值估算预估转化金额根据上一个交易日净值估算'
-                        }
-                        style={{color: '#9095A5', fontSize: text(12), lineHeight: text(18)}}
-                    />
-                </View>
-            </ScrollView>
-            <FixedButton title="确认购买" />
+                </ScrollView>
+            )}
+            <PasswordModal
+                ref={passwordModal}
+                onDone={submit}
+                onClose={() => {
+                    setMask(false);
+                }}
+            />
+            {mask && <Mask />}
+            {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={passwordInput} />}
         </>
     );
 }
@@ -115,6 +194,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderColor: '#DDDDDD',
         paddingBottom: text(10),
+        marginBottom: text(10),
     },
     circle: {
         width: text(8),
@@ -136,6 +216,5 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         minWidth: text(90),
         textAlign: 'center',
-        paddingTop: text(10),
     },
 });

@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 12:09:44
+ * @LastEditTime: 2021-03-03 11:40:41
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -14,18 +14,18 @@ import Toast from '../../components/Toast/';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
-import Clipboard from '@react-native-community/clipboard';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 
 export default function BankWithdraw(props) {
-    const [showMask, setShowMark] = useState(false);
+    const [showMask, setShowMask] = useState(false);
     const passwordModal = useRef(null);
 
     const submitData = () => {};
     const passwordInput = () => {
         passwordModal.current.show();
-        setShowMark(true);
+        setShowMask(true);
     };
     return (
         <View style={{flex: 1}}>
@@ -75,9 +75,10 @@ export default function BankWithdraw(props) {
                 ref={passwordModal}
                 onDone={submitData}
                 onClose={() => {
-                    setShowMark(false);
+                    setShowMask(false);
                 }}
             />
+            {showMask && <Mask />}
             <FixedButton title={'确认提现'} onPress={passwordInput} />
         </View>
     );
