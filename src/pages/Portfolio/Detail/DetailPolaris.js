@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 11:14:35
+ * @LastEditTime: 2021-03-03 16:33:36
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -19,7 +19,7 @@ import ChartData from './data.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
-export default function DetailMaHongMan() {
+export default function DetailPolaris() {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');

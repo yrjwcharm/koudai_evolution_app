@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 11:43:08
+ * @LastEditTime: 2021-03-03 17:40:47
  * @Description:路由表
  */
 import React from 'react';
@@ -91,8 +91,8 @@ import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建�
 import MessageBoard from '../pages/MofangIndex/MessageBoard'; //用户留言详情
 import PrivateRedeem from '../pages/PE/PrivateRedeem'; // 私募赎回
 import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
-import DetailMaHongMan from '../pages/Portfolio/Detail/DetailMaHongMan'; //马红漫详情页
-import StrategyMaHongMan from '../pages/Portfolio/StrategyMaHongMan'; //马红漫策略页
+import DetailPolaris from '../pages/Portfolio/Detail/DetailPolaris'; //马红漫详情页
+import StrategyPolaris from '../pages/Portfolio/StrategyPolaris'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
 import ContactUs from '../pages/Assets/ContactUs'; // 联系我们
 import PasswordManagement from '../pages/Assets/PasswordManagement'; // 密码管理
@@ -116,12 +116,14 @@ import AssetNav from '../pages/PE/AssetNav'; //私募净值
 import ProductIntro from '../pages/Portfolio/Detail/ProductIntro'; //产品说明页
 import BankWithdraw from '../pages/BankPages/BankWithdraw'; //银行提现
 import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智能组合
+import ExperienceGoldRule from '../pages/ExperienceGold/Rule';
+
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TransferAccount"
+            initialRouteName="Login"
             screenOptions={{
                 // headerShown: false,
 
@@ -368,8 +370,8 @@ export default function AppStack() {
             <Stack.Screen name="ActivityNotice" component={ActivityNotice} options={{headerShown: false}} />
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
-            <Stack.Screen name="DetailMaHongMan" component={DetailMaHongMan} options={{headerShown: false}} />
-            <Stack.Screen name="StrategyMaHongMan" component={StrategyMaHongMan} options={{title: '马红漫投资策略'}} />
+            <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{headerShown: false}} />
+            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: '马红漫投资策略'}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
             <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />
@@ -381,7 +383,8 @@ export default function AppStack() {
             <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
             <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
-            <Stack.Screen
+            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: ''}} />
+            {/* <Stack.Screen
                 name="ExperienceGoldDetail"
                 component={ExperienceGoldDetail}
                 options={{
@@ -402,7 +405,7 @@ export default function AppStack() {
                     },
                     title: '理财魔方体验金',
                 }}
-            />
+            /> */}
             <Stack.Screen
                 name="ExperienceGoldResult"
                 component={ExperienceGoldResult}
@@ -417,6 +420,7 @@ export default function AppStack() {
             <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
+            <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
         </Stack.Navigator>
     );
 }

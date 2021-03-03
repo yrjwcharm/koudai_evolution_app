@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 11:44:35
+ * @LastEditTime: 2021-03-03 16:33:26
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
@@ -13,7 +13,7 @@ import FitImage from 'react-native-fit-image';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Font, Style, Colors} from '../../common/commonStyle';
-export default function StrategyMaHongMan() {
+export default function StrategyPolaris() {
     return (
         <ScrollView>
             <View style={{backgroundColor: '#fff'}}>
