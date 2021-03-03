@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 17:40:47
+ * @LastEditTime: 2021-03-03 18:09:54
  * @Description:路由表
  */
 import React from 'react';
@@ -123,7 +123,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Login"
+            initialRouteName="LargeAmount"
             screenOptions={{
                 // headerShown: false,
 
@@ -371,7 +371,7 @@ export default function AppStack() {
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
             <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{headerShown: false}} />
-            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: '马红漫投资策略'}} />
+            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{headerShown: false}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
             <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />

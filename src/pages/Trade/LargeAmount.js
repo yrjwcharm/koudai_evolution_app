@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 12:03:50
+ * @LastEditTime: 2021-03-03 18:42:18
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -86,7 +86,7 @@ const LargeAmount = (props) => {
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={styles.title_sty}>支持银行卡</Text>
-                        <Text style={styles.desc_sty}>仅支持以下银行卡的转账汇款，否则资金将原</Text>
+                        <Text style={styles.desc_sty}>仅支持以下银行卡的转账汇款，否则资金将原路返回</Text>
                         <>
                             {data.pay_methods.map((_item, _index) => {
                                 return (

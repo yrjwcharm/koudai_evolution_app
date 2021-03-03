@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 16:33:36
+ * @LastEditTime: 2021-03-03 17:46:57
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -24,7 +24,7 @@ export default function DetailPolaris() {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/detail/20210101', {
+        Http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/strategy/20210101', {
             upid: 1,
         }).then((res) => {
             setData(res.result);
@@ -108,7 +108,7 @@ export default function DetailPolaris() {
                                     </Text>
                                 </View>
                             </View>
-                            <Chart initScript={baseChart(chartData)} />
+                            {/* <Chart initScript={baseChart(chartData)} /> */}
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -158,7 +158,7 @@ export default function DetailPolaris() {
                                 </Text>
                             </View>
                             <View style={{height: 220}}>
-                                <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                {/* <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} /> */}
                             </View>
                             <View style={styles.fund_card_sty}>
                                 <View
@@ -220,7 +220,7 @@ export default function DetailPolaris() {
                                 resizeMode="contain"
                             />
                         </View>
-                        <View style={[styles.card_sty, {paddingVertical: 0}]}>
+                        {/* <View style={[styles.card_sty, {paddingVertical: 0}]}>
                             {data.gather_info.map((_info, _idx) => {
                                 return (
                                     <TouchableOpacity
@@ -238,7 +238,7 @@ export default function DetailPolaris() {
                                     </TouchableOpacity>
                                 );
                             })}
-                        </View>
+                        </View> */}
                     </View>
                 </ScrollView>
             )}
