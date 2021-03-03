@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 17:10:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-02 18:58:28
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -85,309 +85,296 @@ export default function PortfolioAssets() {
     return (
         <>
             {/* {Object.keys(data).length > 0 &&} */}
-            <View>
-                <Header
-                    title={data.title}
-                    leftIcon="chevron-left"
-                    style={{backgroundColor: '#0052CD'}}
-                    fontStyle={{color: '#fff'}}
-                />
-                {Object.keys(data).length > 0 && data?.processing_info && <Notice content={data.processing_info} />}
-                <ScrollView style={{marginBottom: btnHeight}}>
-                    <View style={styles.assets_card_sty}>
-                        {Object.keys(data).length > 0 && (
-                            <View
-                                style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
-                                <View>
-                                    <View style={[Style.flexRow, {marginBottom: text(15)}]}>
-                                        <Text style={styles.profit_text_sty}>总金额(元)</Text>
-                                        <TouchableOpacity onPress={toggleEye}>
-                                            <Ionicons
-                                                name={showEye === true ? 'eye-outline' : 'eye-off-outline'}
-                                                size={16}
-                                                color={'rgba(255, 255, 255, 0.8)'}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
-                                        {showEye ? data.amount : '***'}
+
+            <Header
+                title={data.title}
+                leftIcon="chevron-left"
+                style={{backgroundColor: '#0052CD'}}
+                fontStyle={{color: '#fff'}}
+            />
+            {Object.keys(data).length > 0 && data?.processing_info && <Notice content={data.processing_info} />}
+            <ScrollView style={{marginBottom: btnHeight}}>
+                <View style={styles.assets_card_sty}>
+                    {Object.keys(data).length > 0 && (
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
+                            <View>
+                                <View style={[Style.flexRow, {marginBottom: text(15)}]}>
+                                    <Text style={styles.profit_text_sty}>总金额(元)</Text>
+                                    <TouchableOpacity onPress={toggleEye}>
+                                        <Ionicons
+                                            name={showEye === true ? 'eye-outline' : 'eye-off-outline'}
+                                            size={16}
+                                            color={'rgba(255, 255, 255, 0.8)'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
+                                    {showEye ? data.amount : '***'}
+                                </Text>
+                            </View>
+                            <View>
+                                <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
+                                    <Text style={styles.profit_text_sty}>日收益</Text>
+                                    <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
+                                        {showEye ? data.profit : '***'}
                                     </Text>
                                 </View>
-                                <View>
-                                    <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
-                                        <Text style={styles.profit_text_sty}>日收益</Text>
-                                        <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
-                                            {showEye ? data.profit : '***'}
-                                        </Text>
-                                    </View>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.profit_text_sty}>累计收益</Text>
-                                        <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
-                                            {showEye ? data.profit_acc : '***'}
-                                        </Text>
-                                    </View>
+                                <View style={Style.flexRow}>
+                                    <Text style={styles.profit_text_sty}>累计收益</Text>
+                                    <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
+                                        {showEye ? data.profit_acc : '***'}
+                                    </Text>
                                 </View>
                             </View>
-                        )}
-                        {Object.keys(data).length > 0 && data.progress_bar && (
-                            <>
-                                <View style={styles.process_wrap_sty}>
-                                    <View style={[styles.bubbles_sty, {left: left}]}>
-                                        <Text style={styles.bubble_text_sty}>{data.progress_bar.percent_text}</Text>
-                                        <AntDesign
-                                            name={'caretdown'}
-                                            size={14}
-                                            color={'#FFDC5D'}
-                                            style={[styles.ab_sty]}
-                                        />
+                        </View>
+                    )}
+                    {Object.keys(data).length > 0 && data.progress_bar && (
+                        <>
+                            <View style={styles.process_wrap_sty}>
+                                <View style={[styles.bubbles_sty, {left: left}]}>
+                                    <Text style={styles.bubble_text_sty}>{data.progress_bar.percent_text}</Text>
+                                    <AntDesign name={'caretdown'} size={14} color={'#FFDC5D'} style={[styles.ab_sty]} />
+                                </View>
+                            </View>
+                            <View style={styles.process_outer}>
+                                <View style={[styles.process_inner, {width: widthD}]} />
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    marginTop: text(5),
+                                }}>
+                                <Text style={{fontSize: text(12), color: '#fff'}}>
+                                    {data?.progress_bar?.range_text[0]}
+                                </Text>
+                                <Text style={{fontSize: text(12), color: '#fff'}}>
+                                    {data?.progress_bar?.range_text[1]}
+                                </Text>
+                            </View>
+                        </>
+                    )}
+                </View>
+
+                <View style={styles.list_card_sty}>
+                    {Object.keys(data).length > 0 &&
+                        data.core_buttons.map((_item, _index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={{alignItems: 'center'}}
+                                    key={_index + '_item0'}
+                                    onPress={jumpTo}>
+                                    <Image
+                                        source={{
+                                            uri: _item.icon,
+                                        }}
+                                        resizeMode="contain"
+                                        style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                    />
+                                    <Text style={styles.list_text_sty}>{_item.text}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                </View>
+                <View>
+                    {Object.keys(data).length > 0 && data.ad_info && (
+                        <TouchableOpacity onPress={jumpTo(data.ad_info.url)}>
+                            <FitImage
+                                source={{
+                                    uri: data.ad_info.img,
+                                }}
+                                resizeMode="contain"
+                                style={{marginBottom: text(10)}}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
+                <View style={styles.padding_sty}>
+                    {Object.keys(card).length > 0 && (
+                        <View style={styles.plan_card_sty}>
+                            <Html style={styles.plan_title_sty} html={card.title_info.content} />
+                            <Text style={styles.plan_desc_sty}>{card.desc}</Text>
+                            {card?.notice ? (
+                                <View style={styles.blue_wrap_style}>
+                                    <Text style={styles.blue_text_style}>{card.notice}</Text>
+                                </View>
+                            ) : null}
+                            <View style={[Style.flexRow, {justifyContent: 'space-between', marginTop: text(14)}]}>
+                                {card.button_list.map((_button, _index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            key={_index + '_button'}
+                                            onPress={() => jumpTo(_button.url)}
+                                            style={{
+                                                borderColor: '#4E556C',
+                                                borderWidth: _index == 0 ? 0.5 : 0,
+                                                borderRadius: text(6),
+                                                backgroundColor:
+                                                    _button.avail !== 0 ? '#0051CC' : _index == 0 ? '#eee' : '#C7D8F0',
+                                                flex: 1,
+
+                                                marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
+                                            }}>
+                                            <Text
+                                                style={{
+                                                    paddingVertical: text(10),
+                                                    textAlign: 'center',
+                                                    color: _index == 0 ? '#545968' : '#fff',
+                                                }}>
+                                                {_button.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
+                        </View>
+                    )}
+
+                    {/* 净值趋势图 */}
+                    {Object.keys(chart).length > 0 && (
+                        <>
+                            <Text style={styles.title_sty}>{chart.title}</Text>
+                            <View
+                                style={{
+                                    height: 280,
+                                    backgroundColor: '#fff',
+                                    paddingVertical: text(20),
+                                    paddingBottom: text(10),
+                                    borderRadius: text(10),
+                                }}>
+                                <View style={[Style.flexRow]}>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={styles.legend_title_sty}>{chart.label[0].val}</Text>
+                                        <Text style={styles.legend_desc_sty}>{chart.label[0].name}</Text>
+                                    </View>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>
+                                            {chart.label[1].val}
+                                        </Text>
+                                        <Text>
+                                            <MaterialCommunityIcons
+                                                name={'record-circle-outline'}
+                                                color={'#E74949'}
+                                                size={12}
+                                            />
+                                            <Text style={styles.legend_desc_sty}>{chart.label[1].name}</Text>
+                                        </Text>
+                                    </View>
+                                    <View style={styles.legend_sty}>
+                                        <Text style={styles.legend_title_sty}>{chart.label[2].val}</Text>
+                                        <Text>
+                                            <MaterialCommunityIcons
+                                                name={'record-circle-outline'}
+                                                color={'#545968'}
+                                                size={12}
+                                            />
+                                            <Text style={styles.legend_desc_sty}>{chart.label[2].name}</Text>
+                                        </Text>
                                     </View>
                                 </View>
-                                <View style={styles.process_outer}>
-                                    <View style={[styles.process_inner, {width: widthD}]}></View>
-                                </View>
+                                <Chart initScript={baseLineChart(chartData, [Colors.red], true)} />
                                 <View
                                     style={{
                                         flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        marginTop: text(5),
+                                        height: 50,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginHorizontal: 20,
                                     }}>
-                                    <Text style={{fontSize: text(12), color: '#fff'}}>
-                                        {data?.progress_bar?.range_text[0]}
-                                    </Text>
-                                    <Text style={{fontSize: text(12), color: '#fff'}}>
-                                        {data?.progress_bar?.range_text[1]}
-                                    </Text>
-                                </View>
-                            </>
-                        )}
-                    </View>
-
-                    <View style={styles.list_card_sty}>
-                        {Object.keys(data).length > 0 &&
-                            data.core_buttons.map((_item, _index) => {
-                                return (
-                                    <TouchableOpacity
-                                        style={{alignItems: 'center'}}
-                                        key={_index + '_item0'}
-                                        onPress={jumpTo}>
-                                        <Image
-                                            source={{
-                                                uri: _item.icon,
-                                            }}
-                                            resizeMode="contain"
-                                            style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                        />
-                                        <Text style={styles.list_text_sty}>{_item.text}</Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                    </View>
-                    <View>
-                        {Object.keys(data).length > 0 && data.ad_info && (
-                            <TouchableOpacity onPress={jumpTo(data.ad_info.url)}>
-                                <FitImage
-                                    source={{
-                                        uri: data.ad_info.img,
-                                    }}
-                                    resizeMode="contain"
-                                    style={{marginBottom: text(10)}}
-                                />
-                            </TouchableOpacity>
-                        )}
-                    </View>
-                    <View style={styles.padding_sty}>
-                        {Object.keys(card).length > 0 && (
-                            <View style={styles.plan_card_sty}>
-                                <Html style={styles.plan_title_sty} html={card.title_info.content} />
-                                <Text style={styles.plan_desc_sty}>{card.desc}</Text>
-                                {card?.notice ? (
-                                    <View style={styles.blue_wrap_style}>
-                                        <Text style={styles.blue_text_style}>{card.notice}</Text>
-                                    </View>
-                                ) : null}
-                                <View style={[Style.flexRow, {justifyContent: 'space-between', marginTop: text(14)}]}>
-                                    {card.button_list.map((_button, _index) => {
+                                    {chart.sub_tabs.map((_item, _index) => {
+                                        let num = _index * 10 + 10;
                                         return (
                                             <TouchableOpacity
-                                                key={_index + '_button'}
-                                                onPress={() => jumpTo(_button.url)}
-                                                style={{
-                                                    borderColor: '#4E556C',
-                                                    borderWidth: _index == 0 ? 0.5 : 0,
-                                                    borderRadius: text(6),
-                                                    backgroundColor:
-                                                        _button.avail !== 0
-                                                            ? '#0051CC'
-                                                            : _index == 0
-                                                            ? '#eee'
-                                                            : '#C7D8F0',
-                                                    flex: 1,
-
-                                                    marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
-                                                }}>
+                                                key={_index + '_item2'}
+                                                style={[
+                                                    styles.btn_sty,
+                                                    {
+                                                        backgroundColor: period == _item.period ? '#F1F6FF' : '#fff',
+                                                        marginRight: _index != chart.sub_tabs.length - 1 ? text(10) : 0,
+                                                    },
+                                                ]}
+                                                onPress={() => changeTab(num, _item.val)}>
                                                 <Text
                                                     style={{
-                                                        paddingVertical: text(10),
-                                                        textAlign: 'center',
-                                                        color: _index == 0 ? '#545968' : '#fff',
+                                                        color: period == _item.period ? '#0051CC' : '#555B6C',
+                                                        fontSize: text(12),
                                                     }}>
-                                                    {_button.text}
+                                                    {_item.name}
                                                 </Text>
                                             </TouchableOpacity>
                                         );
                                     })}
                                 </View>
                             </View>
-                        )}
+                        </>
+                    )}
 
-                        {/* 净值趋势图 */}
-                        {Object.keys(chart).length > 0 && (
-                            <>
-                                <Text style={styles.title_sty}>{chart.title}</Text>
-                                <View
-                                    style={{
-                                        height: 280,
-                                        backgroundColor: '#fff',
-                                        paddingVertical: text(20),
-                                        paddingBottom: text(10),
-                                        borderRadius: text(10),
-                                    }}>
-                                    <View style={[Style.flexRow]}>
-                                        <View style={styles.legend_sty}>
-                                            <Text style={styles.legend_title_sty}>{chart.label[0].val}</Text>
-                                            <Text style={styles.legend_desc_sty}>{chart.label[0].name}</Text>
-                                        </View>
-                                        <View style={styles.legend_sty}>
-                                            <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>
-                                                {chart.label[1].val}
-                                            </Text>
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#E74949'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>{chart.label[1].name}</Text>
-                                            </Text>
-                                        </View>
-                                        <View style={styles.legend_sty}>
-                                            <Text style={styles.legend_title_sty}>{chart.label[2].val}</Text>
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#545968'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>{chart.label[2].name}</Text>
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Chart initScript={baseLineChart(chartData, [Colors.red], true)} />
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            height: 50,
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            marginHorizontal: 20,
-                                        }}>
-                                        {chart.sub_tabs.map((_item, _index) => {
-                                            let num = _index * 10 + 10;
-                                            return (
-                                                <TouchableOpacity
-                                                    key={_index + '_item2'}
-                                                    style={[
-                                                        styles.btn_sty,
-                                                        {
-                                                            backgroundColor:
-                                                                period == _item.period ? '#F1F6FF' : '#fff',
-                                                            marginRight:
-                                                                _index != chart.sub_tabs.length - 1 && text(10),
-                                                        },
-                                                    ]}
-                                                    onPress={() => changeTab(num, _item.val)}>
-                                                    <Text
-                                                        style={{
-                                                            color: period == _item.period ? '#0051CC' : '#555B6C',
-                                                            fontSize: text(12),
-                                                        }}>
-                                                        {_item.name}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
+                    {Object.keys(data).length > 0 && data?.asset_deploy && (
+                        <>
+                            <View style={Style.flexBetween}>
+                                <Text style={styles.title_sty}>{data.asset_deploy.header.title}</Text>
+                                <Text style={{color: '#0051CC', fontSize: text(12)}}>
+                                    {data.asset_deploy.header.text}
+                                </Text>
+                            </View>
+                            <View style={styles.fund_card_sty}>
+                                <View style={[Style.flexBetween, {paddingBottom: text(10)}]}>
+                                    <Text style={styles.fund_title_sty}>{data.asset_deploy.th.name}</Text>
+                                    <Text style={styles.fund_title_sty}>{data.asset_deploy.th.ratio}</Text>
                                 </View>
-                            </>
-                        )}
-
-                        {Object.keys(data).length > 0 && data?.asset_deploy && (
-                            <>
-                                <View style={Style.flexBetween}>
-                                    <Text style={styles.title_sty}>{data.asset_deploy.header.title}</Text>
-                                    <Text style={{color: '#0051CC', fontSize: text(12)}}>
-                                        {data.asset_deploy.header.text}
-                                    </Text>
-                                </View>
-                                <View style={styles.fund_card_sty}>
-                                    <View style={[Style.flexBetween, {paddingBottom: text(10)}]}>
-                                        <Text style={styles.fund_title_sty}>{data.asset_deploy.th.name}</Text>
-                                        <Text style={styles.fund_title_sty}>{data.asset_deploy.th.ratio}</Text>
-                                    </View>
-                                    {data.asset_deploy.items.map((_i, _d) => {
-                                        return (
-                                            <View style={[Style.flexBetween, styles.fund_item_sty]} key={_d + '_i'}>
-                                                <View>
-                                                    <Text style={{color: '#333333'}}>{_i.name}</Text>
-                                                    <Text
-                                                        style={{
-                                                            color: '#999999',
-                                                            fontSize: text(11),
-                                                            marginTop: text(5),
-                                                            fontFamily: Font.numFontFamily,
-                                                        }}>
-                                                        {_i.code}
-                                                    </Text>
-                                                </View>
+                                {data.asset_deploy.items.map((_i, _d) => {
+                                    return (
+                                        <View style={[Style.flexBetween, styles.fund_item_sty]} key={_d + '_i'}>
+                                            <View>
+                                                <Text style={{color: '#333333'}}>{_i.name}</Text>
                                                 <Text
                                                     style={{
-                                                        color: '#333333',
-                                                        fontSize: text(13),
+                                                        color: '#999999',
+                                                        fontSize: text(11),
+                                                        marginTop: text(5),
                                                         fontFamily: Font.numFontFamily,
                                                     }}>
-                                                    {_i.percent}
+                                                    {_i.code}
                                                 </Text>
                                             </View>
-                                        );
-                                    })}
-                                </View>
-                            </>
-                        )}
-                        <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
-                            {Object.keys(data).length > 0 &&
-                                data.extend_buttons.map((_e, _index) => {
-                                    return (
-                                        <View style={{alignItems: 'center'}} key={_index + '_e'}>
-                                            <Image
-                                                source={{
-                                                    uri: _e.icon,
-                                                }}
-                                                resizeMode="contain"
+                                            <Text
                                                 style={{
-                                                    width: text(24),
-                                                    height: text(24),
-                                                    marginBottom: text(5),
-                                                }}
-                                            />
-                                            <Text style={styles.list_text_sty}>{_e.text}</Text>
+                                                    color: '#333333',
+                                                    fontSize: text(13),
+                                                    fontFamily: Font.numFontFamily,
+                                                }}>
+                                                {_i.percent}
+                                            </Text>
                                         </View>
                                     );
                                 })}
-                        </View>
+                            </View>
+                        </>
+                    )}
+                    <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
+                        {Object.keys(data).length > 0 &&
+                            data.extend_buttons.map((_e, _index) => {
+                                return (
+                                    <View style={{alignItems: 'center'}} key={_index + '_e'}>
+                                        <Image
+                                            source={{
+                                                uri: _e.icon,
+                                            }}
+                                            resizeMode="contain"
+                                            style={{
+                                                width: text(24),
+                                                height: text(24),
+                                                marginBottom: text(5),
+                                            }}
+                                        />
+                                        <Text style={styles.list_text_sty}>{_e.text}</Text>
+                                    </View>
+                                );
+                            })}
                     </View>
-                    <BottomDesc />
-                </ScrollView>
-            </View>
+                </View>
+                <BottomDesc />
+            </ScrollView>
         </>
     );
 }
@@ -395,7 +382,7 @@ export default function PortfolioAssets() {
 const styles = StyleSheet.create({
     assets_card_sty: {
         backgroundColor: '#0052CD',
-        paddingHorizontal: text(16),
+        paddingHorizontal: text(20),
         paddingVertical: text(15),
         paddingBottom: text(40),
     },

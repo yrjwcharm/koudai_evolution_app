@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 14:23:22
+ * @LastEditTime: 2021-03-02 16:40:02
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -14,7 +14,7 @@ import EmptyTip from '../../components/EmptyTip';
 import {Colors, Style, Font} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
 const trade_type = [0, 3, 5, 6, 4, 7];
-const TradeRecord = ({route, nvaigation}) => {
+const TradeRecord = ({route, navigation}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [data, setData] = useState([]);
@@ -63,7 +63,9 @@ const TradeRecord = ({route, nvaigation}) => {
         setHasMore(false);
         setActiveTab(obj.i);
     };
-    const _onPress = () => {};
+    const _onPress = (type, txn_id) => {
+        navigation.navigate('TradeRecordDetail', {type, txn_id});
+    };
     const tradeStuatusColor = (status) => {
         if (status < 0) {
             return Colors.red;
@@ -93,7 +95,12 @@ const TradeRecord = ({route, nvaigation}) => {
     const renderItem = ({item}) => {
         return (
             item && (
-                <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={_onPress}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.card}
+                    onPress={() => {
+                        _onPress(item.type, item.id);
+                    }}>
                     <>
                         <View style={Style.flexBetween}>
                             <View style={Style.flexRow}>

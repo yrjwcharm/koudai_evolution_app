@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 15:20:24
+ * @LastEditTime: 2021-03-02 15:37:54
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -424,9 +424,7 @@ export class question extends Component {
                             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                             style={[styles.container, {height: height - this.header.navBarHeight - bottom}]}>
                             <Robot />
-                            <Animated.View
-                                style={{transform: [{translateY}], opacity, marginTop: px(24)}}
-                                onLayout={this.onLayout}>
+                            <Animated.View style={{transform: [{translateY}], opacity}} onLayout={this.onLayout}>
                                 <Animatable.View ref={this.handleContentView} animation="fadeInUp">
                                     {!finishTest ? (
                                         <>

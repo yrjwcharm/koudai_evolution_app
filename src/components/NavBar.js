@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 11:05:38
+ * @LastEditTime: 2021-03-02 17:23:47
  * @Description:头部组件
  */
 
@@ -51,7 +51,11 @@ const NavBar = React.forwardRef((props, ref) => {
             if (Platform.OS === 'android') {
                 return (
                     <TouchableNativeFeedback onPress={onPress} style={styles.btn}>
-                        <Icon name={name} size={px2dp(28)} color={Colors.navTitleColor} />
+                        <Icon
+                            name={name}
+                            size={px2dp(28)}
+                            color={props.fontStyle ? props.fontStyle.color : Colors.navTitleColor}
+                        />
                     </TouchableNativeFeedback>
                 );
             } else {
@@ -60,7 +64,7 @@ const NavBar = React.forwardRef((props, ref) => {
                         <Icon
                             name={name}
                             size={px2dp(26)}
-                            color={props.fontStyle ? props.fontStyle.color : 'Colors.navTitleColor'}
+                            color={props.fontStyle ? props.fontStyle.color : Colors.navTitleColor}
                         />
                     </TouchableOpacity>
                 );
