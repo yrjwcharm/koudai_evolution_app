@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 18:09:54
+ * @LastEditTime: 2021-03-04 12:15:01
  * @Description:路由表
  */
 import React from 'react';
@@ -116,14 +116,15 @@ import AssetNav from '../pages/PE/AssetNav'; //私募净值
 import ProductIntro from '../pages/Portfolio/Detail/ProductIntro'; //产品说明页
 import BankWithdraw from '../pages/BankPages/BankWithdraw'; //银行提现
 import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智能组合
-import ExperienceGoldRule from '../pages/ExperienceGold/Rule';
+import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
+import GesturePassword from '../pages/Assets/GesturePassword.js';
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="LargeAmount"
+            initialRouteName="GesturePassword"
             screenOptions={{
                 // headerShown: false,
 
@@ -421,6 +422,7 @@ export default function AppStack() {
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
+            <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
         </Stack.Navigator>
     );
 }

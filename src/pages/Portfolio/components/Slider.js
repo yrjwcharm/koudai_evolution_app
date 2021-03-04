@@ -66,7 +66,7 @@ export default class Slider extends React.Component {
         this._onPanResponderMove = this._onPanResponderMove.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.watcher = PanResponder.create({
             // 建立监视器
             onStartShouldSetPanResponder: () => true,
