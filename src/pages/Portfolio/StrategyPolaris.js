@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 18:18:08
+ * @LastEditTime: 2021-03-04 17:43:53
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -18,7 +18,7 @@ import * as Animatable from 'react-native-animatable';
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/strategy/20210101').then((res) => {
+        http.get('http://kapi-web.bae.mofanglicai.com.cn:10080/polaris/strategy/20210101').then((res) => {
             setData(res.result);
         });
     });
@@ -28,7 +28,6 @@ export default function StrategyPolaris(props) {
     return (
         <>
             {Object.keys(data).length > 0 && <Header title={data.title} leftIcon="chevron-left" />}
-
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     <View style={{backgroundColor: '#fff'}}>
@@ -60,7 +59,13 @@ export default function StrategyPolaris(props) {
                                         <Text style={{color: '#555B6C', fontSize: text(13), lineHeight: text(18)}}>
                                             {_item.desc}
                                         </Text>
-                                        <Text style={styles.radio_sty}>{_item.ratio}</Text>
+                                        <Text
+                                            style={[
+                                                styles.radio_sty,
+                                                {color: _item.ratio > 0 ? Colors.red : Colors.green},
+                                            ]}>
+                                            {_item.ratio}
+                                        </Text>
                                         <Text style={{color: '#9AA1B2', fontSize: Font.textH3}}>
                                             {_item.ratio_desc}
                                         </Text>
@@ -120,7 +125,6 @@ const styles = StyleSheet.create({
         paddingBottom: text(6),
     },
     radio_sty: {
-        color: '#E74949',
         fontSize: text(22),
         fontFamily: Font.numFontFamily,
         marginTop: text(16),

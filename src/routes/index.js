@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 16:10:38
+ * @LastEditTime: 2021-03-04 17:48:32
  * @Description:路由表
  */
 import React from 'react';
@@ -124,7 +124,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="TradeAdjust"
+            initialRouteName="DetailPolaris"
             screenOptions={{
                 // headerShown: false,
 

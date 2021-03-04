@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 17:46:57
+ * @LastEditTime: 2021-03-04 17:51:55
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -19,13 +19,13 @@ import ChartData from './data.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
-export default function DetailPolaris() {
+export default function DetailPolaris({route}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     useEffect(() => {
-        Http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/strategy/20210101', {
-            upid: 1,
+        Http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/portfolio_detail/20210101', {
+            // poid: route.params.poid,
         }).then((res) => {
             setData(res.result);
         });
@@ -242,7 +242,7 @@ export default function DetailPolaris() {
                     </View>
                 </ScrollView>
             )}
-            <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} />
+            {/* <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} /> */}
         </>
     );
 }
