@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 16:40:02
+ * @LastEditTime: 2021-03-04 20:44:44
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -13,6 +13,7 @@ import http from '../../services/index.js';
 import EmptyTip from '../../components/EmptyTip';
 import {Colors, Style, Font} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
+import {useJump} from '../../components/hooks';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const TradeRecord = ({route, navigation}) => {
     const [page, setPage] = useState(1);
@@ -20,6 +21,7 @@ const TradeRecord = ({route, navigation}) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [tabActive, setActiveTab] = useState(0);
+    const jump = useJump();
     const getData = useCallback(() => {
         setLoading(true);
         http.get('/order/records/20210101', {
@@ -63,9 +65,7 @@ const TradeRecord = ({route, navigation}) => {
         setHasMore(false);
         setActiveTab(obj.i);
     };
-    const _onPress = (type, txn_id) => {
-        navigation.navigate('TradeRecordDetail', {type, txn_id});
-    };
+
     const tradeStuatusColor = (status) => {
         if (status < 0) {
             return Colors.red;
@@ -99,7 +99,7 @@ const TradeRecord = ({route, navigation}) => {
                     activeOpacity={0.8}
                     style={styles.card}
                     onPress={() => {
-                        _onPress(item.type, item.id);
+                        jump(item.url);
                     }}>
                     <>
                         <View style={Style.flexBetween}>

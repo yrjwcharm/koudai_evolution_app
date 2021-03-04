@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 18:05:47
+ * @LastEditTime: 2021-03-04 20:25:42
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -121,7 +121,7 @@ export class planningHistory extends Component {
                     {button && (
                         <QuestionBtn
                             onPress={() => {
-                                this.jumpNext(button.url);
+                                this.jumpNext(button?.url?.path, button?.url?.params);
                             }}
                             style={{marginTop: px(16)}}
                             button={button}

@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 19:53:11
+ * @LastEditTime: 2021-03-04 20:06:27
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -49,6 +49,7 @@ export default function PortfolioAssets(props) {
             if (res.result.progress_bar) {
                 const _left = res.result.progress_bar.percent_text;
                 if (_left.split('%')[0] < 10) {
+                    // eslint-disable-next-line react-hooks/exhaustive-deps
                     _l = _left.split('%')[0] - 1 + '%';
                 } else {
                     _l = _left.split('%')[0] + '%';

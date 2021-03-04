@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 16:37:12
+ * @LastEditTime: 2021-03-04 20:48:42
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -21,7 +21,7 @@ import Toast from '../../components/Toast';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
-    const {txn_id, type} = props.route?.params;
+    const {txn_id, type, sub_type} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [data, setData] = useState();
@@ -36,8 +36,9 @@ const TradeRecordDetail = (props) => {
     useEffect(() => {});
     const getData = useCallback(() => {
         http.get('/order/detail/20210101', {
-            txn_id: txn_id,
-            type: type,
+            txn_id,
+            type,
+            sub_type,
         }).then((res) => {
             setData(res.result);
             props.navigation.setOptions({
@@ -54,7 +55,7 @@ const TradeRecordDetail = (props) => {
             });
             setShowMore(expand);
         });
-    }, [props.navigation, txn_id, type]);
+    }, [props.navigation, txn_id, type, sub_type]);
     useEffect(() => {
         getData();
     }, [getData, props.navigation]);
