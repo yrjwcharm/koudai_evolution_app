@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-02-24 16:21:15
+ * @LastEditTime: 2021-03-04 16:15:34
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -109,7 +109,7 @@ export default class PrivateProduct extends Component {
             content: data.tip.content,
             confirm: true,
             confirmText: data.tip.button[0].title,
-            cancleText: data.tip.button[1].title,
+            cancelText: data.tip.button[1].title,
             confirmCallBack: () => {
                 this.props.navigation.navigate(this.state.data.button.url);
             },

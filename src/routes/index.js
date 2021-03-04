@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 12:15:01
+ * @LastEditTime: 2021-03-04 16:10:38
  * @Description:路由表
  */
 import React from 'react';
@@ -124,7 +124,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="GesturePassword"
+            initialRouteName="TradeAdjust"
             screenOptions={{
                 // headerShown: false,
 

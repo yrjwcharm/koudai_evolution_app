@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 11:36:51
+ * @LastEditTime: 2021-03-04 16:46:34
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -27,6 +27,7 @@ export default class TradeAdjust extends Component {
             password: '',
             data: {},
             showMask: false,
+            poid: this.props.route?.params?.poid,
         };
     }
     toggleChange = (index) => {
@@ -37,7 +38,9 @@ export default class TradeAdjust extends Component {
         });
     };
     componentDidMount() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/plan/20210101').then((res) => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/plan/20210101', {
+            poid: this.state.poid,
+        }).then((res) => {
             this.setState({
                 data: res.result,
             });
@@ -46,7 +49,10 @@ export default class TradeAdjust extends Component {
     confirmBtn = () => {
         Modal.show({
             confirm: true,
-            content: '12222',
+            content:
+                '因本次调仓可能会涉及到部分持有时间不足7天的基金，其中涉及到风控资产将立即赎回。其他基金为规避相应惩罚性手续费，将会对该部分基金做延时赎回。请确认是否调仓。',
+            cancelText: '取消调仓',
+            confirmText: '确认调仓',
             confirmCallBack: this.passwordInput,
         });
     };
@@ -110,7 +116,7 @@ export default class TradeAdjust extends Component {
                                                         <Text style={styles.content_head_title}>
                                                             {_index == 0 && data?.adjust_compare?.header?.ratio_src}
                                                         </Text>
-                                                        <Text style={styles.content_head_title}>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
                                                             {_index == 0 && data?.adjust_compare.header?.ratio_dst}
                                                         </Text>
                                                     </View>
@@ -133,15 +139,7 @@ export default class TradeAdjust extends Component {
                                                                 <Text style={styles.content_item_text}>
                                                                     {_i?.ratio_src}
                                                                 </Text>
-                                                                <View
-                                                                    style={[
-                                                                        Style.flexRow,
-                                                                        {
-                                                                            width: text(90),
-                                                                            justifyContent: 'flex-end',
-                                                                            paddingTop: text(15),
-                                                                        },
-                                                                    ]}>
+                                                                <View style={[Style.flexRow, styles.fund_text_sty]}>
                                                                     <Text
                                                                         style={{
                                                                             fontSize: Font.textH3,
@@ -215,7 +213,7 @@ export default class TradeAdjust extends Component {
                                                         <Text style={styles.content_head_title}>
                                                             {_index == 0 && data?.adjust_hold?.header?.percent}
                                                         </Text>
-                                                        <Text style={styles.content_head_title}>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
                                                             {_index == 0 && data?.adjust_hold?.header?.amount}
                                                         </Text>
                                                     </View>
@@ -232,7 +230,11 @@ export default class TradeAdjust extends Component {
                                                                 <Text style={styles.content_item_text}>
                                                                     {_i.percent}
                                                                 </Text>
-                                                                <Text style={styles.content_item_text}>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.content_item_text,
+                                                                        {textAlign: 'right'},
+                                                                    ]}>
                                                                     {_i.amount}
                                                                 </Text>
                                                             </View>
@@ -258,7 +260,7 @@ export default class TradeAdjust extends Component {
                             <Html html={data?.fee_desc} style={styles.tips_sty} />
                         </View>
                         <BottomDesc />
-                        {showMask && <Mask />}
+                        {this.state.showMask && <Mask />}
                     </ScrollView>
                 )}
 
@@ -314,5 +316,10 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         margin: text(10),
         lineHeight: text(18),
+    },
+    fund_text_sty: {
+        width: text(90),
+        justifyContent: 'flex-end',
+        paddingTop: text(15),
     },
 });
