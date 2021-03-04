@@ -15,7 +15,7 @@ import Praise from '../../components/Praise';
 const MessageBoard = (props) => {
     const [comment, setComment] = useState(null);
     const getData = useCallback(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/comment/detail/20210101', {
+        http.get('/comment/detail/20210101', {
             id: props?.route?.params?.id,
         }).then((res) => {
             setComment(res.result);

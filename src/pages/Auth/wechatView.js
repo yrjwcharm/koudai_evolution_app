@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 19:08:40
+ * @LastEditTime: 2021-03-03 14:36:15
  * @Description: 微信登录
  */
 import React from 'react';
@@ -38,7 +38,7 @@ function Wechat(props) {
         // navigation.navigate('WechatLogin');
     };
     return (
-        <View style={[styles.Login, Style.flexCenter]}>
+        <View style={[styles.Login, Style.flexCenter, props.style]}>
             <View style={styles.LoginWrap}>
                 <View style={styles.LoginLine} />
                 <Text style={[styles.text, {marginBottom: 12}]}>其他登录方式</Text>

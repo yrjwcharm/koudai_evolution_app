@@ -20,7 +20,7 @@ export default function TradeNotice({navigation}) {
     const btnHeight = isIphoneX() ? text(90) : text(66);
 
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/message/list/20210101').then((res) => {
+        Http.get('/mapi/message/list/20210101').then((res) => {
             setList(res.result.messages);
         });
     }, [navigation]);

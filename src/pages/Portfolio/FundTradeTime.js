@@ -19,7 +19,7 @@ const FundTradeTime = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/trade_time/20210101', {
+            http.get('/fund/trade_time/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);

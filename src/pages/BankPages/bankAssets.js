@@ -29,7 +29,7 @@ export default function BankAssets(props) {
         props.navigation.navigate(url.path, url.params);
     };
     useEffect(() => {
-        Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/bank/asset/detail/20210101', {
+        Http.get('/bank/asset/detail/20210101', {
             ...props.route.params,
         }).then((res) => {
             setData(res.result);

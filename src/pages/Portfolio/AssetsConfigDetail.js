@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-02 19:29:14
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-04 17:49:38
+ * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
@@ -57,6 +57,14 @@ export class AssetsConfigDetail extends Component {
             this.setState({data: res.result});
             this.props.navigation.setOptions({title: res.result.title});
         });
+        // http.get('/portfolio/asset_deploy/20210101', {
+        //     amount,
+        //     alloc_id,
+        //     upid,
+        // }).then((res) => {
+        //     this.setState({data: res.result});
+        //     this.props.navigation.setOptions({title: res.result.title});
+        // });
     };
     // 点击快捷输入投资金额
     onLable = (amount) => {

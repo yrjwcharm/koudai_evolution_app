@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 18:32:53
  * @Description:子女教育详情页
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-17 10:45:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 17:20:45
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
@@ -27,7 +27,7 @@ import Picker from 'react-native-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Table from '../components/Table';
 import DynamicAdjustment from '../DynamicAdjustment';
-export default function DetailEducation() {
+export default function DetailEducation(props) {
     const [data, setData] = useState({});
     const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');
@@ -64,15 +64,15 @@ export default function DetailEducation() {
         // setMap(mapData);
     }, []);
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/purpose_invest_detail/20210101', {
-            upid: 1,
+        Http.get('/portfolio/purpose_invest_detail/20210101', {
+            upid: props.route?.params?.upid,
         }).then((res) => {
             setData(res.result);
             setAge(res.result.plan_info.personal_info.age);
         });
         setChartData(ChartData);
         // getPieData();
-    }, []);
+    }, [props.route]);
     const selectAge = () => {
         Picker.init({
             pickerTitleText: '时间选择',
@@ -99,7 +99,7 @@ export default function DetailEducation() {
                         rightPress={rightPress}
                         rightTextStyle={styles.right_sty}
                     />
-                    <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
+                    <ScrollView style={{flex: 1}}>
                         <View style={styles.container_sty}>
                             <View style={[Style.flexBetween, styles.select_wrap_sty]}>
                                 <Text style={styles.select_text_sty}>
@@ -353,7 +353,7 @@ export default function DetailEducation() {
                             </View>
                         </View>
                     </ScrollView>
-                    <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} />
+                    <FixedBtn btns={data.btns} />
                 </View>
             )}
         </>

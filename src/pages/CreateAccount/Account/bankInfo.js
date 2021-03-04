@@ -2,11 +2,11 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 14:47:47
+ * @LastEditTime: 2021-03-03 14:28:48
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -35,11 +35,9 @@ export class bankInfo extends Component {
         };
     }
     componentDidMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/bank_list/20210101').then(
-            (data) => {
-                this.setState({bankList: data.result});
-            }
-        );
+        http.get('/passport/xy_account/bank_list/20210101').then((data) => {
+            this.setState({bankList: data.result});
+        });
     }
     /**
      * @description: 开户
@@ -75,16 +73,20 @@ export class bankInfo extends Component {
         if (!formCheck(checkData)) {
             return;
         }
-        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/bind_confirm/20210101', {
-            phone,
-            code,
-            bank_no: bank_no.replaceAll(' ', ''),
-            bank_code: selectBank.bank_code,
-            id_no: this.props.route?.params?.id_no,
-            name: this.props.route?.params?.name,
-            rcode: this.props.route?.params?.rcode,
-            rname: this.props.route?.params?.rname,
-        }).then((res) => {
+        http.post(
+            '/passport/xy_account/bind_confirm/20210101',
+            {
+                phone,
+                code,
+                bank_no: bank_no.replace(/ /g, ''),
+                bank_code: selectBank.bank_code,
+                id_no: this.props.route?.params?.id_no,
+                name: this.props.route?.params?.name,
+                rcode: this.props.route?.params?.rcode,
+                rname: this.props.route?.params?.rname,
+            },
+            '正在提交数据...'
+        ).then((res) => {
             if (res.code == '000000') {
                 Toast.show('开户成功', {
                     onHidden: () => {
@@ -122,10 +124,14 @@ export class bankInfo extends Component {
             if (!formCheck(checkData)) {
                 return;
             }
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/send_verify_code/20210101', {
-                mobile: phone,
-                operation: 'open_acct',
-            }).then((res) => {
+            http.post(
+                '/passport/send_verify_code/20210101',
+                {
+                    mobile: phone,
+                    operation: 'open_acct',
+                },
+                '正在发送验证码...'
+            ).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
                     this.timer();
@@ -176,8 +182,8 @@ export class bankInfo extends Component {
      */
     onChangeBankNo = (value) => {
         if (value && value.length > 11) {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/match/bank_card_info/20210101', {
-                bank_no: this.state.bank_no.replaceAll(' ', ''),
+            http.get('/passport/match/bank_card_info/20210101', {
+                bank_no: this.state.bank_no.replace(/ /g, ''),
             }).then((res) => {
                 this.setState({
                     selectBank: res.result,
@@ -194,83 +200,100 @@ export class bankInfo extends Component {
     render() {
         const {verifyText, bank_no, bankList, selectBank} = this.state;
         return (
-            <View style={styles.con}>
-                {/* <Mask /> */}
-                <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
-                    <BankCardModal
-                        title="请选择银行卡"
-                        data={bankList}
-                        style={{height: px(500)}}
-                        onDone={(data) => {
-                            this.setState({selectBank: data});
-                        }}
-                        ref={(ref) => (this.bankCard = ref)}
-                    />
-                    <FastImage
-                        style={styles.pwd_img}
-                        source={require('../../../assets/img/account/second.png')}
-                        resizeMode={FastImage.resizeMode.contain}
-                    />
-                    <View style={styles.card}>
-                        <View style={styles.card_header}>
-                            <Image
-                                source={require('../../../assets/img/account/cardMes.png')}
-                                style={{width: px(22), resizeMode: 'contain'}}
-                            />
-                            <Text style={styles.card_head_text}>银行卡信息</Text>
-                        </View>
-                        <Input
-                            label="银行卡号"
-                            placeholder="请输入您的银行卡号"
-                            keyboardType={'number-pad'}
-                            maxLength={25}
-                            value={bank_no}
-                            onChange={this.onChangeBankNo}
-                        />
-                        <View style={Style.flexRow}>
-                            <Input
-                                label="银行"
-                                isUpdate={false}
-                                placeholder="请选择您银行"
-                                value={selectBank.bank_name}
-                                onClick={this._showBankCard}
-                                inputStyle={{flex: 1}}
-                                returnKeyType={'done'}
-                            />
-                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
-                        </View>
-                        <Input
-                            label="手机号"
-                            placeholder="请输入您的手机号"
-                            keyboardType={'number-pad'}
-                            maxLength={11}
-                            onChange={(phone) => {
-                                this.setState({phone});
+            <View style={{flex: 1}}>
+                <ScrollView style={styles.con}>
+                    <KeyboardAvoidingView
+                        behavior="position"
+                        keyboardVerticalOffset={px(120)}
+                        style={{paddingHorizontal: px(16)}}>
+                        <BankCardModal
+                            title="请选择银行卡"
+                            data={bankList}
+                            style={{height: px(500)}}
+                            onDone={(data) => {
+                                this.setState({selectBank: data});
                             }}
+                            ref={(ref) => (this.bankCard = ref)}
                         />
-                        <View style={Style.flexRow}>
+                        <FastImage
+                            style={styles.pwd_img}
+                            source={require('../../../assets/img/account/second.png')}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                        <View
+                            // style={{height: height}}
+
+                            style={styles.card}>
+                            <View style={styles.card_header}>
+                                <Image
+                                    source={require('../../../assets/img/account/cardMes.png')}
+                                    style={{width: px(22), resizeMode: 'contain'}}
+                                />
+                                <Text style={styles.card_head_text}>银行卡信息</Text>
+                            </View>
                             <Input
-                                label="验证码"
-                                placeholder="请输入验证码"
+                                label="银行卡号"
+                                placeholder="请输入您的银行卡号"
                                 keyboardType={'number-pad'}
-                                maxLength={6}
-                                onChange={(code) => {
-                                    this.setState({code});
-                                }}
-                                inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                maxLength={25}
+                                value={bank_no}
+                                onChange={this.onChangeBankNo}
                             />
-                            <View style={[styles.border]}>
-                                <TouchableOpacity onPress={this.sendCode}>
-                                    <Text style={{color: Colors.btnColor}}>{verifyText}</Text>
-                                </TouchableOpacity>
+                            <View style={Style.flexRow}>
+                                <Input
+                                    label="银行"
+                                    isUpdate={false}
+                                    placeholder="请选择您银行"
+                                    value={selectBank.bank_name}
+                                    onClick={this._showBankCard}
+                                    inputStyle={{flex: 1}}
+                                    returnKeyType={'done'}
+                                />
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={18}
+                                    color={'#999999'}
+                                    style={{marginLeft: -14}}
+                                />
+                            </View>
+
+                            <Input
+                                label="手机号"
+                                placeholder="请输入您的手机号"
+                                keyboardType={'number-pad'}
+                                maxLength={11}
+                                onChange={(phone) => {
+                                    this.setState({phone});
+                                }}
+                            />
+                            <View style={Style.flexRow}>
+                                <Input
+                                    label="验证码"
+                                    placeholder="请输入验证码"
+                                    keyboardType={'number-pad'}
+                                    maxLength={6}
+                                    onChange={(code) => {
+                                        this.setState({code});
+                                    }}
+                                    inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                />
+                                <View style={[styles.border, {width: verifyText.length > 5 ? px(110) : px(84)}]}>
+                                    <Text
+                                        onPress={this.sendCode}
+                                        style={{
+                                            color: Colors.btnColor,
+                                        }}>
+                                        {verifyText}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                    <Agreements
-                        onChange={(checked) => {
-                            this.setState({checked});
-                        }}
-                    />
+                        <Agreements
+                            onChange={(checked) => {
+                                this.setState({checked});
+                            }}
+                        />
+                    </KeyboardAvoidingView>
                 </ScrollView>
                 <FixedButton title={'立即开户'} onPress={this.confirm} />
             </View>
@@ -307,7 +330,6 @@ const styles = StyleSheet.create({
     },
     border: {
         borderLeftWidth: px(0.5),
-        width: px(84),
         alignItems: 'flex-end',
         borderColor: Colors.borderColor,
     },

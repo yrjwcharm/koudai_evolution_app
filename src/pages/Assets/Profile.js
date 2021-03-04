@@ -93,7 +93,7 @@ const Profile = ({navigation}) => {
     );
 
     useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/user_info/20210101', {}).then((res) => {
+        http.get('/user_info/20210101', {}).then((res) => {
             console.log(res);
         });
     }, []);

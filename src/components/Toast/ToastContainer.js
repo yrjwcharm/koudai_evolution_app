@@ -95,7 +95,7 @@ class ToastContainer extends Component {
         position: positions.CENTER,
         opacity: 0.8,
         delay: 0,
-        hideOnPress: true,
+        hideOnPress: false,
         keyboardAvoiding: true,
         loading: false,
     };
@@ -256,7 +256,7 @@ class ToastContainer extends Component {
                         ref={(ele) => (this._root = ele)}>
                         {this.props.loading ? (
                             <View style={{marginBottom: px(10)}}>
-                                <ActivityIndicator />
+                                <ActivityIndicator color="#fff" />
                             </View>
                         ) : null}
                         <Text style={[styles.textStyle, props.textStyle, props.textColor && {color: props.textColor}]}>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 11:53:08
+ * @LastEditTime: 2021-03-04 17:31:30
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -49,8 +49,7 @@ class TradeBuy extends Component {
     }
     getTab = () => {
         const {upid} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/set_tabs/20210101', {upid}).then((data) => {
-            console.log(data);
+        http.get('/trade/set_tabs/20210101', {upid}).then((data) => {
             this.setState({
                 type: data.result.active,
                 has_tab: data.result.has_tab,
@@ -60,7 +59,7 @@ class TradeBuy extends Component {
     };
     init = (_type) => {
         const {type, upid} = this.state;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/info/20210101', {
+        http.get('/trade/buy/info/20210101', {
             type: _type || type,
             upid,
         }).then((res) => {
@@ -84,7 +83,7 @@ class TradeBuy extends Component {
         const {upid, planData, amount, bankSelect} = this.state;
         const {buy_id} = planData;
         let toast = Toast.showLoading();
-        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/do/20210101', {
+        http.post('/trade/buy/do/20210101', {
             upid,
             buy_id,
             amount,
@@ -111,7 +110,7 @@ class TradeBuy extends Component {
             pay_method: this.state.bankSelect?.pay_method,
             upid: this.state.upid,
         };
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/plan/20210101', params).then((data) => {
+        http.get('/trade/buy/plan/20210101', params).then((data) => {
             this.setState({planData: data.result});
         });
     };
@@ -182,7 +181,7 @@ class TradeBuy extends Component {
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
                 this.setState({showMask: false, currentDate: pickedValue});
-                http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/nextday/20210101', {
+                http.get('/trade/fix_invest/nextday/20210101', {
                     cycle: pickedValue[0],
                     timing: pickedValue[1],
                 }).then((res) => {

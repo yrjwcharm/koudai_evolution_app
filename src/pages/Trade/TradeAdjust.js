@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 16:46:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 17:52:46
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -27,7 +27,7 @@ export default class TradeAdjust extends Component {
             password: '',
             data: {},
             showMask: false,
-            poid: this.props.route?.params?.poid,
+            poid: this.props?.route?.params?.poid,
         };
     }
     toggleChange = (index) => {
@@ -38,9 +38,7 @@ export default class TradeAdjust extends Component {
         });
     };
     componentDidMount() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/plan/20210101', {
-            poid: this.state.poid,
-        }).then((res) => {
+        Http.get('/trade/adjust/plan/20210101').then((res) => {
             this.setState({
                 data: res.result,
             });
@@ -58,7 +56,7 @@ export default class TradeAdjust extends Component {
     };
     submit = () => {
         const {data, password} = this.state;
-        Http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/do/20210101', {
+        Http.post('/trade/adjust/do/20210101', {
             adjust_id: data.adjust_id,
             mode: data.mode,
             password: password,
@@ -105,10 +103,8 @@ export default class TradeAdjust extends Component {
                                                         <View
                                                             style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
                                                             <View
-                                                                style={[
-                                                                    styles.circle,
-                                                                    {backgroundColor: _item?.color},
-                                                                ]}></View>
+                                                                style={[styles.circle, {backgroundColor: _item?.color}]}
+                                                            />
                                                             <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
                                                                 {_item?.title}
                                                             </Text>
@@ -202,10 +198,8 @@ export default class TradeAdjust extends Component {
                                                         <View
                                                             style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
                                                             <View
-                                                                style={[
-                                                                    styles.circle,
-                                                                    {backgroundColor: _item.color},
-                                                                ]}></View>
+                                                                style={[styles.circle, {backgroundColor: _item.color}]}
+                                                            />
                                                             <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
                                                                 {_item?.title}
                                                             </Text>

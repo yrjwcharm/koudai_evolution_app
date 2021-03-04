@@ -33,14 +33,14 @@ export default class WechatLogin extends Component {
     }
     register = () => {
         const {code, password} = this.state;
-        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/auth/user/register/20210101', {
+        http.post('/auth/user/register/20210101', {
             mobile: this.props.route?.params?.mobile,
             verify_code: code,
             password,
         }).then((res) => {
             if (res.code === '000000') {
                 Toast.show('注册成功');
-                http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {
+                http.post('/auth/user/login/20210101', {
                     mobile: this.props.route?.params?.mobile,
                     password,
                 }).then((data) => {
@@ -56,7 +56,7 @@ export default class WechatLogin extends Component {
         const {code_btn_click} = this.state;
         if (code_btn_click) {
             this.timer();
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/send_verify_code/20210101', {
+            http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
             }).then((res) => {
                 if (res.code == '000000') {

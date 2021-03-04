@@ -22,7 +22,7 @@ const HistoryNav = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/history/20210101', {
+            http.get('/fund/nav/history/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {

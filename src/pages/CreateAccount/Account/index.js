@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 15:45:12
+ * @LastEditTime: 2021-03-03 14:41:53
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -31,18 +31,16 @@ export class index extends Component {
         };
     }
     componentDidMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/xy_account/career_list/20210101').then(
-            (data) => {
-                var career = data.result.career.filter((item) => {
-                    return item.code == data.result.default_career;
-                });
-                this.setState({
-                    careerList: data.result.career,
-                    rname: career[0].name,
-                    rcode: data.result.default_career,
-                });
-            }
-        );
+        http.get('/passport/xy_account/career_list/20210101').then((data) => {
+            var career = data.result.career.filter((item) => {
+                return item.code == data.result.default_career;
+            });
+            this.setState({
+                careerList: data.result.career,
+                rname: career[0].name,
+                rcode: data.result.default_career,
+            });
+        });
     }
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
@@ -62,7 +60,7 @@ export class index extends Component {
         if (!formCheck(checkData)) {
             return;
         }
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/open_account/check/20210101', {
+        http.get('/passport/open_account/check/20210101', {
             id_no,
             name,
         }).then((res) => {
@@ -123,7 +121,7 @@ export class index extends Component {
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
-                <ScrollView scrollEnabled={false} style={{paddingHorizontal: px(16)}}>
+                <ScrollView style={{paddingHorizontal: px(16)}}>
                     <FastImage
                         style={styles.pwd_img}
                         source={require('../../../assets/img/account/first.png')}

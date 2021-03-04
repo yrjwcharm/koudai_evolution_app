@@ -20,7 +20,7 @@ const FundRanking = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/rank/20210101', {
+            http.get('/fund/nav/rank/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);

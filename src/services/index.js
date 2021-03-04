@@ -28,6 +28,7 @@ axios.defaults.transformRequest = [
 ];
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
+    // Storage.delete('loginStatus');
     //拦截器处理
     var token = '';
     var uid = '';
@@ -111,18 +112,17 @@ export default class http {
         }
         // }
     }
-    static async post(url, params, showLoading = true) {
+    static async post(url, params, showLoading = '') {
         if (!url.indexOf('http') > -1) {
             axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
         }
         try {
+            let toast = '';
             if (showLoading) {
-                // Toast.showLoading('加载中...');
+                toast = Toast.showLoading(showLoading);
             }
             let res = await axios.post(url, params);
-            if (showLoading) {
-                // Toast.hide();
-            }
+            toast && Toast.hide(toast);
             return res;
         } catch (error) {
             return error;

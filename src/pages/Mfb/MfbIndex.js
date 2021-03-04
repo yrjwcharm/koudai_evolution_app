@@ -26,7 +26,7 @@ export default function MfbIndex(props) {
         props.navigation.navigate('TradeRecord');
     };
     useEffect(() => {
-        Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/wallet/holding/20210101').then((res) => {
+        Http.get('/wallet/holding/20210101').then((res) => {
             setData(res.result);
         });
     }, []);

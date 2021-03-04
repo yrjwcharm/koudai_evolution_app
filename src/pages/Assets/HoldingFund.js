@@ -43,8 +43,8 @@ const HoldingFund = ({navigation, route}) => {
         (first) => {
             http.get(
                 curTab === 0
-                    ? 'http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/user_holding/20210101'
-                    : 'http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/user_confirming/20210101',
+                    ? '/portfolio/funds/user_holding/20210101'
+                    : '/portfolio/funds/user_confirming/20210101',
                 {
                     poid: route.params?.poid || 'X00F000003',
                 }

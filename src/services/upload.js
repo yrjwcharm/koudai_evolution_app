@@ -12,7 +12,7 @@ const upload = (params, succ, failed) => {
     const PATH = Platform.OS === 'android' ? params.uri : params.uri.replace('file:///', '');
     RNFetchBlob.fetch(
         'POST',
-        'http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/identity/upload/20210101',
+        '/mapi/identity/upload/20210101',
         {
             'Content-Type': 'multipart/form-data',
         },

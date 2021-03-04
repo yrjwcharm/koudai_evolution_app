@@ -2,13 +2,13 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, isIphoneX} from '../../../utils/appUtil';
+import {px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -16,9 +16,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Header from '../../../components/NavBar';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import {baseChart, histogram, pie} from './ChartOption';
+import {histogram, pie} from './ChartOption';
 import {baseAreaChart} from '../components/ChartOption';
-import ChartData from './data.json';
 import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -27,9 +26,7 @@ export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState();
-    const rightPress = () => {
-        props.navigation.navigate('ProductIntro');
-    };
+
     const year = [
         {title: '近1年', period: 'y1'},
         {title: '近3年', period: 'y3'},
@@ -41,15 +38,15 @@ export default function DetailAccount(props) {
     const changeTab = (num, period) => {
         setPeriod(period);
     };
-    const jumpPage = (url) => {
+    const jumpPage = (url, params) => {
         if (!url) {
             return;
         }
-        props.navigation.navigate(url);
+        props.navigation.navigate(url, params);
     };
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/detail/20210101', {
-            upid: 1,
+        Http.get('/portfolio/detail/20210101', {
+            upid: props.route?.upid,
         }).then((res) => {
             setData(res.result);
             setPeriod(res.result.period);
@@ -216,7 +213,7 @@ export default function DetailAccount(props) {
                 value: -0.0426,
             },
         ]);
-    }, [period]);
+    }, [period, props.route.upid]);
 
     return (
         <>
@@ -224,13 +221,14 @@ export default function DetailAccount(props) {
                 <Header
                     title={data.title}
                     leftIcon="chevron-left"
-                    rightText={data.product_intro.title}
-                    rightPress={() => rightPress(data.product_intro.url)}
+                    rightText={'产品说明书'}
+                    titleStyle={{marginRight: text(-16)}}
+                    rightPress={() => jumpPage('ProductIntro')}
                     rightTextStyle={styles.right_sty}
                 />
             ) : null}
             {Object.keys(data).length > 0 ? (
-                <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
+                <ScrollView style={{flex: 1}}>
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
@@ -288,6 +286,7 @@ export default function DetailAccount(props) {
                                             styles.btn_sty,
                                             {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
                                         ]}
+                                        key={_index}
                                         onPress={() => changeTab(num, _item.period)}>
                                         <Text
                                             style={{
@@ -328,6 +327,7 @@ export default function DetailAccount(props) {
                             {data.adjust_info.items.map((_i, _d) => {
                                 return (
                                     <View
+                                        key={_d}
                                         style={{
                                             width: '50%',
                                             paddingTop: text(16),
@@ -424,16 +424,17 @@ export default function DetailAccount(props) {
                             );
                         })}
                     </View>
+                    <BottomDesc />
                 </ScrollView>
             ) : null}
-            <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} />
+            {data?.btns && <FixedBtn btns={data.btns} />}
         </>
     );
 }
 const styles = StyleSheet.create({
     right_sty: {
-        marginRight: text(16),
         color: '#1F2432',
+        width: text(70),
     },
     container_sty: {
         paddingHorizontal: text(16),
@@ -502,9 +503,5 @@ const styles = StyleSheet.create({
     zan_sty: {
         width: text(24),
         height: text(24),
-        // position: 'absolute',
-        // left: '10%',
-        // top: 10,
-        // zIndex: 999,
     },
 });

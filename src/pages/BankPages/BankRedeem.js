@@ -32,7 +32,7 @@ class BankRedeem extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/info/20210101', {
+        http.get('/trade/redeem/info/20210101', {
             asset_code: 'BK.SX0001H',
         }).then((data) => {
             this.setState({
@@ -76,7 +76,7 @@ class BankRedeem extends Component {
     // 提交数据
     submitData() {
         this.setState({password: this.state.password}, () => {
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/do/20210101', {
+            http.post('/wallet/withdraw/do/20210101', {
                 code: '',
                 amount: this.state.amount,
                 password: this.state.password,
@@ -86,7 +86,7 @@ class BankRedeem extends Component {
         });
     }
     getPlanInfo() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
+        http.get('/trade/redeem/plan/20210101', {
             asset_code: 'BK.SX0001H',
         }).then((res) => {
             this.setState({

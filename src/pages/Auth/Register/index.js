@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 19:04:56
+ * @LastEditTime: 2021-03-03 14:30:37
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -28,15 +28,13 @@ export default class index extends Component {
     register = () => {
         global.LogTool('Register');
         const {mobile} = this.state;
-        http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/mobile_available/20210101', {mobile}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    this.props.navigation.navigate('SetLoginPassword', {mobile});
-                } else {
-                    Toast.show(res.message);
-                }
+        http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
+            if (res.code === '000000') {
+                this.props.navigation.navigate('SetLoginPassword', {mobile});
+            } else {
+                Toast.show(res.message);
             }
-        );
+        });
     };
     onChangeMobile = (mobile) => {
         this.setState({mobile, btnClick: !(mobile.length >= 11)});
@@ -79,13 +77,13 @@ export default class index extends Component {
                 />
                 <View style={Style.flexRowCenter}>
                     <Text style={styles.text}>已有账号</Text>
-                    <TouchableOpacity
+                    <Text
                         onPress={() => {
                             this.jumpPage('Login');
                         }}
-                        style={styles.toLogin}>
-                        <Text style={[styles.text, {color: Colors.btnColor}]}>去登录</Text>
-                    </TouchableOpacity>
+                        style={[styles.text, {color: Colors.btnColor, marginLeft: 2}]}>
+                        去登录
+                    </Text>
                 </View>
                 <WechatView />
             </ScrollView>
@@ -99,9 +97,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    toLogin: {
-        marginLeft: 2,
-    },
+
     title: {
         fontSize: text(22),
         fontWeight: '500',

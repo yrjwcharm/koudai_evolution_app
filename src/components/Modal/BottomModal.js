@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-14 11:13:57
+ * @LastEditTime: 2021-03-04 17:12:39
  * @Description: 底部弹窗
  */
 import React from 'react';
@@ -11,6 +11,7 @@ import {constants} from './util';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
+import Mask from '../Mask';
 const BottomModal = React.forwardRef((props, ref) => {
     const {
         backdrop = true,
@@ -45,7 +46,8 @@ const BottomModal = React.forwardRef((props, ref) => {
 
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
-            <View style={[styles.container, {backgroundColor: backdrop ? 'rgba(0,0,0,0.5)' : 'transparent'}]}>
+            {backdrop && <Mask />}
+            <View style={styles.container}>
                 <View style={styles.con}>
                     {header || (
                         <View style={styles.header}>

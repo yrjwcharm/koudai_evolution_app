@@ -16,7 +16,7 @@ import FitImage from 'react-native-fit-image';
 export default function BankList(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/bank/asset/list/20210101').then((res) => {
+        Http.get('/bank/asset/list/20210101').then((res) => {
             setData(res.result);
         });
     }, []);

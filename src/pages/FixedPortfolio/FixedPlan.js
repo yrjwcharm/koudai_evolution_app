@@ -37,7 +37,7 @@ export default function FixedPlan() {
         [left]
     );
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/invest_plan/detail/20210101', {}).then(
+        Http.get('/trade/invest_plan/detail/20210101', {}).then(
             (res) => {
                 setData(res.result);
             }

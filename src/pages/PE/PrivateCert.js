@@ -33,7 +33,7 @@ export default class PrivateCert extends Component {
     }
     clickBtn = () => {
         if (this.state.check[0] && this.state.check[1]) {
-            Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/validate/20210101', {
+            Http.get('/pe/validate/20210101', {
                 fund_code: 'SGX499',
             }).then((res) => {
                 if (res.code === '000000') {
@@ -45,7 +45,7 @@ export default class PrivateCert extends Component {
         }
     };
     componentDidMount() {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/validate/20210101', {
+        Http.get('/pe/validate/20210101', {
             fund_code: 'SGX499',
         }).then((res) => {
             this.setState({

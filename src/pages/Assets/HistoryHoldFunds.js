@@ -22,7 +22,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/user_redeemed/20210101', {
+            http.get('/portfolio/funds/user_redeemed/20210101', {
                 poid: route.params?.poid || 'X00F000003',
                 page,
             }).then((res) => {

@@ -20,7 +20,7 @@ export default function ElectronicAccount(props) {
     const [data, setData] = useState({});
     const [num, setNum] = useState('6579976588086535678');
     useEffect(() => {
-        Http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/bank/elec_account/20210101', {
+        Http.get('/bank/elec_account/20210101', {
             bank_code: 'ZBB',
         }).then((res) => {
             setData(res.result);

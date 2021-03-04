@@ -126,7 +126,7 @@ export default function DetailProvideOrder() {
     };
     const chooseBtn = () => {};
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/purpose_invest_detail/20210101', {
+        Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: 1,
         }).then((res) => {
             setData(res.result);

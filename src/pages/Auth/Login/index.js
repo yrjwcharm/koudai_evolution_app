@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 11:29:39
+ * @LastEditTime: 2021-03-03 14:36:56
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -27,20 +27,18 @@ export default class index extends Component {
     }
     login = () => {
         const {mobile, password} = this.state;
-        http.post('http://kapi-web.ll.mofanglicai.com.cn:10080/auth/user/login/20210101', {mobile, password}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    Toast.show('登录成功', {
-                        onHidden: () => {
-                            this.props.navigation.goBack();
-                        },
-                    });
-                    Storage.save('loginStatus', res.result);
-                } else {
-                    Toast.show(res.message);
-                }
+        http.post('/auth/user/login/20210101', {mobile, password}).then((res) => {
+            if (res.code === '000000') {
+                Toast.show('登录成功', {
+                    onHidden: () => {
+                        this.props.navigation.goBack();
+                    },
+                });
+                Storage.save('loginStatus', res.result);
+            } else {
+                Toast.show(res.message);
             }
-        );
+        });
     };
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
@@ -82,29 +80,29 @@ export default class index extends Component {
                     clearButtonMode="while-editing"
                     keyboardType={'ascii-capable'}
                 />
-                <TouchableOpacity
+                <Text
                     onPress={() => {
                         this.jumpPage('CreateAccount');
                     }}
-                    style={styles.forget_password}>
-                    <Text style={[styles.text, {color: Colors.btnColor, height: text(30)}]}>忘记密码</Text>
-                </TouchableOpacity>
+                    style={[styles.text, {color: Colors.btnColor, height: text(30), alignSelf: 'flex-end'}]}>
+                    忘记密码
+                </Text>
                 <Button
                     title="登录"
                     disabled={btnClick}
                     onPress={this.login}
-                    style={{marginBottom: text(26), marginTop: px(10)}}
+                    style={{marginBottom: text(20), marginTop: px(10)}}
                 />
-                <View style={Style.flexRowCenter}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.props.navigation.replace('Register');
-                        }}
-                        style={styles.toLogin}>
-                        <Text style={[styles.text, {color: Colors.btnColor}]}>立即注册</Text>
-                    </TouchableOpacity>
-                </View>
-                <WechatView weChatLogin={this.weChatLogin} />
+
+                <Text
+                    onPress={() => {
+                        this.props.navigation.replace('Register');
+                    }}
+                    style={[styles.text, {color: Colors.btnColor, alignSelf: 'center', height: px(30)}]}>
+                    立即注册
+                </Text>
+
+                <WechatView weChatLogin={this.weChatLogin} style={{marginTop: px(16)}} />
             </ScrollView>
         );
     }
@@ -116,12 +114,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    forget_password: {
-        alignItems: 'flex-end',
-    },
-    toLogin: {
-        marginLeft: 2,
-    },
+
     title: {
         fontSize: text(22),
         fontWeight: '500',

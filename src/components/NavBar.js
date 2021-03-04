@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 17:23:47
+ * @LastEditTime: 2021-03-04 17:36:02
  * @Description:头部组件
  */
 
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
         color: Colors.navTitleColor,
         fontWeight: 'bold',
         fontSize: px2dp(17),
+        flex: 1,
+        textAlign: 'center',
     },
     text_ty: {
         // marginRight: px2dp(16),

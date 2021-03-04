@@ -16,7 +16,7 @@ export default function MfbIntro(props) {
     const [data, setData] = useState({});
     useEffect(() => {
         console.log(props);
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/wallet/intro/20210101').then((res) => {
+        Http.get('/wallet/intro/20210101').then((res) => {
             setData(res.result);
         });
     }, []);

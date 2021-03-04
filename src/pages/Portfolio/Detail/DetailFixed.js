@@ -30,11 +30,9 @@ export default function DetailAccount() {
         'https://static.licaimofang.com/wp-content/uploads/2021/01/implementation.png',
     ];
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/fix_invest_detail/20210101').then(
-            (res) => {
-                setData(res.result);
-            }
-        );
+        Http.get('/portfolio/fix_invest_detail/20210101').then((res) => {
+            setData(res.result);
+        });
         setChartData(ChartData);
     }, []);
     const jumpTo = () => {};

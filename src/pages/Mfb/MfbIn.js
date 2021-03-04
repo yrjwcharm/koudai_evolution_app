@@ -29,7 +29,7 @@ class MfbIn extends Component {
         };
     }
     UNSAFE_componentWillMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/recharge/info/20210101').then((data) => {
+        http.get('/wallet/recharge/info/20210101').then((data) => {
             this.setState({
                 data: data.result,
             });
@@ -91,7 +91,7 @@ class MfbIn extends Component {
                 password: this.state.password,
             },
             () => {
-                http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/recharge/do/20210101', {
+                http.post('/wallet/recharge/do/20210101', {
                     code: '000678',
                     amount: this.state.amount,
                     password: this.state.password,

@@ -24,7 +24,7 @@ export default function SetTarget(props) {
     };
     var timer;
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/target_info/20210101', {
+        Http.get('/trade/fix_invest/target_info/20210101', {
             target_id: target,
         }).then((res) => {
             setData(res.result);
@@ -33,7 +33,7 @@ export default function SetTarget(props) {
         return clearTimeout(timer);
     }, []);
     const confirmData = () => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/set/invest_target/20210101', {
+        Http.get('/trade/set/invest_target/20210101', {
             target: num,
             possible: data.target_info.possible,
         }).then((res) => {

@@ -26,7 +26,7 @@ const FundSearching = ({route}) => {
             .catch((err) => Alert(err));
     }, []);
     useEffect(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/portfolio/funds/searching/20210101', {
+        http.get('/portfolio/funds/searching/20210101', {
             ...route.params,
         }).then((res) => {
             setData(res.result);

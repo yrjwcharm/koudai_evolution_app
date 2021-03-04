@@ -29,7 +29,7 @@ export default class PrivateProduct extends Component {
         };
     }
     componentDidMount() {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/product_detail/20210101', {
+        Http.get('/pe/product_detail/20210101', {
             fund_code: 'SGX499',
         }).then((res) => {
             this.setState({
