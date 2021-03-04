@@ -27,7 +27,7 @@ export default function TransferAccount({navigation}) {
         setShow(!show);
     };
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/price/transfer/20210101').then((res) => {
+        Http.get('trade/price/transfer/20210101').then((res) => {
             setData(res.result);
         });
     }, [navigation]);

@@ -20,7 +20,7 @@ const BankCardList = ({navigation}) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/bank_card/manage/20210101').then((res) => {
+        http.get('passport/bank_card/manage/20210101').then((res) => {
             // console.log(res);
             navigation.setOptions({title: res.title});
             setData(res);

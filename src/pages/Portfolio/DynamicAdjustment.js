@@ -25,13 +25,13 @@ class DynamicAdjustment extends Component {
     }
     componentDidMount() {
         const {upid} = this.props.route.params || {};
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/adjust/20210101', {
+        http.get('/portfolio/adjust/20210101', {
             upid: upid || 1,
         }).then((res) => {
             this.setState({data: res.result});
             this.props.navigation.setOptions({title: res.result.title});
         });
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/adjust_chart/20210101', {
+        http.get('/portfolio/adjust_chart/20210101', {
             upid: upid || 1,
         }).then((res) => {
             this.setState({

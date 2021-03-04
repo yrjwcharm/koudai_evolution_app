@@ -49,7 +49,7 @@ const HoldingFund = ({navigation, route}) => {
                     poid: route.params?.poid || 'X00F000003',
                 }
             ).then((res) => {
-                if (res.code === 20000) {
+                if (res.code === '000000') {
                     first && navigation.setOptions({title: res.result.title || '持有基金'});
                     first && setTabs(res.result.tabs);
                     curTab === 0 ? setList1(res.result.list) : setList2(res.result.list);

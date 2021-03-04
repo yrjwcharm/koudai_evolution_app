@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-02 19:24:07
+ * @LastEditTime: 2021-03-04 18:25:58
  * @Description: 分享弹窗
  */
 import React, {useEffect, useState} from 'react';
@@ -14,6 +14,7 @@ import {isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../Button';
+import Mask from '../Mask';
 const ShareModal = React.forwardRef((props, ref) => {
     const {
         backdrop = true, // 是否有蒙层
@@ -116,10 +117,11 @@ const ShareModal = React.forwardRef((props, ref) => {
 
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
+            {backdrop && <Mask />}
             <TouchableOpacity
                 activeOpacity={1}
                 onPress={isTouchMaskToClose ? hide : () => {}}
-                style={[styles.container, {backgroundColor: backdrop ? 'rgba(0,0,0,0.5)' : 'transparent'}]}>
+                style={[styles.container]}>
                 <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
                     {header ||
                         (title ? (

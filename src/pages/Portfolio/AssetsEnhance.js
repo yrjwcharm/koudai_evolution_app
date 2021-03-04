@@ -19,7 +19,7 @@ import FixedBtn from './components/FixedBtn';
 const AssetsEnhance = ({navigation}) => {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/asset_enhance/20210101').then((res) => {
+        http.get('/portfolio/asset_enhance/20210101').then((res) => {
             setData(res.result);
             navigation.setOptions({title: res.result.title});
         });

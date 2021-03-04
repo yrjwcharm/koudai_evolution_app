@@ -18,7 +18,7 @@ import Http from '../../services';
 export default function Result() {
     const [data, setData] = useState({});
     useEffect(() => {
-        Http.post('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/do_cash_out/20210101').then((res) => {
+        Http.post('/freefund/do_cash_out/20210101').then((res) => {
             setData(res.result);
         });
     }, []);

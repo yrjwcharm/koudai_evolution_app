@@ -31,7 +31,7 @@ const AccProfit = ({poid}) => {
             http.get('/profit/user_portfolios/20210101', {
                 uid: '1000000001',
             }).then((res) => {
-                if (res.code === 20000) {
+                if (res.code === '000000') {
                     setList(res.result.list);
                 }
                 setRefreshing(false);
@@ -44,7 +44,7 @@ const AccProfit = ({poid}) => {
             uid: '1000000001',
             period,
         }).then((res) => {
-            if (res.code === 20000) {
+            if (res.code === '000000') {
                 setChartData(res.result);
             }
         });

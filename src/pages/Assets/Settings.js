@@ -62,7 +62,7 @@ const Settings = ({navigation}) => {
     );
 
     useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/config/20210101').then((res) => {
+        http.get('mapi/config/20210101').then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }

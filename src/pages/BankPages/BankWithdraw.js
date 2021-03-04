@@ -29,7 +29,7 @@ export default function BankWithdraw(props) {
         setShowMask(true);
     };
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/bank/withdraw/info/20210101', {
+        Http.get('trade/bank/withdraw/info/20210101', {
             asset_code: 'BK.SX0001H',
         }).then((res) => {
             setData(res.result);

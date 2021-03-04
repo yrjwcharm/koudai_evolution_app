@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:10:50
+ * @LastEditTime: 2021-03-04 18:19:33
  * @Description: 体验金首页
  */
 
@@ -51,7 +51,7 @@ const ExperienceGold = ({navigation}) => {
     //     }, [])
     // );
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/detail/20210101').then((res) => {
+        Http.get('/freefund/detail/20210101').then((res) => {
             setData(res.result);
         });
     }, [navigation]);

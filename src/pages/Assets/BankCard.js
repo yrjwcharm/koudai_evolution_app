@@ -17,7 +17,7 @@ import http from '../../services/index.js';
 const BankCard = ({navigation, route}) => {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/bank_card/detail/20210101', {
+        http.get('passport/bank_card/detail/20210101', {
             pay_method: route.params?.pay_method,
         }).then((res) => {
             navigation.setOptions({title: res.title});

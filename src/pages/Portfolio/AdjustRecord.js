@@ -25,7 +25,7 @@ const AdjustRecord = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/adjust/20210101', {
+            http.get('/portfolio/adjust/20210101', {
                 upid: route.params?.poid || 1,
                 page,
                 scene: 'history',

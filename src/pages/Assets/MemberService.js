@@ -38,7 +38,7 @@ const MemberService = ({navigation, route}) => {
     }, [current]);
     useEffect(() => {
         http.get('/mc/privilege_list/20210101').then((res) => {
-            if (res.code === 20000) {
+            if (res.code === '000000') {
                 setData(res.result);
             }
         });

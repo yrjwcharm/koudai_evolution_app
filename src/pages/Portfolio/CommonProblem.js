@@ -20,7 +20,7 @@ const CommonProblem = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
     useEffect(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/qa/20210101', {
+        http.get('/portfolio/qa/20210101', {
             upid: route.params?.upid || 1,
         }).then((res) => {
             if (res.code === '000000') {
