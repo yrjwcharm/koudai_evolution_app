@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-02 15:25:10
+ * @LastEditTime: 2021-03-04 19:24:49
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -178,7 +178,7 @@ const TradeProcessing = (props) => {
                     })}
             </View>
             {finish && (
-                <TouchableOpacity style={[styles.btn, Style.flexCenter]}>
+                <TouchableOpacity style={[styles.btn, Style.flexCenter]} onPress={props.navigation.navigate('Home')}>
                     <Text style={[styles.btnText]}>{data.button.text}</Text>
                 </TouchableOpacity>
             )}

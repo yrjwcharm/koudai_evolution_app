@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 14:41:53
+ * @LastEditTime: 2021-03-04 18:37:58
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -65,11 +65,12 @@ export class index extends Component {
             name,
         }).then((res) => {
             if (res.code == '000000') {
-                this.props.navigation.navigate(nav, {
+                this.props.navigation.replace(nav, {
                     name,
                     id_no,
                     rname,
                     rcode,
+                    poid: this.props.route?.params?.poid,
                 });
             } else {
                 Toast.show(res.message);

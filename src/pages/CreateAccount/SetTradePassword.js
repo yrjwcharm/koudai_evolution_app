@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 12:00:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 18:39:54
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -68,16 +68,15 @@ export default class SetTradePassword extends Component {
                             if (this.state.pwdFisrt == this.state.password) {
                                 Http.post('/passport/set_trade_password/20210101', {
                                     password: this.state.password,
-                                    poid: this.state.poid,
-                                    fr: this.state.fr,
+                                    poid: this.props.route?.params?.poid,
                                 }).then((data) => {
                                     if (data.code === '000000') {
                                         Toast.show(data.message);
                                         setTimeout(() => {
-                                            // this.props.getUserInfo()
-                                            this.props.navigation.replace(data.result.jump_name, {
-                                                ...data.result.params,
-                                            });
+                                            this.props.navigation.replace(
+                                                data.result?.jump_url?.path,
+                                                data.result?.jump_url?.params
+                                            );
                                         }, 1000);
                                     } else {
                                         Toast.show(data.message);

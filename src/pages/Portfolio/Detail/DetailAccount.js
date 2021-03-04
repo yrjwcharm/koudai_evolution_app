@@ -46,7 +46,7 @@ export default function DetailAccount(props) {
     };
     useEffect(() => {
         Http.get('/portfolio/detail/20210101', {
-            upid: props.route?.upid,
+            upid: props.route?.params?.upid,
         }).then((res) => {
             setData(res.result);
             setPeriod(res.result.period);
@@ -213,7 +213,7 @@ export default function DetailAccount(props) {
                 value: -0.0426,
             },
         ]);
-    }, [period, props.route.upid]);
+    }, [period, props.route]);
 
     return (
         <>
@@ -222,7 +222,7 @@ export default function DetailAccount(props) {
                     title={data.title}
                     leftIcon="chevron-left"
                     rightText={'产品说明书'}
-                    titleStyle={{marginRight: text(-16)}}
+                    titleStyle={{marginRight: text(-20)}}
                     rightPress={() => jumpPage('ProductIntro')}
                     rightTextStyle={styles.right_sty}
                 />

@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 17:50:04
+ * @LastEditTime: 2021-03-04 19:53:11
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -43,8 +43,7 @@ export default function PortfolioAssets(props) {
 
     useEffect(() => {
         Http.get('/position/detail/20210101', {
-            poid: 'X04F008618',
-            account_id: 2,
+            poid: props.route?.params?.poid,
         }).then((res) => {
             setData(res.result);
             if (res.result.progress_bar) {
@@ -59,14 +58,12 @@ export default function PortfolioAssets(props) {
             }
         });
         Http.get('/position/console/20210101', {
-            poid: 'X04F008618',
-            account_id: 2,
+            poid: props.route?.params?.poid,
         }).then((res) => {
             setCard(res.result);
         });
         Http.get('/position/chart/20210101', {
-            poid: 'X04F008618',
-            account_id: 2,
+            poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
             setChart(res.result);

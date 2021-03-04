@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 17:07:38
+ * @LastEditTime: 2021-03-04 18:05:47
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -25,6 +25,9 @@ const shadow = {
     y: 4,
     width: deviceWidth - px(32),
     height: px(158),
+    style: {
+        marginBottom: px(16),
+    },
 };
 export class planningHistory extends Component {
     state = {
@@ -35,8 +38,8 @@ export class planningHistory extends Component {
             this.setState({data: data.result});
         });
     }
-    jumpNext = (url) => {
-        this.props.navigation.replace('Evaluation');
+    jumpNext = (url, param) => {
+        this.props.navigation.replace(url, param);
     };
     render() {
         const {title, plan_list, button} = this.state.data;
@@ -61,7 +64,12 @@ export class planningHistory extends Component {
                             ? plan_list.map((item, index) => {
                                   return (
                                       <BoxShadow key={index} setting={shadow}>
-                                          <View style={styles.card}>
+                                          <TouchableOpacity
+                                              activeOpacity={0.8}
+                                              style={styles.card}
+                                              onPress={() => {
+                                                  this.jumpNext(item?.url?.path, item?.url?.params);
+                                              }}>
                                               <Text style={[styles.name, {marginBottom: px(20)}]}>{item.title}</Text>
                                               <View style={[Style.flexRow, {marginBottom: px(10)}]}>
                                                   <Text style={styles.key}>目标金额</Text>
@@ -104,7 +112,7 @@ export class planningHistory extends Component {
                                                       <Text style={styles.key}>{item.plan_duration_info.tip}</Text>
                                                   </View>
                                               ) : null}
-                                          </View>
+                                          </TouchableOpacity>
                                       </BoxShadow>
                                   );
                               })
@@ -115,7 +123,7 @@ export class planningHistory extends Component {
                             onPress={() => {
                                 this.jumpNext(button.url);
                             }}
-                            style={{marginTop: px(32)}}
+                            style={{marginTop: px(16)}}
                             button={button}
                         />
                     )}
@@ -144,7 +152,6 @@ const styles = StyleSheet.create({
         padding: px(16),
         backgroundColor: '#fff',
         borderRadius: px(8),
-        marginBottom: px(16),
         height: px(158),
     },
     plan_goal_amount: {

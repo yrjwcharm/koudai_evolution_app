@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 16:12:55
+ * @LastEditTime: 2021-03-04 18:51:51
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -55,9 +55,9 @@ export default class WechatLogin extends Component {
     sendCode = () => {
         const {code_btn_click} = this.state;
         if (code_btn_click) {
-            this.timer();
             http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
+                operation: 'passport_create',
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:19:53
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 19:37:13
  * @Description:路由表
  */
 import React from 'react';
@@ -46,8 +46,7 @@ import MfbIntro from '../pages/Mfb/MfbIntro'; //魔方宝说明
 import BankAssets from '../pages/BankPages/BankAssets'; //银行持仓页(除平安)
 import BankAssetsPA from '../pages/BankPages/BankAssetsPA'; //银行持仓页(平安)
 import ElectronicAccount from '../pages/BankPages/ElectronicAccount'; //电子账户
-import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 智能调仓
-import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
+import DynamicAdjustment from '../pages/Portfolio/DynamicAdjustment'; // 动态调仓
 import MfbIn from '../pages/Mfb/MfbIn'; //魔方宝充值
 import MfbOut from '../pages/Mfb/MfbOut'; //魔方宝提现
 import DetailAccount from '../pages/Portfolio/Detail/DetailAccount'; //短期账户详情页
@@ -113,13 +112,11 @@ import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
 import ExperienceGoldResult from '../pages/ExperienceGold/Result'; //体验金结果页
 import ExperienceGoldTrade from '../pages/ExperienceGold/Trade'; //体验金购买
-import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; // 答题提现(体验金)
 import AssetNav from '../pages/PE/AssetNav'; //私募净值
 import ProductIntro from '../pages/Portfolio/Detail/ProductIntro'; //产品说明页
 import BankWithdraw from '../pages/BankPages/BankWithdraw'; //银行提现
 import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智能组合
 import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
-import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import GesturePassword from '../pages/Assets/GesturePassword.js';
 
 const Stack = createStackNavigator();
@@ -303,8 +300,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />
             <Stack.Screen name="BankAssets" component={BankAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
-            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '智能调仓'}} />
-            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
+            <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
             <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
             <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
@@ -313,7 +309,7 @@ export default function AppStack() {
             <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
             <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{headerShown: false}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
-            <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓配比'}} />
+            <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
             <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
@@ -423,8 +419,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
-            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: '体验金购买'}} />
-            <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
+            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
             <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
@@ -435,7 +430,6 @@ export default function AppStack() {
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
-            <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
         </Stack.Navigator>
     );
 }
