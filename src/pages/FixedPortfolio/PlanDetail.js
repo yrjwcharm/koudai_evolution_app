@@ -18,7 +18,7 @@ export default function PlanDetail(props) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/invest_plan/list/20210101').then((res) => {
+        Http.get('/trade/invest_plan/list/20210101').then((res) => {
             setData(res.result);
         });
     });

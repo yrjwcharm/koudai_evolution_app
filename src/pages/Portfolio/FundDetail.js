@@ -30,7 +30,7 @@ const FundDetail = ({navigation, route}) => {
     const [summary, setSummary] = useState([]);
 
     const init = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/detail/20210101', {
+        http.get('/fund/detail/20210101', {
             fund_code: route.params?.code,
             // fund_code: '006322',
         }).then((res) => {
@@ -38,7 +38,7 @@ const FundDetail = ({navigation, route}) => {
         });
     }, [route]);
     const getChart1 = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/inc/20210101', {
+        http.get('/fund/nav/inc/20210101', {
             fund_code: route.params?.code,
             // fund_code: '006322',
             period,
@@ -48,7 +48,7 @@ const FundDetail = ({navigation, route}) => {
         });
     }, [route, period]);
     const getChart2 = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/trend/20210101', {
+        http.get('/fund/nav/trend/20210101', {
             fund_code: route.params?.code,
             // fund_code: '006322',
             period,
@@ -58,7 +58,7 @@ const FundDetail = ({navigation, route}) => {
         });
     }, [route, period]);
     const getChart3 = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/nav/monetary/20210101', {
+        http.get('/fund/nav/monetary/20210101', {
             fund_code: route.params?.code,
             // fund_code: '006322',
             period,

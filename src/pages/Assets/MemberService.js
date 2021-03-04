@@ -37,7 +37,7 @@ const MemberService = ({navigation, route}) => {
         swipeRef.current?.scrollTo(current, true);
     }, [current]);
     useEffect(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/mc/privilege_list/20210101').then((res) => {
+        http.get('/mc/privilege_list/20210101').then((res) => {
             if (res.code === 20000) {
                 setData(res.result);
             }

@@ -2,14 +2,14 @@
  * @Date: 2021-03-01 14:11:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-01 19:41:42
+ * @LastEditTime: 2021-03-03 17:21:17
  * @Description:
  */
 import React from 'react';
 import {SafeAreaView, View, Text, TextInput, Animated, Dimensions, ViewStyle} from 'react-native';
 import {Font, Colors} from '../common/commonStyle';
 import {px, deviceHeight as height, deviceWidth as width} from '../utils/appUtil';
-
+import lodash from 'lodash';
 type Props = {
     /**
      * Container style
@@ -176,9 +176,10 @@ class Ruler extends React.Component<Props> {
         }
     }
     scroll = (value) => {
+        console.log(value);
         const {minimum} = this.props;
         this.timer = setTimeout(() => {
-            this.scrollViewRef?.current.scrollTo({
+            this.scrollViewRef?.current?.scrollTo({
                 x: (value - minimum) * this.snapSegment,
                 y: 0,
                 animated: false,
@@ -187,21 +188,24 @@ class Ruler extends React.Component<Props> {
     };
     componentDidMount() {
         const {minimum, defaultValue} = this.props;
+
         defaultValue && this.scroll(defaultValue);
         // Create a listener
-        this.scrollListener = this.state.scrollX.addListener(({value}) => {
-            if (defaultValue && value == (defaultValue * this.snapSegment) / 2) {
-                return;
-            }
-            if (this.textInputRef && this.textInputRef.current) {
-                this.textInputRef.current.setNativeProps({
-                    text: `${Math.round(value / this.snapSegment) + minimum}`,
-                });
-                this.setState({
-                    value: Math.round(value / this.snapSegment) + minimum,
-                });
-            }
-        });
+        this.scrollListener = this.state.scrollX.addListener(
+            lodash.debounce(({value}) => {
+                if (defaultValue && value == (defaultValue * this.snapSegment) / 2) {
+                    return;
+                }
+                if (this.textInputRef && this.textInputRef.current) {
+                    this.textInputRef.current.setNativeProps({
+                        text: `${Math.round(value / this.snapSegment) + minimum}`,
+                    });
+                    this.setState({
+                        value: Math.round(value / this.snapSegment) + minimum,
+                    });
+                }
+            }, 0)
+        );
     }
 
     componentWillUnmount() {
@@ -317,7 +321,7 @@ class Ruler extends React.Component<Props> {
                     {
                         width,
                         height,
-                        marginRight: px(16),
+                        // marginRight: px(16),
                         backgroundColor,
                         position: 'relative',
                         transform: vertical ? [{rotate: '90deg'}] : undefined,
@@ -327,8 +331,10 @@ class Ruler extends React.Component<Props> {
                     ref={this.scrollViewRef}
                     horizontal
                     bounces={false}
+                    // automaticallyAdjustContentInsets={false}
+                    snapToAlignment="center"
                     showsHorizontalScrollIndicator={false}
-                    scrollEventThrottle={16}
+                    scrollEventThrottle={100}
                     snapToInterval={this.snapSegment}
                     onScroll={Animated.event(
                         [
@@ -369,6 +375,8 @@ class Ruler extends React.Component<Props> {
                                 fontSize: numberSize,
                                 fontFamily: numberFontFamily,
                                 color: numberColor,
+                                textAlign: 'center',
+                                padding: 0,
                             }}
                             defaultValue={defaultValue?.toString() || minimum.toString()}
                         />
@@ -409,9 +417,9 @@ Ruler.defaultProps = {
     minimum: 0,
     maximum: 100,
     segmentWidth: px(1),
-    segmentSpacing: px(23),
+    segmentSpacing: px(24),
     indicatorColor: Colors.brandColor,
-    indicatorWidth: 100,
+    indicatorWidth: px(100),
     indicatorHeight: px(49),
     indicatorBottom: px(40),
     step: 10,
@@ -420,7 +428,7 @@ Ruler.defaultProps = {
     normalColor: '#E7E7E7',
     normalHeight: px(16),
     backgroundColor: '#FFFFFF',
-    numberFontFamily: Font.numFontFamily,
+    numberFontFamily: Font.numMedium,
     numberSize: px(48),
     numberColor: Colors.brandColor,
     unit: 'cm',

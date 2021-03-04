@@ -78,17 +78,17 @@ function HomeScreen({navigation}) {
     const init = useCallback((refresh) => {
         refresh === 'refresh' && setRefreshing(true);
         refresh === 'refresh' && setHideMsg(false);
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/holding/20210101', {
+        http.get('/asset/holding/20210101', {
             // uid: '1000000001',
         }).then((res) => {
             setHoldingData(res.result);
         });
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/asset/common/20210101', {
+        http.get('/asset/common/20210101', {
             // uid: '1000000001',
         }).then((res) => {
             setUserBasicInfo(res.result);
         });
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/asset/notice/20210101', {
+        http.get('/asset/notice/20210101', {
             // uid: '1000000001',
         }).then((res) => {
             setNotice(res.result);

@@ -66,10 +66,11 @@ export default class SetTradePassword extends Component {
                     } else {
                         if (this.state.pwdFisrt !== '') {
                             if (this.state.pwdFisrt == this.state.password) {
-                                Http.post(
-                                    'http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/set_trade_password/20210101',
-                                    {password: this.state.password, poid: this.state.poid, fr: this.state.fr}
-                                ).then((data) => {
+                                Http.post('/passport/set_trade_password/20210101', {
+                                    password: this.state.password,
+                                    poid: this.state.poid,
+                                    fr: this.state.fr,
+                                }).then((data) => {
                                     if (data.code === '000000') {
                                         Toast.show(data.message);
                                         setTimeout(() => {

@@ -19,7 +19,7 @@ export default function RemindMessage({navigation}) {
         setHide(true);
     };
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/message/index/20210101').then((res) => {
+        Http.get('/mapi/message/index/20210101').then((res) => {
             setData(res.result);
         });
     }, []);

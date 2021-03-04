@@ -34,7 +34,7 @@ export default class PrivateOrder extends Component {
         return time;
     }
     componentDidMount() {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/appointment_detail/20210101', {
+        Http.get('/pe/appointment_detail/20210101', {
             fund_code: 'SGX499',
         }).then((res) => {
             this.setState({
@@ -82,7 +82,7 @@ export default class PrivateOrder extends Component {
     };
     submitOrder = () => {
         const {data, amount, currentDate} = this.state;
-        Http.post('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/do_appointment/20210101', {
+        Http.post('/pe/do_appointment/20210101', {
             order_id: data.order_id,
             amount: amount,
             date: currentDate,

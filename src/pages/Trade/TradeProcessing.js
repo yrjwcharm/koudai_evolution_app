@@ -32,7 +32,7 @@ const TradeProcessing = (props) => {
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/order/processing/20210101', {
+            http.get('/trade/order/processing/20210101', {
                 txn_id: txn_id,
                 loop: loopRef.current,
             }).then((res) => {
@@ -66,7 +66,7 @@ const TradeProcessing = (props) => {
         [heightArr]
     );
     const signSendVerify = useCallback(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_send/20210101', {
+        http.get('/trade/recharge/verify_code_send/20210101', {
             txn_id: txn_id,
         }).then((res) => {
             setSign(true);
@@ -88,13 +88,10 @@ const TradeProcessing = (props) => {
         (value) => {
             setCode(value);
             if (value.length === 6) {
-                http.post(
-                    'http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/recharge/verify_code_confirm/20210101',
-                    {
-                        txn_id: bankInfo.txn_id,
-                        code: '123456',
-                    }
-                ).then((res) => {
+                http.post('/trade/recharge/verify_code_confirm/20210101', {
+                    txn_id: bankInfo.txn_id,
+                    code: '123456',
+                }).then((res) => {
                     if (res.code === '000000') {
                         setSign(false);
                         setTimeout(() => {

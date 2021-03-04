@@ -42,7 +42,7 @@ export default function PortfolioAssets() {
         setChartData(num);
     };
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/position/detail/20210101', {
+        Http.get('/position/detail/20210101', {
             poid: 'X04F008618',
             account_id: 6,
         }).then((res) => {
@@ -56,13 +56,13 @@ export default function PortfolioAssets() {
             setLeft(_l);
             setWidthD(res.result.progress_bar.percent_text);
         });
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/position/console/20210101', {
+        Http.get('/position/console/20210101', {
             poid: 'X04F008618',
             account_id: 6,
         }).then((res) => {
             setCard(res.result);
         });
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/position/chart/20210101', {
+        Http.get('/position/chart/20210101', {
             poid: 'X04F008618',
             account_id: 6,
             period: 'y1',

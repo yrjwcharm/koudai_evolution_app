@@ -17,7 +17,7 @@ export default function Praise(props) {
     const [like, setLike] = useState(comment.like_status);
     const [num, setNum] = useState(comment.like_num);
     const postLike = useCallback((id, _like) => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/comment/like/20210101', {id, like: _like});
+        http.get('/comment/like/20210101', {id, like: _like});
     }, []);
     const press = () => {
         if (like == 1) {

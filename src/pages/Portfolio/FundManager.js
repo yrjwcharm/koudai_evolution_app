@@ -19,7 +19,7 @@ const FundManager = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/managers/20210101', {
+            http.get('/fund/managers/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
                 setRefreshing(false);

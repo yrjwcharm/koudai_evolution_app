@@ -22,7 +22,7 @@ const TradeRecord = ({route, navigation}) => {
     const [tabActive, setActiveTab] = useState(0);
     const getData = useCallback(() => {
         setLoading(true);
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/order/records/20210101', {
+        http.get('/order/records/20210101', {
             type: trade_type[tabActive],
             page: page,
             poid: route.params?.poid,

@@ -31,15 +31,15 @@ const LargeAmount = (props) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/trade/large_transfer/info/20210101').then(
-            (res) => {
-                setData(res.result);
-                tips[2].tel = res.result.phone;
-            }
-        );
+        Http.get('/trade/large_transfer/info/20210101').then((res) => {
+            setData(res.result);
+            tips[2].tel = res.result.phone;
+        });
     });
     const jumpPage = (url) => {
-        if (!url) return;
+        if (!url) {
+            return;
+        }
         props.navigation.navigate(url);
     };
     const btnClick = (url) => {};

@@ -17,7 +17,7 @@ export default function PrivateRedeem() {
     const btnClick = (url) => {};
     useEffect(() => {
         Http.get(
-            'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/redeem_detail/20210101?fund_code=SGX499&poid=xxx'
+            '/pe/redeem_detail/20210101?fund_code=SGX499&poid=xxx'
         ).then((res) => {
             setData(res.result);
         });

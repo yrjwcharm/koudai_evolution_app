@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:32:03
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 15:38:04
+ * @LastEditTime: 2021-03-04 15:53:43
  * @Description: 机器人
  */
 import React, {Component} from 'react';
@@ -15,7 +15,7 @@ export default class Robot extends Component {
         return (
             <Animatable.Image
                 animation="rotate"
-                style={styles.robot}
+                style={[styles.robot, this.props.style]}
                 source={require('../../../assets/img/robot.png')}
             />
         );

@@ -32,7 +32,7 @@ class BankRedeem extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/info/20210101').then((data) => {
+        http.get('/wallet/withdraw/info/20210101').then((data) => {
             this.setState({
                 data: data.result,
             });
@@ -52,7 +52,7 @@ class BankRedeem extends Component {
     // 提交数据
     submitData() {
         this.setState({password: this.state.password}, () => {
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/do/20210101', {
+            http.post('/wallet/withdraw/do/20210101', {
                 code: '',
                 amount: this.state.amount,
                 password: this.state.password,

@@ -32,7 +32,7 @@ const PrivateApply = (props) => {
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
-            http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/redeem/20210101', {
+            http.get('/pe/redeem/20210101', {
                 fund_code: 'SGX499',
             }).then((res) => {
                 setData(res.result);

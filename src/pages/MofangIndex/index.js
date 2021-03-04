@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 16:21:28
+ * @LastEditTime: 2021-03-04 16:20:26
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -29,6 +29,7 @@ import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
 import {NavigationContainer, LinkingOptions, useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {Button} from '../../components/Button';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -62,7 +63,7 @@ const Index = (props) => {
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback((params) => {
         params == 'refresh' && setRefreshing(true);
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/home/detail/20210101').then((res) => {
+        http.get('/home/detail/20210101').then((res) => {
             setData(res.result);
             setRefreshing(false);
         });
@@ -83,6 +84,30 @@ const Index = (props) => {
             getData();
         }, [getData])
     );
+    const renderSecurity = (menu_list, bottom) => {
+        return menu_list ? (
+            <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
+                {menu_list.map((item, index) => (
+                    <BoxShadow key={index} setting={{...shadow, width: px(165), height: px(61)}}>
+                        <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
+                            <View>
+                                <View style={[Style.flexRow, {marginBottom: px(4)}]}>
+                                    <FastImage
+                                        resizeMode={FastImage.resizeMode.contain}
+                                        style={{width: px(24), height: px(24)}}
+                                        source={{uri: item.icon}}
+                                    />
+                                    <Text style={[styles.secure_title, {marginLeft: px(4)}]}>{item.title}</Text>
+                                </View>
+                                <Text style={styles.light_text}>{item.desc}</Text>
+                            </View>
+                            <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
+                        </View>
+                    </BoxShadow>
+                ))}
+            </View>
+        ) : null;
+    };
     return (
         <>
             {/* header */}
@@ -92,23 +117,27 @@ const Index = (props) => {
                         <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
                         <Text style={styles.header_title}>理财魔方</Text>
                     </View>
-                    <TouchableOpacity
-                        onPress={() => {
-                            jumpPage('Register');
-                            global.LogTool();
-                        }}>
-                        <Text style={Style.more}>登录/注册</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            jumpPage('TradeBuy');
-                        }}>
-                        <View style={styles.new_message} />
-                        <FastImage
-                            style={{width: px(24), height: px(24)}}
-                            source={require('../../assets/img/index/message.png')}
-                        />
-                    </TouchableOpacity>
+                    {data?.login_status == 0 ? (
+                        <Text
+                            onPress={() => {
+                                jumpPage('Register');
+                                global.LogTool();
+                            }}
+                            style={Style.more}>
+                            登录/注册
+                        </Text>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={() => {
+                                jumpPage('RemindMessage');
+                            }}>
+                            {data?.notice_num > 0 && <View style={styles.new_message} />}
+                            <FastImage
+                                style={{width: px(24), height: px(24)}}
+                                source={require('../../assets/img/index/message.png')}
+                            />
+                        </TouchableOpacity>
+                    )}
                 </View>
                 <Text style={styles.title_desc}>您的智能基金组合专家</Text>
             </View>
@@ -154,45 +183,37 @@ const Index = (props) => {
                             </Swiper>
                         ) : null}
                     </View>
-
-                    {/* 安全保障 */}
-                    <View style={[Style.flexBetween, {marginBottom: px(20)}]}>
-                        <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
-                            <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
-                                <View>
-                                    <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                        <FastImage
-                                            resizeMode={FastImage.resizeMode.contain}
-                                            style={{width: px(24), height: px(24)}}
-                                            source={require('../../assets/img/index/anquan.png')}
-                                        />
-                                        <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
-                                    </View>
-                                    <Text style={styles.light_text}>证监会批准持牌机构</Text>
-                                </View>
-                                <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
-                            </View>
-                        </BoxShadow>
-                        <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
-                            <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
-                                <View>
-                                    <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                        <FastImage
-                                            resizeMode={FastImage.resizeMode.contain}
-                                            style={{width: px(24), height: px(24)}}
-                                            source={require('../../assets/img/index/anquan.png')}
-                                        />
-                                        <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
-                                    </View>
-                                    <Text style={styles.light_text}>证监会批准持牌机构</Text>
-                                </View>
-                                <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
-                            </View>
-                        </BoxShadow>
+                    <View>
+                        <Button
+                            title="去开户"
+                            onPress={() => {
+                                jumpPage('CreateAccount');
+                            }}
+                        />
+                        <Button
+                            title="去购买"
+                            onPress={() => {
+                                jumpPage('TradeBuy');
+                            }}
+                        />
+                        <Button
+                            title="去定制"
+                            onPress={() => {
+                                jumpPage('Evaluation');
+                            }}
+                        />
                     </View>
+                    {/* 安全保障 */}
+                    {data?.login_status == 0 && renderSecurity(data?.menu_list)}
+
                     {/* 推荐 */}
                     {data?.custom_info && (
-                        <View style={{marginBottom: px(20), marginTop: px(14)}}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                jumpPage(data?.custom_info?.button?.url?.path, data?.custom_info?.button?.url?.params);
+                            }}
+                            style={{marginBottom: px(20), marginTop: px(14)}}>
                             <FastImage style={styles.robot} source={require('../../assets/img/robot.png')} />
                             <View style={styles.recommen_card}>
                                 <ImageBackground
@@ -225,19 +246,18 @@ const Index = (props) => {
                                         已有<Text style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>1234</Text>
                                         人开启
                                     </Text>
-                                    <TouchableOpacity activeOpacity={0.8}>
-                                        <LinearGradient
-                                            start={{x: 0, y: 0.25}}
-                                            end={{x: 0, y: 0.8}}
-                                            colors={['#FF9463', '#FF7D41']}
-                                            style={[styles.recommend_btn, Style.flexRow]}>
-                                            <Text style={styles.btn_text}>{data?.custom_info?.button.text}</Text>
-                                            <FontAwesome name={'angle-right'} size={18} color="#fff" />
-                                        </LinearGradient>
-                                    </TouchableOpacity>
+
+                                    <LinearGradient
+                                        start={{x: 0, y: 0.25}}
+                                        end={{x: 0, y: 0.8}}
+                                        colors={['#FF9463', '#FF7D41']}
+                                        style={[styles.recommend_btn, Style.flexRow]}>
+                                        <Text style={styles.btn_text}>{data?.custom_info?.button.text}</Text>
+                                        <FontAwesome name={'angle-right'} size={18} color="#fff" />
+                                    </LinearGradient>
                                 </View>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                     {/* 马红漫 */}
                     {data?.polaris_info && (
@@ -337,72 +357,24 @@ const Index = (props) => {
                     <View style={{marginBottom: px(20)}}>
                         <RenderTitle title={'关于理财魔方'} />
                         {/* 安全保障 */}
-
-                        <View style={[Style.flexBetween, {marginBottom: px(12)}]}>
-                            <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
-                                <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
-                                    <View>
-                                        <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                            <FastImage
-                                                resizeMode={FastImage.resizeMode.contain}
-                                                style={{width: px(24), height: px(24)}}
-                                                source={require('../../assets/img/index/anquan.png')}
-                                            />
-                                            <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
-                                        </View>
-                                        <Text style={styles.light_text}>证监会批准持牌机构</Text>
-                                    </View>
-                                    <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
-                                </View>
-                            </BoxShadow>
-                            <BoxShadow setting={{...shadow, width: px(165), height: px(61)}}>
-                                <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
-                                    <View>
-                                        <View style={[Style.flexRow, {marginBottom: px(4)}]}>
-                                            <FastImage
-                                                resizeMode={FastImage.resizeMode.contain}
-                                                style={{width: px(24), height: px(24)}}
-                                                source={require('../../assets/img/index/anquan.png')}
-                                            />
-                                            <Text style={[styles.secure_title, {marginLeft: px(4)}]}>安全保障</Text>
-                                        </View>
-                                        <Text style={styles.light_text}>证监会批准持牌机构</Text>
-                                    </View>
-                                    <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
-                                </View>
-                            </BoxShadow>
-                        </View>
+                        {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
                         <BoxShadow setting={{...shadow, height: px(191)}}>
                             <View style={{borderRadius: px(6), overflow: 'hidden'}}>
                                 <ImageBackground
                                     style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
                                     source={require('../../assets/img/index/aboutOur.png')}>
-                                    <View>
-                                        <View style={[Style.flexRow, {marginBottom: px(2)}]}>
-                                            <Text style={styles.large_num}>200</Text>
-                                            <Text style={styles.num_unit}>亿元</Text>
-                                        </View>
-                                        <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
-                                            累计基金交易额超过
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <View style={[Style.flexRow, {marginBottom: px(2)}]}>
-                                            <Text style={styles.large_num}>200</Text>
-                                            <Text style={styles.num_unit}>%</Text>
-                                        </View>
-                                        <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
-                                            累计基金交易额超过
-                                        </Text>
-                                    </View>
-                                    <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
-                                    {/* <Text style={{fontSize: px(11), color: '#fff'}}>
-                                        {data?.about_info?.header.map((text, index) => (
-                                            <Text key={index} style={text.type == 'number' ? styles.about_num : null}>
-                                                {text.content}
+                                    {data?.about_info?.header.map((text, index) => (
+                                        <View key={index}>
+                                            <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                                <Text style={styles.large_num}>{text?.value}</Text>
+                                                <Text style={styles.num_unit}>{text?.unit}</Text>
+                                            </View>
+                                            <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                                {text?.content}
                                             </Text>
-                                        ))}
-                                    </Text> */}
+                                        </View>
+                                    ))}
+                                    <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
                                 </ImageBackground>
                                 <View
                                     style={[
@@ -514,7 +486,7 @@ const styles = StyleSheet.create({
     recommen_title: {
         fontSize: px(16),
         marginTop: px(26),
-        marginLeft: px(94),
+        marginLeft: px(84),
     },
     recommen_text: {
         fontSize: px(14),

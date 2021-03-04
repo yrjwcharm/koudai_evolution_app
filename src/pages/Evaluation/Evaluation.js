@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 15:37:54
+ * @LastEditTime: 2021-03-04 17:07:12
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -31,8 +31,23 @@ import http from '../../services';
 import Ruler from '../../components/AnimateRuler';
 import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
+import FastImage from 'react-native-fast-image';
+import _ from 'lodash';
 const bottom = isIphoneX() ? 84 : 50;
 const defaultAge = 25;
+const layoutAnimation = () => {
+    LayoutAnimation.configureNext({
+        duration: 300,
+        create: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+            property: LayoutAnimation.Properties.opacity,
+        },
+        update: {
+            type: LayoutAnimation.Types.easeInEaseOut,
+        },
+    });
+};
+
 export class question extends Component {
     state = {
         questions: [],
@@ -59,7 +74,7 @@ export class question extends Component {
     startTime = '';
     endTime = '';
     componentDidMount() {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/start/20210101').then((data) => {
+        http.get('/questionnaire/start/20210101').then((data) => {
             this.setState({summary_id: data.result.summary_id}, () => {
                 this.getNextQuestion();
             });
@@ -76,32 +91,30 @@ export class question extends Component {
             history,
             action,
         };
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/questions/20210101', params).then(
-            (data) => {
-                //已经答过的题
-                let ques = questions.slice(0, current + 1);
-                this.setState(
-                    {
-                        questions: ques.concat(data.result.questions),
-                        questionnaire_cate: data.result.questionnaire_cate,
-                    },
-                    () => {
-                        startAnimation && startAnimation(action);
-                    }
-                );
-            }
-        );
+        http.get('/questionnaire/questions/20210101', params).then((data) => {
+            //已经答过的题
+            let ques = questions.slice(0, current + 1);
+            this.setState(
+                {
+                    questions: ques.concat(data.result.questions),
+                    questionnaire_cate: data.result.questionnaire_cate,
+                },
+                () => {
+                    startAnimation && startAnimation(action);
+                }
+            );
+        });
     };
     handleViewRef = (ref) => (this.quesBtnView = ref);
     handleContentView = (ref) => (this.contentView = ref);
-    showAnimation = (action) => {
+    showNextAnimation = (action) => {
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
         if (action == 'submit') {
             this.setState({finishTest: true});
             setTimeout(() => {
-                this.props.navigation.replace('EvaluationResult');
+                this.props.navigation.replace('EvaluationResult', {upid: this.upid});
             }, 2000);
         } else {
             this.setState({
@@ -123,16 +136,14 @@ export class question extends Component {
                 }),
             ]).start(() => {
                 //动画变化过程中将底部按钮变为透明
-
                 this.quesBtnView?.setNativeProps({
                     opacity: 0,
                 });
-
                 this.contentView?.fadeInUp(500).then(() => {
                     this.quesBtnView?.setNativeProps({
                         opacity: 1,
                     });
-                    this.quesBtnView.fadeInRight(500);
+                    this.quesBtnView?.fadeInRight(500);
                 });
                 if (questions[this.state.current].style == 'age_cursor') {
                     this.setState({value: defaultAge, inputBtnCanClick: true});
@@ -157,12 +168,13 @@ export class question extends Component {
         }
         this.canNextClick = true;
         Vibration.vibrate(10);
-        if (option.action == 'url') {
-            this.props.navigation.replace('PlanHistory');
-            return;
-        }
+
         const {translateY, offsetY, opacity} = this.state;
         this.reportResult(option);
+        if (option.action == 'url') {
+            this.props.navigation.replace('EvaluationHistory');
+            return;
+        }
         Animated.sequence([
             Animated.parallel([
                 Animated.timing(translateY, {
@@ -177,13 +189,16 @@ export class question extends Component {
                 }),
             ]),
         ]).start(() => {
-            LayoutAnimation.configureNext(
-                LayoutAnimation.create(500, LayoutAnimation.Types.linear, LayoutAnimation.Properties.opacity)
-            );
+            layoutAnimation();
             if (option.action.includes('next_questionnaire')) {
-                this.getNextQuestion(option.next_questionnaire_cate, option.action, option.history, this.showAnimation);
+                this.getNextQuestion(
+                    option.next_questionnaire_cate,
+                    option.action,
+                    option.history,
+                    this.showNextAnimation
+                );
             } else {
-                this.showAnimation(option.action);
+                this.showNextAnimation(option.action);
             }
         });
     };
@@ -204,9 +219,8 @@ export class question extends Component {
         this.setState({current: _current}, () => {
             this.setState({value: questions[this.state.current].value || ''});
         });
-        LayoutAnimation.configureNext(
-            LayoutAnimation.create(500, LayoutAnimation.Types.linear, LayoutAnimation.Properties.opacity)
-        );
+
+        layoutAnimation();
         Animated.timing(opacity, {
             toValue: 0,
             duration: 0,
@@ -247,14 +261,15 @@ export class question extends Component {
     handelTag = (option, tag, keyName) => {
         const {questions, current, value, previousCount} = this.state;
         let list = [];
-        let previousTest = current - 1;
         let handleList = [];
+        let previousTest = current - 1;
         //处理点击tag修改数据
-        if (questions[current]?.tag == tag && previousTest >= 0) {
+        if (questions[current]?.tag == tag && previousTest >= 0 && questions[current]?.tag_end_status == 0) {
             if (previousCount > 0) {
+                // 当点击tag返回previousCount页时，点击修改后需要将之后的对应的值全部修改
                 for (let i in questions) {
                     if (questions[i].hasOwnProperty(keyName) && questions[i][keyName].length > 0) {
-                        handleList = handleList.concat(questions[i][keyName]);
+                        handleList = [].concat(questions[i][keyName]);
                         handleList.map((item) => {
                             if (item.key == questions[current].name) {
                                 return (item.val = value || option.content);
@@ -280,6 +295,7 @@ export class question extends Component {
                 list.push({key: questions[current].name, val: value || option.content});
             }
         }
+        handleList = [];
         return list;
     };
     //提交答案
@@ -292,7 +308,7 @@ export class question extends Component {
         let _profileList = this.handelTag(option, 'profile', 'profileList');
         let _balanceList = this.handelTag(option, 'balance', 'balanceList');
         let _complianceList = this.handelTag(option, 'compliance', 'complianceList');
-        newQues = Object.assign(ques[current], {
+        newQues = _.assign(ques[current], {
             answer: option.id,
             value,
             profileList: _profileList,
@@ -316,11 +332,12 @@ export class question extends Component {
                     questionnaire_cate,
                     latency: this.endTime - this.startTime,
                 };
-                http.post(
-                    'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/questionnaire/report/20210101',
-                    params
-                ).then((res) => {
+                http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
+                        // setTimeout(() => {
+                        //     this.props.navigation.replace('EvaluationResult', {upid: res.result.upid});
+                        // }, 2000);
+                        this.upid = res.result.upid;
                         this.setState({loading_text: res?.result?.loading_text});
                     }
                 });
@@ -377,7 +394,7 @@ export class question extends Component {
         let previousTest = current - 1;
         let tagList = [];
         // tag判断
-        if (previousTest >= 0 && current_ques.tag) {
+        if (previousTest >= 0 && current_ques?.tag) {
             if (current_ques.tag == 'profile') {
                 tagList = questions[previousTest].profileList;
             }
@@ -388,6 +405,7 @@ export class question extends Component {
                 tagList = questions[previousTest].complianceList;
             }
         }
+
         return (
             <>
                 <Header
@@ -395,7 +413,11 @@ export class question extends Component {
                         this.header = ref;
                     }}
                     renderLeft={
-                        <TouchableOpacity style={styles.title_btn}>
+                        <TouchableOpacity
+                            style={styles.title_btn}
+                            onPress={() => {
+                                this.props.navigation.goBack();
+                            }}>
                             <Icon name="close" size={px(22)} />
                         </TouchableOpacity>
                     }
@@ -477,7 +499,7 @@ export class question extends Component {
                                             {current_ques?.style == 'invest_goal' ? (
                                                 current_ques?.desc.length > 0 ? (
                                                     <View style={[Style.flexRow, {marginVertical: px(24)}]}>
-                                                        <Image
+                                                        <FastImage
                                                             style={styles.line}
                                                             source={require('../../assets/img/account/line.png')}
                                                         />
@@ -576,6 +598,7 @@ export class question extends Component {
                                                     <Text style={styles.tip_text}>{current_ques.tip}</Text>
                                                 </TouchableOpacity>
                                             ) : null}
+
                                             {current_ques.style == 'age_cursor' ? (
                                                 <Ruler
                                                     width={deviceWidth - px(32)}
@@ -584,7 +607,7 @@ export class question extends Component {
                                                         this.inputValue(age, 'age');
                                                     }}
                                                     step={2}
-                                                    defaultValue={value || 25}
+                                                    defaultValue={value || defaultAge}
                                                     minimum={18}
                                                     maximum={100}
                                                     unit="岁"
@@ -658,7 +681,14 @@ export class question extends Component {
                             </Animated.View>
                         </KeyboardAvoidingView>
                     </ScrollView>
-                ) : null}
+                ) : (
+                    <View
+                        style={{
+                            backgroundColor: '#fff',
+                            flex: 1,
+                        }}
+                    />
+                )}
             </>
         );
     }
@@ -727,7 +757,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: px(8),
         padding: 0,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
     },
     input_icon: {
         fontSize: px(28),

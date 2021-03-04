@@ -26,7 +26,7 @@ export default function BankAssetsPA(props) {
     };
 
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/doc/wallet/holding/20210101').then((res) => {
+        Http.get('/wallet/holding/20210101').then((res) => {
             setData(res.result);
         });
         console.log(ChartData);

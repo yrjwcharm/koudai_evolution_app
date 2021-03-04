@@ -3,12 +3,12 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 19:06:02
+ * @LastEditTime: 2021-03-03 17:44:43
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler, NativeModules, Linking} from 'react-native';
+import {StatusBar, Platform, BackHandler, Linking, UIManager} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {useColorScheme} from 'react-native-appearance';
@@ -24,8 +24,12 @@ import './src/common/appConfig';
 import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
-const {UIManager} = NativeModules;
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true); //启用安卓动画
+if (Platform.OS === 'android') {
+    //启用安卓动画
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
 const MyTheme = {
     dark: true,
     colors: {

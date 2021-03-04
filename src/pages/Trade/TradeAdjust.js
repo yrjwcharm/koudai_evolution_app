@@ -36,7 +36,7 @@ export default class TradeAdjust extends Component {
         });
     };
     componentDidMount() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/plan/20210101').then((res) => {
+        Http.get('/trade/adjust/plan/20210101').then((res) => {
             this.setState({
                 data: res.result,
             });
@@ -51,7 +51,7 @@ export default class TradeAdjust extends Component {
     };
     submit = () => {
         const {data, password} = this.state;
-        Http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/adjust/do/20210101', {
+        Http.post('/trade/adjust/do/20210101', {
             adjust_id: data.adjust_id,
             mode: data.mode,
             password: password,

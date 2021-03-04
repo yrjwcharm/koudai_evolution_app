@@ -25,7 +25,7 @@ const AccProfit = ({poid}) => {
     const init = useCallback(() => {
         getChart();
         if (!poid) {
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/profit/user_portfolios/20210101', {
+            http.get('/profit/user_portfolios/20210101', {
                 uid: '1000000001',
             }).then((res) => {
                 setRefreshing(false);
@@ -35,7 +35,7 @@ const AccProfit = ({poid}) => {
     }, [poid, getChart]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/profit/user_acc/20210101', {
+        http.get('/profit/user_acc/20210101', {
             uid: '1000000001',
             period,
         }).then((res) => {

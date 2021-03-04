@@ -36,7 +36,7 @@ export default class TradeRedeem extends Component {
         };
     }
     componentDidMount() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/info/20210101', {
+        Http.get('/trade/redeem/info/20210101', {
             poid: 'VV00000065',
         }).then((res) => {
             this.getPlanInfo();
@@ -59,7 +59,7 @@ export default class TradeRedeem extends Component {
     }
     getPlanInfo() {
         const {tableData} = this.state;
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/plan/20210101', {
+        Http.get('/trade/redeem/plan/20210101', {
             percent: this.state.inputValue / 100,
             trade_method: this.state.trade_method,
             poid: 'VV00000065',
@@ -101,7 +101,7 @@ export default class TradeRedeem extends Component {
         this.setState({showMask: true});
     };
     submitData = (password) => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/do/20210101', {
+        Http.get('/trade/redeem/do/20210101', {
             redeemid: 12,
             password,
             percent: this.state.inputValue / 100,

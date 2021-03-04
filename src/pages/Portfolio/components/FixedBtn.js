@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-02-07 10:00:01
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 17:29:55
+ * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -68,7 +68,9 @@ const FixedBtn = (props) => {
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
-                        onPress={() => {}}
+                        onPress={() => {
+                            navigation.navigate(btns[1].url.path, btns[1].url.params);
+                        }}
                     />
                     <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />
                 </>

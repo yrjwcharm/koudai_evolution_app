@@ -338,7 +338,7 @@ export class AssetsConfigDetail extends Component {
                 ],
             },
         });
-        // http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/doc/portfolio/asset_deploy/20210101', {
+        // http.get('/portfolio/asset_deploy/20210101', {
         //     amount,
         //     alloc_id,
         //     upid,

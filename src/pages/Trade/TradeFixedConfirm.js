@@ -43,13 +43,11 @@ export default class TradeFixedConfirm extends Component {
         });
     };
     componentDidMount() {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/fix_invest/result/20210101', {}).then(
-            (res) => {
-                this.setState({
-                    data: res.result,
-                });
-            }
-        );
+        Http.get('/trade/fix_invest/result/20210101', {}).then((res) => {
+            this.setState({
+                data: res.result,
+            });
+        });
     }
     jumpTo() {
         this.props.navigation.navigate(data.button.url);

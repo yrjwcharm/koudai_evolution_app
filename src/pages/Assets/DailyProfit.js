@@ -28,7 +28,7 @@ const DailyProfit = ({poid}) => {
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
             const url = poid ? '/profit/portfolio_daily/20210101' : '/profit/user_daily/20210101';
-            http.get(`http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080${url}`, {
+            http.get(`${url}`, {
                 uid: '1000000001',
                 page,
             }).then((res) => {

@@ -22,7 +22,7 @@ const FundAnnouncement = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/fund/announcements/20210101', {
+            http.get('/fund/announcements/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {

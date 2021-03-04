@@ -36,7 +36,7 @@ class MfbOut extends Component {
 
     UNSAFE_componentWillMount() {
         const selectData = this.state.selectData;
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/info/20210101').then((data) => {
+        http.get('/wallet/withdraw/info/20210101').then((data) => {
             selectData['comAmount'] = data.result.pay_methods[0].common_withdraw_amount;
             selectData['comText'] = data.result.pay_methods[0].common_withdraw_subtext;
             selectData['quickAmount'] = data.result.pay_methods[0].quick_withdraw_amount;
@@ -153,7 +153,7 @@ class MfbOut extends Component {
     // 提交数据
     submitData = () => {
         this.setState({password: this.state.password}, () => {
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/wallet/withdraw/do/20210101', {
+            http.post('/wallet/withdraw/do/20210101', {
                 code: '',
                 amount: this.state.amount,
                 password: this.state.password,

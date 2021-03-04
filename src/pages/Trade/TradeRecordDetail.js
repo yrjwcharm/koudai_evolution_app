@@ -35,7 +35,7 @@ const TradeRecordDetail = (props) => {
     };
     useEffect(() => {});
     const getData = useCallback(() => {
-        http.get('http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/order/detail/20210101', {
+        http.get('/order/detail/20210101', {
             txn_id: txn_id,
             type: type,
         }).then((res) => {
@@ -60,7 +60,7 @@ const TradeRecordDetail = (props) => {
     }, [getData, props.navigation]);
     // 撤单
     const cancleTxn = (password) => {
-        http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/order/cancel/20210101', {
+        http.post('/trade/order/cancel/20210101', {
             password,
             txn_id,
         }).then((res) => {

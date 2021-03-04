@@ -48,7 +48,7 @@ export default function FixedUpdate() {
         Picker.show();
     };
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/update/invest_plan/20210101', {}).then(
+        Http.get('/trade/update/invest_plan/20210101', {}).then(
             (res) => {
                 this.setState({
                     data: res.result,

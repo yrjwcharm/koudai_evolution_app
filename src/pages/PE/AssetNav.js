@@ -24,7 +24,7 @@ const AssetNav = ({navigation, route}) => {
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
             http.get(
-                'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/pe/asset_nav/20210101?fund_code=SGX499&page=1',
+                '/pe/asset_nav/20210101?fund_code=SGX499&page=1',
                 {
                     fund_code: (route.params && route.params.code) || '',
                     page,
