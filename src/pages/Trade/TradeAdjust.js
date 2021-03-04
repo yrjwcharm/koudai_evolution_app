@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 14:36:53
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 17:52:46
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -17,6 +17,7 @@ import BottomDesc from '../../components/BottomDesc';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default class TradeAdjust extends Component {
     constructor() {
@@ -26,6 +27,7 @@ export default class TradeAdjust extends Component {
             password: '',
             data: {},
             showMask: false,
+            poid: this.props?.route?.params?.poid,
         };
     }
     toggleChange = (index) => {
@@ -45,7 +47,10 @@ export default class TradeAdjust extends Component {
     confirmBtn = () => {
         Modal.show({
             confirm: true,
-            content: '12222',
+            content:
+                '因本次调仓可能会涉及到部分持有时间不足7天的基金，其中涉及到风控资产将立即赎回。其他基金为规避相应惩罚性手续费，将会对该部分基金做延时赎回。请确认是否调仓。',
+            cancelText: '取消调仓',
+            confirmText: '确认调仓',
             confirmCallBack: this.passwordInput,
         });
     };
@@ -98,10 +103,8 @@ export default class TradeAdjust extends Component {
                                                         <View
                                                             style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
                                                             <View
-                                                                style={[
-                                                                    styles.circle,
-                                                                    {backgroundColor: _item?.color},
-                                                                ]}></View>
+                                                                style={[styles.circle, {backgroundColor: _item?.color}]}
+                                                            />
                                                             <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
                                                                 {_item?.title}
                                                             </Text>
@@ -109,7 +112,7 @@ export default class TradeAdjust extends Component {
                                                         <Text style={styles.content_head_title}>
                                                             {_index == 0 && data?.adjust_compare?.header?.ratio_src}
                                                         </Text>
-                                                        <Text style={styles.content_head_title}>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
                                                             {_index == 0 && data?.adjust_compare.header?.ratio_dst}
                                                         </Text>
                                                     </View>
@@ -132,15 +135,7 @@ export default class TradeAdjust extends Component {
                                                                 <Text style={styles.content_item_text}>
                                                                     {_i?.ratio_src}
                                                                 </Text>
-                                                                <View
-                                                                    style={[
-                                                                        Style.flexRow,
-                                                                        {
-                                                                            width: text(90),
-                                                                            justifyContent: 'flex-end',
-                                                                            paddingTop: text(15),
-                                                                        },
-                                                                    ]}>
+                                                                <View style={[Style.flexRow, styles.fund_text_sty]}>
                                                                     <Text
                                                                         style={{
                                                                             fontSize: Font.textH3,
@@ -203,10 +198,8 @@ export default class TradeAdjust extends Component {
                                                         <View
                                                             style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
                                                             <View
-                                                                style={[
-                                                                    styles.circle,
-                                                                    {backgroundColor: _item.color},
-                                                                ]}></View>
+                                                                style={[styles.circle, {backgroundColor: _item.color}]}
+                                                            />
                                                             <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
                                                                 {_item?.title}
                                                             </Text>
@@ -214,7 +207,7 @@ export default class TradeAdjust extends Component {
                                                         <Text style={styles.content_head_title}>
                                                             {_index == 0 && data?.adjust_hold?.header?.percent}
                                                         </Text>
-                                                        <Text style={styles.content_head_title}>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
                                                             {_index == 0 && data?.adjust_hold?.header?.amount}
                                                         </Text>
                                                     </View>
@@ -231,7 +224,11 @@ export default class TradeAdjust extends Component {
                                                                 <Text style={styles.content_item_text}>
                                                                     {_i.percent}
                                                                 </Text>
-                                                                <Text style={styles.content_item_text}>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.content_item_text,
+                                                                        {textAlign: 'right'},
+                                                                    ]}>
                                                                     {_i.amount}
                                                                 </Text>
                                                             </View>
@@ -257,6 +254,7 @@ export default class TradeAdjust extends Component {
                             <Html html={data?.fee_desc} style={styles.tips_sty} />
                         </View>
                         <BottomDesc />
+                        {this.state.showMask && <Mask />}
                     </ScrollView>
                 )}
 
@@ -312,5 +310,10 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         margin: text(10),
         lineHeight: text(18),
+    },
+    fund_text_sty: {
+        width: text(90),
+        justifyContent: 'flex-end',
+        paddingTop: text(15),
     },
 });

@@ -26,7 +26,7 @@ export default class MyModal extends Component {
         this.content = props.content ? props.content : false;
         this.type = props.type ? props.type : 'text';
         this.confirmText = props.confirmText || (props.hasOwnProperty('confirm') ? '确认' : '知道了');
-        this.cancleText = props.cancleText || '取消';
+        this.cancelText = props.cancelText || '取消';
         this.customTitleView = props.customTitleView ? props.customTitleView : false;
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
@@ -110,7 +110,7 @@ export default class MyModal extends Component {
                                         ]}
                                         onPress={this.cancle.bind(this)}>
                                         <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
-                                            {this.cancleText}
+                                            {this.cancelText}
                                         </Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity

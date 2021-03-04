@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 13:58:47
+ * @LastEditTime: 2021-03-03 11:38:49
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -18,11 +18,11 @@ import Video from '../../components/Video';
 import FitImage from 'react-native-fit-image';
 import {FixedButton} from '../../components/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import NumText from '../../components/NumText';
 import Http from '../../services';
 import {Modal, SelectModal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import {BottomModal} from '../../components/Modal';
+import Mask from '../../components/Mask';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
@@ -31,6 +31,7 @@ export default function PrivateAssets(props) {
     const [data, setData] = useState({});
     const passwordModal = useRef(null);
     const bottomModal = React.useRef(null);
+    const [showMask, setShowMask] = useState(false);
     const [left, setLeft] = useState('100%');
     const [qa, setQa] = useState({});
     const rightPress = () => {
@@ -300,6 +301,7 @@ export default function PrivateAssets(props) {
                             setShowMask(false);
                         }}
                     />
+                    {showMask && <Mask />}
                     <BottomModal ref={bottomModal} confirmText={'确认'}>
                         <View style={{padding: text(16)}}>
                             <Text style={[styles.tips_sty, {marginBottom: text(10)}]}>{qa?.q}</Text>

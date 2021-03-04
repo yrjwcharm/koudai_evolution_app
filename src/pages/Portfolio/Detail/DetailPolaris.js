@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-22 11:14:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 17:50:42
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -19,12 +19,12 @@ import ChartData from './data.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
-export default function DetailMaHongMan() {
+export default function DetailPolaris() {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     useEffect(() => {
-        Http.get('/portfolio/detail/20210101', {
+        Http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/strategy/20210101', {
             upid: 1,
         }).then((res) => {
             setData(res.result);
@@ -108,7 +108,7 @@ export default function DetailMaHongMan() {
                                     </Text>
                                 </View>
                             </View>
-                            <Chart initScript={baseChart(chartData)} />
+                            {/* <Chart initScript={baseChart(chartData)} /> */}
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -158,7 +158,7 @@ export default function DetailMaHongMan() {
                                 </Text>
                             </View>
                             <View style={{height: 220}}>
-                                <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                {/* <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} /> */}
                             </View>
                             <View style={styles.fund_card_sty}>
                                 <View
@@ -220,7 +220,7 @@ export default function DetailMaHongMan() {
                                 resizeMode="contain"
                             />
                         </View>
-                        <View style={[styles.card_sty, {paddingVertical: 0}]}>
+                        {/* <View style={[styles.card_sty, {paddingVertical: 0}]}>
                             {data.gather_info.map((_info, _idx) => {
                                 return (
                                     <TouchableOpacity
@@ -238,7 +238,7 @@ export default function DetailMaHongMan() {
                                     </TouchableOpacity>
                                 );
                             })}
-                        </View>
+                        </View> */}
                     </View>
                 </ScrollView>
             )}

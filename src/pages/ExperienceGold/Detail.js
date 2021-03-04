@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 15:15:45
+ * @LastEditTime: 2021-03-03 15:55:35
  * @Description: 体验金首页
  */
 
@@ -10,15 +10,15 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
+import Http from '../../services/index.js';
 import {Button} from '../../components/Button';
 import {BottomModal} from '../../components/Modal';
 import HTML from '../../components/RenderHtml';
+import Header from '../../components/NavBar';
 
 const ExperienceGold = ({navigation}) => {
     const [data, setData] = useState({});
@@ -39,173 +39,207 @@ const ExperienceGold = ({navigation}) => {
         }
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            StatusBar.setBarStyle('light-content');
-            return () => {
-                StatusBar.setBarStyle('dark-content');
-            };
-        }, [])
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         StatusBar.setBarStyle('light-content');
+    //         return () => {
+    //             StatusBar.setBarStyle('dark-content');
+    //         };
+    //     }, [])
+    // );
     useEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <>
-                    <TouchableOpacity style={[Style.flexCenter, styles.topRightBtn]}>
-                        <Text style={{...styles.bigTitle, color: '#fff', fontWeight: '400'}}>{'规则说明'}</Text>
-                    </TouchableOpacity>
-                </>
-            ),
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/detail/20210101').then((res) => {
+            setData(res.result);
         });
     }, [navigation]);
-
+    const rightPress = () => {
+        navigation.navigate({name: 'ExperienceGoldRule'});
+    };
     return (
-        <SafeAreaView style={styles.container} edges={['bottom']}>
-            <ScrollView style={{flex: 1}} refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
-                <LinearGradient
-                    style={styles.bg}
-                    colors={['#D4AC6F', 'rgba(212, 172, 111, 0)']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 1}}
+        <>
+            {Object.keys(data).length > 0 ? (
+                <Header
+                    title={data.title}
+                    leftIcon="chevron-left"
+                    rightText={'规则说明'}
+                    rightPress={() => rightPress()}
+                    rightTextStyle={{fontSize: text(16)}}
+                    style={{backgroundColor: '#D4AC6F'}}
+                    fontStyle={{color: '#fff'}}
                 />
-                <View style={styles.topBox}>
-                    <View style={[Style.flexRow, styles.noticeBar]}>
-                        <Image source={require('../../assets/personal/volume.png')} style={styles.noticeIcon} />
-                        <Text style={styles.noticeText}>{'体验金是理财魔方虚拟金额, 产生的收益奖励归你'}</Text>
-                    </View>
-                    <Text style={[styles.title, {marginBottom: text(10)}]}>{'7天体验金 (元)'}</Text>
-                    <Text style={[styles.num]}>{'20000.00'}</Text>
-                    <View style={styles.profitBox}>
-                        <Text style={styles.profitText}>{'暂无收益'}</Text>
-                    </View>
-                    <View style={[Style.flexBetween, styles.items]}>
-                        <View style={Style.flexCenter}>
-                            <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>{'累计收益'}</Text>
-                            <Text style={[styles.itemValue, {marginTop: text(7)}]}>{'0.00'}</Text>
-                        </View>
-                        <View style={Style.flexCenter}>
-                            <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>{'开始日期'}</Text>
-                            <Text style={[styles.itemValue, {marginTop: text(7)}]}>{'2020.5.10'}</Text>
-                        </View>
-                        <View style={Style.flexCenter}>
-                            <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>{'到期日期'}</Text>
-                            <Text style={[styles.itemValue, {marginTop: text(7)}]}>{'2020.5.10'}</Text>
-                        </View>
-                    </View>
-                    <Text style={[styles.noticeText, styles.expireText]}>{'2020.06.20 过期'}</Text>
-                    <Button
-                        title={'立即使用'}
-                        disabled={false}
-                        color={'#D7AF74'}
-                        style={styles.useBtn}
-                        textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
+            ) : null}
+
+            {Object.keys(data).length > 0 && (
+                <ScrollView
+                    style={{flex: 1}}
+                    refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
+                    <LinearGradient
+                        style={styles.bg}
+                        colors={['#D4AC6F', 'rgba(212, 172, 111, 0)']}
+                        start={{x: 0, y: 0}}
+                        end={{x: 0, y: 1}}
                     />
-                </View>
-                <Text style={[styles.bigTitle, {marginTop: text(22), marginLeft: Space.marginAlign}]}>
-                    {'为您精选'}
-                </Text>
-                <TouchableOpacity style={[Style.flexBetween, styles.productBox]}>
-                    <View style={{flex: 1}}>
-                        <Text style={styles.title}>
-                            <Text style={{fontWeight: '500'}}>{'稳健组合 '}</Text>
-                            <Text style={{fontSize: Font.textH3, color: Colors.descColor}}>
-                                {'| 无惧黑天鹅，安心增值必备'}
-                            </Text>
-                        </Text>
-                        <View style={[Style.flexRow, styles.yieldBox]}>
-                            <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
-                                <Text>{'6.41'}</Text>
-                                <Text style={{fontSize: text(18)}}>{'%'}</Text>
-                            </Text>
-                            <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>{'过去两年年收益率'}</Text>
+                    <View style={styles.topBox}>
+                        <View style={[Style.flexRow, styles.noticeBar]}>
+                            <Image source={require('../../assets/personal/volume.png')} style={styles.noticeIcon} />
+                            <Text style={styles.noticeText}>{data?.part1?.notice?.message}</Text>
                         </View>
-                        <View style={Style.flexRow}>
-                            <Text style={[styles.yieldKey, styles.tag]}>{'优秀固收+'}</Text>
-                            <Text style={[styles.yieldKey, styles.tag]}>{'更先进的 量化算法'}</Text>
+                        <Text style={[styles.title, {marginBottom: text(10)}]}>{data?.part1?.title}</Text>
+                        <Text style={[styles.num]}>{data.part1.money}</Text>
+                        <View style={styles.profitBox}>
+                            <Text style={styles.profitText}>{data?.part1?.income_yesterday}</Text>
                         </View>
-                    </View>
-                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                </TouchableOpacity>
-                <View style={[Style.flexBetween, styles.withdrawBox]}>
-                    <View style={{position: 'relative'}}>
-                        <Text style={styles.title}>
-                            {'收益余额(元) :  '}
-                            <Text style={{fontSize: Font.textH1, fontFamily: Font.numMedium}}>{'12.05'}</Text>
-                        </Text>
-                        <TouchableOpacity
-                            style={[Style.flexCenter, styles.fill]}
-                            onPress={() => bottomModal.current.show()}>
-                            <Text style={[styles.yieldKey, {color: '#fff'}]}>{'补'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{alignItems: 'flex-end', marginTop: text(4)}}>
+                        <View style={[Style.flexBetween, styles.items]}>
+                            {data?.part1?.label?.map((_item, _index) => {
+                                return (
+                                    <View style={Style.flexCenter} key={_index + '_item'}>
+                                        <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>
+                                            {_item.key}
+                                        </Text>
+                                        <Text style={[styles.itemValue, {marginTop: text(7)}]}>{_item.val}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <Text style={[styles.noticeText, styles.expireText]}>{'2020.06.20 过期'}</Text>
                         <Button
-                            title={'立即提现'}
-                            disabled={true}
-                            disabledColor={'#F2F2F2'}
+                            title={'立即使用'}
+                            disabled={false}
                             color={'#D7AF74'}
-                            style={styles.withdrawBtn}
-                            textStyle={{...styles.profitText, color: '#C1C1C1', fontWeight: '500'}}
+                            style={styles.useBtn}
+                            textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
                         />
-                        <Text style={{...styles.yieldKey, color: '#DC4949'}}>{'23:59:59内提现, 收益翻倍!'}</Text>
                     </View>
-                </View>
-                <View style={[Style.flexRow, {paddingLeft: Space.padding}]}>
-                    <Text style={{...styles.bigTitle, marginRight: text(8)}}>{'持有的产品'}</Text>
-                    <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>{'仅展示体验金购买的产品'}</Text>
-                </View>
-                <View style={[Style.flexBetween, styles.productBox, {paddingRight: text(13)}]}>
-                    <View style={{flex: 1}}>
-                        <Text style={[styles.title, {fontWeight: '500'}]}>{'稳健 | 稳健组合'}</Text>
-                        <View style={[Style.flexBetween, {marginTop: text(8)}]}>
-                            <View>
-                                <Text
-                                    style={{...styles.noticeText, color: Colors.lightGrayColor, marginBottom: text(4)}}>
-                                    {'总金额'}
+
+                    {data?.part1?.content && (
+                        <View style={[Style.flexBetween, styles.withdrawBox]}>
+                            <View style={{position: 'relative'}}>
+                                <Text style={styles.title}>
+                                    {data?.part1?.content}
+                                    <Text style={{fontSize: Font.textH1, fontFamily: Font.numMedium}}>
+                                        {data?.part1?.income}
+                                    </Text>
                                 </Text>
-                                <Text style={{...styles.itemValue, fontFamily: Font.numFontFamily}}>{'20,912.48'}</Text>
+                                <TouchableOpacity
+                                    style={[Style.flexCenter, styles.fill]}
+                                    onPress={() => bottomModal.current.show()}>
+                                    <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
+                                </TouchableOpacity>
                             </View>
-                            <View>
-                                <Text
-                                    style={{...styles.noticeText, color: Colors.lightGrayColor, marginBottom: text(4)}}>
-                                    {'累计收益'}
-                                </Text>
-                                <Text
-                                    style={{
-                                        ...styles.itemValue,
-                                        color: getColor('912.48'),
-                                        fontFamily: Font.numFontFamily,
-                                    }}>
-                                    {'912.48'}
-                                </Text>
+                            <View style={{alignItems: 'flex-end', marginTop: text(4)}}>
+                                <Button
+                                    title={data?.part1?.cashout_button?.title}
+                                    disabled={true}
+                                    disabledColor={'#F2F2F2'}
+                                    color={'#D7AF74'}
+                                    style={styles.withdrawBtn}
+                                    textStyle={{...styles.profitText, color: '#C1C1C1', fontWeight: '500'}}
+                                />
+                                <Text style={{...styles.yieldKey, color: '#DC4949'}}>{data?.part1?.time_desc}</Text>
                             </View>
                         </View>
-                    </View>
-                    <Button
-                        title={'买同款'}
-                        disabled={false}
-                        color={'#fff'}
-                        style={styles.buyBtn}
-                        textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
-                    />
-                </View>
-            </ScrollView>
-            <BottomModal
-                title={'收益补贴说明'}
-                ref={bottomModal}
-                confirmText={'确定'}
-                children={
-                    <View style={{padding: Space.padding}}>
-                        <HTML
-                            html={
-                                '受大盘波动影响，短期会存在亏损情况，根据过往数据，长期c收益率在**.**%-**.**%之间\n\n本次补贴您20元理财红包，点击下方立即提现，即可进入提现流程哦！'
-                            }
-                            style={styles.htmlStyle}
-                        />
-                    </View>
-                }
-            />
-        </SafeAreaView>
+                    )}
+                    {/* 未购买稳健组合后展示的样式 */}
+                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{'推荐组合'}</Text>
+                    {data.part2.portfolios.map((_item, _index) => {
+                        return (
+                            <TouchableOpacity style={[Style.flexBetween, styles.productBox]} key={_index + '_i'}>
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.title}>
+                                        <Text style={{fontWeight: '500'}}>{_item.name}</Text>
+                                        <Text style={{fontSize: Font.textH3, color: Colors.descColor}}>
+                                            {'| 无惧黑天鹅，安心增值必备'}
+                                        </Text>
+                                    </Text>
+                                    <View style={[Style.flexRow, styles.yieldBox]}>
+                                        <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
+                                            <Text>{'6.41'}</Text>
+                                            <Text style={{fontSize: text(18)}}>{'%'}</Text>
+                                        </Text>
+                                        <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>
+                                            {'过去两年年收益率'}
+                                        </Text>
+                                    </View>
+                                    <View style={Style.flexRow}>
+                                        <Text style={[styles.yieldKey, styles.tag]}>{'优秀固收+'}</Text>
+                                        <Text style={[styles.yieldKey, styles.tag]}>{'更先进的 量化算法'}</Text>
+                                    </View>
+                                </View>
+                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
+                        );
+                    })}
+
+                    {/* 购买稳健组合后展示的样式 */}
+                    {data?.part2 && (
+                        <View style={[Style.flexRow, {paddingLeft: Space.padding, marginTop: text(16)}]}>
+                            <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
+                            <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>
+                                {data?.part2?.desc}
+                            </Text>
+                        </View>
+                    )}
+                    {data?.part2 &&
+                        data?.part2?.portfolios?.map((_p, _index) => {
+                            return (
+                                <View
+                                    style={[Style.flexBetween, styles.productBox, {paddingRight: text(13)}]}
+                                    key={_index + '_p'}>
+                                    <View style={{flex: 1}}>
+                                        <Text style={[styles.title, {fontWeight: '500'}]}>{_p.name}</Text>
+                                        <View style={[Style.flexBetween, {marginTop: text(8)}]}>
+                                            {_p.items.map((_i, _d) => {
+                                                return (
+                                                    <View key={_d + '_i0'}>
+                                                        <Text
+                                                            style={{
+                                                                ...styles.noticeText,
+                                                                color: Colors.lightGrayColor,
+                                                                marginBottom: text(4),
+                                                            }}>
+                                                            {'累计收益'}
+                                                        </Text>
+                                                        <Text
+                                                            style={{
+                                                                ...styles.itemValue,
+                                                                color: _d == 0 ? '#292D39' : '#DC4949',
+                                                                fontFamily: Font.numFontFamily,
+                                                            }}>
+                                                            {'912.48'}
+                                                        </Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    </View>
+                                    <Button
+                                        title={_p.button.title}
+                                        disabled={false}
+                                        color={'#fff'}
+                                        style={styles.buyBtn}
+                                        textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
+                                    />
+                                </View>
+                            );
+                        })}
+                </ScrollView>
+            )}
+            {Object.keys(data).length > 0 && (
+                <BottomModal
+                    title={data?.part1?.give_pop?.title}
+                    ref={bottomModal}
+                    confirmText={'确定'}
+                    children={
+                        <View style={{padding: Space.padding}}>
+                            <Text style={styles.htmlStyle}>{data?.part1?.give_pop?.desc1}</Text>
+                            <Text style={[styles.htmlStyle, {marginTop: text(15)}]}>
+                                {data?.part1?.give_pop?.desc2}
+                            </Text>
+                        </View>
+                    }
+                />
+            )}
+        </>
     );
 };
 

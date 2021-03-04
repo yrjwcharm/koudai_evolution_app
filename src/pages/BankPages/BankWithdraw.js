@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 12:09:44
+ * @LastEditTime: 2021-03-03 15:04:46
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -14,72 +14,91 @@ import Toast from '../../components/Toast/';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
-import Clipboard from '@react-native-community/clipboard';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 
 export default function BankWithdraw(props) {
-    const [showMask, setShowMark] = useState(false);
+    const [data, setData] = useState({});
+    const [showMask, setShowMask] = useState(false);
     const passwordModal = useRef(null);
 
     const submitData = () => {};
     const passwordInput = () => {
         passwordModal.current.show();
-        setShowMark(true);
+        setShowMask(true);
     };
+    useEffect(() => {
+        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/bank/withdraw/info/20210101', {
+            asset_code: 'BK.SX0001H',
+        }).then((res) => {
+            setData(res.result);
+        });
+    }, []);
     return (
-        <View style={{flex: 1}}>
-            <View style={{position: 'relative', margin: text(16)}}>
-                <FastImage
-                    style={styles.bank_bg_sty}
-                    source={{
-                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/zhaoshang.png',
-                    }}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={styles.bank_name_sty}>招商银行</Text>
-                <View style={styles.bank_fund_wrap_sty}>
-                    <Text style={{color: '#fff', fontWeight: 'bold'}}>余额(元)</Text>
-                    <Text style={styles.bank_fund_sty}>2,400.00</Text>
-                </View>
-            </View>
-            <View style={styles.card_sty}>
-                <Text style={styles.title_sty}>提现金额</Text>
-                <View style={[Style.flexRow, {alignItems: 'baseline', marginTop: text(18)}]}>
-                    <Text style={{fontSize: text(22), fontWeight: 'bold'}}>¥</Text>
-                    <TextInput value={'2,000.00'} style={styles.num_sty} />
-                </View>
-            </View>
-            <Text style={[{padding: text(15)}, Style.descSty]}>收款银行卡</Text>
-            <View style={[Style.flexRow, styles.card_item, styles.card_select]}>
-                <View style={Style.flexRow}>
-                    <FastImage
-                        style={{width: text(30), height: text(30)}}
-                        source={{
-                            uri: 'https://static.licaimofang.com/wp-content/uploads/2016/04/gongshang.png',
-                        }}
-                        resizeMode={FastImage.resizeMode.contain}
-                    />
-                    <View>
-                        <Text style={{color: Colors.defaultColor, paddingLeft: text(10), fontWeight: 'bold'}}>
-                            招商银行储蓄卡(4569)
-                        </Text>
-                        <Text style={{color: '#9095A5', paddingLeft: text(10), fontSize: text(12), marginTop: text(4)}}>
-                            单笔限额30000元
-                        </Text>
+        <>
+            {Object.keys(data).length > 0 && (
+                <View style={{flex: 1}}>
+                    <View style={{position: 'relative', margin: text(16)}}>
+                        <FastImage
+                            style={styles.bank_bg_sty}
+                            source={{
+                                uri: data.bank_account.bank_icon,
+                            }}
+                            resizeMode={FastImage.resizeMode.contain}
+                        />
+                        <Text style={styles.bank_name_sty}>{data.bank_account.bank_name}</Text>
+                        <View style={styles.bank_fund_wrap_sty}>
+                            <Text style={{color: '#fff', fontWeight: 'bold'}}>{data.bank_account.balance.key}</Text>
+                            <Text style={styles.bank_fund_sty}>{data.bank_account.balance.val}</Text>
+                        </View>
                     </View>
+                    <View style={styles.card_sty}>
+                        <Text style={styles.title_sty}>{data.withdraw_info.title}</Text>
+                        <View style={[Style.flexRow, {alignItems: 'baseline', marginTop: text(18)}]}>
+                            <Text style={{fontSize: text(22), fontWeight: 'bold'}}>¥</Text>
+                            <TextInput value={data.withdraw_info.min.toString()} style={styles.num_sty} />
+                        </View>
+                    </View>
+                    <Text style={[{padding: text(15)}, Style.descSty]}>{data.pay_info.title}</Text>
+                    <View style={[Style.flexRow, styles.card_item, styles.card_select]}>
+                        <View style={Style.flexRow}>
+                            <FastImage
+                                style={{width: text(30), height: text(30)}}
+                                source={{
+                                    uri: data.pay_info.pay_method.bank_icon,
+                                }}
+                                resizeMode={FastImage.resizeMode.contain}
+                            />
+                            <View>
+                                <Text style={{color: Colors.defaultColor, paddingLeft: text(10), fontWeight: 'bold'}}>
+                                    {data.pay_info.pay_method.bank_name}
+                                </Text>
+                                <Text
+                                    style={{
+                                        color: '#9095A5',
+                                        paddingLeft: text(10),
+                                        fontSize: text(12),
+                                        marginTop: text(4),
+                                    }}>
+                                    {data.pay_info.pay_method.limit_desc}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    <Text style={styles.tips_sty}>{data.notice}</Text>
+                    <PasswordModal
+                        ref={passwordModal}
+                        onDone={submitData}
+                        onClose={() => {
+                            setShowMask(false);
+                        }}
+                    />
+                    {showMask && <Mask />}
+                    <FixedButton title={data.button.text} onPress={passwordInput} disabled={data.button.avail == 0} />
                 </View>
-            </View>
-            <Text style={styles.tips_sty}>预计2小时内到账，具体到账时间以收款方银</Text>
-            <PasswordModal
-                ref={passwordModal}
-                onDone={submitData}
-                onClose={() => {
-                    setShowMark(false);
-                }}
-            />
-            <FixedButton title={'确认提现'} onPress={passwordInput} />
-        </View>
+            )}
+        </>
     );
 }
 const styles = StyleSheet.create({

@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 12:10:09
+ * @LastEditTime: 2021-03-03 16:46:39
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -11,106 +11,149 @@ import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Button} from '../../components/Button';
-import HTML from '../../components/RenderHtml';
+import Html from '../../components/RenderHtml';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {PasswordModal} from '../../components/Password';
+import Mask from '../../components/Mask';
 
 export default function Trade(props) {
     const passwordModal = useRef(null);
-    const [showMask, setShowMark] = useState(false);
-    const [expand, setExpand] = useState(true);
-    const [data, setData] = useState();
-    const jumpTo = () => {};
+    const [showMask, setShowMask] = useState(false);
+    const [expand, setExpand] = useState(false);
+    const [data, setData] = useState({});
+    const [list, setList] = useState({});
+    const jumpTo = (url) => {
+        props.navigation.navigate(url);
+    };
 
     const toggle = () => {
         setExpand(!expand);
     };
     const passwordInput = () => {
         passwordModal.current.show();
-        setShowMark(true);
+        setShowMask(true);
     };
     const submitData = () => {};
     useEffect(() => {
-        http.get('', {}).then((res) => {
-            setData(data);
+        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/buy/20210101', {}).then((res) => {
+            setData(res.result);
+            plan();
         });
     });
+    const plan = () => {
+        const params = {
+            amount: data.buy_info.amount,
+            pay_method: data.buy_info.pay_method,
+            upid: '',
+        };
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/plan/20210101', params).then((data) => {
+            setList(data.result);
+        });
+    };
     return (
         <View>
-            <Header title={'稳健组合'} leftIcon="chevron-left" />
-            <TouchableOpacity style={[Style.flexRow, styles.yellow_wrap_sty]} onPress={jumpTo}>
-                <Text style={styles.yellow_sty}>使用体验金为虚拟购买，若想购买真实产品</Text>
-            </TouchableOpacity>
-            <View style={styles.list_sty}>
-                <Image source={require('../../assets/img/gold.png')} style={{width: text(24), height: text(24)}} />
-                <Text style={{marginLeft: text(5), color: '#333333'}}>理财魔方体验金 (剩余 ¥20000.0</Text>
-            </View>
-            <View style={[styles.fund_card_sty, {marginBottom: text(10)}]}>
-                <Text style={styles.title_sty}>买入金额</Text>
-                <View
-                    style={[Style.flexRow, {paddingBottom: text(15), borderBottomWidth: 0.5, borderColor: '#DDDDDD'}]}>
-                    <Text style={{fontSize: text(22)}}>¥</Text>
-                    <Text style={styles.num_sty}>2000000</Text>
-                </View>
-                <Text style={[styles.desc_sty, {paddingBottom: 0}]}>费率: 使用体验金进行虚拟购买, 不计算</Text>
-                <Text style={styles.desc_sty}>使用体验金进行购买, 不能修改买入金额哦</Text>
-            </View>
-            <TouchableOpacity
-                activeOpacity={1}
-                style={[
-                    styles.fund_card_sty,
-                    {paddingBottom: text(16), flexDirection: 'row', justifyContent: 'space-between'},
-                ]}
-                onPress={toggle}>
-                <Text style={{color: '#CDA76E', fontSize: text(12)}}>
-                    查看配置基金<Text style={{color: '#999999'}}>(根据购买金额不同配置不同基金)</Text>{' '}
-                </Text>
-                {expand ? (
-                    <Icon name={'up'} size={text(14)} color={Colors.lightGrayColor} />
-                ) : (
-                    <Icon name={'down'} size={text(14)} color={Colors.lightGrayColor} />
-                )}
-            </TouchableOpacity>
-            {expand && (
+            {Object.keys(data).length > 0 && (
                 <>
-                    <View style={styles.line} />
-                    <View style={styles.config_desc}>
-                        <View>
-                            <View style={[Style.flexBetween, {marginBottom: text(14)}]}>
-                                <View style={[Style.flexRow, {width: text(162)}]}>
-                                    <View style={[styles.circle, {backgroundColor: '#ff0'}]} />
-                                    <Text style={styles.config_title}>22222</Text>
-                                </View>
-                                <>
-                                    <Text style={[styles.config_title, {width: text(60)}]}>买入比例</Text>
-                                    <Text style={styles.config_title}>买入金额</Text>
-                                </>
-                            </View>
-                            <View style={[Style.flexBetween, {marginBottom: text(14)}]}>
-                                <Text style={[styles.config_title_desc, {width: text(162)}]}>
-                                    鹏华空天军工指数(LOF)
-                                </Text>
-                                <Text style={[styles.config_title_desc, {width: text(60)}]}>100%</Text>
-                                <Text style={styles.config_title_desc}>12000</Text>
-                            </View>
-                        </View>
+                    <Header title={data.title} leftIcon="chevron-left" />
+                    <TouchableOpacity
+                        style={[Style.flexRow, styles.yellow_wrap_sty]}
+                        onPress={() => jumpTo(data?.tip_info?.processing_url)}>
+                        <Html style={styles.yellow_sty} html={data?.tip_info?.processing} />
+                    </TouchableOpacity>
+                    <View style={styles.list_sty}>
+                        <Image
+                            source={require('../../assets/img/gold.png')}
+                            style={{width: text(24), height: text(24)}}
+                        />
+                        <Text style={{marginLeft: text(5), color: '#333333'}}>{data?.buy_info?.buy_title}</Text>
                     </View>
+                    <View style={[styles.fund_card_sty, {marginBottom: text(10)}]}>
+                        <Text style={styles.title_sty}>{data?.buy_info?.buy_desc}</Text>
+                        <View
+                            style={[
+                                Style.flexRow,
+                                {paddingBottom: text(15), borderBottomWidth: 0.5, borderColor: '#DDDDDD'},
+                            ]}>
+                            <Text style={{fontSize: text(22)}}>¥</Text>
+                            <Text style={styles.num_sty}>{data?.buy_info?.amount}</Text>
+                        </View>
+                        <Text style={[styles.desc_sty, {paddingBottom: 0}]}>{data?.buy_info?.rate_label[0]}</Text>
+                        <Text style={styles.desc_sty}>{data?.buy_info?.rate_label[1]}</Text>
+                    </View>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={[
+                            styles.fund_card_sty,
+                            {paddingBottom: text(16), flexDirection: 'row', justifyContent: 'space-between'},
+                        ]}
+                        onPress={toggle}>
+                        <Text style={{color: '#CDA76E', fontSize: text(12)}}>
+                            {data.plan_info.title}
+                            <Text style={{color: '#999999'}}>{data?.plan_info?.desc}</Text>
+                        </Text>
+                        {expand ? (
+                            <Icon name={'up'} size={text(14)} color={Colors.lightGrayColor} />
+                        ) : (
+                            <Icon name={'down'} size={text(14)} color={Colors.lightGrayColor} />
+                        )}
+                    </TouchableOpacity>
+                    {expand &&
+                        Object.keys(list).length > 0 &&
+                        list?.body?.map((_item, _index) => {
+                            return (
+                                <View key={_index + '_item'}>
+                                    <View style={styles.line} />
+                                    <View style={styles.config_desc}>
+                                        <View>
+                                            <View style={[Style.flexBetween, {marginBottom: text(14)}]}>
+                                                <View style={[Style.flexRow, {width: text(162)}]}>
+                                                    <View style={[styles.circle, {backgroundColor: '#ff0'}]} />
+                                                    <Text style={styles.config_title}>22222</Text>
+                                                </View>
+                                                <>
+                                                    <Text style={[styles.config_title, {width: text(60)}]}>
+                                                        {list.header.percent}
+                                                    </Text>
+                                                    <Text style={styles.config_title}>{list.header.amount}</Text>
+                                                </>
+                                            </View>
+                                            {_item?.funds.map((_b, _i) => {
+                                                return (
+                                                    <View
+                                                        style={[Style.flexBetween, {marginBottom: text(14)}]}
+                                                        key={_i + '_b'}>
+                                                        <Text style={[styles.config_title_desc, {width: text(162)}]}>
+                                                            {_b.name}
+                                                        </Text>
+                                                        <Text style={[styles.config_title_desc, {width: text(60)}]}>
+                                                            {_b.percent}
+                                                        </Text>
+                                                        <Text style={styles.config_title_desc}>{_b.amount}</Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    </View>
+                                </View>
+                            );
+                        })}
+                    <Button
+                        title={data?.button?.title}
+                        color={'#D4AC6F'}
+                        onPress={passwordInput}
+                        style={{marginHorizontal: text(16), backgroundColor: '#D4AC6F', marginTop: text(20)}}
+                    />
                 </>
             )}
-            <Button
-                title="确认购买"
-                color={'#D4AC6F'}
-                onPress={passwordInput}
-                style={{marginHorizontal: text(16), backgroundColor: '#D4AC6F', marginTop: text(20)}}
-            />
             <PasswordModal
                 ref={passwordModal}
                 onDone={submitData}
                 onClose={() => {
-                    setShowMark(false);
+                    setShowMask(false);
                 }}
             />
+            {showMask && <Mask />}
         </View>
     );
 }
@@ -118,6 +161,7 @@ const styles = StyleSheet.create({
     yellow_wrap_sty: {
         backgroundColor: '#FEF6E9',
         paddingHorizontal: Space.padding,
+        paddingVertical: text(10),
     },
     yellow_sty: {
         color: '#A0793E',

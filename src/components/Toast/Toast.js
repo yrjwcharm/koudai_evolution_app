@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 17:57:49
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 18:20:31
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-04 10:31:40
  * @Description:
  */
 import React, {Component} from 'react';
@@ -46,11 +46,11 @@ class Toast extends Component {
 
     _toast = null;
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this._toast = new RootSiblings(<ToastContainer {...this.props} duration={0} />);
     };
 
-    componentWillReceiveProps = (nextProps) => {
+    UNSAFE_componentWillReceiveProps = (nextProps) => {
         this._toast.update(<ToastContainer {...nextProps} duration={0} />);
     };
 
