@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 15:55:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 18:10:50
  * @Description: 体验金首页
  */
 
@@ -30,9 +30,12 @@ const ExperienceGold = ({navigation}) => {
         setRefreshing(false);
     }, []);
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.defaultColor;
         } else {
             return Colors.red;

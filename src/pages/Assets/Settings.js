@@ -2,43 +2,72 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-18 11:42:20
+ * @LastEditTime: 2021-03-04 15:17:19
  * @Description: 个人设置
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import {useJump} from '../../components/hooks';
+import {Modal, ShareModal} from '../../components/Modal';
 
 const Settings = ({navigation}) => {
-    const [data, setData] = useState([
-        [
-            {key: '密码管理', val: '', type: 'link', jump_to: 'PasswordManagement'},
-            {key: '账号注销', val: '', type: 'link', jump_to: ''},
-        ],
-        [
-            {key: '邀请码', val: '', type: 'link', jump_to: ''},
-            {key: '分享理财魔方', val: '', type: 'link', jump_to: ''},
-        ],
-        [
-            {key: '联系我们', val: '', type: 'link', jump_to: 'ContactUs'},
-            {key: '鼓励一下', val: '', type: 'link', jump_to: ''},
-            {key: '投诉建议', val: '', type: 'link', jump_to: 'ComplaintsAdvices'},
-            {key: '关于理财魔方', val: '当前版本：5.2.9', type: 'link', jump_to: ''},
-            {key: '版本更新', val: '', type: 'link', jump_to: ''},
-        ],
-        [{key: '安全退出', val: '', type: 'link', jump_to: ''}],
-    ]);
+    const jump = useJump();
+    const [data, setData] = useState([]);
+    const shareModal = useRef(null);
 
     const onPress = useCallback(
         (item) => {
-            navigation.navigate(item.jump_to);
+            if (item.type === 'bind_invitor') {
+                Alert.prompt('填写邀请码', '', [
+                    {
+                        text: '取消',
+                        onPress: () => console.log('取消'),
+                    },
+                    {
+                        text: '确定',
+                        onPress: () => console.log('确定'),
+                    },
+                ]);
+            } else if (item.type === 'share_mofang') {
+                shareModal.current.show();
+            } else if (item.type === 'logout') {
+                Modal.show({
+                    title: '退出登录',
+                    content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
+                    confirm: true,
+                    confirmCallBack: () => {
+                        Alert.alert('退出登录');
+                    },
+                });
+                // Alert.alert('退出登录', '退出后，日收益和投资产品列表将不再展示，是否确认退出？', [
+                //     {
+                //         text: '取消',
+                //         onPress: () => console.log('取消'),
+                //     },
+                //     {
+                //         text: '确定',
+                //         onPress: () => console.log('确定'),
+                //     },
+                // ]);
+            } else {
+                jump(item.url);
+            }
         },
-        [navigation]
+        [jump]
     );
+
+    useEffect(() => {
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/config/20210101').then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
+    }, []);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
@@ -47,19 +76,20 @@ const Settings = ({navigation}) => {
                         <View key={index} style={styles.partBox}>
                             {part.map((item, i) => {
                                 return (
-                                    <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>
+                                    <View key={item.text} style={[i === 0 ? {} : styles.borderTop]}>
                                         <TouchableOpacity
+                                            activeOpacity={0.8}
                                             style={[Style.flexBetween, {paddingVertical: text(18)}]}
                                             onPress={() => onPress(item)}>
-                                            <Text style={styles.title}>{item.key}</Text>
+                                            <Text style={styles.title}>{item.text}</Text>
                                             <View style={Style.flexRow}>
-                                                {item.val ? (
+                                                {item.desc ? (
                                                     <Text
                                                         style={[
                                                             styles.title,
                                                             {marginRight: text(8), color: Colors.lightGrayColor},
                                                         ]}>
-                                                        {item.val}
+                                                        {item.desc}
                                                     </Text>
                                                 ) : null}
                                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
@@ -72,6 +102,7 @@ const Settings = ({navigation}) => {
                     );
                 })}
             </ScrollView>
+            <ShareModal ref={shareModal} title={'分享理财魔方'} />
         </SafeAreaView>
     );
 };

@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 17:17:09
+ * @LastEditTime: 2021-03-04 10:17:00
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -53,8 +53,18 @@ const CompanyFunds = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[1]}</Text>
+                {header?.map((item, index) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {item}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, [header]);
@@ -87,7 +97,7 @@ const CompanyFunds = ({navigation, route}) => {
                             styles.itemText,
                             {textAlign: 'right', color: getColor(item.inc), fontFamily: Font.numFontFamily},
                         ]}>
-                        {parseFloat(item.inc.replaceAll(',', '')) > 0 ? `+${item.inc}` : item.inc}
+                        {parseFloat(item.inc?.replace(/,/g, '')) > 0 ? `+${item.inc}` : item.inc}
                     </Text>
                 </View>
             );
@@ -96,9 +106,12 @@ const CompanyFunds = ({navigation, route}) => {
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
             return Colors.red;
         } else {
             return Colors.defaultColor;

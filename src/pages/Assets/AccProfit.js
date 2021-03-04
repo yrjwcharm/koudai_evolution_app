@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-27 17:52:34
+ * @LastEditTime: 2021-03-04 18:09:28
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -15,38 +15,46 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Modal} from '../../components/Modal';
+import {useJump} from '../../components/hooks';
+import {Chart} from '../../components/Chart';
+import {areaChart} from '../Portfolio/components/ChartOption';
 
 const AccProfit = ({poid}) => {
+    const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
-    const [period, setPeriod] = useState('y1');
-    const [chart, setChart] = useState({});
+    const [period, setPeriod] = useState('this_year');
+    const [chartData, setChartData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
     const init = useCallback(() => {
-        getChart();
         if (!poid) {
             http.get('/profit/user_portfolios/20210101', {
                 uid: '1000000001',
             }).then((res) => {
+                if (res.code === 20000) {
+                    setList(res.result.list);
+                }
                 setRefreshing(false);
-                setList(res.result.list);
             });
         }
-    }, [poid, getChart]);
+    }, [poid]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
         http.get('/profit/user_acc/20210101', {
             uid: '1000000001',
             period,
         }).then((res) => {
-            setChart(res.result);
+            if (res.code === 20000) {
+                setChartData(res.result);
+            }
         });
     }, [period]);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         init();
-    }, [init]);
+        getChart();
+    }, [init, getChart]);
     // 渲染收益更新说明头部
     const renderHeader = useCallback((section, index, isActive) => {
         return (
@@ -91,9 +99,12 @@ const AccProfit = ({poid}) => {
     }, []);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.darkGrayColor;
         } else {
             return Colors.red;
@@ -101,7 +112,8 @@ const AccProfit = ({poid}) => {
     }, []);
     useEffect(() => {
         init();
-    }, [init]);
+        getChart();
+    }, [init, getChart]);
     return (
         <ScrollView
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -121,9 +133,8 @@ const AccProfit = ({poid}) => {
             </View>
             <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
                 <View style={[Style.flexRow, {justifyContent: 'center'}]}>
-                    <Text style={styles.subTitle}>{'累计收益(元)'}</Text>
-                    <TouchableOpacity
-                        onPress={() => Modal.show({content: '是指您所有基金（含已赎回基金）的累计收益总和'})}>
+                    <Text style={styles.subTitle}>{chartData.title}</Text>
+                    <TouchableOpacity onPress={() => Modal.show({content: chartData.desc})}>
                         <AntDesign
                             style={{marginLeft: text(4)}}
                             name={'questioncircleo'}
@@ -132,9 +143,31 @@ const AccProfit = ({poid}) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <Text style={[styles.profitAcc, {color: getColor('403,526.88')}]}>{'403,526.88'}</Text>
+                <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>{chartData.profit_acc}</Text>
                 <View style={[styles.chart]}>
-                    <></>
+                    <Chart
+                        initScript={areaChart(chartData.chart, [Colors.red, Colors.lightBlackColor], false, 0)}
+                        data={chartData.chart}
+                    />
+                </View>
+                <View style={[Style.flexRowCenter, {paddingBottom: text(30)}]}>
+                    {chartData?.subtabs?.map((tab, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={tab.val + index}
+                                onPress={() => setPeriod(tab.val)}
+                                style={[Style.flexCenter, styles.subtab, period === tab.val ? styles.active : {}]}>
+                                <Text
+                                    style={[
+                                        styles.tabText,
+                                        {color: period === tab.val ? Colors.brandColor : Colors.lightBlackColor},
+                                    ]}>
+                                    {tab.key}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
             </View>
             {list.length > 0 && (
@@ -146,19 +179,21 @@ const AccProfit = ({poid}) => {
             {list.map((item, index) => {
                 return (
                     <TouchableOpacity
+                        activeOpacity={0.8}
                         style={[
                             styles.poItem,
                             Style.flexBetween,
                             {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
                         ]}
-                        key={index}>
+                        key={index}
+                        onPress={() => jump(item.url)}>
                         <View style={Style.flexRow}>
                             <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>{item.name}</Text>
                             <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} />
                             {item.tag ? <Text style={styles.tag}>{item.tag}</Text> : null}
                         </View>
                         <Text style={[styles.title, {fontWeight: '600', color: getColor(item.profit_acc)}]}>
-                            {parseFloat(item.profit_acc.replaceAll(',', '')) > 0
+                            {parseFloat(item.profit_acc?.replace(/,/g, '')) > 0
                                 ? `+${item.profit_acc}`
                                 : item.profit_acc}
                         </Text>
@@ -223,7 +258,19 @@ const styles = StyleSheet.create({
         marginTop: text(2),
     },
     chart: {
-        height: text(282),
+        height: text(224),
+    },
+    subtab: {
+        marginHorizontal: text(7),
+        paddingVertical: text(6),
+        paddingHorizontal: text(12),
+        borderRadius: text(16),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    active: {
+        backgroundColor: '#F1F6FF',
+        borderColor: '#F1F6FF',
     },
     poHeader: {
         height: text(36),

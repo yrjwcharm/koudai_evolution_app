@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 17:03:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 18:08:52
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -81,17 +81,23 @@ function HomeScreen({navigation}) {
         http.get('/asset/holding/20210101', {
             // uid: '1000000001',
         }).then((res) => {
-            setHoldingData(res.result);
+            if (res.code === 20000) {
+                setHoldingData(res.result);
+            }
         });
         http.get('/asset/common/20210101', {
             // uid: '1000000001',
         }).then((res) => {
-            setUserBasicInfo(res.result);
+            if (res.code === 20000) {
+                setUserBasicInfo(res.result);
+            }
         });
         http.get('/asset/notice/20210101', {
             // uid: '1000000001',
         }).then((res) => {
-            setNotice(res.result);
+            if (res.code === 20000) {
+                setNotice(res.result);
+            }
             setRefreshing(false);
         });
     }, []);

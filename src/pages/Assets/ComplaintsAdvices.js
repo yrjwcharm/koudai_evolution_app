@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-05 10:43:06
+ * @LastEditTime: 2021-03-02 14:16:56
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -36,6 +36,7 @@ const ComplaintsAdvices = () => {
         Keyboard.dismiss();
         setShowMask(true);
         Picker.init({
+            pickerTitleColor: [31, 36, 50, 1],
             pickerTitleText: '请选择分类',
             pickerCancelBtnText: '取消',
             pickerConfirmBtnText: '确定',
@@ -44,8 +45,9 @@ const ComplaintsAdvices = () => {
             pickerData: sortList.map((item) => item.key),
             pickerFontColor: [33, 33, 33, 1],
             pickerRowHeight: 36,
-            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerConfirmBtnColor: [0, 81, 204, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
+            selectedValue: [sort.key],
             wheelFlex: [1, 1],
             onPickerCancel: () => setShowMask(false),
             onPickerConfirm: (pickedValue, pickedIndex) => {
@@ -54,7 +56,7 @@ const ComplaintsAdvices = () => {
             },
         });
         Picker.show();
-    }, [sortList]);
+    }, [sort, sortList]);
     // 隐藏选择器
     const hidePicker = useCallback(() => {
         Picker.hide();

@@ -165,9 +165,9 @@ const FundDetail = ({navigation, route}) => {
         if (!t) {
             return Colors.defaultColor;
         }
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.defaultColor;
         } else {
             return Colors.red;

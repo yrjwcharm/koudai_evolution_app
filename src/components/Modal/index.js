@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:13:55
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-20 17:28:55
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-02 19:17:08
  * @Description:
  */
 
@@ -11,4 +11,5 @@ import BottomModal from './BottomModal';
 import VerifyCodeModal from './VerifyCodeModal';
 import BankCardModal from './BankCardModal';
 import SelectModal from './SelectModal';
-export {BottomModal, Modal, VerifyCodeModal, BankCardModal, SelectModal};
+import ShareModal from './ShareModal';
+export {BottomModal, Modal, VerifyCodeModal, BankCardModal, SelectModal, ShareModal};
