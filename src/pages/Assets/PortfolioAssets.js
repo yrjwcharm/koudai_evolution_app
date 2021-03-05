@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:06:27
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-05 14:43:21
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -96,7 +96,7 @@ export default function PortfolioAssets(props) {
                 },
             });
         } else if (type == 'adjust') {
-            props.navigation.navigate(url);
+            props.navigation.navigate('TradeAdjust');
         }
     };
     const renderBtn = () => {

@@ -1,13 +1,12 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-04 19:24:49
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-05 14:19:32
+ * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -16,10 +15,10 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
 import {Button} from '../../components/Button';
+import Header from '../../components/NavBar';
 
-const TradeProcessing = (props) => {
-    const {txn_id} = props.route.params || {};
-    const navigation = useNavigation();
+const TradeProcessing = ({navigation, route}) => {
+    const {txn_id} = route.params || {};
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
     const [heightArr, setHeightArr] = useState([]);
@@ -52,7 +51,6 @@ const TradeProcessing = (props) => {
                         }
                     }, 1000);
                 }
-                first && navigation.setOptions({title: res.result.title});
             });
         },
         [loopRef, timerRef, navigation, signSendVerify, txn_id]
@@ -109,88 +107,99 @@ const TradeProcessing = (props) => {
         return () => clearTimeout(timerRef.current);
     }, [init, timerRef]);
     return (
-        <ScrollView style={[styles.container]}>
-            <Text style={[styles.title]}>购买进度明细</Text>
-            <View style={[styles.processContainer]}>
-                {Object.keys(data).length > 0 &&
-                    data.items.map((item, index) => {
-                        return (
-                            <View key={index} style={[styles.processItem]} onLayout={(e) => onLayout(index, e)}>
-                                <View style={[styles.icon, Style.flexCenter]}>
-                                    {(item.done === 1 || item.done === -1) && (
-                                        <Ionicons
-                                            name={item.done === 1 ? 'checkmark-circle' : 'close-circle'}
-                                            size={17}
-                                            color={item.done === 1 ? Colors.green : Colors.red}
-                                        />
-                                    )}
-                                    {item.done === 0 && (
-                                        <FontAwesome
-                                            name={'circle-thin'}
-                                            size={16}
-                                            color={'#CCD0DB'}
-                                            style={{
-                                                marginRight: text(2),
-                                                backgroundColor: Colors.bgColor,
-                                            }}
-                                        />
-                                    )}
-                                </View>
-                                <View style={[styles.contentBox]}>
-                                    <FontAwesome
-                                        name={'caret-left'}
-                                        color={'#fff'}
-                                        size={30}
-                                        style={styles.caret_sty}
-                                    />
-                                    <View style={[styles.content]}>
-                                        <View style={[styles.processTitle, Style.flexBetween]}>
-                                            <Text numberOfLines={1} style={[styles.desc]}>
-                                                {item.k}
-                                            </Text>
-                                            <Text style={[styles.date]}>{item.v}</Text>
-                                        </View>
-                                        {item.d && item.d.length > 0 && (
-                                            <View style={[styles.moreInfo]}>
-                                                {item.d.map((val, i) => {
-                                                    return (
-                                                        <Text key={val} style={[styles.moreInfoText]}>
-                                                            {val}
-                                                        </Text>
-                                                    );
-                                                })}
-                                            </View>
+        <>
+            <Header
+                title="交易确认页"
+                rightText={'完成'}
+                // titleStyle={{marginRight: text(-20)}}
+                rightPress={() => navigation.navigate('Home')}
+                rightTextStyle={{marginRight: text(6)}}
+            />
+            <ScrollView style={[styles.container]}>
+                <Text style={[styles.title]}>购买进度明细</Text>
+                <View style={[styles.processContainer]}>
+                    {Object.keys(data).length > 0 &&
+                        data.items.map((item, index) => {
+                            return (
+                                <View key={index} style={[styles.processItem]} onLayout={(e) => onLayout(index, e)}>
+                                    <View style={[styles.icon, Style.flexCenter]}>
+                                        {(item.done === 1 || item.done === -1) && (
+                                            <Ionicons
+                                                name={item.done === 1 ? 'checkmark-circle' : 'close-circle'}
+                                                size={17}
+                                                color={item.done === 1 ? Colors.green : Colors.red}
+                                            />
+                                        )}
+                                        {item.done === 0 && (
+                                            <FontAwesome
+                                                name={'circle-thin'}
+                                                size={16}
+                                                color={'#CCD0DB'}
+                                                style={{
+                                                    marginRight: text(2),
+                                                    backgroundColor: Colors.bgColor,
+                                                }}
+                                            />
                                         )}
                                     </View>
+                                    <View style={[styles.contentBox]}>
+                                        <FontAwesome
+                                            name={'caret-left'}
+                                            color={'#fff'}
+                                            size={30}
+                                            style={styles.caret_sty}
+                                        />
+                                        <View style={[styles.content]}>
+                                            <View style={[styles.processTitle, Style.flexBetween]}>
+                                                <Text numberOfLines={1} style={[styles.desc]}>
+                                                    {item.k}
+                                                </Text>
+                                                <Text style={[styles.date]}>{item.v}</Text>
+                                            </View>
+                                            {item.d && item.d.length > 0 && (
+                                                <View style={[styles.moreInfo]}>
+                                                    {item.d.map((val, i) => {
+                                                        return (
+                                                            <Text key={val} style={[styles.moreInfoText]}>
+                                                                {val}
+                                                            </Text>
+                                                        );
+                                                    })}
+                                                </View>
+                                            )}
+                                        </View>
+                                    </View>
+                                    {index !== data.items.length - 1 && (
+                                        <View
+                                            style={[
+                                                styles.line,
+                                                {
+                                                    height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
+                                                },
+                                            ]}
+                                        />
+                                    )}
                                 </View>
-                                {index !== data.items.length - 1 && (
-                                    <View
-                                        style={[
-                                            styles.line,
-                                            {
-                                                height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
-                                            },
-                                        ]}
-                                    />
-                                )}
-                            </View>
-                        );
-                    })}
-            </View>
-            {finish && (
-                <TouchableOpacity style={[styles.btn, Style.flexCenter]} onPress={props.navigation.navigate('Home')}>
-                    <Text style={[styles.btnText]}>{data.button.text}</Text>
-                </TouchableOpacity>
-            )}
+                            );
+                        })}
+                </View>
+                {finish && (
+                    <TouchableOpacity
+                        style={[styles.btn, Style.flexCenter]}
+                        onPress={() => navigation.navigate('Home')}>
+                        <Text style={[styles.btnText]}>{data.button.text}</Text>
+                    </TouchableOpacity>
+                )}
 
-            <VerifyCodeModal
-                ref={verifyCodeModel}
-                desc={bankInfo.content ? bankInfo.content : ''}
-                modalCancelCallBack={modalCancelCallBack}
-                onChangeText={onChangeText}
-                isSign={isSign}
-            />
-        </ScrollView>
+                <VerifyCodeModal
+                    ref={verifyCodeModel}
+                    desc={bankInfo.content ? bankInfo.content : ''}
+                    modalCancelCallBack={modalCancelCallBack}
+                    onChangeText={onChangeText}
+                    isSign={isSign}
+                />
+            </ScrollView>
+        </>
     );
 };
 

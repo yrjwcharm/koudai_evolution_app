@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 19:49:39
+ * @LastEditTime: 2021-03-05 15:00:54
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -54,7 +54,6 @@ export default function DetailPolaris({route, navigation}) {
     return (
         <>
             {<Header title={data?.title} leftIcon="chevron-left" />}
-
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />

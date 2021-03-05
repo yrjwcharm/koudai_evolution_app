@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-04 15:17:19
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-05 11:21:57
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,9 +11,11 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
+import Http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
 import {Modal, ShareModal} from '../../components/Modal';
+import Storage from '../../utils/storage';
+import Toast from '../../components/Toast';
 
 const Settings = ({navigation}) => {
     const jump = useJump();
@@ -30,7 +32,13 @@ const Settings = ({navigation}) => {
                     },
                     {
                         text: '确定',
-                        onPress: () => console.log('确定'),
+                        onPress: () => {
+                            Http.post('/polaris/bind_invite_code/20210101', {
+                                invited_code: '202088',
+                            }).then((res) => {
+                                Toast.show('邀请码绑定成功');
+                            });
+                        },
                     },
                 ]);
             } else if (item.type === 'share_mofang') {
@@ -41,7 +49,9 @@ const Settings = ({navigation}) => {
                     content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
                     confirm: true,
                     confirmCallBack: () => {
-                        Alert.alert('退出登录');
+                        // Alert.alert('退出登录');
+                        Storage.delete('loginStatus');
+                        navigation.navigate({name: 'Login'});
                     },
                 });
                 // Alert.alert('退出登录', '退出后，日收益和投资产品列表将不再展示，是否确认退出？', [
@@ -62,7 +72,7 @@ const Settings = ({navigation}) => {
     );
 
     useEffect(() => {
-        http.get('mapi/config/20210101').then((res) => {
+        Http.get('mapi/config/20210101').then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }

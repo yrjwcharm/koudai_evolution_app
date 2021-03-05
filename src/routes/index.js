@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 10:30:59
+ * @LastEditTime: 2021-03-05 14:48:35
  * @Description:路由表
  */
 import React from 'react';
@@ -293,7 +293,7 @@ export default function AppStack() {
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
-            <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{title: '交易确认页'}} />
+            <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{headerShown: false}} />
             <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
