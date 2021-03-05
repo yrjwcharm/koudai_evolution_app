@@ -103,16 +103,13 @@ export default class MyModal extends Component {
                             ) : this.props.confirm ? (
                                 <View style={styles.centerBottomBtns}>
                                     <TouchableOpacity
-                                        style={[
-                                            styles.centerBtn,
-                                            Style.flexCenter,
-                                            {borderColor: '#DCDEE3', borderRightWidth: 0.5},
-                                        ]}
+                                        style={[styles.centerBtn, Style.flexCenter]}
                                         onPress={this.cancle.bind(this)}>
                                         <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
                                             {this.cancelText}
                                         </Text>
                                     </TouchableOpacity>
+                                    <View style={styles.borderRight} />
                                     <TouchableOpacity
                                         style={[Style.flexCenter, styles.centerBtn]}
                                         onPress={this.confirm.bind(this)}>
@@ -183,7 +180,7 @@ const styles = StyleSheet.create({
         width: text(modalWidth),
         backgroundColor: '#FFF',
         borderRadius: 8,
-        paddingHorizontal: 15,
+        // paddingHorizontal: 15,
     },
     title: {
         textAlign: 'center',
@@ -195,10 +192,12 @@ const styles = StyleSheet.create({
         paddingTop: text(18),
     },
     confirmBtn: {
+        width: '100%',
         height: text(40),
     },
     centerBtn: {
         flex: 1,
+        width: '100%',
         height: text(40),
     },
     centerBtnText: {
@@ -207,7 +206,8 @@ const styles = StyleSheet.create({
     contentCon: {
         paddingTop: text(18),
         paddingBottom: px(18),
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(18),
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},
+    borderRight: {borderColor: '#DCDEE3', borderRightWidth: 0.5, height: text(40)},
 });

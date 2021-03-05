@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-27 18:01:11
+ * @LastEditTime: 2021-03-04 16:46:52
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -14,13 +14,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
+import {Chart} from '../../components/Chart';
+import {baseAreaChart} from '../Portfolio/components/ChartOption';
 
 const NetValueTrend = ({poid}) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [list, setList] = useState([]);
     const [period, setPeriod] = useState('y1');
     const [chart, setChart] = useState({});
-    const [activeSections, setActiveSections] = useState([0]);
+
     const init = useCallback(() => {}, []);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
@@ -29,9 +30,12 @@ const NetValueTrend = ({poid}) => {
     }, [init]);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.darkGrayColor;
         } else {
             return Colors.red;

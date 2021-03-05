@@ -1,12 +1,13 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 17:12:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 18:08:34
  * @Description: 底部弹窗
  */
 import React from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
+import PropTypes from 'prop-types';
 import {constants} from './util';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -18,11 +19,12 @@ const BottomModal = React.forwardRef((props, ref) => {
         header,
         title = '请选择',
         confirmText = '',
-        children = '',
+        children = <Text />,
         /**
          * 点击确认按钮
          */
         onDone = () => {},
+        isTouchMaskToClose = true,
     } = props;
     const [visible, setVisible] = React.useState(false);
     const show = () => {
@@ -47,8 +49,11 @@ const BottomModal = React.forwardRef((props, ref) => {
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             {backdrop && <Mask />}
-            <View style={styles.container}>
-                <View style={styles.con}>
+            <TouchableOpacity
+                activeOpacity={1}
+                onPress={isTouchMaskToClose ? hide : () => {}}
+                style={[styles.container]}>
+                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
                     {header || (
                         <View style={styles.header}>
                             <TouchableOpacity style={styles.close} onPress={hide}>
@@ -63,8 +68,8 @@ const BottomModal = React.forwardRef((props, ref) => {
                         </View>
                     )}
                     {children}
-                </View>
-            </View>
+                </TouchableOpacity>
+            </TouchableOpacity>
         </Modal>
     );
 });
@@ -110,5 +115,15 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
 });
+
+BottomModal.propTypes = {
+    backdrop: PropTypes.bool,
+    header: PropTypes.oneOfType([PropTypes.element, PropTypes.elementType]),
+    title: PropTypes.string,
+    confirmText: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.elementType]),
+    onDone: PropTypes.func,
+    isTouchMaskToClose: PropTypes.bool,
+};
 
 export default BottomModal;

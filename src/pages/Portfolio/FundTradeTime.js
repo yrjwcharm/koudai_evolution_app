@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-27 16:37:46
+ * @LastEditTime: 2021-03-04 10:29:43
  * @Description: 交易时间说明
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -38,8 +38,18 @@ const FundTradeTime = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{buy.table?.head[0]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{buy.table?.head[1]}</Text>
+                {buy.table?.head?.map((item, index) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === buy.table.head.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {item}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, [buy]);
@@ -49,8 +59,18 @@ const FundTradeTime = ({navigation, route}) => {
             <View
                 key={index}
                 style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
-                <Text style={[styles.itemText, {textAlign: 'right'}]}>{item[1]}</Text>
+                {item?.map((value, idx) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.itemText,
+                                idx === 0 ? {textAlign: 'left'} : {},
+                                idx === item.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {value}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, []);

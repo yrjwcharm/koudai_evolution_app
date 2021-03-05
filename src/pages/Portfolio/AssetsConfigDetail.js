@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-04 17:49:38
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-04 18:15:58
+ * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
@@ -50,7 +50,7 @@ export class AssetsConfigDetail extends Component {
         const {amount} = this.state;
         const {alloc_id, upid} = this.props.route.params || {};
 
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080//portfolio/asset_deploy/20210101', {
+        Http.get('/portfolio/asset_deploy/20210101', {
             amount,
             alloc_id,
         }).then((res) => {

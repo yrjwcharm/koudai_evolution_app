@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-23 16:29:44
+ * @LastEditTime: 2021-03-04 10:02:17
  * @Description: 修改交易密码
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -55,7 +55,7 @@ const ModifyTradePwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'numeric'}
                 maxLength={6}
-                onChangeText={(pwd) => setOldPwd(pwd.replaceAll(/\D/g, ''))}
+                onChangeText={(pwd) => setOldPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'请输入当前交易密码'}
                 secureTextEntry={true}
                 textContentType={'password'}
@@ -66,7 +66,7 @@ const ModifyTradePwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'numeric'}
                 maxLength={6}
-                onChangeText={(pwd) => setNewPwd(pwd.replaceAll(/\D/g, ''))}
+                onChangeText={(pwd) => setNewPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'请输入新的6位数字交易密码'}
                 secureTextEntry={true}
                 textContentType={'password'}
@@ -77,7 +77,7 @@ const ModifyTradePwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'numeric'}
                 maxLength={6}
-                onChangeText={(pwd) => setConfirmPwd(pwd.replaceAll(/\D/g, ''))}
+                onChangeText={(pwd) => setConfirmPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'确认新的交易密码'}
                 secureTextEntry={true}
                 textContentType={'password'}

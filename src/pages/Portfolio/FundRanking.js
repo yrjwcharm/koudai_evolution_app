@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 16:38:41
+ * @LastEditTime: 2021-03-04 10:05:14
  * @Description: 基金排名
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -56,7 +56,7 @@ const FundRanking = ({navigation, route}) => {
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0]}</Text>
                     <Text style={[styles.itemText, {color: getColor(item[1]), fontFamily: Font.numFontFamily}]}>
-                        {parseFloat(item[1].replaceAll(',', '')) > 0 ? `+${item[1]}` : item[1]}
+                        {parseFloat(item[1]?.replace(/,/g, '')) > 0 ? `+${item[1]}` : item[1]}
                     </Text>
                     <Text style={[styles.itemText, {textAlign: 'right', fontFamily: Font.numRegular}]}>{item[2]}</Text>
                 </View>
@@ -66,9 +66,12 @@ const FundRanking = ({navigation, route}) => {
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
             return Colors.red;
         } else {
             return Colors.defaultColor;

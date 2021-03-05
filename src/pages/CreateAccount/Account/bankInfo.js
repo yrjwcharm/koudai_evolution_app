@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 14:28:48
+ * @LastEditTime: 2021-03-04 19:02:48
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -84,13 +84,14 @@ export class bankInfo extends Component {
                 name: this.props.route?.params?.name,
                 rcode: this.props.route?.params?.rcode,
                 rname: this.props.route?.params?.rname,
+                poid: this.props.route?.params?.poid,
             },
             '正在提交数据...'
         ).then((res) => {
             if (res.code == '000000') {
                 Toast.show('开户成功', {
                     onHidden: () => {
-                        console.log('1123123213');
+                        this.props.navigation.replace(res.result?.jump_url?.path, res.result?.jump_url?.params);
                     },
                 });
             } else {
@@ -125,10 +126,13 @@ export class bankInfo extends Component {
                 return;
             }
             http.post(
-                '/passport/send_verify_code/20210101',
+                '/passport/xy_account/bind_prepare/20210101',
                 {
-                    mobile: phone,
-                    operation: 'open_acct',
+                    id_no: this.props.route?.params?.id_no,
+                    name: this.props.route?.params?.name,
+                    bank_no: bank_no.replace(/ /g, ''),
+                    bank_code: selectBank.bank_code,
+                    phone,
                 },
                 '正在发送验证码...'
             ).then((res) => {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-26 14:34:47
+ * @LastEditTime: 2021-03-04 10:25:57
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -53,8 +53,18 @@ const HistoryHoldFunds = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[1]}</Text>
+                {header.map((item, index) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {item}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, [header]);
@@ -92,18 +102,21 @@ const HistoryHoldFunds = ({navigation, route}) => {
                             styles.itemText,
                             {textAlign: 'right', color: getColor(item.profit_acc), fontFamily: Font.numFontFamily},
                         ]}>
-                        {parseFloat(item.profit_acc.replaceAll(',', '')) > 0 ? `+${item.profit_acc}` : item.profit_acc}
+                        {parseFloat(item.profit_acc?.replace(/,/g, '')) > 0 ? `+${item.profit_acc}` : item.profit_acc}
                     </Text>
                 </TouchableOpacity>
             );
         },
-        [getColor]
+        [navigation, getColor]
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
             return Colors.red;
         } else {
             return Colors.defaultColor;

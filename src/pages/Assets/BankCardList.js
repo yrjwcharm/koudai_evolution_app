@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-23 11:44:04
+ * @LastEditTime: 2021-03-03 14:53:45
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -18,81 +18,80 @@ import Empty from '../../components/EmptyTip';
 
 const BankCardList = ({navigation}) => {
     const [data, setData] = useState({});
+
+    useEffect(() => {
+        http.get('passport/bank_card/manage/20210101').then((res) => {
+            // console.log(res);
+            navigation.setOptions({title: res.title});
+            setData(res);
+        });
+    }, [navigation]);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
-                <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{'玄元银行卡'}</Text>
-                <TouchableOpacity
-                    style={[Style.flexRow, styles.cardBox]}
-                    onPress={() => navigation.navigate({name: 'BankCard'})}>
-                    <View style={[Style.flexRow, {flex: 1}]}>
-                        <Image
-                            source={{
-                                uri:
-                                    'https://static.licaimofang.com/wp-content/uploads/2020/10/schoolseason_course4.png',
-                            }}
-                            style={styles.bankLogo}
+                {data.xy?.cards?.length > 0 && (
+                    <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{data.xy.text}</Text>
+                )}
+                {data.xy?.cards?.map((item, index) => {
+                    return (
+                        <TouchableOpacity
+                            key={item.pay_method}
+                            style={[Style.flexRow, styles.cardBox]}
+                            onPress={() =>
+                                navigation.navigate({name: 'BankCard', params: {pay_method: item.pay_method}})
+                            }>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.cardNum}>
+                                        {item.bank_name}
+                                        {item.bank_no}
+                                    </Text>
+                                    <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
+                                </View>
+                            </View>
+                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                    );
+                })}
+                {data.ym?.cards?.length > 0 && (
+                    <Text style={[styles.title, {paddingBottom: text(6)}]}>{'盈米银行卡'}</Text>
+                )}
+                {data.ym?.cards?.map((item, index) => {
+                    return (
+                        <TouchableOpacity
+                            key={item.pay_method}
+                            style={[Style.flexRow, styles.cardBox]}
+                            onPress={() =>
+                                navigation.navigate({name: 'BankCard', params: {pay_method: item.pay_method}})
+                            }>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.cardNum}>
+                                        {item.bank_name}
+                                        {item.bank_no}
+                                    </Text>
+                                    <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
+                                </View>
+                            </View>
+                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                    );
+                })}
+                {data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0 && (
+                    <>
+                        <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
+                        <Button
+                            title={'添加新银行卡'}
+                            style={[styles.btn, {marginHorizontal: text(4), marginTop: text(86)}]}
                         />
-                        <View style={{flex: 1}}>
-                            <Text style={styles.cardNum}>{'招商银行储蓄卡(4569)'}</Text>
-                            <Text style={[styles.title, {marginTop: text(2)}]}>{'限额：单笔5千元、单日3万元'}</Text>
-                        </View>
-                    </View>
-                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[Style.flexRow, styles.cardBox]}>
-                    <View style={[Style.flexRow, {flex: 1}]}>
-                        <Image
-                            source={{
-                                uri:
-                                    'https://static.licaimofang.com/wp-content/uploads/2020/10/schoolseason_course4.png',
-                            }}
-                            style={styles.bankLogo}
-                        />
-                        <View style={{flex: 1}}>
-                            <Text style={styles.cardNum}>{'招商银行储蓄卡(4569)'}</Text>
-                            <Text style={[styles.title, {marginTop: text(2)}]}>{'限额：单笔5千元、单日3万元'}</Text>
-                        </View>
-                    </View>
-                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                </TouchableOpacity>
-                <Text style={[styles.title, {paddingBottom: text(6)}]}>{'盈米银行卡'}</Text>
-                <TouchableOpacity style={[Style.flexRow, styles.cardBox]}>
-                    <View style={[Style.flexRow, {flex: 1}]}>
-                        <Image
-                            source={{
-                                uri:
-                                    'https://static.licaimofang.com/wp-content/uploads/2020/10/schoolseason_course4.png',
-                            }}
-                            style={styles.bankLogo}
-                        />
-                        <View style={{flex: 1}}>
-                            <Text style={styles.cardNum}>{'招商银行储蓄卡(4569)'}</Text>
-                            <Text style={[styles.title, {marginTop: text(2)}]}>{'限额：单笔5千元、单日3万元'}</Text>
-                        </View>
-                    </View>
-                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[Style.flexRow, styles.cardBox]}>
-                    <View style={[Style.flexRow, {flex: 1}]}>
-                        <Image
-                            source={{
-                                uri:
-                                    'https://static.licaimofang.com/wp-content/uploads/2020/10/schoolseason_course4.png',
-                            }}
-                            style={styles.bankLogo}
-                        />
-                        <View style={{flex: 1}}>
-                            <Text style={styles.cardNum}>{'招商银行储蓄卡(4569)'}</Text>
-                            <Text style={[styles.title, {marginTop: text(2)}]}>{'限额：单笔5千元、单日3万元'}</Text>
-                        </View>
-                    </View>
-                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                </TouchableOpacity>
-                {/* <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
-                <Button title={'添加新银行卡'} style={[styles.btn, {marginHorizontal: text(4), marginTop: text(86)}]} /> */}
+                    </>
+                )}
             </ScrollView>
-            <Button title={'添加新银行卡'} style={styles.btn} />
+            {data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0 ? null : (
+                <Button title={'添加新银行卡'} style={styles.btn} />
+            )}
         </SafeAreaView>
     );
 };

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-27 18:18:32
+ * @LastEditTime: 2021-03-04 10:36:47
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -49,11 +49,13 @@ const HoldingFund = ({navigation, route}) => {
                     poid: route.params?.poid || 'X00F000003',
                 }
             ).then((res) => {
+                if (res.code === '000000') {
+                    first && navigation.setOptions({title: res.result.title || '持有基金'});
+                    first && setTabs(res.result.tabs);
+                    curTab === 0 ? setList1(res.result.list) : setList2(res.result.list);
+                    urlRef.current = res.result.url;
+                }
                 setRefreshing(false);
-                first && navigation.setOptions({title: res.result.title || '持有基金'});
-                first && setTabs(res.result.tabs);
-                curTab === 0 ? setList1(res.result.list) : setList2(res.result.list);
-                urlRef.current = res.result.url;
             });
         },
         [navigation, route, curTab]
@@ -66,9 +68,9 @@ const HoldingFund = ({navigation, route}) => {
         if (!t) {
             return Colors.defaultColor;
         }
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.defaultColor;
         } else {
             return Colors.red;

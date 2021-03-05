@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 17:31:30
+ * @LastEditTime: 2021-03-04 19:12:38
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -39,7 +39,7 @@ class TradeBuy extends Component {
             configExpand: false, //买入明细是否展开
             showMask: false,
             bankSelect: '', //选中的银行卡
-            upid: this.props.route?.params?.upid || 1,
+            poid: this.props.route?.params?.poid || 1,
             currentDate: '', //定投日期
             nextday: '',
         };
@@ -48,8 +48,8 @@ class TradeBuy extends Component {
         this.getTab();
     }
     getTab = () => {
-        const {upid} = this.state;
-        http.get('/trade/set_tabs/20210101', {upid}).then((data) => {
+        const {poid} = this.state;
+        http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
             this.setState({
                 type: data.result.active,
                 has_tab: data.result.has_tab,
@@ -58,10 +58,10 @@ class TradeBuy extends Component {
         });
     };
     init = (_type) => {
-        const {type, upid} = this.state;
+        const {type, poid} = this.state;
         http.get('/trade/buy/info/20210101', {
             type: _type || type,
-            upid,
+            poid,
         }).then((res) => {
             if (res.code === '000000') {
                 this.setState({
@@ -80,11 +80,11 @@ class TradeBuy extends Component {
      * @return {*}
      */
     submit = (password) => {
-        const {upid, planData, amount, bankSelect} = this.state;
+        const {poid, planData, amount, bankSelect} = this.state;
         const {buy_id} = planData;
         let toast = Toast.showLoading();
         http.post('/trade/buy/do/20210101', {
-            upid,
+            poid,
             buy_id,
             amount,
             password,
@@ -108,7 +108,7 @@ class TradeBuy extends Component {
         const params = {
             amount,
             pay_method: this.state.bankSelect?.pay_method,
-            upid: this.state.upid,
+            poid: this.state.poid,
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
             this.setState({planData: data.result});

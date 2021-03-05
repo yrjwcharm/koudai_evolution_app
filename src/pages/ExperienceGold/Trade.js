@@ -36,7 +36,7 @@ export default function Trade(props) {
     };
     const submitData = () => {};
     useEffect(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/buy/20210101', {}).then((res) => {
+        http.get('/freefund/buy/20210101', {}).then((res) => {
             setData(res.result);
             plan();
         });
@@ -47,7 +47,7 @@ export default function Trade(props) {
             pay_method: data.buy_info.pay_method,
             upid: '',
         };
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/buy/plan/20210101', params).then((data) => {
+        http.get('trade/buy/plan/20210101', params).then((data) => {
             setList(data.result);
         });
     };

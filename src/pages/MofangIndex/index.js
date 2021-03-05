@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 16:20:26
+ * @LastEditTime: 2021-03-04 20:49:37
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -183,26 +183,7 @@ const Index = (props) => {
                             </Swiper>
                         ) : null}
                     </View>
-                    <View>
-                        <Button
-                            title="去开户"
-                            onPress={() => {
-                                jumpPage('CreateAccount');
-                            }}
-                        />
-                        <Button
-                            title="去购买"
-                            onPress={() => {
-                                jumpPage('TradeBuy');
-                            }}
-                        />
-                        <Button
-                            title="去定制"
-                            onPress={() => {
-                                jumpPage('Evaluation');
-                            }}
-                        />
-                    </View>
+
                     {/* 安全保障 */}
                     {data?.login_status == 0 && renderSecurity(data?.menu_list)}
 

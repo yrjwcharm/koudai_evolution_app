@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-26 16:31:19
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-03 16:42:35
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -16,7 +16,7 @@ export default class RenderHtml extends Component {
     //   html: this.props.html
     // }
     render() {
-        const style = this.props.style;
+        const {numberOfLines = 10000, style} = this.props;
         return (
             <HTML
                 ignoredStyles={[
@@ -31,6 +31,7 @@ export default class RenderHtml extends Component {
                 debug={false}
                 defaultTextProps={{
                     allowFontScaling: false,
+                    numberOfLines,
                 }}
                 baseFontStyle={style}
                 source={{html: this.props.html}}

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 17:02:24
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 10:23:48
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -57,10 +57,21 @@ const AssetNav = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText]}>{header[1]}</Text>
+                {header?.map((item, index) => {
+                    return (
+                        <Text
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {item}
+                        </Text>
+                    );
+                })}
+                {/* <Text style={[styles.headerText]}>{header[1]}</Text>
                 <Text style={[styles.headerText]}>{header[2]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text>
+                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text> */}
             </View>
         );
     }, [header]);
@@ -85,7 +96,24 @@ const AssetNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
+                    {item?.map((value, idx) => {
+                        return (
+                            <Text
+                                style={[
+                                    styles.itemText,
+                                    {color: getColor(item[3].text), fontFamily: Font.numFontFamily},
+                                    idx === 0 ? {textAlign: 'left'} : {},
+                                    idx === item.length - 1 ? {textAlign: 'right'} : {},
+                                ]}>
+                                {idx === item.length - 1
+                                    ? parseFloat(value?.text?.replace(/,/g, '')) > 0
+                                        ? `+${value.text}`
+                                        : value.text
+                                    : value.text}
+                            </Text>
+                        );
+                    })}
+                    {/* <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
                     <Text style={[styles.itemText]}>{item[1].text}</Text>
                     <Text style={[styles.itemText]}>{item[2].text}</Text>
                     <Text
@@ -93,8 +121,8 @@ const AssetNav = ({navigation, route}) => {
                             styles.itemText,
                             {textAlign: 'right', color: getColor(item[3].text), fontFamily: Font.numFontFamily},
                         ]}>
-                        {parseFloat(item[3].text.replaceAll(',', '')) > 0 ? `+${item[3].text}` : item[3].text}
-                    </Text>
+                        {parseFloat(item[3]?.text?.replace(/,/g, '')) > 0 ? `+${item[3].text}` : item[3].text}
+                    </Text> */}
                 </View>
             );
         },
@@ -102,9 +130,12 @@ const AssetNav = ({navigation, route}) => {
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
             return Colors.red;
         } else {
             return Colors.defaultColor;

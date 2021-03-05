@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-01 09:53:40
+ * @LastEditTime: 2021-03-04 10:01:09
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -98,9 +98,12 @@ const DailyProfit = ({poid}) => {
     }, []);
     // 获取日收益背景颜色
     const getColor = useCallback((t) => {
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) === 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
             return Colors.darkGrayColor;
         } else {
             return Colors.red;
@@ -162,7 +165,7 @@ const DailyProfit = ({poid}) => {
                                     text(105),
                                     maxData === 0
                                         ? 0
-                                        : (Math.abs(parseFloat(`${item.profit}`.replaceAll(',', ''))) / maxData) *
+                                        : (Math.abs(parseFloat(`${item.profit}`?.replace(/,/g, ''))) / maxData) *
                                               (deviceWidth - 32)
                                 ),
                                 maxWidth: '100%',
@@ -171,7 +174,7 @@ const DailyProfit = ({poid}) => {
                         ]}>
                         <Text style={styles.incomeText}>{item.date}</Text>
                         <Text style={styles.incomeText}>
-                            {parseFloat(`${item.profit}`.replaceAll(',', '')) > 0 ? `+${item.profit}` : item.profit}
+                            {parseFloat(`${item.profit}`?.replace(/,/g, '')) > 0 ? `+${item.profit}` : item.profit}
                         </Text>
                     </View>
                     {item.fee ? <Text style={styles.feeText}>{item.fee}</Text> : null}
@@ -193,7 +196,7 @@ const DailyProfit = ({poid}) => {
             setMaxData(
                 Math.max.apply(
                     Math,
-                    list.map((o) => Math.abs(parseFloat(o.profit.replaceAll(',', ''))))
+                    list.map((o) => Math.abs(parseFloat(o.profit?.replace(/,/g, ''))))
                 )
             );
             LayoutAnimation.configureNext({
@@ -211,18 +214,20 @@ const DailyProfit = ({poid}) => {
     return (
         <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
             {list.length > 0 ? (
-                <SectionList
-                    sections={[{title: 'list', data: list}]}
+                <FlatList
+                    data={list}
+                    // sections={[{title: 'list', data: list}]}
                     initialNumToRender={20}
                     keyExtractor={(item, index) => item + index}
                     ListFooterComponent={renderFooter}
                     ListEmptyComponent={renderEmpty}
+                    ListHeaderComponent={renderSectionHeader}
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.5}
                     onRefresh={onRefresh}
                     refreshing={refreshing}
                     renderItem={renderItem}
-                    renderSectionHeader={renderSectionHeader}
+                    // renderSectionHeader={renderSectionHeader}
                     style={[{backgroundColor: '#fff'}]}
                 />
             ) : (

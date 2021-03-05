@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-27 18:15:20
+ * @LastEditTime: 2021-03-04 10:28:11
  * @Description: 历史净值
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -61,7 +61,7 @@ const HistoryNav = ({navigation, route}) => {
                                 index === 0 ? {textAlign: 'left'} : {},
                                 index === header.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
-                            {header[index]}
+                            {item}
                         </Text>
                     );
                 })}
@@ -89,16 +89,22 @@ const HistoryNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    {item.map((value, idx) => {
+                    {item?.map((value, idx) => {
                         return (
                             <Text
                                 style={[
                                     styles.itemText,
                                     idx === 0 ? {textAlign: 'left'} : {},
                                     idx === item.length - 1 ? {textAlign: 'right'} : {},
-                                    idx === 3 ? {color: getColor(item[3]), fontFamily: Font.numFontFamily} : {},
+                                    idx === item.length - 1
+                                        ? {color: getColor(value), fontFamily: Font.numFontFamily}
+                                        : {},
                                 ]}>
-                                {item[idx]}
+                                {idx === item.length - 1
+                                    ? parseFloat(value?.replace(/,/g, '')) > 0
+                                        ? `+${value}`
+                                        : value
+                                    : value}
                             </Text>
                         );
                     })}
@@ -112,9 +118,9 @@ const HistoryNav = ({navigation, route}) => {
         if (!t) {
             return Colors.defaultColor;
         }
-        if (parseFloat(t.replaceAll(',', '')) < 0) {
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
             return Colors.green;
-        } else if (parseFloat(t.replaceAll(',', '')) > 0) {
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
             return Colors.red;
         } else {
             return Colors.defaultColor;

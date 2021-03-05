@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 11:38:49
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-04 18:12:22
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -23,6 +23,7 @@ import {Modal, SelectModal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import {BottomModal} from '../../components/Modal';
 import Mask from '../../components/Mask';
+import storage from '../../utils/storage';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
@@ -68,15 +69,15 @@ export default function PrivateAssets(props) {
         //赎回提交记录
     };
     const tipShow = (q, a) => {
-        qa['q'] = q;
-        qa['a'] = a;
+        qa.q = q;
+        qa.a = a;
         setQa(qa);
         bottomModal.current.show();
     };
     const renderContent = (index, data) => {
         console.log(data);
         if (index === 0) {
-            return <View style={{backgroundColor: '#fff'}}></View>;
+            return <View style={{backgroundColor: '#fff'}} />;
         } else if (index === 1) {
             return (
                 <>
@@ -159,7 +160,7 @@ export default function PrivateAssets(props) {
                                                         flex: _i == 0 ? 1 : 0,
                                                         color:
                                                             _i == _body.length - 1
-                                                                ? parseFloat(_td.text.replaceAll(',', '')) < 0
+                                                                ? parseFloat(_td.text?.replace(/,/g, '')) < 0
                                                                     ? Colors.green
                                                                     : Colors.red
                                                                 : '',

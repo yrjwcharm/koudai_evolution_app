@@ -13,7 +13,7 @@ import {px as text} from '../../utils/appUtil.js';
 export default function Rule() {
     const [data, setData] = useState({});
     useEffect(() => {
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/rule/20210101').then((res) => {
+        Http.get('/freefund/rule/20210101').then((res) => {
             setData(res.result.image_list);
         });
     }, []);

@@ -2,104 +2,102 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-01-21 16:33:58
- * @Description:
+ * @LastEditTime: 2021-03-04 17:30:18
+ * @Description: 智能调仓
  */
 import React, {Component} from 'react';
 import {ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
+import http from '../../services';
+import HTML from '../../components/RenderHtml';
+import {percentStackColumn} from './components/ChartOption';
+import {Chart} from '../../components/Chart';
 
 class DynamicAdjustment extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: {},
+            chartData: [],
         };
     }
     componentDidMount() {
-        // const { account_id } = this.props.route.params || {};
-        // http.get('/portfolio/adjust/20210101', { account_id }).then(res => {
-        //   this.setState({ data: res.result });
-        //   this.props.navigation.setOptions({ title: res.result.title });
-        // });
-        this.setState({
-            data: {
-                items: [
-                    {
-                        title: 'A股基金池调整，同时增加债券比例',
-                        date: '（2020-12-12）',
-                        desc: '在全市场8000多只基金中，筛选出稳定性强的基金…',
-                    },
-                    {
-                        title: 'A股结构性调整，增配大盘、减配小盘股，总体配置比例不变，增加债券比例',
-                        date: '（2020-12-12）',
-                        desc: '在全市场8000多只基金中，筛选出稳定性强的基金大…',
-                    },
-                    {
-                        title: 'A股基金池调整，同时增加债券比例',
-                        date: '（2020-12-12）',
-                        desc: '在全市场8000多只基金中，筛选出稳定性强的基金…',
-                    },
-                    {
-                        title: 'A股结构性调整，增配大盘、减配小盘股，总体配置比例不变，增加债券比例',
-                        date: '（2020-12-12）',
-                        desc: '在全市场8000多只基金中，筛选出稳定性强的基金大…',
-                    },
-                ],
-            },
+        const {upid} = this.props.route.params || {};
+        http.get('/portfolio/adjust/20210101', {
+            upid: upid || 1,
+        }).then((res) => {
+            this.setState({data: res.result});
+            this.props.navigation.setOptions({title: res.result.title});
+        });
+        http.get('/portfolio/adjust_chart/20210101', {
+            upid: upid || 1,
+        }).then((res) => {
+            this.setState({
+                chartData: res.result.chart,
+            });
         });
     }
     render() {
-        const {data} = this.state;
+        const {data, chartData} = this.state;
+        const {navigation, route} = this.props;
         return (
             <ScrollView style={[styles.container]}>
                 <View style={[styles.topPart]}>
-                    <View />
+                    <Chart initScript={percentStackColumn(chartData)} data={chartData} style={{width: '100%'}} />
                 </View>
                 <View style={[styles.adjustListContainer]}>
-                    <Text style={[styles.adjustTitle]}>{'调仓记录'}</Text>
-                    {data.items &&
-                        data.items.map((item, index) => {
-                            return (
-                                <View
-                                    key={index}
-                                    style={[
-                                        styles.borderTop,
-                                        index === data.items.length - 1 ? styles.borderBottom : {},
-                                    ]}>
-                                    <TouchableOpacity style={[styles.adjustRecord, Style.flexRow]}>
-                                        <View style={{width: text(296)}}>
-                                            <Text style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                                <Text style={[styles.recordTitle, {fontWeight: '500'}]}>
-                                                    {item.title}
-                                                </Text>
-                                                <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
-                                                    {item.date}
-                                                </Text>
+                    <Text style={[styles.adjustTitle]}>{data.record?.title}</Text>
+                    {data.record?.items?.map((item, index) => {
+                        return (
+                            <View
+                                key={item.id}
+                                style={[
+                                    styles.borderTop,
+                                    index === data.record.items.length - 1 ? styles.borderBottom : {},
+                                ]}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.adjustRecord, Style.flexRow]}
+                                    onPress={() =>
+                                        navigation.navigate({
+                                            name: 'HistoryAdjust',
+                                            params: {adjust_id: item.id, upid: route.params?.upid || 1},
+                                        })
+                                    }>
+                                    <View style={{flex: 1}}>
+                                        <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
+                                            <Text style={[styles.recordTitle, {fontWeight: '500'}]}>{item.title}</Text>
+                                            <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
+                                                &nbsp;&nbsp;({item.date})
                                             </Text>
-                                            <Text style={[styles.recordDesc]}>{item.desc}</Text>
-                                        </View>
-                                        <FontAwesome
-                                            name={'angle-right'}
-                                            size={20}
-                                            color={Colors.descColor}
-                                            style={{marginLeft: text(8)}}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        })}
-                    <TouchableOpacity style={[styles.moreRecord, Style.flexCenter]}>
-                        <Text style={[styles.moreText]}>{'查看更多'}</Text>
-                        <FontAwesome
-                            name={'angle-right'}
-                            size={20}
-                            color={Colors.brandColor}
-                            style={{marginLeft: text(4)}}
-                        />
-                    </TouchableOpacity>
+                                        </Text>
+                                        <HTML numberOfLines={1} html={item.content} style={styles.recordDesc} />
+                                    </View>
+                                    <FontAwesome
+                                        name={'angle-right'}
+                                        size={20}
+                                        color={Colors.descColor}
+                                        style={{marginLeft: text(12)}}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        );
+                    })}
+                    {data.record?.btn && (
+                        <TouchableOpacity
+                            style={[styles.moreRecord, Style.flexCenter]}
+                            onPress={() => navigation.navigate('AdjustRecord')}>
+                            <Text style={[styles.moreText]}>{data.record?.btn.title}</Text>
+                            <FontAwesome
+                                name={'angle-right'}
+                                size={20}
+                                color={Colors.brandColor}
+                                style={{marginLeft: text(4)}}
+                            />
+                        </TouchableOpacity>
+                    )}
                 </View>
             </ScrollView>
         );

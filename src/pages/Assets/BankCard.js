@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:41:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-23 14:00:04
+ * @LastEditTime: 2021-03-03 14:51:10
  * @Description: 银行卡
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -14,7 +14,16 @@ import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 
-const BankCard = ({navigation}) => {
+const BankCard = ({navigation, route}) => {
+    const [data, setData] = useState({});
+    useEffect(() => {
+        http.get('passport/bank_card/detail/20210101', {
+            pay_method: route.params?.pay_method,
+        }).then((res) => {
+            navigation.setOptions({title: res.title});
+            setData(res);
+        });
+    }, [navigation, route]);
     return (
         <ScrollView style={styles.container}>
             <View style={styles.cardBox}>
