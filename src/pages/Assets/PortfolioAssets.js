@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 14:43:21
+ * @LastEditTime: 2021-03-05 16:22:46
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -81,22 +81,22 @@ export default function PortfolioAssets(props) {
     const jumpTo = (url) => {
         props.navigation.navigate(url);
     };
-    const accountJump = (url, type) => {
+    const accountJump = (url, type, popup) => {
         if (type == 'buy') {
-            props.navigation.navigate(url);
+            props.navigation.navigate(url.path, url.params);
         } else if (type == 'redeem') {
             Modal.show({
-                title: '提示',
-                content: '确认赎回？',
+                title: popup?.title || '提示',
+                content: popup?.content || '确认赎回？',
                 confirm: true,
-                cancelText: '再想一想',
-                confirmText: '确认赎回',
+                cancelText: popup?.confirm?.text || '再想一想',
+                confirmText: popup?.cancel?.text || '确认赎回',
                 confirmCallBack: () => {
-                    props.navigation.navigate('TradeRedeem');
+                    props.navigation.navigate(url.path, url.params);
                 },
             });
         } else if (type == 'adjust') {
-            props.navigation.navigate('TradeAdjust');
+            props.navigation.navigate(url.path, url.params);
         }
     };
     const renderBtn = () => {
@@ -114,14 +114,15 @@ export default function PortfolioAssets(props) {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
-                                onPress={() => accountJump(_button.url, _button.action)}
+                                onPress={() => accountJump(_button.url, _button.action, _button.popup)}
                                 disabled={_button.avail == 0}
                                 activeOpacity={1}
                                 style={{
                                     borderColor: '#4E556C',
                                     borderWidth: _index == 0 && _button.avail !== 0 ? 0.5 : 0,
                                     borderRadius: text(6),
-                                    backgroundColor: _button.avail !== 0 ? '#0051CC' : _index == 0 ? '#eee' : '#C7D8F0',
+                                    backgroundColor:
+                                        _button.avail !== 0 ? (_index == 0 ? '#fff' : '#0051CC') : '#C7D8F0',
                                     flex: 1,
                                     marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
                                 }}>
@@ -129,7 +130,7 @@ export default function PortfolioAssets(props) {
                                     style={{
                                         paddingVertical: text(10),
                                         textAlign: 'center',
-                                        color: _index == 0 ? '#545968' : '#fff',
+                                        color: _index == 0 ? (_button.avail == 0 ? '#fff' : '#545968') : '#fff',
                                     }}>
                                     {_button.text}
                                 </Text>
@@ -466,6 +467,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(18),
         marginTop: text(10),
+        textAlign: 'center',
     },
     blue_wrap_style: {
         backgroundColor: '#DFEAFC',

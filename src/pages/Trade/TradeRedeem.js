@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 15:38:45
+ * @LastEditTime: 2021-03-05 16:30:38
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -18,6 +18,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
+import Mask from '../../components/Mask';
 const deviceWidth = Dimensions.get('window').width;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -33,11 +34,13 @@ export default class TradeRedeem extends Component {
             password: '',
             trade_method: 0,
             tableData: {},
+            reasonParams: '',
+            redeem_id: '',
         };
     }
     componentDidMount() {
         Http.get('/trade/redeem/info/20210101', {
-            poid: 'VV00000065',
+            poid: this.props.route.params.poid,
         }).then((res) => {
             this.getPlanInfo();
             if (res.result.pay_methods.default === 1) {
@@ -62,12 +65,13 @@ export default class TradeRedeem extends Component {
         Http.get('/trade/redeem/plan/20210101', {
             percent: this.state.inputValue / 100,
             trade_method: this.state.trade_method,
-            poid: 'VV00000065',
+            poid: this.props.route.params.poid,
         }).then((res) => {
             tableData['head'] = res.result.header;
             tableData['body'] = res.result.body;
             this.setState({
                 tableData,
+                redeem_id: res.result.redeem_id,
             });
         });
     }
@@ -102,14 +106,14 @@ export default class TradeRedeem extends Component {
     };
     submitData = (password) => {
         Http.get('/trade/redeem/do/20210101', {
-            redeemid: 12,
+            redeem_id: this.state.redeem_id,
             password,
             percent: this.state.inputValue / 100,
             trade_method: this.state.trade_method,
-            poid: 'VV00000065',
+            poid: this.props.route.params.poid,
         }).then((res) => {
             if (res.code === '000000') {
-                this.props.navigation.navigate(this.state.data.button.url);
+                this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
             } else {
                 Modal.show({
                     content: res.message,
@@ -128,24 +132,23 @@ export default class TradeRedeem extends Component {
         }
     };
     selectAge = () => {
+        const option = [];
+        this.state.data.survey.option.forEach((_item, _index) => {
+            option.push(_item.v);
+        });
+        this.setState({showMask: true});
         Picker.init({
             pickerTitleText: '您赎回的原因？',
             pickerCancelBtnText: '取消',
             pickerConfirmBtnText: '确定',
             selectedValue: [1],
             pickerBg: [255, 255, 255, 1],
-            pickerData: [
-                '收益不好',
-                '需要用钱',
-                '最近行情不好',
-                'APP体验不好',
-                '投资顾问服务不满意',
-                '转投其他产品',
-                '其他',
-            ],
+            pickerData: option,
             pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                console.log(pickedValue, pickedIndex);
+                // reasonParams
+                // console.log(this.state.data.survey.option.indexOf(pickedIndex));
+                // console.log(pickedValue, pickedIndex);
                 this.passwordInput();
             },
         });
@@ -236,20 +239,20 @@ export default class TradeRedeem extends Component {
                                 <View>
                                     <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
                                         <Text style={styles.head_sty}></Text>
-                                        <Text style={styles.head_sty}>{tableData.head.amount_total}</Text>
-                                        <Text style={styles.head_sty}>{tableData.head.amount}</Text>
+                                        <Text style={styles.head_sty}>{tableData?.head?.amount_total}</Text>
+                                        <Text style={styles.head_sty}>{tableData?.head?.amount}</Text>
                                     </View>
                                     <View>
-                                        {tableData.body.map((_item, _index) => {
+                                        {tableData?.body?.map((_item, _index) => {
                                             return (
                                                 <View
                                                     key={_index + 'item'}
                                                     style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                                    <Text style={[styles.body_sty, {textAlign: 'left'}]}>
+                                                    <Text style={[styles.body_sty, {textAlign: 'left', flexShrink: 1}]}>
                                                         {_item.name}
                                                     </Text>
-                                                    <Text style={styles.body_sty}>{_item.amount_total}</Text>
-                                                    <Text style={styles.body_sty}>{_item.amount}</Text>
+                                                    <Text style={styles.body_sty}>{_item?.amount_total}</Text>
+                                                    <Text style={styles.body_sty}>{_item?.amount}</Text>
                                                 </View>
                                             );
                                         })}
@@ -266,6 +269,7 @@ export default class TradeRedeem extends Component {
                                 this.setState({showMask: false});
                             }}
                         />
+                        {this.state.showMask && <Mask />}
                         <BottomDesc />
                     </ScrollView>
                 )}
@@ -321,9 +325,9 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     body_sty: {
-        flex: 1,
         color: '#4E556C',
         fontSize: text(12),
         textAlign: 'right',
+        flex: 1,
     },
 });

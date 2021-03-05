@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 15:00:54
+ * @LastEditTime: 2021-03-05 15:31:18
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -242,7 +242,7 @@ export default function DetailPolaris({route, navigation}) {
                             </Text>
                             <FitImage
                                 source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2020/12/12.png ',
+                                    uri: data?.part_texts[0]?.img,
                                 }}
                                 resizeMode="contain"
                             />
@@ -253,8 +253,8 @@ export default function DetailPolaris({route, navigation}) {
                                 <Text style={{lineHeight: text(18)}}>{data?.parts_addition_data?.pie?.tip?.desc}</Text>
                             </View>
                         </BottomModal>
-                        {/* <View style={[styles.card_sty, {paddingVertical: 0}]}>
-                            {data.gather_info.map((_info, _idx) => {
+                        <View style={[styles.card_sty, {paddingVertical: 0}]}>
+                            {data?.gather_info?.map((_info, _idx) => {
                                 return (
                                     <TouchableOpacity
                                         style={[
@@ -271,7 +271,7 @@ export default function DetailPolaris({route, navigation}) {
                                     </TouchableOpacity>
                                 );
                             })}
-                        </View> */}
+                        </View>
                     </View>
                 </ScrollView>
             )}
