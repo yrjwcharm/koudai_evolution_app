@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:48:42
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-05 17:13:14
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -35,6 +35,7 @@ const TradeRecordDetail = (props) => {
     };
     useEffect(() => {});
     const getData = useCallback(() => {
+        console.log('chedan');
         http.get('/order/detail/20210101', {
             txn_id,
             type,
@@ -61,10 +62,12 @@ const TradeRecordDetail = (props) => {
     }, [getData, props.navigation]);
     // 撤单
     const cancleTxn = (password) => {
+        let toast = Toast.showLoading('正在撤单...');
         http.post('/trade/order/cancel/20210101', {
             password,
             txn_id,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code == '000000') {
                 Toast.show('撤单成功！');
                 getData();
@@ -101,7 +104,7 @@ const TradeRecordDetail = (props) => {
                         cancleTxn(password);
                     }}
                     onClose={() => {
-                        this.setState({showMask: false});
+                        setShowMask(false);
                     }}
                 />
                 {showMask && <Mask />}

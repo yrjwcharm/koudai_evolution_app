@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 16:22:46
+ * @LastEditTime: 2021-03-05 18:54:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -125,10 +125,11 @@ export default function PortfolioAssets(props) {
                                         _button.avail !== 0 ? (_index == 0 ? '#fff' : '#0051CC') : '#C7D8F0',
                                     flex: 1,
                                     marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
+                                    height: text(40),
+                                    justifyContent: 'center',
                                 }}>
                                 <Text
                                     style={{
-                                        paddingVertical: text(10),
                                         textAlign: 'center',
                                         color: _index == 0 ? (_button.avail == 0 ? '#fff' : '#545968') : '#fff',
                                     }}>

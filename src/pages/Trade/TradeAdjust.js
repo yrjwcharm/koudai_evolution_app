@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 16:40:38
+ * @LastEditTime: 2021-03-05 16:58:47
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -83,181 +83,189 @@ export default class TradeAdjust extends Component {
         const {toggle, data} = this.state;
         return (
             <>
-                <ScrollView style={styles.container}>
-                    <View style={{marginBottom: text(10)}}>
-                        <TouchableOpacity
-                            style={[styles.list_head, Style.flexRow]}
-                            onPress={() => this.toggleChange(0)}
-                            activeOpacity={1}>
-                            <View style={[Style.flexRow, styles.list_content]}>
-                                <View style={[{flex: 1}, Style.flexRow]}>
-                                    <Text>{data?.adjust_compare?.title}</Text>
+                {Object.keys(data).length > 0 && (
+                    <ScrollView style={styles.container}>
+                        <View style={{marginBottom: text(10)}}>
+                            <TouchableOpacity
+                                style={[styles.list_head, Style.flexRow]}
+                                onPress={() => this.toggleChange(0)}
+                                activeOpacity={1}>
+                                <View style={[Style.flexRow, styles.list_content]}>
+                                    <View style={[{flex: 1}, Style.flexRow]}>
+                                        <Text>{data?.adjust_compare?.title}</Text>
+                                    </View>
+                                    <AntDesign name={toggle[0] ? 'up' : 'down'} size={12} color={'#9095A5'} />
                                 </View>
-                                <AntDesign name={toggle[0] ? 'up' : 'down'} size={12} color={'#9095A5'} />
-                            </View>
-                        </TouchableOpacity>
-                        {toggle[0] && (
-                            <View
-                                style={{
-                                    paddingBottom: text(15),
-                                    backgroundColor: '#fff',
-                                    paddingHorizontal: text(15),
-                                }}>
-                                <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
-                                    {data?.adjust_compare?.fund_list?.map((_item, _index) => {
-                                        return (
-                                            <View key={_index + '_item'}>
-                                                <View style={[Style.flexRow]}>
-                                                    <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
+                            </TouchableOpacity>
+                            {toggle[0] && (
+                                <View
+                                    style={{
+                                        paddingBottom: text(15),
+                                        backgroundColor: '#fff',
+                                        paddingHorizontal: text(15),
+                                    }}>
+                                    <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
+                                        {data?.adjust_compare?.fund_list?.map((_item, _index) => {
+                                            return (
+                                                <View key={_index + '_item'}>
+                                                    <View style={[Style.flexRow]}>
                                                         <View
-                                                            style={[styles.circle, {backgroundColor: _item?.color}]}
-                                                        />
-                                                        <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
-                                                            {_item?.title}
+                                                            style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
+                                                            <View
+                                                                style={[styles.circle, {backgroundColor: _item?.color}]}
+                                                            />
+                                                            <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
+                                                                {_item?.title}
+                                                            </Text>
+                                                        </View>
+                                                        <Text style={styles.content_head_title}>
+                                                            {_index == 0 && data?.adjust_compare?.header?.ratio_src}
+                                                        </Text>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
+                                                            {_index == 0 && data?.adjust_compare.header?.ratio_dst}
                                                         </Text>
                                                     </View>
-                                                    <Text style={styles.content_head_title}>
-                                                        {_index == 0 && data?.adjust_compare?.header?.ratio_src}
-                                                    </Text>
-                                                    <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
-                                                        {_index == 0 && data?.adjust_compare.header?.ratio_dst}
-                                                    </Text>
-                                                </View>
-                                                {_item.funds.map((_i, _d) => {
-                                                    const _color =
-                                                        _i.compare == 'gt'
-                                                            ? Colors.red
-                                                            : _i.compare == 'lt'
-                                                            ? Colors.green
-                                                            : '#4E556C';
-                                                    return (
-                                                        <View style={Style.flexRow} key={_i + _d}>
-                                                            <Text
-                                                                style={[
-                                                                    styles.content_item_text,
-                                                                    {flex: 1, textAlign: 'left'},
-                                                                ]}>
-                                                                {_i?.name}
-                                                            </Text>
-                                                            <Text style={styles.content_item_text}>
-                                                                {_i?.ratio_src}
-                                                            </Text>
-                                                            <View style={[Style.flexRow, styles.fund_text_sty]}>
+                                                    {_item.funds.map((_i, _d) => {
+                                                        const _color =
+                                                            _i.compare == 'gt'
+                                                                ? Colors.red
+                                                                : _i.compare == 'lt'
+                                                                ? Colors.green
+                                                                : '#4E556C';
+                                                        return (
+                                                            <View style={Style.flexRow} key={_i + _d}>
                                                                 <Text
-                                                                    style={{
-                                                                        fontSize: Font.textH3,
-
-                                                                        color: _color,
-                                                                    }}>
-                                                                    {_i?.ratio_dst}
+                                                                    style={[
+                                                                        styles.content_item_text,
+                                                                        {flex: 1, textAlign: 'left'},
+                                                                    ]}>
+                                                                    {_i?.name}
                                                                 </Text>
-                                                                {_i.compare != 'et' && (
-                                                                    <Icon
-                                                                        name={
-                                                                            _i?.compare == 'gt'
-                                                                                ? 'arrowup'
-                                                                                : 'arrowdown'
-                                                                        }
-                                                                        color={_color}
-                                                                    />
-                                                                )}
+                                                                <Text style={styles.content_item_text}>
+                                                                    {_i?.ratio_src}
+                                                                </Text>
+                                                                <View style={[Style.flexRow, styles.fund_text_sty]}>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: Font.textH3,
+
+                                                                            color: _color,
+                                                                        }}>
+                                                                        {_i?.ratio_dst}
+                                                                    </Text>
+                                                                    {_i.compare != 'et' && (
+                                                                        <Icon
+                                                                            name={
+                                                                                _i?.compare == 'gt'
+                                                                                    ? 'arrowup'
+                                                                                    : 'arrowdown'
+                                                                            }
+                                                                            color={_color}
+                                                                        />
+                                                                    )}
+                                                                </View>
                                                             </View>
+                                                        );
+                                                    })}
+                                                </View>
+                                            );
+                                        })}
+                                    </View>
+                                </View>
+                            )}
+                        </View>
+                        <View>
+                            <TouchableOpacity
+                                style={[styles.list_head, Style.flexRow]}
+                                onPress={() => this.toggleChange(1)}
+                                activeOpacity={1}>
+                                <View style={[Style.flexRow, styles.list_content]}>
+                                    <View style={[{flex: 1}, Style.flexRow]}>
+                                        <Text>{data?.adjust_hold?.title}</Text>
+                                        {/* <AntDesign
+                                      name={'questioncircleo'}
+                                      size={14}
+                                      color={'#9095A5'}
+                                      style={{marginLeft: text(5)}}
+                                  /> */}
+                                    </View>
+                                    <AntDesign name={toggle[1] ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                                </View>
+                            </TouchableOpacity>
+                            {toggle[1] && (
+                                <View
+                                    style={{
+                                        paddingBottom: text(15),
+                                        backgroundColor: '#fff',
+                                        paddingHorizontal: text(15),
+                                    }}>
+                                    <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
+                                        {data?.adjust_hold?.fund_list?.map((_item, _index) => {
+                                            return (
+                                                <View key={_index + '_item'}>
+                                                    <View style={[Style.flexRow]}>
+                                                        <View
+                                                            style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
+                                                            <View
+                                                                style={[styles.circle, {backgroundColor: _item.color}]}
+                                                            />
+                                                            <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
+                                                                {_item?.title}
+                                                            </Text>
                                                         </View>
-                                                    );
-                                                })}
-                                            </View>
-                                        );
-                                    })}
-                                </View>
-                            </View>
-                        )}
-                    </View>
-                    <View>
-                        <TouchableOpacity
-                            style={[styles.list_head, Style.flexRow]}
-                            onPress={() => this.toggleChange(1)}
-                            activeOpacity={1}>
-                            <View style={[Style.flexRow, styles.list_content]}>
-                                <View style={[{flex: 1}, Style.flexRow]}>
-                                    <Text>{data?.adjust_hold?.title}</Text>
-                                    {/* <AntDesign
-                                            name={'questioncircleo'}
-                                            size={14}
-                                            color={'#9095A5'}
-                                            style={{marginLeft: text(5)}}
-                                        /> */}
-                                </View>
-                                <AntDesign name={toggle[1] ? 'up' : 'down'} size={12} color={'#9095A5'} />
-                            </View>
-                        </TouchableOpacity>
-                        {toggle[1] && (
-                            <View
-                                style={{
-                                    paddingBottom: text(15),
-                                    backgroundColor: '#fff',
-                                    paddingHorizontal: text(15),
-                                }}>
-                                <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
-                                    {data?.adjust_hold?.fund_list?.map((_item, _index) => {
-                                        return (
-                                            <View key={_index + '_item'}>
-                                                <View style={[Style.flexRow]}>
-                                                    <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
-                                                        <View style={[styles.circle, {backgroundColor: _item.color}]} />
-                                                        <Text style={{color: '#9AA1B2', fontSize: text(12)}}>
-                                                            {_item?.title}
+                                                        <Text style={styles.content_head_title}>
+                                                            {_index == 0 && data?.adjust_hold?.header?.percent}
+                                                        </Text>
+                                                        <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
+                                                            {_index == 0 && data?.adjust_hold?.header?.amount}
                                                         </Text>
                                                     </View>
-                                                    <Text style={styles.content_head_title}>
-                                                        {_index == 0 && data?.adjust_hold?.header?.percent}
-                                                    </Text>
-                                                    <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
-                                                        {_index == 0 && data?.adjust_hold?.header?.amount}
-                                                    </Text>
+                                                    {_item?.funds?.map((_i, _d) => {
+                                                        return (
+                                                            <View style={Style.flexRow} key={_i + _d}>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.content_item_text,
+                                                                        {flex: 1, textAlign: 'left'},
+                                                                    ]}>
+                                                                    {_i.name}
+                                                                </Text>
+                                                                <Text style={styles.content_item_text}>
+                                                                    {_i.percent}
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.content_item_text,
+                                                                        {textAlign: 'right'},
+                                                                    ]}>
+                                                                    {_i.amount}
+                                                                </Text>
+                                                            </View>
+                                                        );
+                                                    })}
                                                 </View>
-                                                {_item?.funds?.map((_i, _d) => {
-                                                    return (
-                                                        <View style={Style.flexRow} key={_i + _d}>
-                                                            <Text
-                                                                style={[
-                                                                    styles.content_item_text,
-                                                                    {flex: 1, textAlign: 'left'},
-                                                                ]}>
-                                                                {_i.name}
-                                                            </Text>
-                                                            <Text style={styles.content_item_text}>{_i.percent}</Text>
-                                                            <Text
-                                                                style={[
-                                                                    styles.content_item_text,
-                                                                    {textAlign: 'right'},
-                                                                ]}>
-                                                                {_i.amount}
-                                                            </Text>
-                                                        </View>
-                                                    );
-                                                })}
-                                            </View>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </View>
                                 </View>
-                            </View>
-                        )}
-                    </View>
-                    <PasswordModal
-                        ref={(ref) => {
-                            this.passwordModal = ref;
-                        }}
-                        onDone={this.submit}
-                        onClose={() => {
-                            this.setState({showMask: false});
-                        }}
-                    />
-                    <View style={{margin: Space.marginAlign}}>
-                        <Html html={data?.fee_desc} style={styles.tips_sty} />
-                    </View>
-                    <BottomDesc />
-                    {this.state.showMask && <Mask />}
-                </ScrollView>
+                            )}
+                        </View>
+                        <PasswordModal
+                            ref={(ref) => {
+                                this.passwordModal = ref;
+                            }}
+                            onDone={this.submit}
+                            onClose={() => {
+                                this.setState({showMask: false});
+                            }}
+                        />
+                        <View style={{margin: Space.marginAlign}}>
+                            <Html html={data?.fee_desc} style={styles.tips_sty} />
+                        </View>
+                        <BottomDesc />
+                        {this.state.showMask && <Mask />}
+                    </ScrollView>
+                )}
                 <FixedButton title="确认调仓" onPress={this.confirmBtn} />
             </>
         );

@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-27 18:23:03
+ * @LastEditTime: 2021-03-05 18:23:12
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -17,11 +17,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
 import Accordion from 'react-native-collapsible/Accordion';
 import BottomDesc from '../../components/BottomDesc';
+import {useJump} from '../../components/hooks';
 
 export default function MfbIndex(props) {
     const [data, setData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
     const updateSections = (activeSections) => setActiveSections(activeSections);
+    const jump = useJump();
     const rightPress = () => {
         props.navigation.navigate('TradeRecord');
     };
@@ -30,9 +32,9 @@ export default function MfbIndex(props) {
             setData(res.result);
         });
     }, []);
-    const jumpPage = (url, params) => {
-        props.navigation.navigate(url, params);
-    };
+    // const jumpPage = (url, params) => {
+    //     props.navigation.navigate(url, params);
+    // };
 
     const renderHeader = (section, index, isActive) => {
         return (
@@ -93,7 +95,7 @@ export default function MfbIndex(props) {
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
                 fontStyle={{color: '#fff'}}
-                style={{backgroundColor: '#0052CD'}}
+                style={{backgroundColor: '#0052CD', marginRight: text(-20)}}
             />
             {Object.keys(data).length > 0 && (
                 <ScrollView>
@@ -105,11 +107,11 @@ export default function MfbIndex(props) {
                             <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
                                 <View style={{flex: 1}}>
                                     <Text style={styles.top_text_sty}>日收益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data.holding.profit}</Text>
+                                    <Text style={styles.bottom_num_sty}>{data?.holding?.profit}</Text>
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
                                     <Text style={styles.top_text_sty}>累计受益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data.holding.profit_acc}</Text>
+                                    <Text style={styles.bottom_num_sty}>{data?.holding?.profit_acc}</Text>
                                 </View>
                             </View>
                             <View style={styles.btn_wrap_sty}>
@@ -118,12 +120,12 @@ export default function MfbIndex(props) {
                                     style={styles.btn_st_sty}
                                     textStyle={{color: '#333'}}
                                     disables={data.buttons[0].avail}
-                                    onPress={() => jumpPage(data.buttons[0].url.path, data.buttons[0].url.params)}
+                                    onPress={() => jump(data.buttons[0].url)}
                                 />
                                 <Button
                                     title={data.buttons[1].text}
                                     style={{flex: 1}}
-                                    onPress={() => jumpPage(data.buttons[1].url.path, data.buttons[1].url.params)}
+                                    onPress={() => jump(data.buttons[1].url)}
                                     disables={data.buttons[1].avail}
                                 />
                             </View>
@@ -149,7 +151,7 @@ export default function MfbIndex(props) {
                                 <Text style={[styles.title_sty, {flex: 1, marginTop: 0}]}>魔方宝</Text>
                                 <TouchableOpacity
                                     style={{color: '#0051CC', fontSize: text(11)}}
-                                    onPress={() => jumpPage('MfbIntro')}>
+                                    onPress={() => props.navigation.navigate('MfbIntro')}>
                                     <Text style={{color: '#0051CC', fontSize: text(11)}}>查看更多</Text>
                                 </TouchableOpacity>
                             </View>

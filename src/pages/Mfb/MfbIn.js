@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-29 10:53:14
+ * @LastEditTime: 2021-03-05 18:48:54
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -26,10 +26,11 @@ class MfbIn extends Component {
             bankSelect: 0,
             tips: '',
             enable: false,
+            code: props?.route?.code || '',
         };
     }
     UNSAFE_componentWillMount() {
-        http.get('/wallet/recharge/info/20210101').then((data) => {
+        http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
                 data: data.result,
             });
@@ -45,23 +46,27 @@ class MfbIn extends Component {
                 this.setState({
                     tips,
                     enable: false,
+                    amount,
                 });
             } else if (amount > pay_methods.single_amount) {
                 const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
+                    amount,
                 });
-            } else if (amount > pay_methods.left_amount) {
+            } else if (amount > Number(pay_methods.left_amount)) {
                 const tips = '由于银行卡单日限额，今日最多可转入金额为' + pay_methods.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
+                    amount,
                 });
             } else {
                 this.setState({
                     tips: '',
                     enable: true,
+                    amount,
                 });
             }
         } else {
@@ -83,25 +88,29 @@ class MfbIn extends Component {
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
+
         this.setState({showMask: true});
     };
-    submitData = () => {
+    submitData = (password) => {
+        const {bankSelect, data, code} = this.state;
         this.setState(
             {
                 password: this.state.password,
             },
             () => {
                 http.post('/wallet/recharge/do/20210101', {
-                    code: '000678',
+                    code: code,
                     amount: this.state.amount,
-                    password: this.state.password,
+                    password: password,
+                    pay_method: data.pay_methods[bankSelect].pay_method,
                 }).then((res) => {
                     if (res.code === '000000') {
+                        this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+                    } else {
                         Modal.show({
                             confirm: false,
                             content: res.message,
                         });
-                    } else {
                     }
                 });
             }
@@ -113,7 +122,7 @@ class MfbIn extends Component {
         return (
             <View style={{marginBottom: px(12)}}>
                 <View style={[styles.bankCard, Style.flexBetween]}>
-                    {pay_methods ? (
+                    {pay_methods.length > 0 ? (
                         <>
                             <Image
                                 style={styles.bank_icon}
@@ -185,7 +194,9 @@ class MfbIn extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={(password) => this.submitData(password)}
-                    onClose={() => {}}
+                    onClose={() => {
+                        this.setState({showMask: false});
+                    }}
                 />
                 <Text style={styles.title}>魔方宝</Text>
                 <View style={styles.buyCon}>
@@ -201,7 +212,7 @@ class MfbIn extends Component {
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
-                                value={amount}
+                                value={amount.toString()}
                             />
                             <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
