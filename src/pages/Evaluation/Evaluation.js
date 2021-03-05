@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:36:31
+ * @LastEditTime: 2021-03-05 15:35:06
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -20,6 +20,7 @@ import {
     Image,
     Keyboard,
     Vibration,
+    BackHandler,
 } from 'react-native';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -33,8 +34,10 @@ import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
+import {Modal} from '../../components/Modal';
 const bottom = isIphoneX() ? 84 : 50;
 const defaultAge = 25;
+//机器人动画
 const layoutAnimation = () => {
     LayoutAnimation.configureNext({
         duration: 300,
@@ -74,6 +77,7 @@ export class question extends Component {
     startTime = '';
     endTime = '';
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/start/20210101').then((data) => {
             this.setState({summary_id: data.result.summary_id}, () => {
                 this.getNextQuestion();
@@ -81,6 +85,7 @@ export class question extends Component {
         });
     }
     componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
         this.clearValueTimer && clearTimeout(this.clearValueTimer);
     }
     getNextQuestion = (questionnaire_cate, action, history, startAnimation) => {
@@ -108,6 +113,7 @@ export class question extends Component {
     handleViewRef = (ref) => (this.quesBtnView = ref);
     handleContentView = (ref) => (this.contentView = ref);
     showNextAnimation = (action) => {
+        layoutAnimation();
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
@@ -189,7 +195,6 @@ export class question extends Component {
                 }),
             ]),
         ]).start(() => {
-            layoutAnimation();
             if (option.action.includes('next_questionnaire')) {
                 this.getNextQuestion(
                     option.next_questionnaire_cate,
@@ -347,6 +352,21 @@ export class question extends Component {
             }
         );
     };
+    goBackAndroid = () => {
+        if (Platform.OS == 'android') {
+            return true;
+        }
+    };
+    goBack = () => {
+        Modal.show({
+            title: '结束定制',
+            content: '确定要结束本次定制吗？',
+            confirm: true,
+            confirmCallBack: () => {
+                this.props.navigation.goBack();
+            },
+        });
+    };
     tagClick = (count) => {
         this.setState({
             previousCount: count,
@@ -413,11 +433,7 @@ export class question extends Component {
                         this.header = ref;
                     }}
                     renderLeft={
-                        <TouchableOpacity
-                            style={styles.title_btn}
-                            onPress={() => {
-                                this.props.navigation.goBack();
-                            }}>
+                        <TouchableOpacity style={styles.title_btn} onPress={this.goBack}>
                             <Icon name="close" size={px(22)} />
                         </TouchableOpacity>
                     }
@@ -498,7 +514,7 @@ export class question extends Component {
                                             {/* 有目的的钱 */}
                                             {current_ques?.style == 'invest_goal' ? (
                                                 current_ques?.desc.length > 0 ? (
-                                                    <View style={[Style.flexRow, {marginVertical: px(24)}]}>
+                                                    <View style={[Style.flexRow, {marginVertical: px(20)}]}>
                                                         <FastImage
                                                             style={styles.line}
                                                             source={require('../../assets/img/account/line.png')}

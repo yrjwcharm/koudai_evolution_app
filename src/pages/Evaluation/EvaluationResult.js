@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 17:09:47
+ * @LastEditTime: 2021-03-05 10:50:58
  * @Description:规划结果页
  */
 
@@ -212,12 +212,14 @@ export default class planResult extends Component {
                             )}
                         </Animatable.View>
 
-                        <QuestionBtn
-                            style={{marginTop: px(16)}}
-                            onPress={() => {
-                                this.jumpNext(button?.url?.path, button?.url?.params);
-                            }}
-                        />
+                        {button && (
+                            <QuestionBtn
+                                style={{marginTop: px(16)}}
+                                onPress={() => {
+                                    this.jumpNext(button?.url?.path, button?.url?.params);
+                                }}
+                            />
+                        )}
                     </View>
                 )}
             </View>

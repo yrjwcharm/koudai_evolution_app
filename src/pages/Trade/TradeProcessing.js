@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-05 14:19:32
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-05 16:06:21
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -14,7 +14,6 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
-import {Button} from '../../components/Button';
 import Header from '../../components/NavBar';
 
 const TradeProcessing = ({navigation, route}) => {

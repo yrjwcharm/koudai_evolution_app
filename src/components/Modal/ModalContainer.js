@@ -92,7 +92,7 @@ export default class MyModal extends Component {
                                 ? this.customTitleView
                                 : this.title && <Text style={styles.title}>{this.title}</Text>}
                             {/* 内容 */}
-                            <View style={styles.contentCon}>
+                            <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(16)}]}>
                                 <HTML style={styles.contentText} html={this.props.content} />
                             </View>
                             {/* 分割线 */}
@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'PingFangSC-Semibold',
         fontSize: text(16),
-        lineHeight: px(25),
         fontWeight: '500',
         color: Colors.defaultColor,
         paddingTop: text(18),
@@ -204,8 +203,7 @@ const styles = StyleSheet.create({
         fontSize: text(14),
     },
     contentCon: {
-        paddingTop: text(18),
-        paddingBottom: px(18),
+        paddingBottom: px(16),
         paddingHorizontal: text(18),
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},

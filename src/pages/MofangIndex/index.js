@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:49:37
+ * @LastEditTime: 2021-03-05 16:41:54
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -29,7 +29,7 @@ import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
 import {NavigationContainer, LinkingOptions, useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {Button} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -59,7 +59,7 @@ const Index = (props) => {
     const linkTo = useLinkTo();
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
-
+    const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback((params) => {
         params == 'refresh' && setRefreshing(true);
@@ -74,10 +74,6 @@ const Index = (props) => {
         });
         return unsubscribe;
     }, [getData, props.navigation, isFocused]);
-    const jumpPage = (url, params) => {
-        // linkTo('/login');
-        props.navigation.navigate(url, params);
-    };
 
     useFocusEffect(
         useCallback(() => {
@@ -120,7 +116,7 @@ const Index = (props) => {
                     {data?.login_status == 0 ? (
                         <Text
                             onPress={() => {
-                                jumpPage('Register');
+                                jump({path: 'Register'});
                                 global.LogTool();
                             }}
                             style={Style.more}>
@@ -129,7 +125,7 @@ const Index = (props) => {
                     ) : (
                         <TouchableOpacity
                             onPress={() => {
-                                jumpPage('RemindMessage');
+                                jump({path: 'RemindMessage'});
                             }}>
                             {data?.notice_num > 0 && <View style={styles.new_message} />}
                             <FastImage
@@ -192,7 +188,7 @@ const Index = (props) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
-                                jumpPage(data?.custom_info?.button?.url?.path, data?.custom_info?.button?.url?.params);
+                                jump(data?.custom_info?.button?.url);
                             }}
                             style={{marginBottom: px(20), marginTop: px(14)}}>
                             <FastImage style={styles.robot} source={require('../../assets/img/robot.png')} />
@@ -242,7 +238,12 @@ const Index = (props) => {
                     )}
                     {/* 马红漫 */}
                     {data?.polaris_info && (
-                        <View style={{marginBottom: px(20)}}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                jump(data?.polaris_info?.url);
+                            }}
+                            activeOpacity={0.8}
+                            style={{marginBottom: px(20)}}>
                             <BoxShadow setting={{...shadow, height: px(75), width: deviceWidth - px(32)}}>
                                 <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
                                     <FastImage
@@ -271,7 +272,7 @@ const Index = (props) => {
                                     </View>
                                 </View>
                             </BoxShadow>
-                        </View>
+                        </TouchableOpacity>
                     )}
                     {/* 推荐阅读 */}
                     {data?.article_info && (
@@ -311,7 +312,7 @@ const Index = (props) => {
                                         style={[styles.about_our, styles.common_card]}
                                         activeOpacity={0.8}
                                         onPress={() => {
-                                            jumpPage('MessageBoard', {id: comment.id});
+                                            jump({path: 'MessageBoard', params: {id: comment.id}});
                                         }}>
                                         <View style={Style.flexRow}>
                                             <FastImage source={{uri: comment.avatar}} style={styles.avatar} />

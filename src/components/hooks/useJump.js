@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-01 20:19:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-05 16:42:01
  * @Description: 自定义跳转钩子
  */
 import React from 'react';
@@ -13,9 +13,7 @@ function useJump() {
     const navigation = useNavigation();
     return (url, type = 'navigate') => {
         if (url) {
-            if (url.type === 1) {
-                navigation[type]({name: url.path, params: url.params || {}});
-            } else if (url.type === 2) {
+            if (url.type === 2) {
                 Linking.canOpenURL(url.path)
                     .then((supported) => {
                         if (!supported) {
@@ -29,6 +27,8 @@ function useJump() {
                     name: 'OpenPdf',
                     params: {url: url.path},
                 });
+            } else {
+                navigation[type]({name: url.path, params: url.params || {}});
             }
         }
     };
