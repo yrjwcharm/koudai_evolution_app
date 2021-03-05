@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 17:51:55
+ * @LastEditTime: 2021-03-04 19:49:39
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -19,13 +19,17 @@ import ChartData from './data.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
-export default function DetailPolaris({route}) {
+import Html from '../../../components/RenderHtml';
+import {BottomModal} from '../../../components/Modal';
+export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
+    const bottomModal = React.useRef(null);
+    const [showMask, setShowMask] = useState(false);
     useEffect(() => {
-        Http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/polaris/portfolio_detail/20210101', {
-            // poid: route.params.poid,
+        Http.get('/polaris/portfolio_detail/20210101', {
+            poid: route.params.poid,
         }).then((res) => {
             setData(res.result);
         });
@@ -43,43 +47,46 @@ export default function DetailPolaris({route}) {
         setPeriod(period);
         setChartData(num);
     };
+    const jumpTo = (url) => {
+        navigation.navigate({name: url.path, params});
+    };
+
     return (
         <>
-            <Header title={'科技大势组合'} leftIcon="chevron-left" />
+            {<Header title={data?.title} leftIcon="chevron-left" />}
 
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
-                    <FitImage
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/12/14.jpg'}}
-                        resizeMode="contain"
-                    />
+                    <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     <View style={{padding: text(16)}}>
                         <View style={styles.card_sty}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
-                                科技大势组合
+                                {data?.top?.title}
                             </Text>
                             <View style={[Style.flexRowCenter, {marginTop: text(10)}]}>
-                                <View style={styles.label_wrap_sty}>
-                                    <Text style={styles.label_sty}>经济复苏</Text>
-                                </View>
-                                <View style={styles.label_wrap_sty}>
-                                    <Text style={styles.label_sty}>经济复苏</Text>
-                                </View>
+                                {data?.top?.tags?.map((_tag, _index) => {
+                                    return (
+                                        <View style={styles.label_wrap_sty} key={_index + '_tag'}>
+                                            <Text style={styles.label_sty}>{_tag.text}</Text>
+                                        </View>
+                                    );
+                                })}
                             </View>
-                            <Text style={styles.num_sty}>31.93%</Text>
-                            <Text style={styles.desc_sty}>成立以来收益</Text>
-                            <TouchableOpacity style={styles.btn_sty}>
-                                <Text style={styles.btn_text_sty}>1000元起购</Text>
+                            <Text style={styles.num_sty}>{data?.top?.ratio_text}</Text>
+                            <Text style={styles.desc_sty}>{data?.top?.desc}</Text>
+                            <TouchableOpacity style={styles.btn_sty} onPress={() => jumpTo(data?.top?.btn?.url)}>
+                                <Text style={styles.btn_text_sty}>{data?.top?.btn?.text}</Text>
                             </TouchableOpacity>
                         </View>
+
                         <View
                             style={{
                                 height: 400,
                                 backgroundColor: '#fff',
-                                paddingTop: text(20),
+                                paddingVertical: text(20),
                                 borderRadius: text(10),
                             }}>
-                            <Text style={styles.card_title_sty}>业绩表现</Text>
+                            <Text style={styles.card_title_sty}>{data?.part_line?.title}</Text>
                             <View style={[Style.flexRow]}>
                                 <View style={styles.legend_sty}>
                                     <Text style={styles.legend_title_sty}>2020-11</Text>
@@ -108,14 +115,15 @@ export default function DetailPolaris({route}) {
                                     </Text>
                                 </View>
                             </View>
-                            {/* <Chart initScript={baseChart(chartData)} /> */}
+
+                            <Chart initScript={baseChart(chartData)} />
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    height: 50,
+                                    height: text(60),
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    marginHorizontal: 20,
+                                    marginHorizontal: text(20),
                                 }}>
                                 {year.map((_item, _index) => {
                                     let num = _index * 10 + 10;
@@ -123,7 +131,9 @@ export default function DetailPolaris({route}) {
                                         <TouchableOpacity
                                             style={[
                                                 styles.btn_press_sty,
-                                                {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
+                                                {
+                                                    backgroundColor: period == _item.period ? '#F1F6FF' : '#fff',
+                                                },
                                             ]}
                                             onPress={() => changeTab(num, _item.period)}>
                                             <Text
@@ -137,29 +147,21 @@ export default function DetailPolaris({route}) {
                                     );
                                 })}
                             </View>
-                            <Text
-                                style={{
-                                    paddingHorizontal: text(16),
-                                    marginTop: text(10),
-                                    paddingBottom: text(20),
-                                    fontSize: text(12),
-                                    color: '#9AA1B2',
-                                }}>
-                                策略组合的过往业绩并不预示其未来表现,
-                            </Text>
+                            <View style={{paddingHorizontal: text(16)}}>
+                                <Html style={styles.line_desc_sty} html={data?.part_line?.line?.desc} />
+                            </View>
                         </View>
                         <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
                             <View style={{paddingHorizontal: text(16)}}>
                                 <Text style={[styles.card_title_sty, {paddingHorizontal: 0, paddingBottom: text(10)}]}>
-                                    配置比例
+                                    {data?.part_pie?.title}
                                 </Text>
-                                <Text style={{color: '#4E556C', fontSize: text(13)}}>
-                                    精选市场发展空间充足的低估值行业股票基金
-                                </Text>
+                                <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
                             </View>
                             <View style={{height: 220}}>
-                                {/* <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} /> */}
+                                <Chart initScript={pie(data?.part_texts?.parts_addition_data?.pie?.rows, [])} />
                             </View>
+
                             <View style={styles.fund_card_sty}>
                                 <View
                                     style={[
@@ -169,57 +171,89 @@ export default function DetailPolaris({route}) {
                                             padding: text(13),
                                         },
                                     ]}>
-                                    <Text style={[styles.fund_title_sty, {flex: 1}]}>基金名称</Text>
-                                    <Text style={styles.fund_title_sty}>基金配比</Text>
-                                    <Text style={[styles.fund_title_sty, {textAlign: 'right'}]}>
-                                        收益率
-                                        <AntDesign name={'questioncircleo'} size={12} color={'#BCBCBC'} />
+                                    <Text style={[styles.fund_title_sty, {flex: 1}]}>
+                                        {data?.part_pie?.pie?.table?.header?.fund_name}
                                     </Text>
+                                    <Text style={styles.fund_title_sty}>
+                                        {data?.part_pie?.pie?.table?.header?.hold_ratio_text}
+                                    </Text>
+                                    <TouchableOpacity onPress={() => bottomModal.current.show()}>
+                                        <Text style={[styles.fund_title_sty, {textAlign: 'right'}]}>
+                                            {data?.part_pie?.pie?.table?.header?.ratio_text}
+                                            <AntDesign name={'questioncircleo'} size={12} color={'#BCBCBC'} />
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <View style={{padding: text(13)}}>
-                                    <View style={[Style.flexBetween, styles.fund_item_sty]}>
-                                        <View>
-                                            <Text style={{color: '#333333'}} numberOfLines={1}>
-                                                工银瑞信新材料新能源行业
-                                            </Text>
-                                            <Text
-                                                style={{
-                                                    color: '#999999',
-                                                    fontSize: text(11),
-                                                    marginTop: text(5),
-                                                    fontFamily: Font.numFontFamily,
-                                                }}>
-                                                001232
-                                            </Text>
+                                {data?.part_pie?.pie.table?.body.map((_table, _index) => {
+                                    const width = _index < data?.part_pie?.pie.table?.body.length - 1 ? 0.5 : 0;
+                                    const padding = _index < data?.part_pie?.pie.table?.body.length - 1 ? text(13) : 0;
+                                    return (
+                                        <View style={{padding: text(13), paddingBottom: 0}} key={_table.id}>
+                                            <View
+                                                style={[
+                                                    Style.flexBetween,
+                                                    styles.fund_item_sty,
+                                                    {
+                                                        borderBottomWidth: width,
+                                                        paddingBottom: padding,
+                                                    },
+                                                ]}>
+                                                <View>
+                                                    <Text
+                                                        style={{color: '#333333', width: text(140)}}
+                                                        numberOfLines={1}>
+                                                        {_table.fund_name}
+                                                    </Text>
+                                                    <Text
+                                                        style={{
+                                                            color: '#999999',
+                                                            fontSize: text(11),
+                                                            marginTop: text(5),
+                                                            fontFamily: Font.numFontFamily,
+                                                        }}>
+                                                        {_table.tag}
+                                                    </Text>
+                                                </View>
+                                                <Text
+                                                    style={{
+                                                        color: '#333333',
+                                                        fontSize: text(13),
+                                                        fontFamily: Font.numFontFamily,
+                                                    }}>
+                                                    {_table.hold_ratio}
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        color: '#CE4040',
+                                                        fontSize: text(13),
+                                                        fontFamily: Font.numFontFamily,
+                                                        textAlign: 'right',
+                                                    }}>
+                                                    {_table.ratio_text}
+                                                </Text>
+                                            </View>
                                         </View>
-                                        <Text
-                                            style={{
-                                                color: '#333333',
-                                                fontSize: text(13),
-                                                fontFamily: Font.numFontFamily,
-                                            }}>
-                                            80.90%
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                color: '#CE4040',
-                                                fontSize: text(13),
-                                                fontFamily: Font.numFontFamily,
-                                                textAlign: 'right',
-                                            }}>
-                                            80.90%
-                                        </Text>
-                                    </View>
-                                </View>
+                                    );
+                                })}
                             </View>
                         </View>
                         <View style={[styles.card_sty, {paddingHorizontal: 0, paddingBottom: 0, overflow: 'hidden'}]}>
-                            <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>组合描述</Text>
+                            <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>
+                                {data?.part_texts[0]?.title}
+                            </Text>
                             <FitImage
-                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/12/12.png '}}
+                                source={{
+                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2020/12/12.png ',
+                                }}
                                 resizeMode="contain"
                             />
                         </View>
+                        {showMask && <Mask />}
+                        <BottomModal ref={bottomModal} confirmText={'确认'}>
+                            <View style={{padding: text(16)}}>
+                                <Text style={{lineHeight: text(18)}}>{data?.parts_addition_data?.pie?.tip?.desc}</Text>
+                            </View>
+                        </BottomModal>
                         {/* <View style={[styles.card_sty, {paddingVertical: 0}]}>
                             {data.gather_info.map((_info, _idx) => {
                                 return (
@@ -242,7 +276,7 @@ export default function DetailPolaris({route}) {
                     </View>
                 </ScrollView>
             )}
-            {/* <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} /> */}
+            <FixedBtn btns={data?.fixed_bottom} style={{position: 'absolute', bottom: 0}} />
         </>
     );
 }
@@ -280,7 +314,7 @@ const styles = StyleSheet.create({
     btn_text_sty: {
         color: '#fff',
         textAlign: 'center',
-        paddingVertical: text(12),
+        paddingVertical: text(14),
     },
     btn_sty: {
         backgroundColor: '#E74949',
@@ -335,5 +369,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         borderColor: Colors.borderColor,
         paddingBottom: text(13),
+    },
+    line_desc_sty: {
+        paddingHorizontal: text(16),
+        marginTop: text(10),
+        paddingBottom: text(20),
+        fontSize: text(12),
+        color: '#9AA1B2',
+        lineHeight: text(18),
     },
 });
