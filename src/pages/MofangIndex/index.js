@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:49:37
+ * @LastEditTime: 2021-03-05 15:50:18
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -129,7 +129,7 @@ const Index = (props) => {
                     ) : (
                         <TouchableOpacity
                             onPress={() => {
-                                jumpPage('RemindMessage');
+                                jumpPage('LineChart');
                             }}>
                             {data?.notice_num > 0 && <View style={styles.new_message} />}
                             <FastImage

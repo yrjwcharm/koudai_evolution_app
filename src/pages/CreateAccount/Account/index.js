@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 18:37:58
+ * @LastEditTime: 2021-03-05 15:53:21
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -18,6 +18,8 @@ import Mask from '../../../components/Mask';
 import {formCheck} from '../../../utils/validator';
 import http from '../../../services';
 import Toast from '../../../components/Toast';
+import {Modal} from '../../../components/Modal';
+
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -30,7 +32,24 @@ export class index extends Component {
             careerList: [],
         };
     }
+    componentWillUnmount() {
+        this._unsubscribe();
+    }
+    back = (e) => {
+        e.preventDefault();
+        Modal.show({
+            title: '结束开户',
+            content: '您马上就开户完成了，确定要离开吗？',
+            confirm: true,
+            confirmCallBack: () => {
+                this.props.navigation.dispatch(e.data.action);
+                // this.props.navigation.goBack();
+            },
+        });
+    };
+
     componentDidMount() {
+        this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
         http.get('/passport/xy_account/career_list/20210101').then((data) => {
             var career = data.result.career.filter((item) => {
                 return item.code == data.result.default_career;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 19:02:48
+ * @LastEditTime: 2021-03-05 15:54:29
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -18,6 +18,7 @@ import {BankCardModal} from '../../../components/Modal';
 import {formCheck} from '../../../utils/validator';
 import Toast from '../../../components/Toast';
 import http from '../../../services';
+import {Modal} from '../../../components/Modal';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -34,10 +35,16 @@ export class bankInfo extends Component {
             selectBank: '',
         };
     }
+
     componentDidMount() {
+        this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
         http.get('/passport/xy_account/bank_list/20210101').then((data) => {
             this.setState({bankList: data.result});
         });
+    }
+    componentWillUnmount() {
+        this._unsubscribe && this._unsubscribe();
+        this.time && clearInterval(this.time);
     }
     /**
      * @description: 开户
@@ -91,7 +98,9 @@ export class bankInfo extends Component {
             if (res.code == '000000') {
                 Toast.show('开户成功', {
                     onHidden: () => {
-                        this.props.navigation.replace(res.result?.jump_url?.path, res.result?.jump_url?.params);
+                        this.props.navigation.replace(res.result?.jump_url?.path, {
+                            ...res.result?.jump_url?.params,
+                        });
                     },
                 });
             } else {
@@ -173,11 +182,20 @@ export class bankInfo extends Component {
     _showBankCard = () => {
         this.bankCard.show();
     };
-    componentWillUnmount() {
-        this.time && clearInterval(this.time);
-    }
     jumpPage = () => {
         this.props.navigation.navigate('BankInfo');
+    };
+
+    back = (e) => {
+        e.preventDefault();
+        Modal.show({
+            title: '结束开户',
+            content: '您马上就开户完成了，确定要离开吗？',
+            confirm: true,
+            confirmCallBack: () => {
+                this.props.navigation.dispatch(e.data.action);
+            },
+        });
     };
     /**
      * @description: 回填银行信息，格式化

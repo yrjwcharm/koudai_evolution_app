@@ -22,6 +22,8 @@ import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
+import {StackActions} from '@react-navigation/native';
+
 export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -213,7 +215,7 @@ export default function DetailAccount(props) {
                 value: -0.0426,
             },
         ]);
-    }, [period, props.route]);
+    }, [period, props.route, props.navigation]);
 
     return (
         <>
