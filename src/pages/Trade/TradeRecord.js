@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:44:44
+ * @LastEditTime: 2021-03-05 16:30:03
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -98,6 +98,7 @@ const TradeRecord = ({route, navigation}) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     style={styles.card}
+                    key={item?.time}
                     onPress={() => {
                         jump(item.url);
                     }}>
@@ -107,15 +108,15 @@ const TradeRecord = ({route, navigation}) => {
                                 <View
                                     style={[
                                         Style.tag,
-                                        {marginRight: px(8), backgroundColor: tagColor(item?.type).bg_color},
+                                        {marginRight: px(8), backgroundColor: tagColor(item?.type?.val).bg_color},
                                     ]}>
-                                    <Text style={{fontSize: px(11), color: tagColor(item?.type).text_color}}>
-                                        {item?.tag}
+                                    <Text style={{fontSize: px(11), color: tagColor(item?.type?.val).text_color}}>
+                                        {item?.type?.text}
                                     </Text>
                                 </View>
                                 <Text style={{color: Colors.defaultColor, fontSize: px(14)}}>{item.name}</Text>
                             </View>
-                            <Text style={styles.date}>{item.order_time}</Text>
+                            <Text style={styles.date}>{item.time}</Text>
                         </View>
                         <View style={[Style.flexBetween, {paddingVertical: px(13)}]}>
                             {item?.items.map((_item, _index) => (
@@ -125,12 +126,18 @@ const TradeRecord = ({route, navigation}) => {
                                         style={[
                                             styles.num_text,
                                             {
-                                                fontFamily: _index != 2 ? Font.numMedium : null,
+                                                fontFamily: _index != item?.items.length - 1 ? Font.numMedium : null,
                                                 color:
-                                                    _index == 2 ? tradeStuatusColor(item.status) : Colors.defaultColor,
+                                                    _index == item?.items.length - 1
+                                                        ? tradeStuatusColor(_item.v.val)
+                                                        : Colors.defaultColor,
                                             },
                                         ]}>
-                                        {_item.v}
+                                        {_index == item?.items.length - 1 ? (
+                                            <Text>{_item.v.text}</Text>
+                                        ) : (
+                                            <Text>{_item.v}</Text>
+                                        )}
                                     </Text>
                                 </View>
                             ))}
