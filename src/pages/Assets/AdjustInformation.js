@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-03 10:58:06
+ * @LastEditTime: 2021-03-05 10:17:37
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -82,11 +82,17 @@ const AdjustInformation = ({navigation, route}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染底部
     const renderFooter = useCallback(() => {
         return (
@@ -106,7 +112,17 @@ const AdjustInformation = ({navigation, route}) => {
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (
-            <TouchableOpacity style={[Style.flexRow, styles.infoItem]}>
+            <TouchableOpacity
+                style={[Style.flexRow, styles.infoItem]}
+                onPress={() =>
+                    navigation.navigate({
+                        name: 'HistoryAdjust',
+                        params: {
+                            adjust_id: item.id,
+                            fr: 'holding',
+                        },
+                    })
+                }>
                 <View style={{flex: 1, marginRight: text(12)}}>
                     <View style={[Style.flexRow, styles.titleBox]}>
                         <Text style={[styles.title, {marginRight: text(12)}]}>{item.title}</Text>

@@ -2,17 +2,17 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:21:36
- * @Description: 旗下基金
+ * @LastEditTime: 2021-03-05 14:49:56
+ * @Description: 邀请好友记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {SectionList, StyleSheet, Text, View} from 'react-native';
+import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 
-const CompanyFunds = ({navigation, route}) => {
+const InviteRecord = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -22,22 +22,23 @@ const CompanyFunds = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get('/fund/company/funds/20210101', {
-                company_id: (route.params && route.params.company_id) || '',
+            http.get('/promotion/invitees/20210101', {
                 page,
             }).then((res) => {
                 setRefreshing(false);
-                setHasMore(res.result.has_more);
-                first && navigation.setOptions({title: route.params.title || '旗下基金'});
-                first && setHeader(res.result.header);
-                if (status === 'refresh') {
-                    setList(res.result.list || []);
-                } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                if (res.code === '000000') {
+                    setHasMore(res.result.has_more || false);
+                    first && navigation.setOptions({title: res.result.title || '邀请好友记录'});
+                    first && setHeader(res.result.head);
+                    if (status === 'refresh') {
+                        setList(res.result.list || []);
+                    } else if (status === 'loadmore') {
+                        setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                    }
                 }
             });
         },
-        [navigation, route, page]
+        [navigation, page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
@@ -59,9 +60,10 @@ const CompanyFunds = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header?.map((item, index) => {
+                {header.map((item, index) => {
                     return (
                         <Text
+                            key={item}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
@@ -79,7 +81,7 @@ const CompanyFunds = ({navigation, route}) => {
         return (
             <>
                 {list.length > 0 && (
-                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
+                    <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
                         {hasMore ? '正在加载...' : '暂无更多了'}
                     </Text>
                 )}
@@ -88,40 +90,19 @@ const CompanyFunds = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无旗下基金数据'} />;
+        return <Empty text={'暂无邀请好友记录数据'} />;
     }, []);
     // 渲染列表项
-    const renderItem = useCallback(
-        ({item, index}) => {
-            return (
-                <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {textAlign: 'left'}]}>
-                        {item.name}
-                    </Text>
-                    <Text
-                        style={[
-                            styles.itemText,
-                            {textAlign: 'right', color: getColor(item.inc), fontFamily: Font.numFontFamily},
-                        ]}>
-                        {parseFloat(item.inc?.replace(/,/g, '')) > 0 ? `+${item.inc}` : item.inc}
-                    </Text>
-                </View>
-            );
-        },
-        [getColor]
-    );
-    // 获取涨跌颜色
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
-            return Colors.red;
-        } else {
-            return Colors.defaultColor;
-        }
+    const renderItem = useCallback(({item, index}) => {
+        return (
+            <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
+                <Text style={[styles.itemText, {textAlign: 'left', fontFamily: Font.numRegular}]}>{item[0]}</Text>
+                <Text style={[styles.itemText, {flex: 1.5}]}>
+                    <Text style={{fontFamily: Font.numRegular}}>{item[1]} </Text>({item[2]})
+                </Text>
+                <Text style={[styles.itemText, {textAlign: 'right', fontFamily: Font.numRegular}]}>{item[3]}</Text>
+            </View>
+        );
     }, []);
 
     useEffect(() => {
@@ -180,9 +161,9 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontFamily: Font.numRegular,
+        // fontFamily: Font.numRegular,
         textAlign: 'center',
     },
 });
 
-export default CompanyFunds;
+export default InviteRecord;

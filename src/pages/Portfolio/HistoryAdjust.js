@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:10:02
+ * @LastEditTime: 2021-03-04 20:25:20
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -41,11 +41,18 @@ const HistoryAdjust = ({navigation, route}) => {
         http.get('/portfolio/adjust_history/20210101', {
             adjust_id: route.params?.adjust_id,
             upid: route.params?.upid || 0,
+            scene: route.params?.fr || 'portfolio',
         }).then((res) => {
             setData(res.result);
             // navigation.setOptions({title: res.result.title});
             setChart(
-                res.result.deploy_detail?.map((item) => ({name: item.name, percent: (item.ratio * 100).toFixed(2) * 1}))
+                res.result.deploy_detail
+                    ?.filter((item) => item.ratio !== 0)
+                    .map((item) => ({
+                        a: '1',
+                        name: item.name,
+                        percent: (item.ratio * 100).toFixed(2) * 1,
+                    }))
             );
         });
     }, [navigation, route]);
@@ -131,7 +138,7 @@ const HistoryAdjust = ({navigation, route}) => {
                         <View style={{height: text(288)}}>
                             <Chart initScript={basicPieChart(chart)} data={chart} />
                         </View>
-                        <View style={[styles.intros]}>
+                        <View style={{marginTop: text(8)}}>
                             <Text style={[styles.intro_title]}>{data.intros.title}</Text>
                             <Text style={[styles.intro_content]}>{data.intros.content}</Text>
                         </View>

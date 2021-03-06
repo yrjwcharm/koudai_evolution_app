@@ -2,11 +2,11 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 17:30:18
+ * @LastEditTime: 2021-03-04 20:27:34
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
-import {ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -21,14 +21,15 @@ class DynamicAdjustment extends Component {
         this.state = {
             data: {},
             chartData: [],
+            refreshing: false,
         };
     }
-    componentDidMount() {
+    init = () => {
         const {upid} = this.props.route.params || {};
         http.get('/portfolio/adjust/20210101', {
             upid: upid || 1,
         }).then((res) => {
-            this.setState({data: res.result});
+            this.setState({data: res.result, refreshing: false});
             this.props.navigation.setOptions({title: res.result.title});
         });
         http.get('/portfolio/adjust_chart/20210101', {
@@ -38,12 +39,17 @@ class DynamicAdjustment extends Component {
                 chartData: res.result.chart,
             });
         });
+    };
+    componentDidMount() {
+        this.init();
     }
     render() {
-        const {data, chartData} = this.state;
+        const {data, chartData, refreshing} = this.state;
         const {navigation, route} = this.props;
         return (
-            <ScrollView style={[styles.container]}>
+            <ScrollView
+                style={[styles.container]}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
                 <View style={[styles.topPart]}>
                     <Chart initScript={percentStackColumn(chartData)} data={chartData} style={{width: '100%'}} />
                 </View>
@@ -63,7 +69,11 @@ class DynamicAdjustment extends Component {
                                     onPress={() =>
                                         navigation.navigate({
                                             name: 'HistoryAdjust',
-                                            params: {adjust_id: item.id, upid: route.params?.upid || 1},
+                                            params: {
+                                                adjust_id: item.id,
+                                                upid: route.params?.upid || 1,
+                                                fr: 'portfolio',
+                                            },
                                         })
                                     }>
                                     <View style={{flex: 1}}>

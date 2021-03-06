@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:25:57
+ * @LastEditTime: 2021-03-05 14:52:42
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -44,11 +44,17 @@ const HistoryHoldFunds = ({navigation, route}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
@@ -56,6 +62,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
                 {header.map((item, index) => {
                     return (
                         <Text
+                            key={item}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
@@ -139,7 +146,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
+                onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}

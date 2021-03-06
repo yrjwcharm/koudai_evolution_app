@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 15:33:55
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-06 13:34:10
  * @Description:路由表
  */
 import React from 'react';
@@ -30,6 +30,7 @@ import PrivateProduct from '../pages/PE/PrivateProduct'; //私募公告页面
 import PrivateCert from '../pages/PE/PrivateCert'; //私募合格投资认证页面
 import PrivateOrder from '../pages/PE/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
+import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
@@ -117,6 +118,8 @@ import ProductIntro from '../pages/Portfolio/Detail/ProductIntro'; //产品说�
 import BankWithdraw from '../pages/BankPages/BankWithdraw'; //银行提现
 import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智能组合
 import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
+import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
+import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
 import GesturePassword from '../pages/Assets/GesturePassword.js';
 
 const Stack = createStackNavigator();
@@ -288,6 +291,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
             <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
+            <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: '基金组合协议'}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
             <Stack.Screen name="FundSafe" component={FundSafe} options={{title: '资金安全'}} />
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
@@ -430,6 +434,8 @@ export default function AppStack() {
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
+            <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
+            <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
         </Stack.Navigator>
     );
 }

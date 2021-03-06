@@ -3,7 +3,7 @@
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:23:48
+ * @LastEditTime: 2021-03-05 10:21:24
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -23,13 +23,10 @@ const AssetNav = ({navigation, route}) => {
     const init = useCallback(
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
-            http.get(
-                '/pe/asset_nav/20210101?fund_code=SGX499&page=1',
-                {
-                    fund_code: (route.params && route.params.code) || '',
-                    page,
-                }
-            ).then((res) => {
+            http.get('/pe/asset_nav/20210101?fund_code=SGX499&page=1', {
+                fund_code: (route.params && route.params.code) || '',
+                page,
+            }).then((res) => {
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 first && navigation.setOptions({title: res.result.title || '历史净值'});
@@ -48,11 +45,17 @@ const AssetNav = ({navigation, route}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
@@ -158,7 +161,7 @@ const AssetNav = ({navigation, route}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
+                onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}
