@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 16:41:54
+ * @LastEditTime: 2021-03-06 11:46:06
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -61,10 +61,12 @@ const Index = (props) => {
     const isFocused = useIsFocused();
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
     const getData = useCallback((params) => {
         params == 'refresh' && setRefreshing(true);
         http.get('/home/detail/20210101').then((res) => {
             setData(res.result);
+            setLoading(false);
             setRefreshing(false);
         });
     }, []);
@@ -104,290 +106,334 @@ const Index = (props) => {
             </View>
         ) : null;
     };
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: inset.top + px(8),
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <FastImage
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/img/loading/indexLoading.png')}
+                    resizeMode="contain"
+                />
+            </View>
+        );
+    };
     return (
         <>
-            {/* header */}
-            <View style={[styles.header, {paddingTop: inset.top + px(8)}]}>
-                <View style={Style.flexBetween}>
-                    <View style={Style.flexRow}>
-                        <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
-                        <Text style={styles.header_title}>理财魔方</Text>
-                    </View>
-                    {data?.login_status == 0 ? (
-                        <Text
-                            onPress={() => {
-                                jump({path: 'Register'});
-                                global.LogTool();
-                            }}
-                            style={Style.more}>
-                            登录/注册
-                        </Text>
-                    ) : (
-                        <TouchableOpacity
-                            onPress={() => {
-                                jump({path: 'RemindMessage'});
-                            }}>
-                            {data?.notice_num > 0 && <View style={styles.new_message} />}
-                            <FastImage
-                                style={{width: px(24), height: px(24)}}
-                                source={require('../../assets/img/index/message.png')}
-                            />
-                        </TouchableOpacity>
-                    )}
-                </View>
-                <Text style={styles.title_desc}>您的智能基金组合专家</Text>
-            </View>
-            <ScrollView
-                style={{backgroundColor: Colors.bgColor}}
-                scrollEventThrottle={16}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
-                <LinearGradient
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 1}}
-                    colors={['#fff', Colors.bgColor]}
-                    style={styles.container}>
-                    <View style={styles.swiper}>
-                        {data?.banner_list ? (
-                            <Swiper
-                                height={px(120)}
-                                autoplay
-                                loadMinimal={Platform.OS == 'ios' ? true : false}
-                                removeClippedSubviews={false}
-                                autoplayTimeout={4}
-                                paginationStyle={{
-                                    bottom: px(5),
-                                }}
-                                dotStyle={{
-                                    opacity: 0.5,
-                                    width: px(4),
-                                    ...styles.dotStyle,
-                                }}
-                                activeDotStyle={{
-                                    width: px(12),
-                                    ...styles.dotStyle,
-                                }}>
-                                {data?.banner_list?.map((banner, index) => (
-                                    <TouchableOpacity key={index} activeOpacity={0.8}>
-                                        <FastImage
-                                            style={styles.slide}
-                                            source={{
-                                                uri: banner.cover,
-                                            }}
-                                        />
-                                    </TouchableOpacity>
-                                ))}
-                            </Swiper>
-                        ) : null}
-                    </View>
-
-                    {/* 安全保障 */}
-                    {data?.login_status == 0 && renderSecurity(data?.menu_list)}
-
-                    {/* 推荐 */}
-                    {data?.custom_info && (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {
-                                jump(data?.custom_info?.button?.url);
-                            }}
-                            style={{marginBottom: px(20), marginTop: px(14)}}>
-                            <FastImage style={styles.robot} source={require('../../assets/img/robot.png')} />
-                            <View style={styles.recommen_card}>
-                                <ImageBackground
-                                    source={require('../../assets/img/index/recommendBg.png')}
-                                    style={{height: px(134)}}>
-                                    <Text style={[styles.secure_title, styles.recommen_title]}>
-                                        {data?.custom_info?.title}
-                                    </Text>
-                                    <View style={[Style.flexRow, styles.recommen_con]}>
-                                        <FastImage
-                                            style={{width: px(20), height: px(20)}}
-                                            source={require('../../assets/img/index/douhao.png')}
-                                        />
-                                        <Text style={styles.recommen_text}>{data?.custom_info?.desc}</Text>
-                                    </View>
-                                </ImageBackground>
-                                <View style={[styles.recommen_bottom, Style.flexBetween]}>
-                                    <View style={Style.flexRow}>
-                                        {data?.custom_info?.user_avatar_list.map((avar, index) => {
-                                            return (
-                                                <FastImage
-                                                    key={index}
-                                                    source={{uri: avar}}
-                                                    style={[styles.user_avatar, {marginLeft: index != 0 ? px(-6) : 0}]}
-                                                />
-                                            );
-                                        })}
-                                    </View>
-                                    <Text style={{fontSize: px(12)}}>
-                                        已有<Text style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>1234</Text>
-                                        人开启
-                                    </Text>
-
-                                    <LinearGradient
-                                        start={{x: 0, y: 0.25}}
-                                        end={{x: 0, y: 0.8}}
-                                        colors={['#FF9463', '#FF7D41']}
-                                        style={[styles.recommend_btn, Style.flexRow]}>
-                                        <Text style={styles.btn_text}>{data?.custom_info?.button.text}</Text>
-                                        <FontAwesome name={'angle-right'} size={18} color="#fff" />
-                                    </LinearGradient>
-                                </View>
+            {loading ? (
+                renderLoading()
+            ) : (
+                <>
+                    <View style={[styles.header, {paddingTop: inset.top + px(8)}]}>
+                        <View style={Style.flexBetween}>
+                            <View style={Style.flexRow}>
+                                <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
+                                <Text style={styles.header_title}>理财魔方</Text>
                             </View>
-                        </TouchableOpacity>
-                    )}
-                    {/* 马红漫 */}
-                    {data?.polaris_info && (
-                        <TouchableOpacity
-                            onPress={() => {
-                                jump(data?.polaris_info?.url);
-                            }}
-                            activeOpacity={0.8}
-                            style={{marginBottom: px(20)}}>
-                            <BoxShadow setting={{...shadow, height: px(75), width: deviceWidth - px(32)}}>
-                                <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
-                                    <FastImage
-                                        style={{width: px(40), height: px(40), marginRight: px(8)}}
-                                        source={{uri: data?.polaris_info?.avatar}}
-                                    />
-                                    <View style={{flex: 1}}>
-                                        <View style={[Style.flexRow, {marginBottom: px(6)}]}>
-                                            <Text style={[styles.secure_title, {marginRight: px(4)}]}>
-                                                {data?.polaris_info?.name}
-                                            </Text>
-                                            <FastImage
-                                                style={{width: px(17), height: px(17)}}
-                                                source={{uri: data?.polaris_info?.v_img}}
-                                            />
-                                        </View>
-                                        <View style={Style.flexBetween}>
-                                            <Text numberOfLines={1} style={styles.v_text}>
-                                                {data?.polaris_info?.detail}
-                                            </Text>
-                                            <View style={[Style.flexRow]}>
-                                                <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
-                                                <FontAwesome name={'angle-right'} color={Colors.btnColor} size={18} />
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </BoxShadow>
-                        </TouchableOpacity>
-                    )}
-                    {/* 推荐阅读 */}
-                    {data?.article_info && (
-                        <View style={{marginBottom: px(20)}}>
-                            <RenderTitle title={'推荐阅读'} />
-                            <ArticleCard data={data?.article_info} />
-                        </View>
-                    )}
-                    {/* 用户问答 */}
-                    {data?.qa_list && (
-                        <View style={{marginBottom: px(9)}}>
-                            <RenderTitle title={'用户问答'} />
-                            <QuestionCard data={data?.qa_list} />
-                        </View>
-                    )}
-                    {/* 听听魔方用户怎么说 */}
-                    <View>
-                        <RenderTitle title={'听听魔方用户怎么说'} />
-                        <ScrollView
-                            loop={true}
-                            showsPagination={false}
-                            horizontal={true}
-                            height={px(188)}
-                            snapToInterval={px(298)}
-                            decelerationRate={0.99}
-                            showsHorizontalScrollIndicator={false}>
-                            {data?.comment_list?.map((comment) => (
-                                <BoxShadow
-                                    key={comment.id}
-                                    setting={{
-                                        ...shadow,
-                                        width: px(282),
-                                        height: px(168),
-                                        style: {marginRight: px(16)},
+                            {data?.login_status == 0 ? (
+                                <Text
+                                    onPress={() => {
+                                        jump({path: 'Register'});
+                                        global.LogTool();
+                                    }}
+                                    style={Style.more}>
+                                    登录/注册
+                                </Text>
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        jump({path: 'RemindMessage'});
                                     }}>
-                                    <TouchableOpacity
-                                        style={[styles.about_our, styles.common_card]}
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            jump({path: 'MessageBoard', params: {id: comment.id}});
+                                    {data?.notice_num > 0 && <View style={styles.new_message} />}
+                                    <FastImage
+                                        style={{width: px(24), height: px(24)}}
+                                        source={require('../../assets/img/index/message.png')}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <Text style={styles.title_desc}>您的智能基金组合专家</Text>
+                    </View>
+                    <ScrollView
+                        style={{backgroundColor: Colors.bgColor}}
+                        scrollEventThrottle={16}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />
+                        }>
+                        <LinearGradient
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            colors={['#fff', Colors.bgColor]}
+                            style={styles.container}>
+                            <View style={styles.swiper}>
+                                {data?.banner_list ? (
+                                    <Swiper
+                                        height={px(120)}
+                                        autoplay
+                                        loadMinimal={Platform.OS == 'ios' ? true : false}
+                                        removeClippedSubviews={false}
+                                        autoplayTimeout={4}
+                                        paginationStyle={{
+                                            bottom: px(5),
+                                        }}
+                                        dotStyle={{
+                                            opacity: 0.5,
+                                            width: px(4),
+                                            ...styles.dotStyle,
+                                        }}
+                                        activeDotStyle={{
+                                            width: px(12),
+                                            ...styles.dotStyle,
                                         }}>
-                                        <View style={Style.flexRow}>
-                                            <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
-                                            <View style={{flex: 1}}>
-                                                <Text style={styles.avatar_name}>{comment.name}</Text>
-                                                <Text
-                                                    style={{
-                                                        fontSize: px(12),
-                                                        color: Colors.darkGrayColor,
-                                                    }}>
-                                                    {comment.from}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                        <Text style={styles.about_text} numberOfLines={4}>
-                                            {comment.content}
-                                        </Text>
-                                        <Praise comment={comment} id={comment.id} style={styles.zan} />
-                                    </TouchableOpacity>
-                                </BoxShadow>
-                            ))}
-                        </ScrollView>
-                    </View>
-                    <View style={{marginBottom: px(20)}}>
-                        <RenderTitle title={'关于理财魔方'} />
-                        {/* 安全保障 */}
-                        {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
-                        <BoxShadow setting={{...shadow, height: px(191)}}>
-                            <View style={{borderRadius: px(6), overflow: 'hidden'}}>
-                                <ImageBackground
-                                    style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
-                                    source={require('../../assets/img/index/aboutOur.png')}>
-                                    {data?.about_info?.header.map((text, index) => (
-                                        <View key={index}>
-                                            <View style={[Style.flexRow, {marginBottom: px(2)}]}>
-                                                <Text style={styles.large_num}>{text?.value}</Text>
-                                                <Text style={styles.num_unit}>{text?.unit}</Text>
-                                            </View>
-                                            <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
-                                                {text?.content}
-                                            </Text>
-                                        </View>
-                                    ))}
-                                    <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
-                                </ImageBackground>
-                                <View
-                                    style={[
-                                        Style.flexRow,
-                                        {backgroundColor: '#fff', justifyContent: 'space-evenly', height: px(83)},
-                                    ]}>
-                                    {data?.about_info?.items?.map((item, index) => (
-                                        <View key={index} style={{alignItems: 'flex-start'}}>
-                                            <FastImage source={{uri: item.icon}} style={styles.icon} />
-                                            <Text
-                                                style={{
-                                                    color: Colors.defaultColor,
-                                                    fontWeight: 'bold',
-                                                    fontSize: px(14),
-                                                    marginBottom: px(6),
-                                                }}>
-                                                {item.name}
-                                            </Text>
-                                            <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
-                                                {item.name}
-                                            </Text>
-                                        </View>
-                                    ))}
-                                </View>
+                                        {data?.banner_list?.map((banner, index) => (
+                                            <TouchableOpacity key={index} activeOpacity={0.8}>
+                                                <FastImage
+                                                    style={styles.slide}
+                                                    source={{
+                                                        uri: banner.cover,
+                                                    }}
+                                                />
+                                            </TouchableOpacity>
+                                        ))}
+                                    </Swiper>
+                                ) : null}
                             </View>
-                        </BoxShadow>
-                    </View>
 
-                    <BottomDesc />
-                </LinearGradient>
-            </ScrollView>
+                            {/* 安全保障 */}
+                            {data?.login_status == 0 && renderSecurity(data?.menu_list)}
+
+                            {/* 推荐 */}
+                            {data?.custom_info && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(data?.custom_info?.button?.url);
+                                    }}
+                                    style={{marginBottom: px(20), marginTop: px(14)}}>
+                                    <FastImage style={styles.robot} source={require('../../assets/img/robot.png')} />
+                                    <View style={styles.recommen_card}>
+                                        <ImageBackground
+                                            source={require('../../assets/img/index/recommendBg.png')}
+                                            style={{height: px(134)}}>
+                                            <Text style={[styles.secure_title, styles.recommen_title]}>
+                                                {data?.custom_info?.title}
+                                            </Text>
+                                            <View style={[Style.flexRow, styles.recommen_con]}>
+                                                <FastImage
+                                                    style={{width: px(20), height: px(20)}}
+                                                    source={require('../../assets/img/index/douhao.png')}
+                                                />
+                                                <Text style={styles.recommen_text}>{data?.custom_info?.desc}</Text>
+                                            </View>
+                                        </ImageBackground>
+                                        <View style={[styles.recommen_bottom, Style.flexBetween]}>
+                                            <View style={Style.flexRow}>
+                                                {data?.custom_info?.user_avatar_list.map((avar, index) => {
+                                                    return (
+                                                        <FastImage
+                                                            key={index}
+                                                            source={{uri: avar}}
+                                                            style={[
+                                                                styles.user_avatar,
+                                                                {marginLeft: index != 0 ? px(-6) : 0},
+                                                            ]}
+                                                        />
+                                                    );
+                                                })}
+                                            </View>
+                                            <Text style={{fontSize: px(12)}}>
+                                                已有
+                                                <Text style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
+                                                    1234
+                                                </Text>
+                                                人开启
+                                            </Text>
+
+                                            <LinearGradient
+                                                start={{x: 0, y: 0.25}}
+                                                end={{x: 0, y: 0.8}}
+                                                colors={['#FF9463', '#FF7D41']}
+                                                style={[styles.recommend_btn, Style.flexRow]}>
+                                                <Text style={styles.btn_text}>{data?.custom_info?.button.text}</Text>
+                                                <FontAwesome name={'angle-right'} size={18} color="#fff" />
+                                            </LinearGradient>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            {/* 马红漫 */}
+                            {data?.polaris_info && (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        jump(data?.polaris_info?.url);
+                                    }}
+                                    activeOpacity={0.8}
+                                    style={{marginBottom: px(20)}}>
+                                    <BoxShadow setting={{...shadow, height: px(75), width: deviceWidth - px(32)}}>
+                                        <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
+                                            <FastImage
+                                                style={{
+                                                    width: px(40),
+                                                    height: px(40),
+                                                    marginRight: px(8),
+                                                    borderRadius: px(6),
+                                                }}
+                                                source={{uri: data?.polaris_info?.avatar}}
+                                            />
+                                            <View style={{flex: 1}}>
+                                                <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                    <Text style={[styles.secure_title, {marginRight: px(4)}]}>
+                                                        {data?.polaris_info?.name}
+                                                    </Text>
+                                                    <FastImage
+                                                        style={{width: px(17), height: px(17)}}
+                                                        source={{uri: data?.polaris_info?.v_img}}
+                                                    />
+                                                </View>
+                                                <View style={Style.flexBetween}>
+                                                    <Text numberOfLines={1} style={styles.v_text}>
+                                                        {data?.polaris_info?.detail}
+                                                    </Text>
+                                                    <View style={[Style.flexRow]}>
+                                                        <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
+                                                        <FontAwesome
+                                                            name={'angle-right'}
+                                                            color={Colors.btnColor}
+                                                            size={18}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </BoxShadow>
+                                </TouchableOpacity>
+                            )}
+                            {/* 推荐阅读 */}
+                            {data?.article_info && (
+                                <View style={{marginBottom: px(20)}}>
+                                    <RenderTitle title={'推荐阅读'} />
+                                    <ArticleCard data={data?.article_info} />
+                                </View>
+                            )}
+                            {/* 用户问答 */}
+                            {data?.qa_list && (
+                                <View style={{marginBottom: px(9)}}>
+                                    <RenderTitle title={'用户问答'} />
+                                    <QuestionCard data={data?.qa_list} />
+                                </View>
+                            )}
+                            {/* 听听魔方用户怎么说 */}
+                            <View>
+                                <RenderTitle title={'听听魔方用户怎么说'} />
+                                <ScrollView
+                                    loop={true}
+                                    showsPagination={false}
+                                    horizontal={true}
+                                    height={px(188)}
+                                    snapToInterval={px(298)}
+                                    decelerationRate={0.99}
+                                    showsHorizontalScrollIndicator={false}>
+                                    {data?.comment_list?.map((comment) => (
+                                        <BoxShadow
+                                            key={comment.id}
+                                            setting={{
+                                                ...shadow,
+                                                width: px(282),
+                                                height: px(168),
+                                                style: {marginRight: px(16)},
+                                            }}>
+                                            <TouchableOpacity
+                                                style={[styles.about_our, styles.common_card]}
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    jump({path: 'MessageBoard', params: {id: comment.id}});
+                                                }}>
+                                                <View style={Style.flexRow}>
+                                                    <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
+                                                    <View style={{flex: 1}}>
+                                                        <Text style={styles.avatar_name}>{comment.name}</Text>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: px(12),
+                                                                color: Colors.darkGrayColor,
+                                                            }}>
+                                                            {comment.from}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                <Text style={styles.about_text} numberOfLines={4}>
+                                                    {comment.content}
+                                                </Text>
+                                                <Praise comment={comment} id={comment.id} style={styles.zan} />
+                                            </TouchableOpacity>
+                                        </BoxShadow>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                            <View style={{marginBottom: px(20)}}>
+                                <RenderTitle title={'关于理财魔方'} />
+                                {/* 安全保障 */}
+                                {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
+                                <BoxShadow setting={{...shadow, height: px(191)}}>
+                                    <View style={{borderRadius: px(6), overflow: 'hidden'}}>
+                                        <ImageBackground
+                                            style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
+                                            source={require('../../assets/img/index/aboutOur.png')}>
+                                            {data?.about_info?.header.map((text, index) => (
+                                                <View key={index}>
+                                                    <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                                        <Text style={styles.large_num}>{text?.value}</Text>
+                                                        <Text style={styles.num_unit}>{text?.unit}</Text>
+                                                    </View>
+                                                    <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                                        {text?.content}
+                                                    </Text>
+                                                </View>
+                                            ))}
+                                            <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
+                                        </ImageBackground>
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                {
+                                                    backgroundColor: '#fff',
+                                                    justifyContent: 'space-evenly',
+                                                    height: px(83),
+                                                },
+                                            ]}>
+                                            {data?.about_info?.items?.map((item, index) => (
+                                                <View key={index} style={{alignItems: 'flex-start'}}>
+                                                    <FastImage source={{uri: item.icon}} style={styles.icon} />
+                                                    <Text
+                                                        style={{
+                                                            color: Colors.defaultColor,
+                                                            fontWeight: 'bold',
+                                                            fontSize: px(14),
+                                                            marginBottom: px(6),
+                                                        }}>
+                                                        {item.name}
+                                                    </Text>
+                                                    <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
+                                                        {item.name}
+                                                    </Text>
+                                                </View>
+                                            ))}
+                                        </View>
+                                    </View>
+                                </BoxShadow>
+                            </View>
+
+                            <BottomDesc />
+                        </LinearGradient>
+                    </ScrollView>
+                </>
+            )}
         </>
     );
 };

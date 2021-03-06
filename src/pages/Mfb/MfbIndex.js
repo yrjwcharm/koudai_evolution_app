@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 18:23:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-05 19:39:32
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -25,7 +25,7 @@ export default function MfbIndex(props) {
     const updateSections = (activeSections) => setActiveSections(activeSections);
     const jump = useJump();
     const rightPress = () => {
-        props.navigation.navigate('TradeRecord');
+        props.navigation.navigate('TradeRecord', {fr: 'mfb'});
     };
     useEffect(() => {
         Http.get('/wallet/holding/20210101').then((res) => {
@@ -99,7 +99,7 @@ export default function MfbIndex(props) {
             />
             {Object.keys(data).length > 0 && (
                 <ScrollView>
-                    <View style={styles.bg_sty}></View>
+                    <View style={styles.bg_sty} />
                     <View style={Style.containerPadding}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
                             <Text style={Style.descSty}>总金额(元){data.holding.date}</Text>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 16:49:57
+ * @LastEditTime: 2021-03-06 13:33:56
  * @Description:
  */
 import React, {useState} from 'react';
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         backgroundColor: '#fff',
         borderRadius: px(4),
+        borderWidth: 0,
         paddingTop: Platform.OS == 'ios' ? px(10) : 0,
     },
 });

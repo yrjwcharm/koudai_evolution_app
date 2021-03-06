@@ -38,7 +38,7 @@ npx nrm use npm
 ```
 npm install
 #ios需要执行一下命令
-cd ios&&pod installl
+cd ios&&pod install
 ```
 ### 5、启动项目(模拟器)
 

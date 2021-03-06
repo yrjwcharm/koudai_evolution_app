@@ -2,11 +2,11 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 19:17:53
+ * @LastEditTime: 2021-03-06 12:11:23
  * @Description:发现
  */
-import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,21 +14,58 @@ import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
 import Header from '../../components/NavBar';
 import BottomDesc from '../../components/BottomDesc';
+import http from '../../services';
+import {useJump} from '../../components/hooks';
+import {Chart, chartOptions} from '../../components/Chart';
+import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 const Index = (props) => {
+    const inset = useRef(useSafeAreaInsets()).current;
     const [data, SetData] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const jump = useJump();
     useEffect(() => {
-        SetData([{title: '养老计划'}, {title: '养老计划'}, {title: '养老计划'}]);
-    }, [props.navigation]);
+        getData();
+    }, [getData]);
     // let scrollingRight = '';
     // let lastx = '';
     // const snapScroll = useRef(null);
-    const jumpPage = () => {
-        props.navigation.navigate('FindDetail');
+    const getData = useCallback((type) => {
+        type == 'refresh' && setRefreshing(true);
+        http.get('/discovery/index/20210101').then((res) => {
+            setRefreshing(false);
+            setLoading(false);
+            SetData(res.result);
+        });
+    }, []);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                    paddingTop: inset.top + px(8),
+                }}>
+                <FastImage
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/img/loading/findLoading.png')}
+                    resizeMode="contain"
+                />
+            </View>
+        );
     };
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             <Header renderLeft={<Text style={styles.header_title}>今日推荐</Text>} />
-            <ScrollView style={{backgroundColor: Colors.bgColor}}>
+            <ScrollView
+                style={{backgroundColor: Colors.bgColor}}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
                 <View style={styles.container}>
                     <LinearGradient
                         start={{x: 0, y: 0}}
@@ -39,24 +76,38 @@ const Index = (props) => {
                         <MagicMove.View id="logo" transition={MagicMove.Transition.morph}>
                             <TouchableOpacity
                                 activeOpacity={1}
-                                onPress={jumpPage}
+                                onPress={() => {
+                                    jump(data?.recommend?.button?.url);
+                                }}
                                 style={[styles.recommend, styles.card]}>
                                 <View style={[styles.header]}>
-                                    <Text style={styles.img_desc}>35+必备</Text>
-                                    <Text style={styles.img_title}>美好生活提前储备</Text>
+                                    <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                                    <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
                                 </View>
                                 <FastImage
                                     style={{
                                         height: px(320),
                                     }}
                                     source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片42.png',
+                                        uri: data?.recommend?.background,
                                     }}
                                 />
                                 <View style={{padding: Space.cardPadding}}>
                                     <View style={Style.flexRow}>
-                                        <Text style={[styles.card_title, {fontSize: px(16)}]}>养老计划</Text>
-                                        <Text style={styles.card_title_dexc}>35+必备 ｜ 美好生活提前储备</Text>
+                                        <Text style={[styles.card_title, {fontSize: px(16)}]}>
+                                            {data?.recommend?.name}
+                                        </Text>
+                                        {data?.recommend?.labels && (
+                                            <Text style={styles.card_title_dexc}>
+                                                {data?.recommend?.labels.map((item, index) =>
+                                                    index == 0 ? (
+                                                        <Text key={index}>{item}</Text>
+                                                    ) : (
+                                                        <Text key={index}>｜{item}</Text>
+                                                    )
+                                                )}
+                                            </Text>
+                                        )}
                                     </View>
                                     <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                         <Text
@@ -64,19 +115,18 @@ const Index = (props) => {
                                                 styles.radio,
                                                 {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
                                             ]}>
-                                            132.87%~156.58%
+                                            {data?.recommend?.yield?.ratio}
                                         </Text>
-                                        <TouchableOpacity onPress={jumpPage}>
-                                            <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
-                                                colors={['#FF9463', '#FF7D41']}
-                                                style={styles.recommend_btn}>
-                                                <Text style={styles.btn_text}>去看看</Text>
-                                            </LinearGradient>
-                                        </TouchableOpacity>
+
+                                        <LinearGradient
+                                            start={{x: 0, y: 0.25}}
+                                            end={{x: 0, y: 0.8}}
+                                            colors={['#FF9463', '#FF7D41']}
+                                            style={styles.recommend_btn}>
+                                            <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
+                                        </LinearGradient>
                                     </View>
-                                    <Text style={styles.light_text}>35+必备 ｜ 美好生活提前储备</Text>
+                                    <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
                                 </View>
                             </TouchableOpacity>
                         </MagicMove.View>
@@ -85,33 +135,51 @@ const Index = (props) => {
                     {/* 目标理财 */}
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>目标理财</Text>
-                            <View style={[styles.card, {borderRadius: 8}, Style.flexRow]}>
-                                <View style={{padding: Space.cardPadding, flex: 1}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.card_title}>养老计划</Text>
-                                        <Text style={styles.card_title_dexc}> 美好生活提前储备</Text>
-                                    </View>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>132.87%~156.58%</Text>
-                                    <Text style={styles.light_text}>35+必备 ｜ 美好生活提前储备</Text>
-                                </View>
-                                <Image
-                                    style={{width: px(120), height: '100%'}}
-                                    source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片33.png',
+                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
+                            {data?.part1?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item?.url);
                                     }}
-                                />
-                            </View>
+                                    key={index}
+                                    style={[styles.card, {borderRadius: 8}, Style.flexRow]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                    </View>
+                                    <Image
+                                        style={{width: px(120), height: '100%'}}
+                                        source={{
+                                            uri: item?.background,
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            ))}
                         </View>
                         {/* 专业理财 */}
                         <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>专业理财</Text>
+                            <Text style={styles.large_title}>{data?.part2?.group_name}</Text>
 
                             <ScrollView
                                 loop={true}
                                 showsPagination={false}
                                 horizontal={true}
-                                height={200}
+                                height={px(217)}
                                 decelerationRate={0.99}
                                 snapToInterval={px(214)}
                                 // ref={snapScroll}
@@ -128,67 +196,69 @@ const Index = (props) => {
                                 //     lastx = nextx;
                                 // }}
                                 showsHorizontalScrollIndicator={false}>
-                                <View style={[styles.major_card, styles.card]}>
-                                    <Text style={styles.card_title}>养老计划</Text>
-                                    <Text style={[styles.card_title_dexc, {marginTop: px(6)}]}>
-                                        美好生活 | 稳健理性多赚钱
-                                    </Text>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>6.87%~11.58%</Text>
-                                    <Text style={styles.light_text}>预期年化收益率</Text>
-                                </View>
-                                <View style={[styles.major_card, styles.card]}>
-                                    <Text style={styles.card_title}>养老计划</Text>
-                                    <Text style={[styles.card_title_dexc, {marginTop: px(6)}]}>
-                                        美好生活 | 稳健理性多赚钱
-                                    </Text>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>6.87%~11.58%</Text>
-                                    <Text style={styles.light_text}>预期年化收益率</Text>
-                                </View>
-                                <View style={[styles.major_card, styles.card]}>
-                                    <Text style={styles.card_title}>养老计划</Text>
-                                    <Text style={[styles.card_title_dexc, {marginTop: px(6)}]}>
-                                        美好生活 | 稳健理性多赚钱
-                                    </Text>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>6.87%~11.58%</Text>
-                                    <Text style={styles.light_text}>预期年化收益率</Text>
-                                </View>
+                                {data?.part2?.plans?.map((item, index) => (
+                                    <View style={[styles.major_card, styles.card]} key={index}>
+                                        <Text style={styles.card_title}>{item.name}</Text>
+                                        {item?.labels && (
+                                            <Text style={[styles.card_title_dexc, {marginTop: px(10)}]}>
+                                                {item?.labels.map((_item, _index) =>
+                                                    _index == 0 ? (
+                                                        <Text key={_index}>{_item}</Text>
+                                                    ) : (
+                                                        <Text key={_index}>｜{_item}</Text>
+                                                    )
+                                                )}
+                                            </Text>
+                                        )}
+
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                        {item?.yield?.chart && (
+                                            <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
+                                                <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
+                                            </View>
+                                        )}
+                                    </View>
+                                ))}
                             </ScrollView>
                         </View>
                         {/* 增值服务 */}
                         <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>增值服务</Text>
-                            <View style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
-                                <View style={{padding: Space.cardPadding, flex: 1}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.card_title}>养老计划</Text>
-                                        <Text style={styles.card_title_dexc}> 美好生活提前储备</Text>
-                                    </View>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>132.87%~156.58%</Text>
-                                    <Text style={styles.light_text}>35+必备 ｜ 美好生活提前储备</Text>
-                                </View>
-                                <Image
-                                    style={{width: px(120), height: '100%'}}
-                                    source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片33.png',
+                            <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
+                            {data?.part3?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item?.url);
                                     }}
-                                />
-                            </View>
-                            <View style={[styles.card, {borderRadius: 8}, Style.flexRow]}>
-                                <View style={{padding: Space.cardPadding, flex: 1}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.card_title}>养老计划</Text>
-                                        <Text style={styles.card_title_dexc}> 美好生活提前储备</Text>
+                                    key={index}
+                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
                                     </View>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>132.87%~156.58%</Text>
-                                    <Text style={styles.light_text}>35+必备 ｜ 美好生活提前储备</Text>
-                                </View>
-                                <Image
-                                    style={{width: px(120), height: '100%'}}
-                                    source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片33.png',
-                                    }}
-                                />
-                            </View>
+                                    <Image
+                                        style={{width: px(120), height: '100%'}}
+                                        source={{
+                                            uri: item?.background,
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            ))}
                         </View>
                     </View>
                     <BottomDesc />
@@ -227,7 +297,7 @@ const styles = StyleSheet.create({
         marginRight: px(12),
     },
     card_title_dexc: {
-        fontSize: px(14),
+        fontSize: px(13),
         color: Colors.darkGrayColor,
     },
     radio: {

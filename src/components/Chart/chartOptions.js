@@ -147,6 +147,29 @@ export const baseChart = (data) => `(function(){
   chart.render();
 })()
 `;
+//发现页小图
+export const smChart = (data) => `(function(){
+  const chart = new F2.Chart({
+    id: 'chart',
+    pixelRatio: window.devicePixelRatio,
+    padding: 0
+  });
+  chart.source(${JSON.stringify(data)});
+  chart.axis(false);
+  chart.legend(false);
+  chart.tooltip(false);
+  chart.area()
+    .position('date*value')
+    .color('l(90) 0:#DC4949 1:#ffffff').shape('smooth')
+   
+    ;
+  chart.line()
+    .position('date*value')
+    .color( '#DC4949').shape('smooth')
+    ;
+  chart.render();
+})()
+`;
 
 export const dynamicChart = (data) => `
 (function(){

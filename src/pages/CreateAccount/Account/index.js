@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 15:53:21
+ * @LastEditTime: 2021-03-06 13:58:45
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -34,8 +34,12 @@ export class index extends Component {
     }
     componentWillUnmount() {
         this._unsubscribe();
+        this.closePicker();
     }
     back = (e) => {
+        if (e.data.action.type == 'REPLACE') {
+            return;
+        }
         e.preventDefault();
         Modal.show({
             title: '结束开户',
@@ -43,7 +47,6 @@ export class index extends Component {
             confirm: true,
             confirmCallBack: () => {
                 this.props.navigation.dispatch(e.data.action);
-                // this.props.navigation.goBack();
             },
         });
     };
@@ -132,9 +135,6 @@ export class index extends Component {
         Picker.hide();
         this.setState({showMask: false});
     };
-    componentWillUnmount() {
-        this.closePicker();
-    }
     render() {
         const {showMask, name, id_no, rname} = this.state;
         // console.log(rname);
