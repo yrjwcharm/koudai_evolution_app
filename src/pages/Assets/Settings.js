@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 11:21:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-05 15:22:45
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -68,7 +68,7 @@ const Settings = ({navigation}) => {
                 jump(item.url);
             }
         },
-        [jump]
+        [navigation, jump]
     );
 
     useEffect(() => {

@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 15:55:34
+ * @LastEditTime: 2021-03-05 10:16:27
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -47,11 +47,17 @@ const AdjustRecord = ({navigation, route}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染底部
     const renderFooter = useCallback(() => {
         return (
@@ -101,7 +107,7 @@ const AdjustRecord = ({navigation, route}) => {
     return (
         <FlatList
             data={list}
-            initialNumToRender={20}
+            initialNumToRender={10}
             ItemSeparatorComponent={() => (
                 <View style={{borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor}} />
             )}

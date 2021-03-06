@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-02 14:16:56
+ * @LastEditTime: 2021-03-06 11:13:36
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -16,21 +16,16 @@ import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 import {Button} from '../../components/Button';
 
-const ComplaintsAdvices = () => {
-    const [type, setType] = useState(1);
-    const [sortList, setSortList] = useState([
-        {key: '产品功能', val: 1},
-        {key: '投顾服务', val: 2},
-        {key: '信息推送', val: 3},
-        {key: '策略沟通会', val: 4},
-        {key: '活动', val: 5},
-        {key: '其他', val: 6},
-    ]);
-    const [sort, setSort] = useState(sortList[0]);
+const ComplaintsAdvices = ({navigation}) => {
+    const [data, setData] = useState({});
+    const [type, setType] = useState(0);
+    const [sortList, setSortList] = useState([]);
+    const [sort, setSort] = useState({});
     const [content, setContent] = useState('');
     const [showMask, setShowMask] = useState(false);
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const leftHeight = useRef(0);
+
     // 显示选择器
     const showPicker = useCallback(() => {
         Keyboard.dismiss();
@@ -42,12 +37,12 @@ const ComplaintsAdvices = () => {
             pickerConfirmBtnText: '确定',
             pickerBg: [255, 255, 255, 1],
             pickerToolBarBg: [249, 250, 252, 1],
-            pickerData: sortList.map((item) => item.key),
+            pickerData: sortList.map((item) => item.value),
             pickerFontColor: [33, 33, 33, 1],
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 81, 204, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
-            selectedValue: [sort.key],
+            selectedValue: [sort.value],
             wheelFlex: [1, 1],
             onPickerCancel: () => setShowMask(false),
             onPickerConfirm: (pickedValue, pickedIndex) => {
@@ -87,29 +82,21 @@ const ComplaintsAdvices = () => {
     );
 
     useEffect(() => {
-        if (type === 1) {
-            setSortList([
-                {key: '产品功能', val: 1},
-                {key: '投顾服务', val: 2},
-                {key: '信息推送', val: 3},
-                {key: '策略沟通会', val: 4},
-                {key: '活动', val: 5},
-                {key: '其他', val: 6},
-            ]);
-        } else {
-            setSortList([
-                {key: '组合收益', val: 1},
-                {key: '投顾服务', val: 2},
-                {key: 'APP功能', val: 3},
-                {key: '信息推送', val: 4},
-                {key: '活动', val: 5},
-                {key: '其他', val: 6},
-            ]);
-        }
-    }, [type]);
+        http.get('/mapi/complain/suggest/20210101').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '投诉建议'});
+                setData(res.result);
+                setType(res.result.active);
+                setSortList(res.result.type_cates[res.result.active].items);
+            }
+        });
+    }, [navigation]);
     useEffect(() => {
-        setSort(sortList[0]);
-    }, [sortList]);
+        if (data.type_cates) {
+            setSortList(data.type_cates[type].items);
+            setSort(data.type_cates[type].items[0]);
+        }
+    }, [data, type]);
     useEffect(() => {
         Picker.hide();
         Keyboard.addListener('keyboardWillShow', keyboardWillShow);
@@ -131,27 +118,26 @@ const ComplaintsAdvices = () => {
                     <View style={[Style.flexBetween, {height: text(56)}]}>
                         <Text style={styles.title}>{'类型'}</Text>
                         <View style={Style.flexRow}>
-                            <TouchableOpacity
-                                style={[Style.flexRow, {marginRight: text(48)}]}
-                                onPress={() => setType(1)}>
-                                <View style={[Style.flexCenter, styles.radioBox]}>
-                                    {type === 1 && <View style={styles.radio} />}
-                                </View>
-                                <Text style={[styles.title, styles.val]}>{'建议'}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[Style.flexRow]} onPress={() => setType(2)}>
-                                <View style={[Style.flexCenter, styles.radioBox]}>
-                                    {type === 2 && <View style={styles.radio} />}
-                                </View>
-                                <Text style={[styles.title, styles.val]}>{'投诉'}</Text>
-                            </TouchableOpacity>
+                            {data.type_cates?.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={item.type + index}
+                                        style={[Style.flexRow, {marginLeft: index !== 0 ? text(48) : 0}]}
+                                        onPress={() => setType(index)}>
+                                        <View style={[Style.flexCenter, styles.radioBox]}>
+                                            {type === index && <View style={styles.radio} />}
+                                        </View>
+                                        <Text style={[styles.title, styles.val]}>{item.type}</Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
                         </View>
                     </View>
                     <View style={styles.borderTop}>
                         <TouchableOpacity style={[Style.flexBetween, {height: text(56)}]} onPress={showPicker}>
                             <Text style={styles.title}>{'分类'}</Text>
                             <View style={Style.flexRow}>
-                                <Text style={[styles.title, styles.val, {marginRight: text(12)}]}>{sort.key}</Text>
+                                <Text style={[styles.title, styles.val, {marginRight: text(12)}]}>{sort.value}</Text>
                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
                             </View>
                         </TouchableOpacity>
@@ -159,15 +145,15 @@ const ComplaintsAdvices = () => {
                 </View>
                 <View style={styles.partBox}>
                     <Text style={[styles.title, {marginTop: Space.marginVertical, marginBottom: text(4)}]}>
-                        {'内容描述'}
+                        {data.content?.desc}
                     </Text>
                     <TextInput
                         editable
-                        maxLength={200}
+                        maxLength={data.content?.limit}
                         multiline
                         numberOfLines={4}
                         onChangeText={(value) => setContent(value)}
-                        placeholder={'请输入您的宝贵意见，我们会为您不断改善'}
+                        placeholder={data.content?.prmt}
                         placeholderTextColor={'#CCD0DB'}
                         style={styles.input}
                         value={content}
@@ -177,10 +163,10 @@ const ComplaintsAdvices = () => {
                             styles.wordNum,
                             {textAlign: 'right', marginTop: text(4), marginBottom: Space.marginVertical},
                         ]}>
-                        {content.length}/200
+                        {content.length}/{data.content?.limit}
                     </Text>
                 </View>
-                <Button style={styles.btn} title={'提交'} />
+                <Button disabled={!data.button?.avail} style={styles.btn} title={data.button?.text} />
             </ScrollView>
         </Animated.View>
     );
@@ -210,8 +196,8 @@ const styles = StyleSheet.create({
     val: {
         lineHeight: text(24),
         color: Colors.lightGrayColor,
-        fontFamily: Font.numMedium,
-        fontWeight: '500',
+        // fontFamily: Font.numMedium,
+        // fontWeight: '500',
     },
     wordNum: {
         fontSize: Font.textH3,

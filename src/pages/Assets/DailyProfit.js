@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:01:09
+ * @LastEditTime: 2021-03-05 10:20:28
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -49,11 +49,17 @@ const DailyProfit = ({poid}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染收益更新说明头部
     const renderHeader = useCallback((section, index, isActive) => {
         return (
@@ -213,40 +219,21 @@ const DailyProfit = ({poid}) => {
     }, [list]);
     return (
         <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            {list.length > 0 ? (
-                <FlatList
-                    data={list}
-                    // sections={[{title: 'list', data: list}]}
-                    initialNumToRender={20}
-                    keyExtractor={(item, index) => item + index}
-                    ListFooterComponent={renderFooter}
-                    ListEmptyComponent={renderEmpty}
-                    ListHeaderComponent={renderSectionHeader}
-                    onEndReached={onEndReached}
-                    onEndReachedThreshold={0.5}
-                    onRefresh={onRefresh}
-                    refreshing={refreshing}
-                    renderItem={renderItem}
-                    // renderSectionHeader={renderSectionHeader}
-                    style={[{backgroundColor: '#fff'}]}
-                />
-            ) : (
-                <>
-                    <View style={styles.updateDesc}>
-                        <Accordion
-                            activeSections={activeSections}
-                            expandMultiple
-                            onChange={(indexes) => setActiveSections(indexes)}
-                            renderContent={renderTable}
-                            renderHeader={renderHeader}
-                            sections={[1]}
-                            touchableComponent={TouchableOpacity}
-                            touchableProps={{activeOpacity: 1}}
-                        />
-                    </View>
-                    {renderEmpty()}
-                </>
-            )}
+            <FlatList
+                data={list}
+                // sections={[{title: 'list', data: list}]}
+                initialNumToRender={20}
+                keyExtractor={(item, index) => item + index}
+                ListFooterComponent={renderFooter}
+                ListEmptyComponent={renderEmpty}
+                ListHeaderComponent={renderSectionHeader}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.5}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                renderItem={renderItem}
+                style={[{backgroundColor: '#fff'}]}
+            />
         </View>
     );
 };

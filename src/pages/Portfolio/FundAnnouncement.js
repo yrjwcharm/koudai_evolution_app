@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:18:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 16:15:32
+ * @LastEditTime: 2021-03-05 10:21:52
  * @Description: 基金公告
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -43,11 +43,17 @@ const FundAnnouncement = ({navigation, route}) => {
         setPage(1);
     }, []);
     // 上拉加载
-    const onEndReached = useCallback(() => {
-        if (hasMore) {
-            setPage((p) => p + 1);
-        }
-    }, [hasMore]);
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
     // 渲染底部
     const renderFooter = useCallback(() => {
         return (
@@ -99,7 +105,7 @@ const FundAnnouncement = ({navigation, route}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.1}
+                onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}

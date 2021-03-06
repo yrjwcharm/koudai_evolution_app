@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 17:43:31
+ * @LastEditTime: 2021-03-05 16:41:37
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -116,6 +116,7 @@ export const areaChart = (
         '#5E71E8',
         '#EBDD69',
     ],
+    alias = {},
     percent = false,
     tofixed = 2
 ) => `
@@ -132,7 +133,7 @@ chart.scale('date', {
   range: [0, 1]
 });
 chart.scale('value', {
-  alias: '累计收益(元)',
+  alias: '${alias.value || 'value'}',
   tickCount: 6,
   range: [ 0, 1 ]
 });
@@ -333,11 +334,11 @@ export const percentStackColumn = (
     },
   });
   chart.tooltip(false);
-  const settingInstance = chart.interval()
+  chart.interval()
     .position('date*percent')
     .color('type', ${JSON.stringify(colors)})
-    .adjust('${type}');
-    settingInstance.size(10);
+    .adjust('${type}')
+    .size(10);
   chart.render();
 })();
 `;
@@ -370,18 +371,26 @@ export const basicPieChart = (
     pixelRatio: window.devicePixelRatio
   });
   chart.source(${JSON.stringify(data)});
-  chart.scale('percent', percent: {
+  chart.scale('percent', {
     formatter: function formatter(val) {
       return val + '%';
     }
   });
-  chart.legend('type', {
+  chart.legend({
     position: 'bottom',
     align: 'center',
-    // wordSpace: 14,
+    itemMarginBottom: 6,
     itemFormatter: function itemFormatter(val) {
       return val + '  ' + map[val];
-    }
+    },
+    marker: {
+      symbol: 'circle', // marker 的形状
+      radius: 5 // 半径大小
+    },
+    titleStyle: {
+      fontSize: 13,
+      color: '#4E556C',
+    },
   });
   chart.coord('polar', {
     transposed: true,
@@ -392,7 +401,7 @@ export const basicPieChart = (
   chart.tooltip(false);
   chart.interval()
     .position('a*percent')
-    .color('type', ${JSON.stringify(colors)})
+    .color('name', ${JSON.stringify(colors)})
     .adjust('stack');
   chart.render();
 })();

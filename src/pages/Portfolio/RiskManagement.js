@@ -1,63 +1,46 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-03-01 14:34:41
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-06 09:58:48
+ * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
  */
 import React, {Component} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Chart} from '../../components/Chart';
-import data from '../Chart/data.json';
+// import data from '../Chart/data.json';
 // import {area} from '../Chart/chartOptions';
 import Html from '../../components/RenderHtml';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import http from '../../services';
+import BottomDesc from '../../components/BottomDesc';
 
-const area = (data) => `
+const area = (source, alias = [], percent = true, tofixed = 0) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio
   });
   
-  chart.source(${JSON.stringify(data)}, {
+  chart.source(${JSON.stringify(source)}, {
     date: {
       range: [ 0, 1 ],
       type: 'timeCat',
-      mask: 'MM-DD'
+      tickCount: 3,
     },
     value: {
-      max: 300,
-      tickCount: 4
+      tickCount: 4,
+      formatter: (value) => {
+        return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
+      }
     }
   });
   chart.tooltip({
     showCrosshairs: true,
     custom: true, // 自定义 tooltip 内容框
-    onChange: function onChange(obj) {
-      const legend = chart.get('legendController').legends.top[0];
-      const tooltipItems = obj.items;
-      const legendItems = legend.items;
-      const map = {};
-      legendItems.forEach(function(item) {
-        map[item.name] = item;
-      });
-      tooltipItems.forEach(function(item) {
-        const name = item.name;
-        const value = item.value;
-        if (map[name]) {
-          map[name].value = value;
-        }
-      });
-      legend.setItems(Object.values(map));
-    },
-    onHide: function onHide() {
-      const legend = chart.get('legendController').legends.top[0];
-      legend.setItems(chart.getLegendItems().country);
-    }
+    showTooltipMarker: false,
   });
   chart.axis('date', {
     label: function label(text, index, total) {
@@ -70,24 +53,33 @@ const area = (data) => `
       return textCfg;
     }
   });
-  chart.guide().line({
-    start: [ 'min', 125 ],
-    end: [ 'max', 125 ],
-    style: {
-      stroke: '#4E556C',
-      lineWidth: 1,
-      lineCap: 'round',
-      lineDash: [5, 5, 5]
-    }
+  chart.legend('type', {
+      position: 'bottom',
+      align: 'center',
+      marker: {
+        symbol: 'square',
+        radius: 4,
+      },
+      nameStyle: {
+        fill: '${Colors.defaultColor}', // 文本的颜色
+        fontSize: 12, // 文本大小
+      }
   });
-  chart.area()
-    .position('date*value')
-    .color('city')
-    .adjust('stack');
   chart.line()
     .position('date*value')
-    .color('city')
-    .adjust('stack');
+    .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor, Colors.descColor])})
+    .shape('smooth')
+    .style('type', {
+        lineWidth: 1,
+        lineDash(val) {
+            if (val === '${alias[2]}') return [5, 5, 5];
+            else return [];
+        }
+    });
+  chart.area()
+    .position('date*value')
+    .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor, 'transparent'])})
+    .shape('smooth');
   chart.render();
 })();
 `;
@@ -97,62 +89,93 @@ class RiskManagement extends Component {
         super(props);
         this.state = {
             data: {},
+            alias: [],
+            refreshing: false,
         };
     }
     componentDidMount() {
-        // const { risk } = this.props.route.params || {};
-        // http.get('/portfolio/risk_conrol/20210101', { risk }).then(res => {
-        //   this.setState({ data: res.result });
-        //   this.props.navigation.setOptions({ title: res.result.title });
-        // });
+        this.init();
     }
+    init = () => {
+        const {upid} = this.props.route.params || {};
+        http.get('/portfolio/risk_control/20210101', {upid: upid || 8}).then((res) => {
+            if (res.code === '000000') {
+                const alias = [];
+                res.result.chart.map((item) => {
+                    if (item.ratio) {
+                        item.value = item.ratio;
+                        item.type = item.cate;
+                        delete item.ratio;
+                        delete item.cate;
+                    }
+                    if (alias.indexOf(item.type) === -1) {
+                        alias.push(item.type);
+                    }
+                });
+                this.setState({data: res.result, alias, refreshing: false});
+                this.props.navigation.setOptions({title: res.result.title || '风险控制'});
+            }
+        });
+    };
     render() {
+        const {data, alias, refreshing} = this.state;
         return (
-            <ScrollView style={[styles.container]}>
+            <ScrollView
+                style={[styles.container]}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
                 <View style={[styles.topPart]}>
                     <View style={[styles.chartContainer]}>
                         <Text style={[styles.chartTitle]}>最大回撤走势图</Text>
-                        <Chart initScript={area(data)} />
+                        {data.chart && <Chart initScript={area(data.chart || [], alias)} data={data.chart || []} />}
                     </View>
-                    <View style={[styles.tabelWrap]}>
-                        <View style={[styles.tabelRow, Style.flexRow]}>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]} />
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
-                                <Text style={[styles.tabelTitle]}>智能组合</Text>
+                    {data.table && (
+                        <View style={[styles.tabelWrap]}>
+                            <View style={[styles.tabelRow, Style.flexRow]}>
+                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]} />
+                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
+                                    <Text style={[styles.tabelTitle]}>{data.table.th[1]}</Text>
+                                </View>
+                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
+                                    <Text style={[styles.tabelTitle]}>{data.table.th[2]}</Text>
+                                </View>
                             </View>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
-                                <Text style={[styles.tabelTitle]}>比较基准</Text>
-                            </View>
+                            {data.table.tr_list.map((item, index) => {
+                                return (
+                                    <View
+                                        key={`row${index}`}
+                                        style={[
+                                            styles.tabelRow,
+                                            Style.flexRow,
+                                            {backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor},
+                                        ]}>
+                                        <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]}>
+                                            <Text style={[styles.columnText]}>{item[0].split(' ')[0]}</Text>
+                                            {item[0].split(' ')[1] && (
+                                                <Text
+                                                    style={[
+                                                        styles.columnText,
+                                                        {fontSize: Font.textSm, fontFamily: 'DIN-Regular'},
+                                                    ]}>
+                                                    {item[0].split(' ')[1]}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
+                                            <Text style={[styles.columnText, {color: Colors.green}]}>{item[1]}</Text>
+                                        </View>
+                                        <View
+                                            style={[
+                                                styles.tableCell,
+                                                Style.flexCenter,
+                                                {flex: 1, borderRightWidth: 0},
+                                            ]}>
+                                            <Text style={[styles.columnText, {color: Colors.green}]}>{item[2]}</Text>
+                                        </View>
+                                    </View>
+                                );
+                            })}
                         </View>
-                        <View style={[styles.tabelRow, Style.flexRow, {backgroundColor: '#fff'}]}>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]}>
-                                <Text style={[styles.columnText]}>股灾</Text>
-                                <Text style={[styles.columnText, {fontSize: Font.textSm, fontFamily: 'DIN-Regular'}]}>
-                                    2020/05/23~2020/05/23
-                                </Text>
-                            </View>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
-                                <Text style={[styles.columnText, {color: Colors.green}]}>-13.62%</Text>
-                            </View>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
-                                <Text style={[styles.columnText, {color: Colors.green}]}>-33.62%</Text>
-                            </View>
-                        </View>
-                        <View style={[styles.tabelRow, Style.flexRow]}>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]}>
-                                <Text style={[styles.columnText]}>股灾</Text>
-                                <Text style={[styles.columnText, {fontSize: Font.textSm, fontFamily: Font.numRegular}]}>
-                                    2020/05/23~2020/05/23
-                                </Text>
-                            </View>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
-                                <Text style={[styles.columnText, {color: Colors.green}]}>-13.62%</Text>
-                            </View>
-                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
-                                <Text style={[styles.columnText, {color: Colors.green}]}>-33.62%</Text>
-                            </View>
-                        </View>
-                    </View>
+                    )}
                 </View>
                 <View style={[styles.riskNoticeWrap]}>
                     <View style={[styles.noticeTitleBox]}>
@@ -161,10 +184,11 @@ class RiskManagement extends Component {
                     <Html
                         style={styles.noticeContent}
                         html={
-                            '内容内容内容内容内容内容内容内容内容内容内容\n内容内容内容内容\n内容内容内容内容\n内容内容内容内容内容内容内容内容\n内容内容内容内容内容内容内容内容\n内容内容内容内容内容内容内容内容\n'
+                            '理财魔方智能投资管理系统全天候监控：\n1）全市场的系统性风险；\n2）各类资产的市场风险；\n3）单只基金具体投资的风险。\n理财魔方对投资组合的风险控制通过“调仓”操作实现。\n\n当出现如下风险/潜在风险事件时，系统将自动计算得出调仓建议：\n1) 在某类资产预期走势变强/变弱时管理买入/卖出该类资产；\n2) 当某类资产/基金的风险积聚/释放时逐渐降低/调高某类资产/基金的配置比重；\n3) 在市场性风险突然来临时，对某些资产进行止损操作。\n请您密切关注理财魔方智能投资管理系统给出的调仓信号。调仓信号不构成投资建议，您需要自行承担调仓或继续持有的风险。\n'
                         }
                     />
                 </View>
+                <BottomDesc />
             </ScrollView>
         );
     }
@@ -188,7 +212,7 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.defaultColor,
         textAlign: 'center',
-        paddingVertical: text(10),
+        paddingTop: text(10),
     },
     tabelWrap: {
         borderRadius: text(4),
@@ -215,6 +239,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         color: Colors.descColor,
+        textAlign: 'center',
     },
     riskNoticeWrap: {
         margin: Space.marginAlign,
