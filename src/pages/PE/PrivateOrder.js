@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-02-24 17:06:50
+ * @LastEditTime: 2021-03-06 13:31:41
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
@@ -14,6 +14,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import Http from '../../services';
 import {Toast} from '../../components/Toast';
+import {Modal} from '../../components/Modal';
 export default class PrivateOrder extends Component {
     constructor(props) {
         super(props);
@@ -89,7 +90,12 @@ export default class PrivateOrder extends Component {
             mobile: this.state.data.quote.phone,
         }).then((res) => {
             if (res.code === '000000') {
-                Toast.show('预约成功');
+                Modal.show({
+                    title: '恭喜您预约成功',
+                    content: '已成功预约',
+                    confirmText: '确定',
+                });
+                // Toast.show('预约成功');
             }
         });
     };

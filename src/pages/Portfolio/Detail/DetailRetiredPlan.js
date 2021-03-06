@@ -26,7 +26,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import Table from '../components/Table';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-export default function DetailProvideOrder() {
+export default function DetailRetiredPlan() {
     const [data, setData] = useState({});
     const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');

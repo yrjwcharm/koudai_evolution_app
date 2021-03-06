@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 18:40:56
+ * @LastEditTime: 2021-03-06 13:38:45
  */
 import _ from 'lodash';
 export const baseChart = (data) => `(function(){
@@ -156,8 +156,8 @@ export const histogram = (data) =>
       marginRatio: 0.4// 设置分组间柱子的间距
     });
     chart.guide().line({ // 绘制辅助线
-      start: [ 'min', -10 ],
-      end: [ 'max', -10 ],
+      start: [ 'min', -1 ],
+      end: [ 'max', -1 ],
       style: {
         stroke: '#4E556C',
         lineDash: [ 2 ]

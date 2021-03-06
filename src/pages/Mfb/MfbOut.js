@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 18:31:33
+ * @LastEditTime: 2021-03-05 19:24:53
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -31,12 +31,13 @@ class MfbOut extends Component {
             optionChoose: 0,
             tips: '',
             enable: false,
+            code: props.route.code,
         };
     }
 
     UNSAFE_componentWillMount() {
-        const selectData = this.state.selectData;
-        http.get('/wallet/withdraw/info/20210101').then((data) => {
+        const {selectData, code} = this.state;
+        http.get('/wallet/withdraw/info/20210101', {code: code}).then((data) => {
             selectData['comAmount'] = data.result.pay_methods[0].common_withdraw_amount;
             selectData['comText'] = data.result.pay_methods[0].common_withdraw_subtext;
             selectData['quickAmount'] = data.result.pay_methods[0].quick_withdraw_amount;
@@ -151,14 +152,17 @@ class MfbOut extends Component {
         });
     }
     // 提交数据
-    submitData = () => {
+    submitData = (password) => {
+        const {code, amount, data, bankSelect, optionChoose} = this.state;
         this.setState({password: this.state.password}, () => {
             http.post('/wallet/withdraw/do/20210101', {
-                code: '',
-                amount: this.state.amount,
-                password: this.state.password,
+                code: code,
+                amount: amount,
+                password: password,
+                pay_method: data.pay_methods[bankSelect].pay_method,
+                type: optionChoose,
             }).then((res) => {
-                this.props.navigation.navigate('TradeProcessing', res.result.txn_id);
+                this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
             });
         });
     };
@@ -243,15 +247,18 @@ class MfbOut extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(index) =>
+                    onDone={(index) => {
                         this.getBankInfo(
                             index,
                             pay_methods[index]?.common_withdraw_amount,
                             pay_methods[index]?.common_withdraw_subtext,
                             pay_methods[index]?.quick_withdraw_amount,
                             pay_methods[index]?.quick_withdraw_subtext
-                        )
-                    }
+                        );
+                        this.setState({
+                            bankSelect: index,
+                        });
+                    }}
                 />
             </ScrollView>
         );
