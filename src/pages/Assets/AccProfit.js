@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:09:28
+ * @LastEditTime: 2021-03-05 10:39:48
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -146,7 +146,13 @@ const AccProfit = ({poid}) => {
                 <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>{chartData.profit_acc}</Text>
                 <View style={[styles.chart]}>
                     <Chart
-                        initScript={areaChart(chartData.chart, [Colors.red, Colors.lightBlackColor], false, 0)}
+                        initScript={areaChart(
+                            chartData.chart,
+                            [Colors.red, Colors.lightBlackColor],
+                            {value: chartData.title},
+                            false,
+                            0
+                        )}
                         data={chartData.chart}
                     />
                 </View>

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 10:31:10
- * @LastEditTime: 2021-01-21 11:50:08
+ * @LastEditTime: 2021-03-06 13:31:04
  * @LastEditors: dx
  * @Description: 用户协议(接口返回内容)
  * @FilePath: /koudai_evolution_app/src/pages/Index/Agreement.js
@@ -21,9 +21,9 @@ export class Agreement extends Component {
         data: {},
     };
     componentDidMount() {
-        http.get('/common/passport/agreement/20200808', {type: this.props.route.params.type}).then((res) => {
+        http.get('/passport/agreement/detail/20210101', {id: this.props.route.params?.id}).then((res) => {
             this.setState({data: res.result});
-            this.props.navigation.setOptions({title: res.result.title});
+            this.props.navigation.setOptions({title: res.result.title || '用户协议'});
         });
     }
     render() {

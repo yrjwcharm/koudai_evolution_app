@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 15:54:29
+ * @LastEditTime: 2021-03-06 13:57:14
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -187,6 +187,9 @@ export class bankInfo extends Component {
     };
 
     back = (e) => {
+        if (e.data.action.type == 'REPLACE') {
+            return;
+        }
         e.preventDefault();
         Modal.show({
             title: '结束开户',

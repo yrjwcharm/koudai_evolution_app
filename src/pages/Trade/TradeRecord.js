@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 16:30:03
+ * @LastEditTime: 2021-03-05 19:08:40
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -15,6 +15,7 @@ import {Colors, Style, Font} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
 const trade_type = [0, 3, 5, 6, 4, 7];
+const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
@@ -22,10 +23,11 @@ const TradeRecord = ({route, navigation}) => {
     const [loading, setLoading] = useState(true);
     const [tabActive, setActiveTab] = useState(0);
     const jump = useJump();
+    const isMfb = route?.params?.fr == 'mfb';
     const getData = useCallback(() => {
         setLoading(true);
-        http.get('/order/records/20210101', {
-            type: trade_type[tabActive],
+        http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
+            type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
             page: page,
             poid: route.params?.poid,
         })
@@ -43,7 +45,7 @@ const TradeRecord = ({route, navigation}) => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [page, tabActive, route]);
+    }, [page, tabActive, route, isMfb]);
     useEffect(() => {
         getData();
     }, [getData]);
@@ -120,7 +122,7 @@ const TradeRecord = ({route, navigation}) => {
                         </View>
                         <View style={[Style.flexBetween, {paddingVertical: px(13)}]}>
                             {item?.items.map((_item, _index) => (
-                                <View style={{alignItems: 'center'}}>
+                                <View style={{alignItems: 'center'}} key={_index}>
                                     <Text style={styles.light_text}>{_item.k}</Text>
                                     <Text
                                         style={[
@@ -168,28 +170,43 @@ const TradeRecord = ({route, navigation}) => {
             />
         );
     };
+
     return (
         <View style={{flex: 1, paddingTop: 1}}>
-            <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
-                <View tabLabel="全部" style={styles.container}>
-                    {renderContent()}
-                </View>
-                <View tabLabel="购买" style={styles.container}>
-                    {renderContent()}
-                </View>
-                <View tabLabel="定投" style={styles.container}>
-                    {renderContent()}
-                </View>
-                <View tabLabel="调仓" style={styles.container}>
-                    {renderContent()}
-                </View>
-                <View tabLabel="赎回" style={styles.container}>
-                    {renderContent()}
-                </View>
-                <View tabLabel="分红" style={styles.container}>
-                    {renderContent()}
-                </View>
-            </ScrollableTabView>
+            {isMfb ? (
+                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
+                    <View tabLabel="全部" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="充值" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="提现" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                </ScrollableTabView>
+            ) : (
+                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
+                    <View tabLabel="全部" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="购买" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="定投" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="调仓" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="赎回" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                    <View tabLabel="分红" style={styles.container}>
+                        {renderContent()}
+                    </View>
+                </ScrollableTabView>
+            )}
         </View>
     );
 };

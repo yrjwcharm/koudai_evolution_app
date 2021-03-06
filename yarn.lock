@@ -7101,10 +7101,10 @@ react-native-device-info@^7.0.2:
   resolved "https://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-7.4.0.tgz?cache=0&sync_timestamp=1610299184249&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-device-info%2Fdownload%2Freact-native-device-info-7.4.0.tgz#694deddfc6de0ff7268ff463d84693ee980c683c"
   integrity sha1-aU3t38beD/cmj/Rj2EaT7pgMaDw=
 
-react-native-easy-chat-ui@^0.4.13:
-  version "0.4.13"
-  resolved "https://registry.npm.taobao.org/react-native-easy-chat-ui/download/react-native-easy-chat-ui-0.4.13.tgz#ee43f4785ea37cce171602714abc60e76e133646"
-  integrity sha1-7kP0eF6jfM4XFgJxSrxg524TNkY=
+react-native-easy-chat-ui@^0.4.14:
+  version "0.4.14"
+  resolved "https://registry.npm.taobao.org/react-native-easy-chat-ui/download/react-native-easy-chat-ui-0.4.14.tgz#517c004a1732dcb837d290ba5a8f5e7d4451517d"
+  integrity sha1-UXwAShcy3Lg30pC6Wo9efURRUX0=
   dependencies:
     moment "^2.22.2"
 

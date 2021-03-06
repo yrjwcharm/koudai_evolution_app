@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:10:20
+ * @LastEditTime: 2021-03-05 15:38:05
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -64,7 +64,9 @@ const Profile = ({navigation}) => {
 
     useEffect(() => {
         http.get('/user_info/20210101', {}).then((res) => {
-            console.log(res);
+            if (res.code === '000000') {
+                setData(res.result);
+            }
         });
     }, [navigation]);
     return (

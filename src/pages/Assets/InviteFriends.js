@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-02 16:32:19
+ * @LastEditTime: 2021-03-05 14:53:19
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,11 +15,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
-import {Button} from '../../components/Button';
+import {ShareModal} from '../../components/Modal';
 import HTML from '../../components/RenderHtml';
 
 const InviteFriends = ({navigation}) => {
-    const [activeSections, setActiveSections] = useState([0]);
+    const [activeSections, setActiveSections] = useState([]);
+    const [data, setData] = useState({});
+    const shareModal = useRef(null);
 
     const renderHeader = (section, index, isActive) => {
         return (
@@ -31,33 +33,42 @@ const InviteFriends = ({navigation}) => {
     };
     const renderContent = () => {
         return (
-            <View style={{paddingHorizontal: Space.padding, paddingBottom: text(20)}}>
+            <View style={{paddingHorizontal: Space.padding, paddingBottom: data.has_more ? 0 : Space.padding}}>
                 <View style={[Style.flexRow, styles.tableHead]}>
-                    <Text style={[styles.desc, styles.headText, {textAlign: 'left'}]}>{'邀请用户'}</Text>
+                    <Text style={[styles.desc, styles.headText, {textAlign: 'left'}]}>{'日期'}</Text>
                     <Text style={[styles.desc, styles.headText]}>{'用户状态'}</Text>
                     <Text style={[styles.desc, styles.headText, {textAlign: 'right'}]}>{'获得魔分'}</Text>
                 </View>
-                <View style={[Style.flexRow, {height: text(30)}]}>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'left', fontFamily: Font.numRegular}]}>
-                        {'186****6677'}
-                    </Text>
-                    <Text style={[styles.desc, styles.rowText]}>{'已注册'}</Text>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'right'}]}>{'--'}</Text>
-                </View>
-                <View style={[Style.flexRow, {height: text(30)}]}>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'left', fontFamily: Font.numRegular}]}>
-                        {'186****6677'}
-                    </Text>
-                    <Text style={[styles.desc, styles.rowText]}>{'已购买'}</Text>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'right'}]}>{'5000魔分'}</Text>
-                </View>
-                <View style={[Style.flexRow, {height: text(30)}]}>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'left', fontFamily: Font.numRegular}]}>
-                        {'186****6677'}
-                    </Text>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'center'}]}>{'已购买'}</Text>
-                    <Text style={[styles.desc, styles.rowText, {textAlign: 'right'}]}>{'5000魔分'}</Text>
-                </View>
+                {data.invitees?.map((item, index) => {
+                    return (
+                        <View key={`row${index}`} style={[Style.flexRow, {height: text(30)}]}>
+                            <Text
+                                style={[styles.desc, styles.rowText, {textAlign: 'left', fontFamily: Font.numRegular}]}>
+                                {item[0]}
+                            </Text>
+                            <Text style={[styles.desc, styles.rowText, {flex: 1.5}]}>
+                                <Text style={{fontFamily: Font.numRegular}}>{item[1]} </Text>({item[2]})
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.desc,
+                                    styles.rowText,
+                                    {textAlign: 'right', fontFamily: Font.numRegular},
+                                ]}>
+                                {item[3]}
+                            </Text>
+                        </View>
+                    );
+                })}
+                {data.has_more && (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.moreRecord, Style.flexCenter]}
+                        onPress={() => navigation.navigate('InviteRecord')}>
+                        <Text style={[styles.moreText]}>{'查看更多'}</Text>
+                        <Icon name={'angle-right'} size={20} color={Colors.brandColor} style={{marginLeft: text(4)}} />
+                    </TouchableOpacity>
+                )}
             </View>
         );
     };
@@ -72,28 +83,31 @@ const InviteFriends = ({navigation}) => {
                 </>
             ),
         });
+        http.get('/promotion/invite/summary/20210101').then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+            }
+        });
     }, [navigation]);
 
     return (
         <ScrollView style={styles.container}>
-            <Image
-                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/03/yq_banner.png'}}
-                style={styles.banner}
-            />
+            <Image source={{uri: data.banner}} style={styles.banner} />
             <View style={styles.inviteBox}>
-                <Image
-                    source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/03/yq_step.png'}}
-                    style={styles.stepImg}
-                />
+                <Image source={{uri: data.step_image}} style={styles.stepImg} />
                 <View style={[Style.flexRow, styles.stepBox]}>
-                    <Text style={[styles.desc, {width: text(73)}]}>{'邀请好友注册'}</Text>
-                    <Text style={[styles.desc, {width: text(73)}]}>{'好友成功购买智能组合'}</Text>
-                    <Text style={[styles.desc, {width: text(73)}]}>{'您获得红包5000魔分'}</Text>
+                    {data.steps?.map((step, index) => {
+                        return (
+                            <Text key={`step${index}`} style={[styles.desc, {width: text(73)}]}>
+                                {step}
+                            </Text>
+                        );
+                    })}
                 </View>
                 <View style={[Style.flexRow, {marginBottom: text(28)}]}>
                     <View style={[Style.flexCenter, {flex: 1}, styles.borderRight]}>
                         <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(11)}]}>
-                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{'10000'}</Text>
+                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.bonus || '****'}</Text>
                             <Text style={[styles.desc, {color: Colors.lightGrayColor, marginBottom: text(3)}]}>
                                 {'魔分'}
                             </Text>
@@ -102,7 +116,7 @@ const InviteFriends = ({navigation}) => {
                     </View>
                     <View style={[Style.flexCenter, {flex: 1}]}>
                         <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(11)}]}>
-                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{'12'}</Text>
+                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.count || '**'}</Text>
                             <Text style={[styles.desc, {color: Colors.lightGrayColor, marginBottom: text(3)}]}>
                                 {'人'}
                             </Text>
@@ -118,7 +132,10 @@ const InviteFriends = ({navigation}) => {
                     />
                 </TouchableOpacity> */}
                 {/* <Button title={'邀请好友赚魔分'} color={'#FFD666'} style={styles.btn} textStyle={styles.btnText} /> */}
-                <TouchableOpacity style={[styles.btn, {backgroundColor: 'transparent'}]}>
+                <TouchableOpacity
+                    onPress={() => shareModal.current.show()}
+                    activeOpacity={0.8}
+                    style={[styles.btn, {backgroundColor: 'transparent'}]}>
                     <LinearGradient
                         colors={['#FFF0B3', '#FFDC77', '#FFD666', '#FEC340']}
                         style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
@@ -146,6 +163,7 @@ const InviteFriends = ({navigation}) => {
                     style={styles.rules}
                 />
             </View>
+            <ShareModal ref={shareModal} title={'邀请好友'} />
         </ScrollView>
     );
 };
@@ -250,6 +268,15 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(21),
         color: Colors.lightGrayColor,
+    },
+    moreRecord: {
+        paddingVertical: text(14),
+        flexDirection: 'row',
+    },
+    moreText: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.brandColor,
     },
 });
 
