@@ -2,11 +2,11 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 19:12:38
+ * @LastEditTime: 2021-03-06 15:41:33
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import {Colors, Font, Style} from '../../common/commonStyle.js';
@@ -42,6 +42,7 @@ class TradeBuy extends Component {
             poid: this.props.route?.params?.poid || 1,
             currentDate: '', //定投日期
             nextday: '',
+            buyBtnCanClick: false,
         };
     }
     componentDidMount() {
@@ -80,24 +81,47 @@ class TradeBuy extends Component {
      * @return {*}
      */
     submit = (password) => {
-        const {poid, planData, amount, bankSelect} = this.state;
+        const {poid, planData, amount, bankSelect, type, currentDate} = this.state;
         const {buy_id} = planData;
         let toast = Toast.showLoading();
-        http.post('/trade/buy/do/20210101', {
-            poid,
-            buy_id,
-            amount,
-            password,
-            trade_method: bankSelect?.pay_type,
-            pay_method: bankSelect?.pay_method || '',
-        }).then((res) => {
-            Toast.hide(toast);
-            if (res.code === '000000') {
-                this.props.navigation.navigate('TradeProcessing', res.result);
-            } else {
-                Toast.show(res.message);
-            }
-        });
+
+        type == 0
+            ? http
+                  .post('/trade/buy/do/20210101', {
+                      poid,
+                      buy_id,
+                      amount,
+                      password,
+                      trade_method: bankSelect?.pay_type,
+                      pay_method: bankSelect?.pay_method || '',
+                  })
+                  .then((res) => {
+                      Toast.hide(toast);
+                      if (res.code === '000000') {
+                          this.props.navigation.navigate('TradeProcessing', res.result);
+                      } else {
+                          Toast.show(res.message);
+                      }
+                  })
+            : http
+                  .post('/trade/fix_invest/do/20210101', {
+                      poid,
+                      amount,
+                      password,
+                      trade_method: bankSelect?.pay_type,
+                      pay_method: bankSelect?.pay_method || '',
+                      cycle: currentDate[0],
+                      timing: currentDate[1],
+                      need_buy: this.need_buy,
+                  })
+                  .then((res) => {
+                      Toast.hide(toast);
+                      if (res.code === '000000') {
+                          this.props.navigation.navigate('TradeFixedConfirm', res.result);
+                      } else {
+                          Toast.show(res.message);
+                      }
+                  });
     };
     /**
      * @description:购买计划 生产buyid
@@ -123,7 +147,10 @@ class TradeBuy extends Component {
     onInput = (amount) => {
         this.setState({amount});
         if (amount > this.state.data.buy_info.initial_amount) {
+            this.setState({buyBtnCanClick: true});
             this.plan(amount);
+        } else {
+            this.setState({buyBtnCanClick: false});
         }
     };
     /**
@@ -132,9 +159,31 @@ class TradeBuy extends Component {
      * @return {*}
      */
     buyClick = () => {
+        const {type, data} = this.state;
         global.LogTool('buy');
-        this.passwordModal.show();
-        this.setState({showMask: true});
+        Keyboard.dismiss();
+        if (type == 1 && data.fix_info.first_order) {
+            Modal.show({
+                title: data.fix_modal.title,
+                confirm: true,
+                content: data.fix_modal.content,
+                confirmText: data.fix_modal.confirm_text,
+                cancelText: data.fix_modal.cancel_text,
+                confirmCallBack: () => {
+                    this.passwordModal.show();
+                    this.setState({showMask: true});
+                    this.need_buy = true;
+                },
+                cancleCallBack: () => {
+                    this.passwordModal.show();
+                    this.setState({showMask: true});
+                    this.need_buy = false;
+                },
+            });
+        } else {
+            this.passwordModal.show();
+            this.setState({showMask: true});
+        }
     };
     //清空输入框
     clearInput = () => {
@@ -181,7 +230,7 @@ class TradeBuy extends Component {
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
                 this.setState({showMask: false, currentDate: pickedValue});
-                http.get('/trade/fix_invest/nextday/20210101', {
+                http.get('/trade/fix_invest/next_day/20210101', {
                     cycle: pickedValue[0],
                     timing: pickedValue[1],
                 }).then((res) => {
@@ -447,7 +496,7 @@ class TradeBuy extends Component {
     }
 
     render() {
-        const {showMask, data, type, has_tab} = this.state;
+        const {showMask, data, type, has_tab, buyBtnCanClick} = this.state;
         const {button} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
@@ -466,7 +515,13 @@ class TradeBuy extends Component {
                 ) : (
                     this.render_buy()
                 )}
-                {button && <FixedButton title={button.text} disabled={button.avail == 0} onPress={this.buyClick} />}
+                {button && (
+                    <FixedButton
+                        title={button.text}
+                        disabled={button.avail == 0 || !buyBtnCanClick}
+                        onPress={this.buyClick}
+                    />
+                )}
                 {showMask && <Mask />}
             </View>
         );

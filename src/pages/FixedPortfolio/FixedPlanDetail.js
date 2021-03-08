@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 18:16:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-06 15:33:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -16,7 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
 import FixedBtn from '../Portfolio/components/FixedBtn';
 const deviceWidth = Dimensions.get('window').width;
-export default function FixedPlan() {
+export default function FixedPlan(props) {
     const [data, setData] = useState({});
     const [left, setLeft] = useState('40%');
     const [widthD, setWidthD] = useState('40%');
@@ -37,11 +37,9 @@ export default function FixedPlan() {
         [left]
     );
     useEffect(() => {
-        Http.get('/trade/invest_plan/detail/20210101', {}).then(
-            (res) => {
-                setData(res.result);
-            }
-        );
+        Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
+            setData(res.result);
+        });
     });
     return (
         <>

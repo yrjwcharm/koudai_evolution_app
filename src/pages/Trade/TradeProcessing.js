@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-05 19:23:03
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-06 15:58:57
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -15,7 +15,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
 import Header from '../../components/NavBar';
-
+import {Button} from '../../components/Button';
 const TradeProcessing = ({navigation, route}) => {
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
@@ -52,7 +52,7 @@ const TradeProcessing = ({navigation, route}) => {
                 }
             });
         },
-        [loopRef, timerRef, navigation, signSendVerify, txn_id]
+        [loopRef, timerRef, signSendVerify, txn_id]
     );
     const onLayout = useCallback(
         (index, e) => {
@@ -182,13 +182,7 @@ const TradeProcessing = ({navigation, route}) => {
                             );
                         })}
                 </View>
-                {finish && (
-                    <TouchableOpacity
-                        style={[styles.btn, Style.flexCenter]}
-                        onPress={() => navigation.navigate('Home')}>
-                        <Text style={[styles.btnText]}>{data.button.text}</Text>
-                    </TouchableOpacity>
-                )}
+                {finish && <Button title={data.button.text} onPress={() => navigation.navigate('Home')} />}
 
                 <VerifyCodeModal
                     ref={verifyCodeModel}
@@ -273,18 +267,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCD0DB',
         zIndex: 1,
     },
-    btn: {
-        marginHorizontal: text(80),
-        marginVertical: text(32),
-        borderRadius: text(6),
-        height: text(44),
-        backgroundColor: Colors.brandColor,
-    },
-    btnText: {
-        fontSize: text(15),
-        lineHeight: text(21),
-        color: '#fff',
-    },
+
     caret_sty: {
         position: 'absolute',
         top: text(10),

@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 14:30:37
+ * @LastEditTime: 2021-03-06 16:28:23
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -68,6 +68,20 @@ export default class index extends Component {
                     onChange={(check) => {
                         this.setState({check});
                     }}
+                    data={[
+                        {
+                            title: '《用户协议》',
+                            id: 0,
+                        },
+                        {
+                            title: '《投资人权益协议》',
+                            id: 19,
+                        },
+                        {
+                            title: '《隐私权政策》',
+                            id: 32,
+                        },
+                    ]}
                 />
                 <Button
                     title="立即注册"

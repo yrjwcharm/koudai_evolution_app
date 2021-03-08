@@ -2,7 +2,7 @@
  * @Date: 2021-01-05 16:10:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-21 17:16:37
+ * @LastEditTime: 2021-03-06 16:04:57
  * @Description: 底部弹窗式密码
  */
 import React from 'react';
@@ -13,7 +13,9 @@ import {constants} from './util';
 import {isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
+import {useNavigation} from '@react-navigation/native';
 const PasswordModal = React.forwardRef((props, ref) => {
+    const navigation = useNavigation();
     const {
         onDone, //输入完成回调
         clear = true,
@@ -21,7 +23,12 @@ const PasswordModal = React.forwardRef((props, ref) => {
         header,
         title = '请输入交易密码',
         tip = '忘记交易密码',
-        tipProps,
+        tipProps = {
+            onPress: () => {
+                hide();
+                navigation.navigate('ForgotTradePwd');
+            },
+        },
         inputViewProps = {},
         keyboardProps = {},
         onClose = () => {},

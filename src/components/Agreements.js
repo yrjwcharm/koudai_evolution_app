@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-23 14:10:33
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-06 16:24:07
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -15,7 +15,7 @@ function Agreements(props) {
     const navigation = useNavigation();
     const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
     const jumpPage = (item) => {
-        navigation.navigate('Article');
+        navigation.navigate('Agreement', {id: item.id});
     };
     const [checked, setChecked] = useState(check);
     const toggle = () => {
