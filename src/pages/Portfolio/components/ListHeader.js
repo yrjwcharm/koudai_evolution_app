@@ -3,14 +3,15 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-28 15:39:49
+ * @LastEditTime: 2021-03-06 16:38:14
  */
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {px as text} from '../../../utils/appUtil';
 import PropTypes from 'prop-types';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {useJump} from '../../../components/hooks';
 export default function ListHeader(props) {
     ListHeader.propTypes = {
         data: PropTypes.object,
@@ -23,8 +24,9 @@ export default function ListHeader(props) {
         style: {},
     };
     const {data, color, style} = props;
+    const jump = useJump();
     return (
-        <View style={[Style.flexRow, {paddingBottom: text(12)}, style]}>
+        <TouchableOpacity style={[Style.flexRow, {paddingBottom: text(12)}, style]} onPress={jump(props.url)}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 {data.icon ? (
                     <Image
@@ -37,13 +39,12 @@ export default function ListHeader(props) {
                     <Text style={styles.desc_sty}>{data.tip && data.tip}</Text>
                 </View>
             </View>
-            {data.text ? (
-                <Text style={{color: '#0051CC'}}>
-                    {data.text}
-                    <AntDesign name={'right'} color={color} size={12} />
-                </Text>
-            ) : null}
-        </View>
+
+            <Text style={{color: '#0051CC'}}>
+                {data?.text}
+                <AntDesign name={'right'} color={color} size={12} />
+            </Text>
+        </TouchableOpacity>
     );
 }
 const styles = StyleSheet.create({

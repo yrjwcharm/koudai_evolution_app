@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 12:13:25
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-06 14:29:27
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -23,7 +23,7 @@ import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 import './src/utils/LogTool';
 import Toast from './src/components/Toast';
-// global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
+global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
     if (UIManager.setLayoutAnimationEnabledExperimental) {

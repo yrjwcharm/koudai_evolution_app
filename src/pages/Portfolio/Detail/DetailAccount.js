@@ -2,11 +2,11 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: xjh
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
@@ -27,17 +27,13 @@ import {StackActions} from '@react-navigation/native';
 export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState();
-
-    const year = [
-        {title: '近1年', period: 'y1'},
-        {title: '近3年', period: 'y3'},
-        {title: '近5年', period: 'y5'},
-        {title: '近10年', period: 'y10'},
-        {title: '未来10年', period: 'y100'},
-    ];
-
-    const changeTab = (num, period) => {
+    const [period, setPeriod] = useState('y5');
+    const [summary, setSummary] = useState([]);
+    const [labelInfo, setLabelInfo] = useState([]);
+    const _textTime = useRef(null);
+    const _textPortfolio = useRef(null);
+    const _textBenchmark = useRef(null);
+    const changeTab = (period) => {
         setPeriod(period);
     };
     const jumpPage = (url, params) => {
@@ -50,173 +46,49 @@ export default function DetailAccount(props) {
         Http.get('/portfolio/detail/20210101', {
             upid: props.route?.params?.upid,
         }).then((res) => {
-            setData(res.result);
-            setPeriod(res.result.period);
+            if (res.code === '000000') {
+                setData(res.result);
+                setPeriod(res.result.period);
+            }
         });
-        setChartData([
-            {
-                date: '2021-01-29',
-                type: '本基金',
-                value: 0.0054,
-            },
-            {
-                date: '2021-01-29',
-                type: '同类平均',
-                value: 0.0037,
-            },
-            {
-                date: '2021-02-01',
-                type: '本基金',
-                value: 0.0154,
-            },
-            {
-                date: '2021-02-01',
-                type: '同类平均',
-                value: 0.0132,
-            },
-            {
-                date: '2021-02-02',
-                type: '本基金',
-                value: 0.007,
-            },
-            {
-                date: '2021-02-02',
-                type: '同类平均',
-                value: 0.0037,
-            },
-            {
-                date: '2021-02-03',
-                type: '本基金',
-                value: -0.0004,
-            },
-            {
-                date: '2021-02-03',
-                type: '同类平均',
-                value: -0.0022,
-            },
-            {
-                date: '2021-02-04',
-                type: '本基金',
-                value: -0.0079,
-            },
-            {
-                date: '2021-02-04',
-                type: '同类平均',
-                value: -0.0132,
-            },
-            {
-                date: '2021-02-05',
-                type: '本基金',
-                value: -0.0165,
-            },
-            {
-                date: '2021-02-05',
-                type: '同类平均',
-                value: -0.0169,
-            },
-            {
-                date: '2021-02-08',
-                type: '本基金',
-                value: -0.0107,
-            },
-            {
-                date: '2021-02-08',
-                type: '同类平均',
-                value: -0.0096,
-            },
-            {
-                date: '2021-02-09',
-                type: '本基金',
-                value: 0.0001,
-            },
-            {
-                date: '2021-02-09',
-                type: '同类平均',
-                value: -0.0013,
-            },
-            {
-                date: '2021-02-10',
-                type: '本基金',
-                value: 0.0008,
-            },
-            {
-                date: '2021-02-10',
-                type: '同类平均',
-                value: -0.0006,
-            },
-            {
-                date: '2021-02-18',
-                type: '本基金',
-                value: -0.0278,
-            },
-            {
-                date: '2021-02-18',
-                type: '同类平均',
-                value: -0.0312,
-            },
-            {
-                date: '2021-02-19',
-                type: '本基金',
-                value: -0.0313,
-            },
-            {
-                date: '2021-02-19',
-                type: '同类平均',
-                value: -0.033,
-            },
-            {
-                date: '2021-02-22',
-                type: '本基金',
-                value: -0.0216,
-            },
-            {
-                date: '2021-02-22',
-                type: '同类平均',
-                value: -0.0222,
-            },
-            {
-                date: '2021-02-23',
-                type: '本基金',
-                value: -0.0125,
-            },
-            {
-                date: '2021-02-23',
-                type: '同类平均',
-                value: -0.0162,
-            },
-            {
-                date: '2021-02-24',
-                type: '本基金',
-                value: -0.0144,
-            },
-            {
-                date: '2021-02-24',
-                type: '同类平均',
-                value: -0.0178,
-            },
-            {
-                date: '2021-02-25',
-                type: '本基金',
-                value: -0.0251,
-            },
-            {
-                date: '2021-02-25',
-                type: '同类平均',
-                value: -0.0301,
-            },
-            {
-                date: '2021-02-26',
-                type: '本基金',
-                value: -0.0378,
-            },
-            {
-                date: '2021-02-26',
-                type: '同类平均',
-                value: -0.0426,
-            },
-        ]);
-    }, [period, props.route, props.navigation]);
+    }, [props.route]);
+    useEffect(
+        () => {
+            if (Object.keys(data).length > 0) {
+                Http.get('/portfolio/yield_chart/20210101', {
+                    allocation_id: data.allocation_id,
+                    benchmark_id: data.benchmark_id,
+                    period: period,
+                    type: 1,
+                }).then((res) => {
+                    setLabelInfo(res.result.yield_info.label);
+                    setChartData(res.result.yield_info);
+                    setSummary(res.result.yield_info.label);
+                });
+            }
+        },
+        [period],
+        data
+    );
 
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({text: items[0]?.value});
+            _textBenchmark.current.setNativeProps({text: items[1]?.value});
+        },
+        [props.route, period]
+    );
+    // 图表滑动结束
+    const onHide = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: labelInfo[0].val});
+            _textPortfolio.current.setNativeProps({text: labelInfo[1].val});
+            _textBenchmark.current.setNativeProps({text: labelInfo[2].val});
+        },
+        [props.route, period]
+    );
     return (
         <>
             {Object.keys(data).length > 0 ? (
@@ -235,42 +107,58 @@ export default function DetailAccount(props) {
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                     </View>
-                    <View style={{height: 280, backgroundColor: '#fff'}}>
+                    <View style={{height: 380, backgroundColor: '#fff'}}>
                         <View style={[Style.flexRow]}>
                             <View style={styles.legend_sty}>
-                                <Text style={styles.legend_title_sty}>2020-11</Text>
-                                <Text style={styles.legend_desc_sty}>时间</Text>
+                                <TextInput
+                                    ref={_textTime}
+                                    style={styles.legend_title_sty}
+                                    defaultValue={summary[0]?.val}
+                                />
+                                <Text style={styles.legend_desc_sty}>{summary[0]?.key}</Text>
                             </View>
                             <View style={styles.legend_sty}>
-                                <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>15.15%</Text>
+                                <TextInput
+                                    style={[styles.legend_title_sty, {color: '#E74949'}]}
+                                    ref={_textPortfolio}
+                                    defaultValue={summary[1]?.val}
+                                />
                                 <Text>
                                     <MaterialCommunityIcons
                                         name={'record-circle-outline'}
                                         color={'#E74949'}
                                         size={12}
                                     />
-                                    <Text style={styles.legend_desc_sty}>短期账户</Text>
+                                    <Text style={styles.legend_desc_sty}>{summary[1]?.key}</Text>
                                 </Text>
                             </View>
                             <View style={styles.legend_sty}>
-                                <Text style={styles.legend_title_sty}>8.12%</Text>
+                                <TextInput
+                                    style={[styles.legend_title_sty, {color: '#E74949'}]}
+                                    ref={_textBenchmark}
+                                    defaultValue={summary[2]?.val}
+                                />
                                 <Text>
                                     <MaterialCommunityIcons
                                         name={'record-circle-outline'}
                                         color={'#545968'}
                                         size={12}
                                     />
-                                    <Text style={styles.legend_desc_sty}>比较基准</Text>
+                                    <Text style={styles.legend_desc_sty}>{summary[2]?.key}</Text>
                                 </Text>
                             </View>
                         </View>
                         <Chart
                             initScript={baseAreaChart(
-                                chartData,
-                                ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor],
+                                chartData?.chart,
+                                ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor, 'transparent'],
+                                ['l(90) 0:#E74949 1:#fff', 'transparent', 'green'],
                                 true
                             )}
-                            data={chartData}
+                            onChange={onChartChange}
+                            data={chartData?.chart}
+                            onHide={onHide}
+                            style={{width: '100%'}}
                         />
                         <View
                             style={{
@@ -280,40 +168,47 @@ export default function DetailAccount(props) {
                                 justifyContent: 'space-between',
                                 marginHorizontal: 20,
                             }}>
-                            {year.map((_item, _index) => {
-                                let num = _index * 10 + 10;
+                            {chartData?.sub_tabs?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
                                         style={[
                                             styles.btn_sty,
-                                            {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
+                                            {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
                                         ]}
                                         key={_index}
-                                        onPress={() => changeTab(num, _item.period)}>
+                                        onPress={() => changeTab(_item.val, _item.type)}>
                                         <Text
                                             style={{
-                                                color: period == _item.period ? '#0051CC' : '#555B6C',
+                                                color: period == _item.val ? '#0051CC' : '#555B6C',
                                                 fontSize: text(12),
                                             }}>
-                                            {_item.title}
+                                            {_item.name}
                                         </Text>
                                     </TouchableOpacity>
                                 );
                             })}
                         </View>
-                        <Text style={{paddingHorizontal: text(16), marginTop: text(10), paddingBottom: text(20)}}>
-                            <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
-                            <Text style={{fontSize: text(12)}}>短期账户历史最大回撤 </Text>
-                            <Text
-                                style={{
-                                    color: '#4BA471',
-                                    fontSize: text(15),
-                                    fontWeight: 'bold',
-                                    fontFamily: Font.numFontFamily,
-                                }}>
-                                -2.03%
+                        <View style={{paddingBottom: text(20), paddingHorizontal: text(16)}}>
+                            <Text style={{marginTop: text(10), marginBottom: text(5)}}>
+                                <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
+                                <Text style={{fontSize: text(12)}}>{chartData?.remark?.title} </Text>
+                                <Text
+                                    style={{
+                                        color: '#4BA471',
+                                        fontSize: text(15),
+                                        fontWeight: 'bold',
+                                        fontFamily: Font.numFontFamily,
+                                    }}>
+                                    {chartData?.remark?.ratio}
+                                </Text>
                             </Text>
-                        </Text>
+                            {chartData?.remark?.content && (
+                                <Html
+                                    html={chartData?.remark?.content}
+                                    style={{fontSize: text(12), lineHeight: text(18)}}
+                                />
+                            )}
+                        </View>
                     </View>
                     {/* 全球配置 */}
                     <View style={styles.card_sty}>
@@ -475,7 +370,7 @@ const styles = StyleSheet.create({
         borderColor: '#E2E4EA',
         paddingHorizontal: text(8),
         paddingVertical: text(5),
-        borderRadius: text(12),
+        borderRadius: text(15),
     },
     card_sty: {
         backgroundColor: '#fff',
