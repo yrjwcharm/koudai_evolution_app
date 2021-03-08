@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-06 14:17:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-06 16:38:37
  * @Description:路由表
  */
 import React from 'react';
@@ -33,7 +33,7 @@ import Agreement from '../pages/Common/Agreement'; // 用户协议
 import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
-import TradeFixedConfirm from '../pages/Trade/TradeFixedConfirm'; //定投确认页面
+import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
 import FundSafe from '../pages/Common/FundSafe'; // 资金安全
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
@@ -78,8 +78,8 @@ import FundManager from '../pages/Portfolio/FundManager'; // 基金经理
 import FundCompany from '../pages/Portfolio/FundCompany'; // 基金公司
 import CompanyFunds from '../pages/Portfolio/CompanyFunds'; // 旗下基金
 import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公告
-import PlanDetail from '../pages/FixedPortfolio/PlanDetail'; //计划详情
-import FixedPlan from '../pages/FixedPortfolio/FixedPlan'; //定投计划
+import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
+import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
@@ -120,14 +120,14 @@ import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智�
 import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
 import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
-import GesturePassword from '../pages/Assets/GesturePassword.js';
+import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="IM"
             screenOptions={{
                 // headerShown: false,
 
@@ -368,8 +368,12 @@ export default function AppStack() {
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
-            <Stack.Screen name="PlanDetail" component={PlanDetail} options={{title: '计划详情'}} />
-            <Stack.Screen name="FixedPlan" component={FixedPlan} options={{headerShown: false}} />
+            <Stack.Screen
+                name="FixedPlanDetail"
+                component={FixedPlanDetail}
+                options={{title: '计划详情', headerShown: false}}
+            />
+            <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
             <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />

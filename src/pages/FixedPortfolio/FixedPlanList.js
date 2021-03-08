@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 14:44:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-06 16:08:03
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -18,12 +18,12 @@ export default function PlanDetail(props) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        Http.get('/trade/invest_plan/list/20210101').then((res) => {
+        Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
             setData(res.result);
         });
     });
-    const jumpPage = (url, params) => {
-        // props.navigation.navigate(url, params);
+    const jumpPage = (invest_id) => {
+        props.navigation.navigate('FixedPlanDetail', {invest_id});
     };
     return (
         <ScrollView style={Style.containerPadding}>
@@ -31,7 +31,12 @@ export default function PlanDetail(props) {
                 data.length > 0 &&
                 data.map((_item, _index) => {
                     return (
-                        <TouchableOpacity style={styles.card_sty} key={_index + '_item'} onPress={jumpPage()}>
+                        <TouchableOpacity
+                            style={styles.card_sty}
+                            key={_index + '_item'}
+                            onPress={() => {
+                                jumpPage(_item.invest_id);
+                            }}>
                             <View
                                 style={[
                                     Style.flexBetween,

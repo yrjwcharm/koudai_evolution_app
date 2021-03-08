@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 12:11:23
+ * @LastEditTime: 2021-03-06 16:35:52
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -163,7 +163,7 @@ const Index = (props) => {
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
                                     </View>
                                     <Image
-                                        style={{width: px(120), height: '100%'}}
+                                        style={{width: px(110), height: '100%'}}
                                         source={{
                                             uri: item?.background,
                                         }}
@@ -252,7 +252,7 @@ const Index = (props) => {
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
                                     </View>
                                     <Image
-                                        style={{width: px(120), height: '100%'}}
+                                        style={{width: px(110), height: '100%'}}
                                         source={{
                                             uri: item?.background,
                                         }}
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
         fontSize: px(15),
         fontWeight: '700',
         color: Colors.defaultColor,
-        marginRight: px(12),
+        marginRight: px(10),
     },
     card_title_dexc: {
         fontSize: px(13),

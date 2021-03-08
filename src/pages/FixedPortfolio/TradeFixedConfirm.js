@@ -1,24 +1,12 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 15:37:25
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @Description: 定投确认页
- * @LastEditTime: 2021-02-25 15:33:32
+ * @LastEditTime: 2021-03-06 15:27:43
  */
 import React, {Component} from 'react';
-import {
-    View,
-    Text,
-    Linking,
-    Image,
-    ScrollView,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    findNodeHandle,
-} from 'react-native';
-
-import {Colors, Space, Font, Style} from '../../common/commonStyle';
+import {View, Text, StyleSheet} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,25 +23,23 @@ export default class TradeFixedConfirm extends Component {
     }
     onLayout = (index, event) => {
         const arr = [...this.state.heightArr];
-        const {data} = this.state;
         arr[index] = event.nativeEvent.layout.height;
-        console.log(data);
         this.setState({
             heightArr: arr,
         });
     };
     componentDidMount() {
-        Http.get('/trade/fix_invest/result/20210101', {}).then((res) => {
+        Http.get('/trade/fix_invest/result/20210101', {invest_id: this.props.route?.params?.invest_id}).then((res) => {
             this.setState({
                 data: res.result,
             });
         });
     }
-    jumpTo() {
-        this.props.navigation.navigate(data.button.url);
-    }
+    jumpTo = () => {
+        this.props.navigation.replace(this.state.data.button?.url?.path, this.state.data.button?.url?.params);
+    };
     render() {
-        const {data, viewHeight, heightArr} = this.state;
+        const {data, heightArr} = this.state;
         return (
             <View style={styles.container}>
                 {Object.keys(data).length > 0 && (
@@ -75,7 +61,7 @@ export default class TradeFixedConfirm extends Component {
                                 />
                             )}
                             <Html
-                                style={[styles.title_sty, {color: data.is_success ? '#4BA471' : '#DC4949'}]}
+                                style={{color: data.is_success ? '#4BA471' : '#DC4949', fontSize: text(16)}}
                                 html={data.content}
                             />
                         </View>
@@ -131,10 +117,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5,
         borderColor: '#E2E4EA',
     },
-    title_sty: {
-        color: '#4BA471',
-        fontSize: Font.textH1,
-    },
+
     content_sty: {
         paddingTop: text(24),
         paddingBottom: text(28),
@@ -152,7 +135,7 @@ const styles = StyleSheet.create({
     line_sty: {
         backgroundColor: '#E2E4EA',
         position: 'absolute',
-        top: text(15),
+        top: text(25),
         left: text(3.5),
         width: text(1),
         zIndex: -1,

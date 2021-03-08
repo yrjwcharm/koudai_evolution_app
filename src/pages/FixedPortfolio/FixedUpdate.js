@@ -48,13 +48,11 @@ export default function FixedUpdate() {
         Picker.show();
     };
     useEffect(() => {
-        Http.get('/trade/update/invest_plan/20210101', {}).then(
-            (res) => {
-                this.setState({
-                    data: res.result,
-                });
-            }
-        );
+        Http.get('/trade/update/invest_plan/20210101', {}).then((res) => {
+            this.setState({
+                data: res.result,
+            });
+        });
     });
     return (
         <>
