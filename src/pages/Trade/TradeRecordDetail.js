@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 17:13:14
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-09 19:05:48
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -221,7 +221,7 @@ const TradeRecordDetail = (props) => {
 
                                 {item?.type == 'adjust_compare' && item?.children && showMore[index] ? (
                                     // 调仓
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 1 : 0}]}>
+                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
                                         {item?.children?.head ? (
                                             <View style={[Style.flexBetween, {height: px(30)}]}>
                                                 {item?.children?.head.map((text, key) => (
@@ -272,7 +272,7 @@ const TradeRecordDetail = (props) => {
                                             : null}
                                     </View>
                                 ) : item?.children && showMore[index] ? (
-                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 1 : 0}]}>
+                                    <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
                                         {item?.children?.head && (
                                             <View style={[Style.flexBetween, {height: px(30)}]}>
                                                 {item?.children?.head.map((text, key) => (
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
         left: px(-26),
     },
     buy_table: {
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
     },
     light_text: {
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     fund_item: {
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
         paddingVertical: px(8),
     },

@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 19:08:40
+ * @LastEditTime: 2021-03-09 19:04:44
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         lineHeight: px(16),
     },
     notice: {
-        borderTopWidth: 1,
+        borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
     },
     notice_text: {

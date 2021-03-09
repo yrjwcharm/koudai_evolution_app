@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 17:27:20
+ * @LastEditTime: 2021-03-09 19:09:46
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -385,7 +385,7 @@ const Index = (props) => {
                                 {/* 安全保障 */}
                                 {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
                                 <BoxShadow setting={{...shadow, height: px(191)}}>
-                                    <View style={{borderRadius: px(6), overflow: 'hidden'}}>
+                                    <View style={styles.aboutCard}>
                                         <ImageBackground
                                             style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
                                             source={require('../../assets/img/index/aboutOur.png')}>
@@ -406,9 +406,9 @@ const Index = (props) => {
                                             style={[
                                                 Style.flexRow,
                                                 {
+                                                    flex: 1,
                                                     backgroundColor: '#fff',
                                                     justifyContent: 'space-evenly',
-                                                    height: px(83),
                                                 },
                                             ]}>
                                             {data?.about_info?.items?.map((item, index) => (
@@ -632,5 +632,11 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         color: '#fff',
         marginTop: px(10),
+    },
+    aboutCard: {
+        borderRadius: px(6),
+        overflow: 'hidden',
+        height: px(191),
+        flexDirection: 'column',
     },
 });
