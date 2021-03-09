@@ -71,7 +71,7 @@ export default function DetailAccount(props) {
         useCallback(() => {
             init();
             getChartInfo();
-        }, [props.route, init, getChartInfo])
+        }, [props.route, getChartInfo])
     );
 
     // 图表滑动legend变化

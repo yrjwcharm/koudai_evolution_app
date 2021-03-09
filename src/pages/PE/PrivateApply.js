@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 18:15:18
+ * @LastEditTime: 2021-03-09 18:54:15
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -17,9 +17,11 @@ import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
 import {Button} from '../../components/Button';
 import {FixedButton} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 
 const PrivateApply = (props) => {
-    const {txn_id} = props.route.params || {};
+    const {fund_code, poid} = props.route.params || {};
+    const jump = useJump();
     const navigation = useNavigation();
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
@@ -33,7 +35,8 @@ const PrivateApply = (props) => {
     const init = useCallback(
         (first) => {
             http.get('/pe/redeem/20210101', {
-                fund_code: 'SGX499',
+                fund_code: fund_code,
+                poid: poid,
             }).then((res) => {
                 setData(res.result);
             });
@@ -80,8 +83,7 @@ const PrivateApply = (props) => {
                                             <Text numberOfLines={1} style={[styles.desc]}>
                                                 {item.key}
                                             </Text>
-                                            <TouchableOpacity
-                                                onPress={() => props.navigation.navigate('PrivateRedeem')}>
+                                            <TouchableOpacity onPress={() => jump(data.flow_list[1].button.url)}>
                                                 <Text style={{color: '#0051CC'}}>{item?.button?.text}</Text>
                                             </TouchableOpacity>
                                         </View>

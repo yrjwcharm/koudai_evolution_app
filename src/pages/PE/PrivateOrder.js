@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-03-06 13:31:41
+ * @LastEditTime: 2021-03-09 16:44:45
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
@@ -15,6 +15,7 @@ import {FixedButton} from '../../components/Button';
 import Http from '../../services';
 import {Toast} from '../../components/Toast';
 import {Modal} from '../../components/Modal';
+import Mask from '../../components/Mask';
 export default class PrivateOrder extends Component {
     constructor(props) {
         super(props);
@@ -23,20 +24,13 @@ export default class PrivateOrder extends Component {
             amount: '',
             phone: '',
             data: {},
+            fund_code: props.route?.params?.fund_code || '',
+            showMask: false,
         };
-    }
-    _getCurrentDate() {
-        var currDate = new Date();
-        var month = (currDate.getMonth() + 1).toString();
-        month = month.padStart(2, '0');
-        var dateDay = currDate.getDate().toString();
-        dateDay = dateDay.padStart(2, '0');
-        let time = month + '月' + dateDay + '日';
-        return time;
     }
     componentDidMount() {
         Http.get('/pe/appointment_detail/20210101', {
-            fund_code: 'SGX499',
+            fund_code: this.state.fund_code,
         }).then((res) => {
             this.setState({
                 data: res.result,
@@ -45,7 +39,54 @@ export default class PrivateOrder extends Component {
             });
         });
     }
+    //获取当前日期  格式如 2018-12-15
+    _getCurrentDate() {
+        var currDate = new Date();
+        var year = currDate.getFullYear();
+        var month = (currDate.getMonth() + 1).toString();
+        month = month.padStart(2, '0');
+        var dateDay = currDate.getDate().toString();
+        dateDay = dateDay.padStart(2, '0');
+        let time = year + '年' + month + '月' + dateDay + '日';
+        return time;
+    }
+
+    //组装日期数据
+    _createDateData() {
+        let date = [];
+        var currDate = new Date();
+        var i = currDate.getFullYear();
+        // var month = currDate.getMonth() + 1;
+        let month = [];
+        for (let j = 3; j < 13; j++) {
+            let day = [];
+            if (j === 2) {
+                for (let k = 1; k < 29; k++) {
+                    day.push(k + '日');
+                }
+                if (i % 4 === 0) {
+                    day.push(29 + '日');
+                }
+            } else if (j in {1: 1, 3: 1, 5: 1, 7: 1, 8: 1, 10: 1, 12: 1}) {
+                for (let k = 1; k < 32; k++) {
+                    day.push(k + '日');
+                }
+            } else {
+                for (let k = 1; k < 31; k++) {
+                    day.push(k + '日');
+                }
+            }
+            let _month = {};
+            _month[j + '月'] = day;
+            month.push(_month);
+        }
+        let _date = {};
+        _date[i + '年'] = month;
+        date.push(_date);
+        return date;
+    }
     _showDatePicker = () => {
+        this.setState({showMask: true});
         var year = '';
         var month = '';
         var day = '';
@@ -60,18 +101,22 @@ export default class PrivateOrder extends Component {
             pickerConfirmBtnText: '确定',
             selectedValue: [month + '月', day + '日'],
             pickerBg: [255, 255, 255, 1],
-            pickerData: this.state.data.quote.month,
+            pickerData: this._createDateData(),
             pickerFontColor: [33, 33, 33, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                // var year = pickedValue[0].substring(0, pickedValue[0].length - 1);
-                // var month = pickedValue[1].substring(0, pickedValue[1].length - 1);
-                let _month = pickedValue[0];
-                let _day = pickedValue[1];
-                console.log(_month, _day);
-                let _str = _month + '月' + _day + '日';
+                let _str = pickedValue[0] + pickedValue[1] + pickedValue[2];
                 this.setState({
                     currentDate: _str,
+                    showMask: false,
                 });
+            },
+            onPickerCancel: () => {
+                this.setState({showMask: false});
             },
         });
         Picker.show();
@@ -92,15 +137,18 @@ export default class PrivateOrder extends Component {
             if (res.code === '000000') {
                 Modal.show({
                     title: '恭喜您预约成功',
-                    content: '已成功预约',
+                    content: `<div>已成功预约:${data.quote.name}</div><div>预约金额:${amount}</div>`,
                     confirmText: '确定',
+                    confirmCallBack: this.jumpTo,
                 });
-                // Toast.show('预约成功');
             }
         });
     };
+    jumpTo = () => {
+        this.props.navigation.replace(this.state.data.button.url.path, this.state.data.button.url.params);
+    };
     render() {
-        const {currentDate, data, amount, phone} = this.state;
+        const {currentDate, data, amount, phone, showMask} = this.state;
         return (
             <View style={Style.containerPadding}>
                 {Object.keys(data).length > 0 && (
@@ -153,6 +201,7 @@ export default class PrivateOrder extends Component {
                         color={'#CEA26B'}
                     />
                 )}
+                {showMask && <Mask />}
             </View>
         );
     }

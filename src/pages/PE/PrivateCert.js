@@ -3,7 +3,7 @@
  * @Date: 2021-01-19 12:19:22
  * @LastEditors: xjh
  * @Desc:私募合格投资者认证
- * @LastEditTime: 2021-02-24 16:16:36
+ * @LastEditTime: 2021-03-09 17:07:55
  */
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
@@ -14,15 +14,17 @@ import CheckBox from '../../components/CheckBox';
 import {Button, FixedButton} from '../../components/Button';
 import Http from '../../services';
 import Toast from '../../components/Toast';
+import {Modal} from '../../components/Modal';
 
 const deviceWidth = Dimensions.get('window').width;
 
 export default class PrivateCert extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             data: {},
             check: [true, true],
+            fund_code: props.route?.params?.fund_code || '',
         };
     }
 
@@ -32,21 +34,32 @@ export default class PrivateCert extends Component {
         this.setState({check: checkIndex});
     }
     clickBtn = () => {
-        if (this.state.check[0] && this.state.check[1]) {
-            Http.get('/pe/validate/20210101', {
-                fund_code: 'SGX499',
-            }).then((res) => {
-                if (res.code === '000000') {
-                    this.props.navigation.navigate(this.state.data.button.url);
-                }
-            });
+        const {data, check, fund_code} = this.state;
+        if (check[0] && check[1]) {
+            if (!data.tip) {
+                Modal.show({
+                    title: data.tip.title,
+                    content: data.tip.content,
+                    confirm: true,
+                    confirmText: '确定',
+                    confirmCallBack: this.props.navigation.replace(data.tip.button[0].url),
+                });
+            } else {
+                Http.post('/pe/confirm/20210101', {
+                    fund_code: fund_code,
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        this.props.navigation.replace(this.state.data.button.path, this.state.data.button.params);
+                    }
+                });
+            }
         } else {
             Toast.show('请勾选协议');
         }
     };
     componentDidMount() {
         Http.get('/pe/validate/20210101', {
-            fund_code: 'SGX499',
+            fund_code: this.state.fund_code,
         }).then((res) => {
             this.setState({
                 data: res.result,

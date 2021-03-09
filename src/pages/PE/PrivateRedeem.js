@@ -3,25 +3,57 @@
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-26 18:31:48
+ * @LastEditTime: 2021-03-09 18:57:52
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
-export default function PrivateRedeem() {
+import {Modal} from '../../components/Modal';
+// import {PasswordModal} from '../../components/Password';
+// import Mask from '../../components/Mask';
+export default function PrivateRedeem({route, navigation}) {
     const [data, setData] = useState({});
     const [amount, setAmount] = useState('');
-    const btnClick = (url) => {};
+    // const [showMask, setShowMask] = useState(false);
+    const passwordModal = useRef(null);
     useEffect(() => {
-        Http.get(
-            '/pe/redeem_detail/20210101?fund_code=SGX499&poid=xxx'
-        ).then((res) => {
+        console.log(navigation);
+        Http.get('/pe/redeem_detail/20210101', {
+            fund_code: route.params?.fund_code,
+            poid: route.params.poid,
+        }).then((res) => {
             setData(res.result);
         });
     }, []);
+
+    const submitData = () => {
+        Http.post('/pe/do_redeem/20210101', {
+            fund_code: route.params?.fund_code,
+            poid: route.params.poid,
+            order_id: route.params.order_id,
+            share: amount,
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.navigate('PrivateAssets');
+            } else {
+                Modal.show({content: res.message});
+            }
+        });
+    };
+    const onInput = (amount) => {
+        if (amount >= data.share.share) {
+            setAmount(data.share.share.toString());
+        } else {
+            setAmount(amount);
+        }
+    };
+    //  const submit = () => {
+    //     passwordModal.current.show();
+    //     setShowMask(true)
+    //   };
     return (
         <>
             {Object.keys(data).length > 0 && (
@@ -37,7 +69,8 @@ export default function PrivateRedeem() {
                             <TextInput
                                 style={{height: text(50), fontSize: text(26), flex: 1}}
                                 placeholder="请输入赎回百分比"
-                                // keyboardType={'number-pad'}
+                                keyboardType={'number-pad'}
+                                onChangeText={onInput}
                                 value={amount}
                             />
                             <TouchableOpacity onPress={() => setAmount(data.share.share.toString())}>
@@ -73,7 +106,22 @@ export default function PrivateRedeem() {
                             );
                         })}
                     </View>
-                    <FixedButton title={data.share.button.text} style={styles.btn_sty} onPress={() => btnClick()} />
+                    {/* <PasswordModal
+                        ref={(ref) => {
+                            this.passwordModal = ref;
+                        }}
+                        onDone={(password) => this.submitData(password)}
+                        onClose={() => {
+                            setShowMask(false);
+                        }}
+                    />
+                    {showMask && <Mask />} */}
+                    <FixedButton
+                        title={data.share.button.text}
+                        style={styles.btn_sty}
+                        onPress={() => submitData()}
+                        color={'#CEA26B'}
+                    />
                 </View>
             )}
         </>
