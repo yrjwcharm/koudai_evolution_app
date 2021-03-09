@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-06 15:58:57
+ * @LastEditTime: 2021-03-09 14:15:00
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -182,7 +182,13 @@ const TradeProcessing = ({navigation, route}) => {
                             );
                         })}
                 </View>
-                {finish && <Button title={data.button.text} onPress={() => navigation.navigate('Home')} />}
+                {finish && (
+                    <Button
+                        title={data.button.text}
+                        style={{margin: text(40), marginTop: text(20)}}
+                        onPress={() => navigation.navigate('Home')}
+                    />
+                )}
 
                 <VerifyCodeModal
                     ref={verifyCodeModel}
