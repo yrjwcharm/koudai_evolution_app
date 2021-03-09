@@ -22,6 +22,7 @@ import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
@@ -41,17 +42,18 @@ export default function DetailAccount(props) {
         }
         props.navigation.navigate(url, params);
     };
-    useEffect(() => {
+    const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
             upid: props.route?.params?.upid,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
                 setPeriod(res.result.period);
+                getChartInfo();
             }
         });
-    }, [props.route]);
-    useEffect(() => {
+    }, []);
+    const getChartInfo = useCallback(() => {
         if (Object.keys(data).length > 0) {
             Http.get('/portfolio/yield_chart/20210101', {
                 allocation_id: data.allocation_id,
@@ -65,25 +67,26 @@ export default function DetailAccount(props) {
             });
         }
     }, [period, props.route]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            getChartInfo();
+        }, [props.route, init, getChartInfo])
+    );
 
     // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({text: items[0]?.value});
-            _textBenchmark.current.setNativeProps({text: items[1]?.value});
-        },
-        [props.route, period]
-    );
+    const onChartChange = useCallback(({items}) => {
+        _textTime.current.setNativeProps({text: items[0]?.title});
+        _textPortfolio.current.setNativeProps({text: items[0]?.value});
+        _textBenchmark.current.setNativeProps({text: items[1]?.value});
+    }, []);
     // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: labelInfo[0].val});
-            _textPortfolio.current.setNativeProps({text: labelInfo[1].val});
-            _textBenchmark.current.setNativeProps({text: labelInfo[2].val});
-        },
-        [props.route, period]
-    );
+    const onHide = useCallback(({items}) => {
+        console.log(labelInfo);
+        _textTime.current.setNativeProps({text: labelInfo[0]?.val});
+        _textPortfolio.current.setNativeProps({text: labelInfo[1]?.val});
+        _textBenchmark.current.setNativeProps({text: labelInfo[2]?.val});
+    }, []);
     return (
         <>
             {Object.keys(data).length > 0 ? (
