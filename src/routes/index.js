@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-08 12:10:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-09 14:05:12
  * @Description:路由表
  */
 import React from 'react';
@@ -127,7 +127,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="IM"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 

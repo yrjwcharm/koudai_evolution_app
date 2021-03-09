@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 11:46:06
+ * @LastEditTime: 2021-03-08 15:53:50
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -148,7 +148,7 @@ const Index = (props) => {
                             ) : (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        jump({path: 'RemindMessage'});
+                                        jump({path: 'IM'});
                                     }}>
                                     {data?.notice_num > 0 && <View style={styles.new_message} />}
                                     <FastImage
