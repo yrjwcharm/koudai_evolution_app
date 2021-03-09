@@ -26,7 +26,7 @@ import FixedBtn from '../components/FixedBtn';
 export default function DetailAccount(props) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y5');
+    const [period, setPeriod] = useState('');
     const [summary, setSummary] = useState([]);
     const [labelInfo, setLabelInfo] = useState([]);
     const _textTime = useRef(null);
@@ -51,24 +51,20 @@ export default function DetailAccount(props) {
             }
         });
     }, [props.route]);
-    useEffect(
-        () => {
-            if (Object.keys(data).length > 0) {
-                Http.get('/portfolio/yield_chart/20210101', {
-                    allocation_id: data.allocation_id,
-                    benchmark_id: data.benchmark_id,
-                    period: period,
-                    type: 1,
-                }).then((res) => {
-                    setLabelInfo(res.result.yield_info.label);
-                    setChartData(res.result.yield_info);
-                    setSummary(res.result.yield_info.label);
-                });
-            }
-        },
-        [period],
-        data
-    );
+    useEffect(() => {
+        if (Object.keys(data).length > 0) {
+            Http.get('/portfolio/yield_chart/20210101', {
+                allocation_id: data.allocation_id,
+                benchmark_id: data.benchmark_id,
+                period: period,
+                type: 1,
+            }).then((res) => {
+                setLabelInfo(res.result.yield_info.label);
+                setChartData(res.result.yield_info);
+                setSummary(res.result.yield_info.label);
+            });
+        }
+    }, [period, props.route]);
 
     // 图表滑动legend变化
     const onChartChange = useCallback(
