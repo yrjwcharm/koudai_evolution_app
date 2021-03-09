@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-08 17:20:58
+ * @LastEditTime: 2021-03-09 15:58:34
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -50,7 +50,7 @@ let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
 function App() {
-    const scheme = useColorScheme();
+    // const scheme = useColorScheme();
     const navigationRef = useRef();
     const routeNameRef = useRef();
     //如果有更新的提示
@@ -150,7 +150,7 @@ function App() {
                     <PersistGate loading={null} persistor={persistor}>
                         <SafeAreaProvider>
                             <NavigationContainer
-                                theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+                                // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
                                 ref={navigationRef}
                                 onReady={() => {
                                     // console.log(object)

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-08 15:53:50
+ * @LastEditTime: 2021-03-09 17:27:20
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -64,11 +64,15 @@ const Index = (props) => {
     const [loading, setLoading] = useState(true);
     const getData = useCallback((params) => {
         params == 'refresh' && setRefreshing(true);
-        http.get('/home/detail/20210101').then((res) => {
-            setData(res.result);
-            setLoading(false);
-            setRefreshing(false);
-        });
+        http.get('/home/detail/20210101')
+            .then((res) => {
+                setData(res.result);
+                setLoading(false);
+                setRefreshing(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, []);
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {

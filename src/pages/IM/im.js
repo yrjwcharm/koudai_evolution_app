@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-08 20:09:41
+ * @LastEditTime: 2021-03-09 17:52:13
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -102,6 +102,13 @@ const IM = () => {
                         // checkStatus(_data.cmid, 1);
                     }
                     break;
+                case 'QMA':
+                    if (_data.data && _data.data) {
+                        handleMessage(_data.data);
+                    } else {
+                        // checkStatus(_data.cmid, 1);
+                    }
+                    break;
             }
         };
         //连接错误
@@ -117,15 +124,15 @@ const IM = () => {
             reconnect();
         };
     }, []);
-    const handleMessage = (message, type) => {
+    const handleMessage = (message, messageType) => {
         const newMsg = [...messages];
         newMsg.push({
             id: message.cmd,
-            type: type || 'text',
+            type: messageType || 'text',
             content: message.data,
             targetId: message.from,
             renderTime: false,
-            sendStatus: 1,
+            sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
             chatInfo: {
                 id: message.to,
             },
@@ -151,6 +158,7 @@ const IM = () => {
             from: uid,
             to: 'S',
             type,
+            sendStatus: 0,
         });
         console.log(content);
         if (WS.current && WS.current.readyState === WebSocket.OPEN) {
@@ -210,13 +218,12 @@ const IM = () => {
     };
     const renderShortCutList = () => {
         return (
-            <ScrollView>
+            <ScrollView horizontal={true}>
                 <View
                     style={{
                         paddingHorizontal: 14,
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'space-around',
                         marginTop: 11,
                     }}>
                     <TouchableOpacity activeOpacity={0.8} style={styles.shortCutItem}>
@@ -291,5 +298,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: 12,
         paddingVertical: 6,
+        marginRight: px(6),
     },
 });

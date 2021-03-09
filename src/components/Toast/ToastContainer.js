@@ -34,6 +34,7 @@ let styles = StyleSheet.create({
         right: 0,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.2)',
     },
     containerStyle: {
         paddingVertical: px(18),
@@ -202,7 +203,6 @@ class ToastContainer extends Component {
             if (this.props.onHide) {
                 this.props.onHide(this.props.siblingManager);
             }
-
             Animated.timing(this.state.opacity, {
                 toValue: 0,
                 duration: this.props.animation ? TOAST_ANIMATION_DURATION : 0,
@@ -211,6 +211,7 @@ class ToastContainer extends Component {
             }).start(({finished}) => {
                 if (finished) {
                     this._animating = false;
+                    this.props.destroy();
                     this.props.onHidden && this.props.onHidden(this.props.siblingManager);
                 }
             });
@@ -221,7 +222,6 @@ class ToastContainer extends Component {
         let {props} = this;
         const {windowWidth} = this.state;
         let offset = props.position;
-
         const {windowHeight, keyboardScreenY} = this.state;
         const keyboardHeight = Math.max(windowHeight - keyboardScreenY, 0);
         let position = offset
@@ -234,7 +234,7 @@ class ToastContainer extends Component {
               };
 
         return this.state.visible || this._animating ? (
-            <View style={[styles.defaultStyle, position]} pointerEvents="box-none">
+            <View style={[styles.defaultStyle, position]}>
                 <TouchableWithoutFeedback
                     onPress={() => {
                         typeof this.props.onPress === 'function' ? this.props.onPress() : null;
