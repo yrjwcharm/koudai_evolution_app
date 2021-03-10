@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 15:07:15
+ * @LastEditTime: 2021-03-10 16:16:07
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -40,7 +40,6 @@ export class uploadID extends Component {
         this.subscription = DeviceEventEmitter.addListener('EventType', (uri) => {
             this.uri = uri;
             if (this.uri) {
-                console.log('1234');
                 this.uploadImage({uri, type: 'image/png', name: 'name'});
             }
             // 刷新界面等
@@ -63,7 +62,7 @@ export class uploadID extends Component {
     };
     uploadImage = (response) => {
         let toast = Toast.showLoading('正在上传');
-        upload(response, (res) => {
+        upload({...response, desc: this.state.clickIndex == 1 ? 'front' : 'back'}, (res) => {
             Toast.hide(toast);
             this.uri = '';
             if (res.code == '000000') {

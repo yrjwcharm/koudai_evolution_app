@@ -207,6 +207,7 @@ class ChatWindow extends PureComponent {
 
     _changeText(e) {
         this.setState({messageContent: e});
+        this.props.textOnChange && this.props.textOnChange(e);
     }
 
     _onContentSizeChange(e) {
@@ -557,10 +558,10 @@ class ChatWindow extends PureComponent {
     };
 
     _loadHistory = async () => {
-        const {inverted} = this.props;
-        if (!inverted) {
-            return;
-        }
+        // const {inverted} = this.props;
+        // if (!inverted) {
+        //     return;
+        // }
         await this.props.loadHistory();
     };
 
@@ -825,6 +826,9 @@ class ChatWindow extends PureComponent {
                                     voiceRightLoadingColor={this.props.voiceRightLoadingColor}
                                     leftMessageTextStyle={this.props.leftMessageTextStyle}
                                     rightMessageTextStyle={this.props.rightMessageTextStyle}
+                                    renderQuestionMessage={this.props.renderQuestionMessage}
+                                    renderTextButton={this.props.renderTextButton}
+                                    textMessageContanierStyle={this.props.textMessageContanierStyle}
                                 />
                             )}
                         />

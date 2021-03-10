@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 18:51:51
+ * @LastEditTime: 2021-03-09 19:30:36
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -29,6 +29,7 @@ export default class WechatLogin extends Component {
         code_btn_click: true,
     };
     componentDidMount() {
+        Storage.delete('loginStatus');
         this.sendCode();
     }
     register = () => {

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-05 15:22:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-09 19:29:44
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -51,7 +51,7 @@ const Settings = ({navigation}) => {
                     confirmCallBack: () => {
                         // Alert.alert('退出登录');
                         Storage.delete('loginStatus');
-                        navigation.navigate({name: 'Login'});
+                        navigation.navigate({name: 'Register'});
                     },
                 });
                 // Alert.alert('退出登录', '退出后，日收益和投资产品列表将不再展示，是否确认退出？', [

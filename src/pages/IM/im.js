@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 17:52:13
+ * @LastEditTime: 2021-03-10 20:18:55
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -12,9 +12,11 @@ import {
     Text,
     View,
     StatusBar,
+    Keyboard,
     PermissionsAndroid,
     TouchableOpacity,
     ScrollView,
+    TouchableHighlight,
 } from 'react-native';
 // import { Header, NavigationActions } from 'react-navigation'
 // import {AudioRecorder, AudioUtils} from 'react-native-audio'
@@ -23,10 +25,17 @@ import {
 import {ChatScreen} from '../../components/IM';
 // import {ChatScreen} from 'react-native-easy-chat-ui';
 import {useHeaderHeight} from '@react-navigation/stack';
-import {isIphoneX, px} from '../../utils/appUtil';
+import {isIphoneX, px, requestExternalStoragePermission, deviceWidth} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import HTML from '../../components/RenderHtml';
 import http from '../../services';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FastImage from 'react-native-fast-image';
+import {BottomModal, Modal} from '../../components/Modal';
+import {Button} from '../../components/Button';
+import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
+import _ from 'lodash';
+import {launchImageLibrary} from 'react-native-image-picker';
 const url = 'ws://192.168.88.68:39503';
 /**
  * @description:
@@ -42,11 +51,17 @@ const IM = () => {
     let token = useRef(null);
     let WS = useRef(null);
     let timeout = null;
-
+    let _uid = useRef(null);
     const [messages, setMessages] = useState([]);
+    const bottomModal = useRef(null);
     useEffect(() => {
+        // bottomModal.current.show();
         initWebSocket();
-    }, [initWebSocket]);
+        Keyboard.addListener('keyboardWillHide', clearIntelList);
+    }, [initWebSocket, clearIntelList]);
+    const clearIntelList = useCallback(() => {
+        setIntellectList([]);
+    }, []);
     /**
      * 初始化WebSocket
      */
@@ -70,11 +85,11 @@ const IM = () => {
         WS.current.onopen = function () {
             http.get('http://mapi.lengxiaochu.mofanglicai.com.cn:10080/20180417/webim/get/token').then((data) => {
                 setUid(data.result.uid);
-                token = data.result.token;
-                WS.current.send(handleMsgParams('LIR', '哈哈哈', data.result.uid));
-                console.log(handleMsgParams('LIR', '哈哈哈', data.result.uid));
+                _uid.current = data.result.uid;
+                token.current = data.result.token;
+                WS.current.send(handleMsgParams('LIR', 'loign'));
             });
-            // console.log('WebSocket:', 'connect to server');
+            console.log('WebSocket:', 'connect to server');
         };
         //客户端接收服务端数据时触发
         WS.current.onmessage = function (evt) {
@@ -87,27 +102,55 @@ const IM = () => {
                     if (_data.data.code == 20000) {
                         WS.current.send(handleMsgParams('LMR', 0));
                         WS.current.send(handleMsgParams('QMR', 0));
+                        console.log(handleMsgParams('QMR', 0));
+                        _data.data.questions && setShortCutList(_data.data.questions);
                         // WS.current.send(handleMsgParams('PMR', randomMsgId('PMR'), 1));
                     }
                     break;
                 //发送消息回馈
+                case 'SMA': //点击按钮的恢复
                 case 'TMA':
                 case 'IMA':
                 case 'EMA':
                 case 'VMA':
                 case 'AMA':
-                    if (_data.data && _data.data) {
+                    if (_data.data) {
                         handleMessage(_data.data);
                     } else {
                         // checkStatus(_data.cmid, 1);
                     }
                     break;
+                //收到问题列表
                 case 'QMA':
-                    if (_data.data && _data.data) {
-                        handleMessage(_data.data);
+                    if (_data.data) {
+                        handleMessage(_data, 'Question');
                     } else {
                         // checkStatus(_data.cmid, 1);
                     }
+                    break;
+                //收到历史信息
+                case 'LMA':
+                    if (_data.data.code == 20000) {
+                        if (_data.data.data.length > 0) {
+                            _data.data.data.forEach(function (v, k) {
+                                handleMessage(v, v.cmd == 'BMA' ? 'textButton' : 'text');
+                            });
+                        }
+                    }
+                    break;
+                //输入提示
+                case 'DMA':
+                    _data.data && setIntellectList(_data.data);
+
+                    break;
+                //直接是问题答案
+                case 'BMA':
+                    if (_data.data) {
+                        handleMessage(_data, 'textButton');
+                    } else {
+                        // checkStatus(_data.cmid, 1);
+                    }
+
                     break;
             }
         };
@@ -123,47 +166,58 @@ const IM = () => {
             //重连
             reconnect();
         };
-    }, []);
-    const handleMessage = (message, messageType) => {
-        const newMsg = [...messages];
-        newMsg.push({
-            id: message.cmd,
-            type: messageType || 'text',
-            content: message.data,
-            targetId: message.from,
-            renderTime: false,
-            sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
-            chatInfo: {
-                id: message.to,
-            },
-            time: `${new Date().getTime()}`,
+    }, [handleMessage, handleMsgParams, reconnect]);
+    const handleMessage = useCallback((message, messageType) => {
+        setMessages((preMes) => {
+            return [
+                ...preMes,
+                {
+                    id: message.cmid,
+                    type: messageType || 'text',
+                    content: message.data,
+                    targetId: `${message.from}`,
+                    renderTime: false,
+                    sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
+                    chatInfo: {
+                        id: message.to,
+                        nickName: '智能客服',
+                        avatar: 'https://static.licaimofang.com/wp-content/uploads/2021/01/vip_index_12.png',
+                    },
+                    time: message.time,
+                },
+            ];
         });
-        setMessages(newMsg);
-    };
+    }, []);
+
     //断开重连
     const reconnect = useCallback(() => {
-        if (timeout.current) {
-            clearTimeout(timeout.current);
+        if (timeout?.current) {
+            clearTimeout(timeout?.current);
         }
         timeout.current = setTimeout(function () {
             //重新连接WebSocket
             initWebSocket();
         }, 15000);
     }, [initWebSocket, timeout]);
-    //发送消息
-    const sendMessage = (type, content, isInverted) => {
+    //点击发送按钮发送消息
+    const sendMessage = (type, content, isInverted, cmd, question_id) => {
         handleMessage({
-            cmd: randomMsgId('TMR'),
+            cmid: randomMsgId(cmd || 'TMR'),
             data: content,
             from: uid,
             to: 'S',
             type,
             sendStatus: 0,
+            time: `${new Date().getTime()}`,
         });
-        console.log(content);
+        wsSend(cmd, content, question_id);
+    };
+    //真实发送
+    const wsSend = (cmd, content, question_id) => {
         if (WS.current && WS.current.readyState === WebSocket.OPEN) {
             try {
-                WS.current.send(handleMsgParams('TMR', content));
+                console.log(handleMsgParams(cmd || 'TMR', cmd == 'QMR' ? question_id : content));
+                WS.current.send(handleMsgParams(cmd || 'TMR', cmd == 'QMR' ? question_id : content));
             } catch (err) {
                 console.warn('WS.current sendMessage', err.message);
             }
@@ -171,22 +225,34 @@ const IM = () => {
             console.log('WebSocket:', 'connect not open to send message');
         }
     };
-    const handleMsgParams = (cmd, content, _uid) => {
-        var params = {};
-        params.token = token;
-        params.cmd = cmd;
-        params.from = _uid || uid;
-        params.cmid = randomMsgId(cmd);
-        params.to = 'S';
-        params.data = content;
-        return JSON.stringify(params);
+    /**
+     * @description: 处理发送消息参数
+     * @param {*}
+     * @return {*}
+     */
+    const handleMsgParams = useCallback(
+        (cmd, content) => {
+            var params = {};
+            params.token = token.current;
+            params.cmd = cmd;
+            params.from = _uid.current;
+            params.cmid = randomMsgId(cmd);
+            params.to = 'S';
+            params.data = content;
+            return JSON.stringify(params);
+        },
+        [randomMsgId]
+    );
+
+    const loadHistory = () => {
+        console.log('loadHistory');
     };
     /**
      * @description: 根据cmd生产消息ID
      * @param {*} cmd
      * @return {*}
      */
-    function randomMsgId(cmd) {
+    const randomMsgId = useCallback((cmd) => {
         cmd ? cmd : '';
         var date = new Date();
         var str =
@@ -206,7 +272,57 @@ const IM = () => {
             '|' +
             '0';
         return str;
-    }
+    }, []);
+
+    //打开相册
+    const openPicker = () => {
+        const options = {
+            width: px(300),
+            height: px(190),
+        };
+        setTimeout(() => {
+            launchImageLibrary(options, (response) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else {
+                    console.log('123');
+                    // this.uploadImage(response);
+                }
+            });
+        }, 100);
+    };
+    // 选择图片或相册
+    const onClickChoosePicture = async () => {
+        try {
+            if (Platform.OS == 'android') {
+                requestExternalStoragePermission(
+                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                    openPicker,
+                    blockCal
+                );
+            } else {
+                requestExternalStoragePermission(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    };
+    //权限提示弹窗
+    const blockCal = () => {
+        Modal.show({
+            title: '权限申请',
+            content: '权限没打开,请前往手机的“设置”选项中,允许该权限',
+            confirm: true,
+            confirmText: '前往',
+            confirmCallBack: () => {
+                openSettings().catch(() => console.warn('cannot open settings'));
+            },
+        });
+    };
     /**
      * 处理时间格式
      *
@@ -217,63 +333,241 @@ const IM = () => {
         return int < 10 ? '0' + int.toString() : int.toString();
     };
     const renderShortCutList = () => {
-        return (
+        return shortCutList.length > 0 ? (
             <ScrollView horizontal={true}>
                 <View
                     style={{
-                        paddingHorizontal: 14,
+                        paddingHorizontal: px(14),
                         flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 11,
+                        alignItems: 'flex-end',
+                        height: px(37),
                     }}>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.shortCutItem}>
-                        <Text style={{fontSize: 12, color: '#545968'}}>魔方公司介绍</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.shortCutItem}>
-                        <Text style={{fontSize: 12, color: '#545968'}}>资金安全</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.shortCutItem}>
-                        <Text style={{fontSize: 12, color: '#545968'}}>个性化定制</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.shortCutItem}>
-                        <Text style={{fontSize: 12, color: '#545968'}}>购买须知</Text>
-                    </TouchableOpacity>
+                    {shortCutList.map((item, index) => (
+                        // type, content, isInverted, cmd
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={index}
+                            style={styles.shortCutItem}
+                            onPress={() => {
+                                sendMessage('text', item.question, null, 'QMR', item.question_id);
+                            }}>
+                            <Text style={{fontSize: 12, color: '#545968'}}>{item.question}</Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
             </ScrollView>
-        );
+        ) : null;
     };
     const renderIntelList = () => {
-        return null;
-        // return (
-        //     <View style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
-        //         <TouchableOpacity activeOpacity={0.8} style={[{height: px(43)}, Style.flexRow]}>
-        //             <HTML style={{fontSize: px(14)}} html="基金组合有哪些" />
-        //         </TouchableOpacity>
-        //         <TouchableOpacity activeOpacity={0.8} style={[{height: px(43)}, Style.flexRow]}>
-        //             <HTML style={{fontSize: px(14)}} html="基金组合有哪些" />
-        //         </TouchableOpacity>
-        //     </View>
-        // );
+        return intellectList.length > 0 ? (
+            <View style={styles.intellectList}>
+                {intellectList.map((item, index) => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        key={index}
+                        style={[{height: px(43)}, Style.flexRow]}
+                        onPress={() => {
+                            sendMessage('text', item.question_ori, null, 'QMR', item.question_id);
+                            Keyboard.dismiss();
+                            clearIntelList();
+                        }}>
+                        <HTML style={{fontSize: px(14)}} html={item.question} />
+                    </TouchableOpacity>
+                ))}
+            </View>
+        ) : null;
+    };
+    const renderTextButton = ({isOpen, isSelf, message}) => {
+        return (
+            <View style={{flexDirection: 'row'}}>
+                <View style={[styles.triangle, styles.left_triangle]} />
+                <View
+                    style={{
+                        backgroundColor: '#fff',
+                        width: px(238),
+                        borderRadius: px(4),
+                    }}>
+                    <View style={{paddingHorizontal: px(12)}}>
+                        {message?.content?.head ? (
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    borderBottomColor: '#E2E4EA',
+                                    borderBottomWidth: 0.5,
+                                    paddingVertical: px(14),
+                                }}>
+                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                                    {message?.content?.head}
+                                </Text>
+                            </View>
+                        ) : null}
+                        <Text style={{fontSize: px(14), lineHeight: px(20), marginVertical: px(16)}}>
+                            {message?.content?.answer}
+                        </Text>
+                        <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
+                            <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
+                            <Button
+                                title="未解决"
+                                style={{
+                                    ...styles.button,
+                                    marginLeft: px(12),
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#E2E4EA',
+                                    borderWidth: 0.5,
+                                }}
+                                textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
+                            />
+                        </View>
+                        <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
+                            还未解决？转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    };
+    const renderQuestionMessage = ({isOpen, isSelf, message}) => {
+        return (
+            <View style={{flexDirection: 'row'}}>
+                <View style={[styles.triangle, styles.left_triangle]} />
+                <View
+                    style={{
+                        backgroundColor: '#fff',
+                        width: px(238),
+                        borderRadius: px(4),
+                    }}>
+                    <View style={{paddingHorizontal: px(12)}}>
+                        {message?.content?.head ? (
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    borderBottomColor: '#E2E4EA',
+                                    borderBottomWidth: 0.5,
+                                    paddingVertical: px(14),
+                                }}>
+                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                                    {message?.content?.head}
+                                </Text>
+                            </View>
+                        ) : null}
+                        {message?.content?.questions?.map((item, index) => (
+                            <TouchableHighlight
+                                key={index}
+                                underlayColor="#eee"
+                                onPress={() => {
+                                    console.log('123');
+                                }}
+                                style={{
+                                    height: px(43),
+                                    justifyContent: 'center',
+                                    borderTopColor: '#E2E4EA',
+                                    borderTopWidth: index == 0 ? 0 : 0.5,
+                                }}>
+                                <View style={Style.flexBetween}>
+                                    <Text>{item.question}</Text>
+                                    <FontAwesome name={'angle-right'} size={18} color={'#9AA1B2'} />
+                                </View>
+                            </TouchableHighlight>
+                        ))}
+                        {message?.content?.foot ? (
+                            <View
+                                style={{
+                                    paddingVertical: px(14),
+                                    justifyContent: 'center',
+                                    borderTopColor: '#E2E4EA',
+                                    borderTopWidth: 0.5,
+                                }}>
+                                <Text>{message?.content?.foot}</Text>
+                            </View>
+                        ) : null}
+                    </View>
+                </View>
+            </View>
+        );
     };
     return (
         <View style={{flex: 1}}>
+            <BottomModal style={{height: px(442)}} ref={bottomModal}>
+                <ScrollView style={{flex: 1}}>
+                    <View
+                        style={{
+                            paddingHorizontal: px(16),
+                            paddingTop: px(22),
+                            paddingBottom: isIphoneX() ? 34 : px(20),
+                        }}>
+                        <Text style={{fontSize: px(13), color: Colors.lightBlackColor, lineHeight: px(20)}}>
+                            组合中配置的都是公募基金，属于浮动收益产品，收益不固定，会跟随市场情况有涨有跌，且收益和风险是成正比的。理论上来讲，各产品风险从大到小排序依次为：低估值智能定投>智能组合>稳健组合>活期组合，从预期收益从大到小排序也是一样。如果不希望本金受组合中配置的都是公募基金，属于浮动收益产品，收益不固定，会跟随市场情况有涨有跌，且收益和风险是成正比的。理论上来讲，各产品风险从大到小排序依次为：低估值智能定投>智能组合>稳健组合>活期组合，从预期收益从大到小排序也是一样。
+                        </Text>
+                        <View style={[Style.flexRowCenter, {marginTop: px(30), marginBottom: px(16)}]}>
+                            <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
+                            <Button
+                                title="未解决"
+                                style={{
+                                    ...styles.button,
+                                    marginLeft: px(12),
+                                    backgroundColor: 'transparent',
+                                    borderColor: '#E2E4EA',
+                                    borderWidth: 0.5,
+                                }}
+                                textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
+                            />
+                        </View>
+                        <Text style={styles.sm_text}>
+                            以上问题都没有，请转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
+                        </Text>
+                    </View>
+                </ScrollView>
+            </BottomModal>
             <ChatScreen
-                // rightMessageBackground="#CEE3FE"
                 messageList={messages}
                 isIPhoneX={isIphoneX()}
+                inverted={false}
                 iphoneXBottomPadding={24}
                 containerBackgroundColor={Colors.inputBg}
                 sendMessage={sendMessage}
                 inputStyle={styles.inputStyle}
                 inputOutContainerStyle={{backgroundColor: '#F7F7F7'}}
-                usePopView={false} //长按消息选项
+                usePopView={true} //长按消息选项
                 useVoice={false} //关闭语音
                 headerHeight={headerHeight}
+                loadHistory={loadHistory}
                 intellectList={renderIntelList}
+                showUserName={true}
+                chatType={'group'}
+                avatarStyle={{width: px(38), height: px(38), borderRadius: px(4), marginHorizontal: px(6)}}
                 shortCutList={renderShortCutList}
+                renderQuestionMessage={renderQuestionMessage}
+                renderTextButton={renderTextButton}
+                panelSource={[{text: '相册', icon: require('../../assets/img/photo.png')}]}
+                textOnChange={_.debounce((text) => {
+                    wsSend('DMR', text);
+                }, 500)}
+                textMessageContanierStyle={{
+                    paddingVertical: px(12),
+                    maxWidth: px(238),
+                }}
+                rightMessageTextStyle={{
+                    fontSize: px(14),
+                }}
+                leftMessageTextStyle={{
+                    fontSize: px(14),
+                    lineHeight: px(20),
+                }}
+                userNameStyle={{marginBottom: px(4)}}
+                rightMessageBackground={'#CEE3FE'}
+                renderPanelRow={(item, index) => (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={{alignItems: 'center'}}
+                        key={index}
+                        onPress={onClickChoosePicture}>
+                        <FastImage source={item.icon} style={{width: px(50), height: px(50), marginBottom: px(10)}} />
+                        <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>{item.text}</Text>
+                    </TouchableOpacity>
+                )}
                 userProfile={{
                     //个人资料
-                    id: uid,
+                    id: `${uid}`,
                     avatar: 'https://static.licaimofang.com/wp-content/uploads/2021/01/vip_index_12.png',
                 }}
                 // sendIcon={<Text>发送</Text>}
@@ -299,5 +593,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 6,
         marginRight: px(6),
+    },
+    triangle: {
+        width: 0,
+        height: 0,
+        zIndex: 999,
+        borderWidth: 8,
+        borderTopColor: 'transparent',
+        borderBottomColor: 'transparent',
+        borderColor: '#fff',
+        marginTop: 16,
+        marginRight: -2,
+    },
+    left_triangle: {
+        borderLeftWidth: 0,
+        marginTop: 8,
+        borderRightWidth: Platform.OS === 'android' ? 6 : 10,
+    },
+    button: {
+        height: px(32),
+        width: px(88),
+        borderRadius: px(16),
+    },
+    sm_text: {
+        textAlign: 'center',
+        fontSize: px(12),
+        color: Colors.lightGrayColor,
+    },
+    intellectList: {
+        backgroundColor: '#fff',
+        paddingHorizontal: px(16),
+        position: 'absolute',
+        bottom: px(61),
+        width: deviceWidth,
+        zIndex: 100,
     },
 });

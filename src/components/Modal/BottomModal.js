@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:08:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-10 14:28:13
  * @Description: 底部弹窗
  */
 import React from 'react';
@@ -20,6 +20,7 @@ const BottomModal = React.forwardRef((props, ref) => {
         title = '请选择',
         confirmText = '',
         children = <Text />,
+        style = {},
         /**
          * 点击确认按钮
          */
@@ -53,7 +54,7 @@ const BottomModal = React.forwardRef((props, ref) => {
                 activeOpacity={1}
                 onPress={isTouchMaskToClose ? hide : () => {}}
                 style={[styles.container]}>
-                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
+                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={[styles.con, style]}>
                     {header || (
                         <View style={styles.header}>
                             <TouchableOpacity style={styles.close} onPress={hide}>

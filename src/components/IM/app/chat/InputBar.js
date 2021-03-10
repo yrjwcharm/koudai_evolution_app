@@ -158,11 +158,11 @@ export default class InputBar extends PureComponent {
                     inputOutContainerStyle,
                     Platform.OS === 'ios' ? {paddingBottom: isIphoneX ? xHeight : 0} : {},
                     {
-                        borderTopWidth: intellectList() ? 0 : StyleSheet.hairlineWidth,
+                        borderTopWidth: intellectList && intellectList() ? 0 : StyleSheet.hairlineWidth,
                     },
                 ]}
                 onLayout={(e) => (this.inputHeight = e.nativeEvent.layout.height)}>
-                {!intellectList() && shortCutList && shortCutList()}
+                {shortCutList && shortCutList()}
                 {intellectList && intellectList()}
                 <View
                     style={[
