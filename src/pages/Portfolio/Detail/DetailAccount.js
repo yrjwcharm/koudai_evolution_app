@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: xjh
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -25,7 +25,7 @@ import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 
-export default function DetailAccount(props) {
+export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -42,11 +42,11 @@ export default function DetailAccount(props) {
         if (!url) {
             return;
         }
-        props.navigation.navigate(url, params);
+        navigation.navigate(url, params);
     };
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
-            upid: props.route?.params?.upid,
+            upid: route?.params?.upid,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
@@ -54,7 +54,7 @@ export default function DetailAccount(props) {
                 getChartInfo();
             }
         });
-    }, [getChartInfo, props.route.params]);
+    }, [getChartInfo, route.params]);
     const getChartInfo = useCallback(() => {
         if (Object.keys(data).length > 0) {
             Http.get('/portfolio/yield_chart/20210101', {

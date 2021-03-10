@@ -3,7 +3,7 @@
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:53:40
+ * @LastEditTime: 2021-03-10 14:58:47
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -59,19 +59,15 @@ const AssetNav = ({navigation, route}) => {
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
-            <View
-                style={[styles.header, {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+            <View style={[Style.flexRow, styles.header]}>
                 {header?.map((item, index, arr) => {
                     return (
                         <Text
                             key={item + index}
                             style={[
-                                [styles.headerText],
-                                {
-                                    flex: index == 0 ? 1 : 0,
-                                    textAlign: index == 0 ? 'left' : 'right',
-                                    width: index == arr.length ? text(40) : text(85),
-                                },
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
@@ -85,7 +81,7 @@ const AssetNav = ({navigation, route}) => {
         return (
             <>
                 {list.length > 0 && (
-                    <Text style={{paddingBottom: Space.padding, textAlign: 'center'}}>
+                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
                         {hasMore ? '正在加载...' : '暂无更多了'}
                     </Text>
                 )}
@@ -101,15 +97,15 @@ const AssetNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    {/* {item?.map((value, idx) => {
+                    {item?.map((value, idx, arr) => {
                         return (
                             <Text
                                 key={value + idx}
                                 style={[
                                     styles.itemText,
-                                    {color: getColor(item[3].text), fontFamily: Font.numFontFamily},
+                                    {fontFamily: Font.numFontFamily},
                                     idx === 0 ? {textAlign: 'left'} : {},
-                                    idx === arr.length - 1 ? {textAlign: 'right'} : {},
+                                    idx === arr.length - 1 ? {color: getColor(value.text), textAlign: 'right'} : {},
                                 ]}>
                                 {idx === arr.length - 1
                                     ? parseFloat(value?.text?.replace(/,/g, '')) > 0
@@ -118,17 +114,7 @@ const AssetNav = ({navigation, route}) => {
                                     : value.text}
                             </Text>
                         );
-                    })} */}
-                    <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
-                    <Text style={[styles.itemText]}>{item[1].text}</Text>
-                    <Text style={[styles.itemText]}>{item[2].text}</Text>
-                    <Text
-                        style={[
-                            styles.itemText,
-                            {color: getColor(item[3].text), fontFamily: Font.numFontFamily, textAlign: 'right'},
-                        ]}>
-                        {parseFloat(item[3]?.text?.replace(/,/g, '')) > 0 ? `+${item[3].text}` : item[3].text}
-                    </Text>
+                    })}
                 </View>
             );
         },
@@ -187,10 +173,11 @@ const styles = StyleSheet.create({
         paddingRight: text(14),
     },
     headerText: {
+        flex: 1,
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.darkGrayColor,
-        width: text(90),
+        textAlign: 'center',
     },
     item: {
         height: text(45),
@@ -204,7 +191,7 @@ const styles = StyleSheet.create({
         lineHeight: text(18),
         color: Colors.defaultColor,
         fontFamily: Font.numRegular,
-        textAlign: 'right',
+        textAlign: 'center',
     },
 });
 
