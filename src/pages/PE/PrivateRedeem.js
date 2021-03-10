@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-09 18:57:52
+ * @LastEditTime: 2021-03-09 19:06:14
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -37,7 +37,7 @@ export default function PrivateRedeem({route, navigation}) {
             share: amount,
         }).then((res) => {
             if (res.code === '000000') {
-                navigation.navigate('PrivateAssets');
+                navigation.navigate('Home');
             } else {
                 Modal.show({content: res.message});
             }

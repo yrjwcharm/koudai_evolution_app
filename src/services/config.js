@@ -1,11 +1,11 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 11:00:53
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-10 14:39:02
  * @Description:环境
  */
-const env = 'develop'; //默认
+const env = 'hjq'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
@@ -22,6 +22,9 @@ const SERVER_URL = {
     },
     ll: {
         SERVER_URL: 'http://polaris-api.ll.mofanglicai.com.cn:10080',
+    },
+    hjq: {
+        SERVER_URL: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/',
     },
 };
 export default SERVER_URL[env];

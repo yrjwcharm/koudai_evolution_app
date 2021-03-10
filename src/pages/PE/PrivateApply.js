@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-09 18:54:15
+ * @LastEditTime: 2021-03-09 19:05:37
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -32,17 +32,14 @@ const PrivateApply = (props) => {
 
     const loopRef = useRef(0);
     const timerRef = useRef(null);
-    const init = useCallback(
-        (first) => {
-            http.get('/pe/redeem/20210101', {
-                fund_code: fund_code,
-                poid: poid,
-            }).then((res) => {
-                setData(res.result);
-            });
-        },
-        [loopRef, timerRef, navigation]
-    );
+    const init = useCallback(() => {
+        http.get('/pe/redeem/20210101', {
+            fund_code: fund_code,
+            poid: poid,
+        }).then((res) => {
+            setData(res.result);
+        });
+    }, [loopRef, timerRef, navigation]);
     const onLayout = useCallback(
         (index, e) => {
             const arr = [...heightArr];
@@ -51,6 +48,9 @@ const PrivateApply = (props) => {
         },
         [heightArr]
     );
+    const btnClick = () => {
+        props.navigation.navigate('Home');
+    };
     useEffect(() => {
         init(true);
         return () => clearTimeout(timerRef.current);
@@ -106,7 +106,13 @@ const PrivateApply = (props) => {
                         );
                     })}
             </View>
-            <FixedButton title={'完成'} style={styles.btn_sty} onPress={() => btnClick()} />
+            <FixedButton
+                title={'完成'}
+                style={styles.btn_sty}
+                onPress={() => btnClick()}
+                color={'#CEA26B'}
+                style={{backgroundColor: '#CEA26B'}}
+            />
         </View>
     );
 };

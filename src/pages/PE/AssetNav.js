@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
- * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:21:24
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-10 11:19:26
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -59,14 +59,18 @@ const AssetNav = ({navigation, route}) => {
     // 渲染头部
     const renderHeader = useCallback(() => {
         return (
-            <View style={[Style.flexRow, styles.header]}>
+            <View
+                style={[styles.header, {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
                 {header?.map((item, index) => {
                     return (
                         <Text
                             style={[
-                                styles.headerText,
-                                index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                [styles.headerText],
+                                {
+                                    flex: index == 0 ? 1 : 0,
+                                    textAlign: index == 0 ? 'left' : 'right',
+                                    width: index == header.length ? text(40) : text(85),
+                                },
                             ]}>
                             {item}
                         </Text>
@@ -99,7 +103,7 @@ const AssetNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    {item?.map((value, idx) => {
+                    {/* {item?.map((value, idx) => {
                         return (
                             <Text
                                 style={[
@@ -115,17 +119,17 @@ const AssetNav = ({navigation, route}) => {
                                     : value.text}
                             </Text>
                         );
-                    })}
-                    {/* <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
+                    })} */}
+                    <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
                     <Text style={[styles.itemText]}>{item[1].text}</Text>
                     <Text style={[styles.itemText]}>{item[2].text}</Text>
                     <Text
                         style={[
                             styles.itemText,
-                            {textAlign: 'right', color: getColor(item[3].text), fontFamily: Font.numFontFamily},
+                            {color: getColor(item[3].text), fontFamily: Font.numFontFamily, textAlign: 'right'},
                         ]}>
                         {parseFloat(item[3]?.text?.replace(/,/g, '')) > 0 ? `+${item[3].text}` : item[3].text}
-                    </Text> */}
+                    </Text>
                 </View>
             );
         },
@@ -184,11 +188,10 @@ const styles = StyleSheet.create({
         paddingRight: text(14),
     },
     headerText: {
-        flex: 1,
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.darkGrayColor,
-        textAlign: 'center',
+        width: text(90),
     },
     item: {
         height: text(45),
@@ -202,7 +205,7 @@ const styles = StyleSheet.create({
         lineHeight: text(18),
         color: Colors.defaultColor,
         fontFamily: Font.numRegular,
-        textAlign: 'center',
+        textAlign: 'right',
     },
 });
 
