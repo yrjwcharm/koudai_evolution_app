@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:47:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-10 20:33:39
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -25,7 +25,7 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-// global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
+global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
     if (UIManager.setLayoutAnimationEnabledExperimental) {

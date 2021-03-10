@@ -2,12 +2,13 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:39:48
+ * @LastEditTime: 2021-03-10 19:45:16
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -20,6 +21,7 @@ import {Chart} from '../../components/Chart';
 import {areaChart} from '../Portfolio/components/ChartOption';
 
 const AccProfit = ({poid}) => {
+    const insets = useSafeAreaInsets();
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
@@ -28,9 +30,7 @@ const AccProfit = ({poid}) => {
     const [activeSections, setActiveSections] = useState([0]);
     const init = useCallback(() => {
         if (!poid) {
-            http.get('/profit/user_portfolios/20210101', {
-                uid: '1000000001',
-            }).then((res) => {
+            http.get('/profit/user_portfolios/20210101').then((res) => {
                 if (res.code === '000000') {
                     setList(res.result.list);
                 }
@@ -40,15 +40,16 @@ const AccProfit = ({poid}) => {
     }, [poid]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        http.get('/profit/user_acc/20210101', {
-            uid: '1000000001',
+        const url = poid ? '/profit/portfolio_acc/20210101' : '/profit/user_acc/20210101';
+        http.get(url, {
             period,
+            poid,
         }).then((res) => {
             if (res.code === '000000') {
                 setChartData(res.result);
             }
         });
-    }, [period]);
+    }, [period, poid]);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -145,16 +146,19 @@ const AccProfit = ({poid}) => {
                 </View>
                 <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>{chartData.profit_acc}</Text>
                 <View style={[styles.chart]}>
-                    <Chart
-                        initScript={areaChart(
-                            chartData.chart,
-                            [Colors.red, Colors.lightBlackColor],
-                            {value: chartData.title},
-                            false,
-                            0
-                        )}
-                        data={chartData.chart}
-                    />
+                    {Object.keys(chartData).length > 0 && (
+                        <Chart
+                            initScript={areaChart(
+                                chartData.chart,
+                                [Colors.red],
+                                ['l(90) 0:#E74949 1:#fff'],
+                                {value: chartData.title},
+                                false,
+                                0
+                            )}
+                            data={chartData.chart}
+                        />
+                    )}
                 </View>
                 <View style={[Style.flexRowCenter, {paddingBottom: text(30)}]}>
                     {chartData?.subtabs?.map((tab, index) => {
@@ -206,6 +210,7 @@ const AccProfit = ({poid}) => {
                     </TouchableOpacity>
                 );
             })}
+            <View style={{marginBottom: insets.bottom}} />
         </ScrollView>
     );
 };

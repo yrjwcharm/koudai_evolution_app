@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 17:09:23
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 19:02:47
+ * @LastEditTime: 2021-03-10 16:05:45
  * @Description: 带输入框的弹窗
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
@@ -30,6 +30,7 @@ const InputModal = forwardRef((props, ref) => {
         header,
         isTouchMaskToClose,
         keyboardType,
+        maxLength,
         placeholder,
         title,
         unit,
@@ -134,6 +135,7 @@ const InputModal = forwardRef((props, ref) => {
                                     autoFocus={true}
                                     clearButtonMode={'while-editing'}
                                     keyboardType={keyboardType}
+                                    maxLength={maxLength}
                                     onChangeText={onChange}
                                     placeholder={placeholder}
                                     style={[styles.input]}
@@ -210,6 +212,7 @@ InputModal.propTypes = {
     header: PropTypes.oneOfType([PropTypes.element, PropTypes.elementType]),
     isTouchMaskToClose: PropTypes.bool,
     keyboardType: PropTypes.string,
+    maxLength: PropTypes.number,
     placeholder: PropTypes.string,
     title: PropTypes.string,
     unit: PropTypes.string,
@@ -221,6 +224,7 @@ InputModal.defaultProps = {
     defaultValue: '',
     isTouchMaskToClose: true,
     keyboardType: 'decimal-pad',
+    maxLength: 1024,
     placeholder: '请输入',
     title: '请输入',
     unit: '￥',

@@ -2,8 +2,8 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 19:14:03
- * @Description: 净值走势
+ * @LastEditTime: 2021-03-10 19:50:44
+ * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
@@ -14,25 +14,24 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
-import {baseAreaChart} from '../Portfolio/components/ChartOption';
+import {dodgeColumn} from '../Portfolio/components/ChartOption';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
-    const [period, setPeriod] = useState('m1');
     const [chartData, setChart] = useState({});
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
 
     const init = useCallback(() => {
-        http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
+        http.get('/profit/month_ratio/20210101', {poid}).then((res) => {
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart(res.result);
             }
         });
-    }, [period, poid]);
+    }, [poid]);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
         init();
@@ -92,7 +91,7 @@ const NetValueTrend = ({poid}) => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             scrollEventThrottle={1000}
             style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            <View style={styles.netValueChart}>
+            <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
                 <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
                     {chartData?.label?.map((item, index) => {
                         return (
@@ -122,12 +121,7 @@ const NetValueTrend = ({poid}) => {
                 <View style={{height: 220}}>
                     {chartData.chart && (
                         <Chart
-                            initScript={baseAreaChart(
-                                chartData.chart,
-                                [Colors.red, Colors.lightBlackColor],
-                                ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                                true
-                            )}
+                            initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
                             data={chartData.chart}
                             onChange={onChartChange}
                             onHide={onHide}
@@ -135,69 +129,6 @@ const NetValueTrend = ({poid}) => {
                         />
                     )}
                 </View>
-                <View style={[Style.flexRow, {justifyContent: 'center', paddingBottom: text(28)}]}>
-                    {chartData?.sub_tabs?.map((item, index) => {
-                        return (
-                            <TouchableOpacity
-                                key={item.val + index}
-                                onPress={() => setPeriod(item.val)}
-                                style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
-                                <Text
-                                    style={[
-                                        styles.subTitle,
-                                        {color: period === item.val ? Colors.brandColor : Colors.descColor},
-                                    ]}>
-                                    {item.name}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </View>
-            <View style={styles.buyTableWrap}>
-                <View style={styles.buyTableHead}>
-                    <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[0]}</Text>
-                    </View>
-                    <View style={[styles.buyTableCell]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[1]}</Text>
-                    </View>
-                    <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[2]}</Text>
-                    </View>
-                </View>
-                {chartData.table?.tr_list?.map((item, index) => {
-                    return (
-                        <View
-                            key={index + 'c'}
-                            style={[
-                                styles.buyTableBody,
-                                {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
-                            ]}>
-                            <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                <Text style={styles.buyTableItem}>{item[0]}</Text>
-                            </View>
-                            <View style={[styles.buyTableCell]}>
-                                <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>{item[1]}</Text>
-                            </View>
-                            <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>{item[2]}</Text>
-                            </View>
-                        </View>
-                    );
-                })}
-            </View>
-            <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
-                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
-                <Text style={[styles.descContent, {marginBottom: text(14)}]}>
-                    {'每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。'}
-                </Text>
-                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么我的净值走势和我的累计收益不一致'}</Text>
-                <Text style={[styles.descContent, {marginBottom: text(14)}]}>
-                    {
-                        '每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。'
-                    }
-                </Text>
             </View>
         </ScrollView>
     );
@@ -219,7 +150,6 @@ const styles = StyleSheet.create({
     },
     netValueChart: {
         backgroundColor: '#fff',
-        // height: text(320),
     },
     bigTitle: {
         fontSize: text(15),

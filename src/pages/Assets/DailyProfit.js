@@ -2,12 +2,13 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:20:28
+ * @LastEditTime: 2021-03-10 19:49:33
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
-import {FlatList, LayoutAnimation, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {LayoutAnimation, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -17,20 +18,22 @@ import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 
 const DailyProfit = ({poid}) => {
+    const insets = useSafeAreaInsets();
     const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
     const [activeSections, setActiveSections] = useState([0]);
     const [maxData, setMaxData] = useState(0);
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             const url = poid ? '/profit/portfolio_daily/20210101' : '/profit/user_daily/20210101';
-            http.get(`${url}`, {
+            http.get(url, {
                 uid: '1000000001',
                 page,
+                poid,
             }).then((res) => {
                 first && navigation.setOptions({title: res.result.title || '收益明细'});
                 setHasMore(res.result.has_more);
@@ -219,20 +222,23 @@ const DailyProfit = ({poid}) => {
     }, [list]);
     return (
         <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            <FlatList
-                data={list}
-                // sections={[{title: 'list', data: list}]}
+            <SectionList
+                // data={list}
+                sections={[{title: 'list', data: list}]}
+                contentContainerStyle={{backgroundColor: '#fff'}}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
-                ListHeaderComponent={renderSectionHeader}
+                // ListHeaderComponent={renderSectionHeader}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
+                renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
-                style={[{backgroundColor: '#fff'}]}
+                style={{paddingBottom: insets.bottom}}
+                stickySectionHeadersEnabled={false}
             />
         </View>
     );

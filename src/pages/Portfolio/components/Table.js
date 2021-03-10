@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
- * @LastEditors: xjh
- * @LastEditTime: 2021-02-17 10:32:38
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-10 20:38:35
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,10 +14,10 @@ import {Style} from '../../../common/commonStyle';
 import PropTypes from 'prop-types';
 export default function Table(props) {
     Table.propTypes = {
-        data: PropTypes.array.isRequired,
+        data: PropTypes.object.isRequired,
     };
     Table.defaultProps = {
-        data: [],
+        data: {},
     };
     const {data} = props;
     return (
@@ -33,8 +33,8 @@ export default function Table(props) {
                             borderTopRightRadius: 6,
                         },
                     ]}>
-                    <Text style={styles.text_align_sty}></Text>
-                    <Text style={styles.text_align_sty}></Text>
+                    <Text style={styles.text_align_sty} />
+                    <Text style={styles.text_align_sty} />
                     <Text style={styles.text_align_sty}>{data?.th[2]}</Text>
                 </View>
                 {data?.tr_list.map((_item, _index) => {

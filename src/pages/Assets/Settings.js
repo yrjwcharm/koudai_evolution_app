@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:29:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-10 20:27:21
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,31 +16,39 @@ import {useJump} from '../../components/hooks';
 import {Modal, ShareModal} from '../../components/Modal';
 import Storage from '../../utils/storage';
 import Toast from '../../components/Toast';
+import {InputModal} from '../../components/Modal';
 
 const Settings = ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState([]);
     const shareModal = useRef(null);
+    const inputModal = useRef(null);
+    const [modalProps, setModalProps] = useState({});
 
     const onPress = useCallback(
         (item) => {
             if (item.type === 'bind_invitor') {
-                Alert.prompt('填写邀请码', '', [
-                    {
-                        text: '取消',
-                        onPress: () => console.log('取消'),
+                setModalProps({
+                    confirmClick: (value) => {
+                        Http.post('/polaris/bind_invite_code/20210101', {
+                            invited_code: value,
+                        }).then((res) => {
+                            Toast.show(res.message);
+                            if (res.code === '000000') {
+                                Http.get('mapi/config/20210101').then((resp) => {
+                                    if (resp.code === '000000') {
+                                        setData(resp.result);
+                                    }
+                                });
+                            }
+                        });
                     },
-                    {
-                        text: '确定',
-                        onPress: () => {
-                            Http.post('/polaris/bind_invite_code/20210101', {
-                                invited_code: '202088',
-                            }).then((res) => {
-                                Toast.show('邀请码绑定成功');
-                            });
-                        },
-                    },
-                ]);
+                    confirmText: '确定',
+                    keyboardType: 'default',
+                    maxLength: 6,
+                    placeholder: '请填写邀请码',
+                    title: '填写邀请码',
+                });
             } else if (item.type === 'share_mofang') {
                 shareModal.current.show();
             } else if (item.type === 'logout') {
@@ -54,16 +62,6 @@ const Settings = ({navigation}) => {
                         navigation.navigate({name: 'Register'});
                     },
                 });
-                // Alert.alert('退出登录', '退出后，日收益和投资产品列表将不再展示，是否确认退出？', [
-                //     {
-                //         text: '取消',
-                //         onPress: () => console.log('取消'),
-                //     },
-                //     {
-                //         text: '确定',
-                //         onPress: () => console.log('确定'),
-                //     },
-                // ]);
             } else {
                 jump(item.url);
             }
@@ -78,8 +76,14 @@ const Settings = ({navigation}) => {
             }
         });
     }, []);
+    useEffect(() => {
+        if (Object.keys(modalProps).length > 0) {
+            inputModal.current.show();
+        }
+    }, [modalProps]);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
+            <InputModal {...modalProps} ref={inputModal} />
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index) => {
                     return (
