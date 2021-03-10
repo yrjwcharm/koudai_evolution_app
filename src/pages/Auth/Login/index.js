@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 14:36:56
+ * @LastEditTime: 2021-03-09 16:22:41
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -82,7 +82,7 @@ export default class index extends Component {
                 />
                 <Text
                     onPress={() => {
-                        this.jumpPage('CreateAccount');
+                        this.jumpPage('ForgetLoginPwd');
                     }}
                     style={[styles.text, {color: Colors.btnColor, height: text(30), alignSelf: 'flex-end'}]}>
                     忘记密码

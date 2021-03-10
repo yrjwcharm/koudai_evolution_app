@@ -3,7 +3,7 @@
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 11:19:26
+ * @LastEditTime: 2021-03-10 14:53:40
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -61,24 +61,22 @@ const AssetNav = ({navigation, route}) => {
         return (
             <View
                 style={[styles.header, {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
-                {header?.map((item, index) => {
+                {header?.map((item, index, arr) => {
                     return (
                         <Text
+                            key={item + index}
                             style={[
                                 [styles.headerText],
                                 {
                                     flex: index == 0 ? 1 : 0,
                                     textAlign: index == 0 ? 'left' : 'right',
-                                    width: index == header.length ? text(40) : text(85),
+                                    width: index == arr.length ? text(40) : text(85),
                                 },
                             ]}>
                             {item}
                         </Text>
                     );
                 })}
-                {/* <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText]}>{header[2]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text> */}
             </View>
         );
     }, [header]);
@@ -87,7 +85,7 @@ const AssetNav = ({navigation, route}) => {
         return (
             <>
                 {list.length > 0 && (
-                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
+                    <Text style={{paddingBottom: Space.padding, textAlign: 'center'}}>
                         {hasMore ? '正在加载...' : '暂无更多了'}
                     </Text>
                 )}
@@ -106,13 +104,14 @@ const AssetNav = ({navigation, route}) => {
                     {/* {item?.map((value, idx) => {
                         return (
                             <Text
+                                key={value + idx}
                                 style={[
                                     styles.itemText,
                                     {color: getColor(item[3].text), fontFamily: Font.numFontFamily},
                                     idx === 0 ? {textAlign: 'left'} : {},
-                                    idx === item.length - 1 ? {textAlign: 'right'} : {},
+                                    idx === arr.length - 1 ? {textAlign: 'right'} : {},
                                 ]}>
-                                {idx === item.length - 1
+                                {idx === arr.length - 1
                                     ? parseFloat(value?.text?.replace(/,/g, '')) > 0
                                         ? `+${value.text}`
                                         : value.text

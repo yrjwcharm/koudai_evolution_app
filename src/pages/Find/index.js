@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:35:52
+ * @LastEditTime: 2021-03-09 15:10:56
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -33,11 +33,15 @@ const Index = (props) => {
     // const snapScroll = useRef(null);
     const getData = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
-        http.get('/discovery/index/20210101').then((res) => {
-            setRefreshing(false);
-            setLoading(false);
-            SetData(res.result);
-        });
+        http.get('/discovery/index/20210101')
+            .then((res) => {
+                setRefreshing(false);
+                setLoading(false);
+                SetData(res.result);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, []);
     const renderLoading = () => {
         return (

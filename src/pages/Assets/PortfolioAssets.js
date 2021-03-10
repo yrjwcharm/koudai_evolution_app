@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 19:41:40
+ * @LastEditTime: 2021-03-09 19:18:34
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -70,7 +70,7 @@ export default function PortfolioAssets(props) {
             setChart(res.result);
             setChartData(res.result.chart);
         });
-    }, [chart]);
+    }, []);
 
     const toggleEye = useCallback(() => {
         setShowEye((show) => {

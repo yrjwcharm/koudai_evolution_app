@@ -2,10 +2,10 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:39:02
+ * @LastEditTime: 2021-03-10 14:54:08
  * @Description:环境
  */
-const env = 'hjq'; //默认
+const env = 'develop'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境

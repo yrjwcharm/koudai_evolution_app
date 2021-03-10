@@ -107,7 +107,6 @@ export default class http {
             }
             return res;
         } catch (error) {
-            console.log(error, '22222');
             return error;
         }
         // }

@@ -58,3 +58,6 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 .history
+/src/service/http/config.js
+/android/app/release/
+/android/app/debug/

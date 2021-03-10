@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 18:01:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 15:04:55
+ * @LastEditTime: 2021-03-08 18:29:20
  * @Description: 基金经理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -18,7 +18,7 @@ const FundManager = ({navigation, route}) => {
 
     const init = useCallback(
         (first) => {
-            setRefreshing(true);
+            // setRefreshing(true);
             http.get('/fund/managers/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
@@ -45,7 +45,7 @@ const FundManager = ({navigation, route}) => {
                 return (
                     <View key={index} style={{marginBottom: text(12)}}>
                         <Text style={styles.name}>{item.name}</Text>
-                        <HTML style={styles.desc} html={item.profile} />
+                        {item.profile ? <HTML style={styles.desc} html={item.profile} /> : null}
                     </View>
                 );
             })}

@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 14:49:56
+ * @LastEditTime: 2021-03-09 09:55:38
  * @Description: 邀请好友记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,7 +21,7 @@ const InviteRecord = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/promotion/invitees/20210101', {
                 page,
             }).then((res) => {
@@ -60,14 +60,14 @@ const InviteRecord = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header.map((item, index) => {
+                {header.map((item, index, arr) => {
                     return (
                         <Text
-                            key={item}
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>

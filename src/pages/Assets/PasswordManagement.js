@@ -2,20 +2,22 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-18 14:54:35
+ * @LastEditTime: 2021-03-10 11:21:46
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
+import storage from '../../utils/storage';
 
 const PasswordManagement = ({navigation}) => {
-    const [data, setData] = useState([
+    const [open, setOpen] = useState(false);
+    const [data] = useState([
         [
             {
                 title: '登录密码修改',
@@ -32,6 +34,12 @@ const PasswordManagement = ({navigation}) => {
                 type: 'link',
                 jump_to: 'TradePwdManagement',
             },
+            {
+                title: '手势密码修改',
+                type: 'link',
+                jump_to: 'GesturePassword',
+                hide: 'true',
+            },
         ],
         [
             {
@@ -41,7 +49,6 @@ const PasswordManagement = ({navigation}) => {
             },
         ],
     ]);
-    const [open, setOpen] = useState(false);
 
     const onPress = useCallback(
         (item) => {
@@ -52,11 +59,27 @@ const PasswordManagement = ({navigation}) => {
     const onToggle = useCallback(() => {
         setOpen((prev) => !prev);
         if (!open) {
-            Toast.show('开启手势密码');
+            // Toast.show('开启手势密码');
+            storage.get('gesturePwd').then((res) => {
+                if (res) {
+                    storage.save('openGesturePwd', true);
+                } else {
+                    navigation.navigate('GesturePassword');
+                }
+            });
         } else {
-            Toast.show('关闭手势密码');
+            // Toast.show('关闭手势密码');
+            storage.save('openGesturePwd', false);
         }
-    }, [open]);
+    }, [navigation, open]);
+
+    useFocusEffect(
+        useCallback(() => {
+            storage.get('openGesturePwd').then((res) => {
+                res !== undefined ? setOpen(res) : setOpen(false);
+            });
+        }, [])
+    );
 
     return (
         <ScrollView style={styles.container}>
@@ -65,6 +88,9 @@ const PasswordManagement = ({navigation}) => {
                     <View key={i} style={styles.box}>
                         {part.map((item, index) => {
                             if (item.type === 'link') {
+                                if (item.hide === 'true' && !open) {
+                                    return null;
+                                }
                                 return (
                                     <View
                                         key={`item${index}`}
