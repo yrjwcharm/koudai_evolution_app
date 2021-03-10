@@ -3,16 +3,17 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 15:31:18
+ * @LastEditTime: 2021-03-10 20:26:52
  */
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
 import Header from '../../../components/NavBar';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
-import {baseChart, histogram, pie} from './ChartOption';
+import {pie} from './ChartOption';
+import {baseAreaChart} from '../components/ChartOption';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ChartData from './data.json';
@@ -21,35 +22,89 @@ import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
 import Html from '../../../components/RenderHtml';
 import {BottomModal} from '../../../components/Modal';
+import {useJump} from '../../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
+
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const bottomModal = React.useRef(null);
     const [showMask, setShowMask] = useState(false);
-    useEffect(() => {
+    const _textTime = useRef(null);
+    const _textPortfolio = useRef(null);
+    const _textBenchmark = useRef(null);
+    const [type, setType] = useState(1);
+    const jump = useJump();
+    const init = useCallback(() => {
         Http.get('/polaris/portfolio_detail/20210101', {
             poid: route.params.poid,
         }).then((res) => {
             setData(res.result);
+            Http.get('/portfolio/yield_chart/20210101', {
+                upid: route.params.upid,
+                period: period,
+                type: type,
+                allocation_id: res.result.parts_addition_data.line.allocation_id,
+                benchmark_id: res.result.parts_addition_data.line.benchmark_id,
+            }).then((res) => {
+                setChartData(res.result);
+            });
         });
-        setChartData(ChartData);
-    }, []);
+    }, [route.params, period]);
 
-    const year = [
-        {title: '近1年', period: 'y1'},
-        {title: '近3年', period: 'y3'},
-        {title: '近5年', period: 'y5'},
-        {title: '近10年', period: 'y10'},
-        {title: '未来10年', period: 'y100'},
-    ];
-    const changeTab = (num, period) => {
+    const changeTab = (period, type) => {
         setPeriod(period);
-        setChartData(num);
+        setType(type);
     };
     const jumpTo = (url) => {
         navigation.navigate({name: url.path, params});
     };
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = ({items}) => {
+        const _data = chartData?.yield_info;
+        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+        });
+    };
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
 
     return (
         <>
@@ -73,83 +128,119 @@ export default function DetailPolaris({route, navigation}) {
                             </View>
                             <Text style={styles.num_sty}>{data?.top?.ratio_text}</Text>
                             <Text style={styles.desc_sty}>{data?.top?.desc}</Text>
-                            <TouchableOpacity style={styles.btn_sty} onPress={() => jumpTo(data?.top?.btn?.url)}>
+                            <TouchableOpacity style={styles.btn_sty} onPress={() => jump(data?.top?.btn?.url)}>
                                 <Text style={styles.btn_text_sty}>{data?.top?.btn?.text}</Text>
                             </TouchableOpacity>
                         </View>
-
                         <View
                             style={{
-                                height: 400,
+                                height: 300,
                                 backgroundColor: '#fff',
-                                paddingVertical: text(20),
+                                marginTop: text(12),
                                 borderRadius: text(10),
+                                paddingVertical: text(16),
                             }}>
-                            <Text style={styles.card_title_sty}>{data?.part_line?.title}</Text>
+                            <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>
+                                {data?.part_line?.title}
+                            </Text>
                             <View style={[Style.flexRow]}>
                                 <View style={styles.legend_sty}>
-                                    <Text style={styles.legend_title_sty}>2020-11</Text>
-                                    <Text style={styles.legend_desc_sty}>时间</Text>
+                                    <TextInput
+                                        ref={_textTime}
+                                        style={styles.legend_title_sty}
+                                        defaultValue={chartData?.yield_info?.label[0]?.val}
+                                        editable={false}
+                                    />
+                                    <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[0]?.key}</Text>
                                 </View>
                                 <View style={styles.legend_sty}>
-                                    <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>15.15%</Text>
+                                    <TextInput
+                                        style={[
+                                            styles.legend_title_sty,
+                                            {color: getColor(chartData?.yield_info?.label[1]?.val)},
+                                        ]}
+                                        ref={_textPortfolio}
+                                        defaultValue={chartData?.yield_info?.label[1]?.val}
+                                        editable={false}
+                                    />
                                     <Text>
                                         <MaterialCommunityIcons
                                             name={'record-circle-outline'}
                                             color={'#E74949'}
                                             size={12}
                                         />
-                                        <Text style={styles.legend_desc_sty}>短期账户</Text>
+                                        <Text style={styles.legend_desc_sty}>
+                                            {chartData?.yield_info?.label[1]?.key}
+                                        </Text>
                                     </Text>
                                 </View>
                                 <View style={styles.legend_sty}>
-                                    <Text style={styles.legend_title_sty}>8.12%</Text>
+                                    <TextInput
+                                        style={[
+                                            styles.legend_title_sty,
+                                            {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                        ]}
+                                        ref={_textBenchmark}
+                                        defaultValue={chartData?.yield_info?.label[2]?.val}
+                                        editable={false}
+                                    />
                                     <Text>
                                         <MaterialCommunityIcons
                                             name={'record-circle-outline'}
                                             color={'#545968'}
                                             size={12}
                                         />
-                                        <Text style={styles.legend_desc_sty}>比较基准</Text>
+                                        <Text style={styles.legend_desc_sty}>
+                                            {chartData?.yield_info?.label[2]?.key}
+                                        </Text>
                                     </Text>
                                 </View>
                             </View>
-
-                            <Chart initScript={baseChart(chartData)} />
+                            <Chart
+                                initScript={baseAreaChart(
+                                    chartData?.yield_info?.chart,
+                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                    true
+                                )}
+                                onChange={onChartChange}
+                                data={chartData?.yield_info?.chart}
+                                onHide={onHide}
+                                style={{width: '100%'}}
+                            />
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    height: text(60),
+                                    height: 50,
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    marginHorizontal: text(20),
+                                    marginHorizontal: 20,
                                 }}>
-                                {year.map((_item, _index) => {
-                                    let num = _index * 10 + 10;
+                                {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                     return (
                                         <TouchableOpacity
                                             style={[
-                                                styles.btn_press_sty,
+                                                styles.btn_choose_sty,
                                                 {
-                                                    backgroundColor: period == _item.period ? '#F1F6FF' : '#fff',
+                                                    backgroundColor:
+                                                        period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
                                                 },
                                             ]}
-                                            onPress={() => changeTab(num, _item.period)}>
+                                            key={_index}
+                                            onPress={() => changeTab(_item.val, _item.type)}>
                                             <Text
                                                 style={{
-                                                    color: period == _item.period ? '#0051CC' : '#555B6C',
+                                                    color: period == _item.val ? '#0051CC' : '#555B6C',
                                                     fontSize: text(12),
                                                 }}>
-                                                {_item.title}
+                                                {_item.name}
                                             </Text>
                                         </TouchableOpacity>
                                     );
                                 })}
                             </View>
-                            <View style={{paddingHorizontal: text(16)}}>
-                                <Html style={styles.line_desc_sty} html={data?.part_line?.line?.desc} />
-                            </View>
                         </View>
+
                         <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
                             <View style={{paddingHorizontal: text(16)}}>
                                 <Text style={[styles.card_title_sty, {paddingHorizontal: 0, paddingBottom: text(10)}]}>
@@ -265,7 +356,7 @@ export default function DetailPolaris({route, navigation}) {
                                             },
                                         ]}
                                         key={_idx + 'info'}
-                                        onPress={() => jumpPage(_info.url)}>
+                                        onPress={() => jump(_info.url)}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
                                         <AntDesign name={'right'} color={'#555B6C'} size={12} />
                                     </TouchableOpacity>
@@ -376,5 +467,12 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         color: '#9AA1B2',
         lineHeight: text(18),
+    },
+    btn_choose_sty: {
+        borderWidth: 0.5,
+        borderColor: '#E2E4EA',
+        paddingHorizontal: text(8),
+        paddingVertical: text(5),
+        borderRadius: text(15),
     },
 });
