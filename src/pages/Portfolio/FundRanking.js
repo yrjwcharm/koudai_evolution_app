@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:05:14
+ * @LastEditTime: 2021-03-08 18:24:00
  * @Description: 基金排名
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -19,7 +19,7 @@ const FundRanking = ({navigation, route}) => {
 
     const init = useCallback(
         (first) => {
-            setRefreshing(true);
+            // setRefreshing(true);
             http.get('/fund/nav/rank/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
@@ -39,9 +39,19 @@ const FundRanking = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                <Text style={[styles.headerText, {textAlign: 'left'}]}>{header[0]}</Text>
-                <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[2]}</Text>
+                {header?.map((item, index, arr) => {
+                    return (
+                        <Text
+                            key={item + index}
+                            style={[
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
+                            ]}>
+                            {item}
+                        </Text>
+                    );
+                })}
             </View>
         );
     }, [header]);

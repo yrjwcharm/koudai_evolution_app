@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:22:04
+ * @LastEditTime: 2021-03-08 18:27:06
  * @Description: 历史净值
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,7 +21,7 @@ const HistoryNav = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/fund/nav/history/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
@@ -59,13 +59,14 @@ const HistoryNav = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header.map((item, index) => {
+                {header.map((item, index, arr) => {
                     return (
                         <Text
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
@@ -95,18 +96,19 @@ const HistoryNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    {item?.map((value, idx) => {
+                    {item?.map((value, idx, arr) => {
                         return (
                             <Text
+                                key={value + idx}
                                 style={[
                                     styles.itemText,
                                     idx === 0 ? {textAlign: 'left'} : {},
-                                    idx === item.length - 1 ? {textAlign: 'right'} : {},
-                                    idx === item.length - 1
+                                    idx === arr.length - 1 ? {textAlign: 'right'} : {},
+                                    idx === arr.length - 1
                                         ? {color: getColor(value), fontFamily: Font.numFontFamily}
                                         : {},
                                 ]}>
-                                {idx === item.length - 1
+                                {idx === arr.length - 1
                                     ? parseFloat(value?.replace(/,/g, '')) > 0
                                         ? `+${value}`
                                         : value

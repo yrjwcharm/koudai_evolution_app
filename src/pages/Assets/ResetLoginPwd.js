@@ -2,10 +2,10 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-23 16:43:20
+ * @LastEditTime: 2021-03-10 12:28:23
  * @Description: 重设登录密码
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,14 +15,18 @@ import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
 import {Button} from '../../components/Button';
+import Toast from '../../components/Toast';
 
 const ResetLoginPwd = ({navigation}) => {
     const [oldPwd, setOldPwd] = useState('');
     const [newPwd, setNewPwd] = useState('');
-    const [btnClick, setBtnClick] = useState(true);
+    const btnClick = useRef(true);
 
     // 完成密码重设
     const submit = useCallback(() => {
+        if (!btnClick.current) {
+            return false;
+        }
         const checkData = [
             {
                 field: oldPwd,
@@ -35,8 +39,27 @@ const ResetLoginPwd = ({navigation}) => {
         ];
         if (!formCheck(checkData)) {
             return false;
+        } else {
+            if (newPwd.length < 6) {
+                Toast.show('请输入不少于6位新密码');
+                return false;
+            } else {
+                btnClick.current = false;
+                http.post('/passport/update_login_password/20210101', {
+                    old: oldPwd,
+                    new: newPwd,
+                }).then((res) => {
+                    btnClick.current = true;
+                    if (res.code === '000000') {
+                        Toast.show(res.message);
+                        navigation.goBack();
+                    } else {
+                        Toast.show(res.message);
+                    }
+                });
+            }
         }
-    }, [oldPwd, newPwd]);
+    }, [oldPwd, newPwd, navigation]);
     useEffect(() => {
         // if (oldPwd.length >= 6 && newPwd.length >= 6) {
         //     setBtnClick(true);
@@ -64,7 +87,7 @@ const ResetLoginPwd = ({navigation}) => {
                 onChangeText={(pwd) => setNewPwd(pwd)}
                 placeholder={'请输入不少于6位新密码'}
                 secureTextEntry={true}
-                textContentType={'password'}
+                textContentType={'newPassword'}
                 title={'新密码'}
                 value={newPwd}
             />

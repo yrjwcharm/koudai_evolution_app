@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:21:36
+ * @LastEditTime: 2021-03-08 18:57:12
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,14 +21,13 @@ const CompanyFunds = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/fund/company/funds/20210101', {
                 company_id: (route.params && route.params.company_id) || '',
                 page,
             }).then((res) => {
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
-                first && navigation.setOptions({title: route.params.title || '旗下基金'});
                 first && setHeader(res.result.header);
                 if (status === 'refresh') {
                     setList(res.result.list || []);
@@ -37,7 +36,7 @@ const CompanyFunds = ({navigation, route}) => {
                 }
             });
         },
-        [navigation, route, page]
+        [route, page]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
@@ -59,13 +58,14 @@ const CompanyFunds = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header?.map((item, index) => {
+                {header?.map((item, index, arr) => {
                     return (
                         <Text
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
@@ -95,7 +95,7 @@ const CompanyFunds = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    <Text numberOfLines={1} style={[styles.itemText, {textAlign: 'left'}]}>
+                    <Text numberOfLines={1} style={[styles.itemText]}>
                         {item.name}
                     </Text>
                     <Text
@@ -124,6 +124,9 @@ const CompanyFunds = ({navigation, route}) => {
         }
     }, []);
 
+    useEffect(() => {
+        navigation.setOptions({title: route.params.title || '旗下基金'});
+    }, [navigation, route]);
     useEffect(() => {
         if (page === 1) {
             init('refresh', true);
@@ -180,8 +183,6 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontFamily: Font.numRegular,
-        textAlign: 'center',
     },
 });
 

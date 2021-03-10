@@ -3,11 +3,11 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 14:44:33
+ * @LastEditTime: 2021-03-10 19:00:18
  */
 
-import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
@@ -15,27 +15,92 @@ import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import {baseChart, histogram, pie} from './ChartOption';
-import ChartData from './data.json';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {baseAreaChart} from '../components/ChartOption';
 import FixedBtn from '../components/FixedBtn';
 import Header from '../../../components/NavBar';
-export default function DetailAccount() {
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useFocusEffect} from '@react-navigation/native';
+import {useJump} from '../../../components/hooks';
+export default function DetailAccount({route}) {
     const [data, setData] = useState({});
+    const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
-    const imgList = [
-        'https://static.licaimofang.com/wp-content/uploads/2021/01/step.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/01/profile.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/01/implementation.png',
-    ];
-    useEffect(() => {
-        Http.get('/portfolio/fix_invest_detail/20210101').then((res) => {
+    const _textTime = useRef(null);
+    const _textPortfolio = useRef(null);
+    const _textBenchmark = useRef(null);
+    const jump = useJump();
+    var _type;
+    const changeTab = (period, type) => {
+        setPeriod(period);
+        _type = type;
+    };
+
+    const init = useCallback(() => {
+        Http.get('/portfolio/fix_invest_detail/20210101', {
+            upid: route?.params?.upid,
+            poid: route?.params?.poid,
+        }).then((res) => {
             setData(res.result);
+            Http.get('/portfolio/yield_chart/20210101', {
+                upid: route.params.upid,
+                period: period,
+                type: _type,
+                allocation_id: data.allocation_id,
+                benchmark_id: data.benchmark_id,
+                poid: route?.params?.poid,
+            }).then((res) => {
+                setChartData(res.result);
+            });
         });
-        setChartData(ChartData);
+    }, [route.params, period]);
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = ({items}) => {
+        const _data = chartData?.yield_info;
+        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+        });
+    };
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
     }, []);
-    const jumpTo = () => {};
     return (
         <>
             {Object.keys(data).length > 0 ? <Header title={data.title} leftIcon="chevron-left" /> : null}
@@ -59,49 +124,101 @@ export default function DetailAccount() {
                             })}
                         </View>
                     </View>
-                    <View style={{height: 330, backgroundColor: '#fff'}}>
-                        <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
-                            <View style={{marginLeft: text(16), width: text(70), alignSelf: 'baseline'}}>
-                                <Text
+                    <View style={{height: 320, backgroundColor: '#fff'}}>
+                        <View style={[Style.flexRow, {marginTop: text(22)}]}>
+                            <View style={styles.legend_sty}>
+                                <TextInput
+                                    ref={_textTime}
+                                    style={styles.legend_title_sty}
+                                    defaultValue={chartData?.yield_info?.label[0]?.val}
+                                    editable={false}
+                                />
+                                <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[0]?.key}</Text>
+                            </View>
+                            <View style={styles.legend_sty}>
+                                <TextInput
                                     style={[
                                         styles.legend_title_sty,
-                                        {fontSize: text(13), fontFamily: Font.numFontFamily},
-                                    ]}>
-                                    2020-11-12
+                                        {color: getColor(chartData?.yield_info?.label[1]?.val)},
+                                    ]}
+                                    ref={_textPortfolio}
+                                    defaultValue={chartData?.yield_info?.label[1]?.val}
+                                    editable={false}
+                                />
+                                <Text>
+                                    <MaterialCommunityIcons
+                                        name={'record-circle-outline'}
+                                        color={'#E74949'}
+                                        size={12}
+                                    />
+                                    <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[1]?.key}</Text>
                                 </Text>
                             </View>
                             <View style={styles.legend_sty}>
+                                <TextInput
+                                    style={[
+                                        styles.legend_title_sty,
+                                        {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                    ]}
+                                    ref={_textBenchmark}
+                                    defaultValue={chartData?.yield_info?.label[2]?.val}
+                                    editable={false}
+                                />
                                 <Text>
-                                    <Ionicons name={'square'} color={'#E74949'} size={10} />
-                                    <Text style={styles.legend_desc_sty}>
-                                        低估值智能定投
-                                        <Text
-                                            style={[
-                                                styles.legend_title_sty,
-                                                {color: '#E74949', fontFamily: Font.numFontFamily},
-                                            ]}>
-                                            +15.15%
-                                        </Text>
-                                    </Text>
-                                </Text>
-                            </View>
-                            <View style={styles.legend_sty}>
-                                <Text>
-                                    <Ionicons name={'square'} color={'#C8A77A'} size={10} />
-                                    <Text style={styles.legend_desc_sty}>
-                                        比较基准{' '}
-                                        <Text style={[styles.legend_title_sty, {fontFamily: Font.numFontFamily}]}>
-                                            8.12%
-                                        </Text>
-                                    </Text>
+                                    <MaterialCommunityIcons
+                                        name={'record-circle-outline'}
+                                        color={'#545968'}
+                                        size={12}
+                                    />
+                                    <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
                                 </Text>
                             </View>
                         </View>
-                        <Chart initScript={baseChart(chartData)} />
+                        <Chart
+                            initScript={baseAreaChart(
+                                chartData?.yield_info?.chart,
+                                [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                true
+                            )}
+                            onChange={onChartChange}
+                            data={chartData?.yield_info?.chart}
+                            onHide={onHide}
+                            style={{width: '100%'}}
+                        />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                height: 50,
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginHorizontal: 20,
+                            }}>
+                            {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.btn_sty,
+                                            {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                        ]}
+                                        key={_index}
+                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                        <Text
+                                            style={{
+                                                color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                fontSize: text(12),
+                                            }}>
+                                            {_item.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
                     </View>
+
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View>
-                            {imgList.map((_i, _d) => {
+                            {data?.asset_intros?.map((_i, _d) => {
                                 return (
                                     <FitImage source={{uri: _i}} resizeMode="contain" style={{marginTop: text(16)}} />
                                 );
@@ -144,7 +261,7 @@ export default function DetailAccount() {
                             </View>
                         </View>
                         <View style={[styles.card_sty, {paddingVertical: 0}]}>
-                            {data.gather_info.map((_g, _index) => {
+                            {data?.gather_info?.map((_g, _index) => {
                                 return (
                                     <TouchableOpacity
                                         style={[
@@ -155,7 +272,7 @@ export default function DetailAccount() {
                                             },
                                         ]}
                                         key={_index + '_g'}
-                                        onPress={jumpTo}>
+                                        onPress={() => jump(_g.url)}>
                                         <Text style={{flex: 1, paddingVertical: text(20), color: '#545968'}}>
                                             {_g.title}
                                         </Text>
@@ -165,6 +282,7 @@ export default function DetailAccount() {
                             })}
                         </View>
                     </View>
+                    <BottomDesc />
                 </ScrollView>
             )}
             {Object.keys(data).length > 0 && (
@@ -195,8 +313,9 @@ const styles = StyleSheet.create({
     legend_title_sty: {
         color: '#1F2432',
         fontWeight: 'bold',
-        fontSize: text(12),
+        fontSize: text(16),
         marginBottom: text(4),
+        fontFamily: Font.numFontFamily,
     },
     legend_desc_sty: {
         fontSize: text(11),

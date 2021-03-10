@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 16:36:17
+ * @LastEditTime: 2021-03-10 20:21:11
  * @Description:路由表
  */
 import React from 'react';
@@ -19,7 +19,6 @@ import Register from '../pages/Auth/Register'; //注册
 import Login from '../pages/Auth/Login'; //登录
 import WechatLogin from '../pages/Auth/Login/wechatLogin'; //微信登录
 import SetLoginPassword from '../pages/Auth/Register/setLoginPassword'; //设置登录密码
-import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import SetTradePassword from '../pages/CreateAccount/SetTradePassword'; //设置交易密码
 import CreateAccount from '../pages/CreateAccount/Account'; //基金开户
 import UploadID from '../pages/CreateAccount/Account/uploadID'; //上传身份证
@@ -214,13 +213,6 @@ export default function AppStack() {
             <Stack.Screen
                 name="Login"
                 component={Login}
-                options={{
-                    title: '',
-                }}
-            />
-            <Stack.Screen
-                name="ForgetLoginPwd"
-                component={ForgetLoginPwd}
                 options={{
                     title: '',
                 }}

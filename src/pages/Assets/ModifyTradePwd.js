@@ -2,10 +2,10 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:02:17
+ * @LastEditTime: 2021-03-10 12:31:12
  * @Description: 修改交易密码
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,15 +15,19 @@ import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
 import {Button} from '../../components/Button';
+import Toast from '../../components/Toast';
 
 const ModifyTradePwd = ({navigation}) => {
     const [oldPwd, setOldPwd] = useState('');
     const [newPwd, setNewPwd] = useState('');
     const [confirmPwd, setConfirmPwd] = useState('');
-    const [btnClick, setBtnClick] = useState(true);
+    const btnClick = useRef(true);
 
     // 完成密码修改
     const submit = useCallback(() => {
+        if (!btnClick.current) {
+            return false;
+        }
         const checkData = [
             {
                 field: oldPwd,
@@ -40,8 +44,34 @@ const ModifyTradePwd = ({navigation}) => {
         ];
         if (!formCheck(checkData)) {
             return false;
+        } else {
+            if (oldPwd.length < 6) {
+                Toast.show('当前交易密码错误');
+                return false;
+            } else if (newPwd.length < 6) {
+                Toast.show('新交易密码不能少于6位');
+                return false;
+            } else if (confirmPwd !== newPwd) {
+                Toast.show('两次输入不一致');
+                return false;
+            } else {
+                btnClick.current = false;
+                http.post('/passport/edit_trade_password/20210101', {
+                    password: oldPwd,
+                    new_password: newPwd,
+                    con_new_password: confirmPwd,
+                }).then((res) => {
+                    btnClick.current = true;
+                    if (res.code === '000000') {
+                        Toast.show(res.message);
+                        navigation.goBack();
+                    } else {
+                        Toast.show(res.message);
+                    }
+                });
+            }
         }
-    }, [oldPwd, newPwd, confirmPwd]);
+    }, [oldPwd, newPwd, confirmPwd, navigation]);
     useEffect(() => {
         // if (oldPwd.length >= 6 && newPwd.length >= 6 && confirmPwd.length >= 6) {
         //     setBtnClick(true);
@@ -53,7 +83,7 @@ const ModifyTradePwd = ({navigation}) => {
         <ScrollView style={styles.container}>
             <InputView
                 clearButtonMode={'while-editing'}
-                keyboardType={'numeric'}
+                keyboardType={'number-pad'}
                 maxLength={6}
                 onChangeText={(pwd) => setOldPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'请输入当前交易密码'}
@@ -64,7 +94,7 @@ const ModifyTradePwd = ({navigation}) => {
             />
             <InputView
                 clearButtonMode={'while-editing'}
-                keyboardType={'numeric'}
+                keyboardType={'number-pad'}
                 maxLength={6}
                 onChangeText={(pwd) => setNewPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'请输入新的6位数字交易密码'}
@@ -75,7 +105,7 @@ const ModifyTradePwd = ({navigation}) => {
             />
             <InputView
                 clearButtonMode={'while-editing'}
-                keyboardType={'numeric'}
+                keyboardType={'number-pad'}
                 maxLength={6}
                 onChangeText={(pwd) => setConfirmPwd(pwd.replace(/\D/g, ''))}
                 placeholder={'确认新的交易密码'}

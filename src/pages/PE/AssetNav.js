@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
- * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:21:24
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-10 14:58:47
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -60,21 +60,19 @@ const AssetNav = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header?.map((item, index) => {
+                {header?.map((item, index, arr) => {
                     return (
                         <Text
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
                     );
                 })}
-                {/* <Text style={[styles.headerText]}>{header[1]}</Text>
-                <Text style={[styles.headerText]}>{header[2]}</Text>
-                <Text style={[styles.headerText, {textAlign: 'right'}]}>{header[3]}</Text> */}
             </View>
         );
     }, [header]);
@@ -99,16 +97,17 @@ const AssetNav = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                    {item?.map((value, idx) => {
+                    {item?.map((value, idx, arr) => {
                         return (
                             <Text
+                                key={value + idx}
                                 style={[
                                     styles.itemText,
-                                    {color: getColor(item[3].text), fontFamily: Font.numFontFamily},
+                                    {fontFamily: Font.numFontFamily},
                                     idx === 0 ? {textAlign: 'left'} : {},
-                                    idx === item.length - 1 ? {textAlign: 'right'} : {},
+                                    idx === arr.length - 1 ? {color: getColor(value.text), textAlign: 'right'} : {},
                                 ]}>
-                                {idx === item.length - 1
+                                {idx === arr.length - 1
                                     ? parseFloat(value?.text?.replace(/,/g, '')) > 0
                                         ? `+${value.text}`
                                         : value.text
@@ -116,16 +115,6 @@ const AssetNav = ({navigation, route}) => {
                             </Text>
                         );
                     })}
-                    {/* <Text style={[styles.itemText, {textAlign: 'left'}]}>{item[0].text}</Text>
-                    <Text style={[styles.itemText]}>{item[1].text}</Text>
-                    <Text style={[styles.itemText]}>{item[2].text}</Text>
-                    <Text
-                        style={[
-                            styles.itemText,
-                            {textAlign: 'right', color: getColor(item[3].text), fontFamily: Font.numFontFamily},
-                        ]}>
-                        {parseFloat(item[3]?.text?.replace(/,/g, '')) > 0 ? `+${item[3].text}` : item[3].text}
-                    </Text> */}
                 </View>
             );
         },

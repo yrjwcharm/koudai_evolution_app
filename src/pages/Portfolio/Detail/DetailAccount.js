@@ -23,36 +23,36 @@ import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
+import {useJump} from '../../../components/hooks';
 
-export default function DetailAccount(props) {
+export default function DetailAccount({route, navigation}) {
+    const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('');
+    const [period, setPeriod] = useState('y5');
     const [summary, setSummary] = useState([]);
     const [labelInfo, setLabelInfo] = useState([]);
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
-    const changeTab = (period) => {
-        setPeriod(period);
+    const changeTab = (p) => {
+        setPeriod(p);
     };
     const jumpPage = (url, params) => {
         if (!url) {
             return;
         }
-        props.navigation.navigate(url, params);
+        navigation.navigate(url, params);
     };
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
-            upid: props.route?.params?.upid,
+            upid: route?.params?.upid,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
-                setPeriod(res.result.period);
-                getChartInfo();
             }
         });
-    }, []);
+    }, [getChartInfo, route.params]);
     const getChartInfo = useCallback(() => {
         if (Object.keys(data).length > 0) {
             Http.get('/portfolio/yield_chart/20210101', {
@@ -66,26 +66,55 @@ export default function DetailAccount(props) {
                 setSummary(res.result.yield_info.label);
             });
         }
-    }, [period, props.route]);
+    }, [period, data]);
     useFocusEffect(
         useCallback(() => {
             init();
             getChartInfo();
-        }, [props.route, getChartInfo])
+        }, [getChartInfo, init])
     );
 
     // 图表滑动legend变化
-    const onChartChange = useCallback(({items}) => {
-        _textTime.current.setNativeProps({text: items[0]?.title});
-        _textPortfolio.current.setNativeProps({text: items[0]?.value});
-        _textBenchmark.current.setNativeProps({text: items[1]?.value});
-    }, []);
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
     // 图表滑动结束
-    const onHide = useCallback(({items}) => {
-        console.log(labelInfo);
-        _textTime.current.setNativeProps({text: labelInfo[0]?.val});
-        _textPortfolio.current.setNativeProps({text: labelInfo[1]?.val});
-        _textBenchmark.current.setNativeProps({text: labelInfo[2]?.val});
+    const onHide = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: labelInfo[0].val});
+            _textPortfolio.current.setNativeProps({
+                text: labelInfo[1].val,
+                style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: labelInfo[2].val,
+                style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
+            });
+        },
+        [labelInfo, getColor]
+    );
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
     }, []);
     return (
         <>
@@ -112,14 +141,16 @@ export default function DetailAccount(props) {
                                     ref={_textTime}
                                     style={styles.legend_title_sty}
                                     defaultValue={summary[0]?.val}
+                                    editable={false}
                                 />
                                 <Text style={styles.legend_desc_sty}>{summary[0]?.key}</Text>
                             </View>
                             <View style={styles.legend_sty}>
                                 <TextInput
-                                    style={[styles.legend_title_sty, {color: '#E74949'}]}
+                                    style={[styles.legend_title_sty, {color: getColor(summary[1]?.val)}]}
                                     ref={_textPortfolio}
                                     defaultValue={summary[1]?.val}
+                                    editable={false}
                                 />
                                 <Text>
                                     <MaterialCommunityIcons
@@ -132,9 +163,10 @@ export default function DetailAccount(props) {
                             </View>
                             <View style={styles.legend_sty}>
                                 <TextInput
-                                    style={[styles.legend_title_sty, {color: '#E74949'}]}
+                                    style={[styles.legend_title_sty, {color: getColor(summary[2]?.val)}]}
                                     ref={_textBenchmark}
                                     defaultValue={summary[2]?.val}
+                                    editable={false}
                                 />
                                 <Text>
                                     <MaterialCommunityIcons
@@ -149,8 +181,8 @@ export default function DetailAccount(props) {
                         <Chart
                             initScript={baseAreaChart(
                                 chartData?.chart,
-                                ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor, 'transparent'],
-                                ['l(90) 0:#E74949 1:#fff', 'transparent', 'green'],
+                                [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                                 true
                             )}
                             onChange={onChartChange}
@@ -312,7 +344,7 @@ export default function DetailAccount(props) {
                                         },
                                     ]}
                                     key={_idx + 'info'}
-                                    onPress={() => jumpPage(_info.url)}>
+                                    onPress={() => jump(_info.url)}>
                                     <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
                                     <AntDesign name={'right'} color={'#555B6C'} size={12} />
                                 </TouchableOpacity>

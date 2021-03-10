@@ -5,148 +5,185 @@
 //  * @LastEditors: xjh
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px, px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {baseChart, histogram, pie} from './ChartOption';
-import ChartData from './data.json';
-import FitImage from 'react-native-fit-image';
+import {pie} from './ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import Header from '../../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
+import {baseAreaChart} from '../components/ChartOption';
 import Table from '../components/Table';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-export default function DetailRetiredPlan() {
+import {useFocusEffect} from '@react-navigation/native';
+import Picker from 'react-native-picker';
+import Mask from '../../../components/Mask';
+import {BottomModal} from '../../../components/Modal';
+import {useJump} from '../../../components/hooks';
+export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
-    const [chartData, setChartData] = useState();
     const [period, setPeriod] = useState('y1');
-    const [map, setMap] = useState({});
-    const [choose, setChoose] = useState(1);
-    const year = [
-        {title: '近1年', period: 'y1'},
-        {title: '近3年', period: 'y3'},
-        {title: '近5年', period: 'y5'},
-        {title: '近10年', period: 'y10'},
-        {title: '未来10年', period: 'y100'},
-    ];
-    const head = {
-        title: '子女教育计划是怎么帮我投资的？',
-        text: '',
+    const [chartData, setChartData] = useState();
+    const _textTime = useRef(null);
+    const _textPortfolio = useRef(null);
+    const _textBenchmark = useRef(null);
+    const [countFr, setCountFr] = useState();
+    const [countM, setCountM] = useState();
+    const [showMask, setShowMask] = useState(false);
+    const [current, setCurrent] = useState();
+    const [popup, setPopup] = useState();
+    const bottomModal = React.useRef(null);
+    const jump = useJump();
+    var _type = 1;
+    const rightPress = () => {
+        navigation.navigate('Evaluation');
     };
-    const pieData = [
-        {
-            code: 11202,
-            name: '股票市场',
-            ratio: 0.7252,
-            percent: '72.52%',
-        },
-        {
-            code: 12101,
-            name: '债券市场',
-            ratio: 0.18159999999999998,
-            percent: '18.16%',
-        },
-        {
-            code: 14001,
-            name: '商品市场',
-            ratio: 0.0713,
-            percent: '7.13%',
-        },
-        {
-            code: 13101,
-            name: '货币市场',
-            ratio: 0.0219,
-            percent: '2.19%',
-        },
-    ];
-    const btns = [
-        {
-            title: '咨询',
-            icon: 'https://static.licaimofang.com/wp-content/uploads/2020/12/zixun.png',
-            url: '',
-            subs: [
-                {
-                    icon: 'https://static.licaimofang.com/wp-content/uploads/2020/04/xing_zhuang_@2x1.png',
-                    title: '电话咨询专家',
-                    desc: '与专家电话，问题解答更明白',
-                    recommend: 0,
-                    btn: {
-                        title: '拨打电话',
-                    },
-                    type: 'tel',
-                    sno: '4000808208',
-                },
-                {
-                    icon: 'https://static.licaimofang.com/wp-content/uploads/2020/04/xing_zhuang_@2x2.png',
-                    title: '在线咨询',
-                    desc: '专家在线解决问题，10秒内回复',
-                    recommend: 0,
-                    btn: {
-                        title: '立即咨询',
-                    },
-                    type: 'im',
-                },
-            ],
-        },
-        {
-            title: '立即购买',
-            icon: '',
-            url: '/trade/ym_trade_state?state=buy&id=7&risk=4&amount=2000',
-            desc: '已有1377380人加入',
-        },
-    ];
-    const list = [
-        {title: '重点大学', id: 0},
-        {title: '艺术大学', id: 1},
-        {title: '海外留学', id: 2},
-    ];
-    const table = {
-        head: ['子女教育计划', '子女教育计划', '子女教育计划'],
-        body: [
-            ['某教育基金', '某教育基金', '某教育基金'],
-            ['某教育基金', '某教育基金', '<span style="textAlign:center;">每月缴纳</br>18-22岁领取</span>'],
-            ['某教育基金', '某教育基金', '某教育基金'],
-            ['某教育基金', '某教育基金', '某教育基金'],
-        ],
-    };
-    const rightPress = () => {};
-    const changeTab = (num, period) => {
+    const changeTab = (period, type) => {
         setPeriod(period);
-        setChartData(num);
+        _type = type;
     };
-    const chooseBtn = () => {};
-    useEffect(() => {
+    // 计算金额
+    const countCalc = (interval, action, type) => {
+        const _interval = Number(interval);
+        if (type == 'begin') {
+            if (countFr <= 2000 || countFr >= 1000000) {
+                return;
+            }
+            if (action == 'increase') {
+                setCountFr(countFr + _interval);
+            } else {
+                setCountFr(countFr - _interval);
+            }
+        } else {
+            if (countM <= 2000 || countM >= 1000000) {
+                return;
+            }
+            if (action == 'increase') {
+                setCountM(countM + _interval);
+            } else {
+                setCountM(countM - _interval);
+            }
+        }
+    };
+    const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
-            upid: 1,
+            upid: route.params.upid,
         }).then((res) => {
             setData(res.result);
+            setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
+            setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
+            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
         });
-        setChartData(ChartData);
-        setChartData(ChartData);
-        let obj = {};
-        pieData.map((item) => {
-            obj[item.name] = item.ratio;
+    }, [route.params, getChartInfo]);
+    const getChartInfo = useCallback(() => {
+        Http.get('/portfolio/yield_chart/20210101', {
+            upid: route.params.upid,
+            period: period,
+            type: _type,
+        }).then((res) => {
+            setChartData(res.result);
         });
-        setMap(obj);
+    }, [period]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            getChartInfo();
+        }, [getChartInfo, init])
+    );
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = ({items}) => {
+        const _data = chartData?.yield_info;
+        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+        });
+    };
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
     }, []);
+    // 打开日期选择 视图
+    const _showDatePicker = () => {
+        setShowMask(true);
+        Picker.init({
+            pickerTitleText: '投入年限',
+            pickerCancelBtnText: '取消',
+            pickerConfirmBtnText: '确定',
+            pickerBg: [255, 255, 255, 1],
+            pickerData: _createDateData(),
+            pickerFontColor: [33, 33, 33, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            wheelFlex: [1, 1],
+            onPickerConfirm: (pickedValue) => {
+                setShowMask(false);
+                setCurrent(pickedValue);
+            },
+            onPickerCancel: () => {
+                setShowMask(false);
+            },
+        });
+        Picker.show();
+    };
+    const _createDateData = () => {
+        let _dep = [];
+        for (let i = 1; i <= 60; i++) {
+            _dep.push(i);
+        }
+        return _dep;
+    };
+    const showTips = (tip) => {
+        setPopup(tip);
+        bottomModal.current.show();
+        console.log(popup);
+    };
     return (
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
                     <Header
-                        title={'子女教育计划'}
+                        title={data?.title}
                         leftIcon="chevron-left"
-                        rightText={data.top_button.title}
+                        rightText={'重新测评'}
                         rightPress={rightPress}
                         rightTextStyle={styles.right_sty}
                     />
@@ -154,12 +191,12 @@ export default function DetailRetiredPlan() {
                         <View style={styles.container_sty}>
                             <View>
                                 <View style={Style.flexRow}>
-                                    <Text style={{color: '#9AA1B2'}}>目标金额(元) </Text>
+                                    <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
                                     <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
-                                        <Text style={styles.age_text_sty}>60岁退休</Text>
+                                        <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.fund_input_sty}>98655.99</Text>
+                                <Text style={styles.fund_input_sty}>{data?.plan_info?.goal_info?.amount}</Text>
                                 <View style={{position: 'relative', marginTop: text(5)}}>
                                     <FontAwesome
                                         name={'caret-up'}
@@ -172,30 +209,70 @@ export default function DetailRetiredPlan() {
                                         end={{x: 0.8, y: 0.8}}
                                         colors={['#E9EAED', '#F5F6F8']}
                                         style={{borderRadius: text(25), marginBottom: text(7)}}>
-                                        <Text style={styles.tip_sty}>
-                                            总投入金额100,000.00元，目标收总投入金额100,000.00元
-                                        </Text>
+                                        <Text style={styles.tip_sty}>{data?.plan_info?.goal_info?.remark}</Text>
                                     </LinearGradient>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
+                                        <Text style={{color: '#545968', flex: 1}}>
+                                            {data?.plan_info?.goal_info?.items[0]?.key}
+                                        </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            <Text style={styles.count_num_sty}>1,000,000</Text>
-                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[0].interval,
+                                                        'decrease',
+                                                        data?.plan_info?.goal_info?.items[0].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
+                                            <Text style={styles.count_num_sty}>{countFr}</Text>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[0].interval,
+                                                        'increase',
+                                                        data?.plan_info?.goal_info?.items[0].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>首次投入金额(元)</Text>
+                                        <Text style={{color: '#545968', flex: 1}}>
+                                            {data?.plan_info?.goal_info?.items[1]?.key}
+                                        </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            <Text style={styles.count_num_sty}>1,000,000</Text>
-                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[1].interval,
+                                                        'decrease',
+                                                        data?.plan_info?.goal_info?.items[1].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
+                                            <Text style={styles.count_num_sty}>{countM}</Text>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[1].interval,
+                                                        'increase',
+                                                        data?.plan_info?.goal_info?.items[1].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968'}}>投入年限</Text>
-                                        <TouchableOpacity style={Style.flexRow}>
-                                            <Text style={{color: '#545968'}}>14年</Text>
+                                        <Text style={{color: '#545968'}}>
+                                            {data?.plan_info?.goal_info?.items[2]?.key}
+                                        </Text>
+                                        <TouchableOpacity style={Style.flexRow} onPress={_showDatePicker}>
+                                            <Text style={{color: '#545968'}}>{current}年</Text>
                                             <AntDesign name={'down'} color={'#8D96AF'} size={12} />
                                         </TouchableOpacity>
                                     </View>
@@ -204,76 +281,117 @@ export default function DetailRetiredPlan() {
                         </View>
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
-                                <Text style={styles.title_sty}>子女教育计划VS某教育金</Text>
-                                <View style={[Style.flexRow, {marginTop: text(16)}]}>
-                                    <View style={styles.legend_sty}>
-                                        <Text style={styles.legend_title_sty}>2020-11</Text>
-                                        <Text style={styles.legend_desc_sty}>时间</Text>
-                                    </View>
-                                    <View style={styles.legend_sty}>
-                                        <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>15.15%</Text>
-                                        <Text>
-                                            <MaterialCommunityIcons
-                                                name={'record-circle-outline'}
-                                                color={'#E74949'}
-                                                size={12}
+                                <Text style={styles.title_sty}>{chartData?.title}</Text>
+                                <View style={{height: 300, backgroundColor: '#fff', marginTop: text(20)}}>
+                                    <View style={[Style.flexRow]}>
+                                        <View style={styles.legend_sty}>
+                                            <TextInput
+                                                ref={_textTime}
+                                                style={styles.legend_title_sty}
+                                                defaultValue={chartData?.yield_info?.label[0]?.val}
+                                                editable={false}
                                             />
-                                            <Text style={styles.legend_desc_sty}> 短期账户</Text>
-                                        </Text>
-                                    </View>
-                                    <View style={styles.legend_sty}>
-                                        <Text style={styles.legend_title_sty}>8.12%</Text>
-                                        <Text>
-                                            <MaterialCommunityIcons
-                                                name={'record-circle-outline'}
-                                                color={'#545968'}
-                                                size={12}
-                                            />
-                                            <Text style={styles.legend_desc_sty}> 比较基准</Text>
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={{height: 300}}>
-                                    <Chart initScript={baseChart(chartData)} style={{width: '100%'}} />
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        height: 50,
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginHorizontal: 20,
-                                    }}>
-                                    {year.map((_item, _index) => {
-                                        let num = _index * 10 + 10;
-                                        return (
-                                            <TouchableOpacity
-                                                key={_index + 'item'}
+                                            <Text style={styles.legend_desc_sty}>
+                                                {chartData?.yield_info?.label[0]?.key}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.legend_sty}>
+                                            <TextInput
                                                 style={[
-                                                    styles.btn_sty,
-                                                    {backgroundColor: period == _item.period ? '#F1F6FF' : '#fff'},
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chartData?.yield_info?.label[1]?.val)},
                                                 ]}
-                                                onPress={() => changeTab(num, _item.period)}>
-                                                <Text
-                                                    style={{
-                                                        color: period == _item.period ? '#0051CC' : '#555B6C',
-                                                        fontSize: text(12),
-                                                    }}>
-                                                    {_item.title}
+                                                ref={_textPortfolio}
+                                                defaultValue={chartData?.yield_info?.label[1]?.val}
+                                                editable={false}
+                                            />
+                                            <Text>
+                                                <MaterialCommunityIcons
+                                                    name={'record-circle-outline'}
+                                                    color={'#E74949'}
+                                                    size={12}
+                                                />
+                                                <Text style={styles.legend_desc_sty}>
+                                                    {chartData?.yield_info?.label[1]?.key}
                                                 </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
+                                            </Text>
+                                        </View>
+                                        <View style={styles.legend_sty}>
+                                            <TextInput
+                                                style={[
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                                ]}
+                                                ref={_textBenchmark}
+                                                defaultValue={chartData?.yield_info?.label[2]?.val}
+                                                editable={false}
+                                            />
+                                            <Text>
+                                                <MaterialCommunityIcons
+                                                    name={'record-circle-outline'}
+                                                    color={'#545968'}
+                                                    size={12}
+                                                />
+                                                <Text style={styles.legend_desc_sty}>
+                                                    {chartData?.yield_info?.label[2]?.key}
+                                                </Text>
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <Chart
+                                        initScript={baseAreaChart(
+                                            chartData?.yield_info?.chart,
+                                            [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                            true
+                                        )}
+                                        onChange={onChartChange}
+                                        data={chartData?.yield_info?.chart}
+                                        onHide={onHide}
+                                        style={{width: '100%'}}
+                                    />
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            height: 50,
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            marginHorizontal: 20,
+                                        }}>
+                                        {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    style={[
+                                                        styles.btn_sty,
+                                                        {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                                    ]}
+                                                    key={_index}
+                                                    onPress={() => changeTab(_item.val, _item.type)}>
+                                                    <Text
+                                                        style={{
+                                                            color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                            fontSize: text(12),
+                                                        }}>
+                                                        {_item.name}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
                                 </View>
+
                                 {/* 表格 */}
                                 <Table data={data.asset_compare.table} />
-                                <TouchableOpacity
-                                    style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
-                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                        {data.asset_compare.tip_info.title}
-                                    </Text>
-                                </TouchableOpacity>
+                                {data?.asset_compare?.tip_info?.title && (
+                                    <TouchableOpacity
+                                        style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
+                                        onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
+                                        <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                            {data?.asset_compare?.tip_info?.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             {/* 饼图 */}
                             <View style={styles.card_sty}>
@@ -322,35 +440,53 @@ export default function DetailRetiredPlan() {
                                         </View>
                                     );
                                 })}
-                                <TouchableOpacity
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'baseline',
-                                        marginTop: text(16),
-                                    }}>
-                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                        {data.asset_strategy.tip_info.title}
-                                    </Text>
-                                </TouchableOpacity>
+                                {data?.asset_strategy?.tip_info?.title && (
+                                    <TouchableOpacity
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'baseline',
+                                            marginTop: text(16),
+                                        }}>
+                                        <AntDesign
+                                            name={'exclamationcircleo'}
+                                            color={'#0051CC'}
+                                            size={15}
+                                            onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}
+                                        />
+                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                            {data?.asset_strategy?.tip_info?.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
                                 {data.gather_info.map((_q, _w) => {
                                     return (
-                                        <View
+                                        <TouchableOpacity
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
-                                            ]}>
+                                            ]}
+                                            onPress={() => jump(_q.url)}>
                                             <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
                                             <AntDesign name={'right'} color={'#555B6C'} size={12} />
-                                        </View>
+                                        </TouchableOpacity>
                                     );
                                 })}
                             </View>
                         </View>
+                        <BottomDesc />
                     </ScrollView>
-                    <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
+                    {showMask && <Mask />}
+
+                    {popup?.content && (
+                        <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
+                            <View style={{padding: text(16)}}>
+                                <Html html={popup?.content} />
+                            </View>
+                        </BottomModal>
+                    )}
+                    <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
                 </View>
             ) : null}
         </>

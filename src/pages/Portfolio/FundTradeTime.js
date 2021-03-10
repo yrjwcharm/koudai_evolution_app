@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:29:43
+ * @LastEditTime: 2021-03-08 18:25:08
  * @Description: 交易时间说明
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -18,7 +18,7 @@ const FundTradeTime = ({navigation, route}) => {
 
     const init = useCallback(
         (first) => {
-            setRefreshing(true);
+            // setRefreshing(true);
             http.get('/fund/trade_time/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
@@ -38,13 +38,14 @@ const FundTradeTime = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {buy.table?.head?.map((item, index) => {
+                {buy.table?.head?.map((item, index, arr) => {
                     return (
                         <Text
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === buy.table.head.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
@@ -59,13 +60,14 @@ const FundTradeTime = ({navigation, route}) => {
             <View
                 key={index}
                 style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                {item?.map((value, idx) => {
+                {item?.map((value, idx, arr) => {
                     return (
                         <Text
+                            key={value + idx}
                             style={[
                                 styles.itemText,
                                 idx === 0 ? {textAlign: 'left'} : {},
-                                idx === item.length - 1 ? {textAlign: 'right'} : {},
+                                idx === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {value}
                         </Text>
