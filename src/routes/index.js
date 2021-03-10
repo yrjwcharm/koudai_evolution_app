@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 16:22:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-10 14:34:14
  * @Description:路由表
  */
 import React from 'react';
@@ -82,6 +82,7 @@ import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import TradeNotice from '../pages/Message/TradeNotice'; //交易通知
@@ -102,6 +103,7 @@ import ResetLoginPwd from '../pages/Assets/ResetLoginPwd'; // 重设登录密码
 import TradePwdManagement from '../pages/Assets/TradePwdManagement'; // 交易密码管理
 import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码
 import ForgotTradePwd from '../pages/Assets/ForgotTradePwd'; // 找回交易密码
+import ForgotTradePwdNext from '../pages/Assets/ForgotTradePwdNext'; // 找回交易密码下一步
 import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
 import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
@@ -109,6 +111,8 @@ import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金�
 import MemberCenter from '../pages/Assets/MemberCenter'; // 会员中心
 import MemberSystem from '../pages/Assets/MemberSystem'; // 魔方会员体系
 import MemberService from '../pages/Assets/MemberService'; // 会员专属服务
+import MyScore from '../pages/Assets/MyScore'; // 我的魔分
+import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
 import GetRationalValue from '../pages/Assets/GetRationalValue'; // 信任值获取方法
 import {px} from '../utils/appUtil';
 import BankList from '../pages/BankPages/BankList'; //银行列表
@@ -383,6 +387,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
             <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
+            <Stack.Screen name="HistoryInvestPlan" component={HistoryInvestPlan} options={{title: '历史投资计划'}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
@@ -404,10 +409,11 @@ export default function AppStack() {
             <Stack.Screen name="TradePwdManagement" component={TradePwdManagement} options={{title: '交易密码管理'}} />
             <Stack.Screen name="ModifyTradePwd" component={ModifyTradePwd} options={{title: '修改交易密码'}} />
             <Stack.Screen name="ForgotTradePwd" component={ForgotTradePwd} options={{title: '找回交易密码'}} />
+            <Stack.Screen name="ForgotTradePwdNext" component={ForgotTradePwdNext} options={{title: '找回交易密码'}} />
             <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
             <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
-            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: ''}} />
+            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: false}} />
             {/* <Stack.Screen
                 name="ExperienceGoldDetail"
                 component={ExperienceGoldDetail}
@@ -443,6 +449,8 @@ export default function AppStack() {
             <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
             <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
+            <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
+            <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />

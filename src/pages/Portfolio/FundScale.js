@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:08:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-07 15:02:32
+ * @LastEditTime: 2021-03-08 18:27:47
  * @Description: 基金规模
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -20,7 +20,7 @@ const FundScale = ({navigation, route}) => {
 
     const init = useCallback(
         (first) => {
-            setRefreshing(true);
+            // setRefreshing(true);
             http.get('/fund/volume/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {

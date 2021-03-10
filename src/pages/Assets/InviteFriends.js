@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 14:53:19
+ * @LastEditTime: 2021-03-09 10:36:38
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -77,7 +77,9 @@ const InviteFriends = ({navigation}) => {
         navigation.setOptions({
             headerRight: () => (
                 <>
-                    <TouchableOpacity style={[Style.flexCenter, styles.topRightBtn]}>
+                    <TouchableOpacity
+                        style={[Style.flexCenter, styles.topRightBtn]}
+                        onPress={() => navigation.navigate('MyScore')}>
                         <Text style={styles.title}>{'兑换魔分'}</Text>
                     </TouchableOpacity>
                 </>

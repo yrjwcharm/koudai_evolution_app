@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 14:52:42
+ * @LastEditTime: 2021-03-08 18:25:26
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -59,14 +59,14 @@ const HistoryHoldFunds = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <View style={[Style.flexRow, styles.header]}>
-                {header.map((item, index) => {
+                {header.map((item, index, arr) => {
                     return (
                         <Text
-                            key={item}
+                            key={item + index}
                             style={[
                                 styles.headerText,
                                 index === 0 ? {textAlign: 'left'} : {},
-                                index === header.length - 1 ? {textAlign: 'right'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
                             {item}
                         </Text>
@@ -99,10 +99,10 @@ const HistoryHoldFunds = ({navigation, route}) => {
                     onPress={() => navigation.navigate({name: 'FundDetail', params: {code: item.code}})}
                     style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <View>
-                        <Text numberOfLines={1} style={[styles.itemText, {textAlign: 'left'}]}>
+                        <Text numberOfLines={1} style={[styles.itemText]}>
                             {item.name}
                         </Text>
-                        <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.code}</Text>
+                        <Text style={[styles.itemText, {fontFamily: Font.numRegular}]}>{item.code}</Text>
                     </View>
                     <Text
                         style={[
@@ -186,8 +186,6 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontFamily: Font.numRegular,
-        textAlign: 'center',
     },
 });
 

@@ -2,11 +2,11 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 15:38:05
+ * @LastEditTime: 2021-03-09 18:58:47
  * @Description: 个人资料
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Alert, Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
@@ -15,11 +15,22 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
 import Mask from '../../components/Mask';
+import {InputModal} from '../../components/Modal';
 
 const Profile = ({navigation}) => {
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
+    const inputModal = useRef(null);
+    const [modalProps, setModalProps] = useState({});
 
+    const init = useCallback(() => {
+        http.get('/mapi/person/center/20210101', {}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result.menus || []);
+                navigation.setOptions({title: res.result.title || '个人资料'});
+            }
+        });
+    }, [navigation]);
     const onPress = useCallback(
         (item) => {
             if (item.val?.type === 'jump') {
@@ -37,24 +48,74 @@ const Profile = ({navigation}) => {
                     pickerConfirmBtnText: '确定',
                     pickerBg: [255, 255, 255, 1],
                     pickerToolBarBg: [249, 250, 252, 1],
-                    pickerData: item.val.options?.map((option) => option.value),
+                    pickerData: item.val?.options?.map((option) => option.val),
                     pickerFontColor: [33, 33, 33, 1],
                     pickerRowHeight: 36,
                     pickerConfirmBtnColor: [0, 81, 204, 1],
                     pickerCancelBtnColor: [128, 137, 155, 1],
-                    selectedValue: [item.val.text],
+                    selectedValue: [item.val?.text],
                     wheelFlex: [1, 1],
                     onPickerCancel: () => setShowMask(false),
                     onPickerConfirm: (pickedValue, pickedIndex) => {
                         setShowMask(false);
+                        http.post('/mapi/update/user_info/20210101', {
+                            id: item.id,
+                            ...(item.val?.options[pickedIndex] || {}),
+                        }).then((res) => {
+                            if (res.code === '000000') {
+                                init();
+                            }
+                        });
                     },
                 });
                 Picker.show();
             } else if (item.val?.type === 'input') {
-                // hhh
+                // Alert.prompt(
+                //     `填写${item.key}`,
+                //     '',
+                //     [
+                //         {
+                //             text: '取消',
+                //             onPress: () => console.log('取消'),
+                //         },
+                //         {
+                //             text: '确定',
+                //             onPress: (value) => {
+                //                 http.post('/mapi/update/user_info/20210101', {
+                //                     id: item.id,
+                //                     val: value,
+                //                 }).then((res) => {
+                //                     if (res.code === '000000') {
+                //                         init();
+                //                     }
+                //                 });
+                //             },
+                //         },
+                //     ],
+                //     'plain-text',
+                //     item.val?.text,
+                //     'numeric'
+                // );
+                setModalProps({
+                    confirmClick: (value) => {
+                        http.post('/mapi/update/user_info/20210101', {
+                            id: item.id,
+                            val: value,
+                        }).then((res) => {
+                            if (res.code === '000000') {
+                                init();
+                            }
+                        });
+                    },
+                    confirmText: '确定',
+                    defaultValue: item.val?.text,
+                    placeholder: `请输入${item.key}金额`,
+                    title: item.key,
+                });
+                inputModal.current.show();
             }
         },
-        [navigation]
+        [navigation, init]
     );
     // 隐藏选择器
     const hidePicker = useCallback(() => {
@@ -63,15 +124,12 @@ const Profile = ({navigation}) => {
     }, []);
 
     useEffect(() => {
-        http.get('/user_info/20210101', {}).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-            }
-        });
-    }, [navigation]);
+        init();
+    }, [init]);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
+            <InputModal {...modalProps} ref={inputModal} />
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index) => {
                     return (

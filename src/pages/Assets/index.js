@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:24:28
+ * @LastEditTime: 2021-03-10 09:50:04
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -18,7 +18,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import Image from 'react-native-fast-image';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -45,6 +45,7 @@ function HomeScreen({navigation}) {
     const fadeAnim = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     const jump = useJump();
+    const isFocused = useIsFocused();
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -89,8 +90,10 @@ function HomeScreen({navigation}) {
             // uid: '1000000001',
         }).then((res) => {
             if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
                 setUserBasicInfo(res.result);
             }
+            setRefreshing(false);
         });
         http.get('/asset/notice/20210101', {
             // uid: '1000000001',
@@ -98,7 +101,6 @@ function HomeScreen({navigation}) {
             if (res.code === '000000') {
                 setNotice(res.result);
             }
-            setRefreshing(false);
         });
     }, []);
     // 渲染账户|组合标题
@@ -205,6 +207,12 @@ function HomeScreen({navigation}) {
             };
         }, [init])
     );
+    useEffect(() => {
+        const listener = navigation.addListener('tabPress', () => {
+            isFocused && init('refresh');
+        });
+        return listener;
+    }, [isFocused, navigation, init]);
 
     return (
         <View style={styles.container}>
@@ -224,6 +232,7 @@ function HomeScreen({navigation}) {
                 scrollEventThrottle={16}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
                 <View style={[styles.assetsContainer]}>
+                    {/* 用户头像 会员中心 */}
                     <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
                         <Image
                             source={
@@ -253,6 +262,7 @@ function HomeScreen({navigation}) {
                     </View>
                     <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                     <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
+                    {/* 系统通知 */}
                     {!hideMsg && notice?.system && (
                         <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
                             <Text style={styles.systemMsgText}>{notice.system}</Text>
@@ -261,6 +271,7 @@ function HomeScreen({navigation}) {
                             </TouchableOpacity>
                         </Animated.View>
                     )}
+                    {/* 资产信息 */}
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
                         <Text style={styles.date}>
@@ -289,6 +300,7 @@ function HomeScreen({navigation}) {
                             {holdingData?.summary && showEye === 'true' ? holdingData.summary.amount : '****'}
                         </Text>
                     </View>
+                    {/* 小黄条 */}
                     {notice?.trade && (
                         <TouchableOpacity style={[styles.tradeNotice, Style.flexCenter]}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
@@ -313,20 +325,23 @@ function HomeScreen({navigation}) {
                         </View>
                     </View>
                 </View>
+                {/* 顶部菜单 */}
                 <View style={[styles.topMenu, Style.flexRow]}>
                     {userBasicInfo.top_menus &&
                         userBasicInfo.top_menus.map((item, index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     onPress={() => jump(item.url)}
                                     key={`topmenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1}]}>
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
                             );
                         })}
                 </View>
+                {/* 中控 */}
                 <View style={styles.centerCtrl}>
                     <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
                     <Text style={styles.centerCtrlContent}>
@@ -335,6 +350,7 @@ function HomeScreen({navigation}) {
                         }
                     </Text>
                 </View>
+                {/* 持仓组合 */}
                 {holdingData?.accounts &&
                     holdingData?.accounts.map((item, index) => {
                         return item.portfolios ? (
@@ -378,7 +394,9 @@ function HomeScreen({navigation}) {
                                             index === 0 ? {marginTop: Space.marginVertical} : {},
                                             {padding: 0},
                                         ]}>
-                                        <TouchableOpacity style={[{padding: Space.padding}, Style.flexRow]}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[{padding: Space.padding}, Style.flexRow]}>
                                             <View style={[{flex: 1}, Style.flexRow]}>
                                                 <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
                                                     {item.name}
@@ -393,6 +411,7 @@ function HomeScreen({navigation}) {
                                 ) : (
                                     item.id === 11 && (
                                         <TouchableOpacity
+                                            activeOpacity={0.8}
                                             style={[
                                                 styles.account,
                                                 index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
@@ -406,8 +425,9 @@ function HomeScreen({navigation}) {
                             </View>
                         );
                     })}
+                {/* 投顾 */}
                 {userBasicInfo.ia_info && (
-                    <TouchableOpacity style={[styles.iaInfo, Style.flexRow]}>
+                    <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Image source={{uri: userBasicInfo.ia_info.avatar}} style={styles.iaAvatar} />
                             <View>
@@ -420,10 +440,14 @@ function HomeScreen({navigation}) {
                         <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                     </TouchableOpacity>
                 )}
+                {/* 早报 */}
                 {userBasicInfo.articles &&
                     userBasicInfo.articles.map((item, index) => {
                         return (
-                            <TouchableOpacity key={`article${index}`} style={[styles.article, Style.flexRow]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={`article${index}`}
+                                style={[styles.article, Style.flexRow]}>
                                 <View style={{flex: 1}}>
                                     <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
                                     <Text style={styles.accountName}>{item.desc}</Text>
@@ -432,13 +456,15 @@ function HomeScreen({navigation}) {
                             </TouchableOpacity>
                         );
                     })}
+                {/* 底部菜单 */}
                 <View style={[styles.topMenu, Style.flexRow, {marginTop: Space.marginVertical}]}>
                     {userBasicInfo.bottom_menus &&
                         userBasicInfo.bottom_menus.map((item, index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     key={`bottommenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1}]}
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}
                                     onPress={() => jump(item.url)}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>

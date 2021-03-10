@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:18:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:21:52
+ * @LastEditTime: 2021-03-08 18:58:25
  * @Description: 基金公告
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,7 +21,7 @@ const FundAnnouncement = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/fund/announcements/20210101', {
                 fund_code: (route.params && route.params.code) || '',
                 page,
@@ -75,6 +75,7 @@ const FundAnnouncement = ({navigation, route}) => {
         ({item, index, separators}) => {
             return (
                 <TouchableOpacity
+                    activeOpacity={0.8}
                     onPress={() => navigation.navigate({name: 'OpenPdf', params: {url: item.url, title: item.title}})}>
                     <View style={[Style.flexRow, styles.item]}>
                         <Text numberOfLines={3} style={[styles.itemText]}>

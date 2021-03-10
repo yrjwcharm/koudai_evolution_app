@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 16:43:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-08 18:13:18
  * @Description:主题及公共样式表
  */
 
@@ -167,4 +167,3 @@ export const Style = StyleSheet.create({
         color: Colors.btnColor,
     },
 });
-console.log(text(12), 123123);

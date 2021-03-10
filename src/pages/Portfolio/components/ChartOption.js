@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-06 16:28:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-08 17:50:40
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -78,6 +78,7 @@ export const baseAreaChart = (
     tooltipMarkerStyle: {
       fill: '#E74949',
       stroke: '#E74949',
+      radius: 2
     },
     triggerOn: ['touchstart', 'touchmove'],
     triggerOff: 'touchend',
@@ -95,7 +96,10 @@ export const baseAreaChart = (
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
-    .shape('smooth');
+    .shape('smooth')
+    .style({
+      lineWidth: 1
+    });
   chart.render();
 })();
 `;

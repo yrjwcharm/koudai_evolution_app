@@ -54,39 +54,39 @@ export default function GesturePassword() {
     const _changeHeadPoint = (point) => {
         switch (point + 1) {
             case 1:
-                data['point1'] = '#1F67B9';
+                data.point1 = '#1F67B9';
                 setData(data);
                 break;
             case 2:
-                data['point2'] = '#1F67B9';
+                data.point2 = '#1F67B9';
                 setData(data);
                 break;
             case 3:
-                data['point3'] = '#1F67B9';
+                data.point3 = '#1F67B9';
                 setData(data);
                 break;
             case 4:
-                data['point4'] = '#1F67B9';
+                data.point4 = '#1F67B9';
                 setData(data);
                 break;
             case 5:
-                data['point5'] = '#1F67B9';
+                data.point5 = '#1F67B9';
                 setData(data);
                 break;
             case 6:
-                data['point6'] = '#1F67B9';
+                data.point6 = '#1F67B9';
                 setData(data);
                 break;
             case 7:
-                data['point7'] = '#1F67B9';
+                data.point7 = '#1F67B9';
                 setData(data);
                 break;
             case 8:
-                data['point8'] = '#1F67B9';
+                data.point8 = '#1F67B9';
                 setData(data);
                 break;
             case 9:
-                data['point8'] = '#1F67B9';
+                data.point8 = '#1F67B9';
                 setData(data);
                 break;
         }
@@ -124,8 +124,8 @@ export default function GesturePassword() {
                     console.log('onMove:' + p);
                     _changeHeadPoint(p);
                 }}
-                onFinish={(password) => {
-                    _onEnd(password);
+                onFinish={(pwd) => {
+                    _onEnd(pwd);
                     setTimeout(() => {
                         _resetHeadPoint();
                     }, 500);
