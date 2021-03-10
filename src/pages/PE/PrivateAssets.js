@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:33:58
+ * @LastEditTime: 2021-03-10 17:56:24
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -92,8 +92,14 @@ export default function PrivateAssets({navigation, route}) {
     const onChartChange = useCallback(({items}) => {
         //时间取title setNativeProps中数据取前两条
         _textTime.current.setNativeProps({text: items[0]?.title});
-        _textPortfolio.current.setNativeProps({text: items[0]?.value});
-        _textBenchmark.current.setNativeProps({text: items[1]?.value});
+        _textPortfolio.current.setNativeProps({
+            text: items[0]?.value,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[0].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: items[1]?.value,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+        });
     }, []);
     // 图表滑动结束
     const onHide = () => {
@@ -138,14 +144,7 @@ export default function PrivateAssets({navigation, route}) {
                             </View>
                             <View style={styles.legend_sty}>
                                 <TextInput
-                                    style={[
-                                        styles.legend_title_sty,
-                                        // {
-                                        //     color: getColor(
-                                        //         labelInfo.length > 0 ? labelInfo[1].value : chart?.label[1]?.val
-                                        //     ),
-                                        // },
-                                    ]}
+                                    style={[styles.legend_title_sty]}
                                     ref={_textPortfolio}
                                     defaultValue={chart?.label[1]?.val}
                                 />

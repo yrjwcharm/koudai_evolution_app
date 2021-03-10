@@ -29,7 +29,7 @@ export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('');
+    const [period, setPeriod] = useState('y5');
     const [summary, setSummary] = useState([]);
     const [labelInfo, setLabelInfo] = useState([]);
     const _textTime = useRef(null);
@@ -50,8 +50,6 @@ export default function DetailAccount({route, navigation}) {
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
-                setPeriod(res.result.period);
-                getChartInfo();
             }
         });
     }, [getChartInfo, route.params]);

@@ -12,70 +12,87 @@ import {px, px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {baseChart, histogram, pie} from './ChartOption';
-import ChartData from './data.json';
-import FitImage from 'react-native-fit-image';
+import {pie} from './ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import Header from '../../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import {baseAreaChart} from '../components/ChartOption';
 import Table from '../components/Table';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
+import Picker from 'react-native-picker';
+import Mask from '../../../components/Mask';
+import {BottomModal} from '../../../components/Modal';
+import {useJump} from '../../../components/hooks';
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
-    const [map, setMap] = useState({});
-    const [choose, setChoose] = useState(1);
-    const [summary, setSummary] = useState([]);
-    const [labelInfo, setLabelInfo] = useState([]);
     const [chartData, setChartData] = useState();
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
+    const [countFr, setCountFr] = useState();
+    const [countM, setCountM] = useState();
+    const [showMask, setShowMask] = useState(false);
+    const [current, setCurrent] = useState();
+    const [popup, setPopup] = useState();
+    const bottomModal = React.useRef(null);
+    const jump = useJump();
     var _type = 1;
-    const head = {
-        title: '子女教育计划是怎么帮我投资的？',
-        text: '',
-    };
-
     const rightPress = () => {
         navigation.navigate('Evaluation');
     };
     const changeTab = (period, type) => {
         setPeriod(period);
         _type = type;
-        getChartInfo();
     };
-    const chooseBtn = () => {};
+    // 计算金额
+    const countCalc = (interval, action, type) => {
+        const _interval = Number(interval);
+        if (type == 'begin') {
+            if (countFr <= 2000 || countFr >= 1000000) {
+                return;
+            }
+            if (action == 'increase') {
+                setCountFr(countFr + _interval);
+            } else {
+                setCountFr(countFr - _interval);
+            }
+        } else {
+            if (countM <= 2000 || countM >= 1000000) {
+                return;
+            }
+            if (action == 'increase') {
+                setCountM(countM + _interval);
+            } else {
+                setCountM(countM - _interval);
+            }
+        }
+    };
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
         }).then((res) => {
             setData(res.result);
-            getChartInfo();
+            setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
+            setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
+            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
         });
     }, [route.params, getChartInfo]);
     const getChartInfo = useCallback(() => {
-        if (Object.keys(data).length > 0) {
-            Http.get('/portfolio/yield_chart/20210101', {
-                allocation_id: data.allocation_id,
-                benchmark_id: data.benchmark_id,
-                period: period,
-                type: _type,
-            }).then((res) => {
-                setLabelInfo(res.result.yield_info.label);
-                setChartData(res.result.yield_info);
-                setSummary(res.result.yield_info.label);
-            });
-        }
-    }, [period, data]);
+        Http.get('/portfolio/yield_chart/20210101', {
+            upid: route.params.upid,
+            period: period,
+            type: _type,
+        }).then((res) => {
+            setChartData(res.result);
+        });
+    }, [period]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -98,20 +115,18 @@ export default function DetailRetiredPlan({navigation, route}) {
         [getColor]
     );
     // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: labelInfo[0].val});
-            _textPortfolio.current.setNativeProps({
-                text: labelInfo[1].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: labelInfo[2].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
-            });
-        },
-        [labelInfo, getColor]
-    );
+    const onHide = ({items}) => {
+        const _data = chartData?.yield_info;
+        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+        });
+    };
     const getColor = useCallback((t) => {
         if (!t) {
             return Colors.defaultColor;
@@ -124,14 +139,51 @@ export default function DetailRetiredPlan({navigation, route}) {
             return Colors.red;
         }
     }, []);
+    // 打开日期选择 视图
+    const _showDatePicker = () => {
+        setShowMask(true);
+        Picker.init({
+            pickerTitleText: '投入年限',
+            pickerCancelBtnText: '取消',
+            pickerConfirmBtnText: '确定',
+            pickerBg: [255, 255, 255, 1],
+            pickerData: _createDateData(),
+            pickerFontColor: [33, 33, 33, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            wheelFlex: [1, 1],
+            onPickerConfirm: (pickedValue) => {
+                setShowMask(false);
+                setCurrent(pickedValue);
+            },
+            onPickerCancel: () => {
+                setShowMask(false);
+            },
+        });
+        Picker.show();
+    };
+    const _createDateData = () => {
+        let _dep = [];
+        for (let i = 1; i <= 60; i++) {
+            _dep.push(i);
+        }
+        return _dep;
+    };
+    const showTips = (tip) => {
+        setPopup(tip);
+        bottomModal.current.show();
+        console.log(popup);
+    };
     return (
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
                     <Header
-                        title={'子女教育计划'}
+                        title={data?.title}
                         leftIcon="chevron-left"
-                        rightText={data.top_button.title}
+                        rightText={'重新测评'}
                         rightPress={rightPress}
                         rightTextStyle={styles.right_sty}
                     />
@@ -139,7 +191,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <View style={styles.container_sty}>
                             <View>
                                 <View style={Style.flexRow}>
-                                    <Text style={{color: '#9AA1B2'}}>{data.plan_info.goal_info.title}</Text>
+                                    <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
                                     <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
                                         <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                     </View>
@@ -164,11 +216,27 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             {data?.plan_info?.goal_info?.items[0]?.key}
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            <Text style={styles.count_num_sty}>
-                                                {data?.plan_info?.goal_info?.items[0]?.val}
-                                            </Text>
-                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[0].interval,
+                                                        'decrease',
+                                                        data?.plan_info?.goal_info?.items[0].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
+                                            <Text style={styles.count_num_sty}>{countFr}</Text>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[0].interval,
+                                                        'increase',
+                                                        data?.plan_info?.goal_info?.items[0].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
@@ -176,21 +244,35 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             {data?.plan_info?.goal_info?.items[1]?.key}
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            <Text style={styles.count_num_sty}>
-                                                {data?.plan_info?.goal_info?.items[1]?.val}
-                                            </Text>
-                                            <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[1].interval,
+                                                        'decrease',
+                                                        data?.plan_info?.goal_info?.items[1].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
+                                            <Text style={styles.count_num_sty}>{countM}</Text>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    countCalc(
+                                                        data?.plan_info?.goal_info?.items[1].interval,
+                                                        'increase',
+                                                        data?.plan_info?.goal_info?.items[1].type
+                                                    )
+                                                }>
+                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                         <Text style={{color: '#545968'}}>
                                             {data?.plan_info?.goal_info?.items[2]?.key}
                                         </Text>
-                                        <TouchableOpacity style={Style.flexRow}>
-                                            <Text style={{color: '#545968'}}>
-                                                {data?.plan_info?.goal_info?.items[2]?.val}年
-                                            </Text>
+                                        <TouchableOpacity style={Style.flexRow} onPress={_showDatePicker}>
+                                            <Text style={{color: '#545968'}}>{current}年</Text>
                                             <AntDesign name={'down'} color={'#8D96AF'} size={12} />
                                         </TouchableOpacity>
                                     </View>
@@ -199,23 +281,28 @@ export default function DetailRetiredPlan({navigation, route}) {
                         </View>
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
-                                <Text style={styles.title_sty}>子女教育计划VS某教育金</Text>
+                                <Text style={styles.title_sty}>{chartData?.title}</Text>
                                 <View style={{height: 300, backgroundColor: '#fff', marginTop: text(20)}}>
                                     <View style={[Style.flexRow]}>
                                         <View style={styles.legend_sty}>
                                             <TextInput
                                                 ref={_textTime}
                                                 style={styles.legend_title_sty}
-                                                defaultValue={summary[0]?.val}
+                                                defaultValue={chartData?.yield_info?.label[0]?.val}
                                                 editable={false}
                                             />
-                                            <Text style={styles.legend_desc_sty}>{summary[0]?.key}</Text>
+                                            <Text style={styles.legend_desc_sty}>
+                                                {chartData?.yield_info?.label[0]?.key}
+                                            </Text>
                                         </View>
                                         <View style={styles.legend_sty}>
                                             <TextInput
-                                                style={[styles.legend_title_sty, {color: getColor(summary[1]?.val)}]}
+                                                style={[
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chartData?.yield_info?.label[1]?.val)},
+                                                ]}
                                                 ref={_textPortfolio}
-                                                defaultValue={summary[1]?.val}
+                                                defaultValue={chartData?.yield_info?.label[1]?.val}
                                                 editable={false}
                                             />
                                             <Text>
@@ -224,14 +311,19 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                     color={'#E74949'}
                                                     size={12}
                                                 />
-                                                <Text style={styles.legend_desc_sty}>{summary[1]?.key}</Text>
+                                                <Text style={styles.legend_desc_sty}>
+                                                    {chartData?.yield_info?.label[1]?.key}
+                                                </Text>
                                             </Text>
                                         </View>
                                         <View style={styles.legend_sty}>
                                             <TextInput
-                                                style={[styles.legend_title_sty, {color: getColor(summary[2]?.val)}]}
+                                                style={[
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                                ]}
                                                 ref={_textBenchmark}
-                                                defaultValue={summary[2]?.val}
+                                                defaultValue={chartData?.yield_info?.label[2]?.val}
                                                 editable={false}
                                             />
                                             <Text>
@@ -240,19 +332,21 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                     color={'#545968'}
                                                     size={12}
                                                 />
-                                                <Text style={styles.legend_desc_sty}>{summary[2]?.key}</Text>
+                                                <Text style={styles.legend_desc_sty}>
+                                                    {chartData?.yield_info?.label[2]?.key}
+                                                </Text>
                                             </Text>
                                         </View>
                                     </View>
                                     <Chart
                                         initScript={baseAreaChart(
-                                            chartData?.chart,
+                                            chartData?.yield_info?.chart,
                                             [Colors.red, Colors.lightBlackColor, 'transparent'],
                                             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                                             true
                                         )}
                                         onChange={onChartChange}
-                                        data={chartData?.chart}
+                                        data={chartData?.yield_info?.chart}
                                         onHide={onHide}
                                         style={{width: '100%'}}
                                     />
@@ -264,7 +358,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             justifyContent: 'space-between',
                                             marginHorizontal: 20,
                                         }}>
-                                        {chartData?.sub_tabs?.map((_item, _index) => {
+                                        {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                             return (
                                                 <TouchableOpacity
                                                     style={[
@@ -288,13 +382,16 @@ export default function DetailRetiredPlan({navigation, route}) {
 
                                 {/* 表格 */}
                                 <Table data={data.asset_compare.table} />
-                                <TouchableOpacity
-                                    style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}>
-                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                        {data.asset_compare.tip_info.title}
-                                    </Text>
-                                </TouchableOpacity>
+                                {data?.asset_compare?.tip_info?.title && (
+                                    <TouchableOpacity
+                                        style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
+                                        onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
+                                        <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                            {data?.asset_compare?.tip_info?.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             {/* 饼图 */}
                             <View style={styles.card_sty}>
@@ -343,34 +440,52 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         </View>
                                     );
                                 })}
-                                <TouchableOpacity
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'baseline',
-                                        marginTop: text(16),
-                                    }}>
-                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                        {data.asset_strategy.tip_info.title}
-                                    </Text>
-                                </TouchableOpacity>
+                                {data?.asset_strategy?.tip_info?.title && (
+                                    <TouchableOpacity
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'baseline',
+                                            marginTop: text(16),
+                                        }}>
+                                        <AntDesign
+                                            name={'exclamationcircleo'}
+                                            color={'#0051CC'}
+                                            size={15}
+                                            onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}
+                                        />
+                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                            {data?.asset_strategy?.tip_info?.title}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
                                 {data.gather_info.map((_q, _w) => {
                                     return (
-                                        <View
+                                        <TouchableOpacity
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
-                                            ]}>
+                                            ]}
+                                            onPress={() => jump(_q.url)}>
                                             <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
                                             <AntDesign name={'right'} color={'#555B6C'} size={12} />
-                                        </View>
+                                        </TouchableOpacity>
                                     );
                                 })}
                             </View>
                         </View>
+                        <BottomDesc />
                     </ScrollView>
+                    {showMask && <Mask />}
+
+                    {popup?.content && (
+                        <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
+                            <View style={{padding: text(16)}}>
+                                <Html html={popup?.content} />
+                            </View>
+                        </BottomModal>
+                    )}
                     <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
                 </View>
             ) : null}
