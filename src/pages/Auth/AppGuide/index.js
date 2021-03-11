@@ -2,39 +2,21 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 20:58:56
+ * @LastEditTime: 2021-03-11 17:43:19
  * @Description:app引导页
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-
+import {StyleSheet, Image, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
+import {deviceWidth, deviceHeight} from '../../../utils/appUtil';
 
 const styles = StyleSheet.create({
-    wrapper: {},
-    slide1: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#9DD6EB',
-    },
-    slide2: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#97CAE5',
-    },
-    slide3: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#92BBD9',
-    },
-    text: {
-        color: '#fff',
-        fontSize: 30,
-        fontWeight: 'bold',
+    imgage: {
+        width: deviceWidth,
+        height: deviceHeight,
+        // resizeMode: 'contain',
     },
 });
 
@@ -42,14 +24,20 @@ export default class SwiperComponent extends Component {
     render() {
         return (
             <Swiper style={styles.wrapper} loop={false}>
-                <View style={styles.slide1}>
-                    <Text style={styles.text}>Hello Swiper</Text>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                    <FastImage source={require('../../../assets/img/appGuide/slider1.jpg')} style={styles.imgage} />
                 </View>
-                <View style={styles.slide2}>
-                    <Text style={styles.text}>Beautiful</Text>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                    <FastImage source={require('../../../assets/img/appGuide/slider1.jpg')} style={styles.imgage} />
                 </View>
-                <View style={styles.slide3}>
-                    <Text style={styles.text}>And simple</Text>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                    <FastImage source={require('../../../assets/img/appGuide/slider3.png')} style={styles.imgage} />
+                </View>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                    <FastImage source={require('../../../assets/img/appGuide/slider2.jpg')} style={styles.imgage} />
+                </View>
+                <View style={{flex: 1, backgroundColor: '#fff'}}>
+                    <FastImage source={require('../../../assets/img/appGuide/slider1.jpg')} style={styles.imgage} />
                 </View>
             </Swiper>
         );

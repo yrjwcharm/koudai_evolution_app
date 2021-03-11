@@ -2,19 +2,19 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 16:08:39
+ * @LastEditTime: 2021-03-11 16:10:50
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-import Toast from '../components/Toast';
 import baseConfig from './config';
 const upload = (params, succ, failed) => {
     const PATH = Platform.OS === 'android' ? params.uri : params.uri.replace('file:///', '');
+    console.log(`${baseConfig.SERVER_URL}mapi/identity/upload/20210101`);
     try {
         RNFetchBlob.fetch(
             'POST',
-            `${baseConfig.SERVER_URL}/mapi/identity/upload/20210101`,
+            'http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/identity/upload/20210101',
             {
                 'Content-Type': 'multipart/form-data',
             },
@@ -32,11 +32,12 @@ const upload = (params, succ, failed) => {
             ]
         )
             .then((resp) => {
-                console.log(resp, 'resp');
-                succ && succ(JSON.parse(resp.data));
+                if (resp?.respInfo?.status == 200) {
+                    succ && succ(JSON.parse(resp?.data));
+                }
             })
             .catch((err) => {
-                Toast.show(err);
+                console.log(err);
                 failed && failed();
             });
     } catch (error) {

@@ -1,18 +1,18 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-02-26 10:20:51
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-11 17:48:38
+ * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, Image} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {px as text} from '../utils/appUtil';
 import {Colors, Font, Space} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
-
+import FastImage from 'react-native-fast-image';
 const BottomDesc = (props) => {
     const {style, type} = props;
     const data = {
@@ -44,7 +44,7 @@ const BottomDesc = (props) => {
         <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
             {data.image && (
                 <View style={styles.item}>
-                    <Image source={{uri: data.image}} style={[styles.img]} />
+                    <FastImage source={{uri: data.image}} style={[styles.img]} />
                 </View>
             )}
             {data &&

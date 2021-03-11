@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-10 20:27:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 14:28:58
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,8 +17,10 @@ import {Modal, ShareModal} from '../../components/Modal';
 import Storage from '../../utils/storage';
 import Toast from '../../components/Toast';
 import {InputModal} from '../../components/Modal';
-
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 const Settings = ({navigation}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
     const shareModal = useRef(null);
@@ -58,6 +60,7 @@ const Settings = ({navigation}) => {
                     confirm: true,
                     confirmCallBack: () => {
                         // Alert.alert('退出登录');
+                        dispatch(getUserInfo());
                         Storage.delete('loginStatus');
                         navigation.navigate({name: 'Register'});
                     },
@@ -66,7 +69,7 @@ const Settings = ({navigation}) => {
                 jump(item.url);
             }
         },
-        [navigation, jump]
+        [navigation, jump, dispatch]
     );
 
     useEffect(() => {
