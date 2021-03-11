@@ -3,16 +3,17 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-25 15:59:39
+ * @LastEditTime: 2021-03-11 11:23:21
  */
-import React, {useEffect, memo} from 'react';
-import {View, ScrollView, StyleSheet, Linking, Alert, Dimensions} from 'react-native';
+import React from 'react';
+import {ScrollView, Linking, Alert} from 'react-native';
 import FitImage from 'react-native-fit-image';
 import Agreement from '../../components/Agreements';
 import {FixedButton} from '../../components/Button';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Toast from '../../components/Toast/';
-const deviceWidth = Dimensions.get('window').width;
-const LargeAmountIntro = (props) => {
+const btnHeight = isIphoneX() ? text(90) : text(66);
+const LargeAmountIntro = () => {
     const callTel = () => {
         const url = 'tel:400-080-8208';
         Linking.canOpenURL(url)
@@ -31,24 +32,18 @@ const LargeAmountIntro = (props) => {
     ];
     return (
         <>
-            <ScrollView>
-                {img_list &&
-                    img_list.map((_item, _index) => {
-                        return <FitImage key={_index} source={{uri: _item}} resizeMode="contain" />;
-                    })}
-                <View style={{paddingBottom: 100}}>
-                    <Agreement isHide={true} data={[{title: '《理财魔方汇款交易须知》'}]} />
-                </View>
+            <ScrollView style={{marginBottom: btnHeight}}>
+                {img_list.map((_item, _index) => {
+                    return <FitImage key={_index} source={{uri: _item}} resizeMode="contain" />;
+                })}
+                <Agreement
+                    isHide={true}
+                    data={[{title: '《理财魔方汇款交易须知》', id: 37}]}
+                    style={{marginLeft: text(16)}}
+                />
             </ScrollView>
             <FixedButton title={'魔方客服电话:400-080-8208'} onPress={() => callTel()} />
         </>
     );
 };
 export default LargeAmountIntro;
-const styles = StyleSheet.create({
-    img_sty: {
-        width: deviceWidth,
-        height: 'auto',
-        flex: 1,
-    },
-});

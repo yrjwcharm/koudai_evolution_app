@@ -88,9 +88,11 @@ export default class MyModal extends Component {
                     {this.type == 'text' ? (
                         <View style={[Style.flexCenter, styles.container]}>
                             {/* 是否自定义头部 */}
-                            {this.customTitleView
-                                ? this.customTitleView
-                                : this.title && <Text style={styles.title}>{this.title}</Text>}
+                            {this.customTitleView ? (
+                                this.customTitleView
+                            ) : this.title ? (
+                                <Text style={styles.title}>{this.title}</Text>
+                            ) : null}
                             {/* 内容 */}
                             <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(16)}]}>
                                 <HTML style={styles.contentText} html={this.props.content} />

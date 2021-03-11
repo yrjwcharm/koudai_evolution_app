@@ -3,12 +3,12 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 18:42:18
+ * @LastEditTime: 2021-03-11 11:23:49
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -16,9 +16,10 @@ import {FixedButton} from '../../components/Button';
 import Toast from '../../components/Toast/';
 import Header from '../../components/NavBar';
 import Clipboard from '@react-native-community/clipboard';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Notice from '../../components/Notice';
-const deviceWidth = Dimensions.get('window').width;
+import {Modal} from '../../components/Modal';
+import {useJump} from '../../components/hooks/';
+const btnHeight = isIphoneX() ? text(90) : text(66);
 
 const tips = [
     {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款。'},
@@ -29,7 +30,7 @@ const tips = [
 
 const LargeAmount = (props) => {
     const [data, setData] = useState({});
-
+    const jump = useJump();
     useEffect(() => {
         Http.get('/trade/large_transfer/info/20210101').then((res) => {
             setData(res.result);
@@ -42,7 +43,21 @@ const LargeAmount = (props) => {
         }
         props.navigation.navigate(url);
     };
-    const btnClick = (url) => {};
+    const btnClick = () => {
+        Http.get('/trade/large_transfer/query/20210101').then((res) => {
+            Modal.show({
+                title: res.result?.title,
+                content: res.result.content,
+                confirmCallBack: () => jumpTo(res.result.status),
+            });
+        });
+    };
+    const jumpTo = (status) => {
+        if (status === 1) {
+            //查询到信息 返回上一页
+            props.navigation.goBack();
+        }
+    };
     const copy = (text) => {
         Clipboard.setString(text);
         Toast.show('复制成功！');
@@ -51,17 +66,17 @@ const LargeAmount = (props) => {
         props.navigation.navigate('LargeAmountIntro');
     };
     return (
-        <SafeAreaView edges={['bottom']}>
+        <>
             <Header
-                title={data.title}
+                title={data?.title}
                 leftIcon="chevron-left"
                 rightText={'汇款说明'}
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: text(120)})}>
-                    <Notice content={data.processing} isClose={true} />
+                <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: btnHeight})}>
+                    <Notice content={data?.processing} isClose={true} />
                     {/* <Text style={styles.yellow_sty}>{data.processing}</Text> */}
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
                         <Text style={styles.title_sty}>汇款流程</Text>
@@ -118,33 +133,33 @@ const LargeAmount = (props) => {
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
                                 <View style={styles.item_sty}>
                                     <Text style={styles.item_top_sty}>账户信息</Text>
-                                    <Text style={styles.item_bottom_sty}>{data.mf_account_info.bank_name}</Text>
+                                    <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_name}</Text>
                                 </View>
                                 <TouchableOpacity
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
-                                    onPress={() => copy(data.mf_account_info.bank_name)}>
+                                    onPress={() => copy(data?.mf_account_info?.bank_name)}>
                                     <Text style={styles.copy_sty}>复制</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
                                 <View style={styles.item_sty}>
                                     <Text style={styles.item_top_sty}>银行卡账号</Text>
-                                    <Text style={styles.item_bottom_sty}>{data.mf_account_info.bank_no}</Text>
+                                    <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_no}</Text>
                                 </View>
                                 <TouchableOpacity
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
-                                    onPress={() => copy(data.mf_account_info.bank_no)}>
+                                    onPress={() => copy(data?.mf_account_info?.bank_no)}>
                                     <Text style={styles.copy_sty}>复制</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
                                 <View style={styles.item_sty}>
                                     <Text style={styles.item_top_sty}>开户行</Text>
-                                    <Text style={styles.item_bottom_sty}>{data.mf_account_info.bank_addr}</Text>
+                                    <Text style={styles.item_bottom_sty}>{data?.mf_account_info?.bank_addr}</Text>
                                 </View>
                                 <TouchableOpacity
                                     style={{borderRadius: text(4), overflow: 'hidden'}}
-                                    onPress={() => copy(data.mf_account_info.bank_addr)}>
+                                    onPress={() => copy(data?.mf_account_info?.bank_addr)}>
                                     <Text style={styles.copy_sty}>复制</Text>
                                 </TouchableOpacity>
                             </View>
@@ -165,14 +180,8 @@ const LargeAmount = (props) => {
                     </View>
                 </ScrollView>
             )}
-            {Object.keys(data).length > 0 && (
-                <FixedButton
-                    title={data.button.text}
-                    style={styles.btn_sty}
-                    onPress={() => btnClick(data.button.url)}
-                />
-            )}
-        </SafeAreaView>
+            {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={btnClick} />}
+        </>
     );
 };
 
@@ -248,16 +257,11 @@ const styles = StyleSheet.create({
         paddingTop: text(6),
         padding: Space.padding,
     },
-    btn_sty: {
-        marginHorizontal: Space.padding,
-        marginBottom: '20%',
-    },
     right_sty: {
         paddingHorizontal: text(7),
         paddingVertical: text(5),
         borderColor: Colors.defaultColor,
         borderWidth: 0.5,
-        marginRight: text(16),
         borderRadius: text(5),
     },
 });
