@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
  * @LastEditors: xjh
- * @LastEditTime: 2021-01-27 18:22:42
+ * @LastEditTime: 2021-03-11 12:09:34
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -15,7 +15,6 @@ import {px as text} from '../../utils/appUtil';
 export default function MfbIntro(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        console.log(props);
         Http.get('/wallet/intro/20210101').then((res) => {
             setData(res.result);
         });

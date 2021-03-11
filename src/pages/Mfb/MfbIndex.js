@@ -2,13 +2,13 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 19:39:32
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 12:18:05
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,7 +18,7 @@ import {Button} from '../../components/Button';
 import Accordion from 'react-native-collapsible/Accordion';
 import BottomDesc from '../../components/BottomDesc';
 import {useJump} from '../../components/hooks';
-
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function MfbIndex(props) {
     const [data, setData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
@@ -87,18 +87,19 @@ export default function MfbIndex(props) {
         );
     };
     return (
-        <SafeAreaView edges={['bottom']}>
+        <View>
             <Header
                 title={'魔方宝'}
                 leftIcon="chevron-left"
                 rightText={'交易记录'}
                 rightPress={rightPress}
-                rightTextStyle={styles.right_sty}
+                rightTextStyle={{color: '#fff', marginRight: text(6)}}
                 fontStyle={{color: '#fff'}}
-                style={{backgroundColor: '#0052CD', marginRight: text(-20)}}
+                titleStyle={{marginRight: text(-20)}}
+                style={{backgroundColor: '#0052CD'}}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView style={{marginBottom: btnHeight}}>
                     <View style={styles.bg_sty} />
                     <View style={Style.containerPadding}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
@@ -171,14 +172,10 @@ export default function MfbIndex(props) {
                     {/* <BottomDesc data={bottom} style={{paddingBottom: 100}} /> */}
                 </ScrollView>
             )}
-        </SafeAreaView>
+        </View>
     );
 }
 const styles = StyleSheet.create({
-    right_sty: {
-        marginRight: text(16),
-        color: '#fff',
-    },
     bg_sty: {
         backgroundColor: '#0052CD',
         height: text(120),
