@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-06 11:13:36
+ * @LastEditTime: 2021-03-10 15:46:41
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -15,6 +15,7 @@ import http from '../../services/index.js';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 import {Button} from '../../components/Button';
+import Toast from '../../components/Toast';
 
 const ComplaintsAdvices = ({navigation}) => {
     const [data, setData] = useState({});
@@ -80,6 +81,19 @@ const ComplaintsAdvices = ({navigation}) => {
         },
         [keyboardHeight]
     );
+    const submit = useCallback(() => {
+        http.post('/mapi/complain/store/20210101?cate_id=1&content=test', {
+            cate_id: sort.key,
+            content,
+        }).then((res) => {
+            if (res.code === '000000') {
+                Toast.show(res.result.tips);
+                navigation.goBack();
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    }, [content, navigation, sort]);
 
     useEffect(() => {
         http.get('/mapi/complain/suggest/20210101').then((res) => {
@@ -166,7 +180,7 @@ const ComplaintsAdvices = ({navigation}) => {
                         {content.length}/{data.content?.limit}
                     </Text>
                 </View>
-                <Button disabled={!data.button?.avail} style={styles.btn} title={data.button?.text} />
+                <Button disabled={content.length === 0} style={styles.btn} title={data.button?.text} onPress={submit} />
             </ScrollView>
         </Animated.View>
     );

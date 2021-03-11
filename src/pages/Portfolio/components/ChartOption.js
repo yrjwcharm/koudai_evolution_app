@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 17:50:40
+ * @LastEditTime: 2021-03-10 19:26:25
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -98,7 +98,7 @@ export const baseAreaChart = (
     .color('type', ${JSON.stringify(colors)})
     .shape('smooth')
     .style({
-      lineWidth: 1
+      lineWidth: 1.5
     });
   chart.render();
 })();
@@ -121,6 +121,7 @@ export const areaChart = (
         '#5E71E8',
         '#EBDD69',
     ],
+    areaColors,
     alias = {},
     percent = false,
     tofixed = 2
@@ -156,8 +157,6 @@ chart.axis('date', {
 chart.legend(false);
 chart.tooltip({
   background: {
-    // radius: 2,
-    // fill: '#1890FF',
     padding: [10]
   }, // tooltip 内容框的背景样式
   crosshairsStyle: {
@@ -171,15 +170,19 @@ chart.tooltip({
   tooltipMarkerStyle: {
     fill: ${JSON.stringify(colors[0])}, // 设置 tooltipMarker 的样式
     lineWidth: 0.5,
+    radius: 2
   },
   layout: 'vertical'
 });
 chart.area({startOnZero: false})
   .position('date*value')
-  .color(${JSON.stringify(colors)});
+  .color(${JSON.stringify(areaColors)});
 chart.line()
   .position('date*value')
-  .color(${JSON.stringify(colors)});
+  .color(${JSON.stringify(colors)})
+  .style({
+    lineWidth: 1.5,
+  });
 chart.render();
 })();
 `;
@@ -345,6 +348,64 @@ export const percentStackColumn = (
     .adjust('${type}')
     .size(10);
   chart.render();
+})();
+`;
+
+export const dodgeColumn = (
+    data,
+    colors = [
+        '#E1645C',
+        '#5687EB',
+        '#ECB351',
+        '#CC8FDD',
+        '#E4C084',
+        '#5DC162',
+        '#DE79AE',
+        '#967DF2',
+        '#62B4C7',
+        '#B8D27E',
+        '#F18D60',
+        '#5E71E8',
+        '#EBDD69',
+    ]
+) => `
+(function(){
+chart = new F2.Chart({
+  id: 'chart',
+  pixelRatio: window.devicePixelRatio,
+});
+chart.source(${JSON.stringify(data)}, {
+  value: {
+    tickCount: 5,
+    formatter: function formatter(val) {
+      return (val * 100).toFixed(2) + '%';
+    },
+  }
+});
+chart.axis('value', {
+  label: function label(text) {
+    const number = parseFloat(text);
+    const cfg = {};
+    cfg.text = number.toFixed(0) + "%";
+    return cfg;
+  }
+});
+chart.legend(false);
+chart.tooltip({
+  custom: true,
+  onChange: function(obj) {
+    window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
+  },
+  onHide: function(obj) {
+    window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
+  },
+});
+chart.interval()
+  .position('date*value')
+  .color('type', ${JSON.stringify(colors)})
+  .adjust('dodge')
+  .size(10);
+chart.render();
 })();
 `;
 

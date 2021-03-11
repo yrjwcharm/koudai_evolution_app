@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-04 17:43:53
+ * @LastEditTime: 2021-03-10 20:10:56
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -21,7 +21,7 @@ export default function StrategyPolaris(props) {
         http.get('http://kapi-web.bae.mofanglicai.com.cn:10080/polaris/strategy/20210101').then((res) => {
             setData(res.result);
         });
-    });
+    }, [props.route]);
     const jumpTo = (url) => {
         props.navigation.navigate(url.path, url.params);
     };
