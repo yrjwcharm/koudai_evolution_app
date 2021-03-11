@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:30:22
+ * @LastEditTime: 2021-03-11 12:24:09
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -15,6 +15,8 @@ import InputView from '../input';
 import http from '../../../services/';
 import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
+// import {MapDispatchToProps} from 'react-redux';
+// import {getUserInfo} from '../../redux/actions/userInfo';
 export default class index extends Component {
     constructor(props) {
         super(props);

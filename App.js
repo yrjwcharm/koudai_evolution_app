@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:47:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 12:11:45
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -25,7 +25,7 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-// global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
+global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -108,6 +108,7 @@ function App() {
                 }
             }
         });
+
         syncImmediate();
         // if (Platform.OS == 'android') {
         //     requestExternalStoragePermission(); //申请读写权限
@@ -150,15 +151,15 @@ function App() {
     let ts = new Date().getTime();
     return (
         <RootSiblingParent>
-            <StatusBar
-                animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
-                hidden={false} //是否隐藏状态栏。
-                backgroundColor={'transparent'} //状态栏的背景色
-                translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
-                barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
-            />
-            <MagicMove.Provider>
-                <Provider store={store}>
+            <Provider store={store}>
+                <StatusBar
+                    animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
+                    hidden={false} //是否隐藏状态栏。
+                    backgroundColor={'transparent'} //状态栏的背景色
+                    translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
+                    barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
+                />
+                <MagicMove.Provider>
                     <PersistGate loading={null} persistor={persistor}>
                         <SafeAreaProvider>
                             <NavigationContainer
@@ -188,8 +189,8 @@ function App() {
                             </NavigationContainer>
                         </SafeAreaProvider>
                     </PersistGate>
-                </Provider>
-            </MagicMove.Provider>
+                </MagicMove.Provider>
+            </Provider>
         </RootSiblingParent>
     );
 }

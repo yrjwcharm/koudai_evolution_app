@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-10 09:50:04
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 12:21:10
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -33,8 +33,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import storage from '../../utils/storage';
 import http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
-
+import {useSelector} from 'react-redux';
 function HomeScreen({navigation}) {
+    const userInfo = useSelector((store) => store.userInfo);
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [hideMsg, setHideMsg] = useState(false);
@@ -237,13 +238,13 @@ function HomeScreen({navigation}) {
                         <Image
                             source={
                                 userBasicInfo.user_info
-                                    ? {uri: userBasicInfo.user_info.avatar}
+                                    ? {uri: userInfo.toJS().avatar}
                                     : require('../../assets/personal/usercenter.png')
                             }
                             style={[styles.headImg, userBasicInfo.user_info ? {} : {borderWidth: 0}]}
                         />
                         <Text style={styles.username}>
-                            {userBasicInfo.user_info ? userBasicInfo.user_info.name : '****'}
+                            {userInfo.toJS().nickname ? userInfo.toJS().nickname : '****'}
                         </Text>
                         {userBasicInfo.member_info && Object.keys(userBasicInfo.member_info).length > 0 && (
                             <TouchableOpacity

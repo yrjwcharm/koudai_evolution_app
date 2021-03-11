@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 20:18:55
+ * @LastEditTime: 2021-03-10 21:14:50
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -145,7 +145,7 @@ const IM = () => {
                     break;
                 //直接是问题答案
                 case 'BMA':
-                    if (_data.data) {
+                    if (_data.data && _data.data.length > 0) {
                         handleMessage(_data, 'textButton');
                     } else {
                         // checkStatus(_data.cmid, 1);
@@ -365,7 +365,10 @@ const IM = () => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         key={index}
-                        style={[{height: px(43)}, Style.flexRow]}
+                        style={[
+                            {height: px(43), borderTopColor: '#E2E4EA', borderTopWidth: index == 0 ? 0 : 0.5},
+                            Style.flexRow,
+                        ]}
                         onPress={() => {
                             sendMessage('text', item.question_ori, null, 'QMR', item.question_id);
                             Keyboard.dismiss();
@@ -389,14 +392,8 @@ const IM = () => {
                     }}>
                     <View style={{paddingHorizontal: px(12)}}>
                         {message?.content?.head ? (
-                            <View
-                                style={{
-                                    justifyContent: 'center',
-                                    borderBottomColor: '#E2E4EA',
-                                    borderBottomWidth: 0.5,
-                                    paddingVertical: px(14),
-                                }}>
-                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                            <View style={styles.card_head}>
+                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12), lineHeight: px(17)}}>
                                     {message?.content?.head}
                                 </Text>
                             </View>
@@ -404,23 +401,24 @@ const IM = () => {
                         <Text style={{fontSize: px(14), lineHeight: px(20), marginVertical: px(16)}}>
                             {message?.content?.answer}
                         </Text>
-                        <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
-                            <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
-                            <Button
-                                title="未解决"
-                                style={{
-                                    ...styles.button,
-                                    marginLeft: px(12),
-                                    backgroundColor: 'transparent',
-                                    borderColor: '#E2E4EA',
-                                    borderWidth: 0.5,
-                                }}
-                                textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
-                            />
-                        </View>
-                        <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
-                            还未解决？转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
-                        </Text>
+                        {message?.content?.button?.length > 0 && (
+                            <>
+                                <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
+                                    <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
+                                    <Button
+                                        title="未解决"
+                                        style={{
+                                            ...styles.button,
+                                            ...styles.lightBtn,
+                                        }}
+                                        textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
+                                    />
+                                </View>
+                                <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
+                                    还未解决？转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
+                                </Text>
+                            </>
+                        )}
                     </View>
                 </View>
             </View>
@@ -438,14 +436,8 @@ const IM = () => {
                     }}>
                     <View style={{paddingHorizontal: px(12)}}>
                         {message?.content?.head ? (
-                            <View
-                                style={{
-                                    justifyContent: 'center',
-                                    borderBottomColor: '#E2E4EA',
-                                    borderBottomWidth: 0.5,
-                                    paddingVertical: px(14),
-                                }}>
-                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                            <View style={styles.card_head}>
+                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12), lineHeight: px(17)}}>
                                     {message?.content?.head}
                                 </Text>
                             </View>
@@ -504,10 +496,7 @@ const IM = () => {
                                 title="未解决"
                                 style={{
                                     ...styles.button,
-                                    marginLeft: px(12),
-                                    backgroundColor: 'transparent',
-                                    borderColor: '#E2E4EA',
-                                    borderWidth: 0.5,
+                                    ...styles.lightBtn,
                                 }}
                                 textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
                             />
@@ -546,13 +535,8 @@ const IM = () => {
                     paddingVertical: px(12),
                     maxWidth: px(238),
                 }}
-                rightMessageTextStyle={{
-                    fontSize: px(14),
-                }}
-                leftMessageTextStyle={{
-                    fontSize: px(14),
-                    lineHeight: px(20),
-                }}
+                rightMessageTextStyle={styles.text}
+                leftMessageTextStyle={styles.text}
                 userNameStyle={{marginBottom: px(4)}}
                 rightMessageBackground={'#CEE3FE'}
                 renderPanelRow={(item, index) => (
@@ -627,5 +611,21 @@ const styles = StyleSheet.create({
         bottom: px(61),
         width: deviceWidth,
         zIndex: 100,
+    },
+    text: {
+        fontSize: px(14),
+        lineHeight: px(20),
+    },
+    card_head: {
+        justifyContent: 'center',
+        borderBottomColor: '#E2E4EA',
+        borderBottomWidth: 0.5,
+        paddingVertical: px(14),
+    },
+    lightBtn: {
+        marginLeft: px(12),
+        backgroundColor: 'transparent',
+        borderColor: '#E2E4EA',
+        borderWidth: 0.5,
     },
 });
