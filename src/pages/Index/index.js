@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-01-26 16:12:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 12:15:51
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -193,7 +193,7 @@ function HomeScreen(props) {
                 />
                 <Button title="Go to Im" onPress={() => navigation.navigate('GesturePassword')} />
                 <Button title="Go to LineChart" onPress={() => navigation.navigate('LineChart')} />
-                <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} />
+                {/* <Button title="Dispatch" onPress={() => dispatch(update({is_dav: '哈哈哈', name: '眼'}))} /> */}
                 <Button title="HistoryAdjust" onPress={() => navigation.navigate('HistoryAdjust')} />
                 <Button title="TradeRules" onPress={() => navigation.navigate('TradeRules')} />
                 <Button

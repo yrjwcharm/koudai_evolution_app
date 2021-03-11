@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-27 17:10:29
+ * @LastEditTime: 2021-03-11 11:47:27
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -35,20 +35,20 @@ export default function QuestionCard({data = []}) {
                                 style={styles.big_ques}
                                 source={require('../../assets/img/article/big_ques.png')}
                             />
-                            <Text style={styles.article_content}>{item?.username}</Text>
+                            <Text style={styles.article_content}>{item?.nickname}</Text>
                             <View style={[Style.flexRow, {marginVertical: px(14), alignItems: 'flex-start'}]}>
                                 <FastImage
                                     style={styles.ques_img}
                                     source={require('../../assets/img/find/question.png')}
                                 />
                                 <Text numberOfLines={2} style={styles.article_title}>
-                                    {item?.question_info?.title}
+                                    {item?.name}
                                 </Text>
                             </View>
                             <View style={styles.content}>
                                 <Text style={[styles.article_content, {fontSize: px(12)}]}>
                                     <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>魔方回答：</Text>
-                                    {item?.question_info?.answer_content}
+                                    {item?.content}
                                     <Text style={Style.more}>全文</Text>
                                 </Text>
                             </View>

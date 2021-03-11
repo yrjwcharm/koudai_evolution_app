@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:09:46
+ * @LastEditTime: 2021-03-11 12:17:21
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -28,8 +28,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
-import {NavigationContainer, LinkingOptions, useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -55,6 +57,7 @@ const RenderTitle = (props) => {
 };
 
 const Index = (props) => {
+    const dispatch = useDispatch();
     const inset = useRef(useSafeAreaInsets()).current;
     const linkTo = useLinkTo();
     const [data, setData] = useState(null);
@@ -80,7 +83,9 @@ const Index = (props) => {
         });
         return unsubscribe;
     }, [getData, props.navigation, isFocused]);
-
+    useEffect(() => {
+        dispatch(getUserInfo());
+    }, [dispatch]);
     useFocusEffect(
         useCallback(() => {
             getData();
