@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 15:35:06
+ * @LastEditTime: 2021-03-10 14:02:49
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -574,8 +574,8 @@ export class question extends Component {
                                                                         marginBottom:
                                                                             index == current_ques.desc.length - 1
                                                                                 ? 0
-                                                                                : px(24),
-                                                                        marginTop: px(24),
+                                                                                : px(20),
+                                                                        marginTop: index == 0 ? px(20) : 0,
                                                                         alignItems: 'flex-start',
                                                                     },
                                                                 ]}>

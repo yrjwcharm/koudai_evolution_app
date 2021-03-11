@@ -2,15 +2,14 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 16:46:52
+ * @LastEditTime: 2021-03-10 19:14:03
  * @Description: 净值走势
  */
-import React, {useState, useEffect, useCallback} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
-import Accordion from 'react-native-collapsible/Accordion';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
@@ -18,14 +17,24 @@ import {Chart} from '../../components/Chart';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 
 const NetValueTrend = ({poid}) => {
+    const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
-    const [period, setPeriod] = useState('y1');
-    const [chart, setChart] = useState({});
+    const [period, setPeriod] = useState('m1');
+    const [chartData, setChart] = useState({});
+    const textTime = useRef(null);
+    const textThisFund = useRef(null);
+    const textBenchmark = useRef(null);
 
-    const init = useCallback(() => {}, []);
+    const init = useCallback(() => {
+        http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
+            if (res.code === '000000') {
+                setRefreshing(false);
+                setChart(res.result);
+            }
+        });
+    }, [period, poid]);
     // 下拉刷新回调
     const onRefresh = useCallback(() => {
-        setRefreshing(true);
         init();
     }, [init]);
     // 获取日收益背景颜色
@@ -41,6 +50,40 @@ const NetValueTrend = ({poid}) => {
             return Colors.red;
         }
     }, []);
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            // console.log(items);
+            textTime.current.setNativeProps({text: items[0]?.title});
+            textThisFund.current.setNativeProps({
+                text: `${items[0]?.value}`,
+                style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
+            });
+            textBenchmark.current.setNativeProps({
+                text: `${items[1]?.value}`,
+                style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = useCallback(
+        ({items}) => {
+            chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
+            chartData.label[1] &&
+                textThisFund.current.setNativeProps({
+                    text: `${chartData.label[1]?.val}`,
+                    style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
+                });
+            chartData.label[2] &&
+                textBenchmark.current.setNativeProps({
+                    text: `${chartData.label[2]?.val}`,
+                    style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
+                });
+        },
+        [chartData, getColor]
+    );
+
     useEffect(() => {
         init();
     }, [init]);
@@ -50,67 +93,101 @@ const NetValueTrend = ({poid}) => {
             scrollEventThrottle={1000}
             style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
             <View style={styles.netValueChart}>
-                <></>
+                <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
+                    {chartData?.label?.map((item, index) => {
+                        return (
+                            <View key={item.val + index} style={styles.legendItem}>
+                                <TextInput
+                                    defaultValue={`${item.val}`}
+                                    editable={false}
+                                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                    style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}
+                                />
+                                <View style={Style.flexRow}>
+                                    {index !== 0 && (
+                                        <FontAwesome5
+                                            name={'dot-circle'}
+                                            color={index === 1 ? Colors.red : Colors.descColor}
+                                            size={12}
+                                        />
+                                    )}
+                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                        {item.name}
+                                    </Text>
+                                </View>
+                            </View>
+                        );
+                    })}
+                </View>
+                <View style={{height: 220}}>
+                    {chartData.chart && (
+                        <Chart
+                            initScript={baseAreaChart(
+                                chartData.chart,
+                                [Colors.red, Colors.lightBlackColor],
+                                ['l(90) 0:#E74949 1:#fff', 'transparent'],
+                                true
+                            )}
+                            data={chartData.chart}
+                            onChange={onChartChange}
+                            onHide={onHide}
+                            style={{width: '100%'}}
+                        />
+                    )}
+                </View>
+                <View style={[Style.flexRow, {justifyContent: 'center', paddingBottom: text(28)}]}>
+                    {chartData?.sub_tabs?.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                key={item.val + index}
+                                onPress={() => setPeriod(item.val)}
+                                style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
+                                <Text
+                                    style={[
+                                        styles.subTitle,
+                                        {color: period === item.val ? Colors.brandColor : Colors.descColor},
+                                    ]}>
+                                    {item.name}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
             </View>
-            <View style={[styles.tableWrap, Style.flexRow, {marginTop: text(12), marginHorizontal: text(14)}]}>
-                <View style={[{flex: 2.2}, styles.borderRight]}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'名称'}
-                    </Text>
-                    <Text style={[styles.tableCell]}>{'我的组合'}</Text>
-                    <View
-                        style={[
-                            styles.tableCell,
-                            Style.flexCenter,
-                            {backgroundColor: Colors.bgColor, height: text(56), paddingVertical: 0},
-                        ]}>
-                        <Text style={[styles.tableCell, {paddingVertical: 0}]}>{'比较基准'}</Text>
-                        <Text style={[styles.tableCell, {color: Colors.darkGrayColor, paddingVertical: 0}]}>
-                            {'中证全债34%+上证指数66%'}
-                        </Text>
+            <View style={styles.buyTableWrap}>
+                <View style={styles.buyTableHead}>
+                    <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[0]}</Text>
+                    </View>
+                    <View style={[styles.buyTableCell]}>
+                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[1]}</Text>
+                    </View>
+                    <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[2]}</Text>
                     </View>
                 </View>
-                <View style={[{flex: 1}, styles.borderRight]}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'涨跌幅'}
-                    </Text>
-                    <Text style={[styles.tableCell, {color: getColor('0.1536')}]}>{'15.36%'}</Text>
-                    <Text
-                        style={[
-                            styles.tableCell,
-                            Style.flexCenter,
-                            {
-                                backgroundColor: Colors.bgColor,
-                                paddingVertical: 0,
-                                color: getColor('0.0125'),
-                                height: text(56),
-                                lineHeight: text(56),
-                            },
-                        ]}>
-                        {'1.25%'}
-                    </Text>
-                </View>
-                <View style={{flex: 1}}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'最大回撤'}
-                    </Text>
-                    <Text style={[styles.tableCell, {color: getColor('-0.0526')}]}>{'-5.26%'}</Text>
-                    <Text
-                        style={[
-                            styles.tableCell,
-                            {
-                                backgroundColor: Colors.bgColor,
-                                paddingVertical: 0,
-                                height: text(56),
-                                lineHeight: text(56),
-                                color: getColor('-0.0688'),
-                            },
-                        ]}>
-                        {'-6.88%'}
-                    </Text>
-                </View>
+                {chartData.table?.tr_list?.map((item, index) => {
+                    return (
+                        <View
+                            key={index + 'c'}
+                            style={[
+                                styles.buyTableBody,
+                                {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
+                            ]}>
+                            <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                <Text style={styles.buyTableItem}>{item[0]}</Text>
+                            </View>
+                            <View style={[styles.buyTableCell]}>
+                                <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>{item[1]}</Text>
+                            </View>
+                            <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>{item[2]}</Text>
+                            </View>
+                        </View>
+                    );
+                })}
             </View>
-            <View style={{padding: Space.padding}}>
+            <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
                     {'每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。'}
@@ -137,31 +214,12 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: '500',
     },
-    tableWrap: {
-        marginBottom: text(20),
-        marginHorizontal: Space.marginAlign,
-        borderRadius: Space.borderRadius,
-        borderWidth: Space.borderWidth,
-        borderColor: Colors.borderColor,
-        overflow: 'hidden',
-    },
-    borderRight: {
-        borderRightWidth: Space.borderWidth,
-        borderColor: Colors.borderColor,
-    },
-    tableCell: {
-        paddingVertical: text(12),
-        fontSize: Font.textH3,
-        lineHeight: text(17),
-        color: Colors.defaultColor,
-        textAlign: 'center',
-    },
     chart: {
         height: text(282),
     },
     netValueChart: {
         backgroundColor: '#fff',
-        height: text(320),
+        // height: text(320),
     },
     bigTitle: {
         fontSize: text(15),
@@ -174,6 +232,77 @@ const styles = StyleSheet.create({
         lineHeight: text(22),
         color: Colors.darkGrayColor,
         textAlign: 'justify',
+    },
+    buyTableCell: {
+        flex: 1,
+        height: '100%',
+        borderRightWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buyTableItem: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
+    },
+    buyTableWrap: {
+        marginBottom: text(20),
+        marginHorizontal: Space.marginAlign,
+        borderColor: Colors.borderColor,
+        borderWidth: Space.borderWidth,
+        borderRadius: Space.borderRadius,
+        overflow: 'hidden',
+    },
+    buyTableHead: {
+        flexDirection: 'row',
+        backgroundColor: Colors.bgColor,
+        height: text(43),
+    },
+    buyTableBody: {
+        flexDirection: 'row',
+        height: text(40),
+    },
+    fontColor: {
+        color: Colors.defaultColor,
+        fontWeight: 'bold',
+    },
+    legendItem: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    legendTitle: {
+        fontSize: Font.textH1,
+        lineHeight: text(20),
+        color: Colors.defaultColor,
+        fontFamily: Font.numFontFamily,
+        fontWeight: 'bold',
+    },
+    legendDesc: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: Colors.descColor,
+    },
+    subtab: {
+        paddingHorizontal: text(10),
+        marginHorizontal: text(6),
+        borderRadius: text(14),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        height: text(28),
+        backgroundColor: '#fff',
+    },
+    activeTab: {
+        borderWidth: 0,
+        backgroundColor: '#F1F6FF',
+    },
+    subTitle: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.darkGrayColor,
     },
 });
 

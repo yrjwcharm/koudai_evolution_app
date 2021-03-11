@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 16:22:41
+ * @LastEditTime: 2021-03-09 19:30:22
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -24,6 +24,9 @@ export default class index extends Component {
             check: true,
             btnClick: true,
         };
+    }
+    componentDidMount() {
+        Storage.delete('loginStatus');
     }
     login = () => {
         const {mobile, password} = this.state;

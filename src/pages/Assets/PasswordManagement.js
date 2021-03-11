@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 11:21:46
+ * @LastEditTime: 2021-03-10 15:08:38
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -45,7 +45,7 @@ const PasswordManagement = ({navigation}) => {
             {
                 title: '账号注销',
                 type: 'link',
-                jump_to: 'AccountLogout',
+                jump_to: 'AccountRemove',
             },
         ],
     ]);

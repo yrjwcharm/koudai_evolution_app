@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 18:58:47
+ * @LastEditTime: 2021-03-10 15:55:52
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -70,32 +70,6 @@ const Profile = ({navigation}) => {
                 });
                 Picker.show();
             } else if (item.val?.type === 'input') {
-                // Alert.prompt(
-                //     `填写${item.key}`,
-                //     '',
-                //     [
-                //         {
-                //             text: '取消',
-                //             onPress: () => console.log('取消'),
-                //         },
-                //         {
-                //             text: '确定',
-                //             onPress: (value) => {
-                //                 http.post('/mapi/update/user_info/20210101', {
-                //                     id: item.id,
-                //                     val: value,
-                //                 }).then((res) => {
-                //                     if (res.code === '000000') {
-                //                         init();
-                //                     }
-                //                 });
-                //             },
-                //         },
-                //     ],
-                //     'plain-text',
-                //     item.val?.text,
-                //     'numeric'
-                // );
                 setModalProps({
                     confirmClick: (value) => {
                         http.post('/mapi/update/user_info/20210101', {
@@ -112,7 +86,6 @@ const Profile = ({navigation}) => {
                     placeholder: `请输入${item.key}金额`,
                     title: item.key,
                 });
-                inputModal.current.show();
             }
         },
         [navigation, init]
@@ -126,6 +99,11 @@ const Profile = ({navigation}) => {
     useEffect(() => {
         init();
     }, [init]);
+    useEffect(() => {
+        if (Object.keys(modalProps).length > 0) {
+            inputModal.current.show();
+        }
+    }, [modalProps]);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}

@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:12:43
+ * @LastEditTime: 2021-03-10 18:12:07
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -33,16 +33,16 @@ const FundDetail = ({navigation, route}) => {
 
     const init = useCallback(() => {
         http.get('/fund/detail/20210101', {
-            // fund_code: route.params?.code,
-            fund_code: '001072',
+            fund_code: route.params?.code,
+            // fund_code: '001072',
         }).then((res) => {
             setData(res.result);
         });
     }, [route]);
     const getChart1 = useCallback(() => {
         http.get('/fund/nav/inc/20210101', {
-            // fund_code: route.params?.code,
-            fund_code: '001072',
+            fund_code: route.params?.code,
+            // fund_code: '001072',
             period,
         }).then((res) => {
             setChart1(res.result);
@@ -51,8 +51,8 @@ const FundDetail = ({navigation, route}) => {
     }, [route, period]);
     const getChart2 = useCallback(() => {
         http.get('/fund/nav/trend/20210101', {
-            // fund_code: route.params?.code,
-            fund_code: '001072',
+            fund_code: route.params?.code,
+            // fund_code: '001072',
             period,
         }).then((res) => {
             setChart2(res.result);
@@ -61,8 +61,8 @@ const FundDetail = ({navigation, route}) => {
     }, [route, period]);
     const getChart3 = useCallback(() => {
         http.get('/fund/nav/monetary/20210101', {
-            // fund_code: route.params?.code,
-            fund_code: '001072',
+            fund_code: route.params?.code,
+            // fund_code: '001072',
             period,
         }).then((res) => {
             setChart3(res.result);
@@ -80,9 +80,6 @@ const FundDetail = ({navigation, route}) => {
                     {summary.map((item, index) => {
                         return (
                             <View key={item.key + index} style={styles.legendItem}>
-                                {/* <Text style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}>
-                                    {item.val}
-                                </Text> */}
                                 <TextInput
                                     defaultValue={`${item.val}`}
                                     editable={false}
@@ -191,20 +188,6 @@ const FundDetail = ({navigation, route}) => {
         ({items}) => {
             // console.log(items);
             if (curTab === 0) {
-                // setSummary((prev) => [
-                //     {
-                //         ...prev[0],
-                //         val: items[0]?.title,
-                //     },
-                //     {
-                //         ...prev[1],
-                //         val: items[0]?.value,
-                //     },
-                //     {
-                //         ...prev[2],
-                //         val: items[1]?.value,
-                //     },
-                // ]);
                 textTime.current.setNativeProps({text: items[0]?.title});
                 textThisFund.current.setNativeProps({
                     text: `${items[0]?.value}`,
@@ -215,16 +198,6 @@ const FundDetail = ({navigation, route}) => {
                     style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
                 });
             } else {
-                // setSummary((prev) => [
-                //     {
-                //         ...prev[0],
-                //         val: items[0]?.title,
-                //     },
-                //     {
-                //         ...prev[1],
-                //         val: items[0]?.value,
-                //     },
-                // ]);
                 textTime.current.setNativeProps({text: items[0]?.title});
                 textThisFund.current.setNativeProps({
                     text: `${items[0]?.value}`,
@@ -239,7 +212,6 @@ const FundDetail = ({navigation, route}) => {
         ({items}) => {
             if (curTab === 0) {
                 if (data.part1 && !data.part1.fund.is_monetary) {
-                    // setSummary(chart1.summary);
                     chart1.summary[0] && textTime.current.setNativeProps({text: chart1.summary[0]?.val});
                     chart1.summary[1] &&
                         textThisFund.current.setNativeProps({
@@ -252,7 +224,6 @@ const FundDetail = ({navigation, route}) => {
                             style: [styles.legendTitle, {color: getColor(`${chart1.summary[2]?.val}`)}],
                         });
                 } else {
-                    // setSummary(chart3.summary);
                     chart3.summary[0] && textTime.current.setNativeProps({text: chart3.summary[0]?.val});
                     chart3.summary[1] &&
                         textThisFund.current.setNativeProps({
@@ -266,7 +237,6 @@ const FundDetail = ({navigation, route}) => {
                         });
                 }
             } else {
-                // setSummary(chart2.summary);
                 chart2.summary[0] && textTime.current.setNativeProps({text: chart2.summary[0]?.val});
                 chart2.summary[1] &&
                     textThisFund.current.setNativeProps({

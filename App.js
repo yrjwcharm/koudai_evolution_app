@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:47:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-10 20:33:39
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -23,6 +23,8 @@ import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 import './src/utils/LogTool';
 import Toast from './src/components/Toast';
+import http from './src/services';
+import Storage from './src/utils/storage';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -95,6 +97,16 @@ function App() {
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/').catch((error) => {
             console.log(error, '通用链接');
+        });
+        Storage.get('loginStatus').then((res) => {
+            if (res && res.refresh_token) {
+                var ts = new Date().getTime();
+                if (ts > res.expires_at * 1000) {
+                    http.get('/auth/user/token_refresh/20210101', {refresh_token: res.refresh_token}).then((data) => {
+                        Storage.save('loginStatus', data.result);
+                    });
+                }
+            }
         });
         syncImmediate();
         // if (Platform.OS == 'android') {

@@ -125,6 +125,7 @@ export default class ChatItem extends PureComponent {
                             reSendMessage={reSendMessage}
                             isOpen={isOpen}
                             isSelf={isSelf}
+                            textMessageContanierStyle={this.props.textMessageContanierStyle}
                             messageErrorIcon={messageErrorIcon}
                             message={message}
                             views={this._getActualText(content, isSelf)}
@@ -287,6 +288,16 @@ export default class ChatItem extends PureComponent {
                 } else {
                     return this.props.renderSystemMessage({isOpen, isSelf, message, index: parseInt(rowId)});
                 }
+            case 'Question':
+                return (
+                    this.props.renderQuestionMessage &&
+                    this.props.renderQuestionMessage({isOpen, isSelf, message, index: parseInt(rowId)})
+                );
+            case 'textButton':
+                return (
+                    this.props.renderTextButton &&
+                    this.props.renderTextButton({isOpen, isSelf, message, index: parseInt(rowId)})
+                );
         }
     };
 
@@ -477,6 +488,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#aaa',
         marginBottom: 2,
-        marginLeft: 14,
+        marginLeft: 10,
     },
 });

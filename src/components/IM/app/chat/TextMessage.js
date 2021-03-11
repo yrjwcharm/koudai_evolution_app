@@ -23,6 +23,7 @@ export default class TextMessage extends PureComponent {
             isReadStyle,
             showIsRead,
             ImageComponent,
+            textMessageContanierStyle,
         } = this.props;
         return (
             <View
@@ -59,6 +60,7 @@ export default class TextMessage extends PureComponent {
                     <View
                         style={[
                             styles.container,
+                            textMessageContanierStyle,
                             {backgroundColor: isSelf ? rightMessageBackground : leftMessageBackground},
                         ]}>
                         {views}
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'wrap',
-        borderRadius: 12,
+        borderRadius: 6,
         paddingHorizontal: 15,
         paddingVertical: 15,
         maxWidth: width - 160,
@@ -120,18 +122,18 @@ const styles = StyleSheet.create({
         borderTopColor: 'transparent',
         borderBottomColor: 'transparent',
         borderColor: '#fff',
-        marginTop: 16,
+        marginTop: 13,
     },
     left_triangle: {
         borderLeftWidth: 0,
         borderRightWidth: Platform.OS === 'android' ? 6 : 10,
         marginLeft: 5,
+        marginTop: 8,
     },
     right_triangle: {
         borderRightWidth: 0,
         borderLeftWidth: Platform.OS === 'android' ? 6 : 10,
         borderColor: '#a0e75a',
-        marginRight: 5,
     },
     right: {
         flexDirection: 'row-reverse',
