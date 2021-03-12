@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:41:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-03 14:51:10
+ * @LastEditTime: 2021-03-12 10:46:50
  * @Description: 银行卡
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -17,11 +17,13 @@ import http from '../../services/index.js';
 const BankCard = ({navigation, route}) => {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('passport/bank_card/detail/20210101', {
+        http.get('/passport/bank_card/detail/20210101', {
             pay_method: route.params?.pay_method,
         }).then((res) => {
-            navigation.setOptions({title: res.title});
-            setData(res);
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '银行卡'});
+                setData(res.result);
+            }
         });
     }, [navigation, route]);
     return (

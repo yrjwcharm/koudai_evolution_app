@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:32:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-11 20:22:01
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -38,7 +38,7 @@ export class bankInfo extends Component {
 
     componentDidMount() {
         this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
-        http.get('/passport/xy_account/bank_list/20210101').then((data) => {
+        http.get('/passport/bank_list/20210101').then((data) => {
             this.setState({bankList: data.result});
         });
     }

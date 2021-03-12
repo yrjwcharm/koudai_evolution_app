@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 10:31:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-12 11:02:54
  * @Description:路由表
  */
 import React from 'react';
@@ -107,6 +107,7 @@ import ForgotTradePwdNext from '../pages/Assets/ForgotTradePwdNext'; // 找回�
 import AccountRemove from '../pages/Assets/AccountRemove'; // 账号注销
 import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
+import AddBankCard from '../pages/Assets/AddBankCard'; // 添加新银行卡/更换绑定银行卡
 import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
 import ExperienceGoldDetail from '../pages/ExperienceGold/Detail'; // 体验金详情
 import MemberCenter from '../pages/Assets/MemberCenter'; // 会员中心
@@ -125,6 +126,7 @@ import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
 import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
 import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
+import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 
 const Stack = createStackNavigator();
 
@@ -406,8 +408,9 @@ export default function AppStack() {
             <Stack.Screen name="AccountRemove" component={AccountRemove} options={{title: '账号注销'}} />
             <Stack.Screen name="BankCardList" component={BankCardList} options={{title: '银行卡管理'}} />
             <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
+            <Stack.Screen name="AddBankCard" component={AddBankCard} options={{title: '添加新银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
-            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: ''}} />
+            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: false}} />
             {/* <Stack.Screen
                 name="ExperienceGoldDetail"
                 component={ExperienceGoldDetail}
@@ -448,6 +451,11 @@ export default function AppStack() {
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
             <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
             <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
+            <Stack.Screen
+                name="InviteExperienceGold"
+                component={InviteExperienceGold}
+                options={{title: '理财魔方体验金'}}
+            />
         </Stack.Navigator>
     );
 }

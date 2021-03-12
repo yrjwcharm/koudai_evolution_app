@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 14:28:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-12 10:27:03
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -62,7 +62,7 @@ const Settings = ({navigation}) => {
                         // Alert.alert('退出登录');
                         dispatch(getUserInfo());
                         Storage.delete('loginStatus');
-                        navigation.navigate({name: 'Register'});
+                        navigation.replace('Register');
                     },
                 });
             } else {
@@ -104,12 +104,21 @@ const Settings = ({navigation}) => {
                                                     <Text
                                                         style={[
                                                             styles.title,
-                                                            {marginRight: text(8), color: Colors.lightGrayColor},
+                                                            {
+                                                                marginRight: item.type !== 'about' ? text(8) : 0,
+                                                                color: Colors.lightGrayColor,
+                                                            },
                                                         ]}>
                                                         {item.desc}
                                                     </Text>
                                                 ) : null}
-                                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                                                {item.type !== 'about' && (
+                                                    <Icon
+                                                        name={'angle-right'}
+                                                        size={20}
+                                                        color={Colors.lightGrayColor}
+                                                    />
+                                                )}
                                             </View>
                                         </TouchableOpacity>
                                     </View>

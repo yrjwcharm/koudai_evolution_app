@@ -2,11 +2,12 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 15:55:52
+ * @LastEditTime: 2021-03-12 09:58:56
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
@@ -96,9 +97,11 @@ const Profile = ({navigation}) => {
         setShowMask(false);
     }, []);
 
-    useEffect(() => {
-        init();
-    }, [init]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
     useEffect(() => {
         if (Object.keys(modalProps).length > 0) {
             inputModal.current.show();
@@ -119,6 +122,7 @@ const Profile = ({navigation}) => {
                                         item.val?.type === 'select' ||
                                         item.val?.type === 'input' ? (
                                             <TouchableOpacity
+                                                activeOpacity={0.8}
                                                 style={[Style.flexBetween, {height: text(56)}]}
                                                 onPress={() => onPress(item)}>
                                                 <Text style={styles.title}>{item.key}</Text>
