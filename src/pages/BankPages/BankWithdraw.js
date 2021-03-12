@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 15:04:46
+ * @LastEditTime: 2021-03-12 11:00:19
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -18,7 +18,7 @@ import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
 
-export default function BankWithdraw(props) {
+export default function BankWithdraw({navigation, route}) {
     const [data, setData] = useState({});
     const [showMask, setShowMask] = useState(false);
     const passwordModal = useRef(null);
@@ -30,7 +30,7 @@ export default function BankWithdraw(props) {
     };
     useEffect(() => {
         Http.get('trade/bank/withdraw/info/20210101', {
-            asset_code: 'BK.SX0001H',
+            asset_code: route.params.asset_code,
         }).then((res) => {
             setData(res.result);
         });

@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 17:18:30
+ * @LastEditTime: 2021-03-12 10:57:43
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -19,7 +19,7 @@ import FitImage from 'react-native-fit-image';
 import Question from '../../components/Question';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-const btnHeight = isIphoneX() ? text(110) : text(86);
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankAssets(props) {
     const [data, setData] = useState({});
     const bottomModal = React.useRef(null);
@@ -40,7 +40,7 @@ export default function BankAssets(props) {
     };
 
     return (
-        <View style={{paddingBottom: btnHeight, flex: 1}}>
+        <>
             {Object.keys(data).length > 0 && (
                 <View>
                     <Header
@@ -55,7 +55,7 @@ export default function BankAssets(props) {
                     />
                     <Notice content={data.processing} isClose={true} />
                     {Object.keys(data).length > 0 && (
-                        <ScrollView>
+                        <ScrollView style={{marginBottom: btnHeight}}>
                             <View style={[styles.card_sty, Style.flexCenter]}>
                                 <View style={Style.flexRowCenter}>
                                     <Text style={Style.descSty}>{data.asset.amount.k}</Text>
@@ -177,7 +177,8 @@ export default function BankAssets(props) {
                                 <Text style={styles.title_sty}>{data.faq.title}</Text>
                                 <Question data={data.faq.rows} />
                             </View>
-                            <View style={{paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                            <View
+                                style={{paddingHorizontal: text(16), backgroundColor: '#fff', marginBottom: text(20)}}>
                                 {data.contact.map((_c, _d) => {
                                     return (
                                         <View
@@ -209,7 +210,7 @@ export default function BankAssets(props) {
                     </BottomModal>
                 </View>
             )}
-        </View>
+        </>
     );
 }
 const styles = StyleSheet.create({

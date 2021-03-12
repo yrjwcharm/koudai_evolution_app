@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 17:23:08
+ * @LastEditTime: 2021-03-12 10:53:34
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -56,12 +56,12 @@ export default function ElectronicAccount(props) {
                         <Text style={styles.bank_no_sty}>{num}</Text>
                     </View>
                     <TouchableOpacity style={[Style.flexRow, styles.account_wrap_sty]} onPress={accountBtn}>
-                        <Text style={[styles.account_sty, {flex: 1}]}>我的电子账户</Text>
+                        <Text style={[styles.account_sty, {flex: 1}]}>电子账户余额</Text>
                         <View style={[Style.flexRow]}>
                             <Text style={[styles.account_sty, {textAlign: 'right', marginRight: text(5)}]}>
                                 {data?.account?.balance}
                             </Text>
-                            <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                            {/* <AntDesign name={'right'} color={'#4E556C'} size={12} /> */}
                         </View>
                     </TouchableOpacity>
                     <View style={styles.card_wrap_sty}>

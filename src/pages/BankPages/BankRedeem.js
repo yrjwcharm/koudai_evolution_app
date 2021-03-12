@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 17:00:21
+ * @LastEditTime: 2021-03-12 11:01:24
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -33,7 +33,7 @@ class BankRedeem extends Component {
 
     UNSAFE_componentWillMount() {
         http.get('/trade/redeem/info/20210101', {
-            asset_code: 'BK.SX0001H',
+            asset_code: this.props.route.asset_code,
         }).then((data) => {
             this.setState({
                 data: data.result,
@@ -87,7 +87,7 @@ class BankRedeem extends Component {
     }
     getPlanInfo() {
         http.get('/trade/redeem/plan/20210101', {
-            asset_code: 'BK.SX0001H',
+            asset_code: this.props.route.asset_code,
         }).then((res) => {
             this.setState({
                 items: res.result.part3.items,
