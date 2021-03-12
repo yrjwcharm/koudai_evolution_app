@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 16:13:41
+ * @LastEditTime: 2021-03-12 17:59:55
  * @Description: 体验金首页
  */
 
@@ -116,14 +116,16 @@ const ExperienceGold = ({navigation}) => {
                             })}
                         </View>
                         <Text style={[styles.noticeText, styles.expireText]}>{data?.part1?.expire}</Text>
-                        <Button
-                            title={data?.part1?.button?.title}
-                            disabled={false}
-                            color={'#D7AF74'}
-                            style={styles.useBtn}
-                            textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
-                            onPress={() => Jump(data?.part1?.button?.url)}
-                        />
+                        {data?.part1?.button?.title && (
+                            <Button
+                                title={data?.part1?.button?.title}
+                                disabled={false}
+                                color={'#D7AF74'}
+                                style={styles.useBtn}
+                                textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
+                                onPress={() => Jump(data?.part1?.button?.url)}
+                            />
+                        )}
                     </View>
 
                     {data?.part1?.content && (
@@ -156,10 +158,10 @@ const ExperienceGold = ({navigation}) => {
                         </View>
                     )}
                     {/* 未购买稳健组合后展示的样式 */}
-                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign, marginTop: text(20)}]}>
-                        {data?.part2?.title}
-                    </Text>
-                    {data.part2?.cards.map((_item, _index) => {
+                    {data.part2?.cards && (
+                        <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{data?.part2?.title}</Text>
+                    )}
+                    {data.part2?.cards?.map((_item, _index) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -201,7 +203,7 @@ const ExperienceGold = ({navigation}) => {
 
                     {/* 购买稳健组合后展示的样式 */}
                     {data?.part2?.portfolios && (
-                        <View style={[Style.flexRow, {paddingLeft: Space.padding, marginTop: text(16)}]}>
+                        <View style={[Style.flexRow, {paddingLeft: Space.padding}]}>
                             <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
                             <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>
                                 {data?.part2?.desc}
@@ -362,12 +364,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(30),
         borderRadius: text(16),
         backgroundColor: '#F7F7F7',
+        marginBottom: text(20),
     },
     profitText: {
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.lightBlackColor,
-        paddingBottom: text(24),
     },
     items: {
         paddingBottom: text(16),
