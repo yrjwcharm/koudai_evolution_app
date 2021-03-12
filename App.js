@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-12 11:03:05
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 14:35:23
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -112,7 +112,8 @@ function App() {
                 }
             }
         });
-
+        // 监控设备激活/后台状态
+        AppState.addEventListener('change', _handleAppStateChange);
         syncImmediate();
         // if (Platform.OS == 'android') {
         //     requestExternalStoragePermission(); //申请读写权限

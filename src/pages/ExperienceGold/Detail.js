@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-09 13:59:07
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 13:59:29
  * @Description: 体验金首页
  */
 
@@ -59,7 +59,7 @@ const ExperienceGold = ({navigation}) => {
         });
     }, [navigation]);
     const rightPress = () => {
-        navigation.navigate({name: 'ExperienceGoldRule'});
+        navigation.navigate('ExperienceGoldRule');
     };
     return (
         <>
@@ -73,168 +73,178 @@ const ExperienceGold = ({navigation}) => {
                 fontStyle={{color: '#fff'}}
             />
 
-            <ScrollView style={{flex: 1}} refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
-                <LinearGradient
-                    style={styles.bg}
-                    colors={['#D4AC6F', 'rgba(212, 172, 111, 0)']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 1}}
-                />
-                <View style={styles.topBox}>
-                    <View style={[Style.flexRow, styles.noticeBar]}>
-                        <Image source={require('../../assets/personal/volume.png')} style={styles.noticeIcon} />
-                        <Text style={styles.noticeText}>{data?.part1?.notice?.message}</Text>
+            {Object.keys(data).length > 0 && (
+                <ScrollView
+                    style={{flex: 1}}
+                    refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
+                    <LinearGradient
+                        style={styles.bg}
+                        colors={['#D4AC6F', 'rgba(212, 172, 111, 0)']}
+                        start={{x: 0, y: 0}}
+                        end={{x: 0, y: 1}}
+                    />
+                    <View style={styles.topBox}>
+                        <View style={[Style.flexRow, styles.noticeBar]}>
+                            <Image source={require('../../assets/personal/volume.png')} style={styles.noticeIcon} />
+                            <Text style={styles.noticeText}>{data?.part1?.notice?.message}</Text>
+                        </View>
+                        <Text style={[styles.title, {marginBottom: text(10)}]}>{data?.part1?.title}</Text>
+                        <Text style={[styles.num]}>{data.part1?.money}</Text>
+                        <View style={styles.profitBox}>
+                            <Text style={styles.profitText}>{data?.part1?.income_yesterday}</Text>
+                        </View>
+                        <View style={[Style.flexBetween, styles.items]}>
+                            {data?.part1?.label?.map((_item, _index) => {
+                                return (
+                                    <View style={Style.flexCenter} key={_index + '_item'}>
+                                        <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>
+                                            {_item.key}
+                                        </Text>
+                                        <Text
+                                            style={[
+                                                styles.itemValue,
+                                                {marginTop: text(7)},
+                                                _index === 0 ? {color: getColor(`${_item.val}`)} : {},
+                                            ]}>
+                                            {_item.val}
+                                        </Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <Text style={[styles.noticeText, styles.expireText]}>{'2020.06.20 过期'}</Text>
+                        <Button
+                            title={'立即使用'}
+                            disabled={false}
+                            color={'#D7AF74'}
+                            style={styles.useBtn}
+                            textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
+                        />
                     </View>
-                    <Text style={[styles.title, {marginBottom: text(10)}]}>{data?.part1?.title}</Text>
-                    <Text style={[styles.num]}>{data.part1?.money}</Text>
-                    <View style={styles.profitBox}>
-                        <Text style={styles.profitText}>{data?.part1?.income_yesterday}</Text>
-                    </View>
-                    <View style={[Style.flexBetween, styles.items]}>
-                        {data?.part1?.label?.map((_item, _index) => {
-                            return (
-                                <View style={Style.flexCenter} key={_index + '_item'}>
-                                    <Text style={[styles.profitText, {color: Colors.lightGrayColor}]}>{_item.key}</Text>
-                                    <Text
-                                        style={[
-                                            styles.itemValue,
-                                            {marginTop: text(7)},
-                                            _index === 0 ? {color: getColor(`${_item.val}`)} : {},
-                                        ]}>
-                                        {_item.val}
+
+                    {data?.part1?.content && (
+                        <View style={[Style.flexBetween, styles.withdrawBox]}>
+                            <View>
+                                <Text style={styles.title}>
+                                    {data?.part1?.content}
+                                    <Text style={{fontSize: Font.textH1, fontFamily: Font.numMedium}}>
+                                        {data?.part1?.income}
                                     </Text>
+                                </Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end', marginTop: text(4), position: 'relative'}}>
+                                <TouchableOpacity
+                                    style={[Style.flexCenter, styles.fill]}
+                                    onPress={() => bottomModal.current.show()}>
+                                    <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
+                                </TouchableOpacity>
+                                <Button
+                                    title={data?.part1?.cashout_button?.title}
+                                    disabled={true}
+                                    disabledColor={'#F2F2F2'}
+                                    color={'#D7AF74'}
+                                    style={styles.withdrawBtn}
+                                    textStyle={{...styles.profitText, color: '#C1C1C1', fontWeight: '500'}}
+                                />
+                                <Text style={{...styles.yieldKey, color: '#DC4949'}}>{data?.part1?.time_desc}</Text>
+                            </View>
+                        </View>
+                    )}
+                    {/* 未购买稳健组合后展示的样式 */}
+                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{'推荐组合'}</Text>
+                    {data.part2?.portfolios.map((_item, _index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[Style.flexBetween, styles.productBox]}
+                                key={_index + '_i'}>
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.title}>
+                                        <Text style={{fontWeight: '500'}}>{_item.name}</Text>
+                                        <Text style={{fontSize: Font.textH3, color: Colors.descColor}}>
+                                            {'| 无惧黑天鹅，安心增值必备'}
+                                        </Text>
+                                    </Text>
+                                    <View style={[Style.flexRow, styles.yieldBox]}>
+                                        <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
+                                            <Text>{'6.41'}</Text>
+                                            <Text style={{fontSize: text(18)}}>{'%'}</Text>
+                                        </Text>
+                                        <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>
+                                            {'过去两年年收益率'}
+                                        </Text>
+                                    </View>
+                                    <View style={Style.flexRow}>
+                                        <Text style={[styles.yieldKey, styles.tag]}>{'优秀固收+'}</Text>
+                                        <Text style={[styles.yieldKey, styles.tag]}>{'更先进的 量化算法'}</Text>
+                                    </View>
+                                </View>
+                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
+                        );
+                    })}
+
+                    {/* 购买稳健组合后展示的样式 */}
+                    {data?.part2 && (
+                        <View style={[Style.flexRow, {paddingLeft: Space.padding, marginTop: text(16)}]}>
+                            <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
+                            <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>
+                                {data?.part2?.desc}
+                            </Text>
+                        </View>
+                    )}
+                    {data?.part2 &&
+                        data?.part2?.portfolios?.map((_p, _index, arr) => {
+                            return (
+                                <View
+                                    style={[
+                                        Style.flexBetween,
+                                        styles.productBox,
+                                        {
+                                            paddingRight: text(13),
+                                            marginBottom: _index === arr.length - 1 ? insets.bottom : 0,
+                                        },
+                                    ]}
+                                    key={_index + '_p'}>
+                                    <View style={{flex: 1}}>
+                                        <Text style={[styles.title, {fontWeight: '500'}]}>{_p.name}</Text>
+                                        <View style={[Style.flexBetween, {marginTop: text(8)}]}>
+                                            {_p.items.map((_i, _d) => {
+                                                return (
+                                                    <View key={_d + '_i0'}>
+                                                        <Text
+                                                            style={{
+                                                                ...styles.noticeText,
+                                                                color: Colors.lightGrayColor,
+                                                                marginBottom: text(4),
+                                                            }}>
+                                                            {_i.key}
+                                                        </Text>
+                                                        <Text
+                                                            style={{
+                                                                ...styles.itemValue,
+                                                                color: _d == 0 ? '#292D39' : '#DC4949',
+                                                                fontFamily: Font.numFontFamily,
+                                                            }}>
+                                                            {_i.val}
+                                                        </Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    </View>
+                                    <Button
+                                        title={_p.button.title}
+                                        disabled={false}
+                                        color={'#fff'}
+                                        style={styles.buyBtn}
+                                        textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
+                                    />
                                 </View>
                             );
                         })}
-                    </View>
-                    <Text style={[styles.noticeText, styles.expireText]}>{'2020.06.20 过期'}</Text>
-                    <Button
-                        title={'立即使用'}
-                        disabled={false}
-                        color={'#D7AF74'}
-                        style={styles.useBtn}
-                        textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
-                    />
-                </View>
-
-                {data?.part1?.content && (
-                    <View style={[Style.flexBetween, styles.withdrawBox]}>
-                        <View>
-                            <Text style={styles.title}>
-                                {data?.part1?.content}
-                                <Text style={{fontSize: Font.textH1, fontFamily: Font.numMedium}}>
-                                    {data?.part1?.income}
-                                </Text>
-                            </Text>
-                        </View>
-                        <View style={{alignItems: 'flex-end', marginTop: text(4), position: 'relative'}}>
-                            <TouchableOpacity
-                                style={[Style.flexCenter, styles.fill]}
-                                onPress={() => bottomModal.current.show()}>
-                                <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
-                            </TouchableOpacity>
-                            <Button
-                                title={data?.part1?.cashout_button?.title}
-                                disabled={true}
-                                disabledColor={'#F2F2F2'}
-                                color={'#D7AF74'}
-                                style={styles.withdrawBtn}
-                                textStyle={{...styles.profitText, color: '#C1C1C1', fontWeight: '500'}}
-                            />
-                            <Text style={{...styles.yieldKey, color: '#DC4949'}}>{data?.part1?.time_desc}</Text>
-                        </View>
-                    </View>
-                )}
-                {/* 未购买稳健组合后展示的样式 */}
-                <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{'推荐组合'}</Text>
-                {data.part2?.portfolios.map((_item, _index) => {
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[Style.flexBetween, styles.productBox]}
-                            key={_index + '_i'}>
-                            <View style={{flex: 1}}>
-                                <Text style={styles.title}>
-                                    <Text style={{fontWeight: '500'}}>{_item.name}</Text>
-                                    <Text style={{fontSize: Font.textH3, color: Colors.descColor}}>
-                                        {'| 无惧黑天鹅，安心增值必备'}
-                                    </Text>
-                                </Text>
-                                <View style={[Style.flexRow, styles.yieldBox]}>
-                                    <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
-                                        <Text>{'6.41'}</Text>
-                                        <Text style={{fontSize: text(18)}}>{'%'}</Text>
-                                    </Text>
-                                    <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>{'过去两年年收益率'}</Text>
-                                </View>
-                                <View style={Style.flexRow}>
-                                    <Text style={[styles.yieldKey, styles.tag]}>{'优秀固收+'}</Text>
-                                    <Text style={[styles.yieldKey, styles.tag]}>{'更先进的 量化算法'}</Text>
-                                </View>
-                            </View>
-                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
-                    );
-                })}
-
-                {/* 购买稳健组合后展示的样式 */}
-                {data?.part2 && (
-                    <View style={[Style.flexRow, {paddingLeft: Space.padding, marginTop: text(16)}]}>
-                        <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
-                        <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>{data?.part2?.desc}</Text>
-                    </View>
-                )}
-                {data?.part2 &&
-                    data?.part2?.portfolios?.map((_p, _index, arr) => {
-                        return (
-                            <View
-                                style={[
-                                    Style.flexBetween,
-                                    styles.productBox,
-                                    {
-                                        paddingRight: text(13),
-                                        marginBottom: _index === arr.length - 1 ? insets.bottom : 0,
-                                    },
-                                ]}
-                                key={_index + '_p'}>
-                                <View style={{flex: 1}}>
-                                    <Text style={[styles.title, {fontWeight: '500'}]}>{_p.name}</Text>
-                                    <View style={[Style.flexBetween, {marginTop: text(8)}]}>
-                                        {_p.items.map((_i, _d) => {
-                                            return (
-                                                <View key={_d + '_i0'}>
-                                                    <Text
-                                                        style={{
-                                                            ...styles.noticeText,
-                                                            color: Colors.lightGrayColor,
-                                                            marginBottom: text(4),
-                                                        }}>
-                                                        {_i.key}
-                                                    </Text>
-                                                    <Text
-                                                        style={{
-                                                            ...styles.itemValue,
-                                                            color: _d == 0 ? '#292D39' : '#DC4949',
-                                                            fontFamily: Font.numFontFamily,
-                                                        }}>
-                                                        {_i.val}
-                                                    </Text>
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
-                                </View>
-                                <Button
-                                    title={_p.button.title}
-                                    disabled={false}
-                                    color={'#fff'}
-                                    style={styles.buyBtn}
-                                    textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
-                                />
-                            </View>
-                        );
-                    })}
-            </ScrollView>
+                </ScrollView>
+            )}
             {Object.keys(data).length > 0 && (
                 <BottomModal
                     title={data?.part1?.give_pop?.title}

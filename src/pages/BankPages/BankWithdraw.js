@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 11:00:19
+ * @LastEditTime: 2021-03-12 11:39:51
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -30,7 +30,7 @@ export default function BankWithdraw({navigation, route}) {
     };
     useEffect(() => {
         Http.get('trade/bank/withdraw/info/20210101', {
-            asset_code: route.params.asset_code,
+            prod_code: route.params.prod_code,
         }).then((res) => {
             setData(res.result);
         });
