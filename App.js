@@ -2,8 +2,13 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 15:46:21
+ * @LastEditTime: 2021-03-12 10:31:21
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 15:49:57
+>>>>>>> 4c737297e9c34b55b71035f2711894577d415124
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -95,10 +100,13 @@ function App() {
         return true;
     };
     React.useEffect(() => {
-        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/').catch((error) => {
-            console.log(error, '通用链接');
-        });
-        AppState.addEventListener('change', _handleAppStateChange);
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')
+            .then((res) => {
+                console.log(res, '通用链接res');
+            })
+            .catch((error) => {
+                console.log(error, '通用链接');
+            });
         Storage.get('loginStatus').then((res) => {
             if (res && res.refresh_token) {
                 var ts = new Date().getTime();
@@ -114,7 +122,7 @@ function App() {
         // if (Platform.OS == 'android') {
         //     requestExternalStoragePermission(); //申请读写权限
         // }
-        console.log(__DEV__);
+        // console.log(__DEV__);
         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);

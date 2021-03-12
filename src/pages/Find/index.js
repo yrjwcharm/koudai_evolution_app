@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 18:07:02
+ * @LastEditTime: 2021-03-12 10:31:41
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -252,8 +252,8 @@ const Index = (props) => {
                                                 </Text>
                                             )}
                                         </View>
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                        <Text style={styles.large_text}>{item?.desc}</Text>
+                                        <Text style={styles.light_text}>{item?.slogan}</Text>
                                     </View>
                                     <Image
                                         style={{width: px(110), height: '100%'}}
@@ -348,6 +348,13 @@ const styles = StyleSheet.create({
         fontSize: px(22),
         fontWeight: '700',
         paddingLeft: px(16),
+    },
+    large_text: {
+        marginTop: px(16),
+        marginBottom: px(2),
+        fontSize: px(18),
+        color: Colors.red,
+        lineHeight: px(25),
     },
 });
 export default Index;

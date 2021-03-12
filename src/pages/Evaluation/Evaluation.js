@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 14:02:49
+ * @LastEditTime: 2021-03-11 16:32:06
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -88,6 +88,12 @@ export class question extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
         this.clearValueTimer && clearTimeout(this.clearValueTimer);
     }
+    showTip = ({content, title}) => {
+        Modal.show({
+            title,
+            content,
+        });
+    };
     getNextQuestion = (questionnaire_cate, action, history, startAnimation) => {
         const {summary_id, questions, current} = this.state;
         var params = {
@@ -605,7 +611,11 @@ export class question extends Component {
                                             ) : null}
 
                                             {current_ques.tip ? (
-                                                <TouchableOpacity style={[Style.flexRow, {marginTop: px(16)}]}>
+                                                <TouchableOpacity
+                                                    style={[Style.flexRow, {marginTop: px(16)}]}
+                                                    onPress={() => {
+                                                        this.showTip(current_ques.pop);
+                                                    }}>
                                                     <Icon
                                                         name="exclamationcircleo"
                                                         size={px(14)}

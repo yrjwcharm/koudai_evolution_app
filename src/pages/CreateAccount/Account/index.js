@@ -2,11 +2,11 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 13:58:45
+ * @LastEditTime: 2021-03-11 16:10:36
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, Keyboard, ScrollView} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity, Keyboard, ScrollView, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -53,6 +53,12 @@ export class index extends Component {
 
     componentDidMount() {
         this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
+        this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
+            if (params && Object.keys(params).length == 2) {
+                this.setState({name: params.name, id_no: params.id_no});
+            }
+            // 刷新界面等
+        });
         http.get('/passport/xy_account/career_list/20210101').then((data) => {
             var career = data.result.career.filter((item) => {
                 return item.code == data.result.default_career;

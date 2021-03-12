@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:30:36
+ * @LastEditTime: 2021-03-11 14:27:22
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -16,7 +16,9 @@ import {Style, Font} from '../../../common/commonStyle';
 import http from '../../../services/';
 import Toast from '../../../components/Toast';
 import Storage from '../../../utils/storage';
-export default class WechatLogin extends Component {
+import {connect} from 'react-redux';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+class SetLoginPassword extends Component {
     static propTypes = {
         prop: PropTypes,
     };
@@ -34,11 +36,13 @@ export default class WechatLogin extends Component {
     }
     register = () => {
         const {code, password} = this.state;
+        let toast = Toast.showLoading('正在注册...');
         http.post('/auth/user/register/20210101', {
             mobile: this.props.route?.params?.mobile,
             verify_code: code,
             password,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
                 Toast.show('注册成功');
                 http.post('/auth/user/login/20210101', {
@@ -153,6 +157,13 @@ export default class WechatLogin extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+    getUserInfo,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SetLoginPassword);
 const styles = StyleSheet.create({
     login_content: {
         padding: text(23),

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 16:16:07
+ * @LastEditTime: 2021-03-11 16:08:41
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -27,11 +27,12 @@ import Toast from '../../../components/Toast';
 const typeArr = ['从相册中获取', '拍照'];
 export class uploadID extends Component {
     state = {
-        canClick: true,
         frontSource: '',
         behindSource: '',
         showTypePop: false,
         clickIndex: '',
+        frontStatus: false,
+        backStatus: false,
     };
     showPop = (clickIndex) => {
         this.setState({showTypePop: true, clickIndex});
@@ -48,6 +49,9 @@ export class uploadID extends Component {
     componentWillUnmount() {
         DeviceEventEmitter.removeListener(this.subscription);
     }
+    handleBack = () => {
+        this.props.navigation.goBack();
+    };
     showImg = (uri) => {
         const {clickIndex} = this.state;
         if (clickIndex == 1) {
@@ -61,14 +65,23 @@ export class uploadID extends Component {
         }
     };
     uploadImage = (response) => {
+        const {clickIndex} = this.state;
         let toast = Toast.showLoading('正在上传');
-        upload({...response, desc: this.state.clickIndex == 1 ? 'front' : 'back'}, (res) => {
+        upload({...response, desc: clickIndex == 1 ? 'front' : 'back'}, (res) => {
             Toast.hide(toast);
-            this.uri = '';
-            if (res.code == '000000') {
-                Toast.show('上传成功');
-            } else {
-                Toast.show(res.message);
+            if (res) {
+                this.uri = '';
+                if (res?.code == '000000') {
+                    Toast.show('上传成功');
+                    if (clickIndex == 1) {
+                        DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
+                        this.setState({frontStatus: true});
+                    } else {
+                        this.setState({backStatus: true});
+                    }
+                } else {
+                    Toast.show(res.message);
+                }
             }
         });
         this.showImg(response.uri);
@@ -146,7 +159,7 @@ export class uploadID extends Component {
         }
     };
     render() {
-        const {canClick, showTypePop, frontSource, behindSource} = this.state;
+        const {frontStatus, backStatus, showTypePop, frontSource, behindSource} = this.state;
         return (
             <View style={styles.con}>
                 <SelectModal
@@ -192,13 +205,7 @@ export class uploadID extends Component {
                 </View>
                 <Text style={styles.title}>上传要求</Text>
                 <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
-                <FixedButton
-                    title={'下一步'}
-                    disabled={canClick}
-                    onPress={() => {
-                        this.takePic('BankInfo');
-                    }}
-                />
+                <FixedButton title={'下一步'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
             </View>
         );
     }

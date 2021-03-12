@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 12:24:09
+ * @LastEditTime: 2021-03-11 14:25:22
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -15,9 +15,9 @@ import InputView from '../input';
 import http from '../../../services/';
 import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
-// import {MapDispatchToProps} from 'react-redux';
-// import {getUserInfo} from '../../redux/actions/userInfo';
-export default class index extends Component {
+import {connect} from 'react-redux';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,8 +32,11 @@ export default class index extends Component {
     }
     login = () => {
         const {mobile, password} = this.state;
+        let toast = Toast.showLoading('正在登录...');
         http.post('/auth/user/login/20210101', {mobile, password}).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
+                this.props.getUserInfo();
                 Toast.show('登录成功', {
                     onHidden: () => {
                         this.props.navigation.goBack();
@@ -112,7 +115,12 @@ export default class index extends Component {
         );
     }
 }
+const mapStateToProps = (state) => ({});
 
+const mapDispatchToProps = {
+    getUserInfo,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 const styles = StyleSheet.create({
     login_content: {
         padding: text(23),
