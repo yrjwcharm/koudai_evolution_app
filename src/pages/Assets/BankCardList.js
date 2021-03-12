@@ -2,11 +2,12 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-03 14:53:45
+ * @LastEditTime: 2021-03-12 10:46:38
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -19,13 +20,17 @@ import Empty from '../../components/EmptyTip';
 const BankCardList = ({navigation}) => {
     const [data, setData] = useState({});
 
-    useEffect(() => {
-        http.get('passport/bank_card/manage/20210101').then((res) => {
-            // console.log(res);
-            navigation.setOptions({title: res.title});
-            setData(res);
-        });
-    }, [navigation]);
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/passport/bank_card/manage/20210101').then((res) => {
+                // console.log(res);
+                if (res.code === '000000') {
+                    navigation.setOptions({title: res.result.title || '绑定银行卡'});
+                    setData(res.result);
+                }
+            });
+        }, [navigation])
+    );
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
@@ -79,18 +84,23 @@ const BankCardList = ({navigation}) => {
                         </TouchableOpacity>
                     );
                 })}
-                {data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0 && (
+                {Object.keys(data).length === 0 || (data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0) ? (
                     <>
                         <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
                         <Button
                             title={'添加新银行卡'}
                             style={[styles.btn, {marginHorizontal: text(4), marginTop: text(86)}]}
+                            onPress={() => navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})}
                         />
                     </>
-                )}
+                ) : null}
             </ScrollView>
-            {data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0 ? null : (
-                <Button title={'添加新银行卡'} style={styles.btn} />
+            {Object.keys(data).length === 0 || (data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0) ? null : (
+                <Button
+                    title={'添加新银行卡'}
+                    style={styles.btn}
+                    onPress={() => navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})}
+                />
             )}
         </SafeAreaView>
     );

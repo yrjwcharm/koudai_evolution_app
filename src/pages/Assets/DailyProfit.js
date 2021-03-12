@@ -2,12 +2,11 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 19:49:33
+ * @LastEditTime: 2021-03-11 14:24:28
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {LayoutAnimation, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -19,7 +18,6 @@ import Empty from '../../components/EmptyTip';
 
 const DailyProfit = ({poid}) => {
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
@@ -35,17 +33,16 @@ const DailyProfit = ({poid}) => {
                 page,
                 poid,
             }).then((res) => {
-                first && navigation.setOptions({title: res.result.title || '收益明细'});
                 setHasMore(res.result.has_more);
                 setRefreshing(false);
                 if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.items || [])]);
                 } else if (status === 'refresh') {
-                    setList(res.result.list || []);
+                    setList(res.result.items || []);
                 }
             });
         },
-        [navigation, page, poid]
+        [page, poid]
     );
     // 下拉刷新
     const onRefresh = useCallback(() => {
@@ -151,6 +148,7 @@ const DailyProfit = ({poid}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
+        console.log('dx');
         return <Empty text={'暂无日收益数据'} />;
     }, []);
     // 渲染列表项

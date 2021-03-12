@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 14:30:10
+ * @LastEditTime: 2021-03-11 17:46:25
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import InputView from './components/input';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 
-const ForgotTradePwd = ({navigation, route}) => {
+const ForgotTradePwdNext = ({navigation, route}) => {
     const [msg] = useState(route.params?.msg);
     const [second, setSecond] = useState(59);
     const [codeText, setCodeText] = useState('60秒后可重发');
@@ -173,4 +173,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ForgotTradePwd;
+export default ForgotTradePwdNext;

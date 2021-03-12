@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 16:44:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-11 19:17:46
  * @Description: 银行卡选择
  */
 
@@ -15,7 +15,9 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {Colors} from '../../common/commonStyle';
 import Mask from '../Mask';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 const BankCardModal = React.forwardRef((props, ref) => {
+    const insets = useSafeAreaInsets();
     const {
         type = '', //type为show时是展示
         backdrop = true,
@@ -28,6 +30,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         onDone = () => {},
         style = {},
         onClose = () => {}, //关闭回调
+        isTouchMaskToClose = true,
     } = props;
     const navigation = useNavigation();
     const [visible, setVisible] = React.useState(false);
@@ -88,8 +91,14 @@ const BankCardModal = React.forwardRef((props, ref) => {
         <>
             <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
                 <Mask />
-                <View style={[styles.container]}>
-                    <View style={[styles.con, style]}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={isTouchMaskToClose ? hide : () => {}}
+                    style={[styles.container]}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={(e) => e.stopPropagation()}
+                        style={[styles.con, style]}>
                         {header || (
                             <View style={styles.header}>
                                 <TouchableOpacity style={styles.close} onPress={hide}>
@@ -98,8 +107,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 <Text style={styles.title}>{title}</Text>
                             </View>
                         )}
-                        <View style={{paddingHorizontal: text(14)}}>
+                        <View>
                             <FlatList
+                                contentContainerStyle={{paddingHorizontal: text(14), paddingBottom: insets.bottom}}
                                 data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
@@ -132,8 +142,8 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 </TouchableOpacity>
                             )}
                         </View>
-                    </View>
-                </View>
+                    </TouchableOpacity>
+                </TouchableOpacity>
             </Modal>
         </>
     );

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 12:21:10
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-12 10:24:22
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -343,14 +343,14 @@ function HomeScreen({navigation}) {
                         })}
                 </View>
                 {/* 中控 */}
-                <View style={styles.centerCtrl}>
+                {/* <View style={[styles.centerCtrl, {marginBottom: Space.marginVertical}]}>
                     <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
                     <Text style={styles.centerCtrlContent}>
                         {
                             '您当前的配置和主线有些偏离，建议您尽可跟随调仓可以让您的收益最大化。您也可以追加购买调整比例 '
                         }
                     </Text>
-                </View>
+                </View> */}
                 {/* 持仓组合 */}
                 {holdingData?.accounts &&
                     holdingData?.accounts.map((item, index) => {
@@ -361,7 +361,6 @@ function HomeScreen({navigation}) {
                                     style={[
                                         styles.account,
                                         index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                        index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}>
                                     {renderTitle(item)}
@@ -374,7 +373,6 @@ function HomeScreen({navigation}) {
                                     style={[
                                         styles.account,
                                         index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                        index === 0 ? {marginTop: Space.marginVertical} : {},
                                         needAdjust(item) ? styles.needAdjust : {},
                                     ]}
                                     onPress={() => jump(item.portfolios[0].url)}>
@@ -392,7 +390,6 @@ function HomeScreen({navigation}) {
                                         style={[
                                             styles.account,
                                             index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                            index === 0 ? {marginTop: Space.marginVertical} : {},
                                             {padding: 0},
                                         ]}>
                                         <TouchableOpacity
@@ -416,7 +413,6 @@ function HomeScreen({navigation}) {
                                             style={[
                                                 styles.account,
                                                 index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                                index === 0 ? {marginTop: Space.marginVertical} : {},
                                             ]}>
                                             {renderTitle(item)}
                                             {item.has_bought && renderPortfolios(item)}

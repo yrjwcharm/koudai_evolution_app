@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-11 17:48:38
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-11 18:23:46
+ * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -13,8 +13,12 @@ import {px as text} from '../utils/appUtil';
 import {Colors, Font, Space} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
+import {useSelector} from 'react-redux';
+
 const BottomDesc = (props) => {
-    const {style, type} = props;
+    const userInfo = useSelector((store) => store.userInfo);
+    const {style} = props;
+    const type = userInfo.toJS().po_ver === 0 ? 'yingmi' : 'xuanyuan';
     const data = {
         image:
             type === 'xuanyuan'
@@ -91,11 +95,9 @@ const styles = StyleSheet.create({
 });
 
 BottomDesc.propTypes = {
-    type: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
 };
 BottomDesc.defaultProps = {
-    type: 'xuanyuan',
     style: {},
 };
 

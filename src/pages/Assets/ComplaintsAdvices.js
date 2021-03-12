@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 15:46:41
+ * @LastEditTime: 2021-03-12 10:33:24
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -16,6 +16,7 @@ import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
+import {Modal} from '../../components/Modal';
 
 const ComplaintsAdvices = ({navigation}) => {
     const [data, setData] = useState({});
@@ -26,6 +27,7 @@ const ComplaintsAdvices = ({navigation}) => {
     const [showMask, setShowMask] = useState(false);
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const leftHeight = useRef(0);
+    const btnClick = useRef(true);
 
     // 显示选择器
     const showPicker = useCallback(() => {
@@ -82,17 +84,27 @@ const ComplaintsAdvices = ({navigation}) => {
         [keyboardHeight]
     );
     const submit = useCallback(() => {
-        http.post('/mapi/complain/store/20210101?cate_id=1&content=test', {
-            cate_id: sort.key,
-            content,
-        }).then((res) => {
-            if (res.code === '000000') {
-                Toast.show(res.result.tips);
-                navigation.goBack();
-            } else {
-                Toast.show(res.message);
-            }
-        });
+        if (!btnClick.current) {
+            return false;
+        } else {
+            btnClick.current = false;
+            http.post('/mapi/complain/store/20210101?cate_id=1&content=test', {
+                cate_id: sort.key,
+                content,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    // Toast.show(res.result.tips);
+                    Modal.show({
+                        content: res.result.tips,
+                        confirmCallBack: () => navigation.goBack(),
+                        confirmText: '确定',
+                    });
+                } else {
+                    btnClick.current = true;
+                    Toast.show(res.message);
+                }
+            });
+        }
     }, [content, navigation, sort]);
 
     useEffect(() => {
