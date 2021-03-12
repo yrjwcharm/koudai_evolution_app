@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 14:05:02
+ * @LastEditTime: 2021-03-12 17:36:46
  * @Description:路由表
  */
 import React from 'react';
@@ -128,6 +128,7 @@ import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
 import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
+import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
 
 const Stack = createStackNavigator();
 
@@ -458,6 +459,7 @@ export default function AppStack() {
                 options={{title: '理财魔方体验金'}}
             />
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
+            <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
         </Stack.Navigator>
     );
 }

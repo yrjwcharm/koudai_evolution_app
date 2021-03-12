@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 16:46:39
+ * @LastEditTime: 2021-03-12 16:54:42
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -16,16 +16,15 @@ import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
+import {useJump} from '../../components/hooks/';
 
-export default function Trade(props) {
+export default function Trade({navigation, route}) {
     const passwordModal = useRef(null);
     const [showMask, setShowMask] = useState(false);
     const [expand, setExpand] = useState(false);
     const [data, setData] = useState({});
     const [list, setList] = useState({});
-    const jumpTo = (url) => {
-        props.navigation.navigate(url);
-    };
+    const jump = useJump();
 
     const toggle = () => {
         setExpand(!expand);
@@ -34,21 +33,24 @@ export default function Trade(props) {
         passwordModal.current.show();
         setShowMask(true);
     };
-    const submitData = () => {};
+
     useEffect(() => {
         http.get('/freefund/buy/20210101', {}).then((res) => {
             setData(res.result);
-            plan();
+            http.get('trade/buy/plan/20210101', {
+                amount: res.result.buy_info.amount,
+                pay_method: res.result.buy_info.pay_method,
+            }).then((data) => {
+                setList(data.result);
+            });
         });
-    });
-    const plan = () => {
-        const params = {
+    }, [route]);
+    const submitData = (password) => {
+        http.post('/freefund/do_buy/20210101', {
             amount: data.buy_info.amount,
-            pay_method: data.buy_info.pay_method,
-            upid: '',
-        };
-        http.get('trade/buy/plan/20210101', params).then((data) => {
-            setList(data.result);
+            password,
+        }).then((res) => {
+            navigation.navigate(data?.button?.url?.path);
         });
     };
     return (
@@ -58,7 +60,7 @@ export default function Trade(props) {
                     <Header title={data.title} leftIcon="chevron-left" />
                     <TouchableOpacity
                         style={[Style.flexRow, styles.yellow_wrap_sty]}
-                        onPress={() => jumpTo(data?.tip_info?.processing_url)}>
+                        onPress={() => jump(data?.tip_info?.processing_url)}>
                         <Html style={styles.yellow_sty} html={data?.tip_info?.processing} />
                     </TouchableOpacity>
                     <View style={styles.list_sty}>
@@ -113,9 +115,9 @@ export default function Trade(props) {
                                                 </View>
                                                 <>
                                                     <Text style={[styles.config_title, {width: text(60)}]}>
-                                                        {list.header.percent}
+                                                        {list?.header?.percent}
                                                     </Text>
-                                                    <Text style={styles.config_title}>{list.header.amount}</Text>
+                                                    <Text style={styles.config_title}>{list?.header?.amount}</Text>
                                                 </>
                                             </View>
                                             {_item?.funds.map((_b, _i) => {
@@ -139,7 +141,7 @@ export default function Trade(props) {
                             );
                         })}
                     <Button
-                        title={data?.button?.title}
+                        title={data?.button?.text}
                         color={'#D4AC6F'}
                         onPress={passwordInput}
                         style={{marginHorizontal: text(16), backgroundColor: '#D4AC6F', marginTop: text(20)}}

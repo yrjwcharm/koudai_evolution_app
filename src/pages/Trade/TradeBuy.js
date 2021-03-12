@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 15:41:33
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 14:52:10
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -174,7 +174,7 @@ class TradeBuy extends Component {
                     this.setState({showMask: true});
                     this.need_buy = true;
                 },
-                cancleCallBack: () => {
+                cancelCallBack: () => {
                     this.passwordModal.show();
                     this.setState({showMask: true});
                     this.need_buy = false;
