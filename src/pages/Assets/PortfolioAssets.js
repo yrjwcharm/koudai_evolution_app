@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 17:40:06
+ * @LastEditTime: 2021-03-12 14:27:19
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -42,6 +42,9 @@ export default function PortfolioAssets(props) {
     };
 
     useEffect(() => {
+        init();
+    }, []);
+    const init = useCallback(() => {
         Http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
         }).then((res) => {
@@ -70,7 +73,7 @@ export default function PortfolioAssets(props) {
             setChart(res.result);
             setChartData(res.result.chart);
         });
-    }, []);
+    }, [period]);
 
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
@@ -178,7 +181,6 @@ export default function PortfolioAssets(props) {
                     <Chart initScript={baseLineChart(chartData, [Colors.red], true)} />
                     <View style={styles.chart_list_sty}>
                         {chart.sub_tabs.map((_item, _index) => {
-                            let num = _index * 10 + 10;
                             return (
                                 <TouchableOpacity
                                     key={_index + '_item2'}

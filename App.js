@@ -2,8 +2,13 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 15:42:19
+ * @LastEditTime: 2021-03-12 16:16:03
+=======
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 14:35:23
+>>>>>>> 83a1743d3713e90ce36688e7b3fb94c4ee945612
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -114,6 +119,8 @@ function App(props) {
                 }
             }
         });
+        // 监控设备激活/后台状态
+        AppState.addEventListener('change', _handleAppStateChange);
         syncImmediate();
         // if (Platform.OS == 'android') {
         //     requestExternalStoragePermission(); //申请读写权限

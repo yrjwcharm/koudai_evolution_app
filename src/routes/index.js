@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 14:01:06
+ * @LastEditTime: 2021-03-12 16:16:18
  * @Description:路由表
  */
 import React from 'react';
@@ -128,6 +128,7 @@ import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
 import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
+import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 
 const Stack = createStackNavigator();
 
@@ -417,7 +418,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
-            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: ''}} />
+            <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{headerShown: false}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
             <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
@@ -426,7 +427,7 @@ export default function AppStack() {
             <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
-            <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{title: '体验金规则'}} />
+            <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{headerShown: false}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
             <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
             <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
@@ -436,6 +437,7 @@ export default function AppStack() {
                 component={InviteExperienceGold}
                 options={{title: '理财魔方体验金'}}
             />
+            <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
         </Stack.Navigator>
     );
 }
