@@ -2,7 +2,7 @@
  * @Date: 2021-01-05 16:10:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:04:57
+ * @LastEditTime: 2021-03-12 16:38:47
  * @Description: 底部弹窗式密码
  */
 import React from 'react';
@@ -14,6 +14,7 @@ import {isIphoneX, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
+import Mask from '../Mask';
 const PasswordModal = React.forwardRef((props, ref) => {
     const navigation = useNavigation();
     const {
@@ -74,6 +75,7 @@ const PasswordModal = React.forwardRef((props, ref) => {
     });
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
+            <Mask />
             <View style={[styles.container, {backgroundColor: backdrop ? 'rgba(0,0,0,0.5)' : 'transparent'}]}>
                 <View style={styles.con}>
                     {header || (

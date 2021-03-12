@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:15:09
+ * @LastEditTime: 2021-03-12 16:36:25
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -92,7 +92,6 @@ const TradeRecordDetail = (props) => {
         setShowMore(more);
     };
     const showBank = () => {
-        setShowMask(true);
         bankCardRef.current.show();
     };
     return (
@@ -147,9 +146,6 @@ const TradeRecordDetail = (props) => {
                                         data={_item?.v || []}
                                         type="hidden"
                                         title="回款银行卡"
-                                        onClose={() => {
-                                            setShowMask(false);
-                                        }}
                                         ref={bankCardRef}
                                     />
                                     <FontAwesome

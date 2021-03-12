@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 15:41:33
+ * @LastEditTime: 2021-03-12 16:40:51
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -171,18 +171,17 @@ class TradeBuy extends Component {
                 cancelText: data.fix_modal.cancel_text,
                 confirmCallBack: () => {
                     this.passwordModal.show();
-                    this.setState({showMask: true});
+
                     this.need_buy = true;
                 },
                 cancleCallBack: () => {
                     this.passwordModal.show();
-                    this.setState({showMask: true});
+
                     this.need_buy = false;
                 },
             });
         } else {
             this.passwordModal.show();
-            this.setState({showMask: true});
         }
     };
     //清空输入框
@@ -192,7 +191,6 @@ class TradeBuy extends Component {
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
-        this.setState({showMask: true});
     };
     //跳转
     jumpPage = (nav, param) => {

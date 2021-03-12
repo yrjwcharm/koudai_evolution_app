@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 15:38:56
+ * @LastEditTime: 2021-03-12 16:31:50
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -133,14 +133,7 @@ const IM = () => {
                 case 'LMA':
                     if (_data.data.code == 20000) {
                         if (_data.data.data.length > 0) {
-                            let data = _data.data.data;
-                            // //下拉加载的时候倒序插入
-                            // if (page.current != 1) {
-                            //     data = data.reverse();
-                            // }
-                            data.forEach(function (v, k) {
-                                handleMessage(v, v.cmd == 'BMA' ? 'textButton' : 'text');
-                            });
+                            handleMessage(_data.data.data);
                         }
                     }
                     break;
@@ -179,25 +172,48 @@ const IM = () => {
         };
     }, [handleMessage, handleMsgParams, reconnect]);
     const handleMessage = useCallback((message, messageType, isInverted) => {
-        let _mes = {
-            id: message.cmid,
-            type: messageType || 'text',
-            content: message.data,
-            targetId: `${message.from}`,
-            renderTime: true,
-            sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
-            chatInfo: {
-                id: message.to,
-                nickName: message?.user_info?.nickname || '智能客服',
-                avatar: message?.user_info?.avatar,
-            },
-            time: message.time,
-        };
+        let _mes = [];
+        if (Array.isArray(message)) {
+            message.forEach((item) => {
+                _mes.push({
+                    id: item.cmid,
+                    type: item.cmd == 'BMA' ? 'textButton' : 'text',
+                    content: item.data,
+                    targetId: `${item.from}`,
+                    renderTime: true,
+                    sendStatus: item.hasOwnProperty('sendStatus') ? item.sendStatus : 1,
+                    chatInfo: {
+                        id: item.to,
+                        nickName: item?.user_info?.nickname || '智能客服',
+                        avatar: item?.user_info?.avatar,
+                    },
+                    time: item.time,
+                });
+            });
+        } else {
+            _mes = [
+                {
+                    id: message.cmid,
+                    type: messageType || 'text',
+                    content: message.data,
+                    targetId: `${message.from}`,
+                    renderTime: true,
+                    sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
+                    chatInfo: {
+                        id: message.to,
+                        nickName: message?.user_info?.nickname || '智能客服',
+                        avatar: message?.user_info?.avatar,
+                    },
+                    time: message.time,
+                },
+            ];
+        }
+
         // setMessages((preMes) => {
         //     return isInverted ? [_mes, ...preMes] : [...preMes, _mes];
         // });
         setMessages((preMes) => {
-            return [...preMes, _mes];
+            return [...preMes, ..._mes];
         });
     }, []);
 
