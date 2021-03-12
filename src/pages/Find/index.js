@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 15:10:56
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 18:07:02
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -27,7 +27,7 @@ const Index = (props) => {
     const jump = useJump();
     useEffect(() => {
         getData();
-    }, [getData]);
+    }, []);
     // let scrollingRight = '';
     // let lastx = '';
     // const snapScroll = useRef(null);

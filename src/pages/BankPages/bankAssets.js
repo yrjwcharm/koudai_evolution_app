@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-25 10:57:58
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 17:18:30
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -18,13 +18,12 @@ import Notice from '../../components/Notice';
 import FitImage from 'react-native-fit-image';
 import Question from '../../components/Question';
 import {Button} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 const btnHeight = isIphoneX() ? text(110) : text(86);
 export default function BankAssets(props) {
     const [data, setData] = useState({});
-    const disable = true;
     const bottomModal = React.useRef(null);
-    const [activeSections, setActiveSections] = useState([0]);
-    const updateSections = (activeSections) => setActiveSections(activeSections);
+    const jump = useJump();
     const rightPress = (url) => {
         props.navigation.navigate(url.path, url.params);
     };
@@ -34,17 +33,12 @@ export default function BankAssets(props) {
         }).then((res) => {
             setData(res.result);
         });
-    }, [props.route]);
+        console.log(2222);
+    }, [props.route.params]);
     const reasonShow = () => {
         bottomModal.current.show();
     };
-    const accountBtn = () => {
-        props.navigation.navigate('');
-    };
-    const jumpTo = (url) => {
-        console.log(url);
-        props.navigation.navigate('BankRedeem', url.params);
-    };
+
     return (
         <View style={{paddingBottom: btnHeight, flex: 1}}>
             {Object.keys(data).length > 0 && (
@@ -96,12 +90,12 @@ export default function BankAssets(props) {
                                         borderRadius: text(25),
                                         marginVertical: text(20),
                                     }}
-                                    onPress={() => jumpTo(data.button.url)}>
+                                    onPress={() => jump(data.button.url)}>
                                     <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={[Style.flexRow, styles.account_wrap_sty]}
-                                    onPress={() => accountBtn(data?.elec_account?.url)}>
+                                    onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
                                         {data.elec_account.title}({data?.elec_account?.balance})
                                     </Text>
@@ -146,7 +140,7 @@ export default function BankAssets(props) {
                                                     borderRadius: text(25),
                                                     marginVertical: text(20),
                                                 }}
-                                                onPress={() => jumpTo(_s.button.url)}>
+                                                onPress={() => jump(_s.button.url)}>
                                                 <Text
                                                     style={[
                                                         styles.btn_text_sty,

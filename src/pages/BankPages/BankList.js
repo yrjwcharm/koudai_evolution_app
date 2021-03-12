@@ -3,7 +3,7 @@
  * @Date: 2021-02-23 17:29:21
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-24 10:34:33
+ * @LastEditTime: 2021-03-11 17:08:54
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -13,7 +13,7 @@ import {px as text, isIphoneX} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FitImage from 'react-native-fit-image';
-export default function BankList(props) {
+export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
     useEffect(() => {
         Http.get('/bank/asset/list/20210101').then((res) => {
@@ -21,11 +21,11 @@ export default function BankList(props) {
         });
     }, []);
     const jumpTo = (url) => {
-        //尼克跳转外链
         if (url.type == 2) {
+            //尼克跳转外链
             Linking.openURL(url.path);
         } else {
-            props.navigation.navigate(url.path, url.params);
+            navigation.navigate(url.path, url.params);
         }
     };
     return (
@@ -42,7 +42,8 @@ export default function BankList(props) {
                                     borderRadius: text(10),
                                     overflow: 'hidden',
                                     paddingHorizontal: text(16),
-                                }}>
+                                }}
+                                key={_index + '_pro'}>
                                 {_pro.products.map((_p, _i) => {
                                     return (
                                         <TouchableOpacity
@@ -50,7 +51,8 @@ export default function BankList(props) {
                                                 styles.card_sty,
                                                 {borderBottomWidth: _i < _pro.products.length - 1 ? 0.5 : 0},
                                             ]}
-                                            onPress={() => jumpTo(_p.url)}>
+                                            onPress={() => jumpTo(_p.url)}
+                                            key={_i + '_p'}>
                                             <View style={{flex: 1}}>
                                                 <View style={{flexDirection: 'row'}}>
                                                     <Image

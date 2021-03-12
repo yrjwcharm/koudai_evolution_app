@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 14:33:06
+ * @LastEditTime: 2021-03-11 17:23:08
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -21,7 +21,7 @@ export default function ElectronicAccount(props) {
     const [num, setNum] = useState('6579976588086535678');
     useEffect(() => {
         Http.get('/bank/elec_account/20210101', {
-            bank_code: 'ZBB',
+            ...props.route.params,
         }).then((res) => {
             setData(res.result);
             setNum(res.result.account.card);
@@ -42,13 +42,13 @@ export default function ElectronicAccount(props) {
                     <FastImage
                         style={styles.bank_bg_sty}
                         source={{
-                            uri: data.account.background,
+                            uri: data?.account?.background,
                         }}
                         resizeMode={FastImage.resizeMode.contain}
                     />
                     <View style={styles.fixed_sty}>
                         <View style={[Style.flexRow, styles.fixed_wrap]}>
-                            <Text style={styles.fixed_title_sty}>{data.account.bank}</Text>
+                            <Text style={styles.fixed_title_sty}>{data?.account?.bank}</Text>
                             <TouchableOpacity onPress={() => copy(num)}>
                                 <Text style={styles.copy_sty}>复制卡号</Text>
                             </TouchableOpacity>
@@ -59,13 +59,13 @@ export default function ElectronicAccount(props) {
                         <Text style={[styles.account_sty, {flex: 1}]}>我的电子账户</Text>
                         <View style={[Style.flexRow]}>
                             <Text style={[styles.account_sty, {textAlign: 'right', marginRight: text(5)}]}>
-                                {data.account.balance}
+                                {data?.account?.balance}
                             </Text>
                             <AntDesign name={'right'} color={'#4E556C'} size={12} />
                         </View>
                     </TouchableOpacity>
                     <View style={styles.card_wrap_sty}>
-                        {data.items.map((_item, _index) => {
+                        {data?.items.map((_item, _index) => {
                             return (
                                 <TouchableOpacity style={[Style.flexRow]} onPress={accountBtn} key={_index + '_item'}>
                                     <View
@@ -82,7 +82,7 @@ export default function ElectronicAccount(props) {
                         })}
                     </View>
                     <View style={{marginTop: text(8)}}>
-                        {data.desc.map((_item, _index) => {
+                        {data?.desc.map((_item, _index) => {
                             return (
                                 <View style={{marginTop: text(12)}} key={_index + '_item'}>
                                     <Text style={styles.gray_title_sty}>{_item.key}</Text>
@@ -91,7 +91,7 @@ export default function ElectronicAccount(props) {
                             );
                         })}
                     </View>
-                    <FixedButton title={data.button.text} disabled={data.button.avail == 0} />
+                    <FixedButton title={data?.button?.text} disabled={data?.button?.avail == 0} />
                 </>
             )}
         </View>

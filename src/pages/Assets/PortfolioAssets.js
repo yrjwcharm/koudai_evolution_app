@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:18:34
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 17:40:06
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -14,7 +14,6 @@ import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {baseLineChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ChartData from '../Portfolio/Detail/data.json';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
@@ -23,6 +22,7 @@ import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
 import FitImage from 'react-native-fit-image';
 import {Modal} from '../../components/Modal';
+import {useJump} from '../../components/hooks';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 
@@ -35,10 +35,10 @@ export default function PortfolioAssets(props) {
     const [widthD, setWidthD] = useState('0%');
     const [period, setPeriod] = useState('m1');
     const [chartData, setChartData] = useState();
+    const jump = useJump();
     var _l;
-    const changeTab = (num, period) => {
+    const changeTab = (period) => {
         setPeriod(period);
-        setChartData(num);
     };
 
     useEffect(() => {
@@ -189,7 +189,7 @@ export default function PortfolioAssets(props) {
                                             marginRight: _index != chart.sub_tabs.length - 1 ? text(10) : 0,
                                         },
                                     ]}
-                                    onPress={() => changeTab(num, _item.val)}>
+                                    onPress={() => changeTab(_item.val)}>
                                     <Text
                                         style={{
                                             color: period == _item.val ? '#0051CC' : '#555B6C',
@@ -314,7 +314,10 @@ export default function PortfolioAssets(props) {
                 <View style={styles.list_card_sty}>
                     {data?.core_buttons?.map((_item, _index) => {
                         return (
-                            <TouchableOpacity style={{alignItems: 'center'}} key={_index + '_item0'} onPress={jumpTo}>
+                            <TouchableOpacity
+                                style={{alignItems: 'center'}}
+                                key={_index + '_item0'}
+                                onPress={() => jump(_item.url)}>
                                 <Image
                                     source={{
                                         uri: _item.icon,

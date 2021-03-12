@@ -2,13 +2,13 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 12:25:53
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 15:46:21
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler, Linking, UIManager} from 'react-native';
+import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer, DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {useColorScheme} from 'react-native-appearance';
@@ -98,6 +98,7 @@ function App() {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/').catch((error) => {
             console.log(error, '通用链接');
         });
+        AppState.addEventListener('change', _handleAppStateChange);
         Storage.get('loginStatus').then((res) => {
             if (res && res.refresh_token) {
                 var ts = new Date().getTime();
@@ -119,6 +120,14 @@ function App() {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
         };
     });
+
+    const _handleAppStateChange = (nextAppState) => {
+        const appState = AppState.currentState;
+        console.log(appState, '---appState', nextAppState);
+        if (appState.match(/inactive|background/) || nextAppState === 'active') {
+            LogTool(appState);
+        }
+    };
     // const prefix = Linking.makeUrl('/');
     const linking = {
         // prefixes: [prefix],

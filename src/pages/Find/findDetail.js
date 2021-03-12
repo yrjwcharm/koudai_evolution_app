@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-04 15:23:28
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-11 18:24:40
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -15,6 +15,8 @@ import * as MagicMove from 'react-native-magic-move';
 import * as Animatable from 'react-native-animatable';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {QuestionCard, ArticleCard} from '../../components/Article';
+import Http from '../../services';
+import {useJump} from '../../components/hooks';
 const FindDetail = (props) => {
     // const ZoomIn = {
     //     0: {
@@ -27,8 +29,10 @@ const FindDetail = (props) => {
     //         scale: 1,
     //     },
     // };
+    const [data, setData] = useState({});
     const containerRef = useRef(null);
     const insets = useRef(useSafeAreaInsets()).current;
+    const jump = useJump();
     const renderTitle = (title, more_text) => {
         return (
             <View
@@ -43,81 +47,89 @@ const FindDetail = (props) => {
             </View>
         );
     };
+    useEffect(() => {
+        Http.get('/discovery/plan/detail/20210101').then((res) => {
+            setData(res.result);
+        });
+    }, [props.route]);
     return (
         <MagicMove.Scene>
-            <Animatable.View ref={containerRef} style={styles.container}>
-                <TouchableOpacity
-                    style={[styles.close_img, {top: insets.top}]}
-                    onPress={() => {
-                        Platform.OS == 'ios'
-                            ? containerRef?.current.fadeOutDown(300).then(() => {
-                                  props.navigation.goBack();
-                              })
-                            : props.navigation.goBack();
-                    }}>
-                    <FastImage
-                        style={{width: px(24), height: px(24)}}
-                        source={require('../../assets/img/find/close.png')}
-                    />
-                </TouchableOpacity>
-                <ScrollView>
-                    {/* header */}
-                    <MagicMove.View style={[styles.recommend]} id="logo" transition={MagicMove.Transition.morph}>
+            {Object.keys(data).length > 0 && (
+                <Animatable.View ref={containerRef} style={styles.container}>
+                    <TouchableOpacity
+                        style={[styles.close_img, {top: insets.top}]}
+                        onPress={() => {
+                            Platform.OS == 'ios'
+                                ? containerRef?.current.fadeOutDown(300).then(() => {
+                                      props.navigation.goBack();
+                                  })
+                                : props.navigation.goBack();
+                        }}>
                         <FastImage
-                            style={{
-                                height: px(350),
-                            }}
-                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/图片42.png'}}
+                            style={{width: px(24), height: px(24)}}
+                            source={require('../../assets/img/find/close.png')}
                         />
-                        <View style={[styles.header, {top: insets.top + px(4)}]}>
-                            <Text style={styles.img_desc}>35+必备</Text>
-                            <Text style={styles.img_title}>美好生活提前储备</Text>
-                        </View>
-                        <View
-                            style={[
-                                styles.card,
-                                {
-                                    marginTop: px(-78),
-                                    marginHorizontal: px(16),
-                                },
-                            ]}>
-                            <View
+                    </TouchableOpacity>
+                    <ScrollView>
+                        {/* header */}
+                        <MagicMove.View style={[styles.recommend]} id="logo" transition={MagicMove.Transition.morph}>
+                            <FastImage
                                 style={{
-                                    padding: Space.cardPadding,
-                                }}>
-                                <Text style={[styles.card_title, {fontSize: px(16)}]}>养老计划</Text>
-                                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                                    <Text style={styles.radio}>132.87%~156.58%</Text>
-                                    <TouchableOpacity>
-                                        <LinearGradient
-                                            start={{x: 0, y: 0.25}}
-                                            end={{x: 0, y: 0.8}}
-                                            colors={['#FF9463', '#FF7D41']}
-                                            style={styles.recommend_btn}>
-                                            <Text style={styles.btn_text}>开启计划</Text>
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={styles.light_text}>35+必备 ｜ 美好生活提前储备</Text>
+                                    height: px(350),
+                                }}
+                                source={{uri: data?.plan_info?.background}}
+                            />
+                            <View style={[styles.header, {top: insets.top + px(4)}]}>
+                                <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
+                                <Text style={styles.img_title}>{data?.plan_info?.slogan[1]}</Text>
                             </View>
+                            <View
+                                style={[
+                                    styles.card,
+                                    {
+                                        marginTop: px(-78),
+                                        marginHorizontal: px(16),
+                                    },
+                                ]}>
+                                <View
+                                    style={{
+                                        padding: Space.cardPadding,
+                                    }}>
+                                    <Text style={[styles.card_title, {fontSize: px(16)}]}>{data?.plan_info?.name}</Text>
+                                    <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                        <Text style={styles.radio}>{data?.plan_info?.yield?.ratio}</Text>
+                                        <TouchableOpacity onPress={() => jump(data?.plan_info?.button.url)}>
+                                            <LinearGradient
+                                                start={{x: 0, y: 0.25}}
+                                                end={{x: 0, y: 0.8}}
+                                                colors={['#FF9463', '#FF7D41']}
+                                                style={styles.recommend_btn}>
+                                                <Text style={styles.btn_text}>{data?.plan_info?.button.text}</Text>
+                                            </LinearGradient>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text style={styles.light_text}>
+                                        {data?.plan_info?.slogan[0]} ｜ {data?.plan_info?.slogan[1]}
+                                    </Text>
+                                </View>
 
-                            <Text style={styles.tip_text}>已有 212,345 同龄人开启计划</Text>
-                        </View>
-                    </MagicMove.View>
+                                <Text style={styles.tip_text}>{data?.plan_info?.tip}</Text>
+                            </View>
+                        </MagicMove.View>
 
-                    <View style={{paddingHorizontal: px(16)}}>
-                        <View style={{marginBottom: px(20)}}>
-                            {renderTitle('魔方谈养老', '查看更多')}
-
-                            <ArticleCard />
+                        <View style={{paddingHorizontal: px(16)}}>
+                            <View style={{marginBottom: px(20)}}>
+                                {renderTitle(data?.article_info?.cate_name, '查看更多')}
+                                <ArticleCard data={data?.article_info} />
+                            </View>
+                            <View style={{marginBottom: px(20)}}>
+                                {renderTitle('魔方问答', '查看更多')}
+                                <QuestionCard data={data?.qa_list} />
+                            </View>
                         </View>
-                        <View style={{marginBottom: px(20)}}>
-                            {renderTitle('魔方问答', '查看更多')}
-                            <QuestionCard />
-                        </View>
-                    </View>
-                </ScrollView>
-            </Animatable.View>
+                    </ScrollView>
+                </Animatable.View>
+            )}
         </MagicMove.Scene>
     );
 };
