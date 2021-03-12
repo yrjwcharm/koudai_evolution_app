@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 14:52:10
+ * @LastEditTime: 2021-03-12 17:37:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -171,18 +171,17 @@ class TradeBuy extends Component {
                 cancelText: data.fix_modal.cancel_text,
                 confirmCallBack: () => {
                     this.passwordModal.show();
-                    this.setState({showMask: true});
+
                     this.need_buy = true;
                 },
                 cancelCallBack: () => {
                     this.passwordModal.show();
-                    this.setState({showMask: true});
+
                     this.need_buy = false;
                 },
             });
         } else {
             this.passwordModal.show();
-            this.setState({showMask: true});
         }
     };
     //清空输入框
@@ -192,7 +191,6 @@ class TradeBuy extends Component {
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
-        this.setState({showMask: true});
     };
     //跳转
     jumpPage = (nav, param) => {
@@ -429,9 +427,6 @@ class TradeBuy extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={this.submit}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                 />
                 <Text style={styles.title}>{title}</Text>
                 {buy_info ? (
@@ -480,9 +475,6 @@ class TradeBuy extends Component {
                 )}
                 <BankCardModal
                     data={pay_methods || []}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                     select={0}
                     ref={(ref) => {
                         this.bankCard = ref;

@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-24 18:23:12
+ * @LastEditTime: 2021-03-12 16:07:48
  * @Description:点赞模块
  */
 
@@ -13,23 +13,28 @@ import FastImage from 'react-native-fast-image';
 import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 export default function Praise(props) {
-    const {style, comment, id} = props;
-    const [like, setLike] = useState(comment.like_status);
-    const [num, setNum] = useState(comment.like_num);
-    const postLike = useCallback((id, _like) => {
-        http.get('/comment/like/20210101', {id, like: _like});
-    }, []);
+    const {style, comment} = props;
+    const [like, setLike] = useState(comment.favor_status);
+    const [num, setNum] = useState(comment.favor_num);
+    const postLike = useCallback(
+        (_like) => {
+            http.get('/comment/like/20210101', {id: comment.id, favor: _like});
+        },
+        [comment.id]
+    );
     const press = () => {
+        console.log(comment);
         if (like == 1) {
             setLike(0);
             let like_num = num - 1;
             setNum(like_num);
-            postLike(id, 0);
+            postLike(0);
         } else {
             setLike(1);
             let like_num = num + 1;
+            console.log(like_num);
             setNum(like_num);
-            postLike(id, 1);
+            postLike(1);
         }
     };
 

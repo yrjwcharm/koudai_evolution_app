@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-11 19:17:46
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-12 16:14:03
  * @Description: 银行卡选择
  */
 
@@ -45,7 +45,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
     };
 
     const confirmClick = (index) => {
-        if (type == 'show') {
+        if (type == 'hidden') {
             return;
         }
         setSelect(index);
@@ -107,9 +107,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 <Text style={styles.title}>{title}</Text>
                             </View>
                         )}
-                        <View>
+                        <View style={{flex: 1, paddingBottom: insets.bottom}}>
                             <FlatList
-                                contentContainerStyle={{paddingHorizontal: text(14), paddingBottom: insets.bottom}}
+                                contentContainerStyle={{paddingHorizontal: text(14)}}
                                 data={data}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
@@ -118,11 +118,12 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 }}
                             />
 
-                            {type == 'show' ? null : (
+                            {type == 'hidden' ? null : (
                                 <TouchableOpacity
                                     style={[
                                         styles.bankCard,
                                         {
+                                            paddingHorizontal: px(16),
                                             borderTopColor: Colors.borderColor,
                                             borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
                                         },

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:36:46
+ * @LastEditTime: 2021-03-12 17:37:47
  * @Description:路由表
  */
 import React from 'react';
@@ -127,6 +127,7 @@ import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
 import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
+import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
 
@@ -413,28 +414,6 @@ export default function AppStack() {
             <Stack.Screen name="AddBankCard" component={AddBankCard} options={{title: '添加新银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
             <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: false}} />
-            {/* <Stack.Screen
-                name="ExperienceGoldDetail"
-                component={ExperienceGoldDetail}
-                options={{
-                    headerBackImage: () => {
-                        return <Feather name="chevron-left" size={30} color={'#fff'} />;
-                    },
-                    headerStyle: {
-                        backgroundColor: '#D4AC6F',
-                        shadowOffset: {
-                            height: 0,
-                        },
-                        elevation: 0,
-                    },
-                    headerTitleStyle: {
-                        fontSize: px(18),
-                        lineHeight: px(25),
-                        color: '#fff',
-                    },
-                    title: '理财魔方体验金',
-                }}
-            /> */}
             <Stack.Screen
                 name="ExperienceGoldResult"
                 component={ExperienceGoldResult}
@@ -453,6 +432,7 @@ export default function AppStack() {
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
             <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
             <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
+            <Stack.Screen name="ForgetLoginPwd" component={ForgetLoginPwd} options={{title: ''}} />
             <Stack.Screen
                 name="InviteExperienceGold"
                 component={InviteExperienceGold}

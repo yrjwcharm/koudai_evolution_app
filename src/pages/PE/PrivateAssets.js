@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 17:56:24
+ * @LastEditTime: 2021-03-12 17:43:19
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -22,7 +22,6 @@ import Http from '../../services';
 import {Modal, SelectModal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import {BottomModal} from '../../components/Modal';
-import Mask from '../../components/Mask';
 import storage from '../../utils/storage';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -36,7 +35,6 @@ export default function PrivateAssets({navigation, route}) {
     const [data, setData] = useState({});
     const passwordModal = useRef(null);
     const bottomModal = React.useRef(null);
-    const [showMask, setShowMask] = useState(false);
     const [left, setLeft] = useState('100%');
     const [period, setPeriod] = useState('m1');
     const [qa, setQa] = useState({});
@@ -436,8 +434,6 @@ export default function PrivateAssets({navigation, route}) {
                             );
                         })}
                     </ScrollView>
-
-                    {showMask && <Mask />}
                     <BottomModal ref={bottomModal} confirmText={'确认'}>
                         <View style={{padding: text(16)}}>
                             <Text style={[styles.tips_sty, {marginBottom: text(10)}]}>{qa?.q}</Text>

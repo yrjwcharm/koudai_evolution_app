@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 16:51:35
+ * @LastEditTime: 2021-03-12 17:47:33
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -102,7 +102,6 @@ export default class TradeRedeem extends Component {
 
     passwordInput = () => {
         this.passwordModal.show();
-        this.setState({showMask: true});
     };
     submitData = (password) => {
         Http.get('/trade/redeem/do/20210101', {
@@ -265,9 +264,6 @@ export default class TradeRedeem extends Component {
                                 this.passwordModal = ref;
                             }}
                             onDone={this.submitData}
-                            onClose={() => {
-                                this.setState({showMask: false});
-                            }}
                         />
                         {this.state.showMask && <Mask />}
                         <BottomDesc />

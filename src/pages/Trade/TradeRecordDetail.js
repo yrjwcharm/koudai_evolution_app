@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:05:48
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 17:46:31
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -14,7 +14,6 @@ import {Modal, BankCardModal} from '../../components/Modal';
 import http from '../../services';
 import Icon from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
@@ -25,7 +24,6 @@ const TradeRecordDetail = (props) => {
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [data, setData] = useState();
-    const [showMask, setShowMask] = useState(false);
     const bankCardRef = useRef();
     const passwordModal = useRef();
     const cardLayout = (index, e) => {
@@ -92,7 +90,6 @@ const TradeRecordDetail = (props) => {
         setShowMore(more);
     };
     const showBank = () => {
-        setShowMask(true);
         bankCardRef.current.show();
     };
     return (
@@ -103,11 +100,7 @@ const TradeRecordDetail = (props) => {
                     onDone={(password) => {
                         cancleTxn(password);
                     }}
-                    onClose={() => {
-                        setShowMask(false);
-                    }}
                 />
-                {showMask && <Mask />}
                 <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                     <View
                         style={[
@@ -145,11 +138,8 @@ const TradeRecordDetail = (props) => {
                                     </Text>
                                     <BankCardModal
                                         data={_item?.v || []}
-                                        type="show"
+                                        type="hidden"
                                         title="回款银行卡"
-                                        onClose={() => {
-                                            setShowMask(false);
-                                        }}
                                         ref={bankCardRef}
                                     />
                                     <FontAwesome

@@ -707,6 +707,8 @@ class ChatWindow extends PureComponent {
             chatType,
             shortCutList,
             intellectList,
+            onLoadMore,
+            refreshing,
         } = this.props;
         const {
             messageContent,
@@ -762,6 +764,8 @@ class ChatWindow extends PureComponent {
                             onEndReachedThreshold={this.props.onEndReachedThreshold}
                             enableEmptySections
                             scrollEventThrottle={100}
+                            onRefresh={onLoadMore}
+                            refreshing={refreshing}
                             keyExtractor={(item) => `${item.id}`}
                             onEndReached={() => this._loadHistory()}
                             onLayout={(e) => {
@@ -1077,6 +1081,8 @@ ChatWindow.propTypes = {
     delPanelStyle: ViewPropTypes.style,
     delPanelButtonStyle: ViewPropTypes.style,
     flatListProps: PropTypes.object,
+    onLoadMore: PropTypes.func,
+    refreshing: PropTypes.bool,
 };
 
 ChatWindow.defaultProps = {
@@ -1139,7 +1145,7 @@ ChatWindow.defaultProps = {
     },
     allPanelHeight: 200,
     loadHistory: () => {
-        console.log('loadMore');
+        // console.log('loadMore');
     },
     onMessagePress: (type, index, content, message) => {
         console.log(type, index, content, message);
@@ -1229,4 +1235,6 @@ ChatWindow.defaultProps = {
     containerBackgroundColor: '#f5f5f5',
     showsVerticalScrollIndicator: false,
     showIsRead: false,
+    refreshing: false,
+    onLoadMore: () => {},
 };

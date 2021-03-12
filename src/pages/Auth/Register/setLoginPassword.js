@@ -2,11 +2,10 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 14:27:22
+ * @LastEditTime: 2021-03-11 19:33:25
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import InputView from '../input';
 import {px as text, handlePhone} from '../../../utils/appUtil';
 import {View, Text, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
@@ -19,9 +18,6 @@ import Storage from '../../../utils/storage';
 import {connect} from 'react-redux';
 import {getUserInfo} from '../../../redux/actions/userInfo';
 class SetLoginPassword extends Component {
-    static propTypes = {
-        prop: PropTypes,
-    };
     state = {
         code: '',
         password: '',
@@ -36,33 +32,52 @@ class SetLoginPassword extends Component {
     }
     register = () => {
         const {code, password} = this.state;
-        let toast = Toast.showLoading('正在注册...');
-        http.post('/auth/user/register/20210101', {
-            mobile: this.props.route?.params?.mobile,
-            verify_code: code,
-            password,
-        }).then((res) => {
-            Toast.hide(toast);
-            if (res.code === '000000') {
-                Toast.show('注册成功');
-                http.post('/auth/user/login/20210101', {
-                    mobile: this.props.route?.params?.mobile,
-                    password,
-                }).then((data) => {
-                    this.props.navigation.goBack(2);
-                    Storage.save('loginStatus', data.result);
-                });
-            } else {
-                Toast.show(res.message);
-            }
-        });
+        //找回登录密码
+        if (this.props.route?.params?.fr == 'forget') {
+            let toast = Toast.showLoading('正在修改...');
+            http.post('passport/find_login_password/20210101', {
+                mobile: this.props.route?.params?.mobile,
+                verify_code: code,
+                password,
+            }).then((res) => {
+                Toast.hide(toast);
+                if (res.code === '000000') {
+                    Toast.show('找回成功');
+                    this.props.navigation.goBack();
+                } else {
+                    Toast.show(res.message);
+                }
+            });
+        } else {
+            // 设置登录密码
+            let toast = Toast.showLoading('正在注册...');
+            http.post('/auth/user/register/20210101', {
+                mobile: this.props.route?.params?.mobile,
+                verify_code: code,
+                password,
+            }).then((res) => {
+                Toast.hide(toast);
+                if (res.code === '000000') {
+                    Toast.show('注册成功');
+                    http.post('/auth/user/login/20210101', {
+                        mobile: this.props.route?.params?.mobile,
+                        password,
+                    }).then((data) => {
+                        this.props.navigation.goBack(2);
+                        Storage.save('loginStatus', data.result);
+                    });
+                } else {
+                    Toast.show(res.message);
+                }
+            });
+        }
     };
     sendCode = () => {
         const {code_btn_click} = this.state;
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
-                operation: 'passport_create',
+                operation: this.props.route?.params?.fr == 'forget' ? 'password_reset' : 'passport_create',
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
