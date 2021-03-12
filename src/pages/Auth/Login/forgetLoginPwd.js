@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 16:27:35
+ * @LastEditTime: 2021-03-11 18:58:06
  * @Description:找回登录密码
  */
 /*
@@ -35,9 +35,9 @@ export default class index extends Component {
     register = () => {
         global.LogTool('Register');
         const {mobile} = this.state;
-        http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
+        http.get('passport/mobile/register_check/20210101', {mobile}).then((res) => {
             if (res.code === '000000') {
-                this.props.navigation.navigate('SetLoginPassword', {mobile});
+                this.props.navigation.replace('SetLoginPassword', {mobile, fr: 'forget'});
             } else {
                 Toast.show(res.message);
             }

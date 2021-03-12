@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 16:25:13
+ * @LastEditTime: 2021-03-12 16:05:56
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -63,6 +63,7 @@ const Index = (props) => {
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
     const jump = useJump();
+    const scrollView = useRef(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
     const getData = useCallback((params) => {
@@ -80,6 +81,7 @@ const Index = (props) => {
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
             isFocused && getData('refresh');
+            isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
         });
         return unsubscribe;
     }, [getData, props.navigation, isFocused]);
@@ -172,6 +174,7 @@ const Index = (props) => {
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
                         scrollEventThrottle={16}
+                        ref={scrollView}
                         refreshControl={
                             <RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />
                         }>
@@ -379,7 +382,7 @@ const Index = (props) => {
                                                 <Text style={styles.about_text} numberOfLines={4}>
                                                     {comment.content}
                                                 </Text>
-                                                <Praise comment={comment} id={comment.id} style={styles.zan} />
+                                                <Praise comment={comment} style={styles.zan} />
                                             </TouchableOpacity>
                                         </BoxShadow>
                                     ))}

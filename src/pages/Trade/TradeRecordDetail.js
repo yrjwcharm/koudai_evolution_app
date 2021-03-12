@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 19:05:48
+ * @LastEditTime: 2021-03-12 16:15:09
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -145,7 +145,7 @@ const TradeRecordDetail = (props) => {
                                     </Text>
                                     <BankCardModal
                                         data={_item?.v || []}
-                                        type="show"
+                                        type="hidden"
                                         title="回款银行卡"
                                         onClose={() => {
                                             setShowMask(false);

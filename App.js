@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-12 11:03:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-12 15:42:19
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -51,7 +51,7 @@ let codePushOptions = {
     //MANUAL 手动检查
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
-function App() {
+function App(props) {
     // const scheme = useColorScheme();
     const navigationRef = useRef();
     const routeNameRef = useRef();
@@ -102,6 +102,8 @@ function App() {
             .catch((error) => {
                 console.log(error, '通用链接');
             });
+
+        //刷新token
         Storage.get('loginStatus').then((res) => {
             if (res && res.refresh_token) {
                 var ts = new Date().getTime();
@@ -112,7 +114,6 @@ function App() {
                 }
             }
         });
-
         syncImmediate();
         // if (Platform.OS == 'android') {
         //     requestExternalStoragePermission(); //申请读写权限
