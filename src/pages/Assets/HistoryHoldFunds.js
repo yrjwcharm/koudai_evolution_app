@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:25:26
+ * @LastEditTime: 2021-03-13 13:44:41
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -96,7 +96,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <TouchableOpacity
-                    onPress={() => navigation.navigate({name: 'FundDetail', params: {code: item.code}})}
+                    onPress={() => navigation.navigate('FundDetail', {code: item.code})}
                     style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <View>
                         <Text numberOfLines={1} style={[styles.itemText]}>

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:40:22
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-13 13:51:57
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -78,7 +78,7 @@ class BankRedeem extends Component {
                 amount: this.state.amount,
                 password: this.state.password,
             }).then((res) => {
-                props.navigation.navigate('asset');
+                this.props.navigation.navigate('asset');
             });
         });
     }

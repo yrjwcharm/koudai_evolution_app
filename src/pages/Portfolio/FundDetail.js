@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 18:12:07
+ * @LastEditTime: 2021-03-13 13:54:20
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -299,9 +299,7 @@ const FundDetail = ({navigation, route}) => {
                         <View style={[{paddingLeft: text(4), paddingVertical: text(12)}, Style.flexRow]}>
                             <TouchableOpacity
                                 style={[Style.flexBetween, styles.navBox]}
-                                onPress={() =>
-                                    navigation.navigate({name: 'HistoryNav', params: {code: data.part1.fund.code}})
-                                }>
+                                onPress={() => navigation.navigate('HistoryNav', {code: data.part1.fund.code})}>
                                 <View>
                                     <Text style={[styles.subTitle, {marginBottom: text(4)}]}>
                                         {data.part1.nav && data.part1.nav.key}
@@ -329,9 +327,7 @@ const FundDetail = ({navigation, route}) => {
                             <View style={styles.divider} />
                             <TouchableOpacity
                                 style={[Style.flexBetween, styles.rankBox]}
-                                onPress={() =>
-                                    navigation.navigate({name: 'FundRanking', params: {code: data.part1.fund.code}})
-                                }>
+                                onPress={() => navigation.navigate('FundRanking', {code: data.part1.fund.code})}>
                                 <View>
                                     <Text style={[styles.subTitle, {marginBottom: text(4)}]}>
                                         {data.part1.rank && data.part1.rank.key}

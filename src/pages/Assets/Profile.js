@@ -2,13 +2,13 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 09:58:56
+ * @LastEditTime: 2021-03-13 14:49:29
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
 import {px as text} from '../../utils/appUtil.js';
@@ -19,6 +19,7 @@ import Mask from '../../components/Mask';
 import {InputModal} from '../../components/Modal';
 
 const Profile = ({navigation}) => {
+    const insets = useSafeAreaInsets();
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
     const inputModal = useRef(null);
@@ -108,13 +109,15 @@ const Profile = ({navigation}) => {
         }
     }, [modalProps]);
     return (
-        <SafeAreaView edges={['bottom']} style={styles.container}>
+        <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
             <InputModal {...modalProps} ref={inputModal} />
             <ScrollView style={{paddingHorizontal: Space.padding}}>
-                {data.map((part, index) => {
+                {data.map((part, index, arr) => {
                     return (
-                        <View key={`part${index}`} style={styles.partBox}>
+                        <View
+                            key={`part${index}`}
+                            style={[styles.partBox, index === arr.length - 1 ? {marginBottom: insets.bottom} : {}]}>
                             {part.map((item, i) => {
                                 return (
                                     <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>
@@ -162,7 +165,7 @@ const Profile = ({navigation}) => {
                     );
                 })}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 };
 

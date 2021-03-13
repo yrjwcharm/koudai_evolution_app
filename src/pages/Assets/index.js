@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 10:24:22
+ * @LastEditTime: 2021-03-13 16:19:33
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -24,7 +24,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text, isIphoneX} from '../../utils/appUtil.js';
+import {deviceWidth, px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -249,7 +249,7 @@ function HomeScreen({navigation}) {
                         {userBasicInfo.member_info && Object.keys(userBasicInfo.member_info).length > 0 && (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => navigation.navigate({name: 'MemberCenter', params: {level: 0}})}>
+                                onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
                                 <LinearGradient
                                     colors={['#FFF6E8', '#FFE1B8']}
                                     start={{x: 0, y: 0}}
@@ -352,84 +352,66 @@ function HomeScreen({navigation}) {
                     </Text>
                 </View> */}
                 {/* 持仓组合 */}
-                {holdingData?.accounts &&
-                    holdingData?.accounts.map((item, index) => {
-                        return item.portfolios ? (
-                            item.portfolios.length > 1 ? (
-                                <View
-                                    key={`account${item.id}`}
-                                    style={[
-                                        styles.account,
-                                        index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                        needAdjust(item) ? styles.needAdjust : {},
-                                    ]}>
-                                    {renderTitle(item)}
-                                    {renderPortfolios(item)}
-                                </View>
-                            ) : (
-                                <TouchableOpacity
-                                    key={`account0${item.id}`}
-                                    activeOpacity={0.8}
-                                    style={[
-                                        styles.account,
-                                        index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                        needAdjust(item) ? styles.needAdjust : {},
-                                    ]}
-                                    onPress={() => jump(item.portfolios[0].url)}>
-                                    {renderTitle(item.portfolios[0])}
-                                    {renderPortfolios(item)}
-                                </TouchableOpacity>
-                            )
-                        ) : (
-                            <View key={`account1${item.id}`}>
-                                {item.id === 12 ? (
-                                    <LinearGradient
-                                        colors={['#33436D', '#121D3A']}
-                                        start={{x: 0, y: 0}}
-                                        end={{x: 1, y: 0}}
-                                        style={[
-                                            styles.account,
-                                            index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                            {padding: 0},
-                                        ]}>
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[{padding: Space.padding}, Style.flexRow]}>
-                                            <View style={[{flex: 1}, Style.flexRow]}>
-                                                <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
-                                                    {item.name}
-                                                </Text>
-                                                <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
-                                                    {item.desc}
-                                                </Text>
-                                            </View>
-                                            <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
-                                        </TouchableOpacity>
-                                    </LinearGradient>
-                                ) : (
-                                    item.id === 11 && (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[
-                                                styles.account,
-                                                index === holdingData?.accounts.length - 1 ? {marginBottom: 0} : {},
-                                            ]}>
-                                            {renderTitle(item)}
-                                            {item.has_bought && renderPortfolios(item)}
-                                        </TouchableOpacity>
-                                    )
-                                )}
+                {holdingData?.accounts?.map((item, index, arr) => {
+                    return item.portfolios ? (
+                        item.portfolios.length > 1 ? (
+                            <View
+                                key={`account${item.id}`}
+                                style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
+                                {renderTitle(item)}
+                                {renderPortfolios(item)}
                             </View>
-                        );
-                    })}
+                        ) : (
+                            <TouchableOpacity
+                                key={`account0${item.id}`}
+                                activeOpacity={0.8}
+                                style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
+                                onPress={() => jump(item.portfolios[0].url)}>
+                                {renderTitle(item.portfolios[0])}
+                                {renderPortfolios(item)}
+                            </TouchableOpacity>
+                        )
+                    ) : (
+                        <View key={`account1${item.id}`}>
+                            {item.id === 12 ? (
+                                <LinearGradient
+                                    colors={['#33436D', '#121D3A']}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 1, y: 0}}
+                                    style={[styles.account, {padding: 0}]}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[{padding: Space.padding}, Style.flexRow]}>
+                                        <View style={[{flex: 1}, Style.flexRow]}>
+                                            <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
+                                                {item.name}
+                                            </Text>
+                                            <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
+                                                {item.desc}
+                                            </Text>
+                                        </View>
+                                        <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
+                                    </TouchableOpacity>
+                                </LinearGradient>
+                            ) : (
+                                item.id === 11 && (
+                                    <TouchableOpacity activeOpacity={0.8} style={[styles.account]}>
+                                        {renderTitle(item)}
+                                        {item.has_bought && renderPortfolios(item)}
+                                    </TouchableOpacity>
+                                )
+                            )}
+                        </View>
+                    );
+                })}
                 {/* 投顾 */}
-                {userBasicInfo.ia_info && (
+                {userBasicInfo.im_info && (
                     <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
                         <View style={[Style.flexRow, {flex: 1}]}>
-                            <Image source={{uri: userBasicInfo.ia_info.avatar}} style={styles.iaAvatar} />
+                            <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
                             <View>
                                 <Text style={[styles.accountName, {marginBottom: text(4)}]}>
-                                    {userBasicInfo.ia_info.name}
+                                    {userBasicInfo.im_info.name}
                                 </Text>
                                 <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
                             </View>
@@ -444,7 +426,8 @@ function HomeScreen({navigation}) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 key={`article${index}`}
-                                style={[styles.article, Style.flexRow]}>
+                                onPress={() => jump(item.url)}
+                                style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
                                 <View style={{flex: 1}}>
                                     <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
                                     <Text style={styles.accountName}>{item.desc}</Text>
@@ -454,7 +437,7 @@ function HomeScreen({navigation}) {
                         );
                     })}
                 {/* 底部菜单 */}
-                <View style={[styles.topMenu, Style.flexRow, {marginTop: Space.marginVertical}]}>
+                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
                     {userBasicInfo.bottom_menus &&
                         userBasicInfo.bottom_menus.map((item, index) => {
                             return (
@@ -620,7 +603,7 @@ const styles = StyleSheet.create({
     },
     topMenu: {
         marginTop: text(-28),
-        marginBottom: Space.marginVertical,
+        marginBottom: text(12),
         marginHorizontal: Space.marginAlign,
         paddingHorizontal: text(12),
         borderRadius: Space.borderRadius,
@@ -713,7 +696,7 @@ const styles = StyleSheet.create({
     },
     iaInfo: {
         marginHorizontal: Space.marginAlign,
-        marginTop: Space.marginVertical,
+        marginBottom: text(12),
         paddingVertical: text(14),
         paddingLeft: text(12),
         paddingRight: Space.marginAlign,
@@ -727,7 +710,7 @@ const styles = StyleSheet.create({
     },
     article: {
         marginHorizontal: Space.marginAlign,
-        marginTop: Space.marginVertical,
+        // marginTop: Space.marginVertical,
         paddingVertical: text(14),
         paddingHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,

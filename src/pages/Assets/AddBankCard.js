@@ -2,12 +2,11 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-11 21:06:14
+ * @LastEditTime: 2021-03-12 16:50:46
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -20,10 +19,9 @@ import {BankCardModal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
 
 const AddBankCard = ({navigation, route}) => {
-    const insets = useSafeAreaInsets();
     const userInfo = useSelector((store) => store.userInfo);
-    const [second, setSecond] = useState(60);
-    const [codeText, setCodeText] = useState('');
+    const [second, setSecond] = useState(0);
+    const [codeText, setCodeText] = useState('发送验证码');
     const btnClick = useRef(true);
     const timerRef = useRef('');
     const [bankList, setBankList] = useState([]);
@@ -64,7 +62,6 @@ const AddBankCard = ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     Toast.show(res.message);
-                    setCodeText('60秒后可重发');
                     timer();
                 } else {
                     Toast.show(res.message);
@@ -78,8 +75,21 @@ const AddBankCard = ({navigation, route}) => {
         setBankName(value.bank_name);
     };
     const timer = useCallback(() => {
+        setSecond(60);
+        setCodeText('60秒后可重发');
+        btnClick.current = false;
         timerRef.current = setInterval(() => {
-            setSecond((prev) => prev - 1);
+            setSecond((prev) => {
+                if (prev === 1) {
+                    clearInterval(timerRef.current);
+                    setCodeText('重新获取');
+                    btnClick.current = true;
+                    return prev;
+                } else {
+                    setCodeText(prev - 1 + '秒后可重发');
+                    return prev - 1;
+                }
+            });
         }, 1000);
     }, []);
     // 完成找回密码
@@ -136,20 +146,6 @@ const AddBankCard = ({navigation, route}) => {
         });
     }, [userInfo]);
     useEffect(() => {
-        setCodeText(second + '秒后可重发');
-        if (second <= 0) {
-            clearInterval(timerRef.current);
-            btnClick.current = true;
-            setSecond(60);
-        } else if (second === 60) {
-            if (timerRef.current) {
-                setCodeText('重新获取');
-            } else {
-                setCodeText('发送验证码');
-            }
-        }
-    }, [second]);
-    useEffect(() => {
         if (route.params?.action === 'add') {
             navigation.setOptions({title: '添加新银行卡'});
         } else {
@@ -165,8 +161,9 @@ const AddBankCard = ({navigation, route}) => {
                 data={bankList}
                 onDone={onSelectBank}
                 ref={bankModal}
-                style={{height: text(500), paddingBottom: insets.bottom}}
+                style={{height: text(500)}}
                 title={'请选择银行'}
+                type={'hidden'}
             />
             <InputView
                 clearButtonMode={'while-editing'}

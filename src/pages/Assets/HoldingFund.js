@@ -2,11 +2,11 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 10:36:47
+ * @LastEditTime: 2021-03-13 13:49:13
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Tab from '../../components/TabBar';
@@ -14,6 +14,7 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
+import {useJump} from '../../components/hooks';
 
 const RatioColor = [
     '#E1645C',
@@ -32,6 +33,7 @@ const RatioColor = [
 ];
 
 const HoldingFund = ({navigation, route}) => {
+    const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [tabs, setTabs] = useState([]);
     const [curTab, setCurTab] = useState(0);
@@ -42,9 +44,7 @@ const HoldingFund = ({navigation, route}) => {
     const init = useCallback(
         (first) => {
             http.get(
-                curTab === 0
-                    ? '/portfolio/funds/user_holding/20210101'
-                    : '/portfolio/funds/user_confirming/20210101',
+                curTab === 0 ? '/portfolio/funds/user_holding/20210101' : '/portfolio/funds/user_confirming/20210101',
                 {
                     poid: route.params?.poid || 'X00F000003',
                 }
@@ -103,9 +103,7 @@ const HoldingFund = ({navigation, route}) => {
                                     item.funds.map((fund, i) => {
                                         return (
                                             <TouchableOpacity
-                                                onPress={() =>
-                                                    navigation.navigate({name: 'FundDetail', params: {code: fund.code}})
-                                                }
+                                                onPress={() => navigation.navigate('FundDetail', {code: fund.code})}
                                                 style={[
                                                     styles.fundContainer,
                                                     i === item.funds.length - 1 ? {marginBottom: 0} : {},
@@ -214,9 +212,7 @@ const HoldingFund = ({navigation, route}) => {
                     {curTab === 0 && (
                         <TouchableOpacity
                             style={[styles.historyHolding, Style.flexBetween]}
-                            onPress={() =>
-                                navigation.navigate({name: urlRef.current.path, params: urlRef.current.params})
-                            }>
+                            onPress={() => jump(urlRef.current)}>
                             <Text style={[styles.name, {fontWeight: '500'}]}>{'历史持有基金'}</Text>
                             <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                         </TouchableOpacity>
@@ -224,7 +220,7 @@ const HoldingFund = ({navigation, route}) => {
                 </View>
             </>
         );
-    }, [curTab, list1, list2, getColor, navigation]);
+    }, [curTab, list1, list2, getColor, navigation, jump]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -233,10 +229,7 @@ const HoldingFund = ({navigation, route}) => {
                     <TouchableOpacity
                         style={[styles.topRightBtn, Style.flexCenter]}
                         onPress={() =>
-                            navigation.navigate({
-                                name: 'FundSearching',
-                                params: {poid: route.params?.poid || 'X00F000003'},
-                            })
+                            navigation.navigate('FundSearching', {poid: route.params?.poid || 'X00F000003'})
                         }>
                         <Text>基金查询</Text>
                     </TouchableOpacity>

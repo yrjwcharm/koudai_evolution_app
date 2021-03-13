@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:18:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:58:25
+ * @LastEditTime: 2021-03-13 13:53:39
  * @Description: 基金公告
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -76,7 +76,7 @@ const FundAnnouncement = ({navigation, route}) => {
             return (
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => navigation.navigate({name: 'OpenPdf', params: {url: item.url, title: item.title}})}>
+                    onPress={() => navigation.navigate('OpenPdf', {url: item.url, title: item.title})}>
                     <View style={[Style.flexRow, styles.item]}>
                         <Text numberOfLines={3} style={[styles.itemText]}>
                             {item.title}
