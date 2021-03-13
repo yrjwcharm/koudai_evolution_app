@@ -25,7 +25,7 @@ import DelPanel from './del';
 const {height, width} = Dimensions.get('window');
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 let ImageComponent = Image;
-class ChatWindow extends PureComponent {
+class ChatWindow extends React.Component {
     constructor(props) {
         super(props);
         const {headerHeight, chatType, iphoneXBottomPadding, CustomImageComponent, isIPhoneX} = props;
@@ -178,7 +178,7 @@ class ChatWindow extends PureComponent {
             this.time && clearTimeout(this.time);
             // this.time = setTimeout(() => { this.chatList && this.chatList.scrollToEnd({ animated: true }) }, 200)
         } else {
-            this.chatList.scrollToOffset({y: 0, animated: false});
+            this.chatList.scrollToOffset({y: 0, animated: true});
         }
     };
 
@@ -244,6 +244,7 @@ class ChatWindow extends PureComponent {
             const {contentHeight} = listHeightAndWidth;
             this.isInverted = contentHeight > this.listHeight;
         }
+
         if (!inverted) {
             setTimeout(
                 () => {
@@ -557,12 +558,12 @@ class ChatWindow extends PureComponent {
         }
     };
 
-    _loadHistory = async () => {
-        // const {inverted} = this.props;
-        // if (!inverted) {
-        //     return;
-        // }
-        await this.props.loadHistory();
+    _loadHistory = () => {
+        const {inverted} = this.props;
+        if (!inverted) {
+            return;
+        }
+        this.props.loadHistory();
     };
 
     _onEmojiSelected = (code) => {
@@ -764,10 +765,10 @@ class ChatWindow extends PureComponent {
                             onEndReachedThreshold={this.props.onEndReachedThreshold}
                             enableEmptySections
                             scrollEventThrottle={100}
-                            onRefresh={onLoadMore}
-                            refreshing={refreshing}
                             keyExtractor={(item) => `${item.id}`}
-                            onEndReached={() => this._loadHistory()}
+                            // onEndReached={() => this._loadHistory()}
+                            onRefresh={this.props.loadHistory}
+                            refreshing={false}
                             onLayout={(e) => {
                                 this._scrollToBottom();
                                 this.listHeight = e.nativeEvent.layout.height;
@@ -832,6 +833,7 @@ class ChatWindow extends PureComponent {
                                     rightMessageTextStyle={this.props.rightMessageTextStyle}
                                     renderQuestionMessage={this.props.renderQuestionMessage}
                                     renderTextButton={this.props.renderTextButton}
+                                    renderArticle={this.props.renderArticle}
                                     textMessageContanierStyle={this.props.textMessageContanierStyle}
                                 />
                             )}
@@ -1081,8 +1083,6 @@ ChatWindow.propTypes = {
     delPanelStyle: ViewPropTypes.style,
     delPanelButtonStyle: ViewPropTypes.style,
     flatListProps: PropTypes.object,
-    onLoadMore: PropTypes.func,
-    refreshing: PropTypes.bool,
 };
 
 ChatWindow.defaultProps = {
@@ -1235,6 +1235,4 @@ ChatWindow.defaultProps = {
     containerBackgroundColor: '#f5f5f5',
     showsVerticalScrollIndicator: false,
     showIsRead: false,
-    refreshing: false,
-    onLoadMore: () => {},
 };

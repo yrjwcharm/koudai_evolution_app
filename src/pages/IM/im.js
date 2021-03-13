@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:31:50
+ * @LastEditTime: 2021-03-13 15:47:43
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -12,6 +12,7 @@ import {
     Text,
     View,
     StatusBar,
+    Image,
     Keyboard,
     PermissionsAndroid,
     TouchableOpacity,
@@ -37,6 +38,7 @@ import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-p
 import _ from 'lodash';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
+import Toast from '../../components/Toast';
 const url = 'ws://192.168.88.68:39503';
 /**
  * @description:
@@ -51,6 +53,7 @@ const IM = () => {
     const [intellectList, setIntellectList] = useState([]); //智能提示列表
     const [shortCutList, setShortCutList] = useState([]); //底部快捷提问菜单
     const [modalContent, setModalContent] = useState(null); //弹窗内容
+    const [refresh, setRefresh] = useState(false);
     let token = useRef(null);
     let WS = useRef(null);
     let page = useRef(1);
@@ -60,6 +63,7 @@ const IM = () => {
     const bottomModal = useRef(null);
     useEffect(() => {
         initWebSocket();
+
         Keyboard.addListener('keyboardWillHide', clearIntelList);
     }, [initWebSocket, clearIntelList]);
     const clearIntelList = useCallback(() => {
@@ -91,6 +95,7 @@ const IM = () => {
                 _uid.current = data.result.uid;
                 token.current = data.result.token;
                 WS.current.send(handleMsgParams('LIR', 'loign'));
+                console.log(handleMsgParams('LIR', 'loign'));
             });
             console.log('WebSocket:', 'connect to server');
         };
@@ -105,7 +110,9 @@ const IM = () => {
                     if (_data.data.code == 20000) {
                         WS.current.send(handleMsgParams('LMR', {page: 1}));
                         WS.current.send(handleMsgParams('QMR', {question_id: 0}));
-                        _data.data.questions && setShortCutList(_data.data.questions);
+                        _data.data.result.questions && setShortCutList(_data.data.result.questions);
+                    } else {
+                        Toast.show(_data.data.message);
                     }
                     break;
                 //发送消息回馈
@@ -116,7 +123,7 @@ const IM = () => {
                 case 'VMA':
                 case 'AMA':
                     if (_data.data) {
-                        handleMessage(_data.data);
+                        handleMessage(_data);
                     } else {
                         // checkStatus(_data.cmid, 1);
                     }
@@ -124,16 +131,17 @@ const IM = () => {
                 //收到问题列表
                 case 'QMA':
                     if (_data.data) {
-                        handleMessage(_data, 'Question');
+                        handleMessage(_data);
                     } else {
                         // checkStatus(_data.cmid, 1);
                     }
                     break;
                 //收到历史信息
                 case 'LMA':
+                    setRefresh(false);
                     if (_data.data.code == 20000) {
-                        if (_data.data.data.length > 0) {
-                            handleMessage(_data.data.data);
+                        if (_data.data.result.messages.length > 0) {
+                            handleMessage(_data.data.result.messages);
                         }
                     }
                     break;
@@ -143,8 +151,8 @@ const IM = () => {
                     break;
                 //直接是问题答案
                 case 'BMA':
-                    if (_data.data && _data.data.length > 0) {
-                        handleMessage(_data, 'textButton');
+                    if (_data.data) {
+                        handleMessage(_data);
                     } else {
                         // checkStatus(_data.cmid, 1);
                     }
@@ -153,7 +161,13 @@ const IM = () => {
                 //接收到图片
                 case 'IMN':
                     if (_data.data) {
-                        handleMessage(_data, 'image');
+                        handleMessage(_data);
+                    }
+                    break;
+                //接收到文章
+                case 'AMN':
+                    if (_data.data) {
+                        handleMessage(_data);
                     }
                     break;
             }
@@ -172,13 +186,38 @@ const IM = () => {
         };
     }, [handleMessage, handleMsgParams, reconnect]);
     const handleMessage = useCallback((message, messageType, isInverted) => {
+        const getType = (cmd) => {
+            switch (cmd) {
+                case 'IMN':
+                case 'IMR':
+                    return 'image';
+                case 'BMA':
+                    return 'textButton';
+                case 'AMN':
+                    return 'article';
+                case 'QMA':
+                    return 'Question';
+                default:
+                    return 'text';
+            }
+        };
         let _mes = [];
+        //获取图片宽高
+        const getImageWH = (uri) => {
+            let data = {};
+            Image.getSize(uri, (w, h) => {
+                data.width = w;
+                data.height = h;
+                data.uri = uri;
+            });
+            return data;
+        };
         if (Array.isArray(message)) {
             message.forEach((item) => {
                 _mes.push({
                     id: item.cmid,
-                    type: item.cmd == 'BMA' ? 'textButton' : 'text',
-                    content: item.data,
+                    type: getType(item.cmd),
+                    content: getType(item.cmd) == 'image' ? getImageWH(item.data.uri) : item.data,
                     targetId: `${item.from}`,
                     renderTime: true,
                     sendStatus: item.hasOwnProperty('sendStatus') ? item.sendStatus : 1,
@@ -194,8 +233,8 @@ const IM = () => {
             _mes = [
                 {
                     id: message.cmid,
-                    type: messageType || 'text',
-                    content: message.data,
+                    type: getType(message.cmd),
+                    content: getType(message.cmd) == 'image' ? getImageWH(message.data.uri) : message.data,
                     targetId: `${message.from}`,
                     renderTime: true,
                     sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
@@ -232,6 +271,7 @@ const IM = () => {
         handleMessage({
             cmid: randomMsgId(cmd || 'TMR'),
             data: content,
+            cmd,
             from: uid,
             to: 'S',
             type,
@@ -256,6 +296,19 @@ const IM = () => {
             console.log('WebSocket:', 'connect not open to send message');
         }
     };
+    //问题解决 未解决
+    const submitQues = (status, question_id, id) => {
+        wsSend('SMR', {status, question_id});
+        console.log(id, messages, '123');
+        let copyMes = [...messages];
+        copyMes.forEach((item) => {
+            if (item.id == id) {
+                item.content.result.status = status;
+            }
+        });
+        setMessages(copyMes);
+        bottomModal.current.hide();
+    };
     const showPop = (content) => {
         setModalContent(content);
         bottomModal.current.show();
@@ -279,6 +332,9 @@ const IM = () => {
         [randomMsgId]
     );
     const loadHistory = () => {
+        console.log('loadHistory');
+        setRefresh(true);
+        console.log(handleMsgParams('LMR'));
         WS.current.send(handleMsgParams('LMR', {page: page.current++}));
     };
     //转换时间20210312115002
@@ -332,7 +388,14 @@ const IM = () => {
                 } else if (response.customButton) {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
-                    console.log('123');
+                    sendMessage(
+                        'image',
+                        {
+                            uri: response.uri,
+                        },
+                        null,
+                        'IMR'
+                    );
                     // this.uploadImage(response);
                 }
             });
@@ -377,7 +440,7 @@ const IM = () => {
     };
     const renderShortCutList = () => {
         return shortCutList.length > 0 ? (
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal={true} keyboardShouldPersistTaps="handled" showsHorizontalScrollIndicator={false}>
                 <View
                     style={{
                         paddingHorizontal: px(14),
@@ -393,6 +456,7 @@ const IM = () => {
                             style={styles.shortCutItem}
                             onPress={() => {
                                 sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id});
+                                Keyboard.dismiss();
                             }}>
                             <Text style={{fontSize: 12, color: '#545968'}}>{item.question}</Text>
                         </TouchableOpacity>
@@ -424,6 +488,8 @@ const IM = () => {
         ) : null;
     };
     const renderTextButton = ({isOpen, isSelf, message}) => {
+        var id = message.id;
+        message = message?.content;
         return (
             <View style={{flexDirection: 'row'}}>
                 <View style={[styles.triangle, styles.left_triangle]} />
@@ -435,9 +501,9 @@ const IM = () => {
                     }}>
                     <View style={{paddingHorizontal: px(12)}}>
                         <Text style={{fontSize: px(14), lineHeight: px(20), marginVertical: px(16)}} numberOfLines={8}>
-                            {message?.content?.answer}
+                            {message?.answer}
                         </Text>
-                        {message?.content?.hasOwnProperty('expanded') && message?.content?.expanded == false ? (
+                        {message?.hasOwnProperty('expanded') && message?.expanded == false ? (
                             <View
                                 style={{
                                     paddingVertical: px(14),
@@ -445,45 +511,86 @@ const IM = () => {
                                     borderTopColor: '#E2E4EA',
                                     borderTopWidth: 0.5,
                                 }}>
-                                <View style={[Style.flexBetween]}>
-                                    <Text style={styles.sm_text}>
-                                        {message?.content?.status == 0 ? ' 该问题未解决' : '该问题已解决'}
-                                    </Text>
+                                <View style={Style.flexBetween}>
+                                    {message?.status !== -1 ? (
+                                        <Text style={styles.sm_text}>
+                                            {message?.status == 0 ? ' 该问题未解决' : '该问题已解决'}
+                                        </Text>
+                                    ) : (
+                                        <Text />
+                                    )}
                                     <Text
                                         onPress={() => {
-                                            showPop({title: message?.content?.head, content: message?.content?.answer});
+                                            showPop({...message, id});
                                         }}
                                         style={[styles.sm_text, {color: Colors.btnColor}]}>
                                         展开全部 <FontAwesome name={'angle-down'} size={14} color={Colors.btnColor} />
                                     </Text>
                                 </View>
                             </View>
-                        ) : null}
-
-                        {message?.content?.button?.length > 0 && (
-                            <>
-                                <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
-                                    <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
-                                    <Button
-                                        title="未解决"
-                                        style={{
-                                            ...styles.button,
-                                            ...styles.lightBtn,
-                                        }}
-                                        textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
-                                    />
-                                </View>
-                                <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
-                                    还未解决？转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
-                                </Text>
-                            </>
+                        ) : (
+                            message?.buttons?.length > 0 && (
+                                <>
+                                    <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
+                                        <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
+                                        <Button
+                                            title="已解决"
+                                            style={{
+                                                ...styles.button,
+                                                ...styles.lightBtn,
+                                            }}
+                                            textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
+                                        />
+                                    </View>
+                                    <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
+                                        还未解决？转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
+                                    </Text>
+                                </>
+                            )
                         )}
                     </View>
                 </View>
             </View>
         );
     };
+    //文章
+    const renderArticle = ({isOpen, isSelf, message}) => {
+        const article = message?.content;
+        return (
+            <View style={{flexDirection: 'row'}}>
+                <View style={[styles.triangle, styles.left_triangle]} />
+                <View style={styles.article_con}>
+                    <FastImage
+                        source={{uri: article.img}}
+                        style={{width: px(60), height: px(60), borderRadius: px(4)}}
+                    />
+                    <View
+                        style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', marginLeft: px(8)}}>
+                        <Text style={{lineHeight: px(20)}} numberOfLines={2}>
+                            {article.desc}
+                        </Text>
+                        <Text
+                            numberOfLines={1}
+                            style={{fontSize: px(11), color: Colors.lightGrayColor, lineHeight: px(16)}}>
+                            {article.desc}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    };
+    const renderImageMessage = ({isOpen, isSelf, message}) => {
+        console.log('图片111');
+        return message.content.uri ? (
+            <FastImage
+                resizeMode={FastImage.resizeMode.contain}
+                style={{width: 100, height: 100}}
+                source={{uri: message.content.uri}}
+            />
+        ) : null;
+    };
     const renderQuestionMessage = ({isOpen, isSelf, message}) => {
+        message = message.content.result;
         return (
             <View style={{flexDirection: 'row'}}>
                 <View style={[styles.triangle, styles.left_triangle]} />
@@ -494,14 +601,14 @@ const IM = () => {
                         borderRadius: px(4),
                     }}>
                     <View style={{paddingHorizontal: px(12)}}>
-                        {message?.content?.head ? (
+                        {message?.head ? (
                             <View style={styles.card_head}>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12), lineHeight: px(17)}}>
-                                    {message?.content?.head}
+                                    {message?.head}
                                 </Text>
                             </View>
                         ) : null}
-                        {message?.content?.questions?.map((item, index) => (
+                        {message?.questions?.map((item, index) => (
                             <TouchableHighlight
                                 key={index}
                                 underlayColor="#eee"
@@ -541,7 +648,10 @@ const IM = () => {
     console.log(messages);
     return (
         <View style={{flex: 1}}>
-            <BottomModal style={{height: px(442)}} ref={bottomModal} title={modalContent?.title}>
+            <BottomModal
+                style={{height: px(442), backgroundColor: '#fff'}}
+                ref={bottomModal}
+                title={modalContent?.head}>
                 <ScrollView style={{flex: 1}}>
                     <View
                         style={{
@@ -550,22 +660,36 @@ const IM = () => {
                             paddingBottom: isIphoneX() ? 34 : px(20),
                         }}>
                         <Text style={{fontSize: px(13), color: Colors.lightBlackColor, lineHeight: px(20)}}>
-                            {modalContent?.content}
+                            {modalContent?.answer_ori}
                         </Text>
-                        <View style={[Style.flexRowCenter, {marginTop: px(30), marginBottom: px(16)}]}>
-                            <Button title="未解决" style={styles.button} textStyle={{fontSize: px(12)}} />
-                            <Button
-                                title="未解决"
-                                style={{
-                                    ...styles.button,
-                                    ...styles.lightBtn,
-                                }}
-                                textStyle={{color: Colors.lightGrayColor, fontSize: px(12)}}
-                            />
-                        </View>
-                        <Text style={styles.sm_text}>
-                            以上问题都没有，请转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
-                        </Text>
+                        {modalContent?.buttons ? (
+                            <>
+                                <View style={[Style.flexRowCenter, {marginTop: px(30), marginBottom: px(16)}]}>
+                                    <Button
+                                        title={'未解决'}
+                                        onPress={() => {
+                                            submitQues(0, modalContent.question_id, modalContent.id);
+                                        }}
+                                        style={{...styles.button}}
+                                        textStyle={{fontSize: px(12)}}
+                                    />
+                                    <Button
+                                        title={'已解决'}
+                                        style={{
+                                            ...styles.button,
+                                            ...styles.lightBtn,
+                                        }}
+                                        onPress={() => {
+                                            submitQues(1, modalContent.question_id, modalContent.id);
+                                        }}
+                                        textStyle={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                    />
+                                </View>
+                                <Text style={styles.sm_text}>
+                                    以上问题都没有，请转<Text style={{color: Colors.btnColor}}>投资顾问</Text>
+                                </Text>
+                            </>
+                        ) : null}
                     </View>
                 </ScrollView>
             </BottomModal>
@@ -581,7 +705,8 @@ const IM = () => {
                 usePopView={true} //长按消息选项
                 useVoice={false} //关闭语音
                 headerHeight={headerHeight}
-                onLoadMore={loadHistory}
+                loadHistory={loadHistory}
+                CustomImageComponent={FastImage}
                 intellectList={renderIntelList}
                 showUserName={true}
                 chatType={'group'}
@@ -589,7 +714,9 @@ const IM = () => {
                 shortCutList={renderShortCutList}
                 renderQuestionMessage={renderQuestionMessage}
                 renderTextButton={renderTextButton}
+                renderArticle={renderArticle}
                 panelSource={[{text: '相册', icon: require('../../assets/img/photo.png')}]}
+                // renderImageMessage={renderImageMessage}
                 textOnChange={_.debounce((text) => {
                     wsSend('DMR', text);
                 }, 500)}
@@ -599,7 +726,7 @@ const IM = () => {
                 }}
                 rightMessageTextStyle={styles.text}
                 leftMessageTextStyle={styles.text}
-                userNameStyle={{marginBottom: px(4)}}
+                userNameStyle={{marginBottom: px(6)}}
                 rightMessageBackground={'#CEE3FE'}
                 renderPanelRow={(item, index) => (
                     <TouchableOpacity
@@ -689,5 +816,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderColor: '#E2E4EA',
         borderWidth: 0.5,
+    },
+    article_con: {
+        backgroundColor: '#fff',
+        width: px(238),
+        borderRadius: px(4),
+        padding: px(8),
+        flexDirection: 'row',
     },
 });

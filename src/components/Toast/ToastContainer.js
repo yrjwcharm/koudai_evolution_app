@@ -58,6 +58,7 @@ let styles = StyleSheet.create({
         fontSize: px(16),
         color: '#fff',
         textAlign: 'center',
+        lineHeight: px(24),
     },
 });
 

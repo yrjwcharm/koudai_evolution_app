@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:07:48
+ * @LastEditTime: 2021-03-12 17:23:15
  * @Description:点赞模块
  */
 
@@ -13,14 +13,22 @@ import FastImage from 'react-native-fast-image';
 import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 export default function Praise(props) {
-    const {style, comment} = props;
+    const {style, comment, type = ''} = props;
     const [like, setLike] = useState(comment.favor_status);
     const [num, setNum] = useState(comment.favor_num);
     const postLike = useCallback(
         (_like) => {
-            http.get('/comment/like/20210101', {id: comment.id, favor: _like});
+            if (type == 'article') {
+                http.post('/community/favor/20210101', {
+                    resource_id: comment.id,
+                    action_type: _like,
+                    resource_cate: type,
+                });
+            } else {
+                http.post('/comment/like/20210101', {id: comment.id, favor: _like});
+            }
         },
-        [comment.id]
+        [comment.id, type]
     );
     const press = () => {
         console.log(comment);

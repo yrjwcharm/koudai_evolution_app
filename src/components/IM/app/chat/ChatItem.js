@@ -13,7 +13,7 @@ const PATTERNS = {
     emoji: new RegExp('\\/\\{[a-zA-Z_]{1,14}\\}'),
 };
 
-export default class ChatItem extends PureComponent {
+export default class ChatItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -297,6 +297,11 @@ export default class ChatItem extends PureComponent {
                 return (
                     this.props.renderTextButton &&
                     this.props.renderTextButton({isOpen, isSelf, message, index: parseInt(rowId)})
+                );
+            case 'article':
+                return (
+                    this.props.renderArticle &&
+                    this.props.renderArticle({isOpen, isSelf, message, index: parseInt(rowId)})
                 );
         }
     };
