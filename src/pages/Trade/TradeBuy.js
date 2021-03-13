@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:40:51
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 17:37:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -174,7 +174,7 @@ class TradeBuy extends Component {
 
                     this.need_buy = true;
                 },
-                cancleCallBack: () => {
+                cancelCallBack: () => {
                     this.passwordModal.show();
 
                     this.need_buy = false;
@@ -427,9 +427,6 @@ class TradeBuy extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={this.submit}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                 />
                 <Text style={styles.title}>{title}</Text>
                 {buy_info ? (
@@ -478,9 +475,6 @@ class TradeBuy extends Component {
                 )}
                 <BankCardModal
                     data={pay_methods || []}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                     select={0}
                     ref={(ref) => {
                         this.bankCard = ref;

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 19:24:53
+ * @LastEditTime: 2021-03-12 17:42:28
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -14,7 +14,6 @@ import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Radio from '../../components/Radio';
-import Mask from '../../components/Mask';
 import http from '../../services';
 import Toast from '../../components/Toast';
 class MfbOut extends Component {
@@ -24,7 +23,6 @@ class MfbOut extends Component {
             data: '',
             amount: '',
             password: '',
-            showMask: false,
             bankSelect: 0,
             check: [],
             selectData: {},
@@ -101,7 +99,6 @@ class MfbOut extends Component {
     };
     submit = () => {
         this.passwordModal.show();
-        this.setState({showMask: true});
     };
     allAmount = () => {
         //optionChoose==1快速提现
@@ -127,9 +124,6 @@ class MfbOut extends Component {
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
-        this.setState({
-            showMask: true,
-        });
     };
     radioChange(index, type) {
         let check = this.state.check;
@@ -210,9 +204,6 @@ class MfbOut extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={(password) => this.submitData(password)}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                 />
                 {this.render_bank()}
                 <View style={styles.buyCon}>
@@ -241,9 +232,6 @@ class MfbOut extends Component {
                 {this.render_Radio()}
                 <BankCardModal
                     data={pay_methods || []}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
@@ -302,7 +290,7 @@ class MfbOut extends Component {
         );
     }
     render() {
-        const {showMask, data, enable} = this.state;
+        const {data, enable} = this.state;
         const {button, withdraw_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
@@ -311,7 +299,6 @@ class MfbOut extends Component {
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
-                {showMask && <Mask />}
             </View>
         );
     }

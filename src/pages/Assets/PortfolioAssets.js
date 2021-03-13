@@ -3,16 +3,16 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 14:27:19
+ * @LastEditTime: 2021-03-12 15:26:14
  */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {baseLineChart} from '../Portfolio/components/ChartOption';
+import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomDesc from '../../components/BottomDesc';
@@ -23,6 +23,7 @@ import storage from '../../utils/storage';
 import FitImage from 'react-native-fit-image';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 
@@ -34,16 +35,14 @@ export default function PortfolioAssets(props) {
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
     const [period, setPeriod] = useState('m1');
-    const [chartData, setChartData] = useState();
+    const _textTime = useRef(null);
+    const _textPortfolio = useRef(null);
+    const _textBenchmark = useRef(null);
     const jump = useJump();
     var _l;
     const changeTab = (period) => {
         setPeriod(period);
     };
-
-    useEffect(() => {
-        init();
-    }, []);
     const init = useCallback(() => {
         Http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
@@ -66,15 +65,60 @@ export default function PortfolioAssets(props) {
         }).then((res) => {
             setCard(res.result);
         });
+    }, [props.route.params]);
+    const getChartInfo = useCallback(() => {
         Http.get('/position/chart/20210101', {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
             setChart(res.result);
-            setChartData(res.result.chart);
         });
     }, [period]);
-
+    useFocusEffect(
+        useCallback(() => {
+            init();
+            getChartInfo();
+        }, [init, getChartInfo])
+    );
+    // 图表滑动legend变化
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
+    // 图表滑动结束
+    const onHide = ({items}) => {
+        _textTime.current.setNativeProps({text: chart?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: chart?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(chart?.label[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: chart?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
+        });
+    };
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.toString().replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.toString().replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
             setShowEye(!show);
@@ -84,23 +128,22 @@ export default function PortfolioAssets(props) {
     const jumpTo = (url) => {
         props.navigation.navigate(url);
     };
-    const accountJump = (url, type, popup) => {
-        if (type == 'buy') {
-            props.navigation.navigate(url.path, url.params);
-        } else if (type == 'redeem') {
-            Modal.show({
-                title: popup?.title || '提示',
-                content: popup?.content || '确认赎回？',
-                confirm: true,
-                cancelText: popup?.confirm?.text || '再想一想',
-                confirmText: popup?.cancel?.text || '确认赎回',
-                confirmCallBack: () => {
-                    props.navigation.navigate(url.path, url.params);
-                },
-            });
-        } else if (type == 'adjust') {
-            props.navigation.navigate(url.path, url.params);
-        }
+    const accountJump = (url, type) => {
+        Http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
+            if (res.result) {
+                Modal.show({
+                    title: res.result?.title || '提示',
+                    content: res.result?.content || '确认赎回？',
+                    confirm: true,
+                    cancelText: res.result?.button_list[0]?.text || '确认赎回',
+                    confirmText: res.result?.button_list[1]?.text || '再想一想',
+                    cancelCallBack: () => jump(res?.result?.button_list[0]?.url || url),
+                    confirmCallBack: () => jump(res?.result?.button_list[1]?.url || url),
+                });
+            } else {
+                jump(url);
+            }
+        });
     };
     const renderBtn = () => {
         return (
@@ -117,7 +160,7 @@ export default function PortfolioAssets(props) {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
-                                onPress={() => accountJump(_button.url, _button.action, _button.popup)}
+                                onPress={() => accountJump(_button.url, _button.action)}
                                 disabled={_button.avail == 0}
                                 activeOpacity={1}
                                 style={{
@@ -152,46 +195,76 @@ export default function PortfolioAssets(props) {
                 <Text style={styles.title_sty}>{chart?.title}</Text>
                 <View
                     style={{
-                        height: 280,
+                        height: 300,
                         backgroundColor: '#fff',
-                        paddingVertical: text(20),
-                        paddingBottom: text(10),
                         borderRadius: text(10),
+                        paddingTop: text(16),
+                        paddingBottom: text(10),
                     }}>
                     <View style={[Style.flexRow]}>
                         <View style={styles.legend_sty}>
-                            <Text style={styles.legend_title_sty}>{chart.label[0].val}</Text>
-                            <Text style={styles.legend_desc_sty}>{chart.label[0].name}</Text>
+                            <TextInput
+                                ref={_textTime}
+                                style={styles.legend_title_sty}
+                                defaultValue={chart?.label[0]?.val}
+                                editable={false}
+                            />
+                            <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
                         </View>
                         <View style={styles.legend_sty}>
-                            <Text style={[styles.legend_title_sty, {color: '#E74949'}]}>{chart.label[1].val}</Text>
+                            <TextInput
+                                style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
+                                ref={_textPortfolio}
+                                defaultValue={chart?.label[1]?.val}
+                                editable={false}
+                            />
                             <Text>
                                 <MaterialCommunityIcons name={'record-circle-outline'} color={'#E74949'} size={12} />
-                                <Text style={styles.legend_desc_sty}>{chart.label[1].name}</Text>
+                                <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
                             </Text>
                         </View>
                         <View style={styles.legend_sty}>
-                            <Text style={styles.legend_title_sty}>{chart.label[2].val}</Text>
+                            <TextInput
+                                style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
+                                ref={_textBenchmark}
+                                defaultValue={chart?.label[2]?.val}
+                                editable={false}
+                            />
                             <Text>
                                 <MaterialCommunityIcons name={'record-circle-outline'} color={'#545968'} size={12} />
-                                <Text style={styles.legend_desc_sty}>{chart.label[2].name}</Text>
+                                <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                             </Text>
                         </View>
                     </View>
-                    <Chart initScript={baseLineChart(chartData, [Colors.red], true)} />
-                    <View style={styles.chart_list_sty}>
-                        {chart.sub_tabs.map((_item, _index) => {
+                    <Chart
+                        initScript={baseAreaChart(
+                            chart?.chart,
+                            [Colors.red, Colors.lightBlackColor, 'transparent'],
+                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                            true
+                        )}
+                        onChange={onChartChange}
+                        data={chart?.chart}
+                        onHide={onHide}
+                        style={{width: '100%'}}
+                    />
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            height: 50,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginHorizontal: 20,
+                        }}>
+                        {chart?.sub_tabs?.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
-                                    key={_index + '_item2'}
                                     style={[
                                         styles.btn_sty,
-                                        {
-                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
-                                            marginRight: _index != chart.sub_tabs.length - 1 ? text(10) : 0,
-                                        },
+                                        {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
                                     ]}
-                                    onPress={() => changeTab(_item.val)}>
+                                    key={_index}
+                                    onPress={() => changeTab(_item.val, _item.type)}>
                                     <Text
                                         style={{
                                             color: period == _item.val ? '#0051CC' : '#555B6C',
@@ -514,6 +587,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(8),
         paddingVertical: text(5),
         borderRadius: text(12),
+        marginRight: text(10),
     },
     title_sty: {
         color: '#1F2432',

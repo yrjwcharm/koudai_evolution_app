@@ -16,7 +16,7 @@ import * as Animatable from 'react-native-animatable';
  * @param {?JSX} customTitleView 可选，自定义title样式（包括居中和底部弹框），若该属性有值，会覆盖默认样式，当需要自定义按钮点击功能时可以用这个，
  * @param {?JSX} customBottomView 可选，自定义底部样式（包括居中和底部弹框），若该属性有值，会覆盖默认样式，当需要自定义按钮点击功能时可以用这个，
  * @param {Function} confirmCallBack //确认的回掉函数
- * @param {Function} cancleCallBack //取消的回掉函数
+ * @param {Function} cancelCallBack //取消的回掉函数
  */
 const modalWidth = 260;
 export default class MyModal extends Component {
@@ -49,10 +49,10 @@ export default class MyModal extends Component {
             this.props.destroy();
         }
     }
-    cancle() {
+    cancel() {
         this.setModalVisiable(false);
         setTimeout(() => {
-            this.props.cancleCallBack && this.props.cancleCallBack();
+            this.props.cancelCallBack && this.props.cancelCallBack();
         }, 100);
     }
     confirm() {
@@ -106,7 +106,7 @@ export default class MyModal extends Component {
                                 <View style={styles.centerBottomBtns}>
                                     <TouchableOpacity
                                         style={[styles.centerBtn, Style.flexCenter]}
-                                        onPress={this.cancle.bind(this)}>
+                                        onPress={this.cancel.bind(this)}>
                                         <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
                                             {this.cancelText}
                                         </Text>

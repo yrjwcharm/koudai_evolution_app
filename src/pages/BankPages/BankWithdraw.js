@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 11:39:51
+ * @LastEditTime: 2021-03-12 17:39:36
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -16,17 +16,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
-import Mask from '../../components/Mask';
 
 export default function BankWithdraw({navigation, route}) {
     const [data, setData] = useState({});
-    const [showMask, setShowMask] = useState(false);
     const passwordModal = useRef(null);
 
     const submitData = () => {};
     const passwordInput = () => {
         passwordModal.current.show();
-        setShowMask(true);
     };
     useEffect(() => {
         Http.get('trade/bank/withdraw/info/20210101', {
@@ -87,14 +84,7 @@ export default function BankWithdraw({navigation, route}) {
                         </View>
                     </View>
                     <Text style={styles.tips_sty}>{data.notice}</Text>
-                    <PasswordModal
-                        ref={passwordModal}
-                        onDone={submitData}
-                        onClose={() => {
-                            setShowMask(false);
-                        }}
-                    />
-                    {showMask && <Mask />}
+                    <PasswordModal ref={passwordModal} onDone={submitData} />
                     <FixedButton title={data.button.text} onPress={passwordInput} disabled={data.button.avail == 0} />
                 </View>
             )}

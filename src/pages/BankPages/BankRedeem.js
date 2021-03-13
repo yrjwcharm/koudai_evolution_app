@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 11:39:44
+ * @LastEditTime: 2021-03-12 17:40:22
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -14,7 +14,6 @@ import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Radio from '../../components/Radio';
-import Mask from '../../components/Mask';
 import http from '../../services';
 import Toast from '../../components/Toast';
 class BankRedeem extends Component {
@@ -24,7 +23,6 @@ class BankRedeem extends Component {
             data: '',
             amount: '',
             password: '',
-            showMask: false,
             tips: '',
             enable: false,
             items: [],
@@ -65,7 +63,6 @@ class BankRedeem extends Component {
     };
     submit = () => {
         this.passwordModal.show();
-        this.setState({showMask: true});
     };
     allAmount = () => {
         this.setState({
@@ -103,9 +100,6 @@ class BankRedeem extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={(password) => this.submitData(password)}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                 />
                 <View style={[Style.flexBetween, {paddingHorizontal: px(16), padding: px(12)}]}>
                     <Text style={Style.descSty}>
@@ -154,7 +148,7 @@ class BankRedeem extends Component {
     }
 
     render() {
-        const {showMask, data, enable} = this.state;
+        const {data, enable} = this.state;
         const {button} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
@@ -162,7 +156,6 @@ class BankRedeem extends Component {
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
-                {showMask && <Mask />}
             </View>
         );
     }

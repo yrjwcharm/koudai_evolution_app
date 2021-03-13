@@ -13,11 +13,9 @@ import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import {Modal} from '../../components/Modal';
 // import {PasswordModal} from '../../components/Password';
-// import Mask from '../../components/Mask';
 export default function PrivateRedeem({route, navigation}) {
     const [data, setData] = useState({});
     const [amount, setAmount] = useState('');
-    // const [showMask, setShowMask] = useState(false);
     const passwordModal = useRef(null);
     useEffect(() => {
         console.log(navigation);
@@ -52,7 +50,6 @@ export default function PrivateRedeem({route, navigation}) {
     };
     //  const submit = () => {
     //     passwordModal.current.show();
-    //     setShowMask(true)
     //   };
     return (
         <>
@@ -111,11 +108,8 @@ export default function PrivateRedeem({route, navigation}) {
                             this.passwordModal = ref;
                         }}
                         onDone={(password) => this.submitData(password)}
-                        onClose={() => {
-                            setShowMask(false);
-                        }}
                     />
-                    {showMask && <Mask />} */}
+                   */}
                     <FixedButton
                         title={data.share.button.text}
                         style={styles.btn_sty}

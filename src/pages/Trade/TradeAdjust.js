@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 16:58:47
+ * @LastEditTime: 2021-03-12 17:45:23
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -17,7 +17,6 @@ import BottomDesc from '../../components/BottomDesc';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
-import Mask from '../../components/Mask';
 import Toast from '../../components/Toast';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default class TradeAdjust extends Component {
@@ -27,7 +26,6 @@ export default class TradeAdjust extends Component {
             toggle: [true, false],
             password: '',
             data: {},
-            showMask: false,
             poid: this.props?.route?.params?.poid,
             mode: this.props?.route?.params?.mode || 0,
         };
@@ -77,7 +75,6 @@ export default class TradeAdjust extends Component {
     };
     passwordInput = () => {
         this.passwordModal.show();
-        this.setState({showMask: true});
     };
     render() {
         const {toggle, data} = this.state;
@@ -255,15 +252,11 @@ export default class TradeAdjust extends Component {
                                 this.passwordModal = ref;
                             }}
                             onDone={this.submit}
-                            onClose={() => {
-                                this.setState({showMask: false});
-                            }}
                         />
                         <View style={{margin: Space.marginAlign}}>
                             <Html html={data?.fee_desc} style={styles.tips_sty} />
                         </View>
                         <BottomDesc />
-                        {this.state.showMask && <Mask />}
                     </ScrollView>
                 )}
                 <FixedButton title="确认调仓" onPress={this.confirmBtn} />

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-05 18:48:54
+ * @LastEditTime: 2021-03-12 17:41:56
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
-import Mask from '../../components/Mask';
 import http from '../../services';
 class MfbIn extends Component {
     constructor(props) {
@@ -22,7 +21,6 @@ class MfbIn extends Component {
             data: '',
             amount: '',
             password: '',
-            showMask: false,
             bankSelect: 0,
             tips: '',
             enable: false,
@@ -79,7 +77,6 @@ class MfbIn extends Component {
     };
     submit = () => {
         this.passwordModal.show();
-        this.setState({showMask: true});
     };
     //清空输入框
     clearInput = () => {
@@ -88,8 +85,6 @@ class MfbIn extends Component {
     //切换银行卡
     changeBankCard = () => {
         this.bankCard.show();
-
-        this.setState({showMask: true});
     };
     submitData = (password) => {
         const {bankSelect, data, code} = this.state;
@@ -194,9 +189,6 @@ class MfbIn extends Component {
                         this.passwordModal = ref;
                     }}
                     onDone={(password) => this.submitData(password)}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                 />
                 <Text style={styles.title}>魔方宝</Text>
                 <View style={styles.buyCon}>
@@ -231,9 +223,6 @@ class MfbIn extends Component {
                 </Text>
                 <BankCardModal
                     data={pay_methods || []}
-                    onClose={() => {
-                        this.setState({showMask: false});
-                    }}
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
@@ -246,7 +235,7 @@ class MfbIn extends Component {
     }
 
     render() {
-        const {showMask, data, enable} = this.state;
+        const {data, enable} = this.state;
         const {button, recharge_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
@@ -254,7 +243,6 @@ class MfbIn extends Component {
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
-                {showMask && <Mask />}
             </View>
         );
     }

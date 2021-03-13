@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 11:39:42
+ * @LastEditTime: 2021-03-12 17:48:07
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -16,12 +16,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
 import Icon from 'react-native-vector-icons/AntDesign';
-import Mask from '../../components/Mask';
 
 export default function TransferAccount({navigation}) {
     const [data, setData] = useState({});
     const [show, setShow] = useState(false);
-    const [mask, setMask] = useState(false);
     const passwordModal = useRef(null);
     const toggle = () => {
         setShow(!show);
@@ -33,7 +31,6 @@ export default function TransferAccount({navigation}) {
     }, [navigation]);
     const passwordInput = () => {
         passwordModal.current.show();
-        setMask(true);
     };
     const submit = () => {};
     return (
@@ -161,14 +158,7 @@ export default function TransferAccount({navigation}) {
                     </View>
                 </ScrollView>
             )}
-            <PasswordModal
-                ref={passwordModal}
-                onDone={submit}
-                onClose={() => {
-                    setMask(false);
-                }}
-            />
-            {mask && <Mask />}
+            <PasswordModal ref={passwordModal} onDone={submit} />
             {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={passwordInput} />}
         </>
     );

@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 13:59:29
+ * @LastEditTime: 2021-03-12 17:59:55
  * @Description: 体验金首页
  */
 
@@ -20,15 +20,16 @@ import {Button} from '../../components/Button';
 import {BottomModal} from '../../components/Modal';
 import HTML from '../../components/RenderHtml';
 import Header from '../../components/NavBar';
+import {useJump} from '../../components/hooks';
 
 const ExperienceGold = ({navigation}) => {
     const insets = useSafeAreaInsets();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const bottomModal = useRef(null);
+    const Jump = useJump();
 
     const init = useCallback(() => {
-        console.log('refresh');
         setRefreshing(false);
     }, []);
     const getColor = useCallback((t) => {
@@ -64,7 +65,7 @@ const ExperienceGold = ({navigation}) => {
     return (
         <>
             <Header
-                title={data.title || '理财魔方体验金'}
+                title={data?.title || '理财魔方体验金'}
                 leftIcon="chevron-left"
                 rightText={'规则说明'}
                 rightPress={() => rightPress()}
@@ -90,9 +91,11 @@ const ExperienceGold = ({navigation}) => {
                         </View>
                         <Text style={[styles.title, {marginBottom: text(10)}]}>{data?.part1?.title}</Text>
                         <Text style={[styles.num]}>{data.part1?.money}</Text>
-                        <View style={styles.profitBox}>
-                            <Text style={styles.profitText}>{data?.part1?.income_yesterday}</Text>
-                        </View>
+                        {data?.part1?.income_yesterday && (
+                            <View style={styles.profitBox}>
+                                <Text style={styles.profitText}>{data?.part1?.income_yesterday}</Text>
+                            </View>
+                        )}
                         <View style={[Style.flexBetween, styles.items]}>
                             {data?.part1?.label?.map((_item, _index) => {
                                 return (
@@ -112,14 +115,17 @@ const ExperienceGold = ({navigation}) => {
                                 );
                             })}
                         </View>
-                        <Text style={[styles.noticeText, styles.expireText]}>{'2020.06.20 过期'}</Text>
-                        <Button
-                            title={'立即使用'}
-                            disabled={false}
-                            color={'#D7AF74'}
-                            style={styles.useBtn}
-                            textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
-                        />
+                        <Text style={[styles.noticeText, styles.expireText]}>{data?.part1?.expire}</Text>
+                        {data?.part1?.button?.title && (
+                            <Button
+                                title={data?.part1?.button?.title}
+                                disabled={false}
+                                color={'#D7AF74'}
+                                style={styles.useBtn}
+                                textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
+                                onPress={() => Jump(data?.part1?.button?.url)}
+                            />
+                        )}
                     </View>
 
                     {data?.part1?.content && (
@@ -139,6 +145,7 @@ const ExperienceGold = ({navigation}) => {
                                     <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
                                 </TouchableOpacity>
                                 <Button
+                                    onPress={() => Jump(data?.part1?.cashout_button?.url)}
                                     title={data?.part1?.cashout_button?.title}
                                     disabled={true}
                                     disabledColor={'#F2F2F2'}
@@ -151,32 +158,42 @@ const ExperienceGold = ({navigation}) => {
                         </View>
                     )}
                     {/* 未购买稳健组合后展示的样式 */}
-                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{'推荐组合'}</Text>
-                    {data.part2?.portfolios.map((_item, _index) => {
+                    {data.part2?.cards && (
+                        <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{data?.part2?.title}</Text>
+                    )}
+                    {data.part2?.cards?.map((_item, _index) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={[Style.flexBetween, styles.productBox]}
-                                key={_index + '_i'}>
+                                key={_index + '_i'}
+                                onPress={() => Jump(_item.url)}>
                                 <View style={{flex: 1}}>
-                                    <Text style={styles.title}>
+                                    <View style={[styles.title, Style.flexRow]}>
                                         <Text style={{fontWeight: '500'}}>{_item.name}</Text>
-                                        <Text style={{fontSize: Font.textH3, color: Colors.descColor}}>
-                                            {'| 无惧黑天鹅，安心增值必备'}
+                                        <Text
+                                            style={{
+                                                fontSize: Font.textH3,
+                                                color: Colors.descColor,
+                                                marginLeft: text(5),
+                                            }}>
+                                            {_item.desc}
                                         </Text>
-                                    </Text>
+                                    </View>
                                     <View style={[Style.flexRow, styles.yieldBox]}>
                                         <Text style={[styles.yieldVal, {marginRight: text(5)}]}>
-                                            <Text>{'6.41'}</Text>
+                                            <Text>{_item.ratio}</Text>
                                             <Text style={{fontSize: text(18)}}>{'%'}</Text>
                                         </Text>
                                         <Text style={[styles.yieldKey, {marginBottom: text(2)}]}>
-                                            {'过去两年年收益率'}
+                                            {_item.ratio_desc}
                                         </Text>
                                     </View>
-                                    <View style={Style.flexRow}>
-                                        <Text style={[styles.yieldKey, styles.tag]}>{'优秀固收+'}</Text>
-                                        <Text style={[styles.yieldKey, styles.tag]}>{'更先进的 量化算法'}</Text>
+
+                                    <View style={Style.flexRow} key={_index + '_item'}>
+                                        {_item?.label?.map((_label, _index) => {
+                                            return <Text style={[styles.yieldKey, styles.tag]}>{_label}</Text>;
+                                        })}
                                     </View>
                                 </View>
                                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
@@ -185,8 +202,8 @@ const ExperienceGold = ({navigation}) => {
                     })}
 
                     {/* 购买稳健组合后展示的样式 */}
-                    {data?.part2 && (
-                        <View style={[Style.flexRow, {paddingLeft: Space.padding, marginTop: text(16)}]}>
+                    {data?.part2?.portfolios && (
+                        <View style={[Style.flexRow, {paddingLeft: Space.padding}]}>
                             <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
                             <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>
                                 {data?.part2?.desc}
@@ -196,7 +213,7 @@ const ExperienceGold = ({navigation}) => {
                     {data?.part2 &&
                         data?.part2?.portfolios?.map((_p, _index, arr) => {
                             return (
-                                <View
+                                <TouchableOpacity
                                     style={[
                                         Style.flexBetween,
                                         styles.productBox,
@@ -205,7 +222,8 @@ const ExperienceGold = ({navigation}) => {
                                             marginBottom: _index === arr.length - 1 ? insets.bottom : 0,
                                         },
                                     ]}
-                                    key={_index + '_p'}>
+                                    key={_index + '_p'}
+                                    onPress={() => Jump(_p.url)}>
                                     <View style={{flex: 1}}>
                                         <Text style={[styles.title, {fontWeight: '500'}]}>{_p.name}</Text>
                                         <View style={[Style.flexBetween, {marginTop: text(8)}]}>
@@ -240,7 +258,7 @@ const ExperienceGold = ({navigation}) => {
                                         style={styles.buyBtn}
                                         textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
                                     />
-                                </View>
+                                </TouchableOpacity>
                             );
                         })}
                 </ScrollView>
@@ -346,6 +364,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(30),
         borderRadius: text(16),
         backgroundColor: '#F7F7F7',
+        marginBottom: text(20),
     },
     profitText: {
         fontSize: text(13),
@@ -353,7 +372,6 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     items: {
-        paddingTop: text(24),
         paddingBottom: text(16),
         paddingHorizontal: text(10),
         width: '100%',

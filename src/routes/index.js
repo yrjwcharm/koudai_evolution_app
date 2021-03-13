@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:16:18
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-12 17:37:47
  * @Description:路由表
  */
 import React from 'react';
@@ -129,6 +129,7 @@ import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
+import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
 
 const Stack = createStackNavigator();
 
@@ -438,6 +439,7 @@ export default function AppStack() {
                 options={{title: '理财魔方体验金'}}
             />
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
+            <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
         </Stack.Navigator>
     );
 }
