@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-13 15:47:43
+ * @LastEditTime: 2021-03-13 16:38:11
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -54,6 +54,7 @@ const IM = () => {
     const [shortCutList, setShortCutList] = useState([]); //底部快捷提问菜单
     const [modalContent, setModalContent] = useState(null); //弹窗内容
     const [refresh, setRefresh] = useState(false);
+    let _ChatScreen = useRef(null);
     let token = useRef(null);
     let WS = useRef(null);
     let page = useRef(1);
@@ -63,7 +64,6 @@ const IM = () => {
     const bottomModal = useRef(null);
     useEffect(() => {
         initWebSocket();
-
         Keyboard.addListener('keyboardWillHide', clearIntelList);
     }, [initWebSocket, clearIntelList]);
     const clearIntelList = useCallback(() => {
@@ -376,8 +376,8 @@ const IM = () => {
     //打开相册
     const openPicker = () => {
         const options = {
-            width: px(300),
-            height: px(190),
+            width: px(238),
+            height: px(300),
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
@@ -388,6 +388,7 @@ const IM = () => {
                 } else if (response.customButton) {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
+                    console.log(response);
                     sendMessage(
                         'image',
                         {
@@ -396,6 +397,9 @@ const IM = () => {
                         null,
                         'IMR'
                     );
+                    setTimeout(() => {
+                        _ChatScreen?.current?.closeAll();
+                    }, 100);
                     // this.uploadImage(response);
                 }
             });
@@ -579,16 +583,7 @@ const IM = () => {
             </View>
         );
     };
-    const renderImageMessage = ({isOpen, isSelf, message}) => {
-        console.log('图片111');
-        return message.content.uri ? (
-            <FastImage
-                resizeMode={FastImage.resizeMode.contain}
-                style={{width: 100, height: 100}}
-                source={{uri: message.content.uri}}
-            />
-        ) : null;
-    };
+
     const renderQuestionMessage = ({isOpen, isSelf, message}) => {
         message = message.content.result;
         return (
@@ -694,6 +689,7 @@ const IM = () => {
                 </ScrollView>
             </BottomModal>
             <ChatScreen
+                ref={_ChatScreen}
                 messageList={messages}
                 isIPhoneX={isIphoneX()}
                 inverted={false}

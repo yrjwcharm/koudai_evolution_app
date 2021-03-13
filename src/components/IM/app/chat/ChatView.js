@@ -25,7 +25,7 @@ import DelPanel from './del';
 const {height, width} = Dimensions.get('window');
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 let ImageComponent = Image;
-class ChatWindow extends React.Component {
+class ChatWindow extends PureComponent {
     constructor(props) {
         super(props);
         const {headerHeight, chatType, iphoneXBottomPadding, CustomImageComponent, isIPhoneX} = props;

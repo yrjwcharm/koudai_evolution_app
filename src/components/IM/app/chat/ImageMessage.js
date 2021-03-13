@@ -2,14 +2,14 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-13 15:39:10
+ * @LastEditTime: 2021-03-13 16:39:02
  * @Description:
  */
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {View, TouchableOpacity, StyleSheet, ActivityIndicator, Text} from 'react-native';
-export default class ImageMessage extends React.Component {
+import {px} from '../../../../utils/appUtil';
+export default class ImageMessage extends Component {
     render() {
-        console.log('1234');
         const {
             message,
             messageErrorIcon,
@@ -21,7 +21,7 @@ export default class ImageMessage extends React.Component {
             isReadStyle,
             ImageComponent,
         } = this.props;
-        console.log(message.content.uri);
+
         return (
             <View style={[isSelf ? styles.right : styles.left]}>
                 <TouchableOpacity
@@ -43,28 +43,30 @@ export default class ImageMessage extends React.Component {
                             message
                         );
                     }}>
-                    {message.content.uri && (
-                        <View style={{maxHeight: 300, overflow: 'hidden', borderRadius: 5}}>
+                    <View style={{borderRadius: 5}}>
+                        {message.content.uri && (
                             <ImageComponent
                                 source={{uri: message.content.uri}}
-                                // resizeMode={ImageComponent.resizeMode.contain}
+                                resizeMode={ImageComponent.resizeMode.contain}
                                 style={{
-                                    width: 300,
-                                    // height: message.content.height / (message.content.width / 100),
-                                    height: 300,
+                                    width: message.content.width,
+                                    maxWidth: px(238),
+                                    // eslint-disable-next-line radix
+                                    height:
+                                        message.content.width > px(238)
+                                            ? message.content.height / (message.content.width / px(238))
+                                            : message.content.height,
                                     borderRadius: 5,
                                 }}
                             />
+                        )}
 
-                            {showIsRead && chatType !== 'group' && isSelf && (
-                                <Text style={[{textAlign: 'right', fontSize: 13}, isReadStyle]}>
-                                    {this.props.lastReadAt && this.props.lastReadAt - message.time > 0
-                                        ? '已读'
-                                        : '未读'}
-                                </Text>
-                            )}
-                        </View>
-                    )}
+                        {showIsRead && chatType !== 'group' && isSelf && (
+                            <Text style={[{textAlign: 'right', fontSize: 13}, isReadStyle]}>
+                                {this.props.lastReadAt && this.props.lastReadAt - message.time > 0 ? '已读' : '未读'}
+                            </Text>
+                        )}
+                    </View>
                 </TouchableOpacity>
                 <View style={{alignItems: 'center', justifyContent: 'center', marginRight: 10}}>
                     {!isSelf ? null : message.sendStatus === undefined ? null : message.sendStatus === 0 ? (
