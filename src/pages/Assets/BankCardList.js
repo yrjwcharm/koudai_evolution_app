@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 10:46:38
+ * @LastEditTime: 2021-03-13 16:11:23
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -42,9 +42,7 @@ const BankCardList = ({navigation}) => {
                         <TouchableOpacity
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
-                            onPress={() =>
-                                navigation.navigate({name: 'BankCard', params: {pay_method: item.pay_method}})
-                            }>
+                            onPress={() => navigation.navigate('BankCard', {pay_method: item.pay_method})}>
                             <View style={[Style.flexRow, {flex: 1}]}>
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
@@ -60,16 +58,14 @@ const BankCardList = ({navigation}) => {
                     );
                 })}
                 {data.ym?.cards?.length > 0 && (
-                    <Text style={[styles.title, {paddingBottom: text(6)}]}>{'盈米银行卡'}</Text>
+                    <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{'盈米银行卡'}</Text>
                 )}
                 {data.ym?.cards?.map((item, index) => {
                     return (
                         <TouchableOpacity
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
-                            onPress={() =>
-                                navigation.navigate({name: 'BankCard', params: {pay_method: item.pay_method}})
-                            }>
+                            onPress={() => navigation.navigate('BankCard', {pay_method: item.pay_method})}>
                             <View style={[Style.flexRow, {flex: 1}]}>
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
@@ -89,8 +85,8 @@ const BankCardList = ({navigation}) => {
                         <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
                         <Button
                             title={'添加新银行卡'}
-                            style={[styles.btn, {marginHorizontal: text(4), marginTop: text(86)}]}
-                            onPress={() => navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})}
+                            style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}
+                            onPress={() => navigation.navigate('AddBankCard', {action: 'add'})}
                         />
                     </>
                 ) : null}
@@ -99,7 +95,7 @@ const BankCardList = ({navigation}) => {
                 <Button
                     title={'添加新银行卡'}
                     style={styles.btn}
-                    onPress={() => navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})}
+                    onPress={() => navigation.navigate('AddBankCard', {action: 'add'})}
                 />
             )}
         </SafeAreaView>

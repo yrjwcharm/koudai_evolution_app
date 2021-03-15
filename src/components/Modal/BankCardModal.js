@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:14:03
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-12 16:51:28
  * @Description: 银行卡选择
  */
 
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet, Image, TouchableHighlight, FlatList} from 'react-native';
 import {constants} from './util';
 import {isIphoneX, px as text, px} from '../../utils/appUtil';
@@ -19,7 +19,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 const BankCardModal = React.forwardRef((props, ref) => {
     const insets = useSafeAreaInsets();
     const {
-        type = '', //type为show时是展示
+        type = '', //type为hidden时隐藏添加新银行卡
+        clickable = true, // 是否禁用点击
         backdrop = true,
         header,
         title = '请选择付款方式',
@@ -39,13 +40,13 @@ const BankCardModal = React.forwardRef((props, ref) => {
         setVisible(true);
     };
 
-    const hide = () => {
-        setVisible(!visible);
-        onClose();
-    };
+    const hide = useCallback(() => {
+        setVisible(false);
+        onClose && onClose();
+    }, [onClose]);
 
     const confirmClick = (index) => {
-        if (type == 'hidden') {
+        if (type == 'hidden' && !clickable) {
             return;
         }
         setSelect(index);
@@ -54,9 +55,10 @@ const BankCardModal = React.forwardRef((props, ref) => {
             onDone && onDone(data[index]);
         }, 200);
     };
-    const addCard = () => {
+    const addCard = useCallback(() => {
         hide();
-    };
+        navigation.navigate({name: 'AddBankCard', params: {action: 'add'}});
+    }, [hide, navigation]);
     React.useImperativeHandle(ref, () => {
         return {
             show: show,
@@ -67,7 +69,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         return (
             item && (
                 <TouchableHighlight
-                    underlayColor="#f5f5f5"
+                    underlayColor={type === 'hidden' ? '#fff' : '#f5f5f5'}
                     style={[styles.bankCard]}
                     onPress={() => {
                         confirmClick(index);
@@ -87,6 +89,34 @@ const BankCardModal = React.forwardRef((props, ref) => {
             )
         );
     };
+    const renderFooter = useCallback(() => {
+        if (type !== 'hidden') {
+            return (
+                <TouchableOpacity
+                    style={[
+                        styles.bankCard,
+                        {
+                            borderTopColor: Colors.borderColor,
+                            borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
+                        },
+                    ]}
+                    onPress={addCard}>
+                    <Image
+                        style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
+                        source={{
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2020/09/yinhangka.png',
+                        }}
+                    />
+                    <View style={{flex: 1}}>
+                        <Text style={styles.text}>添加新银行卡</Text>
+                    </View>
+                    <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
+                </TouchableOpacity>
+            );
+        } else {
+            return null;
+        }
+    }, [addCard, data, type]);
     return (
         <>
             <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
@@ -107,41 +137,17 @@ const BankCardModal = React.forwardRef((props, ref) => {
                                 <Text style={styles.title}>{title}</Text>
                             </View>
                         )}
-                        <View style={{flex: 1, paddingBottom: insets.bottom}}>
+                        <View style={{flex: 1}}>
                             <FlatList
                                 contentContainerStyle={{paddingHorizontal: text(14)}}
                                 data={data}
+                                ListFooterComponent={renderFooter}
                                 renderItem={renderItem}
                                 keyExtractor={(item, index) => index.toString()}
                                 ItemSeparatorComponent={() => {
                                     return <View style={{height: 0.5, backgroundColor: Colors.lineColor}} />;
                                 }}
                             />
-
-                            {type == 'hidden' ? null : (
-                                <TouchableOpacity
-                                    style={[
-                                        styles.bankCard,
-                                        {
-                                            paddingHorizontal: px(16),
-                                            borderTopColor: Colors.borderColor,
-                                            borderTopWidth: data?.length > 0 ? constants.borderWidth : 0,
-                                        },
-                                    ]}
-                                    onPress={addCard}>
-                                    <Image
-                                        style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
-                                        source={{
-                                            uri:
-                                                'https://static.licaimofang.com/wp-content/uploads/2020/09/yinhangka.png',
-                                        }}
-                                    />
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.text}>添加新银行卡</Text>
-                                    </View>
-                                    <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
-                                </TouchableOpacity>
-                            )}
                         </View>
                     </TouchableOpacity>
                 </TouchableOpacity>

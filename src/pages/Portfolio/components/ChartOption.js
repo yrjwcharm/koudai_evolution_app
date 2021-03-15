@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 19:26:25
+ * @LastEditTime: 2021-03-13 18:23:17
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -133,15 +133,20 @@ chart = new F2.Chart({
   padding: [56, 'auto', 'auto']
 });
 chart.source(${JSON.stringify(data)});
-chart.scale('date', {
-  type: 'timeCat',
-  tickCount: 4,
-  range: [0, 1]
-});
-chart.scale('value', {
-  alias: '${alias.value || 'value'}',
-  tickCount: 6,
-  range: [ 0, 1 ]
+chart.scale({
+  date: {
+    type: 'timeCat',
+    tickCount: 4,
+    range: [0, 1]
+  },
+  value: {
+    alias: '${alias.value || ''}',
+    tickCount: 6,
+    range: [ 0, 1 ],
+    formatter: (value) => {
+      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value'};
+    }
+  }
 });
 chart.axis('date', {
   label: function label(text, index, total) {
@@ -176,10 +181,12 @@ chart.tooltip({
 });
 chart.area({startOnZero: false})
   .position('date*value')
-  .color(${JSON.stringify(areaColors)});
+  .color(${JSON.stringify(areaColors)})
+  .shape('smooth');
 chart.line()
   .position('date*value')
   .color(${JSON.stringify(colors)})
+  .shape('smooth')
   .style({
     lineWidth: 1.5,
   });

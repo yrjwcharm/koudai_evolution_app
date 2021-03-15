@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-11 17:46:25
+ * @LastEditTime: 2021-03-12 15:59:40
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,9 +17,9 @@ import Toast from '../../components/Toast';
 
 const ForgotTradePwdNext = ({navigation, route}) => {
     const [msg] = useState(route.params?.msg);
-    const [second, setSecond] = useState(59);
+    const [second, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('60秒后可重发');
-    const [btnClick, setBtnClick] = useState(true);
+    const btnClick = useRef(true);
     const timerRef = useRef('');
     const [code, setCode] = useState('');
     const [newPwd, setNewPwd] = useState('');
@@ -27,36 +27,40 @@ const ForgotTradePwdNext = ({navigation, route}) => {
     const subBtnClick = useRef(true);
 
     const getCode = useCallback(() => {
-        if (btnClick) {
-            setBtnClick(false);
+        if (btnClick.current) {
+            btnClick.current = false;
             http.post('/passport/reset_trade_password_prepare/20210101', {
                 name: route.params?.name,
                 id_no: route.params?.id_no,
             }).then((res) => {
                 if (res.code === '000000') {
                     Toast.show(res.message);
-                    setSecond(59);
-                    setCodeText('60秒后可重发');
                     timer();
                 } else {
                     Toast.show(res.message);
-                    setBtnClick(true);
+                    btnClick.current = true;
                 }
             });
         }
     }, [btnClick, timer, route]);
     const timer = useCallback(() => {
+        setSecond(60);
+        setCodeText('60秒后可重发');
+        btnClick.current = false;
         timerRef.current = setInterval(() => {
-            setSecond((prev) => prev - 1);
-            setCodeText(second + '秒后可重发');
-            setBtnClick(false);
-            if (second <= 0) {
-                clearInterval(timerRef.current);
-                setCodeText('重新获取');
-                setBtnClick(true);
-            }
+            setSecond((prev) => {
+                if (prev === 1) {
+                    clearInterval(timerRef.current);
+                    setCodeText('重新获取');
+                    btnClick.current = true;
+                    return prev;
+                } else {
+                    setCodeText(prev - 1 + '秒后可重发');
+                    return prev - 1;
+                }
+            });
         }, 1000);
-    }, [second, timerRef]);
+    }, []);
     // 完成找回密码
     const submit = useCallback(() => {
         if (!subBtnClick.current) {

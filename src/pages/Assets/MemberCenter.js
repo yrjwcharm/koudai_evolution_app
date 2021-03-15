@@ -2,7 +2,7 @@
  * @Date: 2021-02-25 15:37:01
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-11 10:22:45
+ * @LastEditTime: 2021-03-13 13:50:34
  * @Description: 会员中心
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -78,9 +78,7 @@ const MemberCenter = ({navigation, route}) => {
                         {'信任值 230,000 / 650,000'}
                     </Text>
                     <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate({name: 'MemberSystem', params: {level: route.params?.level || 0}})
-                        }>
+                        onPress={() => navigation.navigate('MemberSystem', {level: route.params?.level || 0})}>
                         <AntDesign name={'questioncircleo'} size={11} color={iconColor[route.params?.level || 0]} />
                     </TouchableOpacity>
                 </View>
@@ -161,7 +159,7 @@ const MemberCenter = ({navigation, route}) => {
                         <TouchableOpacity
                             key={item.id}
                             style={[Style.flexCenter, {width: '25%', marginBottom: text(22)}]}
-                            onPress={() => navigation.navigate({name: 'MemberService', params: {active: 0}})}>
+                            onPress={() => navigation.navigate('MemberService', {active: 0})}>
                             <Image source={{uri: item.icon}} style={styles.itemImg} />
                             <HTML html={item.title} style={styles.smallTitle} />
                         </TouchableOpacity>

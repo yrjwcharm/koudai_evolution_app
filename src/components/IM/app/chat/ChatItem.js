@@ -298,6 +298,11 @@ export default class ChatItem extends PureComponent {
                     this.props.renderTextButton &&
                     this.props.renderTextButton({isOpen, isSelf, message, index: parseInt(rowId)})
                 );
+            case 'article':
+                return (
+                    this.props.renderArticle &&
+                    this.props.renderArticle({isOpen, isSelf, message, index: parseInt(rowId)})
+                );
         }
     };
 
@@ -393,7 +398,7 @@ export default class ChatItem extends PureComponent {
                             )}
                         </TouchableOpacity>
 
-                        {this.props.renderErrorMessage(message.sendStatus)}
+                        {/* {this.props.renderErrorMessage(message.sendStatus)} */}
                     </View>
                 </Element>
             </View>

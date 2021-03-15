@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-11 20:27:04
+ * @LastEditTime: 2021-03-12 15:22:59
  * @Description: 密码管理输入框
  */
 import React from 'react';
@@ -67,7 +67,11 @@ const styles = StyleSheet.create({
         height: '100%',
         paddingLeft: text(10),
     },
-    selectBox: {flex: 1, height: '100%', paddingLeft: text(10)},
+    selectBox: {
+        flex: 1,
+        height: '100%',
+        paddingLeft: text(10),
+    },
     inputText: {
         letterSpacing: 1,
         color: Colors.defaultColor,

@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:06:50
+ * @LastEditTime: 2021-03-12 17:06:35
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -45,7 +45,11 @@ const MessageBoard = (props) => {
             <View style={{alignItems: 'flex-end', margin: px(20)}}>
                 {comment && (
                     <Praise
-                        comment={{like_status: comment?.like_status, like_num: comment?.like_num, id: comment.id}}
+                        comment={{
+                            favor_status: comment?.favor_status,
+                            favor_num: comment?.favor_num,
+                            id: comment.id,
+                        }}
                     />
                 )}
             </View>

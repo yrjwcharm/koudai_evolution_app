@@ -2,10 +2,10 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 18:39:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-13 12:50:43
  */
-import React, {Component} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
@@ -13,139 +13,132 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
 import Http from '../../services';
-export default class SetTradePassword extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            password: '',
-            pwdFisrt: '',
-            pwdMsg: '设置6位数字交易密码',
-        };
-    }
-    handelReset = () => {
-        this.setState({
-            pwdFisrt: '',
-            pwdMsg: '设置6位数字交易密码',
-            password: '',
-        });
+import {Modal} from '../../components/Modal';
+import {useJump} from '../../components/hooks';
+
+const SetTradePassword = ({navigation, route}) => {
+    const jump = useJump();
+    const [password, setPassword] = useState('');
+    const [pwdFisrt, setPwdFisrt] = useState('');
+    const [pwdMsg, setPwdMsg] = useState('设置6位数字交易密码');
+    const textInput = useRef(null);
+
+    const handelReset = () => {
+        setPwdFisrt('');
+        setPassword('');
+        setPwdMsg('设置6位数字交易密码');
     };
-    onTouchInput() {
-        const isFocused = this.textInput.isFocused();
+    const onTouchInput = () => {
+        const isFocused = textInput.current.isFocused();
         if (!isFocused) {
-            this.textInput.focus();
+            textInput.current.focus();
         }
-    }
-    render_box() {
-        let passarr = new Array(6);
-        let box = [];
+    };
+    const render_box = useCallback(() => {
+        const passarr = new Array(6);
+        const box = [];
         Array.from(passarr).map((item, index) =>
             box.push(
-                <TouchableOpacity
-                    key={index}
-                    activeOpacity={1}
-                    onPress={() => {
-                        this.onTouchInput();
-                    }}
-                    style={styles.box}>
-                    {this.state.password[index] ? <View style={styles.circle} /> : <Text />}
+                <TouchableOpacity key={index} activeOpacity={1} onPress={onTouchInput} style={styles.box}>
+                    {password[index] ? <View style={styles.circle} /> : <Text />}
                 </TouchableOpacity>
             )
         );
         return <View style={styles.box_con}>{box}</View>;
-    }
-    onInput(text) {
-        var reg = /^[0-9]*$/;
-        this.setState(
-            {
-                password: text,
-            },
-            () => {
-                if (this.state.password.length == 6) {
-                    if (!reg.test(this.state.password)) {
-                        Toast.show('交易密码只能为6位数字');
-                    } else {
-                        if (this.state.pwdFisrt !== '') {
-                            if (this.state.pwdFisrt == this.state.password) {
-                                Http.post('/passport/set_trade_password/20210101', {
-                                    password: this.state.password,
-                                    poid: this.props.route?.params?.poid,
-                                }).then((data) => {
-                                    if (data.code === '000000') {
-                                        Toast.show(data.message);
-                                        setTimeout(() => {
-                                            this.props.navigation.replace(
-                                                data.result?.jump_url?.path,
-                                                data.result?.jump_url?.params
-                                            );
-                                        }, 1000);
+    }, [password]);
+
+    useEffect(() => {
+        const reg = /^[0-9]*$/;
+        if (password.length === 6) {
+            if (!reg.test(password)) {
+                Toast.show('交易密码只能为6位数字');
+            } else {
+                if (pwdFisrt !== '') {
+                    if (pwdFisrt === password) {
+                        Http.post('/passport/set_trade_password/20210101', {
+                            password: password,
+                            poid: route?.params?.poid || '',
+                        }).then((data) => {
+                            if (data.code === '000000') {
+                                if (route.params?.fr === 'BankCard') {
+                                    textInput.current.blur();
+                                    Modal.show({
+                                        confirmCallBack: () => jump(route.params?.url, 'replace'),
+                                        confirmText: '立即跳转',
+                                        content: '交易密码设置成功，即将跳转至修改预留手机号页面',
+                                        isTouchMaskToClose: false,
+                                    });
+                                    return false;
+                                }
+                                Toast.show(data.message);
+                                setTimeout(() => {
+                                    if (data.result?.jump_url?.path) {
+                                        navigation.replace(
+                                            data.result.jump_url.path,
+                                            data.result.jump_url.params || {}
+                                        );
                                     } else {
-                                        Toast.show(data.message);
+                                        navigation.goBack();
                                     }
-                                });
+                                }, 1000);
                             } else {
-                                Toast.show('两次设置的交易密码不一致');
-                                this.handelReset();
+                                Toast.show(data.message);
                             }
-                        } else {
-                            this.setState({
-                                pwdMsg: '请再次设置您的6位数字交易密码',
-                                pwdFisrt: this.state.password,
-                                password: '',
-                            });
-                        }
+                        });
+                    } else {
+                        Toast.show('两次设置的交易密码不一致');
+                        handelReset();
                     }
+                } else {
+                    setPwdMsg('请再次设置您的6位数字交易密码');
+                    setPwdFisrt(password);
+                    setPassword('');
                 }
             }
-        );
-    }
-    render() {
-        const {pwdMsg, password} = this.state;
-        return (
-            <View style={Style.containerPadding}>
-                <FastImage
-                    style={styles.pwd_img}
-                    source={{
-                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/account.png',
-                    }}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
-                <View style={styles.card}>
-                    <View style={[Style.flexRow, styles.card_head]}>
-                        <EvilIcons name="lock" size={25} />
-                        <Text style={styles.title}>{pwdMsg}</Text>
-                    </View>
-                    <View style={{marginTop: text(25)}}>
-                        {this.render_box()}
-                        <TextInput
-                            ref={(ref) => {
-                                this.textInput = ref;
-                            }}
-                            underlineColorAndroid="transparent"
-                            caretHidden
-                            keyboardType="numeric"
-                            style={styles.input}
-                            autoFocus={true}
-                            maxLength={6}
-                            value={password}
-                            onChangeText={(text) => {
-                                this.onInput(text);
-                            }}
-                        />
-                        <Text
-                            onPress={this.handelReset}
-                            style={{
-                                fontSize: text(12),
-                                textAlign: 'center',
-                                color: '#0051CC',
-                            }}>
-                            重新设置密码
-                        </Text>
-                    </View>
+        }
+    }, [jump, navigation, password, pwdFisrt, route]);
+
+    return (
+        <View style={Style.containerPadding}>
+            <FastImage
+                style={styles.pwd_img}
+                source={{
+                    uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/account.png',
+                }}
+                resizeMode={FastImage.resizeMode.contain}
+            />
+            <View style={styles.card}>
+                <View style={[Style.flexRow, styles.card_head]}>
+                    <EvilIcons name="lock" size={25} />
+                    <Text style={styles.title}>{pwdMsg}</Text>
+                </View>
+                <View style={{marginTop: text(25)}}>
+                    {render_box()}
+                    <TextInput
+                        ref={textInput}
+                        underlineColorAndroid="transparent"
+                        caretHidden
+                        keyboardType="number-pad"
+                        style={styles.input}
+                        autoFocus={true}
+                        maxLength={6}
+                        value={password}
+                        onChangeText={(value) => setPassword(value.replace(/\D/g, ''))}
+                    />
+                    <Text
+                        onPress={handelReset}
+                        style={{
+                            fontSize: text(12),
+                            textAlign: 'center',
+                            color: '#0051CC',
+                        }}>
+                        重新设置密码
+                    </Text>
                 </View>
             </View>
-        );
-    }
-}
+        </View>
+    );
+};
 const styles = StyleSheet.create({
     pwd_img: {
         width: '100%',
@@ -196,3 +189,5 @@ const styles = StyleSheet.create({
         height: text(20),
     },
 });
+
+export default SetTradePassword;

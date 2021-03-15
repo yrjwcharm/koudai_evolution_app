@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 11:01:01
+ * @LastEditTime: 2021-03-12 17:07:25
  * @Description:首页发现页文章卡片
  */
 
@@ -51,7 +51,7 @@ export default function ArticleCard({data = ''}) {
                 <View style={[Style.flexBetween, {marginTop: px(12)}]}>
                     <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
-                    <Praise comment={data} />
+                    <Praise comment={data} type={'article'} />
                     {/* <View style={Style.flexRow}>
                             {data?.like_status == 1 ? (
                                 <FastImage
