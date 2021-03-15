@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 16:08:41
+ * @LastEditTime: 2021-03-13 17:07:01
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -67,23 +67,28 @@ export class uploadID extends Component {
     uploadImage = (response) => {
         const {clickIndex} = this.state;
         let toast = Toast.showLoading('正在上传');
-        upload({...response, desc: clickIndex == 1 ? 'front' : 'back'}, (res) => {
-            Toast.hide(toast);
-            if (res) {
-                this.uri = '';
-                if (res?.code == '000000') {
-                    Toast.show('上传成功');
-                    if (clickIndex == 1) {
-                        DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
-                        this.setState({frontStatus: true});
+        upload(
+            'mapi/identity/upload/20210101',
+            response,
+            [{name: 'desc', data: clickIndex == 1 ? 'front' : 'back'}],
+            (res) => {
+                Toast.hide(toast);
+                if (res) {
+                    this.uri = '';
+                    if (res?.code == '000000') {
+                        Toast.show('上传成功');
+                        if (clickIndex == 1) {
+                            DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
+                            this.setState({frontStatus: true});
+                        } else {
+                            this.setState({backStatus: true});
+                        }
                     } else {
-                        this.setState({backStatus: true});
+                        Toast.show(res.message);
                     }
-                } else {
-                    Toast.show(res.message);
                 }
             }
-        });
+        );
         this.showImg(response.uri);
     };
     //打开相册

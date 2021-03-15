@@ -2,13 +2,13 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-13 16:39:02
+ * @LastEditTime: 2021-03-15 12:50:40
  * @Description:
  */
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {View, TouchableOpacity, StyleSheet, ActivityIndicator, Text} from 'react-native';
 import {px} from '../../../../utils/appUtil';
-export default class ImageMessage extends Component {
+export default class ImageMessage extends PureComponent {
     render() {
         const {
             message,
@@ -21,7 +21,6 @@ export default class ImageMessage extends Component {
             isReadStyle,
             ImageComponent,
         } = this.props;
-
         return (
             <View style={[isSelf ? styles.right : styles.left]}>
                 <TouchableOpacity
@@ -30,7 +29,7 @@ export default class ImageMessage extends Component {
                     collapsable={false}
                     disabled={isOpen}
                     onPress={() =>
-                        this.props.onMessagePress('image', parseInt(this.props.rowId), message.content.uri, message)
+                        this.props.onMessagePress('image', parseInt(this.props.rowId), message.content, message)
                     }
                     style={{backgroundColor: 'transparent', padding: 5, borderRadius: 5}}
                     onLongPress={() => {
@@ -39,23 +38,18 @@ export default class ImageMessage extends Component {
                             'image',
                             // eslint-disable-next-line radix
                             parseInt(this.props.rowId),
-                            message.content.uri,
+                            message.content,
                             message
                         );
                     }}>
                     <View style={{borderRadius: 5}}>
-                        {message.content.uri && (
+                        {message?.content && (
                             <ImageComponent
-                                source={{uri: message.content.uri}}
+                                source={{uri: message?.content}}
                                 resizeMode={ImageComponent.resizeMode.contain}
                                 style={{
-                                    width: message.content.width,
-                                    maxWidth: px(238),
-                                    // eslint-disable-next-line radix
-                                    height:
-                                        message.content.width > px(238)
-                                            ? message.content.height / (message.content.width / px(238))
-                                            : message.content.height,
+                                    width: px(100),
+                                    height: px(120),
                                     borderRadius: 5,
                                 }}
                             />

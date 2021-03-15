@@ -722,6 +722,8 @@ class ChatWindow extends PureComponent {
             panelShow,
             emojiShow,
         } = this.state;
+        console.log(messageList, 'messageList');
+
         const currentList = messageList.slice().sort((a, b) => (inverted ? b.time - a.time : a.time - b.time));
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
@@ -1133,7 +1135,7 @@ ChatWindow.defaultProps = {
                             borderRadius: 4,
                             marginBottom: 10,
                         }}>
-                        <Text style={{color: '#333', fontSize: 10}}>好友关系异常，发送失败</Text>
+                        <Text style={{color: '#333', fontSize: 10}}>消息发送异常</Text>
                     </View>
                 );
             default:

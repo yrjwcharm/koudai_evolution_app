@@ -13,7 +13,7 @@ const PATTERNS = {
     emoji: new RegExp('\\/\\{[a-zA-Z_]{1,14}\\}'),
 };
 
-export default class ChatItem extends React.Component {
+export default class ChatItem extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -398,7 +398,7 @@ export default class ChatItem extends React.Component {
                             )}
                         </TouchableOpacity>
 
-                        {this.props.renderErrorMessage(message.sendStatus)}
+                        {/* {this.props.renderErrorMessage(message.sendStatus)} */}
                     </View>
                 </Element>
             </View>

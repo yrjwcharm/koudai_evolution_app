@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-15 12:49:07
+ * @LastEditTime: 2021-03-13 22:41:51
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -67,18 +67,17 @@ const IM = () => {
     let unverifiedMsg = useRef([]);
     const [messages, setMessages] = useState([]);
     const bottomModal = useRef(null);
-    const clearIntelList = () => {
-        intellectList.length > 0 && setIntellectList([]);
-    };
     useEffect(() => {
         initWebSocket();
         Keyboard.addListener('keyboardWillHide', clearIntelList);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initWebSocket, clearIntelList]);
+    const clearIntelList = useCallback(() => {
+        setIntellectList([]);
     }, []);
     /**
      * 初始化WebSocket
      */
-    const initWebSocket = () => {
+    const initWebSocket = useCallback(() => {
         try {
             // eslint-disable-next-line react-hooks/exhaustive-deps
             WS.current = new WebSocket(url);
@@ -89,11 +88,11 @@ const IM = () => {
             //重连
             reconnect();
         }
-    };
+    }, [initWsEvent, reconnect]);
     /**
      * 初始化WebSocket相关事件
      */
-    const initWsEvent = () => {
+    const initWsEvent = useCallback(() => {
         //建立WebSocket连接
         WS.current.onopen = function () {
             http.get('http://mapi.lengxiaochu.mofanglicai.com.cn:10080/20180417/webim/get/token').then((data) => {
@@ -116,7 +115,7 @@ const IM = () => {
                         WS.current.send(handleMsgParams('LMR', {page: 1}));
                         WS.current.send(handleMsgParams('QMR', {question_id: 0}));
                         _data.data.result.questions && setShortCutList(_data.data.result.questions);
-                        // 再次链接时，将为发送出去的消息发出去
+                        //再次链接时，将为发送出去的消息发出去
                         unverifiedMsg.current.forEach((item) => {
                             WS.current.send(handleMsgParams(item.cmd, item.content, item.cmid));
                             setTimeout(() => {
@@ -134,7 +133,6 @@ const IM = () => {
                 case 'EMA':
                 case 'VMA':
                 case 'AMA':
-                case 'LAA': //登录的提示语
                     if (_data.data) {
                         handleMessage(_data);
                     } else {
@@ -199,18 +197,8 @@ const IM = () => {
             //重连
             reconnect();
         };
-    };
-    //断开重连
-    const reconnect = () => {
-        if (timeout?.current) {
-            clearTimeout(timeout?.current);
-        }
-        timeout.current = setTimeout(function () {
-            //重新连接WebSocket
-            initWebSocket();
-        }, 15000);
-    };
-    const handleMessage = (message) => {
+    }, [handleMessage, handleMsgParams, reconnect, checkStatus]);
+    const handleMessage = useCallback((message) => {
         const getType = (cmd) => {
             switch (cmd) {
                 case 'IMN':
@@ -227,66 +215,94 @@ const IM = () => {
             }
         };
         let _mes = [];
-        const genMessage = (_message) => {
-            return {
-                id: _message.cmid,
-                type: getType(_message.cmd),
-                content: _message.data,
-                targetId: `${_message.from}`,
-                renderTime: true,
-                sendStatus: _message.sendStatus,
-                chatInfo: {
-                    id: _message.to,
-                    nickName: _message?.user_info?.nickname || '智能客服',
-                    avatar: _message?.user_info?.avatar,
-                },
-                time: _message.time,
-            };
+        //获取图片宽高
+        const getImageWH = (uri) => {
+            let data = {};
+            Image.getSize(uri, (w, h) => {
+                data.width = w;
+                data.height = h;
+                data.uri = uri;
+            });
+            return data;
         };
         if (Array.isArray(message)) {
             message.forEach((item) => {
-                _mes.push(genMessage(item));
+                _mes.push({
+                    id: item.cmid,
+                    type: getType(item.cmd),
+                    content: getType(item.cmd) == 'image' ? getImageWH(item.data.uri) : item.data,
+                    targetId: `${item.from}`,
+                    renderTime: true,
+                    sendStatus: item.hasOwnProperty('sendStatus') ? item.sendStatus : 1,
+                    chatInfo: {
+                        id: item.to,
+                        nickName: item?.user_info?.nickname || '智能客服',
+                        avatar: item?.user_info?.avatar,
+                    },
+                    time: item.time,
+                });
             });
         } else {
-            _mes = [genMessage(message)];
+            _mes = [
+                {
+                    id: message.cmid,
+                    type: getType(message.cmd),
+                    content: getType(message.cmd) == 'image' ? getImageWH(message.data.uri) : message.data,
+                    targetId: `${message.from}`,
+                    renderTime: true,
+                    sendStatus: message.hasOwnProperty('sendStatus') ? message.sendStatus : 1,
+                    chatInfo: {
+                        id: message.to,
+                        nickName: message?.user_info?.nickname || '智能客服',
+                        avatar: message?.user_info?.avatar,
+                    },
+                    time: message.time,
+                },
+            ];
         }
-        setMessages((pre) => {
-            return [...pre, ..._mes];
+        setMessages((preMes) => {
+            return [...preMes, ..._mes];
         });
-        return [...messages, ..._mes];
-    };
+    }, []);
 
+    //断开重连
+    const reconnect = useCallback(() => {
+        if (timeout?.current) {
+            clearTimeout(timeout?.current);
+        }
+        timeout.current = setTimeout(function () {
+            //重新连接WebSocket
+            initWebSocket();
+        }, 15000);
+    }, [initWebSocket, timeout]);
     //点击发送按钮发送消息
-    const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {
+    const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id) => {
         let cmid = randomMsgId(cmd);
-        const newMessages = handleMessage({
+        handleMessage({
             cmid: cmid,
             data: content,
             cmd,
             from: uid,
             to: 'S',
             type,
-            sendStatus: sendStatus || 0,
+            sendStatus: 0,
             user_info: {
                 avatar: userInfo.toJS().avatar,
             },
             time: `${new Date().getTime()}`,
         });
-        wsSend(cmd, content, question_id, cmid, newMessages);
+        wsSend(cmd, content, question_id, cmid);
     };
     //真实发送
-    const wsSend = (cmd, content, question_id, cmid, messagesArg) => {
-        if (cmd == 'TMR' || cmd == 'IMR') {
-            unverifiedMsg.current.push({cmid, content, cmd});
-        }
+    const wsSend = (cmd, content, question_id, cmid) => {
+        cmd == 'TMR' && unverifiedMsg.current.push({cmid, content, cmd});
         if (WS.current && WS.current.readyState === WebSocket.OPEN) {
             try {
                 WS.current.send(handleMsgParams(cmd, cmd == 'QMR' ? question_id : content, cmid));
-                if (cmd == 'TMR' || cmd == 'IMR') {
-                    setTimeout(() => {
-                        checkStatus(cmid, -1, messagesArg);
+                cmd == 'TMR' &&
+                    setTimeout(function () {
+                        checkStatus(cmid, -1);
                     }, _timeout);
-                }
             } catch (err) {
                 console.warn('WS.current sendMessage', err.message);
             }
@@ -315,42 +331,51 @@ const IM = () => {
      * @param {*}
      * @return {*}
      */
-    const handleMsgParams = (cmd, content, cmid) => {
-        var params = {};
-        params.token = token.current;
-        params.cmd = cmd;
-        params.from = _uid.current;
-        params.cmid = cmid || randomMsgId(cmd);
-        params.to = 'S';
-        params.data = content;
-        return JSON.stringify(params);
-    };
-    const checkStatus = (cmid, status, messagesArg) => {
-        if (!cmid) {
-            return;
-        }
-        status == 1 &&
-            unverifiedMsg.current.forEach((item, index) => {
-                if (item.cmid == cmid) {
-                    unverifiedMsg.current.splice(index, 1);
+    const handleMsgParams = useCallback(
+        (cmd, content, cmid) => {
+            var params = {};
+            params.token = token.current;
+            params.cmd = cmd;
+            params.from = _uid.current;
+            params.cmid = cmid || randomMsgId(cmd);
+            params.to = 'S';
+            params.data = content;
+            return JSON.stringify(params);
+        },
+        [randomMsgId]
+    );
+    const checkStatus = useCallback(
+        (cmid, status) => {
+            console.log('check');
+            if (!cmid) {
+                return;
+            }
+            status == 1 &&
+                unverifiedMsg.current.forEach((item, index) => {
+                    if (item.cmid == cmid) {
+                        unverifiedMsg.current.splice(index, 1);
+                    }
+                });
+
+            console.log('object');
+            let _mes = [...messages];
+            _mes.forEach((item) => {
+                if (item.id == cmid) {
+                    item.sendStatus = status;
                 }
             });
-        setMessages(
-            messagesArg.map((item) => {
-                if (item.id == cmid) {
-                    return {...item, sendStatus: status};
-                } else {
-                    return item;
-                }
-            })
-        );
-    };
+            console.log(_mes, '12332131');
+            setMessages(_mes);
+        },
+        [messages]
+    );
+    console.log(messages, 'message123');
     const loadHistory = () => {
         setRefresh(true);
         WS.current.send(handleMsgParams('LMR', {page: page.current++}));
     };
     //转换时间20210312115002
-    const genTimeStamp = () => {
+    const genTimeStamp = useCallback(() => {
         var date = new Date();
         return (
             date.getFullYear().toString() +
@@ -360,32 +385,35 @@ const IM = () => {
             _handleTime(date.getMinutes()) +
             _handleTime(date.getSeconds())
         );
-    };
+    }, []);
     /**
      * @description: 根据cmd生产消息ID
      * @param {*} cmd
      * @return {*}
      */
-    const randomMsgId = (cmd) => {
-        cmd ? cmd : '';
-        var str =
-            genTimeStamp() +
-            '|' +
-            cmd +
-            '|' +
-            // eslint-disable-next-line radix
-            parseInt(Math.random() * 10000 + 10000).toString() +
-            '|' +
-            'A' +
-            '|' +
-            '0';
-        return str;
-    };
+    const randomMsgId = useCallback(
+        (cmd) => {
+            cmd ? cmd : '';
+            var str =
+                genTimeStamp() +
+                '|' +
+                cmd +
+                '|' +
+                // eslint-disable-next-line radix
+                parseInt(Math.random() * 10000 + 10000).toString() +
+                '|' +
+                'A' +
+                '|' +
+                '0';
+            return str;
+        },
+        [genTimeStamp]
+    );
 
     //打开相册
     const openPicker = () => {
         const options = {
-            quality: 0.4,
+            quality: 1,
             // maxWidth: px(238),
             // maxHeight: px(300),
         };
@@ -399,10 +427,12 @@ const IM = () => {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
                     let cmid = randomMsgId('IMR');
-                    let mewMes = handleMessage({
+                    handleMessage({
                         cmd: 'IMR',
                         cmid,
-                        data: response.uri,
+                        data: {
+                            uri: response.uri,
+                        },
                         from: uid,
                         to: 'S',
                         sendStatus: 0,
@@ -413,7 +443,7 @@ const IM = () => {
                     });
                     setTimeout(() => {
                         _ChatScreen?.current?.closeAll();
-                    });
+                    }, 100);
                     upload(
                         'http://mapi.lengxiaochu.mofanglicai.com.cn:10080/20170831/webim/upload/oss',
                         response,
@@ -424,18 +454,20 @@ const IM = () => {
                         ],
                         (res) => {
                             if (res.code == 20000) {
-                                wsSend('IMR', res.result.url, null, cmid, mewMes);
-                            } else {
-                                checkStatus(cmid, -1, mewMes);
+                                console.log(res.result.url);
+                                wsSend(
+                                    'IMR',
+                                    {
+                                        uri: res.result.url,
+                                    },
+                                    cmid
+                                );
                             }
                         }
                     );
                 }
             });
         }, 100);
-    };
-    const pressMessage = (type, index, uri, message) => {
-        console.log(type, index, uri, message);
     };
     // 选择图片或相册
     const onClickChoosePicture = async () => {
@@ -491,7 +523,7 @@ const IM = () => {
                             key={index}
                             style={styles.shortCutItem}
                             onPress={() => {
-                                sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id}, 1);
+                                sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id});
                                 Keyboard.dismiss();
                             }}>
                             <Text style={{fontSize: 12, color: '#545968'}}>{item.question}</Text>
@@ -513,7 +545,7 @@ const IM = () => {
                             Style.flexRow,
                         ]}
                         onPress={() => {
-                            sendMessage('text', item.question_ori, null, 'QMR', item.question_id, 1);
+                            sendMessage('text', item.question_ori, null, 'QMR', item.question_id);
                             Keyboard.dismiss();
                             clearIntelList();
                         }}>
@@ -640,7 +672,7 @@ const IM = () => {
                                 key={index}
                                 underlayColor="#eee"
                                 onPress={() => {
-                                    sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id}, 1);
+                                    sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id});
                                 }}
                                 style={{
                                     height: px(43),
@@ -743,7 +775,7 @@ const IM = () => {
                 renderTextButton={renderTextButton}
                 renderArticle={renderArticle}
                 panelSource={[{text: '相册', icon: require('../../assets/img/photo.png')}]}
-                onMessagePress={pressMessage}
+                // renderImageMessage={renderImageMessage}
                 textOnChange={_.debounce((text) => {
                     wsSend('DMR', text);
                 }, 500)}
