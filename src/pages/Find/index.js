@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 10:31:41
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-15 13:55:29
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -27,7 +27,7 @@ const Index = (props) => {
     const jump = useJump();
     useEffect(() => {
         getData();
-    }, []);
+    }, [getData]);
     // let scrollingRight = '';
     // let lastx = '';
     // const snapScroll = useRef(null);
@@ -186,19 +186,6 @@ const Index = (props) => {
                                 height={px(217)}
                                 decelerationRate={0.99}
                                 snapToInterval={px(214)}
-                                // ref={snapScroll}
-                                // onResponderRelease={() => {
-                                //     var interval = px(202); // WIDTH OF 1 CHILD COMPONENT
-                                //     var snapTo = scrollingRight ? Math.ceil(lastx / interval) : Math.floor(lastx / interval);
-                                //     var scrollTo = snapTo * interval;
-                                //     snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
-                                // }}
-                                // scrollEventThrottle={32}
-                                // onScroll={(event) => {
-                                //     var nextx = event.nativeEvent.contentOffset.x;
-                                //     scrollingRight = nextx > lastx;
-                                //     lastx = nextx;
-                                // }}
                                 showsHorizontalScrollIndicator={false}>
                                 {data?.part2?.plans?.map((item, index) => (
                                     <View style={[styles.major_card, styles.card]} key={index}>
@@ -229,7 +216,7 @@ const Index = (props) => {
                         {/* 增值服务 */}
                         <View style={{marginBottom: px(20)}}>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                            {data?.part3?.plans?.map((item, index) => (
+                            {/* {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -262,7 +249,7 @@ const Index = (props) => {
                                         }}
                                     />
                                 </TouchableOpacity>
-                            ))}
+                            ))} */}
                         </View>
                     </View>
                     <BottomDesc />

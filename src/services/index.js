@@ -89,7 +89,7 @@ export default class http {
                 // Toast.showLoading('加载中...');
             }
             if (!url.indexOf('http') > -1) {
-                axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
+                axios.defaults.baseURL = baseConfig.HTTP; // 改变 axios 实例的 baseURL
             }
             let query = await qs.stringify(params);
             let res = null;
@@ -113,7 +113,7 @@ export default class http {
     }
     static async post(url, params, showLoading = '') {
         if (!url.indexOf('http') > -1) {
-            axios.defaults.baseURL = baseConfig.SERVER_URL; // 改变 axios 实例的 baseURL
+            axios.defaults.baseURL = baseConfig.HTTP; // 改变 axios 实例的 baseURL
         }
         try {
             let toast = '';

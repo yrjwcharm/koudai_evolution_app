@@ -209,5 +209,5 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(18),
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},
-    borderRight: {borderColor: '#DCDEE3', borderRightWidth: 0.5, height: text(40)},
+    borderRight: {backgroundColor: '#DCDEE3', width: 0.5, height: text(40)},
 });
