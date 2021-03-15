@@ -2,7 +2,7 @@
  * @Date: 2021-03-08 15:03:20
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 16:56:06
+ * @LastEditTime: 2021-03-13 13:44:59
  * @Description: 历史投资计划
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -114,7 +114,7 @@ const HistoryInvestPlan = ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             key={item + index}
-                            onPress={() => navigation.navigate({name: 'FundDetail', params: {code: item.code}})}
+                            onPress={() => navigation.navigate('FundDetail', {code: item.code})}
                             style={[
                                 Style.flexRow,
                                 styles.tableRow,

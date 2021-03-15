@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:16:27
+ * @LastEditTime: 2021-03-13 13:52:55
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -83,7 +83,7 @@ const AdjustRecord = ({navigation, route}) => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={[styles.adjustRecord, Style.flexRow]}
-                onPress={() => navigation.navigate({name: 'HistoryAdjust', params: {id: item.id}})}>
+                onPress={() => navigation.navigate('HistoryAdjust', {id: item.id})}>
                 <View style={{flex: 1}}>
                     <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
                         <Text style={[styles.recordTitle, {fontWeight: '500'}]}>{item.title}</Text>

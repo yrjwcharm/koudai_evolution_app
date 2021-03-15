@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-05 16:10:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:38:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-13 11:14:07
  * @Description: 底部弹窗式密码
  */
 import React from 'react';
@@ -20,7 +20,7 @@ const PasswordModal = React.forwardRef((props, ref) => {
     const {
         onDone, //输入完成回调
         clear = true,
-        backdrop = false,
+        backdrop = true,
         header,
         title = '请输入交易密码',
         tip = '忘记交易密码',
@@ -75,9 +75,9 @@ const PasswordModal = React.forwardRef((props, ref) => {
     });
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
-            <Mask />
-            <View style={[styles.container, {backgroundColor: backdrop ? 'rgba(0,0,0,0.5)' : 'transparent'}]}>
-                <View style={styles.con}>
+            {backdrop && <Mask />}
+            <TouchableOpacity activeOpacity={1} onPress={hide} style={[styles.container]}>
+                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
                     {header || (
                         <View style={styles.header}>
                             <TouchableOpacity style={styles.close} onPress={hide}>
@@ -95,8 +95,8 @@ const PasswordModal = React.forwardRef((props, ref) => {
                         ) : null}
                     </View>
                     <Keyboard {...keyboardProps} onPress={combineText} onDelete={onDelete} />
-                </View>
-            </View>
+                </TouchableOpacity>
+            </TouchableOpacity>
         </Modal>
     );
 });

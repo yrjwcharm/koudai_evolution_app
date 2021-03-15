@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:46:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-13 11:11:07
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -137,6 +137,7 @@ const TradeRecordDetail = (props) => {
                                         {_item?.v?.length}张银行卡
                                     </Text>
                                     <BankCardModal
+                                        clickable={false}
                                         data={_item?.v || []}
                                         type="hidden"
                                         title="回款银行卡"

@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 20:27:34
+ * @LastEditTime: 2021-03-13 13:53:15
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -67,13 +67,10 @@ class DynamicAdjustment extends Component {
                                     activeOpacity={0.8}
                                     style={[styles.adjustRecord, Style.flexRow]}
                                     onPress={() =>
-                                        navigation.navigate({
-                                            name: 'HistoryAdjust',
-                                            params: {
-                                                adjust_id: item.id,
-                                                upid: route.params?.upid || 1,
-                                                fr: 'portfolio',
-                                            },
+                                        navigation.navigate('HistoryAdjust', {
+                                            adjust_id: item.id,
+                                            upid: route.params?.upid || 1,
+                                            fr: 'portfolio',
                                         })
                                     }>
                                     <View style={{flex: 1}}>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 19:45:16
+ * @LastEditTime: 2021-03-13 18:22:22
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -151,7 +151,7 @@ const AccProfit = ({poid}) => {
                             initScript={areaChart(
                                 chartData.chart,
                                 [Colors.red],
-                                ['l(90) 0:#E74949 1:#fff'],
+                                [Colors.red],
                                 {value: chartData.title},
                                 false,
                                 0
@@ -160,7 +160,7 @@ const AccProfit = ({poid}) => {
                         />
                     )}
                 </View>
-                <View style={[Style.flexRowCenter, {paddingBottom: text(30)}]}>
+                <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(30)}]}>
                     {chartData?.subtabs?.map((tab, index) => {
                         return (
                             <TouchableOpacity

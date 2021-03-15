@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-05 10:17:37
+ * @LastEditTime: 2021-03-13 13:42:41
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -115,12 +115,9 @@ const AdjustInformation = ({navigation, route}) => {
             <TouchableOpacity
                 style={[Style.flexRow, styles.infoItem]}
                 onPress={() =>
-                    navigation.navigate({
-                        name: 'HistoryAdjust',
-                        params: {
-                            adjust_id: item.id,
-                            fr: 'holding',
-                        },
+                    navigation.navigate('HistoryAdjust', {
+                        adjust_id: item.id,
+                        fr: 'holding',
                     })
                 }>
                 <View style={{flex: 1, marginRight: text(12)}}>

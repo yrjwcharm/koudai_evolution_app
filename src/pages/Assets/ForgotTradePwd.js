@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 14:27:22
+ * @LastEditTime: 2021-03-13 13:44:07
  * @Description: 找回交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -46,10 +46,7 @@ const ResetLoginPwd = ({navigation}) => {
                 btnClick.current = true;
                 if (res.code === '000000') {
                     Toast.show(res.message);
-                    navigation.navigate({
-                        name: 'ForgotTradePwdNext',
-                        params: {msg: res.result.msg, name, id_no: idCardNum},
-                    });
+                    navigation.navigate('ForgotTradePwdNext', {msg: res.result.msg, name, id_no: idCardNum});
                 } else {
                     Toast.show(res.message);
                 }

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 16:42:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-13 12:34:42
  * @Description: 自定义跳转钩子
  */
 import React from 'react';
@@ -23,12 +23,9 @@ function useJump() {
                     })
                     .catch((err) => Toast.show(err));
             } else if (url.type === 3) {
-                navigation[type]({
-                    name: 'OpenPdf',
-                    params: {url: url.path},
-                });
+                navigation[type]('OpenPdf', url.params || {});
             } else {
-                navigation[type]({name: url.path, params: url.params || {}});
+                navigation[type](url.path, url.params || {});
             }
         }
     };
