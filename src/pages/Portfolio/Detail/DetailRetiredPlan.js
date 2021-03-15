@@ -42,14 +42,14 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
     const bottomModal = React.useRef(null);
+    const [type, setType] = useState(1);
     const jump = useJump();
-    var _type = 1;
     const rightPress = () => {
         navigation.navigate('Evaluation');
     };
     const changeTab = (period, type) => {
         setPeriod(period);
-        _type = type;
+        setType(type);
     };
     // 计算金额
     const countCalc = (interval, action, type) => {
@@ -88,11 +88,11 @@ export default function DetailRetiredPlan({navigation, route}) {
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
             period: period,
-            type: _type,
+            type: type,
         }).then((res) => {
             setChartData(res.result);
         });
-    }, [period]);
+    }, [period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -107,10 +107,12 @@ export default function DetailRetiredPlan({navigation, route}) {
                 text: items[0]?.value,
                 style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
             });
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
+            if (chartData?.yield_info?.label[2]) {
+                _textBenchmark.current.setNativeProps({
+                    text: items[1]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+                });
+            }
         },
         [getColor]
     );
@@ -122,10 +124,12 @@ export default function DetailRetiredPlan({navigation, route}) {
             text: _data?.label[1].val,
             style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
         });
-        _textBenchmark.current.setNativeProps({
-            text: _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
-        });
+        if (_data?.label[2]) {
+            _textBenchmark.current.setNativeProps({
+                text: _data?.label[2].val,
+                style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+            });
+        }
     };
     const getColor = useCallback((t) => {
         if (!t) {
@@ -316,40 +320,60 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 </Text>
                                             </Text>
                                         </View>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
-                                                style={[
-                                                    styles.legend_title_sty,
-                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
-                                                ]}
-                                                ref={_textBenchmark}
-                                                defaultValue={chartData?.yield_info?.label[2]?.val}
-                                                editable={false}
-                                            />
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#545968'}
-                                                    size={12}
+                                        {chartData?.yield_info?.label[2] && (
+                                            <View style={styles.legend_sty}>
+                                                <TextInput
+                                                    style={[
+                                                        styles.legend_title_sty,
+                                                        {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                                    ]}
+                                                    ref={_textBenchmark}
+                                                    defaultValue={chartData?.yield_info?.label[2]?.val}
+                                                    editable={false}
                                                 />
-                                                <Text style={styles.legend_desc_sty}>
-                                                    {chartData?.yield_info?.label[2]?.key}
+                                                <Text>
+                                                    <MaterialCommunityIcons
+                                                        name={'record-circle-outline'}
+                                                        color={'#545968'}
+                                                        size={12}
+                                                    />
+                                                    <Text style={styles.legend_desc_sty}>
+                                                        {chartData?.yield_info?.label[2]?.key}
+                                                    </Text>
                                                 </Text>
-                                            </Text>
-                                        </View>
+                                            </View>
+                                        )}
                                     </View>
+                                    {/* {type == 1 && ( */}
                                     <Chart
                                         initScript={baseAreaChart(
                                             chartData?.yield_info?.chart,
                                             [Colors.red, Colors.lightBlackColor, 'transparent'],
                                             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                            true
+                                            true,
+                                            2,
+                                            type
                                         )}
                                         onChange={onChartChange}
                                         data={chartData?.yield_info?.chart}
                                         onHide={onHide}
                                         style={{width: '100%'}}
                                     />
+                                    {/* )} */}
+                                    {/* {type == 2 && (
+                                        <Chart
+                                            initScript={baseAreaChart(
+                                                chartData?.yield_info?.chart,
+                                                [Colors.lightBlackColor, '#E74949', 'transparent'],
+                                                ['transparent', '#E74949', '#50D88A'],
+                                                true
+                                            )}
+                                            onChange={onChartChange}
+                                            data={chartData?.yield_info?.chart}
+                                            onHide={onHide}
+                                            style={{width: '100%'}}
+                                        />
+                                    )} */}
                                     <View
                                         style={{
                                             flexDirection: 'row',
@@ -363,13 +387,21 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 <TouchableOpacity
                                                     style={[
                                                         styles.btn_sty,
-                                                        {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                                        {
+                                                            backgroundColor:
+                                                                period == _item.val && type == _item.type
+                                                                    ? '#F1F6FF'
+                                                                    : '#fff',
+                                                        },
                                                     ]}
                                                     key={_index}
                                                     onPress={() => changeTab(_item.val, _item.type)}>
                                                     <Text
                                                         style={{
-                                                            color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                            color:
+                                                                period == _item.val && type == _item.type
+                                                                    ? '#0051CC'
+                                                                    : '#555B6C',
                                                             fontSize: text(12),
                                                         }}>
                                                         {_item.name}

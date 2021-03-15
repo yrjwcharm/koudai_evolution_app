@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import OkGesturePassword from 'react-native-ok-gesture-password';
 import Toast from '../../components/Toast';
+import storage from '../../utils/storage';
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
-export default function GesturePassword() {
+export default function GesturePassword({navigation, route}) {
     const [data, setData] = useState({
         point1: '#FFFFFF', //从0开始
         point2: '#FFFFFF',
@@ -19,22 +20,28 @@ export default function GesturePassword() {
     const [password, setPassword] = useState('');
     const [status, setStatus] = useState(false);
     const [isWarning, setIsWarning] = useState(false);
-
+    useEffect(() => {
+        if (storage.get('GesturesPwd')) {
+            setPassword = storage.get('GesturesPwd');
+        }
+    }, []);
     const _onEnd = (pwd) => {
-        // Alert.alert('密码', password);
+        Alert.alert('密码', password);
         if (!password) {
             setPassword(pwd);
         } else if (password == pwd) {
             setStatus(true);
             setIsWarning(false);
-            Toast.show('Password is right, success.');
+            storage.save('GesturesPwd', password);
+            Toast.show('设置成功');
+            navigation.goBack();
         } else {
             setStatus(false);
             setIsWarning(true);
             setTimeout(() => {
                 setIsWarning(false);
             }, 1000);
-            Toast.show('Password is wrong, try again.');
+            Toast.show('两次密码不一致，请重新绘制');
         }
     };
     const _resetHeadPoint = () => {
