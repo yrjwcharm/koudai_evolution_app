@@ -245,7 +245,6 @@ class ChatWindow extends PureComponent {
         if (listHeightAndWidth !== undefined) {
             const {contentHeight} = listHeightAndWidth;
             this.isInverted = contentHeight > this.listHeight;
-            console.log(this.isInverted);
         }
         if (!inverted) {
             setTimeout(
@@ -565,7 +564,6 @@ class ChatWindow extends PureComponent {
         if (!inverted) {
             return;
         }
-        console.log('loadHistory');
         this.props.loadHistory();
     };
 
@@ -727,6 +725,7 @@ class ChatWindow extends PureComponent {
         } = this.state;
 
         const currentList = messageList.slice().sort((a, b) => (inverted ? b.time - a.time : a.time - b.time));
+        console.log(inverted, 'inverted');
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View

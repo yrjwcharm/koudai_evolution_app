@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-16 16:28:25
+ * @LastEditTime: 2021-03-16 18:37:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -11,8 +11,6 @@ import {
     StyleSheet,
     Text,
     View,
-    StatusBar,
-    Image,
     Keyboard,
     Modal as _Modal,
     PermissionsAndroid,
@@ -36,12 +34,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import {BottomModal, Modal} from '../../components/Modal';
-import {Button} from '../../components/Button';
-import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
+import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import _ from 'lodash';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
-import Toast from '../../components/Toast';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import BaseUrl from '../../services/config';
@@ -77,7 +73,7 @@ const IM = (props) => {
     let lastShowTimeStamp = useRef(null);
     let connectTime = useState(''); //链接时长
     let unverifiedMsg = useRef([]);
-
+    const [inverted, setInverted] = useState(false);
     const [messages, setMessages] = useState([]);
     const bottomModal = useRef(null);
     const clearIntelList = () => {
@@ -155,7 +151,6 @@ const IM = (props) => {
                         });
                     } else {
                         handelSystemMes(_data.data.message);
-                        // Toast.show(_data.data.message);
                     }
                     break;
                 //发送消息回馈
@@ -315,11 +310,15 @@ const IM = (props) => {
         if (Array.isArray(message) && message.length > 0) {
             lastShowTimeStamp.current = message[message.length - 1].time;
             message.forEach((item, index) => {
-                if (item.time - lastShowTimeStamp.current > interval) {
-                    lastShowTimeStamp.current = item.time;
+                if (index == message.length - 1) {
                     _mes.push(genMessage({...item, renderTime: true}));
                 } else {
-                    _mes.push(genMessage({...item, renderTime: false}));
+                    if (item.time - lastShowTimeStamp.current > interval) {
+                        lastShowTimeStamp.current = item.time;
+                        _mes.push(genMessage({...item, renderTime: true}));
+                    } else {
+                        _mes.push(genMessage({...item, renderTime: false}));
+                    }
                 }
             });
         } else {
@@ -338,6 +337,8 @@ const IM = (props) => {
 
     //点击发送按钮发送消息
     const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {
+        console.log(_ChatScreen?.current);
+        // isInverted != inverted && setInverted(isInverted || isInverted === null ? true : isInverted);
         let cmid = randomMsgId(cmd);
         const newMessages = handleMessage({
             cmid: cmid,
@@ -898,7 +899,7 @@ const IM = (props) => {
                 ref={_ChatScreen}
                 messageList={messages}
                 isIPhoneX={isIphoneX()}
-                inverted={true}
+                inverted={_ChatScreen?.current?.isInverted}
                 // onScroll={(e) => {
                 //     e.persist();
                 //     if (e?.nativeEvent.contentOffset.y < 0) {
