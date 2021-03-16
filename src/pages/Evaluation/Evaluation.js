@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 16:32:06
+ * @LastEditTime: 2021-03-16 12:18:54
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -35,6 +35,7 @@ import Robot from './components/Robot';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import {Modal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 const bottom = isIphoneX() ? 84 : 50;
 const defaultAge = 25;
 //机器人动画
@@ -79,9 +80,13 @@ export class question extends Component {
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/start/20210101').then((data) => {
-            this.setState({summary_id: data.result.summary_id}, () => {
-                this.getNextQuestion();
-            });
+            if (data.code === '000000') {
+                this.setState({summary_id: data.result.summary_id}, () => {
+                    this.getNextQuestion();
+                });
+            } else {
+                Toast.show(data.message);
+            }
         });
     }
     componentWillUnmount() {
@@ -103,17 +108,21 @@ export class question extends Component {
             action,
         };
         http.get('/questionnaire/questions/20210101', params).then((data) => {
-            //已经答过的题
-            let ques = questions.slice(0, current + 1);
-            this.setState(
-                {
-                    questions: ques.concat(data.result.questions),
-                    questionnaire_cate: data.result.questionnaire_cate,
-                },
-                () => {
-                    startAnimation && startAnimation(action);
-                }
-            );
+            if (data.code === '000000') {
+                //已经答过的题
+                let ques = questions.slice(0, current + 1);
+                this.setState(
+                    {
+                        questions: ques.concat(data.result.questions),
+                        questionnaire_cate: data.result.questionnaire_cate,
+                    },
+                    () => {
+                        startAnimation && startAnimation(action);
+                    }
+                );
+            } else {
+                Toast.show(data.message);
+            }
         });
     };
     handleViewRef = (ref) => (this.quesBtnView = ref);
@@ -396,11 +405,14 @@ export class question extends Component {
         }
         return true;
     };
-    inputValue = (value, type) => {
+    inputValue = (value, type, id) => {
         this.setState({value});
         if (type && type == 'age') {
             this.setState({inputBtnCanClick: true});
         } else {
+            if (id == 16) {
+                this.expendAmount = value; //记录月支出金额
+            }
             this.checkInput(value);
         }
     };
@@ -606,7 +618,17 @@ export class question extends Component {
                                             ) : null}
                                             {current_ques.remark ? (
                                                 <View style={{marginTop: px(12)}}>
-                                                    <HTML style={styles.invest_text} html={current_ques.remark} />
+                                                    <HTML
+                                                        style={styles.invest_text}
+                                                        html={
+                                                            current_ques?.relation_id != 0
+                                                                ? current_ques.remark.replace(
+                                                                      '#amount#',
+                                                                      this.expendAmount
+                                                                  )
+                                                                : current_ques.remark
+                                                        }
+                                                    />
                                                 </View>
                                             ) : null}
 
@@ -651,7 +673,9 @@ export class question extends Component {
                                                                 this.input = ref;
                                                             }}
                                                             keyboardType={'number-pad'}
-                                                            onChangeText={this.inputValue}
+                                                            onChangeText={(value) => {
+                                                                this.inputValue(value, '', current_ques.id);
+                                                            }}
                                                         />
                                                     </View>
                                                     {!warn && value.length > 4 ? (

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:05:56
+ * @LastEditTime: 2021-03-16 10:38:02
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -32,6 +32,7 @@ import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native'
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
+import JPush from 'jpush-react-native';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -79,6 +80,8 @@ const Index = (props) => {
             });
     }, []);
     useEffect(() => {
+        // JPush.init();
+        // JPush.getRegistrationID((result) => console.log('registerID:' + JSON.stringify(result)));
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
             isFocused && getData('refresh');
             isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});

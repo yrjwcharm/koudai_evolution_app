@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 10:29:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-16 16:34:20
  * @Description:路由表
  */
 import React from 'react';
@@ -138,7 +138,7 @@ export default function AppStack() {
     console.log(Stack.Navigator);
     return (
         <Stack.Navigator
-            initialRouteName="Index"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
