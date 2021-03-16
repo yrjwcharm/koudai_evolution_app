@@ -1,8 +1,8 @@
 /*
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-23 10:45:30
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-16 10:14:51
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -14,14 +14,14 @@ import {px} from '../utils/appUtil';
 import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import {Colors} from '../common/commonStyle';
+import storage from '../utils/storage';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(24);
-
 export default function Tabbar() {
     return (
         <Tab.Navigator
             initialRouteName="Index"
-            screenOptions={({route}) => ({
+            screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
                     if (route.name === 'Find') {
                         if (focused) {
@@ -91,7 +91,21 @@ export default function Tabbar() {
                 }}
             />
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
+            <Tab.Screen
+                name="Home"
+                options={{tabBarLabel: '我的'}}
+                component={Home}
+                listeners={({navigation, route}) => {
+                    return {
+                        tabPress: (e) => {
+                            // e.preventDefault();
+                            storage.get('GesturesPassword').then((res) => {
+                                navigation.replace('GesturePassword');
+                            });
+                        },
+                    };
+                }}
+            />
         </Tab.Navigator>
     );
 }

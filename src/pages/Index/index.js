@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 12:15:51
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-16 14:26:26
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -19,6 +19,7 @@ import {
     Keyboard,
     KeyboardAvoidingView,
     StatusBar,
+    Platform,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {update} from '../../redux/actions/userInfo';
@@ -31,12 +32,16 @@ import {Modal, BottomModal, VerifyCodeModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
+import Http from '../../services';
+var _timer;
 function HomeScreen(props) {
     // const refRBSheet = useRef();
     const {navigation} = props;
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
     const [visible, setVisible] = useState(false);
+    const [jpush_rid, setJpush_rid] = useState();
+
     React.useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -47,7 +52,10 @@ function HomeScreen(props) {
             });
             JPush.setBadge({badge: 1, appbadge: '123'});
 
-            JPush.getRegistrationID((result) => console.log('registerID:' + JSON.stringify(result)));
+            JPush.getRegistrationID((result) => {
+                console.log('registerID:' + JSON.stringify(result));
+                setJpush_rid(result);
+            });
 
             //通知回调
             JPush.addNotificationListener((result) => {
@@ -66,6 +74,16 @@ function HomeScreen(props) {
             });
         }, 100);
 
+        _timer = setInterval(() => {
+            Http.post('/common/device/heart_beat/20210101', {
+                channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
+                jpush_rid: '2222',
+                platform: Platform.OS,
+            }).then((res) => {
+                console.log(res);
+            });
+        }, 60 * 1000);
+
         const unsubscribe = navigation.addListener('tabPress', (e) => {
             // Prevent default behavior
             console.log('111');
@@ -76,7 +94,10 @@ function HomeScreen(props) {
         });
         // refRBSheet.current.open();
         // verifyCodeModel.current.show();
-        return unsubscribe;
+        return () => {
+            clearInterval(_timer);
+            unsubscribe;
+        };
     }, [navigation, visible]);
     const password = React.useRef();
     const bottomModal = React.useRef(null);

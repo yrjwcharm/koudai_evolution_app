@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 20:26:52
+ * @LastEditTime: 2021-03-15 16:23:34
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -16,7 +16,6 @@ import {pie} from './ChartOption';
 import {baseAreaChart} from '../components/ChartOption';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ChartData from './data.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
@@ -230,7 +229,10 @@ export default function DetailPolaris({route, navigation}) {
                                             onPress={() => changeTab(_item.val, _item.type)}>
                                             <Text
                                                 style={{
-                                                    color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                    color:
+                                                        period == _item.val && type == _item.type
+                                                            ? '#0051CC'
+                                                            : '#555B6C',
                                                     fontSize: text(12),
                                                 }}>
                                                 {_item.name}

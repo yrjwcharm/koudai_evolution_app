@@ -447,7 +447,10 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                     onPress={() => changeTab(_item.val, _item.type)}>
                                                     <Text
                                                         style={{
-                                                            color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                            color:
+                                                                period == _item.val && type == _item.type
+                                                                    ? '#0051CC'
+                                                                    : '#555B6C',
                                                             fontSize: text(12),
                                                         }}>
                                                         {_item.name}

@@ -3,6 +3,7 @@ import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import OkGesturePassword from 'react-native-ok-gesture-password';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
+import Header from '../../components/NavBar';
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
 export default function GesturePassword({navigation, route}) {
@@ -21,21 +22,29 @@ export default function GesturePassword({navigation, route}) {
     const [status, setStatus] = useState(false);
     const [isWarning, setIsWarning] = useState(false);
     useEffect(() => {
-        if (storage.get('GesturesPwd')) {
-            setPassword = storage.get('GesturesPwd');
-        }
+        // storage.delete('GesturesPassword');
+        storage.get('GesturesPassword').then((res) => {
+            if (res) setPassword(res);
+        });
+        console.log(storage.get('GesturesPwd'), '---GesturesPwd');
     }, []);
     const _onEnd = (pwd) => {
-        Alert.alert('密码', password);
+        // Alert.alert('密码', password);
+        console.log(pwd, '--pwd');
         if (!password) {
             setPassword(pwd);
         } else if (password == pwd) {
             setStatus(true);
             setIsWarning(false);
-            storage.save('GesturesPwd', password);
+            storage.save('GesturesPassword', pwd);
             Toast.show('设置成功');
-            navigation.goBack();
+            setTimeout(() => {
+                navigation.goBack();
+            }, 1000);
         } else {
+            storage.get('GesturesPassword').then((res) => {
+                console.log(res);
+            });
             setStatus(false);
             setIsWarning(true);
             setTimeout(() => {
@@ -100,6 +109,7 @@ export default function GesturePassword({navigation, route}) {
     };
     return (
         <View style={styles.container}>
+            {/* <Header title="手势密码" /> */}
             <View style={{height: 70, marginTop: 10}}>
                 <View style={styles.headContent}>
                     <View style={[styles.headCircle, {backgroundColor: data.point1}]} />

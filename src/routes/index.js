@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-13 11:10:59
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-16 10:29:38
  * @Description:路由表
  */
 import React from 'react';
@@ -130,13 +130,15 @@ import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold';
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
+import Index from '../pages/Index/index'; //
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
+    console.log(Stack.Navigator);
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="Index"
             screenOptions={{
                 // headerShown: false,
 
@@ -440,6 +442,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
+            <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} />
         </Stack.Navigator>
     );
 }

@@ -35,8 +35,10 @@ export default function DetailAccount({route, navigation}) {
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
-    const changeTab = (p) => {
+    const [type, setType] = useState(1);
+    const changeTab = (p, type) => {
         setPeriod(p);
+        setType(type);
     };
     const jumpPage = (url, params) => {
         if (!url) {
@@ -203,13 +205,17 @@ export default function DetailAccount({route, navigation}) {
                                     <TouchableOpacity
                                         style={[
                                             styles.btn_sty,
-                                            {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                            {
+                                                backgroundColor:
+                                                    period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                            },
                                         ]}
                                         key={_index}
                                         onPress={() => changeTab(_item.val, _item.type)}>
                                         <Text
                                             style={{
-                                                color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                color:
+                                                    period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
                                                 fontSize: text(12),
                                             }}>
                                             {_item.name}

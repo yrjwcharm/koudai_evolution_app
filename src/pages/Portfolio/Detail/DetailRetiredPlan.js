@@ -344,7 +344,6 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             </View>
                                         )}
                                     </View>
-                                    {/* {type == 1 && ( */}
                                     <Chart
                                         initScript={baseAreaChart(
                                             chartData?.yield_info?.chart,
@@ -359,21 +358,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         onHide={onHide}
                                         style={{width: '100%'}}
                                     />
-                                    {/* )} */}
-                                    {/* {type == 2 && (
-                                        <Chart
-                                            initScript={baseAreaChart(
-                                                chartData?.yield_info?.chart,
-                                                [Colors.lightBlackColor, '#E74949', 'transparent'],
-                                                ['transparent', '#E74949', '#50D88A'],
-                                                true
-                                            )}
-                                            onChange={onChartChange}
-                                            data={chartData?.yield_info?.chart}
-                                            onHide={onHide}
-                                            style={{width: '100%'}}
-                                        />
-                                    )} */}
+
                                     <View
                                         style={{
                                             flexDirection: 'row',

@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 19:00:18
+ * @LastEditTime: 2021-03-15 16:19:42
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -30,11 +30,11 @@ export default function DetailAccount({route}) {
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
+    const [type, setType] = useState(1);
     const jump = useJump();
-    var _type;
     const changeTab = (period, type) => {
         setPeriod(period);
-        _type = type;
+        setType(type);
     };
 
     const init = useCallback(() => {
@@ -46,7 +46,7 @@ export default function DetailAccount({route}) {
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
                 period: period,
-                type: _type,
+                type: type,
                 allocation_id: data.allocation_id,
                 benchmark_id: data.benchmark_id,
                 poid: route?.params?.poid,
@@ -199,13 +199,17 @@ export default function DetailAccount({route}) {
                                     <TouchableOpacity
                                         style={[
                                             styles.btn_sty,
-                                            {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                            {
+                                                backgroundColor:
+                                                    period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                            },
                                         ]}
                                         key={_index}
                                         onPress={() => changeTab(_item.val, _item.type)}>
                                         <Text
                                             style={{
-                                                color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                color:
+                                                    period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
                                                 fontSize: text(12),
                                             }}>
                                             {_item.name}
