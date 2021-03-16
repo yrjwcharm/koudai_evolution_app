@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 14:26:26
+ * @LastEditTime: 2021-03-16 14:39:05
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -73,11 +73,11 @@ function HomeScreen(props) {
                 console.log('customMessageListener:' + JSON.stringify(result));
             });
         }, 100);
-
+        console.log(jpush_rid, '---jpush_rid');
         _timer = setInterval(() => {
             Http.post('/common/device/heart_beat/20210101', {
                 channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
-                jpush_rid: '2222',
+                jpush_rid: jpush_rid,
                 platform: Platform.OS,
             }).then((res) => {
                 console.log(res);
