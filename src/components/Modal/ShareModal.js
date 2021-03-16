@@ -2,10 +2,10 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 18:25:58
+ * @LastEditTime: 2021-03-16 18:56:26
  * @Description: 分享弹窗
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
@@ -15,6 +15,10 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../Button';
 import Mask from '../Mask';
+import Toast from '../Toast';
+import Clipboard from '@react-native-community/clipboard';
+import * as WeChat from 'react-native-wechat-lib';
+
 const ShareModal = React.forwardRef((props, ref) => {
     const {
         backdrop = true, // 是否有蒙层
@@ -22,32 +26,41 @@ const ShareModal = React.forwardRef((props, ref) => {
         title = '', // 标题
         isTouchMaskToClose = true, // 是否点击蒙层关闭
         more = false, // 是否包含点赞和收藏
+        shareContent = {}, // 分享内容
+        likeCallback = () => {},
+        collectCallback = () => {},
     } = props;
     const [visible, setVisible] = useState(false);
     const [list, setList] = useState([
         {
             img: require('../../assets/img/share/wechat.png'),
             title: '发送微信好友',
+            type: 'ShareAppMessage',
         },
         {
             img: require('../../assets/img/share/timeline.png'),
             title: '分享到朋友圈',
+            type: 'ShareTimeline',
         },
         {
             img: require('../../assets/img/share/like.png'),
             title: '点赞',
+            type: 'Like',
         },
         {
             img: require('../../assets/img/share/collect.png'),
             title: '收藏',
+            type: 'Collect',
         },
         {
             img: require('../../assets/img/share/copy.png'),
             title: '复制链接',
+            type: 'Copy',
         },
         {
             img: require('../../assets/img/share/more.png'),
             title: '更多',
+            type: 'MoreOptions',
         },
     ]);
     const show = () => {
@@ -56,6 +69,80 @@ const ShareModal = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(!visible);
+    };
+
+    const share = (item) => {
+        if (item.type === 'ShareAppMessage') {
+            WeChat.isWXAppInstalled().then((isInstalled) => {
+                if (isInstalled) {
+                    try {
+                        WeChat.shareWebpage({
+                            title: shareContent.title,
+                            description: shareContent.content,
+                            thumbImageUrl: shareContent.avatar,
+                            webpageUrl: shareContent.link,
+                            scene: 0,
+                        }).then((res) => {
+                            hide();
+                            Toast.show('分享成功');
+                        });
+                    } catch (e) {
+                        if (e instanceof WeChat.WechatError) {
+                            console.error(e.stack);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    Toast.show('请安装微信');
+                    hide();
+                }
+            });
+        } else if (item.type == 'ShareTimeline') {
+            WeChat.isWXAppInstalled().then((isInstalled) => {
+                if (isInstalled) {
+                    try {
+                        WeChat.shareWebpage({
+                            title: shareContent.title,
+                            description: shareContent.content,
+                            thumbImageUrl: shareContent.avatar,
+                            webpageUrl: shareContent.link,
+                            scene: 1,
+                        }).then(() => {
+                            hide();
+                            Toast.show('分享成功');
+                        });
+                    } catch (e) {
+                        if (e instanceof WeChat.WechatError) {
+                            console.error(e.stack);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    Toast.show('请安装微信');
+                    hide();
+                }
+            });
+        } else if (item.type === 'Like') {
+            hide();
+            setTimeout(() => {
+                likeCallback();
+            }, 500);
+        } else if (item.type === 'Collect') {
+            hide();
+            setTimeout(() => {
+                collectCallback();
+            }, 500);
+        } else if (item.type === 'Copy') {
+            Clipboard.setString(shareContent.link);
+            hide();
+            setTimeout(() => {
+                Toast.show('复制成功');
+            }, 500);
+        } else if (item.type === 'MoreOptions') {
+            console.log('dx');
+        }
     };
 
     React.useImperativeHandle(ref, () => {
@@ -71,26 +158,32 @@ const ShareModal = React.forwardRef((props, ref) => {
                 {
                     img: require('../../assets/img/share/wechat.png'),
                     title: '发送微信好友',
+                    type: 'ShareAppMessage',
                 },
                 {
                     img: require('../../assets/img/share/timeline.png'),
                     title: '分享到朋友圈',
+                    type: 'ShareTimeline',
                 },
                 {
                     img: require('../../assets/img/share/like.png'),
                     title: '点赞',
+                    type: 'Like',
                 },
                 {
                     img: require('../../assets/img/share/collect.png'),
                     title: '收藏',
+                    type: 'Collect',
                 },
                 {
                     img: require('../../assets/img/share/copy.png'),
                     title: '复制链接',
+                    type: 'Copy',
                 },
                 {
                     img: require('../../assets/img/share/more.png'),
                     title: '更多',
+                    type: 'MoreOptions',
                 },
             ]);
         } else {
@@ -98,18 +191,22 @@ const ShareModal = React.forwardRef((props, ref) => {
                 {
                     img: require('../../assets/img/share/wechat.png'),
                     title: '发送微信好友',
+                    type: 'ShareAppMessage',
                 },
                 {
                     img: require('../../assets/img/share/timeline.png'),
                     title: '分享到朋友圈',
+                    type: 'ShareTimeline',
                 },
                 {
                     img: require('../../assets/img/share/copy.png'),
                     title: '复制链接',
+                    type: 'Copy',
                 },
                 {
                     img: require('../../assets/img/share/more.png'),
                     title: '更多',
+                    type: 'MoreOptions',
                 },
             ]);
         }
@@ -135,6 +232,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                                 <TouchableOpacity
                                     key={index}
                                     activeOpacity={0.8}
+                                    onPress={() => share(item)}
                                     style={[Style.flexCenter, styles.option]}>
                                     <Image source={item.img} style={styles.icon} />
                                     <Text style={styles.opTitle}>{item.title}</Text>
@@ -210,6 +308,9 @@ ShareModal.propTypes = {
     title: PropTypes.string,
     isTouchMaskToClose: PropTypes.bool,
     more: PropTypes.bool,
+    shareContent: PropTypes.object.isRequired,
+    likeCallback: PropTypes.func,
+    collectCallback: PropTypes.func,
 };
 
 export default ShareModal;

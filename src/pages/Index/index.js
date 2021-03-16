@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 14:39:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-16 18:42:05
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -98,7 +98,7 @@ function HomeScreen(props) {
             clearInterval(_timer);
             unsubscribe;
         };
-    }, [navigation, visible]);
+    }, [navigation, visible, jpush_rid, userInfo]);
     const password = React.useRef();
     const bottomModal = React.useRef(null);
     const verifyCodeModel = React.useRef(null);
