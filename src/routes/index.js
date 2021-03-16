@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 10:29:38
+ * @LastEditTime: 2021-03-16 17:15:31
  * @Description:路由表
  */
 import React from 'react';
@@ -85,8 +85,7 @@ import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投�
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
-import TradeNotice from '../pages/Message/TradeNotice'; //交易通知
-import ActivityNotice from '../pages/Message/ActivityNotice'; //活动通知
+import MessageNotice from '../pages/Message/MessageNotice'; //交易通知
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
 import Settings from '../pages/Assets/Settings'; // 个人设置
 import Profile from '../pages/Assets/Profile'; // 个人资料
@@ -138,7 +137,7 @@ export default function AppStack() {
     console.log(Stack.Navigator);
     return (
         <Stack.Navigator
-            initialRouteName="Index"
+            initialRouteName="Tab"
             screenOptions={{
                 // headerShown: false,
 
@@ -367,7 +366,7 @@ export default function AppStack() {
                     //     cardStyle: {
                     //         opacity: progress.interpolate({
                     //             inputRange: [0, 0.5, 0.9, 1],
-                    //             outputRange: [0, 0.25, 0.7, 1],
+                    //             outputRange: [0, 0.25, 0.7, 1]
                     //         }),
                     //     },
                     // }),
@@ -395,8 +394,7 @@ export default function AppStack() {
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
             <Stack.Screen name="MessageBoard" component={MessageBoard} options={{title: '用户留言详情'}} />
-            <Stack.Screen name="TradeNotice" component={TradeNotice} options={{headerShown: false}} />
-            <Stack.Screen name="ActivityNotice" component={ActivityNotice} options={{headerShown: false}} />
+            <Stack.Screen name="MessageNotice" component={MessageNotice} options={{headerShown: false}} />
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
             <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{headerShown: false}} />

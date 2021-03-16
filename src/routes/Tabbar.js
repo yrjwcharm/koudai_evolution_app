@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 10:14:51
+ * @LastEditTime: 2021-03-16 15:36:13
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -15,9 +15,12 @@ import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import {Colors} from '../common/commonStyle';
 import storage from '../utils/storage';
+import {useSelector, useDispatch} from 'react-redux';
+
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(24);
 export default function Tabbar() {
+    const userInfo = useSelector((store) => store.userInfo);
     return (
         <Tab.Navigator
             initialRouteName="Index"
@@ -99,9 +102,14 @@ export default function Tabbar() {
                     return {
                         tabPress: (e) => {
                             // e.preventDefault();
-                            storage.get('GesturesPassword').then((res) => {
-                                navigation.replace('GesturePassword');
-                            });
+                            console.log(userInfo.toJS(), '0000');
+                            if (userInfo.toJS().uid) {
+                                navigation.navigate('Home');
+                            } else {
+                                storage.get('GesturesPassword').then((res) => {
+                                    navigation.replace('GesturePassword');
+                                });
+                            }
                         },
                     };
                 }}

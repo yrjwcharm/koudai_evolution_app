@@ -1,20 +1,22 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
- * @Description:
+ * @Description:消息中心
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-27 16:39:26
+ * @LastEditTime: 2021-03-16 19:50:10
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Linking} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, NativeModules, Image, Linking, Platform} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import {useJump} from '../../components/hooks/';
+import {openSettings} from 'react-native-permissions';
 export default function RemindMessage({navigation}) {
     const [data, setData] = useState({});
     const [hide, setHide] = useState(false);
+    const jump = useJump();
     const closeNotice = () => {
         setHide(true);
     };
@@ -23,20 +25,20 @@ export default function RemindMessage({navigation}) {
             setData(res.result);
         });
     }, []);
-    const jumpTo = (url, params) => {
-        navigation.navigate(url, params);
+    const openLink = () => {
+        openSettings().catch(() => console.warn('cannot open settings'));
     };
-    // Linking.openURL('app-settings:')
-    //   .catch((err) => console.log('error', err));
+
     return (
         <>
             {Object.keys(data).length > 0 && (
                 <View>
                     {!hide && data?.notice && (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                            <Text style={styles.yellow_sty}>{data.notice.text}</Text>
+                            <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
                             <TouchableOpacity
-                                style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}>
+                                style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
+                                onPress={openLink}>
                                 <Text
                                     style={{
                                         color: '#fff',
@@ -44,7 +46,7 @@ export default function RemindMessage({navigation}) {
                                         paddingHorizontal: text(10),
                                         paddingVertical: text(5),
                                     }}>
-                                    {data.notice.button.text}
+                                    {data?.notice?.button?.text}
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => closeNotice()}>
@@ -52,27 +54,28 @@ export default function RemindMessage({navigation}) {
                             </TouchableOpacity>
                         </View>
                     )}
+
                     <View style={{padding: text(16)}}>
-                        <TouchableOpacity
-                            style={styles.im_card_sty}
-                            onPress={() => jumpTo(data.service.jump_url, data.service.params)}>
+                        <TouchableOpacity style={styles.im_card_sty} onPress={() => jump(data?.service?.url)}>
                             <Image
                                 source={{
-                                    uri: data.service.icon,
+                                    uri: data?.service?.icon,
                                 }}
                                 resizeMode="contain"
                                 style={{width: text(40), height: text(40)}}
                             />
                             <View style={{marginLeft: text(20), flex: 1}}>
-                                <Text style={styles.title_sty}>{data.service.title}</Text>
-                                <Text style={styles.desc_sty} numberOfLines={1}>
-                                    {data.service.content}
-                                </Text>
+                                <Text style={styles.title_sty}>{data?.service?.title}</Text>
+                                {data?.service?.content ? (
+                                    <Text style={styles.desc_sty} numberOfLines={1}>
+                                        {data?.service?.content}
+                                    </Text>
+                                ) : null}
                             </View>
                             <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.im_card_sty}
+                        {/* <TouchableOpacity
+                            style={[styles.im_card_sty, {marginBottom: 0}]}
                             onPress={() => jumpTo(data.point.jump_url, data.point.params)}>
                             <Image
                                 source={{
@@ -88,7 +91,7 @@ export default function RemindMessage({navigation}) {
                                 </Text>
                             </View>
                             <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <View
                             style={{
@@ -97,27 +100,39 @@ export default function RemindMessage({navigation}) {
                                 marginTop: text(16),
                                 paddingHorizontal: text(16),
                             }}>
-                            {data.message_list.map((_item, _index) => {
+                            {data?.message_list?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
                                         style={[
                                             styles.list_card_sty,
-                                            {borderBottomWidth: _index < data.message_list.length - 1 ? 0.5 : 0},
+                                            {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},
                                         ]}
                                         key={_index + '_item'}
-                                        onPress={jumpTo(_item.jump_url, _item.params)}>
-                                        <Image
-                                            source={{
-                                                uri: _item.icon,
-                                            }}
-                                            resizeMode="contain"
-                                            style={{width: text(40), height: text(40)}}
-                                        />
+                                        onPress={() => jump(_item.url)}>
+                                        <View>
+                                            <Image
+                                                source={{
+                                                    uri: _item?.icon,
+                                                }}
+                                                resizeMode="contain"
+                                                style={{width: text(40), height: text(40)}}
+                                            />
+                                            {_item?.unread ? (
+                                                <View style={styles.point_sty}>
+                                                    <Text style={{color: '#fff', fontSize: text(11)}}>
+                                                        {_item?.unread}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
+                                        </View>
+
                                         <View style={{marginLeft: text(20), flex: 1}}>
-                                            <Text style={styles.title_sty}>{_item.title}</Text>
-                                            <Text style={styles.desc_sty} numberOfLines={1}>
-                                                {_item.content}
-                                            </Text>
+                                            <Text style={styles.title_sty}>{_item?.title}</Text>
+                                            {_item?.content ? (
+                                                <Text style={styles.desc_sty} numberOfLines={1}>
+                                                    {_item?.content}
+                                                </Text>
+                                            ) : null}
                                         </View>
                                         <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                                     </TouchableOpacity>
@@ -134,10 +149,10 @@ const styles = StyleSheet.create({
     yellow_wrap_sty: {
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.padding,
+        paddingVertical: text(10),
     },
     yellow_sty: {
         color: '#EB7121',
-        paddingVertical: text(10),
         lineHeight: text(18),
         fontSize: text(13),
         flex: 1,
@@ -149,6 +164,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(18),
         flexDirection: 'row',
         alignItems: 'center',
+        // marginBottom: text(12),
     },
     title_sty: {
         color: Colors.defaultColor,
@@ -165,5 +181,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: Colors.borderColor,
         borderBottomWidth: 0.5,
+    },
+    point_sty: {
+        position: 'absolute',
+        right: text(-12),
+        top: text(-5),
+        backgroundColor: '#E74949',
+        borderRadius: text(25),
+        padding: text(2),
+        paddingHorizontal: text(5),
+        borderWidth: text(2),
+        borderColor: '#fff',
     },
 });

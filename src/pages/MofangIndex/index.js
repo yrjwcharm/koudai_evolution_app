@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 16:05:56
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-16 18:36:20
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -66,6 +66,7 @@ const Index = (props) => {
     const scrollView = useRef(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [all, setAll] = useState(0);
     const getData = useCallback((params) => {
         params == 'refresh' && setRefreshing(true);
         http.get('/home/detail/20210101')
@@ -91,8 +92,16 @@ const Index = (props) => {
     useFocusEffect(
         useCallback(() => {
             getData();
+            readInterface();
         }, [getData])
     );
+    const readInterface = () => {
+        setInterval(() => {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
+                setAll(res.result.all);
+            });
+        }, 60 * 1000 * 5);
+    };
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
@@ -159,9 +168,9 @@ const Index = (props) => {
                             ) : (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        jump({path: 'IM'});
+                                        jump({path: 'RemindMessage'});
                                     }}>
-                                    {data?.notice_num > 0 && <View style={styles.new_message} />}
+                                    {all ? <View style={styles.new_message} /> : null}
                                     <FastImage
                                         style={{width: px(24), height: px(24)}}
                                         source={require('../../assets/img/index/message.png')}

@@ -39,7 +39,7 @@ export default function GesturePassword({navigation, route}) {
             storage.save('GesturesPassword', pwd);
             Toast.show('设置成功');
             setTimeout(() => {
-                navigation.goBack();
+                navigation.navigate('Home');
             }, 1000);
         } else {
             storage.get('GesturesPassword').then((res) => {
