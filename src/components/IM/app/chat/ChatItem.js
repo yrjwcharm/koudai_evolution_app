@@ -481,13 +481,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     system_button: {
-        backgroundColor: 'rgba(240, 240, 240, 0.7)',
+        backgroundColor: '#cccccd',
         paddingHorizontal: 8,
         paddingVertical: 3,
         borderRadius: 4,
     },
     system_text: {
         fontSize: 12,
+        color: '#fff',
     },
     userName: {
         fontSize: 12,

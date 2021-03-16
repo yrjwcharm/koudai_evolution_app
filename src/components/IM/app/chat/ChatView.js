@@ -176,7 +176,9 @@ class ChatWindow extends PureComponent {
         this.setState({messageContent: ''});
         if (!inverted) {
             this.time && clearTimeout(this.time);
-            // this.time = setTimeout(() => { this.chatList && this.chatList.scrollToEnd({ animated: true }) }, 200)
+            this.time = setTimeout(() => {
+                this.chatList && this.chatList.scrollToEnd({animated: true});
+            }, 200);
         } else {
             this.chatList.scrollToOffset({y: 0, animated: true});
         }
@@ -218,7 +220,7 @@ class ChatWindow extends PureComponent {
         }
         this.setState({inputChangeSize: changeHeight <= 70 ? changeHeight : 70});
         if (!inverted) {
-            this.chatList && this.chatList.scrollToEnd({animated: true});
+            // this.chatList && this.chatList.scrollToEnd({animated: true});
         }
     }
 
@@ -244,7 +246,6 @@ class ChatWindow extends PureComponent {
             const {contentHeight} = listHeightAndWidth;
             this.isInverted = contentHeight > this.listHeight;
         }
-
         if (!inverted) {
             setTimeout(
                 () => {
@@ -563,6 +564,7 @@ class ChatWindow extends PureComponent {
         if (!inverted) {
             return;
         }
+        console.log('loadHistory');
         this.props.loadHistory();
     };
 
@@ -722,7 +724,6 @@ class ChatWindow extends PureComponent {
             panelShow,
             emojiShow,
         } = this.state;
-        console.log(messageList, 'messageList');
 
         const currentList = messageList.slice().sort((a, b) => (inverted ? b.time - a.time : a.time - b.time));
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
@@ -763,14 +764,18 @@ class ChatWindow extends PureComponent {
                             onScroll={(e) => {
                                 this.props.onScroll(e);
                             }}
+                            // style={{
+                            //     backgroundColor: '#fff',
+                            //     // flex: 1,
+                            //     justifyContent: 'flex-start',
+                            // }}
                             showsVerticalScrollIndicator={this.props.showsVerticalScrollIndicator}
                             onEndReachedThreshold={this.props.onEndReachedThreshold}
-                            enableEmptySections
                             scrollEventThrottle={100}
                             keyExtractor={(item) => `${item.id}`}
-                            // onEndReached={() => this._loadHistory()}
-                            onRefresh={this.props.loadHistory}
-                            refreshing={false}
+                            onEndReached={() => this._loadHistory()}
+                            // onRefresh={this.props.loadHistory}
+                            // refreshing={false}
                             onLayout={(e) => {
                                 this._scrollToBottom();
                                 this.listHeight = e.nativeEvent.layout.height;

@@ -10,7 +10,7 @@ import {View, StyleSheet, Dimensions, Animated, Platform} from 'react-native';
 import EmojiPanel from '../emoji';
 import PlusPanel from '../plus';
 const {width, height} = Dimensions.get('window');
-export default class PanelContainer extends React.Component {
+export default class PanelContainer extends PureComponent {
     constructor(props) {
         super(props);
     }
