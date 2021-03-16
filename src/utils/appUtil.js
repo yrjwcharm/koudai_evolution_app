@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-02 11:21:23
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-15 21:00:25
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -110,16 +110,28 @@ const requestExternalStoragePermission = async (permission, grantedCallback, blo
  * @return {*} 格式化后的字符串
  */
 const formaNum = (num) => {
-    var num = (num || 0).toString(),
-        result = '';
-    while (num.length > 3) {
-        result = ',' + num.slice(-3) + result;
-        num = num.slice(0, num.length - 3);
+    const arr = !isNaN(num * 1) ? (num * 1).toFixed(2).split('.') : [];
+    if (arr[0]) {
+        const lessThanZero = arr[0].indexOf('-') !== -1;
+        num = lessThanZero ? arr[0].slice(1) : arr[0];
+        let result = '';
+        while (num.length > 3) {
+            result = ',' + num.slice(-3) + result;
+            num = num.slice(0, num.length - 3);
+        }
+        if (num) {
+            result = num + result;
+        }
+        result = lessThanZero ? `-${result}` : result;
+        // if (arr[1] === '00') {
+        //     return result;
+        // } else if (arr[1] && arr[1][1] === '0') {
+        //     return `${result}.${arr[1][0]}`;
+        // } else {
+        //     return `${result}.${arr[1]}`;
+        // }
+        return `${result}.${arr[1]}`;
     }
-    if (num) {
-        result = num + result;
-    }
-    return result;
 };
 //手机号脱敏处理
 const handlePhone = (mobile) => {

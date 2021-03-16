@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 14:36:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-16 18:35:44
  * @Description: 微信登录
  */
 import React from 'react';
@@ -20,10 +20,10 @@ function Wechat(props) {
             if (isInstalled) {
                 let scope = 'snsapi_userinfo';
                 let state = '_' + +new Date();
-                WeChat.sendAuthRequest(scope, state).then((response) => {
-                    console.log(response);
-                });
                 try {
+                    WeChat.sendAuthRequest(scope, state).then((response) => {
+                        console.log(response);
+                    });
                 } catch (e) {
                     if (e instanceof WeChat.WechatError) {
                         console.error(e.stack);
