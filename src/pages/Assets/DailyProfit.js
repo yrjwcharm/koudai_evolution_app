@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-11 14:24:28
+ * @LastEditTime: 2021-03-16 19:16:21
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -36,9 +36,9 @@ const DailyProfit = ({poid}) => {
                 setHasMore(res.result.has_more);
                 setRefreshing(false);
                 if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.items || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
                 } else if (status === 'refresh') {
-                    setList(res.result.items || []);
+                    setList(res.result.list || []);
                 }
             });
         },

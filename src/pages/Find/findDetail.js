@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 18:24:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-16 16:08:48
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -18,17 +18,6 @@ import {QuestionCard, ArticleCard} from '../../components/Article';
 import Http from '../../services';
 import {useJump} from '../../components/hooks';
 const FindDetail = (props) => {
-    // const ZoomIn = {
-    //     0: {
-    //         scale: 0.9,
-    //     },
-    //     0.8: {
-    //         scale: 1.05,
-    //     },
-    //     1: {
-    //         scale: 1,
-    //     },
-    // };
     const [data, setData] = useState({});
     const containerRef = useRef(null);
     const insets = useRef(useSafeAreaInsets()).current;

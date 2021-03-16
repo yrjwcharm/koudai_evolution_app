@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 10:30:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-16 17:24:58
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';

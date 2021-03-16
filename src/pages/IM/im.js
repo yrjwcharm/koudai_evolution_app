@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-15 21:52:27
+ * @LastEditTime: 2021-03-16 18:37:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -11,8 +11,6 @@ import {
     StyleSheet,
     Text,
     View,
-    StatusBar,
-    Image,
     Keyboard,
     Modal as _Modal,
     PermissionsAndroid,
@@ -36,12 +34,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import {BottomModal, Modal} from '../../components/Modal';
-import {Button} from '../../components/Button';
-import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
+import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import _ from 'lodash';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
-import Toast from '../../components/Toast';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import BaseUrl from '../../services/config';
@@ -52,6 +48,7 @@ const maxConnectTime = 20 * 60 * 1000; //最大连接时间
 let heartCheckTime = null;
 let WsColseType = 1; //1表示为用户主动正常关闭,0表示异常关闭需要重新连接,2表示重新连接次数超过3次.判断为网络异常.请用户确认网络情况
 let closeSelf = false; //是否是自己主动关闭
+let connect = false; //连接状态
 /**
  * @description:
  * @param {*} targetId: 消息谁发的就是谁的用户ID
@@ -76,11 +73,11 @@ const IM = (props) => {
     let lastShowTimeStamp = useRef(null);
     let connectTime = useState(''); //链接时长
     let unverifiedMsg = useRef([]);
-
+    const [inverted, setInverted] = useState(false);
     const [messages, setMessages] = useState([]);
     const bottomModal = useRef(null);
     const clearIntelList = () => {
-        intellectList.length > 0 && setIntellectList([]);
+        intellectList && setIntellectList([]);
     };
     useEffect(() => {
         initWebSocket();
@@ -124,6 +121,7 @@ const IM = (props) => {
                     token.current = data.result.token;
                     WS.current.send(handleMsgParams('LIR', 'loign'));
                     console.log(handleMsgParams('LIR', 'loign'));
+                    connect = true;
                 })
                 .catch(() => {
                     handelSystemMes('连接错误');
@@ -153,7 +151,6 @@ const IM = (props) => {
                         });
                     } else {
                         handelSystemMes(_data.data.message);
-                        // Toast.show(_data.data.message);
                     }
                     break;
                 //发送消息回馈
@@ -162,6 +159,7 @@ const IM = (props) => {
                 case 'IMA':
                 case 'EMA':
                 case 'VMA':
+                case 'TMN':
                 case 'AMA':
                 case 'CMN': //链接客服回复
                 case 'LAA': //登录的提示语
@@ -214,15 +212,18 @@ const IM = (props) => {
                         WS.current.send(handleMsgParams('AAR', 'success', _data.cmid));
                     }
                     break;
+                case 'AMN':
+                    break;
             }
         };
         //连接错误
         WS.current.onerror = function () {
             console.log('WebSocket:', 'connect to server error');
+            handelSystemMes('连接失败');
             //重连
             WsColseType = 0;
             //重连
-            reconnect();
+            // reconnect();
         };
         //连接关闭
         WS.current.onclose = function () {
@@ -232,7 +233,7 @@ const IM = (props) => {
             }
             //连接被关闭尝试重连 要区分是主动关闭还是异常关闭
             if (!closeSelf) {
-                reconnect();
+                // reconnect();
             }
             //重连
         };
@@ -296,7 +297,7 @@ const IM = (props) => {
                 type: getType(_message.cmd),
                 content: _message.data,
                 targetId: `${_message.from}`,
-                renderTime: _message.renderTime || true,
+                renderTime: _message.renderTime,
                 sendStatus: _message.sendStatus || 1,
                 chatInfo: {
                     id: _message.to,
@@ -309,11 +310,15 @@ const IM = (props) => {
         if (Array.isArray(message) && message.length > 0) {
             lastShowTimeStamp.current = message[message.length - 1].time;
             message.forEach((item, index) => {
-                if (item.time - lastShowTimeStamp.current > interval) {
-                    lastShowTimeStamp.current = item.time;
+                if (index == message.length - 1) {
                     _mes.push(genMessage({...item, renderTime: true}));
                 } else {
-                    _mes.push(genMessage({...item, renderTime: false}));
+                    if (item.time - lastShowTimeStamp.current > interval) {
+                        lastShowTimeStamp.current = item.time;
+                        _mes.push(genMessage({...item, renderTime: true}));
+                    } else {
+                        _mes.push(genMessage({...item, renderTime: false}));
+                    }
                 }
             });
         } else {
@@ -332,7 +337,8 @@ const IM = (props) => {
 
     //点击发送按钮发送消息
     const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {
-        console.log(userInfo.toJS().avatar);
+        console.log(_ChatScreen?.current);
+        // isInverted != inverted && setInverted(isInverted || isInverted === null ? true : isInverted);
         let cmid = randomMsgId(cmd);
         const newMessages = handleMessage({
             cmid: cmid,
@@ -341,7 +347,7 @@ const IM = (props) => {
             from: uid,
             to: 'S',
             type,
-            sendStatus: sendStatus || 0,
+            sendStatus: connect ? sendStatus || 0 : -1,
             user_info: {
                 avatar: userInfo.toJS().avatar,
             },
@@ -388,13 +394,11 @@ const IM = (props) => {
                 console.log(item, 'item');
                 item.content.buttons.forEach((button, index) => {
                     if (button.status == status) {
-                        console.log('button', button);
                         button.status = 2;
                         if (isModal) {
                             _modalContent.buttons[index].status = 2;
                         }
                     } else {
-                        console.log('button3', button);
                         if (isModal) {
                             _modalContent.buttons[index].status = 3;
                         }
@@ -437,7 +441,7 @@ const IM = (props) => {
             });
         setMessages(
             messagesArg.map((item) => {
-                if (item.id == cmid) {
+                if (item.id == cmid && item.sendStatus != 1) {
                     return {...item, sendStatus: status};
                 } else {
                     return item;
@@ -446,7 +450,7 @@ const IM = (props) => {
         );
     };
     const loadHistory = () => {
-        WS.current.send(handleMsgParams('LMR', {page: page.current++}));
+        WS.current.send(handleMsgParams('LMR', {page: ++page.current}));
     };
     //转换时间20210312115002
     const genTimeStamp = () => {
@@ -895,7 +899,14 @@ const IM = (props) => {
                 ref={_ChatScreen}
                 messageList={messages}
                 isIPhoneX={isIphoneX()}
-                inverted={true}
+                inverted={_ChatScreen?.current?.isInverted}
+                // onScroll={(e) => {
+                //     e.persist();
+                //     if (e?.nativeEvent.contentOffset.y < 0) {
+                //         console.log('111111');
+                //         loadHistory();
+                //     }
+                // }}
                 iphoneXBottomPadding={24}
                 containerBackgroundColor={Colors.inputBg}
                 sendMessage={sendMessage}

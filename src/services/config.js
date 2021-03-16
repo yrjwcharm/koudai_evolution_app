@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 16:10:24
+ * @LastEditTime: 2021-03-16 20:03:45
  * @Description:环境
  */
 const env = 'develop'; //默认
@@ -10,7 +10,7 @@ const SERVER_URL = {
     online: {
         // 正式环境
         HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
-        WS: 'ws://kapi-im-kp2.licaimofang.com/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
         IMApi: 'http://kapi-im-kp2.licaimofang.com',
     },
     develop: {

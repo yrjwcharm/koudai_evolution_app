@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 15:36:13
+ * @LastEditTime: 2021-03-16 20:04:04
  * @Description: 底部Tab路由
  */
 import * as React from 'react';

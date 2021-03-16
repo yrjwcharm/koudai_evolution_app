@@ -220,7 +220,7 @@ class ChatWindow extends PureComponent {
         }
         this.setState({inputChangeSize: changeHeight <= 70 ? changeHeight : 70});
         if (!inverted) {
-            // this.chatList && this.chatList.scrollToEnd({animated: true});
+            this.chatList && this.chatList.scrollToEnd({animated: true});
         }
     }
 
@@ -564,7 +564,6 @@ class ChatWindow extends PureComponent {
         if (!inverted) {
             return;
         }
-        console.log('loadHistory');
         this.props.loadHistory();
     };
 
@@ -726,6 +725,7 @@ class ChatWindow extends PureComponent {
         } = this.state;
 
         const currentList = messageList.slice().sort((a, b) => (inverted ? b.time - a.time : a.time - b.time));
+        console.log(inverted, 'inverted');
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View
@@ -764,11 +764,6 @@ class ChatWindow extends PureComponent {
                             onScroll={(e) => {
                                 this.props.onScroll(e);
                             }}
-                            // style={{
-                            //     backgroundColor: '#fff',
-                            //     // flex: 1,
-                            //     justifyContent: 'flex-start',
-                            // }}
                             showsVerticalScrollIndicator={this.props.showsVerticalScrollIndicator}
                             onEndReachedThreshold={this.props.onEndReachedThreshold}
                             scrollEventThrottle={100}

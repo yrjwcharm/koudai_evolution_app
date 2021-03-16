@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-15 19:19:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-16 17:37:04
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -24,7 +24,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text} from '../../utils/appUtil.js';
+import {deviceWidth, px as text, formaNum} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -47,6 +47,7 @@ function HomeScreen({navigation}) {
     const insets = useSafeAreaInsets();
     const jump = useJump();
     const isFocused = useIsFocused();
+    const scrollRef = useRef(null);
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -100,13 +101,13 @@ function HomeScreen({navigation}) {
             }
             setRefreshing(false);
         });
-        http.get('/asset/notice/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
-            if (res.code === '000000') {
-                setNotice(res.result);
-            }
-        });
+        // http.get('/asset/notice/20210101', {
+        //     // uid: '1000000001',
+        // }).then((res) => {
+        //     if (res.code === '000000') {
+        //         setNotice(res.result);
+        //     }
+        // });
     }, []);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
@@ -140,14 +141,14 @@ function HomeScreen({navigation}) {
                 <View style={[styles.po_profit, Style.flexRow]}>
                     <View style={{flex: 1}}>
                         <Text style={styles.po_profit_key}>{part1.key}</Text>
-                        <Text style={styles.po_profit_val}>{part1.val}</Text>
+                        <Text style={styles.po_profit_val}>{formaNum(part1.val)}</Text>
                     </View>
                     <View style={{flex: 1}}>
                         <Text style={styles.po_profit_key}>{part2.key}</Text>
                         {id === 11 || showEye === 'false' ? (
-                            <Text style={styles.po_profit_val}>{part2.val}</Text>
+                            <Text style={styles.po_profit_val}>{formaNum(part2.val)}</Text>
                         ) : (
-                            <NumText style={styles.po_profit_val} text={`${part2.val}`} />
+                            <NumText style={styles.po_profit_val} text={`${formaNum(part2.val)}`} />
                         )}
                     </View>
                 </View>
@@ -203,6 +204,7 @@ function HomeScreen({navigation}) {
     useFocusEffect(
         useCallback(() => {
             init();
+            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
@@ -214,149 +216,142 @@ function HomeScreen({navigation}) {
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            isFocused && init('refresh');
+            if (isFocused) {
+                scrollRef.current.scrollTo({x: 0, y: 0, animated: false});
+                init('refresh');
+            }
         });
         return listener;
     }, [isFocused, navigation, init]);
 
     return (
         <View style={styles.container}>
-            {Object.keys(userBasicInfo).length > 0 && (
-                <>
-                    <Header
-                        title={'我的资产'}
-                        scrollY={scrollY}
-                        style={{
-                            opacity: 0,
-                            position: 'absolute',
-                            width: deviceWidth,
-                            backgroundColor: '#fff',
-                            zIndex: scrollY === 0 ? 0 : 10,
-                        }}
-                    />
-                    <ScrollView
-                        onScroll={onScroll}
-                        scrollEventThrottle={16}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
-                        <View style={[styles.assetsContainer]}>
-                            {/* 用户头像 会员中心 */}
-                            <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
-                                <Image
-                                    source={
-                                        userBasicInfo.user_info
-                                            ? {uri: userInfo.toJS().avatar}
-                                            : require('../../assets/personal/usercenter.png')
-                                    }
-                                    style={[styles.headImg, userBasicInfo.user_info ? {} : {borderWidth: 0}]}
-                                />
-                                <Text style={styles.username}>
-                                    {userInfo.toJS().nickname ? userInfo.toJS().nickname : '****'}
-                                </Text>
-                                {userBasicInfo.member_info && Object.keys(userBasicInfo.member_info).length > 0 && (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
-                                        <LinearGradient
-                                            colors={['#FFF6E8', '#FFE1B8']}
-                                            start={{x: 0, y: 0}}
-                                            end={{x: 1, y: 0}}
-                                            style={[styles.memberCenter, Style.flexRow]}>
-                                            <Text style={styles.memberText}>{userBasicInfo.member_info.title}</Text>
-                                            <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-                                )}
+            <Header
+                title={'我的资产'}
+                scrollY={scrollY}
+                style={{
+                    opacity: 0,
+                    position: 'absolute',
+                    width: deviceWidth,
+                    backgroundColor: '#fff',
+                    zIndex: scrollY === 0 ? 0 : 10,
+                }}
+            />
+            <ScrollView
+                onScroll={onScroll}
+                ref={scrollRef}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
+                <View style={[styles.assetsContainer]}>
+                    {/* 用户头像 会员中心 */}
+                    <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
+                        <Image
+                            source={
+                                userInfo?.toJS()?.avatar
+                                    ? {uri: userInfo.toJS().avatar}
+                                    : require('../../assets/personal/usercenter.png')
+                            }
+                            style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
+                        />
+                        <Text style={styles.username}>
+                            {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
+                        </Text>
+                        {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
+                                <LinearGradient
+                                    colors={['#FFF6E8', '#FFE1B8']}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 1, y: 0}}
+                                    style={[styles.memberCenter, Style.flexRow]}>
+                                    <Text style={styles.memberText}>{userBasicInfo?.member_info.title}</Text>
+                                    <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
+                    <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
+                    {/* 系统通知 */}
+                    {!hideMsg && notice?.system && (
+                        <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
+                            <Text style={styles.systemMsgText}>{notice.system}</Text>
+                            <TouchableOpacity style={styles.closeSystemMsg} activeOpacity={0.8} onPress={hideSystemMsg}>
+                                <EvilIcons name={'close'} size={22} color={Colors.yellow} />
+                            </TouchableOpacity>
+                        </Animated.View>
+                    )}
+                    {/* 资产信息 */}
+                    <View style={[styles.summaryTitle, Style.flexCenter]}>
+                        <Text style={styles.summaryKey}>总资产(元)</Text>
+                        <Text style={styles.date}>{holdingData?.summary?.profit_date || 'YYYY-MM-DD'}</Text>
+                        <TouchableOpacity onPress={toggleEye}>
+                            <Ionicons
+                                name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                size={16}
+                                color={'rgba(255, 255, 255, 0.8)'}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.experienceGold, Style.flexRow]}
+                            onPress={() => navigation.navigate('ExperienceGoldDetail')}>
+                            <Image
+                                source={require('../../assets/personal/jinbi.png')}
+                                style={{width: text(15), height: text(15)}}
+                            />
+                            <Text style={styles.goldText}>{'体验金'}</Text>
+                            <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <Text style={[styles.amount]}>
+                            {showEye === 'true' ? holdingData?.summary?.amount : '****'}
+                        </Text>
+                    </View>
+                    {/* 小黄条 */}
+                    {notice?.trade && (
+                        <TouchableOpacity style={[styles.tradeNotice, Style.flexCenter]}>
+                            <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
+                            <View style={[styles.noticeBox, Style.flexRow]}>
+                                <Text style={styles.noticeText}>{notice.trade.desc}</Text>
+                                <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                             </View>
-                            <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
-                            <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
-                            {/* 系统通知 */}
-                            {!hideMsg && notice?.system && (
-                                <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
-                                    <Text style={styles.systemMsgText}>{notice.system}</Text>
-                                    <TouchableOpacity
-                                        style={styles.closeSystemMsg}
-                                        activeOpacity={0.8}
-                                        onPress={hideSystemMsg}>
-                                        <EvilIcons name={'close'} size={22} color={Colors.yellow} />
-                                    </TouchableOpacity>
-                                </Animated.View>
-                            )}
-                            {/* 资产信息 */}
-                            <View style={[styles.summaryTitle, Style.flexCenter]}>
-                                <Text style={styles.summaryKey}>总资产(元)</Text>
-                                <Text style={styles.date}>
-                                    {holdingData?.summary ? holdingData.summary.profit_date : 'YYYY-MM-DD'}
-                                </Text>
-                                <TouchableOpacity onPress={toggleEye}>
-                                    <Ionicons
-                                        name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
-                                        size={16}
-                                        color={'rgba(255, 255, 255, 0.8)'}
-                                    />
-                                </TouchableOpacity>
+                        </TouchableOpacity>
+                    )}
+                    <View style={[styles.profitContainer, Style.flexRow]}>
+                        <View style={[Style.flexCenter, {flex: 1}]}>
+                            <Text style={styles.profitKey}>累计收益</Text>
+                            <Text style={styles.profitVal}>
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit_acc : '****'}
+                            </Text>
+                        </View>
+                        <View style={[Style.flexCenter, {flex: 1}]}>
+                            <Text style={styles.profitKey}>日收益</Text>
+                            <Text style={styles.profitVal}>
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit : '****'}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+                {/* 顶部菜单 */}
+                <View style={[styles.topMenu, Style.flexRow]}>
+                    {userBasicInfo.top_menus &&
+                        userBasicInfo.top_menus.map((item, index) => {
+                            return (
                                 <TouchableOpacity
-                                    style={[styles.experienceGold, Style.flexRow]}
-                                    onPress={() => navigation.navigate('ExperienceGoldDetail')}>
-                                    <Image
-                                        source={require('../../assets/personal/jinbi.png')}
-                                        style={{width: text(15), height: text(15)}}
-                                    />
-                                    <Text style={styles.goldText}>{'体验金'}</Text>
-                                    <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                                    activeOpacity={0.8}
+                                    onPress={() => jump(item.url)}
+                                    key={`topmenu${item.id}`}
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
+                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
-                            </View>
-                            <View>
-                                <Text style={[styles.amount]}>
-                                    {holdingData?.summary && showEye === 'true' ? holdingData.summary.amount : '****'}
-                                </Text>
-                            </View>
-                            {/* 小黄条 */}
-                            {notice?.trade && (
-                                <TouchableOpacity style={[styles.tradeNotice, Style.flexCenter]}>
-                                    <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
-                                    <View style={[styles.noticeBox, Style.flexRow]}>
-                                        <Text style={styles.noticeText}>{notice.trade.desc}</Text>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            <View style={[styles.profitContainer, Style.flexRow]}>
-                                <View style={[Style.flexCenter, {flex: 1}]}>
-                                    <Text style={styles.profitKey}>累计收益</Text>
-                                    <Text style={styles.profitVal}>
-                                        {holdingData?.summary && showEye === 'true'
-                                            ? holdingData?.summary.profit_acc
-                                            : '****'}
-                                    </Text>
-                                </View>
-                                <View style={[Style.flexCenter, {flex: 1}]}>
-                                    <Text style={styles.profitKey}>日收益</Text>
-                                    <Text style={styles.profitVal}>
-                                        {holdingData?.summary && showEye === 'true'
-                                            ? holdingData?.summary.profit
-                                            : '****'}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                        {/* 顶部菜单 */}
-                        <View style={[styles.topMenu, Style.flexRow]}>
-                            {userBasicInfo.top_menus &&
-                                userBasicInfo.top_menus.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            onPress={() => jump(item.url)}
-                                            key={`topmenu${item.id}`}
-                                            style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                            <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                            <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                        </View>
-                        {/* 中控 */}
-                        {/* <View style={[styles.centerCtrl, {marginBottom: Space.marginVertical}]}>
+                            );
+                        })}
+                </View>
+                {/* 中控 */}
+                {/* <View style={[styles.centerCtrl, {marginBottom: text(12)}]}>
                     <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
                     <Text style={styles.centerCtrlContent}>
                         {
@@ -364,113 +359,109 @@ function HomeScreen({navigation}) {
                         }
                     </Text>
                 </View> */}
-                        {/* 持仓组合 */}
-                        {holdingData?.accounts?.map((item, index, arr) => {
-                            return item.portfolios ? (
-                                item.portfolios.length > 1 ? (
-                                    <View
-                                        key={`account${item.id}`}
-                                        style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
-                                        {renderTitle(item)}
-                                        {renderPortfolios(item)}
-                                    </View>
-                                ) : (
+                {/* 持仓组合 */}
+                {holdingData?.accounts?.map((item, index, arr) => {
+                    return item.portfolios ? (
+                        item.portfolios.length > 1 ? (
+                            <View
+                                key={`account${item.id}`}
+                                style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
+                                {renderTitle(item)}
+                                {renderPortfolios(item)}
+                            </View>
+                        ) : (
+                            <TouchableOpacity
+                                key={`account0${item.id}`}
+                                activeOpacity={0.8}
+                                style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
+                                onPress={() => jump(item.portfolios[0].url)}>
+                                {renderTitle(item.portfolios[0])}
+                                {renderPortfolios(item)}
+                            </TouchableOpacity>
+                        )
+                    ) : (
+                        <View key={`account1${item.id}`}>
+                            {item.id === 12 ? (
+                                <LinearGradient
+                                    colors={['#33436D', '#121D3A']}
+                                    start={{x: 0, y: 0}}
+                                    end={{x: 1, y: 0}}
+                                    style={[styles.account, {padding: 0}]}>
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
                                         activeOpacity={0.8}
-                                        style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
-                                        onPress={() => jump(item.portfolios[0].url)}>
-                                        {renderTitle(item.portfolios[0])}
-                                        {renderPortfolios(item)}
+                                        style={[{padding: Space.padding}, Style.flexRow]}>
+                                        <View style={[{flex: 1}, Style.flexRow]}>
+                                            <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
+                                                {item.name}
+                                            </Text>
+                                            <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
+                                                {item.desc}
+                                            </Text>
+                                        </View>
+                                        <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
+                                    </TouchableOpacity>
+                                </LinearGradient>
+                            ) : (
+                                item.id === 11 && (
+                                    <TouchableOpacity activeOpacity={0.8} style={[styles.account]}>
+                                        {renderTitle(item)}
+                                        {item.has_bought && renderPortfolios(item)}
                                     </TouchableOpacity>
                                 )
-                            ) : (
-                                <View key={`account1${item.id}`}>
-                                    {item.id === 12 ? (
-                                        <LinearGradient
-                                            colors={['#33436D', '#121D3A']}
-                                            start={{x: 0, y: 0}}
-                                            end={{x: 1, y: 0}}
-                                            style={[styles.account, {padding: 0}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={[{padding: Space.padding}, Style.flexRow]}>
-                                                <View style={[{flex: 1}, Style.flexRow]}>
-                                                    <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
-                                                        {item.name}
-                                                    </Text>
-                                                    <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
-                                                        {item.desc}
-                                                    </Text>
-                                                </View>
-                                                <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
-                                            </TouchableOpacity>
-                                        </LinearGradient>
-                                    ) : (
-                                        item.id === 11 && (
-                                            <TouchableOpacity activeOpacity={0.8} style={[styles.account]}>
-                                                {renderTitle(item)}
-                                                {item.has_bought && renderPortfolios(item)}
-                                            </TouchableOpacity>
-                                        )
-                                    )}
-                                </View>
-                            );
-                        })}
-                        {/* 投顾 */}
-                        {userBasicInfo.im_info && (
-                            <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
-                                <View style={[Style.flexRow, {flex: 1}]}>
-                                    <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
-                                    <View>
-                                        <Text style={[styles.accountName, {marginBottom: text(4)}]}>
-                                            {userBasicInfo.im_info.name}
-                                        </Text>
-                                        <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
-                                    </View>
+                            )}
+                        </View>
+                    );
+                })}
+                {/* 投顾 */}
+                {userBasicInfo.im_info && (
+                    <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
+                        <View style={[Style.flexRow, {flex: 1}]}>
+                            <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
+                            <View>
+                                <Text style={[styles.accountName, {marginBottom: text(4)}]}>
+                                    {userBasicInfo.im_info.name}
+                                </Text>
+                                <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
+                            </View>
+                        </View>
+                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                    </TouchableOpacity>
+                )}
+                {/* 早报 */}
+                {userBasicInfo.articles &&
+                    userBasicInfo.articles.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={`article${index}`}
+                                onPress={() => jump(item.url)}
+                                style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
+                                <View style={{flex: 1}}>
+                                    <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
+                                    <Text style={styles.accountName}>{item.desc}</Text>
                                 </View>
                                 <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                             </TouchableOpacity>
-                        )}
-                        {/* 早报 */}
-                        {userBasicInfo.articles &&
-                            userBasicInfo.articles.map((item, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        key={`article${index}`}
-                                        onPress={() => jump(item.url)}
-                                        style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
-                                        <View style={{flex: 1}}>
-                                            <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>
-                                                {item.title}
-                                            </Text>
-                                            <Text style={styles.accountName}>{item.desc}</Text>
-                                        </View>
-                                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        {/* 底部菜单 */}
-                        <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
-                            {userBasicInfo.bottom_menus &&
-                                userBasicInfo.bottom_menus.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            key={`bottommenu${item.id}`}
-                                            style={[Style.flexCenter, {flex: 1, height: '100%'}]}
-                                            onPress={() => jump(item.url)}>
-                                            <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                            <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                        </View>
-                        <BottomDesc />
-                    </ScrollView>
-                </>
-            )}
+                        );
+                    })}
+                {/* 底部菜单 */}
+                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
+                    {userBasicInfo.bottom_menus &&
+                        userBasicInfo.bottom_menus.map((item, index) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={`bottommenu${item.id}`}
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}
+                                    onPress={() => jump(item.url)}>
+                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                </View>
+                <BottomDesc />
+            </ScrollView>
         </View>
     );
 }
