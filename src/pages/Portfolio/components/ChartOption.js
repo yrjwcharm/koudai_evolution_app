@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 18:22:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 22:00:07
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -141,7 +141,7 @@ chart.scale({
   },
   value: {
     alias: '${alias.value || ''}',
-    tickCount: 6,
+    tickCount: 5,
     range: [ 0, 1 ],
     formatter: (value) => {
       return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value'};
@@ -157,6 +157,13 @@ chart.axis('date', {
       textCfg.textAlign = 'right';
     }
     return textCfg;
+  }
+});
+chart.axis('value', {
+  label: (text) => {
+    const cfg = {};
+    cfg.text = ${percent ? '(text * 100).toFixed(' + tofixed + ') + "%"' : '(text * 1).toFixed(' + tofixed + ')'};
+    return cfg;
   }
 });
 chart.legend(false);

@@ -2,7 +2,7 @@
  * @Date: 2021-03-17 17:44:16
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 18:10:42
+ * @LastEditTime: 2021-03-17 21:39:27
  * @Description: 登录注册蒙层
  */
 import React from 'react';
@@ -10,6 +10,7 @@ import {Dimensions, StyleSheet, View} from 'react-native';
 import {RootSiblingPortal} from 'react-native-root-siblings';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {useNavigation} from '@react-navigation/native';
+import {BlurView} from '@react-native-community/blur';
 import {Button} from './Button';
 import {px as text} from '../utils/appUtil';
 import {Colors, Space} from '../common/commonStyle';
@@ -21,7 +22,11 @@ const LoginMask = () => {
     const navigation = useNavigation();
     return (
         <RootSiblingPortal>
-            <View style={[styles.container, {bottom: height}]}>
+            <BlurView
+                blurAmount={10}
+                blurType={'light'}
+                reducedTransparencyFallbackColor={'white'}
+                style={[styles.container, {bottom: height}]}>
                 <Button title={'注册'} style={styles.registerBtn} onPress={() => navigation.navigate('Register')} />
                 <Button
                     title={'登录'}
@@ -30,7 +35,7 @@ const LoginMask = () => {
                     style={styles.loginBtn}
                     textStyle={{color: Colors.lightBlackColor}}
                 />
-            </View>
+            </BlurView>
         </RootSiblingPortal>
     );
 };

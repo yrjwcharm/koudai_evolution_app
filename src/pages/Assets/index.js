@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 21:26:54
+ * @LastEditTime: 2021-03-17 21:41:42
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -238,16 +238,17 @@ function HomeScreen({navigation, route}) {
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            if (isFocused) {
+            if (isFocused && userInfo?.toJS()?.is_login) {
                 scrollRef.current.scrollTo({x: 0, y: 0, animated: false});
                 init('refresh');
             }
         });
         return listener;
-    }, [isFocused, navigation, init]);
+    }, [isFocused, navigation, init, userInfo]);
 
     return !showGesture ? (
         <View style={styles.container}>
+            {/* 登录注册蒙层 */}
             {!userInfo.toJS().is_login && isFocused && <LoginMask />}
             <Header
                 title={'我的资产'}
@@ -487,6 +488,7 @@ function HomeScreen({navigation, route}) {
             </ScrollView>
         </View>
     ) : (
+        // 手势密码
         <GesturePassword option={'verify'} />
     );
 }
