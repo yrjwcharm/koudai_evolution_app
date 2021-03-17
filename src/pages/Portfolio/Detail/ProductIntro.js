@@ -3,21 +3,22 @@
  * @Date: 2021-03-01 17:09:55
  * @Description:产品说明书
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-01 17:21:06
+ * @LastEditTime: 2021-03-17 21:40:50
  */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, ScrollView, StyleSheet} from 'react-native';
 import FitImage from 'react-native-fit-image';
 import Http from '../../../services';
 import {px as text} from '../../../utils/appUtil';
-export default function ProductIntro() {
-    const [data, setData] = useState([
-        'https://static.licaimofang.com/wp-content/uploads/2021/03/1.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/03/2.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/03/3.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/03/4.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/03/5.png',
-    ]);
+export default function ProductIntro({route}) {
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/introduce/20210101', {
+            upid: route.params.upid,
+        }).then((res) => {
+            setData(res.result.image_list);
+        });
+    }, []);
     return (
         <ScrollView style={[styles.container]} scrollIndicatorInsets={{right: 1}}>
             {data.length > 0 &&

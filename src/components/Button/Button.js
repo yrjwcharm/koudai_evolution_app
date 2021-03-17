@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:08:50
+ * @LastEditTime: 2021-03-17 20:26:46
  * @Description:通用按钮
  */
 import React from 'react';
@@ -44,6 +44,7 @@ class Button extends React.Component {
         return (
             <>
                 <TouchableHighlight
+                    activeOpacity={1}
                     onPress={onPress}
                     style={[
                         Style.flexCenter,

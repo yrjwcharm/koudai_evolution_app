@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:08:03
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 20:24:31
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -21,7 +21,7 @@ export default function PlanDetail(props) {
         Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
             setData(res.result);
         });
-    });
+    }, []);
     const jumpPage = (invest_id) => {
         props.navigation.navigate('FixedPlanDetail', {invest_id});
     };
@@ -34,6 +34,7 @@ export default function PlanDetail(props) {
                         <TouchableOpacity
                             style={styles.card_sty}
                             key={_index + '_item'}
+                            activeOpacity={1}
                             onPress={() => {
                                 jumpPage(_item.invest_id);
                             }}>

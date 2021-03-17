@@ -29,6 +29,7 @@ import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
+import RenderChart from '../components/RenderChart';
 var _params, _current, allocation_id;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
@@ -122,59 +123,8 @@ export default function DetailRetiredPlan({navigation, route}) {
         useCallback(() => {
             init();
             getChartInfo();
-        }, [init])
+        }, [init, getChartInfo])
     );
-    // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            if (type == 2) {
-                let range = items[0].origin.value;
-                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
-                _textPortfolio.current.setNativeProps({
-                    text: _value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            } else {
-                _textPortfolio.current.setNativeProps({
-                    text: items[0]?.value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            }
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
-        },
-        [getColor]
-    );
-    // 图表滑动结束
-    const onHide = ({items}) => {
-        const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label[0].val});
-        _textPortfolio.current.setNativeProps({
-            text: _data?.label[1].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
-        });
-        if (_data?.label[2]) {
-            _textBenchmark.current.setNativeProps({
-                text: _data?.label[2].val,
-                style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
-            });
-        }
-    };
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
     // 打开日期选择 视图
     const _showDatePicker = () => {
         setShowMask(true);
@@ -319,114 +269,42 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <View style={{height: 300, backgroundColor: '#fff', marginTop: text(20)}}>
-                                    <View style={[Style.flexRow]}>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
-                                                ref={_textTime}
-                                                style={styles.legend_title_sty}
-                                                defaultValue={chartData?.yield_info?.label[0]?.val}
-                                                editable={false}
-                                            />
-                                            <Text style={styles.legend_desc_sty}>
-                                                {chartData?.yield_info?.label[0]?.key}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
+                                <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: 50,
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginHorizontal: 20,
+                                    }}>
+                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                        return (
+                                            <TouchableOpacity
                                                 style={[
-                                                    styles.legend_title_sty,
-                                                    {color: getColor(chartData?.yield_info?.label[1]?.val)},
+                                                    styles.btn_sty,
+                                                    {
+                                                        backgroundColor:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#F1F6FF'
+                                                                : '#fff',
+                                                    },
                                                 ]}
-                                                ref={_textPortfolio}
-                                                defaultValue={chartData?.yield_info?.label[1]?.val}
-                                                editable={false}
-                                            />
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#E74949'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>
-                                                    {chartData?.yield_info?.label[1]?.key}
+                                                key={_index}
+                                                onPress={() => changeTab(_item.val, _item.type)}>
+                                                <Text
+                                                    style={{
+                                                        color:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#0051CC'
+                                                                : '#555B6C',
+                                                        fontSize: text(12),
+                                                    }}>
+                                                    {_item.name}
                                                 </Text>
-                                            </Text>
-                                        </View>
-
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
-                                                style={[
-                                                    styles.legend_title_sty,
-                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
-                                                ]}
-                                                ref={_textBenchmark}
-                                                defaultValue={chartData?.yield_info?.label[2]?.val}
-                                                editable={false}
-                                            />
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#545968'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>
-                                                    {chartData?.yield_info?.label[2]?.key}
-                                                </Text>
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Chart
-                                        initScript={baseAreaChart(
-                                            chart,
-                                            [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                            true,
-                                            2,
-                                            type
-                                        )}
-                                        onChange={onChartChange}
-                                        data={chart}
-                                        onHide={onHide}
-                                        style={{width: '100%'}}
-                                    />
-
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            height: 50,
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            marginHorizontal: 20,
-                                        }}>
-                                        {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.btn_sty,
-                                                        {
-                                                            backgroundColor:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#F1F6FF'
-                                                                    : '#fff',
-                                                        },
-                                                    ]}
-                                                    key={_index}
-                                                    onPress={() => changeTab(_item.val, _item.type)}>
-                                                    <Text
-                                                        style={{
-                                                            color:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#0051CC'
-                                                                    : '#555B6C',
-                                                            fontSize: text(12),
-                                                        }}>
-                                                        {_item.name}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
                                 </View>
 
                                 {/* 表格 */}
