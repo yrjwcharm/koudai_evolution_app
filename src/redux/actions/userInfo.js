@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 21:38:16
+ * @LastEditTime: 2021-03-17 22:06:16
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -21,3 +21,10 @@ export function getUserInfo() {
         });
     };
 }
+
+export const updateVerifyGesture = () => {
+    return {
+        type: actionTypes.UserInfo,
+        payload: {verifyGesture: true},
+    };
+};

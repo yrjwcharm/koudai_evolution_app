@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 18:22:22
+ * @LastEditTime: 2021-03-17 19:04:30
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -40,7 +40,7 @@ const AccProfit = ({poid}) => {
     }, [poid]);
     // 获取累计收益图数据
     const getChart = useCallback(() => {
-        const url = poid ? '/profit/portfolio_acc/20210101' : '/profit/user_acc/20210101';
+        const url = poid ? '/portfolio/profit/acc/20210101' : '/profit/user_acc/20210101';
         http.get(url, {
             period,
             poid,
