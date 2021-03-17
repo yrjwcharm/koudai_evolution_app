@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-09 14:15:00
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 16:16:21
+ * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -40,7 +40,7 @@ const TradeProcessing = ({navigation, route}) => {
                     signSendVerify();
                     return;
                 }
-                if (res.result.finish || res.result.finish === -2 || res.result.loop >= 40) {
+                if (res.result.finish || res.result.finish === -2 || loopRef.current++ >= res.result.loop) {
                     setFinish(true);
                 } else {
                     timerRef.current = setTimeout(() => {

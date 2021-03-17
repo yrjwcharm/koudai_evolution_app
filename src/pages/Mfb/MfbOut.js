@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:42:28
+ * @LastEditTime: 2021-03-17 19:16:36
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -70,7 +70,7 @@ class MfbOut extends Component {
                     });
                 }
             } else if (this.state.optionChoose === 0) {
-                if (amount > pay_methods.quick_withdraw_amount || amount > pay_methods?.left_amount) {
+                if (amount > pay_methods.common_withdraw_amount || amount > pay_methods?.left_amount) {
                     const tips = '转出金额大于可转出金额';
                     return this.setState({
                         tips,
@@ -132,6 +132,7 @@ class MfbOut extends Component {
         this.setState({
             check,
             optionChoose: type,
+            amount: '',
         });
     }
     getBankInfo(index, comAmount, comText, quickAmount, quickText) {

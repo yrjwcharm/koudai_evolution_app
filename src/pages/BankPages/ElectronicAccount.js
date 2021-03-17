@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 10:53:34
+ * @LastEditTime: 2021-03-17 19:38:15
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -16,9 +16,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import Clipboard from '@react-native-community/clipboard';
 import {FixedButton} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 export default function ElectronicAccount(props) {
     const [data, setData] = useState({});
-    const [num, setNum] = useState('6579976588086535678');
+    const [num, setNum] = useState('');
+    const jump = useJump();
     useEffect(() => {
         Http.get('/bank/elec_account/20210101', {
             ...props.route.params,
@@ -55,7 +57,7 @@ export default function ElectronicAccount(props) {
                         </View>
                         <Text style={styles.bank_no_sty}>{num}</Text>
                     </View>
-                    <TouchableOpacity style={[Style.flexRow, styles.account_wrap_sty]} onPress={accountBtn}>
+                    <View style={[Style.flexRow, styles.account_wrap_sty]}>
                         <Text style={[styles.account_sty, {flex: 1}]}>电子账户余额</Text>
                         <View style={[Style.flexRow]}>
                             <Text style={[styles.account_sty, {textAlign: 'right', marginRight: text(5)}]}>
@@ -63,11 +65,15 @@ export default function ElectronicAccount(props) {
                             </Text>
                             {/* <AntDesign name={'right'} color={'#4E556C'} size={12} /> */}
                         </View>
-                    </TouchableOpacity>
+                    </View>
                     <View style={styles.card_wrap_sty}>
                         {data?.items.map((_item, _index) => {
                             return (
-                                <TouchableOpacity style={[Style.flexRow]} onPress={accountBtn} key={_index + '_item'}>
+                                <TouchableOpacity
+                                    style={[Style.flexRow]}
+                                    onPress={accountBtn}
+                                    key={_index + '_item'}
+                                    onPress={() => jump(_item.url)}>
                                     <View
                                         style={[
                                             styles.list_wrap_sty,

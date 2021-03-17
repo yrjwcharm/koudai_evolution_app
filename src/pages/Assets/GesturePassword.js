@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
-import OkGesturePassword from 'react-native-ok-gesture-password';
+import OkGesturePassword from '../../components/react-native-ok-gesture-password';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import Header from '../../components/NavBar';

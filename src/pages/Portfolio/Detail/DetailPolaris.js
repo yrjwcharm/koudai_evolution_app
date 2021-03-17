@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-15 16:23:34
+ * @LastEditTime: 2021-03-17 17:00:52
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -68,14 +68,19 @@ export default function DetailPolaris({route, navigation}) {
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
+            if (type == 2) {
+                let range = items[0].origin.value;
+                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                _textPortfolio.current.setNativeProps({
+                    text: _value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            } else {
+                _textPortfolio.current.setNativeProps({
+                    text: items[0]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            }
         },
         [getColor]
     );

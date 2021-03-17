@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 12:18:05
+ * @LastEditTime: 2021-03-17 19:09:00
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -122,6 +122,7 @@ export default function MfbIndex(props) {
                                     textStyle={{color: '#333'}}
                                     disables={data.buttons[0].avail}
                                     onPress={() => jump(data.buttons[0].url)}
+                                    color={'#fff'}
                                 />
                                 <Button
                                     title={data.buttons[1].text}

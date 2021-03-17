@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 15:33:37
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 17:51:22
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -15,13 +15,14 @@ import {Button, FixedButton} from '../../components/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
 import FixedBtn from '../Portfolio/components/FixedBtn';
+import {useJump} from '../../components/hooks';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
     const [left, setLeft] = useState('40%');
     const [widthD, setWidthD] = useState('40%');
     const [moveRight, setMoveRight] = useState(false);
-
+    const jump = useJump();
     const onLayout = useCallback(
         (e) => {
             const layWidth = e.nativeEvent.layout.width;
@@ -113,7 +114,13 @@ export default function FixedPlan(props) {
                 </View>
             )}
 
-            {Object.keys(data).length > 0 && <FixedButton title={data.button.text} disabled={data.button.avail == 0} />}
+            {Object.keys(data).length > 0 && (
+                <FixedButton
+                    title={data.button.text}
+                    disabled={data.button.avail == 0}
+                    onPress={() => jump(data.button.url)}
+                />
+            )}
         </>
     );
 }
