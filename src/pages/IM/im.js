@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-16 18:37:06
+ * @LastEditTime: 2021-03-17 16:47:08
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -102,6 +102,7 @@ const IM = (props) => {
     const closeWs = (e) => {
         e.preventDefault();
         closeSelf = true;
+        connect = false;
         WsColseType = 1;
         clearTimeout(heartCheckTime);
         clearTimeout(timeout?.current);
@@ -214,12 +215,15 @@ const IM = (props) => {
                     break;
                 case 'AMN':
                     break;
+                default:
+                    break;
             }
         };
         //连接错误
         WS.current.onerror = function () {
             console.log('WebSocket:', 'connect to server error');
             handelSystemMes('连接失败');
+            connect = false;
             //重连
             WsColseType = 0;
             //重连
@@ -228,6 +232,8 @@ const IM = (props) => {
         //连接关闭
         WS.current.onclose = function () {
             console.log('WebSocket:', 'connect close');
+            connect = false;
+            handelSystemMes('连接已断开');
             if (WsColseType !== 'timeout') {
                 WsColseType = 0;
             }
@@ -337,8 +343,7 @@ const IM = (props) => {
 
     //点击发送按钮发送消息
     const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {
-        console.log(_ChatScreen?.current);
-        // isInverted != inverted && setInverted(isInverted || isInverted === null ? true : isInverted);
+        clearIntelList();
         let cmid = randomMsgId(cmd);
         const newMessages = handleMessage({
             cmid: cmid,
@@ -899,14 +904,7 @@ const IM = (props) => {
                 ref={_ChatScreen}
                 messageList={messages}
                 isIPhoneX={isIphoneX()}
-                inverted={_ChatScreen?.current?.isInverted}
-                // onScroll={(e) => {
-                //     e.persist();
-                //     if (e?.nativeEvent.contentOffset.y < 0) {
-                //         console.log('111111');
-                //         loadHistory();
-                //     }
-                // }}
+                // inverted={_ChatScreen?.current?.isInverted}
                 iphoneXBottomPadding={24}
                 containerBackgroundColor={Colors.inputBg}
                 sendMessage={sendMessage}

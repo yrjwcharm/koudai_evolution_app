@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 20:04:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 17:29:51
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -32,7 +32,6 @@ import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native'
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
-import JPush from 'jpush-react-native';
 const shadow = {
     color: '#E3E6EE',
     border: 10,

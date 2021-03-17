@@ -370,7 +370,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = WZU46PUMFV;
 						LastSwiftMigration = 1120;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -817,7 +817,7 @@
 				CODE_SIGN_ENTITLEMENTS = EvolutionApp/EvolutionApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				HEADER_SEARCH_PATHS = (
@@ -877,7 +877,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.licaimofang.app;
 				PRODUCT_NAME = EvolutionApp;
-				PROVISIONING_PROFILE_SPECIFIER = EnvolutionLCMF;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1014,8 +1014,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EvolutionApp/EvolutionApp.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1076,7 +1076,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.licaimofang.app;
 				PRODUCT_NAME = EvolutionApp;
-				PROVISIONING_PROFILE_SPECIFIER = EnvolutionLCMF;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1093,7 +1093,7 @@
 				CODE_SIGN_ENTITLEMENTS = EvolutionApp/EvolutionApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				HEADER_SEARCH_PATHS = (
@@ -1153,7 +1153,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.licaimofang.app;
 				PRODUCT_NAME = EvolutionApp;
-				PROVISIONING_PROFILE_SPECIFIER = EnvolutionLCMF;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

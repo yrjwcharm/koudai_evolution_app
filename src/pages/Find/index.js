@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-15 13:55:29
+ * @LastEditTime: 2021-03-17 16:43:16
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -216,7 +216,7 @@ const Index = (props) => {
                         {/* 增值服务 */}
                         <View style={{marginBottom: px(20)}}>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                            {/* {data?.part3?.plans?.map((item, index) => (
+                            {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -249,7 +249,7 @@ const Index = (props) => {
                                         }}
                                     />
                                 </TouchableOpacity>
-                            ))} */}
+                            ))}
                         </View>
                     </View>
                     <BottomDesc />

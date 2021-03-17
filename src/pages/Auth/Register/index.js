@@ -2,11 +2,11 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:28:23
+ * @LastEditTime: 2021-03-17 16:43:50
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {px as text} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';

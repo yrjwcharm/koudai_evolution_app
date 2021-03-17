@@ -8,7 +8,6 @@ import {
     Platform,
     Animated,
     Easing,
-    Clipboard,
     Dimensions,
     FlatList,
     ViewPropTypes as RNViewPropTypes,
@@ -22,6 +21,7 @@ import {EMOJIS_ZH} from '../source/emojis';
 import InputBar from './InputBar';
 import PanelContainer from './panelContainer';
 import DelPanel from './del';
+import Clipboard from '@react-native-community/clipboard';
 const {height, width} = Dimensions.get('window');
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 let ImageComponent = Image;
@@ -42,7 +42,7 @@ class ChatWindow extends PureComponent {
         // this.HeaderHeight = this.isIphoneX ? iphoneXHeaderPadding + this.iosHeaderHeight : Platform.OS === 'android' ? androidHeaderHeight : this.iosHeaderHeight
         this.HeaderHeight = headerHeight;
         this.listHeight = height - this.HeaderHeight;
-        this.isInverted = false;
+        // this.state.isInverted = false;
         this.rootHeight = 0;
         this.androidHasAudioPermission = false;
         this.state = {
@@ -68,16 +68,17 @@ class ChatWindow extends PureComponent {
             imageSource: '',
             isSelfMessage: true,
             listY: 0,
-            isInverted: false,
+            // isInverted: false,
             panelShow: false,
             emojiShow: false,
             messageSelected: [],
             currentIndex: -1,
             pressIndex: -1,
+            isInverted: true,
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         Platform.OS === 'ios' && this._willShow();
         Platform.OS === 'ios' && this._willHide();
         Platform.OS === 'android' && this._didShow();
@@ -171,10 +172,10 @@ class ChatWindow extends PureComponent {
         if (type === 'text' && messageContent.trim().length !== 0) {
             messageContent = changeEmojiText(this.state.messageContent).join('');
         }
-        this.props.sendMessage(type, messageContent, this.isInverted);
+        this.props.sendMessage(type, messageContent, this.state.isInverted);
         this.InputBar.input && this.InputBar.input.clear();
         this.setState({messageContent: ''});
-        if (!inverted) {
+        if (!this.state.isInverted) {
             this.time && clearTimeout(this.time);
             this.time = setTimeout(() => {
                 this.chatList && this.chatList.scrollToEnd({animated: true});
@@ -219,8 +220,10 @@ class ChatWindow extends PureComponent {
             return;
         }
         this.setState({inputChangeSize: changeHeight <= 70 ? changeHeight : 70});
-        if (!inverted) {
+        if (!this.state.isInverted) {
             this.chatList && this.chatList.scrollToEnd({animated: true});
+        } else {
+            this.chatList.scrollToOffset({y: 0, animated: true});
         }
     }
 
@@ -244,19 +247,21 @@ class ChatWindow extends PureComponent {
         const {inverted} = this.props;
         if (listHeightAndWidth !== undefined) {
             const {contentHeight} = listHeightAndWidth;
-            this.isInverted = contentHeight > this.listHeight;
+            // let inverte = contentHeight > this.listHeight;
+            this.setState({isInverted: contentHeight > this.listHeight});
+            // this.isInverted = contentHeight > this.listHeight;
         }
-        if (!inverted) {
-            setTimeout(
-                () => {
-                    this.chatList &&
-                        this.chatList.scrollToEnd({
-                            animated: this._userHasBeenInputed,
-                        });
-                },
-                this._userHasBeenInputed ? 0 : 130
-            );
-        }
+        // if (!this.state.isInverted) {
+        //     setTimeout(
+        //         () => {
+        //             this.chatList &&
+        //                 this.chatList.scrollToEnd({
+        //                     animated: this._userHasBeenInputed,
+        //                 });
+        //         },
+        //         this._userHasBeenInputed ? 0 : 130
+        //     );
+        // }
     }
 
     _onFocus = () => {
@@ -485,38 +490,38 @@ class ChatWindow extends PureComponent {
                 if (this.props.setPopItems) {
                     items = this.props.setPopItems(type, index, text, message);
                 } else {
-                    items = [
-                        {
-                            title: '删除',
-                            onPress: () => {
-                                this.props.delMessage({index, message}, this.isInverted);
-                            },
-                        },
-                        {
-                            title: '多选',
-                            onPress: () => {
-                                this.multipleSelect(index, message);
-                            },
-                        },
-                    ];
+                    // items = [
+                    //     {
+                    //         title: '删除',
+                    //         onPress: () => {
+                    //             this.props.delMessage({index, message}, this.state.isInverted);
+                    //         },
+                    //     },
+                    //     {
+                    //         title: '多选',
+                    //         onPress: () => {
+                    //             this.multipleSelect(index, message);
+                    //         },
+                    //     },
+                    // ];
                     if (type === 'text') {
                         items = [
                             {
                                 title: '复制',
                                 onPress: () => Clipboard.setString(text),
                             },
-                            {
-                                title: '删除',
-                                onPress: () => {
-                                    this.props.delMessage({index, message}, this.isInverted);
-                                },
-                            },
-                            {
-                                title: '多选',
-                                onPress: () => {
-                                    this.multipleSelect(index, message);
-                                },
-                            },
+                            // {
+                            //     title: '删除',
+                            //     onPress: () => {
+                            //         this.props.delMessage({index, message}, this.state.isInverted);
+                            //     },
+                            // },
+                            // {
+                            //     title: '多选',
+                            //     onPress: () => {
+                            //         this.multipleSelect(index, message);
+                            //     },
+                            // },
                         ];
                     }
                 }
@@ -561,7 +566,7 @@ class ChatWindow extends PureComponent {
 
     _loadHistory = () => {
         const {inverted} = this.props;
-        if (!inverted) {
+        if (!this.state.isInverted) {
             return;
         }
         this.props.loadHistory();
@@ -724,8 +729,9 @@ class ChatWindow extends PureComponent {
             emojiShow,
         } = this.state;
 
-        const currentList = messageList.slice().sort((a, b) => (inverted ? b.time - a.time : a.time - b.time));
-        console.log(inverted, 'inverted');
+        const currentList = messageList
+            .slice()
+            .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View
@@ -756,7 +762,7 @@ class ChatWindow extends PureComponent {
                         <FlatList
                             {...this.props.flatListProps}
                             ref={(e) => (this.chatList = e)}
-                            inverted={inverted}
+                            inverted={this.state.isInverted}
                             data={currentList}
                             ListFooterComponent={this.props.renderLoadEarlier}
                             extraData={this.props.extraData}
@@ -901,7 +907,7 @@ class ChatWindow extends PureComponent {
                             iphoneXBottomPadding={this.props.iphoneXBottomPadding}
                             messageDelIcon={this.props.messageDelIcon}
                             delMessage={this.props.delMessage}
-                            isInverted={this.isInverted}
+                            isInverted={this.state.isInverted}
                             leftHeight={this.leftHeight}
                         />
                     ) : null}

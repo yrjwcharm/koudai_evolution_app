@@ -2,17 +2,19 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-01-15 15:24:56
+ * @LastEditTime: 2021-03-17 15:51:31
  * @Description:微信登录
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputView from '../input';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, handlePhone} from '../../../utils/appUtil';
 import {Style} from '../../../common/commonStyle';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Agreements from '../../../components/Agreements';
 import {Button} from '../../../components/Button';
+import http from '../../../services';
+import Toast from '../../../components/Toast';
 export default class WechatLogin extends Component {
     // static propTypes = {
     //     prop: PropTypes,
@@ -24,11 +26,21 @@ export default class WechatLogin extends Component {
     };
     /**获取短信验证码 */
     getCode = () => {
-        this.props.navigation.navigate('SetLoginPassword');
+        http.post('/auth/user/mobile_can_bind/20210101', {mobile: this.state.mobile}).then((res) => {
+            if (res.code == '000000') {
+                this.props.navigation.navigate('SetLoginPassword', {
+                    mobile: this.state.mobile,
+                    union_id: this.props.route?.params?.union_id,
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
     };
     onChangeMobile = (mobile) => {
         this.setState({mobile, btnClick: !(mobile.length >= 11)});
     };
+
     render() {
         const {mobile, btnClick} = this.state;
         return (

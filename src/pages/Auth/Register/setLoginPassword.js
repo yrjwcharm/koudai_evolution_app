@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 19:33:25
+ * @LastEditTime: 2021-03-17 16:00:51
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -26,6 +26,8 @@ class SetLoginPassword extends Component {
         second: 60,
         code_btn_click: true,
     };
+    fr = this.props.route?.params?.fr;
+    union_id = this.props.route?.params?.union_id;
     componentDidMount() {
         Storage.delete('loginStatus');
         this.sendCode();
@@ -33,7 +35,7 @@ class SetLoginPassword extends Component {
     register = () => {
         const {code, password} = this.state;
         //找回登录密码
-        if (this.props.route?.params?.fr == 'forget') {
+        if (this.fr == 'forget') {
             let toast = Toast.showLoading('正在修改...');
             http.post('passport/find_login_password/20210101', {
                 mobile: this.props.route?.params?.mobile,
@@ -44,6 +46,29 @@ class SetLoginPassword extends Component {
                 if (res.code === '000000') {
                     Toast.show('找回成功');
                     this.props.navigation.goBack();
+                } else {
+                    Toast.show(res.message);
+                }
+            });
+        } else if (this.union_id) {
+            // 绑定手机号
+            let toast = Toast.showLoading('正在绑定手机号...');
+            http.post('/auth/bind_mobile/20210101', {
+                mobile: this.props.route?.params?.mobile,
+                verify_code: code,
+                password,
+                union_id: this.union_id,
+            }).then((res) => {
+                Toast.hide(toast);
+                if (res.code === '000000') {
+                    Toast.show('绑定成功');
+                    http.post('/auth/user/login/20210101', {
+                        mobile: this.props.route?.params?.mobile,
+                        password,
+                    }).then((data) => {
+                        this.props.navigation.goBack(2);
+                        Storage.save('loginStatus', data.result);
+                    });
                 } else {
                     Toast.show(res.message);
                 }
@@ -77,7 +102,7 @@ class SetLoginPassword extends Component {
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
-                operation: this.props.route?.params?.fr == 'forget' ? 'password_reset' : 'passport_create',
+                operation: this.fr == 'forget' ? 'password_reset' : 'passport_create',
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
@@ -163,7 +188,7 @@ class SetLoginPassword extends Component {
                     clearButtonMode="while-editing"
                 />
                 <Button
-                    title="立即注册"
+                    title={this.fr == 'forget' ? '完成找回密码' : this.union_id ? '完成绑定' : '完成注册'}
                     disabled={btnClick}
                     onPress={this.register}
                     style={{marginVertical: text(26)}}
