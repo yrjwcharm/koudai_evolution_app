@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 16:47:08
+ * @LastEditTime: 2021-03-17 19:02:25
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -340,6 +340,7 @@ const IM = (props) => {
         });
         return [...messages, ..._mes];
     };
+    console.log(messages);
 
     //点击发送按钮发送消息
     const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {

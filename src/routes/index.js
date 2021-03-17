@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 17:29:29
+ * @LastEditTime: 2021-03-17 19:16:55
  * @Description:路由表
  */
 import React from 'react';
@@ -56,9 +56,9 @@ import DetailEducation from '../pages/Portfolio/Detail/DetailEducation'; //子�
 import DetailRetiredPlan from '../pages/Portfolio/Detail/DetailRetiredPlan'; //养老计划详情页
 import AssetsEnhance from '../pages/Portfolio/AssetsEnhance'; // 资产增强
 import HistoryAdjust from '../pages/Portfolio/HistoryAdjust'; // 历史调仓记录
-import Evaluation from '../pages/Evaluation/Evaluation'; //问答投教
-import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //规划历史
-import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //规划结果页
+import Evaluation from '../pages/Evaluation/Evaluation'; //定制
+import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //定制历史
+import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //定制结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
@@ -134,7 +134,6 @@ import Index from '../pages/Index/index'; //
 const Stack = createStackNavigator();
 
 export default function AppStack() {
-    console.log(Stack.Navigator);
     return (
         <Stack.Navigator
             initialRouteName="Tab"

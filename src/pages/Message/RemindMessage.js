@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-16 19:50:10
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 17:31:42
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, NativeModules, Image, Linking, Platform} from 'react-native';
@@ -37,6 +37,7 @@ export default function RemindMessage({navigation}) {
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
                             <TouchableOpacity
+                                activeOpacity={0.9}
                                 style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
                                 onPress={openLink}>
                                 <Text
@@ -56,7 +57,10 @@ export default function RemindMessage({navigation}) {
                     )}
 
                     <View style={{padding: text(16)}}>
-                        <TouchableOpacity style={styles.im_card_sty} onPress={() => jump(data?.service?.url)}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={styles.im_card_sty}
+                            onPress={() => jump(data?.service?.url)}>
                             <Image
                                 source={{
                                     uri: data?.service?.icon,
@@ -103,6 +107,7 @@ export default function RemindMessage({navigation}) {
                             {data?.message_list?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={0.9}
                                         style={[
                                             styles.list_card_sty,
                                             {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},
