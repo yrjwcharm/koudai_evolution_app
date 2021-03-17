@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 18:49:14
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 11:10:16
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -28,7 +28,7 @@ class Login extends Component {
         };
     }
     componentDidMount() {
-        Storage.delete('loginStatus');
+        // Storage.delete('loginStatus');
     }
     login = () => {
         const {mobile, password} = this.state;
