@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 17:16:32
+ * @LastEditTime: 2021-03-17 22:03:25
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -24,6 +24,10 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
+import _ from 'lodash';
+// import {useDispatch} from 'react-redux';
+// import {updateUserInfo} from './src/redux/actions/userInfo';
+import JPush from 'jpush-react-native';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -93,6 +97,22 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+    // heartbeat
+    const heartBeat = () => {
+        JPush.getRegistrationID((result) => {
+            http.post('/common/device/heart_beat/20210101', {
+                channel: '',
+                jpush_rid: result.registerID,
+                platform: Platform.OS,
+            });
+        });
+    };
+    React.useEffect(() => {
+        heartBeat();
+        _timer = setInterval(() => {
+            heartBeat();
+        }, 60 * 1000);
+    }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')
             .then((res) => {
@@ -101,6 +121,8 @@ function App(props) {
             .catch((error) => {
                 console.log(error, '通用链接');
             });
+        //热更新
+        // syncImmediate();
 
         //刷新token
         Storage.get('loginStatus').then((res) => {
@@ -116,20 +138,17 @@ function App(props) {
 
         // 监控设备激活/后台状态
         AppState.addEventListener('change', _handleAppStateChange);
-        syncImmediate();
-        // if (Platform.OS == 'android') {
-        //     requestExternalStoragePermission(); //申请读写权限
-        // }
+
         // console.log(__DEV__);
         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
         };
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
-        console.log(appState, '---appState', nextAppState);
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
             LogTool(appState);
         }

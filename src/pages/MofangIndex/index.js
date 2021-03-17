@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 20:39:56
+ * @LastEditTime: 2021-03-17 21:55:27
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -82,14 +82,41 @@ const Index = (props) => {
             });
     }, []);
     useEffect(() => {
-        // JPush.init();
-        // JPush.getRegistrationID((result) => console.log('registerID:' + JSON.stringify(result)));
+        JPush.init();
+        setTimeout(() => {
+            //连接状态
+            JPush.addConnectEventListener((result) => {
+                console.log('1111');
+                console.log('connectListener:' + JSON.stringify(result));
+            });
+            JPush.setBadge({badge: 10, appbadge: '123'});
+
+            JPush.getRegistrationID((result) => {
+                console.log('registerID:' + JSON.stringify(result));
+            });
+
+            //通知回调
+            JPush.addNotificationListener((result) => {
+                console.log('notificationListener:' + JSON.stringify(result));
+                if (JSON.stringify(result.extras.route)) {
+                    props.navigation.navigate(result.extras.route);
+                }
+            });
+            //本地通知回调
+            JPush.addLocalNotificationListener((result) => {
+                console.log('localNotificationListener:' + JSON.stringify(result));
+            });
+            //自定义消息回调
+            JPush.addCustomMessagegListener((result) => {
+                console.log('customMessageListener:' + JSON.stringify(result));
+            });
+        }, 100);
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
             isFocused && getData('refresh');
             isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
         });
         return () => {
-            clearInterval(_timer);
+            clearTimeout(_timer);
             unsubscribe;
         };
     }, [getData, props.navigation, isFocused]);
@@ -100,15 +127,16 @@ const Index = (props) => {
         useCallback(() => {
             getData();
             readInterface();
-        }, [getData])
+        }, [getData, readInterface])
     );
-    const readInterface = () => {
-        _timer = setInterval(() => {
+    const readInterface = useCallback(() => {
+        _timer = setTimeout(() => {
             http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
                 setAll(res.result.all);
+                readInterface();
             });
         }, 60 * 1000 * 5);
-    };
+    }, []);
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 10:27:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 21:31:25
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -50,7 +50,7 @@ function HomeScreen(props) {
                 console.log('1111');
                 console.log('connectListener:' + JSON.stringify(result));
             });
-            JPush.setBadge({badge: 1, appbadge: '123'});
+            JPush.setBadge({badge: 10, appbadge: '123'});
 
             JPush.getRegistrationID((result) => {
                 console.log('registerID:' + JSON.stringify(result));

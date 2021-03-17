@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 16:44:27
+ * @LastEditTime: 2021-03-17 21:58:59
  * @Description:点赞模块
  */
 
@@ -67,7 +67,7 @@ export default function Praise(props) {
                     color: Colors.lightBlackColor,
                     marginLeft: px(4),
                 }}>
-                {formaNum(num)}
+                {formaNum(num, 'nozero')}
             </Text>
         </TouchableOpacity>
     );
