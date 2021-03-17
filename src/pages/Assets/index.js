@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-16 17:37:04
+ * @LastEditTime: 2021-03-17 18:58:44
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -29,12 +29,13 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
 import BottomDesc from '../../components/BottomDesc';
+import LoginMask from '../../components/LoginMask';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import storage from '../../utils/storage';
 import http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
-function HomeScreen({navigation}) {
+function HomeScreen({navigation, route}) {
     const userInfo = useSelector((store) => store.userInfo);
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
@@ -101,13 +102,13 @@ function HomeScreen({navigation}) {
             }
             setRefreshing(false);
         });
-        // http.get('/asset/notice/20210101', {
-        //     // uid: '1000000001',
-        // }).then((res) => {
-        //     if (res.code === '000000') {
-        //         setNotice(res.result);
-        //     }
-        // });
+        http.get('/asset/notice/20210101', {
+            // uid: '1000000001',
+        }).then((res) => {
+            if (res.code === '000000') {
+                setNotice(res.result);
+            }
+        });
     }, []);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
@@ -209,6 +210,21 @@ function HomeScreen({navigation}) {
                 setShowEye(res ? res : 'true');
             });
             StatusBar.setBarStyle('light-content');
+            // storage.get('gesturePwd').then((res) => {
+            //     if (res) {
+            //         storage.get('openGesturePwd').then((result) => {
+            //             if (result) {
+            //                 navigation.navigate('GesturePassword');
+            //             } else {
+            //                 // 展示登录注册蒙层
+            //                 navigation.navigate('Home');
+            //             }
+            //         });
+            //     } else {
+            //         // 展示登录注册蒙层
+            //         navigation.navigate('Home');
+            //     }
+            // });
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
@@ -226,6 +242,7 @@ function HomeScreen({navigation}) {
 
     return (
         <View style={styles.container}>
+            {!userInfo.toJS().is_login && isFocused && <LoginMask />}
             <Header
                 title={'我的资产'}
                 scrollY={scrollY}
@@ -274,18 +291,18 @@ function HomeScreen({navigation}) {
                     <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                     <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
                     {/* 系统通知 */}
-                    {!hideMsg && notice?.system && (
+                    {!hideMsg && notice?.system ? (
                         <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
                             <Text style={styles.systemMsgText}>{notice.system}</Text>
                             <TouchableOpacity style={styles.closeSystemMsg} activeOpacity={0.8} onPress={hideSystemMsg}>
                                 <EvilIcons name={'close'} size={22} color={Colors.yellow} />
                             </TouchableOpacity>
                         </Animated.View>
-                    )}
+                    ) : null}
                     {/* 资产信息 */}
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
-                        <Text style={styles.date}>{holdingData?.summary?.profit_date || 'YYYY-MM-DD'}</Text>
+                        <Text style={styles.date}>{holdingData?.summary?.profit_date || '0000-00-00'}</Text>
                         <TouchableOpacity onPress={toggleEye}>
                             <Ionicons
                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}

@@ -22,11 +22,13 @@ export default function GesturePassword({navigation, route}) {
     const [status, setStatus] = useState(false);
     const [isWarning, setIsWarning] = useState(false);
     useEffect(() => {
-        // storage.delete('GesturesPassword');
-        storage.get('GesturesPassword').then((res) => {
-            if (res) setPassword(res);
+        // storage.delete('gesturePwd');
+        storage.get('gesturePwd').then((res) => {
+            if (res) {
+                setPassword(res);
+            }
         });
-        console.log(storage.get('GesturesPwd'), '---GesturesPwd');
+        console.log(storage.get('gesturePwd'), '---GesturesPwd');
     }, []);
     const _onEnd = (pwd) => {
         // Alert.alert('密码', password);
@@ -36,13 +38,13 @@ export default function GesturePassword({navigation, route}) {
         } else if (password == pwd) {
             setStatus(true);
             setIsWarning(false);
-            storage.save('GesturesPassword', pwd);
+            storage.save('gesturePwd', pwd);
             Toast.show('设置成功');
             setTimeout(() => {
                 navigation.navigate('Home');
             }, 1000);
         } else {
-            storage.get('GesturesPassword').then((res) => {
+            storage.get('gesturePwd').then((res) => {
                 console.log(res);
             });
             setStatus(false);

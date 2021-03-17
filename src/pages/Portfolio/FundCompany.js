@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 11:01:10
+ * @LastEditTime: 2021-03-17 17:00:44
  * @Description: 基金公司
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -57,7 +57,7 @@ const FundCompany = ({navigation, route}) => {
                 key={index}
                 style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                 <Text style={[styles.itemText, {textAlign: 'left'}]}>{item.key}</Text>
-                <Text style={[styles.itemText, {textAlign: 'right'}]}>{item.val}</Text>
+                <Text style={[styles.itemText, {textAlign: 'right', flex: 1.5}]}>{item.val}</Text>
             </View>
         );
     }, []);

@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 17:09:23
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 16:05:45
+ * @LastEditTime: 2021-03-17 11:27:24
  * @Description: 带输入框的弹窗
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
@@ -12,7 +12,6 @@ import Picker from 'react-native-picker';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Mask from '../Mask';
-import Toast from '../Toast';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {constants} from './util';
@@ -24,43 +23,26 @@ const InputModal = forwardRef((props, ref) => {
         /**
          * 点击确认按钮
          */
+        children,
         confirmClick,
-        confirmText,
-        defaultValue,
+        confirmText = '确定',
         header,
         isTouchMaskToClose,
-        keyboardType,
-        maxLength,
-        placeholder,
         title,
-        unit,
     } = props;
-    const [value, setValue] = useState(defaultValue || '');
     const [visible, setVisible] = useState(false);
-    const valRef = useRef(defaultValue || '');
     const keyboardHeight = useRef(new Animated.Value(0)).current;
 
-    const show = useCallback(() => {
+    const show = () => {
         setVisible(true);
-        setValue(defaultValue);
-    }, [defaultValue]);
+    };
     const hide = () => {
         setVisible(false);
     };
     const onDone = useCallback(() => {
-        if (valRef.current.length === 0) {
-            setVisible(false);
-            Toast.show(placeholder);
-            return false;
-        }
-        setVisible(false);
-        confirmClick && confirmClick(valRef.current);
-    }, [confirmClick, placeholder]);
-    const onChange = (val) => {
-        // console.log(val);
-        valRef.current = val;
-        setValue(val);
-    };
+        // setVisible(false);
+        confirmClick && confirmClick();
+    }, [confirmClick]);
     // 键盘调起
     const keyboardWillShow = useCallback(
         (e) => {
@@ -128,21 +110,7 @@ const InputModal = forwardRef((props, ref) => {
                                 ) : null}
                             </View>
                         )}
-                        <View style={{backgroundColor: '#fff'}}>
-                            <View style={[Style.flexRow, styles.inputContainer]}>
-                                {unit && <Text style={[styles.unit, {marginRight: text(4)}]}>{unit}</Text>}
-                                <TextInput
-                                    autoFocus={true}
-                                    clearButtonMode={'while-editing'}
-                                    keyboardType={keyboardType}
-                                    maxLength={maxLength}
-                                    onChangeText={onChange}
-                                    placeholder={placeholder}
-                                    style={[styles.input]}
-                                    value={value}
-                                />
-                            </View>
-                        </View>
+                        {children}
                     </TouchableOpacity>
                 </Animated.View>
             </TouchableOpacity>
@@ -169,12 +137,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         left: 0,
-        width: 60,
+        width: text(60),
         height: constants.titleHeight,
     },
     confirm: {
         position: 'absolute',
-        right: 20,
+        right: text(20),
         height: constants.titleHeight,
     },
     title: {
@@ -182,52 +150,22 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: '500',
     },
-    inputContainer: {
-        marginVertical: text(32),
-        marginHorizontal: Space.marginAlign,
-        paddingBottom: text(12),
-        borderBottomWidth: Space.borderWidth,
-        borderColor: Colors.borderColor,
-    },
-    unit: {
-        fontSize: text(20),
-        lineHeight: text(24),
-        color: Colors.defaultColor,
-        fontWeight: 'bold',
-    },
-    input: {
-        flex: 1,
-        fontSize: text(26),
-        lineHeight: text(37),
-        color: Colors.defaultColor,
-        fontFamily: Font.numMedium,
-    },
 });
 
 InputModal.propTypes = {
     backdrop: PropTypes.bool,
     confirmClick: PropTypes.func,
     confirmText: PropTypes.string,
-    defaultValue: PropTypes.string,
     header: PropTypes.oneOfType([PropTypes.element, PropTypes.elementType]),
     isTouchMaskToClose: PropTypes.bool,
-    keyboardType: PropTypes.string,
-    maxLength: PropTypes.number,
-    placeholder: PropTypes.string,
     title: PropTypes.string,
-    unit: PropTypes.string,
 };
 InputModal.defaultProps = {
     backdrop: true,
     confirmClick: () => {},
     confirmText: '确定',
-    defaultValue: '',
     isTouchMaskToClose: true,
-    keyboardType: 'decimal-pad',
-    maxLength: 1024,
-    placeholder: '请输入',
     title: '请输入',
-    unit: '￥',
 };
 
 export default InputModal;

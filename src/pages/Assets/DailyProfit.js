@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-16 19:16:21
+ * @LastEditTime: 2021-03-17 10:38:26
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -148,7 +148,6 @@ const DailyProfit = ({poid}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        console.log('dx');
         return <Empty text={'暂无日收益数据'} />;
     }, []);
     // 渲染列表项
@@ -220,9 +219,10 @@ const DailyProfit = ({poid}) => {
     }, [list]);
     return (
         <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
+            {list?.length === 0 && renderSectionHeader()}
             <SectionList
                 // data={list}
-                sections={[{title: 'list', data: list}]}
+                sections={list?.length > 0 ? [{title: 'list', data: list}] : []}
                 contentContainerStyle={{backgroundColor: '#fff'}}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
@@ -235,7 +235,7 @@ const DailyProfit = ({poid}) => {
                 refreshing={refreshing}
                 renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
-                style={{paddingBottom: insets.bottom}}
+                style={{flex: 1, paddingBottom: insets.bottom}}
                 stickySectionHeadersEnabled={false}
             />
         </View>

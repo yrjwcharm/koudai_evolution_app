@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:44:41
+ * @LastEditTime: 2021-03-17 10:42:07
  * @Description: 历史持有基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,7 +21,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/portfolio/funds/user_redeemed/20210101', {
                 poid: route.params?.poid || 'X00F000003',
                 page,
@@ -96,6 +96,7 @@ const HistoryHoldFunds = ({navigation, route}) => {
         ({item, index}) => {
             return (
                 <TouchableOpacity
+                    activeOpacity={0.8}
                     onPress={() => navigation.navigate('FundDetail', {code: item.code})}
                     style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <View>
@@ -107,9 +108,11 @@ const HistoryHoldFunds = ({navigation, route}) => {
                     <Text
                         style={[
                             styles.itemText,
-                            {textAlign: 'right', color: getColor(item.profit_acc), fontFamily: Font.numFontFamily},
+                            {textAlign: 'right', color: getColor(`${item.profit_acc}`), fontFamily: Font.numFontFamily},
                         ]}>
-                        {parseFloat(item.profit_acc?.replace(/,/g, '')) > 0 ? `+${item.profit_acc}` : item.profit_acc}
+                        {parseFloat(`${item.profit_acc}`?.replace(/,/g, '')) > 0
+                            ? `+${item.profit_acc}`
+                            : item.profit_acc}
                     </Text>
                 </TouchableOpacity>
             );
@@ -176,8 +179,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     item: {
-        height: text(45),
+        // height: text(45),
         backgroundColor: '#fff',
+        paddingVertical: text(12),
         paddingLeft: text(12),
         paddingRight: text(14),
     },

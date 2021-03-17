@@ -2,17 +2,19 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:57:12
+ * @LastEditTime: 2021-03-17 13:35:55
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {SectionList, StyleSheet, Text, View} from 'react-native';
+import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
+import {useJump} from '../../components/hooks';
 
 const CompanyFunds = ({navigation, route}) => {
+    const jump = useJump();
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -94,7 +96,9 @@ const CompanyFunds = ({navigation, route}) => {
     const renderItem = useCallback(
         ({item, index}) => {
             return (
-                <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
+                <TouchableOpacity
+                    onPress={() => jump(item.url)}
+                    style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <Text numberOfLines={1} style={[styles.itemText]}>
                         {item.name}
                     </Text>
@@ -105,10 +109,10 @@ const CompanyFunds = ({navigation, route}) => {
                         ]}>
                         {parseFloat(item.inc?.replace(/,/g, '')) > 0 ? `+${item.inc}` : item.inc}
                     </Text>
-                </View>
+                </TouchableOpacity>
             );
         },
-        [getColor]
+        [getColor, jump]
     );
     // 获取涨跌颜色
     const getColor = useCallback((t) => {

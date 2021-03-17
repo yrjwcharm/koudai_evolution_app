@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 17:29:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 18:53:40
  * @Description:路由表
  */
 import React from 'react';
@@ -61,6 +61,7 @@ import EvaluationHistory from '../pages/Evaluation/EvaluationHistory'; //规划�
 import EvaluationResult from '../pages/Evaluation/EvaluationResult'; //规划结果页
 import TotalIncomeDetail from '../pages/Assets/TotalIncomeDetail'; // 总收益明细
 import IncomeDetail from '../pages/Assets/IncomeDetail'; // 组合收益明细
+import HistoryInvestPlan from '../pages/Assets/HistoryInvestPlan'; // 历史投资计划
 import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
@@ -326,6 +327,7 @@ export default function AppStack() {
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />
             <Stack.Screen name="IncomeDetail" component={IncomeDetail} options={{title: '组合收益明细'}} />
+            <Stack.Screen name="HistoryInvestPlan" component={HistoryInvestPlan} options={{title: '历史投资计划'}} />
             <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
             <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
