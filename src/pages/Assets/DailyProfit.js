@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 10:38:26
+ * @LastEditTime: 2021-03-17 19:04:09
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -27,7 +27,7 @@ const DailyProfit = ({poid}) => {
     const init = useCallback(
         (status, first) => {
             // status === 'refresh' && setRefreshing(true);
-            const url = poid ? '/profit/portfolio_daily/20210101' : '/profit/user_daily/20210101';
+            const url = poid ? '/portfolio/profit/daily/20210101' : '/profit/user_daily/20210101';
             http.get(url, {
                 uid: '1000000001',
                 page,
