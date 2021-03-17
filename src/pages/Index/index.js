@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-16 18:42:05
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 10:27:34
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -73,16 +73,15 @@ function HomeScreen(props) {
                 console.log('customMessageListener:' + JSON.stringify(result));
             });
         }, 100);
-        console.log(jpush_rid, '---jpush_rid');
-        _timer = setInterval(() => {
-            Http.post('/common/device/heart_beat/20210101', {
-                channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
-                jpush_rid: jpush_rid,
-                platform: Platform.OS,
-            }).then((res) => {
-                console.log(res);
-            });
-        }, 60 * 1000);
+        // _timer = setInterval(() => {
+        //     Http.post('/common/device/heart_beat/20210101', {
+        //         channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
+        //         jpush_rid: jpush_rid,
+        //         platform: Platform.OS,
+        //     }).then((res) => {
+        //         console.log(res);
+        //     });
+        // }, 60 * 1000);
 
         const unsubscribe = navigation.addListener('tabPress', (e) => {
             // Prevent default behavior
