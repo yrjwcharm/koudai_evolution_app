@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 18:58:44
+ * @LastEditTime: 2021-03-17 21:41:42
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -35,6 +35,7 @@ import storage from '../../utils/storage';
 import http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+import GesturePassword from './GesturePassword';
 function HomeScreen({navigation, route}) {
     const userInfo = useSelector((store) => store.userInfo);
     const [scrollY, setScrollY] = useState(0);
@@ -49,6 +50,7 @@ function HomeScreen({navigation, route}) {
     const jump = useJump();
     const isFocused = useIsFocused();
     const scrollRef = useRef(null);
+    const [showGesture, setShowGesture] = useState(false);
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -210,38 +212,43 @@ function HomeScreen({navigation, route}) {
                 setShowEye(res ? res : 'true');
             });
             StatusBar.setBarStyle('light-content');
-            // storage.get('gesturePwd').then((res) => {
-            //     if (res) {
-            //         storage.get('openGesturePwd').then((result) => {
-            //             if (result) {
-            //                 navigation.navigate('GesturePassword');
-            //             } else {
-            //                 // 展示登录注册蒙层
-            //                 navigation.navigate('Home');
-            //             }
-            //         });
-            //     } else {
-            //         // 展示登录注册蒙层
-            //         navigation.navigate('Home');
-            //     }
-            // });
+            storage.get('gesturePwd').then((res) => {
+                if (res) {
+                    storage.get('openGesturePwd').then((result) => {
+                        if (result) {
+                            if (userInfo?.toJS()?.is_login && !userInfo?.toJS()?.verifyGesture) {
+                                setShowGesture(true);
+                            } else {
+                                setShowGesture(false);
+                            }
+                        } else {
+                            // 展示我的资产内容
+                            setShowGesture(false);
+                        }
+                    });
+                } else {
+                    // 展示我的资产内容
+                    setShowGesture(false);
+                }
+            });
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [init])
+        }, [init, userInfo])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            if (isFocused) {
+            if (isFocused && userInfo?.toJS()?.is_login) {
                 scrollRef.current.scrollTo({x: 0, y: 0, animated: false});
                 init('refresh');
             }
         });
         return listener;
-    }, [isFocused, navigation, init]);
+    }, [isFocused, navigation, init, userInfo]);
 
-    return (
+    return !showGesture ? (
         <View style={styles.container}>
+            {/* 登录注册蒙层 */}
             {!userInfo.toJS().is_login && isFocused && <LoginMask />}
             <Header
                 title={'我的资产'}
@@ -328,7 +335,10 @@ function HomeScreen({navigation, route}) {
                     </View>
                     {/* 小黄条 */}
                     {notice?.trade && (
-                        <TouchableOpacity style={[styles.tradeNotice, Style.flexCenter]}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.tradeNotice, Style.flexCenter]}
+                            onPress={() => jump(userBasicInfo?.top_menus[3]?.url)}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
                             <View style={[styles.noticeBox, Style.flexRow]}>
                                 <Text style={styles.noticeText}>{notice.trade.desc}</Text>
@@ -353,19 +363,18 @@ function HomeScreen({navigation, route}) {
                 </View>
                 {/* 顶部菜单 */}
                 <View style={[styles.topMenu, Style.flexRow]}>
-                    {userBasicInfo.top_menus &&
-                        userBasicInfo.top_menus.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => jump(item.url)}
-                                    key={`topmenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
+                    {userBasicInfo?.top_menus?.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => jump(item.url)}
+                                key={`topmenu${item.id}`}
+                                style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
+                                <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                <Text style={styles.topMenuTitle}>{item.title}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
                 {/* 中控 */}
                 {/* <View style={[styles.centerCtrl, {marginBottom: text(12)}]}>
@@ -430,7 +439,7 @@ function HomeScreen({navigation, route}) {
                     );
                 })}
                 {/* 投顾 */}
-                {userBasicInfo.im_info && (
+                {userBasicInfo?.im_info && (
                     <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
@@ -445,41 +454,42 @@ function HomeScreen({navigation, route}) {
                     </TouchableOpacity>
                 )}
                 {/* 早报 */}
-                {userBasicInfo.articles &&
-                    userBasicInfo.articles.map((item, index) => {
+                {userBasicInfo?.articles?.map((item, index) => {
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={`article${index}`}
+                            onPress={() => jump(item.url)}
+                            style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
+                            <View style={{flex: 1}}>
+                                <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
+                                <Text style={styles.accountName}>{item.desc}</Text>
+                            </View>
+                            <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                        </TouchableOpacity>
+                    );
+                })}
+                {/* 底部菜单 */}
+                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
+                    {userBasicInfo?.bottom_menus?.map((item, index) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                key={`article${index}`}
-                                onPress={() => jump(item.url)}
-                                style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
-                                <View style={{flex: 1}}>
-                                    <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
-                                    <Text style={styles.accountName}>{item.desc}</Text>
-                                </View>
-                                <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                                key={`bottommenu${item.id}`}
+                                style={[Style.flexCenter, {flex: 1, height: '100%'}]}
+                                onPress={() => jump(item.url)}>
+                                <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                <Text style={styles.topMenuTitle}>{item.title}</Text>
                             </TouchableOpacity>
                         );
                     })}
-                {/* 底部菜单 */}
-                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
-                    {userBasicInfo.bottom_menus &&
-                        userBasicInfo.bottom_menus.map((item, index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    key={`bottommenu${item.id}`}
-                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}
-                                    onPress={() => jump(item.url)}>
-                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
                 </View>
                 <BottomDesc />
             </ScrollView>
         </View>
+    ) : (
+        // 手势密码
+        <GesturePassword option={'verify'} />
     );
 }
 const styles = StyleSheet.create({

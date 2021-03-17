@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:57:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 20:39:56
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -16,8 +16,8 @@ import {
     RefreshControl,
     Platform,
 } from 'react-native';
-import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
-import {Colors, Space, Style, Font} from '../../common/commonStyle';
+import {px, deviceWidth} from '../../utils/appUtil';
+import {Colors, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -60,7 +60,7 @@ const RenderTitle = (props) => {
 
 const Index = (props) => {
     const dispatch = useDispatch();
-    const inset = useRef(useSafeAreaInsets()).current;
+    const inset = useSafeAreaInsets();
     const linkTo = useLinkTo();
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
@@ -220,7 +220,7 @@ const Index = (props) => {
                                             ...styles.dotStyle,
                                         }}>
                                         {data?.banner_list?.map((banner, index) => (
-                                            <TouchableOpacity key={index} activeOpacity={0.8}>
+                                            <TouchableOpacity key={index} activeOpacity={0.9}>
                                                 <FastImage
                                                     style={styles.slide}
                                                     source={{
@@ -232,7 +232,21 @@ const Index = (props) => {
                                     </Swiper>
                                 ) : null}
                             </View>
-
+                            {/* 运营位 */}
+                            {data?.ad_info && (
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        jump(data?.ad_info?.url);
+                                    }}>
+                                    <FastImage
+                                        source={{
+                                            uri: data?.ad_info?.cover,
+                                        }}
+                                        style={{height: px(60), borderRadius: 8, marginBottom: px(12)}}
+                                    />
+                                </TouchableOpacity>
+                            )}
                             {/* 安全保障 */}
                             {data?.login_status == 0 && renderSecurity(data?.menu_list)}
 
@@ -484,7 +498,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     swiper: {
-        marginBottom: px(12),
+        marginBottom: px(20),
         marginTop: px(4),
         height: px(120),
     },

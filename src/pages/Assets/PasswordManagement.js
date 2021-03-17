@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 15:08:38
+ * @LastEditTime: 2021-03-17 19:16:48
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -38,6 +38,7 @@ const PasswordManagement = ({navigation}) => {
                 title: '手势密码修改',
                 type: 'link',
                 jump_to: 'GesturePassword',
+                params: {option: 'modify'},
                 hide: 'true',
             },
         ],
@@ -52,7 +53,7 @@ const PasswordManagement = ({navigation}) => {
 
     const onPress = useCallback(
         (item) => {
-            navigation.navigate(item.jump_to);
+            navigation.navigate(item.jump_to, item.params || {});
         },
         [navigation]
     );
@@ -64,7 +65,7 @@ const PasswordManagement = ({navigation}) => {
                 if (res) {
                     storage.save('openGesturePwd', true);
                 } else {
-                    navigation.navigate('GesturePassword');
+                    navigation.navigate('GesturePassword', {option: 'firstSet'});
                 }
             });
         } else {
