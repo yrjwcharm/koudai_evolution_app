@@ -29,6 +29,7 @@ import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
+var _params, _current, allocation_id;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -36,13 +37,15 @@ export default function DetailRetiredPlan({navigation, route}) {
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
-    const [countFr, setCountFr] = useState();
-    const [countM, setCountM] = useState();
+    const [countFr, setCountFr] = useState(); //首投金额
+    const [countM, setCountM] = useState(); //定投金额
     const [showMask, setShowMask] = useState(false);
     const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
     const bottomModal = React.useRef(null);
     const [type, setType] = useState(1);
+    const [remark, setRemark] = useState();
+    const [chart, setChart] = useState([]);
     const jump = useJump();
     const rightPress = () => {
         navigation.navigate('Evaluation');
@@ -73,17 +76,38 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setCountM(countM - _interval);
             }
         }
+        changeNotice();
     };
+    const changeNotice = useCallback(() => {
+        _params = {
+            initial_amount: countFr,
+            per_amount: countM,
+            allocation_id: allocation_id,
+            year: _current,
+            type,
+        };
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/future/yield_chart/20210101', {
+            ..._params,
+        }).then((res) => {
+            setRemark(res.result.remark);
+            if (type == 2) {
+                setChart(res.result.chart);
+            }
+        });
+    }, [countFr, countM]);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
         }).then((res) => {
+            _current = res.result?.plan_info?.goal_info?.items[2]?.val;
+            allocation_id = res.result.allocation_id;
             setData(res.result);
             setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
             setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
             setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
+            setRemark(res.result.plan_info?.goal_info?.remark);
         });
-    }, [route.params, getChartInfo]);
+    }, [route.params]);
     const getChartInfo = useCallback(() => {
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
@@ -91,28 +115,36 @@ export default function DetailRetiredPlan({navigation, route}) {
             type: type,
         }).then((res) => {
             setChartData(res.result);
+            setChart(res.result?.yield_info?.chart);
         });
     }, [period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
             getChartInfo();
-        }, [getChartInfo, init])
+        }, [init])
     );
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-            if (chartData?.yield_info?.label[2]) {
-                _textBenchmark.current.setNativeProps({
-                    text: items[1]?.value,
-                    style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            if (type == 2) {
+                let range = items[0].origin.value;
+                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                _textPortfolio.current.setNativeProps({
+                    text: _value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            } else {
+                _textPortfolio.current.setNativeProps({
+                    text: items[0]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             }
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
         },
         [getColor]
     );
@@ -160,17 +192,19 @@ export default function DetailRetiredPlan({navigation, route}) {
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
                 setShowMask(false);
-                setCurrent(pickedValue);
+                _current = pickedValue[0];
+                setCurrent(pickedValue[0]);
             },
             onPickerCancel: () => {
                 setShowMask(false);
             },
         });
+        changeNotice();
         Picker.show();
     };
     const _createDateData = () => {
         let _dep = [];
-        for (let i = 1; i <= 60; i++) {
+        for (let i = 18; i <= 85; i++) {
             _dep.push(i);
         }
         return _dep;
@@ -178,7 +212,6 @@ export default function DetailRetiredPlan({navigation, route}) {
     const showTips = (tip) => {
         setPopup(tip);
         bottomModal.current.show();
-        console.log(popup);
     };
     return (
         <>
@@ -213,7 +246,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         end={{x: 0.8, y: 0.8}}
                                         colors={['#E9EAED', '#F5F6F8']}
                                         style={{borderRadius: text(25), marginBottom: text(7)}}>
-                                        <Text style={styles.tip_sty}>{data?.plan_info?.goal_info?.remark}</Text>
+                                        <Text style={styles.tip_sty}>{remark}</Text>
                                     </LinearGradient>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                         <Text style={{color: '#545968', flex: 1}}>
@@ -320,33 +353,32 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 </Text>
                                             </Text>
                                         </View>
-                                        {chartData?.yield_info?.label[2] && (
-                                            <View style={styles.legend_sty}>
-                                                <TextInput
-                                                    style={[
-                                                        styles.legend_title_sty,
-                                                        {color: getColor(chartData?.yield_info?.label[2]?.val)},
-                                                    ]}
-                                                    ref={_textBenchmark}
-                                                    defaultValue={chartData?.yield_info?.label[2]?.val}
-                                                    editable={false}
+
+                                        <View style={styles.legend_sty}>
+                                            <TextInput
+                                                style={[
+                                                    styles.legend_title_sty,
+                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
+                                                ]}
+                                                ref={_textBenchmark}
+                                                defaultValue={chartData?.yield_info?.label[2]?.val}
+                                                editable={false}
+                                            />
+                                            <Text>
+                                                <MaterialCommunityIcons
+                                                    name={'record-circle-outline'}
+                                                    color={'#545968'}
+                                                    size={12}
                                                 />
-                                                <Text>
-                                                    <MaterialCommunityIcons
-                                                        name={'record-circle-outline'}
-                                                        color={'#545968'}
-                                                        size={12}
-                                                    />
-                                                    <Text style={styles.legend_desc_sty}>
-                                                        {chartData?.yield_info?.label[2]?.key}
-                                                    </Text>
+                                                <Text style={styles.legend_desc_sty}>
+                                                    {chartData?.yield_info?.label[2]?.key}
                                                 </Text>
-                                            </View>
-                                        )}
+                                            </Text>
+                                        </View>
                                     </View>
                                     <Chart
                                         initScript={baseAreaChart(
-                                            chartData?.yield_info?.chart,
+                                            chart,
                                             [Colors.red, Colors.lightBlackColor, 'transparent'],
                                             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                                             true,
@@ -354,7 +386,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             type
                                         )}
                                         onChange={onChartChange}
-                                        data={chartData?.yield_info?.chart}
+                                        data={chart}
                                         onHide={onHide}
                                         style={{width: '100%'}}
                                     />
@@ -496,13 +528,9 @@ export default function DetailRetiredPlan({navigation, route}) {
                     </ScrollView>
                     {showMask && <Mask />}
 
-                    {popup?.content && (
-                        <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
-                            <View style={{padding: text(16)}}>
-                                <Html html={popup?.content} />
-                            </View>
-                        </BottomModal>
-                    )}
+                    <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
+                        <View style={{padding: text(16)}}>{popup?.content && <Html html={popup?.content} />}</View>
+                    </BottomModal>
                     <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
                 </View>
             ) : null}
@@ -540,7 +568,6 @@ const styles = StyleSheet.create({
         marginRight: text(8),
     },
     fund_input_sty: {
-        height: text(36),
         fontSize: text(34),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,

@@ -3,12 +3,12 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 17:31:42
+ * @LastEditTime: 2021-03-17 20:44:37
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, NativeModules, Image, Linking, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../components/hooks/';
@@ -32,7 +32,7 @@ export default function RemindMessage({navigation}) {
     return (
         <>
             {Object.keys(data).length > 0 && (
-                <View>
+                <ScrollView>
                     {!hide && data?.notice && (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
@@ -145,7 +145,7 @@ export default function RemindMessage({navigation}) {
                             })}
                         </View>
                     </View>
-                </View>
+                </ScrollView>
             )}
         </>
     );

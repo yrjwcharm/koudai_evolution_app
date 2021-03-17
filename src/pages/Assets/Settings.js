@@ -2,11 +2,11 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 10:27:03
+ * @LastEditTime: 2021-03-17 17:41:46
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
@@ -26,28 +26,15 @@ const Settings = ({navigation}) => {
     const shareModal = useRef(null);
     const inputModal = useRef(null);
     const [modalProps, setModalProps] = useState({});
+    const [inviteCode, setInviteCode] = useState('');
+    const inviteCodeRef = useRef('');
 
     const onPress = useCallback(
         (item) => {
             if (item.type === 'bind_invitor') {
+                setInviteCode('');
                 setModalProps({
-                    confirmClick: (value) => {
-                        Http.post('/polaris/bind_invite_code/20210101', {
-                            invited_code: value,
-                        }).then((res) => {
-                            Toast.show(res.message);
-                            if (res.code === '000000') {
-                                Http.get('mapi/config/20210101').then((resp) => {
-                                    if (resp.code === '000000') {
-                                        setData(resp.result);
-                                    }
-                                });
-                            }
-                        });
-                    },
-                    confirmText: '确定',
-                    keyboardType: 'default',
-                    maxLength: 6,
+                    confirmClick,
                     placeholder: '请填写邀请码',
                     title: '填写邀请码',
                 });
@@ -60,8 +47,8 @@ const Settings = ({navigation}) => {
                     confirm: true,
                     confirmCallBack: () => {
                         // Alert.alert('退出登录');
-                        dispatch(getUserInfo());
                         Storage.delete('loginStatus');
+                        dispatch(getUserInfo());
                         navigation.replace('Register');
                     },
                 });
@@ -69,11 +56,30 @@ const Settings = ({navigation}) => {
                 jump(item.url);
             }
         },
-        [navigation, jump, dispatch]
+        [navigation, jump, dispatch, confirmClick]
     );
+    const confirmClick = useCallback(() => {
+        if (!inviteCodeRef.current) {
+            Toast.show('邀请码不能为空');
+            return false;
+        }
+        inputModal.current.hide();
+        Http.post('/polaris/bind_invite_code/20210101', {
+            invited_code: inviteCodeRef.current,
+        }).then((res) => {
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                Http.get('/mapi/config/20210101').then((resp) => {
+                    if (resp.code === '000000') {
+                        setData(resp.result);
+                    }
+                });
+            }
+        });
+    }, []);
 
     useEffect(() => {
-        Http.get('mapi/config/20210101').then((res) => {
+        Http.get('/mapi/config/20210101').then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -84,9 +90,33 @@ const Settings = ({navigation}) => {
             inputModal.current.show();
         }
     }, [modalProps]);
+    useEffect(() => {
+        inviteCodeRef.current = inviteCode;
+    }, [inviteCode]);
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
-            <InputModal {...modalProps} ref={inputModal} />
+            <InputModal {...modalProps} ref={inputModal}>
+                <View style={{backgroundColor: '#fff'}}>
+                    <View style={[Style.flexRow, styles.inputContainer]}>
+                        <TextInput
+                            autoCapitalize={'none'}
+                            autoCompleteType={'off'}
+                            autoCorrect={false}
+                            autoFocus={true}
+                            clearButtonMode={'while-editing'}
+                            contextMenuHidden
+                            enablesReturnKeyAutomatically
+                            keyboardType={'default'}
+                            maxLength={6}
+                            onChangeText={(value) => setInviteCode(value)}
+                            onSubmitEditing={confirmClick}
+                            placeholder={modalProps?.placeholder}
+                            style={styles.input}
+                            value={inviteCode}
+                        />
+                    </View>
+                </View>
+            </InputModal>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index) => {
                     return (
@@ -152,6 +182,19 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: Colors.lightBlackColor,
+    },
+    inputContainer: {
+        marginVertical: text(32),
+        marginHorizontal: Space.marginAlign,
+        paddingBottom: text(12),
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    input: {
+        flex: 1,
+        fontSize: text(26),
+        lineHeight: text(37),
+        color: Colors.defaultColor,
     },
 });
 

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 19:14:47
+ * @LastEditTime: 2021-03-17 20:39:56
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -32,6 +32,8 @@ import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native'
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
+import JPush from 'jpush-react-native';
+var _timer;
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -86,7 +88,10 @@ const Index = (props) => {
             isFocused && getData('refresh');
             isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
         });
-        return unsubscribe;
+        return () => {
+            clearInterval(_timer);
+            unsubscribe;
+        };
     }, [getData, props.navigation, isFocused]);
     useEffect(() => {
         dispatch(getUserInfo());
@@ -98,7 +103,7 @@ const Index = (props) => {
         }, [getData])
     );
     const readInterface = () => {
-        setInterval(() => {
+        _timer = setInterval(() => {
             http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
                 setAll(res.result.all);
             });

@@ -2,7 +2,7 @@
  * @Date: 2021-03-03 11:03:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-03 14:09:12
+ * @LastEditTime: 2021-03-17 16:21:47
  * @Description: 答题提现
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,47 +11,62 @@ import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 
 const QuestionWithdraw = ({navigation}) => {
-    const [data, setData] = useState({
-        current: 1,
-        total: 2,
-        caption: '购买了理财魔方的基金组合后应该如何操作?',
-        options: [
-            {
-                key: 1,
-                val: '自己观察市场行情进行赎回或者购买',
-            },
-            {
-                key: 2,
-                val: '每天观察组合收益情况，跌了就清仓止损',
-            },
-            {
-                key: 3,
-                val: '不需要管. 等待人工智能系统发出调仓信号.收到通知后进行”一键调仓”',
-            },
-        ],
-    });
+    const jump = useJump();
+    const [data, setData] = useState({});
     const [answer, setAnswer] = useState([]);
+    const [current, setCurrent] = useState(0);
 
-    const handleAnswer = useCallback((item) => {
-        setAnswer([item.key]);
-    }, []);
+    const handleAnswer = useCallback(
+        (item) => {
+            setAnswer([item.name]);
+            if (item.val === 1) {
+                setCurrent((prev) => {
+                    if (prev + 1 === 2) {
+                        setTimeout(() => {
+                            jump(data.jump_url, 'replace');
+                        }, 0);
+                        return prev;
+                    } else {
+                        return prev + 1;
+                    }
+                });
+            } else {
+                Toast.show('答案错误');
+                setTimeout(() => {
+                    setAnswer([]);
+                }, 2000);
+            }
+        },
+        [data, jump]
+    );
+
+    useEffect(() => {
+        http.get('/freefund/cash_out/20210101').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '答题提现'});
+                setData(res.result);
+            }
+        });
+    }, [navigation]);
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.noticeBox}>
-                <Text style={styles.notice}>
-                    {'恭喜您，完成了提现任务，接下来花30s的时间回答下面的问题就可以进行体验金收益的提现啦!'}
-                </Text>
+                <Text style={styles.notice}>{data?.wenda_message}</Text>
             </View>
-            <View style={{paddingHorizontal: text(14)}}>
-                <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(8)}]}>
-                    <Text style={styles.current}>{data.current}</Text>
-                    <Text style={[styles.total, {marginBottom: text(6)}]}>/ {data.total}</Text>
-                </View>
-                <Text style={styles.cardTitle}>{data.caption}</Text>
-                {data.options?.length > 0 &&
-                    data.options.map((item, index) => {
+            {Object.keys(data).length > 0 && (
+                <View style={{paddingHorizontal: text(14)}}>
+                    <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(8)}]}>
+                        <Text style={styles.current}>{data?.wenda_form[current]?.number}</Text>
+                        <Text style={[styles.total, {marginBottom: text(6)}]}>
+                            / {data?.wenda_form[current]?.total}
+                        </Text>
+                    </View>
+                    <Text style={styles.cardTitle}>{data?.wenda_form[current]?.title}</Text>
+                    {data?.wenda_form[current]?.items?.map((item, index) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -59,7 +74,7 @@ const QuestionWithdraw = ({navigation}) => {
                                 style={[
                                     styles.cardList,
                                     {
-                                        borderColor: answer.indexOf(item.key) >= 0 ? '#D4AC6F' : '#EEF0F6',
+                                        borderColor: answer.indexOf(item.name) >= 0 ? '#D4AC6F' : '#EEF0F6',
                                     },
                                 ]}
                                 onPress={() => handleAnswer(item)}>
@@ -67,16 +82,17 @@ const QuestionWithdraw = ({navigation}) => {
                                     style={[
                                         styles.cardText,
                                         {
-                                            fontWeight: answer.indexOf(item.key) >= 0 ? '500' : '400',
-                                            color: answer.indexOf(item.key) >= 0 ? '#C7964B' : '#262626',
+                                            fontWeight: answer.indexOf(item.name) >= 0 ? '500' : '400',
+                                            color: answer.indexOf(item.name) >= 0 ? '#C7964B' : '#262626',
                                         },
                                     ]}>
-                                    {item.val}
+                                    {item.name}
                                 </Text>
                             </TouchableOpacity>
                         );
                     })}
-            </View>
+                </View>
+            )}
         </ScrollView>
     );
 };

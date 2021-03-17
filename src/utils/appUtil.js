@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-15 21:00:25
+ * @LastEditTime: 2021-03-17 18:25:34
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -109,7 +109,7 @@ const requestExternalStoragePermission = async (permission, grantedCallback, blo
  * @param {*} formaNum
  * @return {*} 格式化后的字符串
  */
-const formaNum = (num) => {
+const formaNum = (num, type = '') => {
     const arr = !isNaN(num * 1) ? (num * 1).toFixed(2).split('.') : [];
     if (arr[0]) {
         const lessThanZero = arr[0].indexOf('-') !== -1;
@@ -130,7 +130,12 @@ const formaNum = (num) => {
         // } else {
         //     return `${result}.${arr[1]}`;
         // }
+        if (type) {
+            return result;
+        }
         return `${result}.${arr[1]}`;
+    } else {
+        return num;
     }
 };
 //手机号脱敏处理

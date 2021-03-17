@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-15 16:19:42
+ * @LastEditTime: 2021-03-17 17:00:43
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -65,14 +65,19 @@ export default function DetailAccount({route}) {
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
+            if (type == 2) {
+                let range = items[0].origin.value;
+                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                _textPortfolio.current.setNativeProps({
+                    text: _value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            } else {
+                _textPortfolio.current.setNativeProps({
+                    text: items[0]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            }
         },
         [getColor]
     );

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-16 16:08:48
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 17:09:08
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -97,12 +97,18 @@ const FindDetail = (props) => {
                                             </LinearGradient>
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={styles.light_text}>
-                                        {data?.plan_info?.slogan[0]} ｜ {data?.plan_info?.slogan[1]}
-                                    </Text>
+                                    <View style={Style.flexRow}>
+                                        {data?.plan_info?.slogan.map((_s, _i, arr) => {
+                                            return (
+                                                <Text style={styles.light_text} key={_i + '_s2'}>
+                                                    {_s} {_i < arr.length - 1 && '｜'}
+                                                </Text>
+                                            );
+                                        })}
+                                    </View>
                                 </View>
 
-                                <Text style={styles.tip_text}>{data?.plan_info?.tip}</Text>
+                                {data?.plan_info?.tip && <Text style={styles.tip_text}>{data?.plan_info?.tip}</Text>}
                             </View>
                         </MagicMove.View>
 

@@ -80,14 +80,19 @@ export default function DetailAccount({route, navigation}) {
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
+            if (type == 2) {
+                let range = items[0].origin.value;
+                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                _textPortfolio.current.setNativeProps({
+                    text: _value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            } else {
+                _textPortfolio.current.setNativeProps({
+                    text: items[0]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            }
         },
         [getColor]
     );

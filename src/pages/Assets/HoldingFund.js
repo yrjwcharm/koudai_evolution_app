@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:49:13
+ * @LastEditTime: 2021-03-17 10:47:57
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -95,7 +95,7 @@ const HoldingFund = ({navigation, route}) => {
                                     </Text>
                                     {curTab === 0 && (
                                         <Text style={[styles.numStyle, {color: RatioColor[index]}]}>
-                                            {item.percent}%
+                                            {item.percent < 0.01 ? '<0.01' : item.percent}%
                                         </Text>
                                     )}
                                 </View>
@@ -144,7 +144,9 @@ const HoldingFund = ({navigation, route}) => {
                                                                     ]}>
                                                                     {'占比'}
                                                                 </Text>
-                                                                <Text style={[styles.numStyle]}>{fund.percent}%</Text>
+                                                                <Text style={[styles.numStyle]}>
+                                                                    {fund.percent < 0.01 ? '<0.01' : fund.percent}%
+                                                                </Text>
                                                             </View>
                                                             <View style={Style.flexRow}>
                                                                 <Text

@@ -29,6 +29,8 @@ import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
+import RenderChart from '../components/RenderChart';
+var _params, _current, allocation_id, _choose;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -38,13 +40,15 @@ export default function DetailRetiredPlan({navigation, route}) {
     const _textBenchmark = useRef(null);
     const [countFr, setCountFr] = useState();
     const [countM, setCountM] = useState();
+    const [choose, setChoose] = useState();
     const [showMask, setShowMask] = useState(false);
     const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
     const bottomModal = React.useRef(null);
     const [age, setAge] = useState('');
-    const [choose, setChoose] = useState(1);
     const [type, setType] = useState(1);
+    const [remark, setRemark] = useState();
+    const [chart, setChart] = useState([]);
     const jump = useJump();
 
     const rightPress = () => {
@@ -53,20 +57,37 @@ export default function DetailRetiredPlan({navigation, route}) {
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
+        init();
     };
     // 选择大学
-    const chooseBtn = () => {};
+    const chooseBtn = (id) => {
+        _choose = id;
+        setChoose(id);
+        changeNotice();
+    };
     const selectAge = () => {
+        setShowMask(true);
         Picker.init({
             pickerTitleText: '年龄选择',
             pickerCancelBtnText: '取消',
             pickerConfirmBtnText: '确定',
             selectedValue: [age],
-            pickerBg: [255, 255, 255, 1],
             pickerData: _createDateData(),
+            pickerBg: [255, 255, 255, 1],
             pickerFontColor: [33, 33, 33, 1],
-            onPickerConfirm: (pickedValue, pickedIndex) => {
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 82, 205, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
+            wheelFlex: [1, 1],
+            onPickerConfirm: (pickedValue) => {
+                _current = pickedValue[0];
                 setAge(pickedValue[0]);
+                changeNotice();
+                setShowMask(false);
+            },
+            onPickerCancel: () => {
+                setShowMask(false);
             },
         });
         Picker.show();
@@ -101,71 +122,61 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setCountM(countM - _interval);
             }
         }
+        changeNotice();
     };
+    const changeNotice = useCallback(() => {
+        _params = {
+            initial_amount: countFr,
+            per_amount: countM,
+            allocation_id: allocation_id,
+            year: _current,
+            type,
+            goal_amount: _choose,
+        };
+        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/future/yield_chart/20210101', {
+            ..._params,
+        }).then((res) => {
+            if (res.code === '000000') {
+                setRemark(res.result.remark);
+                setCountM(res.result.per_amount);
+                if (type == 2) {
+                    setChart(res.result.chart);
+                }
+            }
+        });
+    }, [countFr, countM]);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
         }).then((res) => {
+            _current = res.result?.plan_info?.goal_info?.items[2]?.val;
+            allocation_id = res.result.allocation_id;
             setData(res.result);
             setAge(res.result.plan_info.personal_info.age);
             setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
             setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
             setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
+            setRemark(res.result.plan_info?.goal_info?.remark);
+            setChoose(res.result.school_id || 1);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
                 period: period,
                 type: type,
             }).then((res) => {
+                setChart(res.result.yield_info.chart);
                 setChartData(res.result);
             });
         });
-    }, [route.params, period]);
+    }, [route.params, period, type]);
+    useEffect(() => {
+        init();
+        return () => Picker.hide();
+    }, [route]);
     useFocusEffect(
         useCallback(() => {
             init();
         }, [init])
     );
-    // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
-        },
-        [getColor]
-    );
-    // 图表滑动结束
-    const onHide = ({items}) => {
-        const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label[0].val});
-        _textPortfolio.current.setNativeProps({
-            text: _data?.label[1].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
-        });
-        _textBenchmark.current.setNativeProps({
-            text: _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
-        });
-    };
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
-
     const showTips = (tip) => {
         setPopup(tip);
         bottomModal.current.show();
@@ -188,7 +199,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     {data.plan_info.personal_info.title}
                                     <Text>({data?.plan_info?.personal_info?.tip})</Text>
                                 </Text>
-                                <TouchableOpacity style={Style.flexRow} onPress={selectAge}>
+                                <TouchableOpacity style={Style.flexRow} onPress={selectAge} activeOpacity={1}>
                                     <Text>
                                         <Text style={styles.age_num_sty}>{age}</Text>岁
                                     </Text>
@@ -196,82 +207,31 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 </TouchableOpacity>
                             </View>
                             <View style={[Style.flexRow, {marginTop: text(7)}]}>
-                                <TouchableOpacity
-                                    style={[
-                                        Style.flexRowCenter,
-                                        styles.select_btn_sty,
-                                        {
-                                            borderColor:
-                                                choose == data?.plan_info?.schoolList[0]?.id ? '#DC4949' : '#E2E4EA',
-                                        },
-                                    ]}
-                                    onPress={chooseBtn(data?.plan_info?.schoolList[0]?.id)}>
-                                    <Image
-                                        source={
-                                            choose == data?.plan_info?.schoolList[0]?.id
-                                                ? require('../../../assets/img/detail/icon_ed_0_ac.png')
-                                                : require('../../../assets/img/detail/icon_ed_0.png')
-                                        }
-                                        style={{width: text(24), height: text(24)}}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: choose == data?.plan_info?.schoolList[0]?.id ? '#DC4949' : '#545968',
-                                        }}>
-                                        {data?.plan_info?.schoolList[0]?.name}
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        Style.flexRowCenter,
-                                        styles.select_btn_sty,
-                                        {
-                                            borderColor:
-                                                choose == data?.plan_info?.schoolList[1]?.id ? '#DC4949' : '#E2E4EA',
-                                        },
-                                    ]}
-                                    onPress={chooseBtn(data?.plan_info?.schoolList[1]?.id)}>
-                                    <Image
-                                        source={
-                                            choose == data?.plan_info.schoolList[1]?.id
-                                                ? require('../../../assets/img/detail/icon_ed_1_ac.png')
-                                                : require('../../../assets/img/detail/icon_ed_1.png')
-                                        }
-                                        style={{width: text(24), height: text(24)}}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: choose == data?.plan_info?.schoolList[1]?.id ? '#DC4949' : '#545968',
-                                        }}>
-                                        {data?.plan_info?.schoolList[1]?.name}
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        Style.flexRowCenter,
-                                        styles.select_btn_sty,
-                                        {
-                                            marginRight: 0,
-                                            borderColor:
-                                                choose == data?.plan_info?.schoolList[2]?.id ? '#DC4949' : '#E2E4EA',
-                                        },
-                                    ]}
-                                    onPress={chooseBtn(data?.plan_info?.schoolList[2]?.id)}>
-                                    <Image
-                                        source={
-                                            choose == data?.plan_info?.schoolList[2]?.id
-                                                ? require('../../../assets/img/detail/icon_ed_2_ac.png')
-                                                : require('../../../assets/img/detail/icon_ed_2.png')
-                                        }
-                                        style={{width: text(24), height: text(24)}}
-                                    />
-                                    <Text
-                                        style={{
-                                            color: choose == data?.plan_info?.schoolList[2]?.id ? '#DC4949' : '#545968',
-                                        }}>
-                                        {data?.plan_info?.schoolList[2]?.name}
-                                    </Text>
-                                </TouchableOpacity>
+                                {data?.plan_info?.schoolList.map((_s, _i) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={1}
+                                            style={[
+                                                Style.flexRowCenter,
+                                                styles.select_btn_sty,
+                                                {
+                                                    borderColor: choose == _s.id ? '#DC4949' : '#E2E4EA',
+                                                },
+                                            ]}
+                                            onPress={() => chooseBtn(_s.id)}>
+                                            <Image
+                                                source={{uri: choose == _s.id ? _s.active_icon : _s.icon}}
+                                                style={{width: text(24), height: text(24)}}
+                                            />
+                                            <Text
+                                                style={{
+                                                    color: choose == _s.id ? '#DC4949' : '#545968',
+                                                }}>
+                                                {_s.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
                             </View>
 
                             <View>
@@ -291,7 +251,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         end={{x: 0.8, y: 0.8}}
                                         colors={['#E9EAED', '#F5F6F8']}
                                         style={{borderRadius: text(25), marginBottom: text(7)}}>
-                                        <Text style={styles.tip_sty}>{data?.plan_info?.goal_info?.remark}</Text>
+                                        <Text style={styles.tip_sty}>{remark}</Text>
                                     </LinearGradient>
                                     <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                         <Text style={{color: '#545968', flex: 1}}>
@@ -299,6 +259,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[0].interval,
@@ -310,6 +271,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             </TouchableOpacity>
                                             <Text style={styles.count_num_sty}>{countFr}</Text>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[0].interval,
@@ -327,6 +289,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[1].interval,
@@ -338,6 +301,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             </TouchableOpacity>
                                             <Text style={styles.count_num_sty}>{countM}</Text>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[1].interval,
@@ -355,116 +319,50 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <View style={{height: 300, backgroundColor: '#fff', marginTop: text(20)}}>
-                                    <View style={[Style.flexRow]}>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
-                                                ref={_textTime}
-                                                style={styles.legend_title_sty}
-                                                defaultValue={chartData?.yield_info?.label[0]?.val}
-                                                editable={false}
-                                            />
-                                            <Text style={styles.legend_desc_sty}>
-                                                {chartData?.yield_info?.label[0]?.key}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
+                                <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: 50,
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginHorizontal: 20,
+                                    }}>
+                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                activeOpacity={1}
                                                 style={[
-                                                    styles.legend_title_sty,
-                                                    {color: getColor(chartData?.yield_info?.label[1]?.val)},
+                                                    styles.btn_sty,
+                                                    {
+                                                        backgroundColor:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#F1F6FF'
+                                                                : '#fff',
+                                                    },
                                                 ]}
-                                                ref={_textPortfolio}
-                                                defaultValue={chartData?.yield_info?.label[1]?.val}
-                                                editable={false}
-                                            />
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#E74949'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>
-                                                    {chartData?.yield_info?.label[1]?.key}
+                                                key={_index}
+                                                onPress={() => changeTab(_item.val, _item.type)}>
+                                                <Text
+                                                    style={{
+                                                        color:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#0051CC'
+                                                                : '#555B6C',
+                                                        fontSize: text(12),
+                                                    }}>
+                                                    {_item.name}
                                                 </Text>
-                                            </Text>
-                                        </View>
-                                        <View style={styles.legend_sty}>
-                                            <TextInput
-                                                style={[
-                                                    styles.legend_title_sty,
-                                                    {color: getColor(chartData?.yield_info?.label[2]?.val)},
-                                                ]}
-                                                ref={_textBenchmark}
-                                                defaultValue={chartData?.yield_info?.label[2]?.val}
-                                                editable={false}
-                                            />
-                                            <Text>
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
-                                                    color={'#545968'}
-                                                    size={12}
-                                                />
-                                                <Text style={styles.legend_desc_sty}>
-                                                    {chartData?.yield_info?.label[2]?.key}
-                                                </Text>
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Chart
-                                        initScript={baseAreaChart(
-                                            chartData?.yield_info?.chart,
-                                            [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                            true
-                                        )}
-                                        onChange={onChartChange}
-                                        data={chartData?.yield_info?.chart}
-                                        onHide={onHide}
-                                        style={{width: '100%'}}
-                                    />
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            height: 50,
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            marginHorizontal: 20,
-                                        }}>
-                                        {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.btn_sty,
-                                                        {
-                                                            backgroundColor:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#F1F6FF'
-                                                                    : '#fff',
-                                                        },
-                                                    ]}
-                                                    key={_index}
-                                                    onPress={() => changeTab(_item.val, _item.type)}>
-                                                    <Text
-                                                        style={{
-                                                            color:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#0051CC'
-                                                                    : '#555B6C',
-                                                            fontSize: text(12),
-                                                        }}>
-                                                        {_item.name}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
                                 </View>
 
                                 {/* 表格 */}
                                 <Table data={data.asset_compare.table} />
                                 {data?.asset_compare?.tip_info?.title && (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
                                         onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
                                         <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
@@ -523,6 +421,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 })}
                                 {data?.asset_strategy?.tip_info?.title && (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={{
                                             flexDirection: 'row',
                                             alignItems: 'baseline',
@@ -544,6 +443,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 {data.gather_info.map((_q, _w) => {
                                     return (
                                         <TouchableOpacity
+                                            activeOpacity={1}
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
@@ -559,7 +459,6 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <BottomDesc />
                     </ScrollView>
                     {showMask && <Mask />}
-
                     {popup?.content && (
                         <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                             <View style={{padding: text(16)}}>
@@ -604,7 +503,6 @@ const styles = StyleSheet.create({
         marginRight: text(8),
     },
     fund_input_sty: {
-        height: text(36),
         fontSize: text(34),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,

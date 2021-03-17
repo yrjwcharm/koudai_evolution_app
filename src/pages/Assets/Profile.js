@@ -2,11 +2,11 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 14:49:29
+ * @LastEditTime: 2021-03-17 14:56:37
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,6 +17,7 @@ import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
 import Mask from '../../components/Mask';
 import {InputModal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 
 const Profile = ({navigation}) => {
     const insets = useSafeAreaInsets();
@@ -24,6 +25,8 @@ const Profile = ({navigation}) => {
     const [showMask, setShowMask] = useState(false);
     const inputModal = useRef(null);
     const [modalProps, setModalProps] = useState({});
+    const [iptVal, setIptVal] = useState('');
+    const iptValRef = useRef('');
 
     const init = useCallback(() => {
         http.get('/mapi/person/center/20210101', {}).then((res) => {
@@ -72,31 +75,44 @@ const Profile = ({navigation}) => {
                 });
                 Picker.show();
             } else if (item.val?.type === 'input') {
+                setIptVal(item.val?.text);
                 setModalProps({
-                    confirmClick: (value) => {
-                        http.post('/mapi/update/user_info/20210101', {
-                            id: item.id,
-                            val: value,
-                        }).then((res) => {
-                            if (res.code === '000000') {
-                                init();
-                            }
-                        });
-                    },
-                    confirmText: '确定',
-                    defaultValue: item.val?.text,
+                    confirmClick: () => confirmClick(item),
                     placeholder: `请输入${item.key}金额`,
                     title: item.key,
                 });
             }
         },
-        [navigation, init]
+        [navigation, init, confirmClick]
     );
     // 隐藏选择器
     const hidePicker = useCallback(() => {
         Picker.hide();
         setShowMask(false);
     }, []);
+    const onKeyPress = (e) => {
+        console.log(e.nativeEvent.key);
+    };
+    const confirmClick = useCallback(
+        (item) => {
+            console.log(iptValRef.current);
+            if (!iptValRef.current) {
+                Toast.show(`${item.key}不能为空`);
+                return false;
+            }
+            inputModal.current.hide();
+            http.post('/mapi/update/user_info/20210101', {
+                id: item.id,
+                val: iptValRef.current,
+            }).then((res) => {
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    init();
+                }
+            });
+        },
+        [init]
+    );
 
     useFocusEffect(
         useCallback(() => {
@@ -108,10 +124,29 @@ const Profile = ({navigation}) => {
             inputModal.current.show();
         }
     }, [modalProps]);
+    useEffect(() => {
+        iptValRef.current = iptVal;
+    }, [iptVal]);
     return (
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
-            <InputModal {...modalProps} ref={inputModal} />
+            <InputModal {...modalProps} ref={inputModal}>
+                <View style={{backgroundColor: '#fff'}}>
+                    <View style={[Style.flexRow, styles.inputContainer]}>
+                        <Text style={[styles.unit, {marginRight: text(4)}]}>{'￥'}</Text>
+                        <TextInput
+                            autoFocus={true}
+                            clearButtonMode={'while-editing'}
+                            keyboardType={'decimal-pad'}
+                            onKeyPress={onKeyPress}
+                            onChangeText={(value) => setIptVal(value)}
+                            placeholder={modalProps?.placeholder}
+                            style={styles.input}
+                            value={iptVal}
+                        />
+                    </View>
+                </View>
+            </InputModal>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index, arr) => {
                     return (
@@ -203,6 +238,26 @@ const styles = StyleSheet.create({
         width: text(32),
         height: text(32),
         borderRadius: text(16),
+    },
+    inputContainer: {
+        marginVertical: text(32),
+        marginHorizontal: Space.marginAlign,
+        paddingBottom: text(12),
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    unit: {
+        fontSize: text(20),
+        lineHeight: text(24),
+        color: Colors.defaultColor,
+        fontWeight: 'bold',
+    },
+    input: {
+        flex: 1,
+        fontSize: text(26),
+        lineHeight: text(37),
+        color: Colors.defaultColor,
+        fontFamily: Font.numMedium,
     },
 });
 

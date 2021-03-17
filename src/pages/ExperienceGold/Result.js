@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 15:17:26
  * @Description:体验金结果页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-03 17:23:43
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 16:40:41
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
@@ -19,7 +19,9 @@ export default function Result() {
     const [data, setData] = useState({});
     useEffect(() => {
         Http.post('/freefund/do_cash_out/20210101').then((res) => {
-            setData(res.result);
+            if (res.code === '000000') {
+                setData(res.result);
+            }
         });
     }, []);
     return (

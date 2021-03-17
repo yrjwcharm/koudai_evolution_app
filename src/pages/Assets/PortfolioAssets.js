@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 15:26:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 16:53:17
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -73,7 +73,7 @@ export default function PortfolioAssets(props) {
         }).then((res) => {
             setChart(res.result);
         });
-    }, [period]);
+    }, [period, props]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -407,7 +407,7 @@ export default function PortfolioAssets(props) {
                 </View>
                 {/* 广告位 */}
                 {data?.ad_info && (
-                    <TouchableOpacity onPress={jumpTo(data.ad_info.url)}>
+                    <TouchableOpacity onPress={() => jumpTo(data.ad_info.url)}>
                         <FitImage
                             source={{
                                 uri: data.ad_info.img,
@@ -606,7 +606,6 @@ const styles = StyleSheet.create({
         padding: text(14),
     },
     fund_item_sty: {
-        paddingVertical: text(5),
         borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
         paddingVertical: text(10),

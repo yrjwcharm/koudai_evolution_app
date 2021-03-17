@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-04 17:29:55
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 14:46:01
+ * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingVertical: text(8),
         paddingHorizontal: text(20),
-        paddingBottom: isIphoneX() ? 34 : 0,
+        paddingBottom: isIphoneX() ? 34 : text(8),
     },
     contactBtn: {
         paddingRight: text(20),

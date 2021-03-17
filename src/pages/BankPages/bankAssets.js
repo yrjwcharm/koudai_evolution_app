@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 10:57:43
+ * @LastEditTime: 2021-03-17 19:46:58
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -33,8 +33,7 @@ export default function BankAssets(props) {
         }).then((res) => {
             setData(res.result);
         });
-        console.log(2222);
-    }, [props.route.params]);
+    }, [props.route]);
     const reasonShow = () => {
         bottomModal.current.show();
     };
@@ -46,8 +45,8 @@ export default function BankAssets(props) {
                     <Header
                         title={data.title}
                         leftIcon="chevron-left"
-                        rightText={'交易记录'}
-                        rightPress={() => rightPress(data.top_right_btn.url)}
+                        rightText={data.trade_record.text}
+                        rightPress={() => rightPress(data.trade_record.url)}
                         rightTextStyle={styles.right_sty}
                         fontStyle={{color: '#000'}}
                         titleStyle={{marginLeft: text(16)}}

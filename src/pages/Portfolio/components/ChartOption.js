@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-13 18:23:17
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 18:22:14
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -89,7 +89,7 @@ export const baseAreaChart = (
       fill: '#E74949',
     },
   });
-  chart.area({startOnZero: false})
+  chart.area()
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
     .shape('smooth');
