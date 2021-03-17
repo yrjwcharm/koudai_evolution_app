@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:38:15
+ * @LastEditTime: 2021-03-17 20:58:43
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -92,12 +92,16 @@ export default function ElectronicAccount(props) {
                             return (
                                 <View style={{marginTop: text(12)}} key={_index + '_item'}>
                                     <Text style={styles.gray_title_sty}>{_item.key}</Text>
-                                    <Text style={styles.gray_content_sty}>{_item.val}</Text>
+                                    <Html style={styles.gray_content_sty} html={_item.val} />
                                 </View>
                             );
                         })}
                     </View>
-                    <FixedButton title={data?.button?.text} disabled={data?.button?.avail == 0} />
+                    <FixedButton
+                        title={data?.button?.text}
+                        disabled={data?.button?.avail == 0}
+                        onPress={() => jump(data?.button?.url)}
+                    />
                 </>
             )}
         </View>

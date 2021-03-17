@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:53:17
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-17 20:39:56
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -283,10 +283,10 @@ export default function PortfolioAssets(props) {
     const renderFixedPlan = () => {
         return (
             <>
-                <View style={Style.flexBetween}>
+                <TouchableOpacity style={Style.flexBetween} onPress={() => jump(data.asset_deploy.header.url)}>
                     <Text style={styles.title_sty}>{data.asset_deploy.header.title}</Text>
                     <Text style={{color: '#0051CC', fontSize: text(12)}}>{data.asset_deploy.header.text}</Text>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.fund_card_sty}>
                     <View style={[Style.flexBetween, {paddingBottom: text(10)}]}>
                         <Text style={styles.fund_title_sty}>{data.asset_deploy.th.name}</Text>
@@ -443,7 +443,10 @@ export default function PortfolioAssets(props) {
                     <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
                         {data?.extend_buttons?.map((_e, _index) => {
                             return (
-                                <View style={{alignItems: 'center'}} key={_index + '_e'}>
+                                <TouchableOpacity
+                                    style={{alignItems: 'center'}}
+                                    key={_index + '_e'}
+                                    onPress={() => jump(_e.url)}>
                                     <Image
                                         source={{
                                             uri: _e.icon,
@@ -452,7 +455,7 @@ export default function PortfolioAssets(props) {
                                         style={styles.img_sty}
                                     />
                                     <Text style={styles.list_text_sty}>{_e.text}</Text>
-                                </View>
+                                </TouchableOpacity>
                             );
                         })}
                     </View>

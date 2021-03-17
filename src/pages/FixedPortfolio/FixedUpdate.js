@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 19:26:26
+ * @LastEditTime: 2021-03-17 20:28:46
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import Http from '../../services';
+import Toast from '../../components/Toast';
 var interval, _cycle, _timing;
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
@@ -26,7 +27,7 @@ export default function FixedUpdate({navigation, route}) {
         setNum(num - interval);
     };
     useEffect(() => {
-        Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/update/invest_plan/info/20210101', {
+        Http.get('/trade/update/invest_plan/info/20210101', {
             invest_id: route.params.invest_id,
         }).then((res) => {
             interval = res.result.target_info.invest.incr;
@@ -68,18 +69,23 @@ export default function FixedUpdate({navigation, route}) {
 
     const jumpTo = (type) => {
         if (type == 'redeem') {
-            Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/stop/invest_plan/20210101', {
+            Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: data.invest_id,
             }).then((res) => {
-                // navigation.navigate('FixedPlanList')
+                Toast.show(res.message);
+                setTimeout(() => {
+                    navigation.goBack();
+                }, 1000);
             });
         } else {
-            Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/update/invest_plan/20210101', {
-                invest_id: data.invest_id,
+            Http.get('/trade/update/invest_plan/20210101', {
+                invest_id: data?.invest_id,
                 amount: data?.target_info?.target_amount?.value,
                 cycle: _cycle,
                 timing: _timing,
-            }).then((res) => {});
+            }).then((res) => {
+                Toast.show(res.message);
+            });
         }
     };
     return (
@@ -121,6 +127,7 @@ export default function FixedUpdate({navigation, route}) {
                             {justifyContent: 'space-between', marginHorizontal: text(16), marginTop: text(16)},
                         ]}>
                         <TouchableOpacity
+                            activeOpacity={1}
                             style={{
                                 borderColor: '#4E556C',
                                 borderWidth: 0.5,
@@ -129,14 +136,13 @@ export default function FixedUpdate({navigation, route}) {
                                 marginRight: text(10),
                             }}
                             onPress={() => jumpTo('redeem')}>
-                            <Text style={{paddingVertical: text(10), textAlign: 'center'}}>终止计划</Text>
+                            <Text style={styles.btn_sty}>终止计划</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
+                            activeOpacity={1}
                             style={{backgroundColor: '#0051CC', borderRadius: text(6), flex: 1}}
                             onPress={() => jumpTo('update')}>
-                            <Text style={{paddingVertical: text(10), textAlign: 'center', color: '#fff'}}>
-                                确认修改
-                            </Text>
+                            <Text style={[styles.btn_sty, {color: '#fff'}]}>确认修改</Text>
                         </TouchableOpacity>
                     </View>
                 </>
@@ -167,6 +173,10 @@ const styles = StyleSheet.create({
         fontSize: text(20),
         fontFamily: Font.numFontFamily,
         minWidth: text(130),
+        textAlign: 'center',
+    },
+    btn_sty: {
+        paddingVertical: text(14),
         textAlign: 'center',
     },
 });

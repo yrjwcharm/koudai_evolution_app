@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 17:51:22
+ * @LastEditTime: 2021-03-17 20:26:17
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -41,7 +41,7 @@ export default function FixedPlan(props) {
         Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
             setData(res.result);
         });
-    });
+    }, []);
     return (
         <>
             {Object.keys(data).length > 0 && (

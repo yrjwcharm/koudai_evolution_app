@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:39:36
+ * @LastEditTime: 2021-03-17 21:29:47
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -20,18 +20,28 @@ import {PasswordModal} from '../../components/Password';
 export default function BankWithdraw({navigation, route}) {
     const [data, setData] = useState({});
     const passwordModal = useRef(null);
-
+    const [amount, setAmount] = useState();
+    const [enable, setEnable] = useState(false);
     const submitData = () => {};
     const passwordInput = () => {
         passwordModal.current.show();
     };
     useEffect(() => {
         Http.get('trade/bank/withdraw/info/20210101', {
-            prod_code: route.params.prod_code,
+            bank_code: route.params.bank_code,
         }).then((res) => {
             setData(res.result);
+            // setAmount(res.result.withdraw_info.min.toString());
         });
     }, []);
+    const onInput = (amount) => {
+        if (amount >= data.bank_account.balance.val) {
+            setAmount(data.bank_account.balance.val);
+        } else {
+            setAmount(amount);
+        }
+        setEnable(true);
+    };
     return (
         <>
             {Object.keys(data).length > 0 && (
@@ -54,7 +64,12 @@ export default function BankWithdraw({navigation, route}) {
                         <Text style={styles.title_sty}>{data.withdraw_info.title}</Text>
                         <View style={[Style.flexRow, {alignItems: 'baseline', marginTop: text(18)}]}>
                             <Text style={{fontSize: text(22), fontWeight: 'bold'}}>¥</Text>
-                            <TextInput value={data.withdraw_info.min.toString()} style={styles.num_sty} />
+                            <TextInput
+                                keyboardType="numeric"
+                                value={amount}
+                                style={styles.num_sty}
+                                onChangeText={(value) => onInput(value)}
+                            />
                         </View>
                     </View>
                     <Text style={[{padding: text(15)}, Style.descSty]}>{data.pay_info.title}</Text>
@@ -85,7 +100,11 @@ export default function BankWithdraw({navigation, route}) {
                     </View>
                     <Text style={styles.tips_sty}>{data.notice}</Text>
                     <PasswordModal ref={passwordModal} onDone={submitData} />
-                    <FixedButton title={data.button.text} onPress={passwordInput} disabled={data.button.avail == 0} />
+                    <FixedButton
+                        title={data.button.text}
+                        onPress={passwordInput}
+                        disabled={data.button?.avail == 0 || !enable}
+                    />
                 </View>
             )}
         </>
@@ -130,6 +149,7 @@ const styles = StyleSheet.create({
         fontSize: text(35),
         fontFamily: Font.numFontFamily,
         marginLeft: text(5),
+        flex: 1,
     },
     card_select: {
         backgroundColor: '#fff',

@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-17 14:46:01
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 20:52:32
+ * @LastEditors: xjh
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -43,7 +43,7 @@ const FixedBtn = (props) => {
                                         <Text style={[styles.methodDesc]}>{sub.desc}</Text>
                                     </View>
                                 </View>
-                                <TouchableOpacity style={[styles.methodBtn, Style.flexCenter]}>
+                                <TouchableOpacity style={[styles.methodBtn, Style.flexCenter]} activeOpacity={1}>
                                     <Text style={[styles.methodBtnText]}>{sub.btn.title}</Text>
                                 </TouchableOpacity>
                             </View>

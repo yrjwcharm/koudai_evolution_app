@@ -52,65 +52,54 @@ export default function DetailAccount({route, navigation}) {
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
+                Http.get('/portfolio/yield_chart/20210101', {
+                    allocation_id: res.result.allocation_id,
+                    benchmark_id: res.result.benchmark_id,
+                    period: period,
+                    type: 1,
+                }).then((res) => {
+                    setLabelInfo(res.result.yield_info.label);
+                    setChartData(res.result.yield_info);
+                    setSummary(res.result.yield_info.label);
+                });
             }
         });
-    }, [getChartInfo, route.params]);
-    const getChartInfo = useCallback(() => {
-        if (Object.keys(data).length > 0) {
-            Http.get('/portfolio/yield_chart/20210101', {
-                allocation_id: data.allocation_id,
-                benchmark_id: data.benchmark_id,
-                period: period,
-                type: 1,
-            }).then((res) => {
-                setLabelInfo(res.result.yield_info.label);
-                setChartData(res.result.yield_info);
-                setSummary(res.result.yield_info.label);
-            });
-        }
-    }, [period, data]);
+    }, [route.params, period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
-            getChartInfo();
-        }, [getChartInfo, init])
+        }, [init])
     );
 
     // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            if (type == 2) {
-                let range = items[0].origin.value;
-                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
-                _textPortfolio.current.setNativeProps({
-                    text: _value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            } else {
-                _textPortfolio.current.setNativeProps({
-                    text: items[0]?.value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            }
-        },
-        [getColor]
-    );
-    // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: labelInfo[0].val});
+    const onChartChange = useCallback(({items}) => {
+        _textTime.current.setNativeProps({text: items[0]?.title});
+        if (type == 2) {
+            let range = items[0].origin.value;
+            let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
             _textPortfolio.current.setNativeProps({
-                text: labelInfo[1].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
+                text: _value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
             });
-            _textBenchmark.current.setNativeProps({
-                text: labelInfo[2].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
+        } else {
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
             });
-        },
-        [labelInfo, getColor]
-    );
+        }
+    }, []);
+    // 图表滑动结束
+    const onHide = useCallback(({items}) => {
+        _textTime.current.setNativeProps({text: labelInfo[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: labelInfo[1].val,
+            style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
+        });
+        _textBenchmark.current.setNativeProps({
+            text: labelInfo[2].val,
+            style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
+        });
+    }, []);
     const getColor = useCallback((t) => {
         if (!t) {
             return Colors.defaultColor;
@@ -131,7 +120,7 @@ export default function DetailAccount({route, navigation}) {
                     leftIcon="chevron-left"
                     rightText={'产品说明书'}
                     titleStyle={{marginRight: text(-20)}}
-                    rightPress={() => jumpPage('ProductIntro')}
+                    rightPress={() => jumpPage('ProductIntro', {upid: route?.params?.upid})}
                     rightTextStyle={styles.right_sty}
                 />
             ) : null}
