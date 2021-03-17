@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 12:34:42
+ * @LastEditTime: 2021-03-17 16:45:41
  * @Description: 自定义跳转钩子
  */
 import React from 'react';
@@ -23,7 +23,7 @@ function useJump() {
                     })
                     .catch((err) => Toast.show(err));
             } else if (url.type === 3) {
-                navigation[type]('OpenPdf', url.params || {});
+                navigation[type]('OpenPdf', {url: url.path});
             } else {
                 navigation[type](url.path, url.params || {});
             }

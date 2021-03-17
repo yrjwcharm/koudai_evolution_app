@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:59:55
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 16:34:43
  * @Description: 体验金首页
  */
 
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -30,7 +30,13 @@ const ExperienceGold = ({navigation}) => {
     const Jump = useJump();
 
     const init = useCallback(() => {
-        setRefreshing(false);
+        Http.get('/freefund/detail/20210101').then((res) => {
+            if (res.code === '000000') {
+                setRefreshing(false);
+                setData(res.result);
+                StatusBar.setBarStyle('light-content');
+            }
+        });
     }, []);
     const getColor = useCallback((t) => {
         if (!t) {
@@ -48,17 +54,12 @@ const ExperienceGold = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             StatusBar.setBarStyle('light-content');
+            init();
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [])
+        }, [init])
     );
-    useEffect(() => {
-        Http.get('/freefund/detail/20210101').then((res) => {
-            setData(res.result);
-            StatusBar.setBarStyle('light-content');
-        });
-    }, [navigation]);
     const rightPress = () => {
         navigation.navigate('ExperienceGoldRule');
     };
@@ -147,11 +148,15 @@ const ExperienceGold = ({navigation}) => {
                                 <Button
                                     onPress={() => Jump(data?.part1?.cashout_button?.url)}
                                     title={data?.part1?.cashout_button?.title}
-                                    disabled={true}
+                                    disabled={!data?.part1?.cashout_button?.avail}
                                     disabledColor={'#F2F2F2'}
                                     color={'#D7AF74'}
                                     style={styles.withdrawBtn}
-                                    textStyle={{...styles.profitText, color: '#C1C1C1', fontWeight: '500'}}
+                                    textStyle={{
+                                        ...styles.profitText,
+                                        color: data?.part1?.cashout_button?.avail ? '#fff' : '#C1C1C1',
+                                        fontWeight: '500',
+                                    }}
                                 />
                                 <Text style={{...styles.yieldKey, color: '#DC4949'}}>{data?.part1?.time_desc}</Text>
                             </View>
@@ -191,8 +196,12 @@ const ExperienceGold = ({navigation}) => {
                                     </View>
 
                                     <View style={Style.flexRow} key={_index + '_item'}>
-                                        {_item?.label?.map((_label, _index) => {
-                                            return <Text style={[styles.yieldKey, styles.tag]}>{_label}</Text>;
+                                        {_item?.label?.map((_label, _idx) => {
+                                            return (
+                                                <Text key={_label + _idx} style={[styles.yieldKey, styles.tag]}>
+                                                    {_label}
+                                                </Text>
+                                            );
                                         })}
                                     </View>
                                 </View>
@@ -252,10 +261,11 @@ const ExperienceGold = ({navigation}) => {
                                         </View>
                                     </View>
                                     <Button
-                                        title={_p.button.title}
+                                        title={_p.button.text}
                                         disabled={false}
                                         color={'#fff'}
                                         style={styles.buyBtn}
+                                        onPress={() => Jump(_p.button.url)}
                                         textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
                                     />
                                 </TouchableOpacity>

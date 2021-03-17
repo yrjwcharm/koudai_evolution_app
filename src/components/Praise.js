@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 17:23:15
+ * @LastEditTime: 2021-03-17 16:44:27
  * @Description:点赞模块
  */
 
@@ -40,7 +40,6 @@ export default function Praise(props) {
         } else {
             setLike(1);
             let like_num = num + 1;
-            console.log(like_num);
             setNum(like_num);
             postLike(1);
         }

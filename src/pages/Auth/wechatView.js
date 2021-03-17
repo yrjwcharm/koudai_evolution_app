@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-16 18:35:44
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 15:28:43
  * @Description: 微信登录
  */
 import React from 'react';
@@ -12,9 +12,13 @@ import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
-
+import Storage from '../../utils/storage';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
+import http from '../../services';
 function Wechat(props) {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const weChatLogin = () => {
         WeChat.isWXAppInstalled().then((isInstalled) => {
             if (isInstalled) {
@@ -22,7 +26,23 @@ function Wechat(props) {
                 let state = '_' + +new Date();
                 try {
                     WeChat.sendAuthRequest(scope, state).then((response) => {
-                        console.log(response);
+                        if (response.code) {
+                            http.post('/auth/bind_mobile/20210101').then((res) => {
+                                if (res.code == '000000') {
+                                    if (res.result.bind_mobile) {
+                                        dispatch(getUserInfo());
+                                        Storage.save('loginStatus', res.result);
+                                        Toast.show('登录成功', {
+                                            onHidden: () => {
+                                                navigation.goBack();
+                                            },
+                                        });
+                                    } else {
+                                        navigation.replace('WechatLogin', {union_id: res.result.union_id});
+                                    }
+                                }
+                            });
+                        }
                     });
                 } catch (e) {
                     if (e instanceof WeChat.WechatError) {

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-15 13:55:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 18:53:55
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -14,11 +14,16 @@ import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
 import Header from '../../components/NavBar';
 import BottomDesc from '../../components/BottomDesc';
+import LoginMask from '../../components/LoginMask';
 import http from '../../services';
 import {useJump} from '../../components/hooks';
 import {Chart, chartOptions} from '../../components/Chart';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
+import {useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 const Index = (props) => {
+    const isFocused = useIsFocused();
+    const userInfo = useSelector((store) => store.userInfo);
     const inset = useRef(useSafeAreaInsets()).current;
     const [data, SetData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -65,6 +70,7 @@ const Index = (props) => {
         renderLoading()
     ) : (
         <>
+            {!userInfo.toJS().is_login && isFocused && <LoginMask />}
             <Header renderLeft={<Text style={styles.header_title}>今日推荐</Text>} />
             <ScrollView
                 style={{backgroundColor: Colors.bgColor}}
@@ -216,7 +222,7 @@ const Index = (props) => {
                         {/* 增值服务 */}
                         <View style={{marginBottom: px(20)}}>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                            {/* {data?.part3?.plans?.map((item, index) => (
+                            {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -249,7 +255,7 @@ const Index = (props) => {
                                         }}
                                     />
                                 </TouchableOpacity>
-                            ))} */}
+                            ))}
                         </View>
                     </View>
                     <BottomDesc />

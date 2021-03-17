@@ -1,8 +1,8 @@
 /*
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 10:47:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-17 18:56:16
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -94,26 +94,7 @@ export default function Tabbar() {
                 }}
             />
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen
-                name="Home"
-                options={{tabBarLabel: '我的'}}
-                component={Home}
-                // listeners={({navigation, route}) => {
-                //     return {
-                //         tabPress: (e) => {
-                //             // e.preventDefault();
-                //             console.log(userInfo.toJS(), '0000');
-                //             if (userInfo.toJS().uid) {
-                //                 navigation.navigate('Home');
-                //             } else {
-                //                 storage.get('GesturesPassword').then((res) => {
-                //                     navigation.replace('GesturePassword');
-                //                 });
-                //             }
-                //         },
-                //     };
-                // }}
-            />
+            <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
         </Tab.Navigator>
     );
 }

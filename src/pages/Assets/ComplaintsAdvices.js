@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 10:33:24
+ * @LastEditTime: 2021-03-16 20:41:27
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -98,6 +98,7 @@ const ComplaintsAdvices = ({navigation}) => {
                         content: res.result.tips,
                         confirmCallBack: () => navigation.goBack(),
                         confirmText: '确定',
+                        isTouchMaskToClose: false,
                     });
                 } else {
                     btnClick.current = true;

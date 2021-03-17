@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:37:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-17 17:26:43
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -468,8 +468,21 @@ class TradeBuy extends Component {
                 {type == 0 && (
                     <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
                         点击确认购买即代表您已知悉该基金组合的
-                        <Text style={{color: Colors.btnColor}}>产品概要</Text>和
-                        <Text style={{color: Colors.btnColor}}>基金组合协议</Text>
+                        <Text
+                            onPress={() => {
+                                this.jumpPage('TradeAgreements', {poid: this.state.poid});
+                            }}
+                            style={{color: Colors.btnColor}}>
+                            基金组合协议
+                        </Text>
+                        和
+                        <Text
+                            style={{color: Colors.btnColor}}
+                            onPress={() => {
+                                this.jumpPage('TradeAgreements', {fund_codes: planData?.codes});
+                            }}>
+                            产品概要
+                        </Text>
                         等相关内容
                     </Text>
                 )}

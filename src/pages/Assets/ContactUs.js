@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 09:56:37
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-06 11:30:35
+ * @LastEditTime: 2021-03-16 21:04:47
  * @Description: 联系我们
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,12 +13,15 @@ import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
+import {Modal} from '../../components/Modal';
+import * as WeChat from 'react-native-wechat-lib';
 
 const ContactUs = ({navigation}) => {
     const [data, setData] = useState({});
 
     const onPress = (item) => {
         if (item.type === 'online') {
+            navigation.navigate('IM');
         } else if (item.type === 'phone') {
             const url = `tel:${item.value}`;
             Linking.canOpenURL(url)
@@ -31,7 +34,29 @@ const ContactUs = ({navigation}) => {
                 .catch((err) => Alert(err));
         } else {
             Clipboard.setString(item.value);
-            Toast.show(`微信公众账号(${item.value})已经复制成功`);
+            Modal.show({
+                confirm: true,
+                content: `微信公众账号(${item.value})已经复制成功`,
+                confirmText: '去粘贴',
+                confirmCallBack: () => {
+                    WeChat.isWXAppInstalled().then((isInstalled) => {
+                        if (isInstalled) {
+                            try {
+                                WeChat.openWXApp();
+                            } catch (e) {
+                                if (e instanceof WeChat.WechatError) {
+                                    console.error(e.stack);
+                                } else {
+                                    throw e;
+                                }
+                            }
+                        } else {
+                            Toast.show('请安装微信');
+                        }
+                    });
+                },
+                title: '关注微信公众号',
+            });
         }
     };
 
