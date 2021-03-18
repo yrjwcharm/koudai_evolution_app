@@ -2,11 +2,11 @@
  * @Date: 2021-03-17 17:44:16
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 22:12:26
+ * @LastEditTime: 2021-03-18 12:24:47
  * @Description: 登录注册蒙层
  */
-import React from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {Dimensions, StyleSheet, View, findNodeHandle} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {BlurView} from '@react-native-community/blur';
 import {Button} from './Button';
@@ -17,35 +17,45 @@ const width = Dimensions.get('window').width;
 
 const LoginMask = () => {
     const navigation = useNavigation();
+    const [blurRef, setBlurRef] = useState(null);
+    const viewRef = useRef(null);
     return (
-        <BlurView
-            blurAmount={10}
-            blurType={'light'}
-            reducedTransparencyFallbackColor={'white'}
-            style={[styles.container, {bottom: 0}]}>
-            <Button title={'注册'} style={styles.registerBtn} onPress={() => navigation.navigate('Register')} />
-            <Button
-                title={'登录'}
-                color={'#fff'}
-                onPress={() => navigation.navigate('Login')}
-                style={styles.loginBtn}
-                textStyle={{color: Colors.lightBlackColor}}
+        <>
+            <View
+                style={[styles.container, {zIndex: 10}]}
+                ref={viewRef}
+                onLayout={() => {
+                    viewRef && setBlurRef(findNodeHandle(viewRef.current));
+                }}>
+                <Button title={'注册'} style={styles.registerBtn} onPress={() => navigation.navigate('Register')} />
+                <Button
+                    title={'登录'}
+                    color={'#fff'}
+                    onPress={() => navigation.navigate('Login')}
+                    style={styles.loginBtn}
+                    textStyle={{color: Colors.lightBlackColor}}
+                />
+            </View>
+            <BlurView
+                blurAmount={10}
+                viewRef={blurRef}
+                blurType={'light'}
+                reducedTransparencyFallbackColor={'white'}
+                style={styles.container}
             />
-        </BlurView>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: text(20),
-        paddingBottom: text(40),
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         position: 'absolute',
         top: 0,
         left: 0,
         bottom: 0,
         width: width,
-        zIndex: 100,
+        zIndex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
@@ -58,6 +68,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
         backgroundColor: '#fff',
         width: width - text(40),
+        marginBottom: text(40),
     },
 });
 
