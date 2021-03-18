@@ -7173,11 +7173,6 @@ react-native-magic-move@^0.6.6:
   dependencies:
     lodash.findlast "^4.6.0"
 
-react-native-ok-gesture-password@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/react-native-ok-gesture-password/download/react-native-ok-gesture-password-2.0.0.tgz#44079fafcaa50239bf938f317b30ff03f4d12377"
-  integrity sha1-RAefr8qlAjm/k48xezD/A/TRI3c=
-
 react-native-orientation-locker@^1.1.8:
   version "1.1.8"
   resolved "https://registry.npm.taobao.org/react-native-orientation-locker/download/react-native-orientation-locker-1.1.8.tgz#45d1c9e002496b8d286ec8932d6e3e7d341f9c85"

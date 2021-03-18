@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:52:55
+ * @LastEditTime: 2021-03-18 13:05:03
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -26,7 +26,8 @@ const AdjustRecord = ({navigation, route}) => {
         (status, first) => {
             status === 'refresh' && setRefreshing(true);
             http.get('/portfolio/adjust/20210101', {
-                upid: route.params?.poid || 1,
+                poid: route.params?.poid,
+                upid: route.params?.upid,
                 page,
                 scene: 'history',
             }).then((res) => {

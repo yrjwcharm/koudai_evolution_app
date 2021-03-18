@@ -2,11 +2,12 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 14:56:37
+ * @LastEditTime: 2021-03-18 11:00:17
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Image, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';

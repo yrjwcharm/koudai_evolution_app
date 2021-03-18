@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-04 20:25:20
+ * @LastEditTime: 2021-03-18 10:37:40
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -61,26 +61,23 @@ const HistoryAdjust = ({navigation, route}) => {
         (section) => {
             return (
                 <>
-                    {section.items &&
-                        section.items.map((item, index) => {
-                            return (
-                                <View key={item.code} style={[styles.assets_l2, Style.flexBetween]}>
-                                    <View>
-                                        <Text style={[styles.assets_l2_name]}>{item.name}</Text>
-                                        <Text style={[styles.assets_l2_code]}>{item.code}</Text>
-                                    </View>
-                                    <View style={[styles.assets_l2_right, {flexDirection: 'row'}]}>
-                                        <Text style={[styles.assets_l2_last_ratio, styles.assets_l2_right]}>
-                                            {item.pre_percent}
-                                        </Text>
-                                        <Icon name={'arrow-right-alt'} size={20} color={Colors.darkGrayColor} />
-                                        <Text style={[styles.assets_l2_ratio, styles.assets_l2_right]}>
-                                            {item.percent}
-                                        </Text>
-                                    </View>
+                    {section?.items?.map((item, index) => {
+                        return (
+                            <View key={item.code} style={[styles.assets_l2, Style.flexBetween]}>
+                                <View>
+                                    <Text style={[styles.assets_l2_name]}>{item.name}</Text>
+                                    <Text style={[styles.assets_l2_code]}>{item.code}</Text>
                                 </View>
-                            );
-                        })}
+                                <View style={[styles.assets_l2_right, {flexDirection: 'row'}]}>
+                                    <Text style={[styles.assets_l2_last_ratio, styles.assets_l2_right]}>
+                                        {item.pre_percent}
+                                    </Text>
+                                    <Icon name={'arrow-right-alt'} size={20} color={Colors.darkGrayColor} />
+                                    <Text style={[styles.assets_l2_ratio, styles.assets_l2_right]}>{item.percent}</Text>
+                                </View>
+                            </View>
+                        );
+                    })}
                 </>
             );
         },
@@ -138,10 +135,12 @@ const HistoryAdjust = ({navigation, route}) => {
                         <View style={{height: text(288)}}>
                             <Chart initScript={basicPieChart(chart)} data={chart} />
                         </View>
-                        <View style={{marginTop: text(8)}}>
-                            <Text style={[styles.intro_title]}>{data.intros.title}</Text>
-                            <Text style={[styles.intro_content]}>{data.intros.content}</Text>
-                        </View>
+                        {data?.intros?.content && (
+                            <View style={{marginTop: text(8)}}>
+                                <Text style={[styles.intro_title]}>{data.intros.title}</Text>
+                                <Text style={[styles.intro_content]}>{data.intros.content}</Text>
+                            </View>
+                        )}
                     </View>
                     <View style={[styles.deploy_detail]}>
                         <Accordion
@@ -150,7 +149,7 @@ const HistoryAdjust = ({navigation, route}) => {
                             onChange={updateSections}
                             renderContent={renderContent}
                             renderHeader={renderHeader}
-                            sections={data.deploy_detail}
+                            sections={data.deploy_detail || []}
                             touchableComponent={TouchableOpacity}
                             touchableProps={{activeOpacity: 1}}
                         />

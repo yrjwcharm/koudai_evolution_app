@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 22:03:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-18 14:36:02
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -108,10 +108,10 @@ function App(props) {
         });
     };
     React.useEffect(() => {
-        heartBeat();
-        _timer = setInterval(() => {
-            heartBeat();
-        }, 60 * 1000);
+        // heartBeat();
+        // _timer = setInterval(() => {
+        //     heartBeat();
+        // }, 60 * 1000);
     }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')
