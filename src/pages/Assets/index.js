@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 21:41:42
+ * @LastEditTime: 2021-03-18 14:29:13
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -334,7 +334,7 @@ function HomeScreen({navigation, route}) {
                         </Text>
                     </View>
                     {/* 小黄条 */}
-                    {notice?.trade && (
+                    {notice?.trade ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.tradeNotice, Style.flexCenter]}
@@ -345,7 +345,7 @@ function HomeScreen({navigation, route}) {
                                 <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                             </View>
                         </TouchableOpacity>
-                    )}
+                    ) : null}
                     <View style={[styles.profitContainer, Style.flexRow]}>
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>累计收益</Text>

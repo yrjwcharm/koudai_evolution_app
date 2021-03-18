@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:42:41
+ * @LastEditTime: 2021-03-18 10:31:28
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -19,59 +19,26 @@ const AdjustInformation = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
-    const [list, setList] = useState([
-        {
-            title: '调整智能组合等级7',
-            status: '已跟随调仓',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-        {
-            title: '调整智能组合等级7',
-            status: '已撤单',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-        {
-            title: '调整智能组合等级7',
-            status: '已跟随调仓',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-        {
-            title: '调整智能组合等级7',
-            status: '已撤单',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-        {
-            title: '调整智能组合等级7',
-            status: '已跟随调仓',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-        {
-            title: '调整智能组合等级7',
-            status: '已跟随调仓',
-            notice_date: '2020-12-12',
-            adjust_date: '2020-12-14',
-        },
-    ]);
+    const [list, setList] = useState([]);
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
-            http.get('', {
-                poid: (route.params && route.params.poid) || '',
+            // status === 'refresh' && setRefreshing(true);
+            http.get('/position/adjust_record/20210101', {
+                poid: route.params?.poid || '',
                 page,
             }).then((res) => {
                 setRefreshing(false);
-                setHasMore(res.result.has_more);
+                if (res.result?.length < 20) {
+                    setHasMore(false);
+                } else {
+                    setHasMore(true);
+                }
                 first && navigation.setOptions({title: res.result.title || '调仓信息'});
                 if (status === 'refresh') {
-                    setList(res.result.list || []);
+                    setList(res.result || []);
                 } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                    setList((prevList) => [...prevList, ...(res.result || [])]);
                 }
             });
         },
@@ -113,28 +80,29 @@ const AdjustInformation = ({navigation, route}) => {
     const renderItem = ({item, index}) => {
         return (
             <TouchableOpacity
+                activeOpacity={0.8}
                 style={[Style.flexRow, styles.infoItem]}
                 onPress={() =>
                     navigation.navigate('HistoryAdjust', {
-                        adjust_id: item.id,
+                        adjust_id: item.lcmf_adjust_id,
                         fr: 'holding',
                     })
                 }>
                 <View style={{flex: 1, marginRight: text(12)}}>
                     <View style={[Style.flexRow, styles.titleBox]}>
-                        <Text style={[styles.title, {marginRight: text(12)}]}>{item.title}</Text>
-                        <Text style={[styles.subTitle, {color: item.status === '已撤单' ? Colors.red : Colors.green}]}>
-                            {item.status}
+                        <Text style={[styles.title, {marginRight: text(12)}]}>{item.adjust_name}</Text>
+                        <Text style={[styles.subTitle, {color: item.adjust_code === 1 ? Colors.red : Colors.green}]}>
+                            {item.adjust_status}
                         </Text>
                     </View>
                     <View style={[Style.flexRow, styles.dateBox]}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Text style={[styles.subTitle, {marginRight: text(10)}]}>{'通知时间'}</Text>
-                            <Text style={styles.date}>{item.notice_date}</Text>
+                            <Text style={styles.date}>{item.notice_time}</Text>
                         </View>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Text style={[styles.subTitle, {marginRight: text(10)}]}>{'调仓时间'}</Text>
-                            <Text style={styles.date}>{item.adjust_date}</Text>
+                            <Text style={styles.date}>{item.adjust_time}</Text>
                         </View>
                     </View>
                 </View>
@@ -145,9 +113,9 @@ const AdjustInformation = ({navigation, route}) => {
 
     useEffect(() => {
         if (page === 1) {
-            // init('refresh', true);
+            init('refresh', true);
         } else {
-            // init('loadmore');
+            init('loadmore');
         }
     }, [page, init]);
     return (

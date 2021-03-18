@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 11:43:19
+ * @LastEditTime: 2021-03-18 15:37:30
  * @Description:路由表
  */
 import React from 'react';
@@ -132,6 +132,8 @@ import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规�
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
 import Loading from '../pages/Auth/Loading';
 import Index from '../pages/Index/index'; //
+import ArticleDetail from '../pages/Vision/ArticleDetail'; // 文章详情
+import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
 
 const Stack = createStackNavigator();
 
@@ -449,6 +451,8 @@ export default function AppStack() {
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
             <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} />
+            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '文章详情'}} />
+            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
         </Stack.Navigator>
     );
 }
