@@ -61,3 +61,5 @@ buck-out/
 /src/service/http/config.js
 /android/app/release/
 /android/app/debug/
+/android/app/CESHI/
+/android/app/BAIDU/

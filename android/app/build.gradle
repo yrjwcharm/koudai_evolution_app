@@ -128,19 +128,15 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 def getAppVersion() {
     def inputFile = new File("../package.json")
     def packageJson = new JsonSlurper().parseText(inputFile.text)
-    return 
-        version:packageJson['version']
-   
+    return packageJson['version']
 }
 def getAppVersionCode() {
     def inputFile = new File("../package.json")
     def packageJson = new JsonSlurper().parseText(inputFile.text)
-    return 
-        version:packageJson['versionCode']
-   
+    return packageJson['versionCode']
 }
 def appVersion = getAppVersion()
-def versionCode = getAppVersionCode()
+def appVersionCode = getAppVersionCode()
 android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -159,7 +155,7 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionCode
+        versionCode appVersionCode
         versionName appVersion
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"

@@ -2,13 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 15:37:11
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-03-18 14:36:02
->>>>>>> b9082b194ee519aa53123d020fa8774af0eb4ab0
+ * @LastEditTime: 2021-03-18 16:00:43
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -103,28 +98,38 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+    const postHeartData = (registerID, channel) => {
+        http.post('/common/device/heart_beat/20210101', {
+            channel: channel,
+            jpush_rid: registerID,
+            platform: Platform.OS,
+        });
+    };
     // heartbeat
     const heartBeat = () => {
-        getAppMetaData('UMENG_CHANNEL')
-            .then((data) => {
-                alert(data);
-            })
-            .catch((error) => {
-                alert('获取失败');
-            });
         JPush.getRegistrationID((result) => {
-            http.post('/common/device/heart_beat/20210101', {
-                channel: '',
-                jpush_rid: result.registerID,
-                platform: Platform.OS,
-            });
+            if (Platform.OS == 'android') {
+                getAppMetaData('UMENG_CHANNEL')
+                    .then((data) => {
+                        postHeartData(result.registerID, data);
+                        global.channel = data;
+                    })
+                    .catch(() => {
+                        global.channel = '';
+                        postHeartData(result.registerID, 'android');
+                        console.log('获取渠道失败');
+                    });
+            } else {
+                global.channel = 'ios';
+                postHeartData(result.registerID, 'ios');
+            }
         });
     };
     React.useEffect(() => {
-        // heartBeat();
-        // _timer = setInterval(() => {
-        //     heartBeat();
-        // }, 60 * 1000);
+        heartBeat();
+        setTimeout(() => {
+            heartBeat();
+        }, 60 * 1000);
     }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')

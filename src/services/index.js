@@ -46,6 +46,7 @@ axios.interceptors.request.use(async (config) => {
         did: DeviceInfo.getUniqueId(),
         uid,
         utid,
+        chn: global.channel,
         ver: DeviceInfo.getVersion(),
         Authorization: token,
     };
