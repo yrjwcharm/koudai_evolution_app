@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 11:23:49
+ * @LastEditTime: 2021-03-18 17:24:17
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -91,11 +91,11 @@ const LargeAmount = (props) => {
                         <View style={styles.process_list}>
                             <Html
                                 html={"1.使用指定银行卡<br/>向<font style='color:#E74949'>魔方监管户</font>汇款"}
-                                style={styles.text_lineHeight}
+                                style={{lineHeight: text(18)}}
                             />
                             <Html
                                 html={'<span style="textAlign:center">2.资金到账后存入<br/>魔方宝</span>'}
-                                style={styles.text_lineHeight}
+                                style={{lineHeight: text(18)}}
                             />
                         </View>
                     </View>
@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: text(15),
+        paddingTop: text(16),
     },
     title_sty: {
         color: '#292D39',
@@ -203,14 +204,10 @@ const styles = StyleSheet.create({
     },
     process_wrap: {
         paddingTop: text(24),
-        paddingBottom: text(16),
         // paddingHorizontal: text(5),
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    text_lineHeight: {
-        lineHeight: text(15),
     },
     card_sty: {
         backgroundColor: '#fff',
