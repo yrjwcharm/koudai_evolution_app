@@ -2,14 +2,15 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 11:47:27
+ * @LastEditTime: 2021-03-18 15:46:09
  * @Description:用户问答卡片
  */
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
+import {useJump} from '../hooks';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {
     width: deviceWidth - px(32),
@@ -24,13 +25,19 @@ const shadow = {
 };
 
 export default function QuestionCard({data = []}) {
+    const jump = useJump();
     return (
         <>
             {data.map((item, index) => {
                 let height = item?.question_info?.title.length > 18 ? px(190) : px(168);
                 return (
                     <BoxShadow setting={{...shadow, height}} key={index}>
-                        <View style={[styles.ques_card, {height}]}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                jump(item?.url);
+                            }}
+                            style={[styles.ques_card, {height}]}>
                             <FastImage
                                 style={styles.big_ques}
                                 source={require('../../assets/img/article/big_ques.png')}
@@ -52,7 +59,7 @@ export default function QuestionCard({data = []}) {
                                     <Text style={Style.more}>全文</Text>
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </BoxShadow>
                 );
             })}

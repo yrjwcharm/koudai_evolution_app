@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 17:07:25
+ * @LastEditTime: 2021-03-18 15:44:25
  * @Description:首页发现页文章卡片
  */
 
@@ -13,6 +13,7 @@ import {px, deviceWidth} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {BoxShadow} from 'react-native-shadow';
 import Praise from '../Praise';
+import {useJump} from '../hooks';
 const shadow = {
     width: deviceWidth - px(32),
     height: px(125),
@@ -24,9 +25,15 @@ const shadow = {
     y: 6,
 };
 export default function ArticleCard({data = ''}) {
+    const jump = useJump();
     return (
         <BoxShadow setting={shadow}>
-            <View style={styles.card}>
+            <TouchableOpacity
+                style={styles.card}
+                activeOpacity={0.9}
+                onPress={() => {
+                    jump(data?.url);
+                }}>
                 <View style={Style.flexRow}>
                     <View style={{flex: 1}}>
                         <Text numberOfLines={1} style={styles.article_title}>
@@ -52,27 +59,8 @@ export default function ArticleCard({data = ''}) {
                     <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
                     <Praise comment={data} type={'article'} />
-                    {/* <View style={Style.flexRow}>
-                            {data?.like_status == 1 ? (
-                                <FastImage
-                                    resizeMode={FastImage.resizeMode.contain}
-                                    style={styles.zan_img}
-                                    source={require('../../assets/img/article/zanActive.png')}
-                                />
-                            ) : (
-                                <FastImage
-                                    resizeMode={FastImage.resizeMode.contain}
-                                    style={styles.zan_img}
-                                    source={require('../../assets/img/article/zan.png')}
-                                />
-                            )}
-
-                            <Text style={{fontSize: px(12), color: Colors.lightBlackColor, marginLeft: px(4)}}>
-                                {data?.like_num}
-                            </Text>
-                        </View> */}
                 </View>
-            </View>
+            </TouchableOpacity>
         </BoxShadow>
     );
 }

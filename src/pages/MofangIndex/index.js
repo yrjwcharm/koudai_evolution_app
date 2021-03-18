@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 21:55:27
+ * @LastEditTime: 2021-03-18 15:40:19
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -248,7 +248,12 @@ const Index = (props) => {
                                             ...styles.dotStyle,
                                         }}>
                                         {data?.banner_list?.map((banner, index) => (
-                                            <TouchableOpacity key={index} activeOpacity={0.9}>
+                                            <TouchableOpacity
+                                                key={index}
+                                                activeOpacity={0.9}
+                                                onPress={() => {
+                                                    jump({path: 'ArticleDetail'});
+                                                }}>
                                                 <FastImage
                                                     style={styles.slide}
                                                     source={{
