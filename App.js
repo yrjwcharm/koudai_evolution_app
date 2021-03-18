@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 14:23:59
+ * @LastEditTime: 2021-03-18 14:42:51
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -100,13 +100,13 @@ function App(props) {
     };
     // heartbeat
     const heartBeat = () => {
-        // getAppMetaData('UMENG_CHANNEL')
-        //     .then((data) => {
-        //         alert(data);
-        //     })
-        //     .catch((error) => {
-        //         alert('获取失败');
-        //     });
+        getAppMetaData('UMENG_CHANNEL')
+            .then((data) => {
+                alert(data);
+            })
+            .catch((error) => {
+                alert('获取失败');
+            });
         JPush.getRegistrationID((result) => {
             http.post('/common/device/heart_beat/20210101', {
                 channel: '',
@@ -117,9 +117,9 @@ function App(props) {
     };
     React.useEffect(() => {
         heartBeat();
-        _timer = setInterval(() => {
-            heartBeat();
-        }, 60 * 1000);
+        // _timer = setInterval(() => {
+        //     heartBeat();
+        // }, 60 * 1000);
     }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')

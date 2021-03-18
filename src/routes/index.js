@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 20:39:32
+ * @LastEditTime: 2021-03-18 11:43:19
  * @Description:路由表
  */
 import React from 'react';
@@ -130,6 +130,7 @@ import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold';
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
+import Loading from '../pages/Auth/Loading';
 import Index from '../pages/Index/index'; //
 
 const Stack = createStackNavigator();
@@ -137,7 +138,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Tab"
+            initialRouteName="Loading"
             screenOptions={{
                 // headerShown: false,
 
@@ -163,7 +164,13 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} options={{headerShown: false}} />
+            <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+            />
+            <Stack.Screen name="Loading" component={Loading} options={{headerShown: false}} />
+
             <Stack.Screen
                 name="TradeBuy"
                 component={TradeBuy}

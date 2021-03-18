@@ -28,7 +28,6 @@ axios.defaults.transformRequest = [
 ];
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
-    // Storage.delete('loginStatus');
     //拦截器处理
     var token = '';
     var uid = '';
@@ -47,7 +46,7 @@ axios.interceptors.request.use(async (config) => {
         did: DeviceInfo.getUniqueId(),
         uid,
         utid,
-        ver: '5.3.0',
+        ver: DeviceInfo.getVersion(),
         Authorization: token,
     };
     return config;
@@ -55,9 +54,9 @@ axios.interceptors.request.use(async (config) => {
 axios.interceptors.response.use(
     (response) => {
         //请求返回数据处理
-        if (response.data.code == 'A00001') {
-            Storage.delete('loginStatus');
-        }
+        // if (response.data.code == 'A00001') {
+        //     Storage.delete('loginStatus');
+        // }
         return response.data.data || response.data;
     },
     (err) => {
