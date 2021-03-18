@@ -147,10 +147,12 @@ packagingOptions {
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true //配置多个dex
+        flavorDimensions "default"
         // renderscriptTargetApi 23
         // renderscriptSupportModeEnabled true
         missingDimensionStrategy 'react-native-camera', 'general'
         manifestPlaceholders = [
+                 UMENG_CHANNEL_VALUE: "DEFAULT_TEST",
                   JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "developer-default"        //在此替换你的channel，也可使用默认的
           ]
@@ -158,6 +160,7 @@ packagingOptions {
         abiFilters "armeabi-v7a","x86"
        }
     }
+
     packagingOptions {
       pickFirst "lib/arm64-v8a/librealm-jni.so"
     }
@@ -176,6 +179,13 @@ packagingOptions {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+         release {
+                // These must be set or Gradle will complain (even if they are overridden).
+                keyAlias = "alias_name"
+                keyPassword = "asdjkl" // And these must be set to non-empty in order to have the signing step added to the task graph.
+                storeFile = file("mofang-release-enimo.keystore")
+                storePassword = "asdjkl"
+            }
     }
     buildTypes {
         debug {
@@ -192,24 +202,50 @@ packagingOptions {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+             android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "mofang_v${defaultConfig.versionCode}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
+                }
+            }
             resValue "string", "CodePushDeploymentKey", '"UAQoDp5PzfpdRBGvG4YpyYNEgceSe0PHBq6mY"'
         }
     }
-
-    // applicationVariants are e.g. debug, release
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
-            // https://developer.android.com/studio/build/configure-apk-splits.html
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {  // null for the universal-debug, universal-release variants
-                output.versionCodeOverride =
-                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
-            }
-
+ productFlavors {
+        QQ {}
+        _360 {}
+        XIAOMI {}
+        WANGDOUJIA {}
+        BAIDU {}
+        _91 {}
+        ANZHUO {}
+        ZHIXING {}
+        CESHI {}
+        WWW {}
+        VIVO {}
+        OPPO {}
+        MEIZU {}
+        huanliang {}
+        yingyongbaocpd {}
+        sanxing {}
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
+
     }
+    // applicationVariants are e.g. debug, release
+    // applicationVariants.all { variant ->
+    //     variant.outputs.each { output ->
+    //         // For each separate APK per architecture, set a unique version code as described here:
+    //         // https://developer.android.com/studio/build/configure-apk-splits.html
+    //         def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+    //         def abi = output.getFilter(OutputFile.ABI)
+    //         if (abi != null) {  // null for the universal-debug, universal-release variants
+    //             output.versionCodeOverride =
+    //                     versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+    //         }
+
+    //     }
+    // }
 }
 
 dependencies {
@@ -252,7 +288,6 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-    // compile project(':react-native-image-picker')
 }
 
 // Run this once to be able to run the application with BUCK
@@ -263,3 +298,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}

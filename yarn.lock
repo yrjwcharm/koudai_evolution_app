@@ -7139,6 +7139,11 @@ react-native-gesture-handler@^1.8.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-get-channel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/react-native-get-channel/download/react-native-get-channel-1.0.1.tgz#25cbf37f063830483a859102f3d4671635499b82"
+  integrity sha1-JcvzfwY4MEg6hZEC89RnFjVJm4I=
+
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"
@@ -7172,11 +7177,6 @@ react-native-magic-move@^0.6.6:
   integrity sha1-6YxPWe5NLWrpzgh/ipEgI0emmFw=
   dependencies:
     lodash.findlast "^4.6.0"
-
-react-native-ok-gesture-password@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/react-native-ok-gesture-password/download/react-native-ok-gesture-password-2.0.0.tgz#44079fafcaa50239bf938f317b30ff03f4d12377"
-  integrity sha1-RAefr8qlAjm/k48xezD/A/TRI3c=
 
 react-native-orientation-locker@^1.1.8:
   version "1.1.8"

@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-12-28 11:53:04
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 14:10:02
+ * @Description: 
+ */
 
 package com.licaimofang.app;
 
@@ -16,6 +23,7 @@ import java.util.List;
 import cn.jiguang.plugins.push.JPushModule; //jpush
 import com.theweflex.react.WeChatPackage; //微信
 import com.microsoft.codepush.react.CodePush; //热更新
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =

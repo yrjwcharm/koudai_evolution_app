@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 22:03:25
+ * @LastEditTime: 2021-03-18 14:23:59
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -24,7 +24,8 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-import _ from 'lodash';
+import {getAppMetaData} from 'react-native-get-channel';
+
 // import {useDispatch} from 'react-redux';
 // import {updateUserInfo} from './src/redux/actions/userInfo';
 import JPush from 'jpush-react-native';
@@ -99,6 +100,13 @@ function App(props) {
     };
     // heartbeat
     const heartBeat = () => {
+        // getAppMetaData('UMENG_CHANNEL')
+        //     .then((data) => {
+        //         alert(data);
+        //     })
+        //     .catch((error) => {
+        //         alert('获取失败');
+        //     });
         JPush.getRegistrationID((result) => {
             http.post('/common/device/heart_beat/20210101', {
                 channel: '',
