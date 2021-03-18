@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 20:44:37
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-18 17:25:35
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -37,7 +37,7 @@ export default function RemindMessage({navigation}) {
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
                             <TouchableOpacity
-                                activeOpacity={0.9}
+                                activeOpacity={1}
                                 style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
                                 onPress={openLink}>
                                 <Text

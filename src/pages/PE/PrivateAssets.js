@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:43:19
+ * @LastEditTime: 2021-03-18 17:18:35
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -27,6 +27,7 @@ import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Chart} from '../../components/Chart';
 import {useJump} from '../../components/hooks';
+import RenderChart from '../Portfolio/components/RenderChart';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
@@ -83,7 +84,7 @@ export default function PrivateAssets({navigation, route}) {
             period: period,
         }).then((res) => {
             setChart(res.result);
-            setLabelInfo(res.result.label);
+            // setLabelInfo(res.result.label);
         });
     }, [period, route]);
     // 图表滑动legend变化
@@ -92,18 +93,26 @@ export default function PrivateAssets({navigation, route}) {
         _textTime.current.setNativeProps({text: items[0]?.title});
         _textPortfolio.current.setNativeProps({
             text: items[0]?.value,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[0].val)}],
+            style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
         });
         _textBenchmark.current.setNativeProps({
             text: items[1]?.value,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+            style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
         });
     }, []);
+
     // 图表滑动结束
-    const onHide = () => {
-        _textTime.current.setNativeProps({text: labelInfo[0]?.val});
-        _textPortfolio.current.setNativeProps({text: labelInfo[1]?.val});
-        _textBenchmark.current.setNativeProps({text: labelInfo[2]?.val});
+    const onHide = ({items}) => {
+        _textTime.current.setNativeProps({text: chart?.label[0].val});
+        _textPortfolio.current.setNativeProps({
+            text: chart?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(chart?.label[1].val)}],
+        });
+
+        _textBenchmark.current.setNativeProps({
+            text: chart?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
+        });
     };
     const tipShow = (q, a) => {
         qa.q = q;
@@ -327,7 +336,8 @@ export default function PrivateAssets({navigation, route}) {
                             return (
                                 <TouchableOpacity
                                     style={[Style.flexRow, {backgroundColor: _index % 2 == 0 ? '#fff' : '#F7F8FA'}]}
-                                    onPress={() => tipShow(_tr.q, _tr.a)}>
+                                    onPress={() => tipShow(_tr.q, _tr.a)}
+                                    key={_index + '_tr1'}>
                                     <Text
                                         style={[
                                             styles.list_item_sty,
@@ -336,8 +346,7 @@ export default function PrivateAssets({navigation, route}) {
                                                 flex: 1,
                                                 backgroundColor: 'transparent',
                                             },
-                                        ]}
-                                        key={_index + '_tr1'}>
+                                        ]}>
                                         {_tr.text}
                                     </Text>
                                     <AntDesign
@@ -364,7 +373,7 @@ export default function PrivateAssets({navigation, route}) {
                         style={{backgroundColor: '#D7AF74'}}
                         fontStyle={{color: '#fff'}}
                         rightText={'交易记录'}
-                        rightPress={() => rightPress()}
+                        rightPress={() => jump(data.trade_record_url)}
                         rightTextStyle={styles.right_sty}
                     />
                     <ScrollView style={{marginBottom: btnHeight}}>
@@ -427,7 +436,10 @@ export default function PrivateAssets({navigation, route}) {
                         </ScrollableTabView>
                         {data?.cards?.map((_item, _index) => {
                             return (
-                                <TouchableOpacity style={styles.list_sty} key={_index + 'card'}>
+                                <TouchableOpacity
+                                    style={styles.list_sty}
+                                    key={_index + 'card'}
+                                    onPress={() => jump(_item.url)}>
                                     <Text style={{flex: 1}}>{_item?.text}</Text>
                                     <AntDesign name={'right'} size={12} color={'#9095A5'} />
                                 </TouchableOpacity>

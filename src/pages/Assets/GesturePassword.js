@@ -1,9 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
-import OkGesturePassword from '../../components/react-native-ok-gesture-password';
+import OkGesturePassword from '../../components/gesturePassword/OkGesturePassword';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import Header from '../../components/NavBar';
+import {updateVerifyGesture} from '../../redux/actions/userInfo';
+import {useDispatch} from 'react-redux';
+var isOpen,
+    password,
+    refresh = true;
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
 export default function GesturePassword({navigation, route}) {
@@ -18,41 +23,100 @@ export default function GesturePassword({navigation, route}) {
         point8: '#FFFFFF',
         point9: '#FFFFFF',
     });
-    const [password, setPassword] = useState('');
+    // const [password, setPassword] = useState('');
     const [status, setStatus] = useState(false);
-    const [isWarning, setIsWarning] = useState(false);
+    const [isWarning, setIsWarning] = useState(false); //设置警告
+    const [title, setTitle] = useState('请绘制解锁图案');
+    const dispatch = useDispatch();
     useEffect(() => {
         // storage.delete('gesturePwd');
+        // 修改手势密码
+        if (route?.params?.option == 'modify') {
+            setTitle('请输入旧的手势密码');
+        }
         storage.get('gesturePwd').then((res) => {
             if (res) {
-                setPassword(res);
+                password = res;
+                // setPassword(res);
             }
         });
-        console.log(storage.get('gesturePwd'), '---GesturesPwd');
+        // 开启手势密码
+        storage.get('openGesturePwd').then((result) => {
+            isOpen = result;
+        });
     }, []);
+
     const _onEnd = (pwd) => {
+        console.log(pwd);
         // Alert.alert('密码', password);
-        console.log(pwd, '--pwd');
+        //手势密码登陆
+        if (isOpen && route?.params?.option !== 'modify') {
+            if (password == pwd) {
+                setStatus(true);
+                setIsWarning(false);
+                dispatch(updateVerifyGesture());
+                Toast.show('登陆成功');
+            } else {
+                setStatus(false);
+                setIsWarning(true);
+                setTimeout(() => {
+                    setIsWarning(false);
+                }, 1000);
+                setTitle('手势密码错误');
+            }
+            // 修改手势密码
+        } else if (route?.params?.option == 'modify' && refresh) {
+            if (password == pwd) {
+                setStatus(true);
+                setIsWarning(false);
+                setTitle('请输入新的手势密码');
+                password = '';
+                refresh = false;
+                console.log(password, '---password');
+                // setPassword('');
+            } else {
+                setStatus(false);
+                setIsWarning(true);
+                setTimeout(() => {
+                    setIsWarning(false);
+                }, 1000);
+                setTitle('请输入正确的旧密码');
+            }
+        } else {
+            refreshPwd(pwd);
+        }
+    };
+    const refreshPwd = (pwd, status) => {
         if (!password) {
-            setPassword(pwd);
+            password = pwd;
+            if (!status) {
+                setTitle('请再次绘制解锁图案');
+            }
+            // setPassword(pwd);
         } else if (password == pwd) {
+            //第二次绘制密码
             setStatus(true);
             setIsWarning(false);
+            //保存手势密码和开启状态
             storage.save('gesturePwd', pwd);
-            Toast.show('设置成功');
+            storage.save('openGesturePwd', true);
+            setTitle('');
+            if (route?.params?.option == 'modify') {
+                Toast.show('修改成功');
+            } else {
+                Toast.show('设置成功');
+            }
             setTimeout(() => {
-                navigation.navigate('Home');
+                navigation.goBack();
             }, 1000);
         } else {
-            storage.get('gesturePwd').then((res) => {
-                console.log(res);
-            });
+            setTitle('两次手势密码不一致，请再次输入');
             setStatus(false);
             setIsWarning(true);
             setTimeout(() => {
                 setIsWarning(false);
             }, 1000);
-            Toast.show('两次密码不一致，请重新绘制');
+            // Toast.show('密码不一致，请重新绘制');
         }
     };
     const _resetHeadPoint = () => {
@@ -111,8 +175,7 @@ export default function GesturePassword({navigation, route}) {
     };
     return (
         <View style={styles.container}>
-            {/* <Header title="手势密码" /> */}
-            <View style={{height: 70, marginTop: 10}}>
+            {/* <View style={{height: 70, marginTop: 10}}>
                 <View style={styles.headContent}>
                     <View style={[styles.headCircle, {backgroundColor: data.point1}]} />
                     <View style={[styles.headCircle, {backgroundColor: data.point2}]} />
@@ -128,7 +191,8 @@ export default function GesturePassword({navigation, route}) {
                     <View style={[styles.headCircle, {backgroundColor: data.point8}]} />
                     <View style={[styles.headCircle, {backgroundColor: data.point9}]} />
                 </View>
-            </View>
+            </View> */}
+            <Text>{title}</Text>
             <OkGesturePassword
                 style={styles.gesturePassword}
                 pointBackgroundColor={'white'}

@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 17:00:43
+ * @LastEditTime: 2021-03-18 14:01:56
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -47,8 +47,8 @@ export default function DetailAccount({route}) {
                 upid: route.params.upid,
                 period: period,
                 type: type,
-                allocation_id: data.allocation_id,
-                benchmark_id: data.benchmark_id,
+                allocation_id: res.result.allocation_id,
+                benchmark_id: res.result.benchmark_id,
                 poid: route?.params?.poid,
             }).then((res) => {
                 setChartData(res.result);
@@ -108,19 +108,19 @@ export default function DetailAccount({route}) {
     }, []);
     return (
         <>
-            {Object.keys(data).length > 0 ? <Header title={data.title} leftIcon="chevron-left" /> : null}
+            {Object.keys(data).length > 0 ? <Header title={data?.title} leftIcon="chevron-left" /> : null}
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: 100, flex: 1}}>
                     <View style={[styles.container_sty]}>
                         <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
-                            {data.ratio_info.title}
+                            {data?.ratio_info?.title}
                         </Text>
                         <Text style={{paddingTop: text(16), paddingBottom: text(8)}}>
-                            <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
-                            <Text style={styles.radio_sty}> {data.ratio_info.ratio_desc}</Text>
+                            <Text style={styles.amount_sty}>{data?.ratio_info?.ratio_val}</Text>
+                            <Text style={styles.radio_sty}> {data?.ratio_info?.ratio_desc}</Text>
                         </Text>
                         <View style={Style.flexRowCenter}>
-                            {data.ratio_info.label.map((_label, _index) => {
+                            {data?.ratio_info?.label.map((_label, _index) => {
                                 return (
                                     <View style={styles.label_sty} key={_index + 'label'}>
                                         <Text style={{color: '#266EFF', fontSize: text(11)}}>{_label}</Text>
@@ -273,6 +273,7 @@ export default function DetailAccount({route}) {
                             {data?.gather_info?.map((_g, _index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={[
                                             Style.flexRow,
                                             {

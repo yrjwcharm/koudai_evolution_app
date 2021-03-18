@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-03-03 16:18:48
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-18 14:52:39
+ * @LastEditors: xjh
  * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
@@ -22,6 +22,7 @@ const CommonProblem = ({navigation, route}) => {
     useEffect(() => {
         http.get('/portfolio/qa/20210101', {
             upid: route.params?.upid || 1,
+            poid: route.params?.poid,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);

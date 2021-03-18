@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-17 16:16:21
+ * @LastEditTime: 2021-03-18 17:45:06
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -87,7 +87,7 @@ const TradeProcessing = ({navigation, route}) => {
             if (value.length === 6) {
                 http.post('/trade/recharge/verify_code_confirm/20210101', {
                     txn_id: bankInfo.txn_id,
-                    code: '123456',
+                    code: value,
                 }).then((res) => {
                     if (res.code === '000000') {
                         setSign(false);
