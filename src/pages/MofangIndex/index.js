@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 15:40:19
+ * @LastEditTime: 2021-03-18 19:41:01
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -30,8 +30,6 @@ import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
 import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
-import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
 import JPush from 'jpush-react-native';
 var _timer;
 const shadow = {
@@ -59,7 +57,6 @@ const RenderTitle = (props) => {
 };
 
 const Index = (props) => {
-    const dispatch = useDispatch();
     const inset = useSafeAreaInsets();
     const linkTo = useLinkTo();
     const [data, setData] = useState(null);
@@ -68,19 +65,30 @@ const Index = (props) => {
     const scrollView = useRef(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [all, setAll] = useState(0);
-    const getData = useCallback((params) => {
-        params == 'refresh' && setRefreshing(true);
-        http.get('/home/detail/20210101')
-            .then((res) => {
-                setData(res.result);
-                setLoading(false);
-                setRefreshing(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }, []);
+    const [allMsg, setAll] = useState(0);
+    const getData = useCallback(
+        (params) => {
+            params == 'refresh' && setRefreshing(true);
+            http.get('/home/detail/20210101')
+                .then((res) => {
+                    setData(res.result);
+                    setLoading(false);
+                    setRefreshing(false);
+                    if (res.result.login_status !== 0 && isFocused) {
+                        readInterface();
+                        // clearInterval(_timer);
+                        // _timer = setInterval(() => {
+                        //     readInterface();
+                        // }, 60 * 1000 * 5);
+                    }
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+        },
+        [isFocused, readInterface]
+    );
+
     useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -115,27 +123,19 @@ const Index = (props) => {
             isFocused && getData('refresh');
             isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
         });
-        return () => {
-            clearTimeout(_timer);
-            unsubscribe;
-        };
+        return unsubscribe;
     }, [getData, props.navigation, isFocused]);
-    useEffect(() => {
-        dispatch(getUserInfo());
-    }, [dispatch]);
+
     useFocusEffect(
         useCallback(() => {
             getData();
-            readInterface();
-        }, [getData, readInterface])
+        }, [getData])
     );
+
     const readInterface = useCallback(() => {
-        _timer = setTimeout(() => {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
-                setAll(res.result.all);
-                readInterface();
-            });
-        }, 60 * 1000 * 5);
+        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
+            setAll(res.result.all);
+        });
     }, []);
     const renderSecurity = (menu_list, bottom) => {
         return menu_list ? (
@@ -205,7 +205,7 @@ const Index = (props) => {
                                     onPress={() => {
                                         jump({path: 'RemindMessage'});
                                     }}>
-                                    {all ? <View style={styles.new_message} /> : null}
+                                    {allMsg ? <View style={styles.new_message} /> : null}
                                     <FastImage
                                         style={{width: px(24), height: px(24)}}
                                         source={require('../../assets/img/index/message.png')}

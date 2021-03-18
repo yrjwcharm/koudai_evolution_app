@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 16:00:51
+ * @LastEditTime: 2021-03-18 19:14:16
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -66,7 +66,8 @@ class SetLoginPassword extends Component {
                         mobile: this.props.route?.params?.mobile,
                         password,
                     }).then((data) => {
-                        this.props.navigation.goBack(2);
+                        this.props.getUserInfo();
+                        this.props.navigation.pop(2);
                         Storage.save('loginStatus', data.result);
                     });
                 } else {
@@ -88,7 +89,8 @@ class SetLoginPassword extends Component {
                         mobile: this.props.route?.params?.mobile,
                         password,
                     }).then((data) => {
-                        this.props.navigation.goBack(2);
+                        this.props.getUserInfo();
+                        this.props.navigation.pop(2);
                         Storage.save('loginStatus', data.result);
                     });
                 } else {
@@ -102,7 +104,7 @@ class SetLoginPassword extends Component {
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
-                operation: this.fr == 'forget' ? 'password_reset' : 'passport_create',
+                operation: this.fr == 'forget' ? 'password_reset' : this.union_id ? 'bind_mobile' : 'passport_create',
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
@@ -151,7 +153,6 @@ class SetLoginPassword extends Component {
     };
     render() {
         const {code, password, btnClick, verifyText, code_btn_click} = this.state;
-        console.log(code_btn_click);
         return (
             <ScrollView style={styles.login_content}>
                 <Text style={styles.title}>请输入短信验证码</Text>

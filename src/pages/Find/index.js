@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 18:53:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 20:14:19
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -194,7 +194,13 @@ const Index = (props) => {
                                 snapToInterval={px(214)}
                                 showsHorizontalScrollIndicator={false}>
                                 {data?.part2?.plans?.map((item, index) => (
-                                    <View style={[styles.major_card, styles.card]} key={index}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={[styles.major_card, styles.card]}
+                                        key={index}
+                                        onPress={() => {
+                                            jump(item?.url);
+                                        }}>
                                         <Text style={styles.card_title}>{item.name}</Text>
                                         {item?.labels && (
                                             <Text style={[styles.card_title_dexc, {marginTop: px(10)}]}>
@@ -215,7 +221,7 @@ const Index = (props) => {
                                                 <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
                                             </View>
                                         )}
-                                    </View>
+                                    </TouchableOpacity>
                                 ))}
                             </ScrollView>
                         </View>

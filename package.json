@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
   "version": "6.0.0",
-  "versionCode":60000,
+  "versionCode": 6000,
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -36,6 +36,7 @@
     "react-native-collapsible": "^1.5.3",
     "react-native-device-info": "^7.0.2",
     "react-native-easy-chat-ui": "^0.4.14",
+    "react-native-exception-handler": "^2.10.9",
     "react-native-fast-image": "^8.3.4",
     "react-native-fit-image": "^1.5.5",
     "react-native-fs": "^2.16.6",

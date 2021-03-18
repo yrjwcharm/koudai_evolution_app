@@ -1,4 +1,11 @@
-package com.licaimofang.wxapi;
+/*
+ * @Date: 2020-12-23 16:39:50
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 18:03:49
+ * @Description: 
+ */
+package com.licaimofang.app.wxapi;
 
 import android.app.Activity;
 import android.os.Bundle;
