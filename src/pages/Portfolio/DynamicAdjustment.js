@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:53:15
+ * @LastEditTime: 2021-03-18 14:27:51
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -27,14 +27,22 @@ class DynamicAdjustment extends Component {
     init = () => {
         const {upid} = this.props.route.params || {};
         http.get('/portfolio/adjust/20210101', {
-            upid: upid || 1,
+            upid: upid,
         }).then((res) => {
             this.setState({data: res.result, refreshing: false});
             this.props.navigation.setOptions({title: res.result.title});
         });
         http.get('/portfolio/adjust_chart/20210101', {
-            upid: upid || 1,
+            upid: upid,
         }).then((res) => {
+            // let num = 0;
+            // res.result.chart?.map((item, index) => {
+            //     num += (item.percent * 100).toFixed(0) * 1;
+            //     if (index !== 0 && index % 12 === 0) {
+            //         console.log(num);
+            //         num = 0;
+            //     }
+            // });
             this.setState({
                 chartData: res.result.chart,
             });
@@ -92,10 +100,12 @@ class DynamicAdjustment extends Component {
                             </View>
                         );
                     })}
-                    {data.record?.btn && (
+                    {data?.record?.btn && (
                         <TouchableOpacity
                             style={[styles.moreRecord, Style.flexCenter]}
-                            onPress={() => navigation.navigate('AdjustRecord')}>
+                            onPress={() =>
+                                navigation.navigate(data?.record?.btn?.url?.path, data?.record?.btn?.url?.params)
+                            }>
                             <Text style={[styles.moreText]}>{data.record?.btn.title}</Text>
                             <FontAwesome
                                 name={'angle-right'}

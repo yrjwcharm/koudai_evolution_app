@@ -7139,6 +7139,11 @@ react-native-gesture-handler@^1.8.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-get-channel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/react-native-get-channel/download/react-native-get-channel-1.0.1.tgz#25cbf37f063830483a859102f3d4671635499b82"
+  integrity sha1-JcvzfwY4MEg6hZEC89RnFjVJm4I=
+
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"

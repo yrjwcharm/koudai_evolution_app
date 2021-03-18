@@ -1,26 +1,22 @@
 /*
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 18:56:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 11:42:40
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../pages/Assets/index';
-// import IndexScreen from '../pages/Index/index';
 import {px} from '../utils/appUtil';
 import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import {Colors} from '../common/commonStyle';
-import storage from '../utils/storage';
-import {useSelector, useDispatch} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(24);
 export default function Tabbar() {
-    const userInfo = useSelector((store) => store.userInfo);
     return (
         <Tab.Navigator
             initialRouteName="Index"

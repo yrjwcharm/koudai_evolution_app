@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 22:03:25
+ * @LastEditTime: 2021-03-18 16:00:43
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -24,7 +24,8 @@ import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-import _ from 'lodash';
+import {getAppMetaData} from 'react-native-get-channel';
+
 // import {useDispatch} from 'react-redux';
 // import {updateUserInfo} from './src/redux/actions/userInfo';
 import JPush from 'jpush-react-native';
@@ -97,19 +98,36 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+    const postHeartData = (registerID, channel) => {
+        http.post('/common/device/heart_beat/20210101', {
+            channel: channel,
+            jpush_rid: registerID,
+            platform: Platform.OS,
+        });
+    };
     // heartbeat
     const heartBeat = () => {
         JPush.getRegistrationID((result) => {
-            http.post('/common/device/heart_beat/20210101', {
-                channel: '',
-                jpush_rid: result.registerID,
-                platform: Platform.OS,
-            });
+            if (Platform.OS == 'android') {
+                getAppMetaData('UMENG_CHANNEL')
+                    .then((data) => {
+                        postHeartData(result.registerID, data);
+                        global.channel = data;
+                    })
+                    .catch(() => {
+                        global.channel = '';
+                        postHeartData(result.registerID, 'android');
+                        console.log('获取渠道失败');
+                    });
+            } else {
+                global.channel = 'ios';
+                postHeartData(result.registerID, 'ios');
+            }
         });
     };
     React.useEffect(() => {
         heartBeat();
-        _timer = setInterval(() => {
+        setTimeout(() => {
             heartBeat();
         }, 60 * 1000);
     }, []);
