@@ -2,14 +2,13 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 09:55:43
+ * @LastEditTime: 2021-03-19 14:51:53
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil.js';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
@@ -94,7 +93,7 @@ const Settings = ({navigation}) => {
         inviteCodeRef.current = inviteCode;
     }, [inviteCode]);
     return (
-        <SafeAreaView edges={['bottom']} style={styles.container}>
+        <View style={styles.container}>
             <InputModal {...modalProps} ref={inputModal}>
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={[Style.flexRow, styles.inputContainer]}>
@@ -118,9 +117,16 @@ const Settings = ({navigation}) => {
                 </View>
             </InputModal>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
-                {data.map((part, index) => {
+                {data.map((part, index, arr) => {
                     return (
-                        <View key={index} style={styles.partBox}>
+                        <View
+                            key={index}
+                            style={[
+                                styles.partBox,
+                                index === arr.length - 1
+                                    ? {marginBottom: isIphoneX() ? 34 + Space.marginVertical : Space.marginVertical}
+                                    : {},
+                            ]}>
                             {part.map((item, i) => {
                                 return (
                                     <View key={item.text} style={[i === 0 ? {} : styles.borderTop]}>
@@ -159,7 +165,7 @@ const Settings = ({navigation}) => {
                 })}
             </ScrollView>
             <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={{}} />
-        </SafeAreaView>
+        </View>
     );
 };
 

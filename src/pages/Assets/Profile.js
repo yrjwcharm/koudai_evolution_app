@@ -2,18 +2,17 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 21:11:34
+ * @LastEditTime: 2021-03-19 15:14:47
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text} from '../../utils/appUtil.js';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -24,7 +23,6 @@ import {useJump} from '../../components/hooks';
 
 const Profile = ({navigation}) => {
     const jump = useJump();
-    const insets = useSafeAreaInsets();
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
     const inputModal = useRef(null);
@@ -183,7 +181,12 @@ const Profile = ({navigation}) => {
                     return (
                         <View
                             key={`part${index}`}
-                            style={[styles.partBox, index === arr.length - 1 ? {marginBottom: insets.bottom} : {}]}>
+                            style={[
+                                styles.partBox,
+                                index === arr.length - 1
+                                    ? {marginBottom: isIphoneX() ? 34 + Space.marginVertical : Space.marginVertical}
+                                    : {},
+                            ]}>
                             {part.map((item, i) => {
                                 return (
                                     <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>

@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -57,14 +57,14 @@ export default function DetailAccount({route, navigation}) {
                     benchmark_id: res.result.benchmark_id,
                     period: period,
                     type: 1,
-                }).then((res) => {
-                    setLabelInfo(res.result.yield_info.label);
-                    setChartData(res.result.yield_info);
-                    setSummary(res.result.yield_info.label);
+                }).then((resp) => {
+                    setLabelInfo(resp.result.yield_info.label);
+                    setChartData(resp.result.yield_info);
+                    setSummary(resp.result.yield_info.label);
                 });
             }
         });
-    }, [route.params, period, type]);
+    }, [route.params, period]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -72,34 +72,40 @@ export default function DetailAccount({route, navigation}) {
     );
 
     // 图表滑动legend变化
-    const onChartChange = useCallback(({items}) => {
-        _textTime.current.setNativeProps({text: items[0]?.title});
-        if (type == 2) {
-            let range = items[0].origin.value;
-            let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
-            _textPortfolio.current.setNativeProps({
-                text: _value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-        } else {
-            _textPortfolio.current.setNativeProps({
-                text: items[0]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-            });
-        }
-    }, []);
+    const onChartChange = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            if (type == 2) {
+                let range = items[0].origin.value;
+                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                _textPortfolio.current.setNativeProps({
+                    text: _value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            } else {
+                _textPortfolio.current.setNativeProps({
+                    text: items[0]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+                });
+            }
+        },
+        [getColor, type]
+    );
     // 图表滑动结束
-    const onHide = useCallback(({items}) => {
-        _textTime.current.setNativeProps({text: labelInfo[0].val});
-        _textPortfolio.current.setNativeProps({
-            text: labelInfo[1].val,
-            style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
-        });
-        _textBenchmark.current.setNativeProps({
-            text: labelInfo[2].val,
-            style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
-        });
-    }, []);
+    const onHide = useCallback(
+        ({items}) => {
+            _textTime.current.setNativeProps({text: labelInfo[0].val});
+            _textPortfolio.current.setNativeProps({
+                text: labelInfo[1].val,
+                style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: labelInfo[2].val,
+                style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
+            });
+        },
+        [getColor, labelInfo]
+    );
     const getColor = useCallback((t) => {
         if (!t) {
             return Colors.defaultColor;
