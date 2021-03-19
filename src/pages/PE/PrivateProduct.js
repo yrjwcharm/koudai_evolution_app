@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-19 14:29:43
+ * @LastEditTime: 2021-03-19 17:25:01
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -40,49 +40,49 @@ export default class PrivateProduct extends Component {
             });
         });
     }
-    _handleTabHeight = (obj) => {
-        console.log(obj);
-        //页面切换时跳到顶部
-        this.refs.totop.scrollTo({x: 0, y: 0, animated: false});
-        //通过ref获得当前页面的高度计算方法
-        console.log(this.refs[obj.ref.props.tabLabel]);
-        // this.refs[obj.ref.props.tabLabel].measure(this._setTabHeight.bind(this));
-        this.LrState = obj.ref.props.tabLabel;
-    };
+    // _handleTabHeight = (obj) => {
+    //     console.log(obj);
+    //     //页面切换时跳到顶部
+    //     this.refs.totop.scrollTo({x: 0, y: 0, animated: false});
+    //     //通过ref获得当前页面的高度计算方法
+    //     console.log(this.refs[obj.ref.props.tabLabel]);
+    //     // this.refs[obj.ref.props.tabLabel].measure(this._setTabHeight.bind(this));
+    //     this.LrState = obj.ref.props.tabLabel;
+    // };
 
-    _setTabHeight = (ox, oy, width, height, px, py) => {
-        //高度不为零时才进行高度计算
-        if (height != 0) {
-            //获取左右的高度
-            if (this.LrState === 'Left' && this.state.LTabSwitch) {
-                this.setState((prevState, props) => ({
-                    Lheight: height,
-                    LTabSwitch: false,
-                }));
-            } else if (this.LrState === 'Right' && this.state.RTabSwitch) {
-                this.setState((prevState, props) => ({
-                    Rheight: height,
-                    RTabSwitch: false,
-                }));
-            }
-            //判断是否是第一次取高度
-            if (!this.state.firstTabSwitch) {
-                //动态更改view的高度
-                if (this.LrState === 'Left')
-                    this.setState((prevState, props) => ({
-                        tabViewStyle: {height: this.state.Lheight + 40},
-                    }));
-                else
-                    this.setState((prevState, props) => ({
-                        tabViewStyle: {height: this.state.Rheight + 40},
-                    }));
-            } else {
-                this.setState({
-                    firstTabSwitch: false,
-                });
-            }
-        }
-    };
+    // _setTabHeight = (ox, oy, width, height, px, py) => {
+    //     //高度不为零时才进行高度计算
+    //     if (height != 0) {
+    //         //获取左右的高度
+    //         if (this.LrState === 'Left' && this.state.LTabSwitch) {
+    //             this.setState((prevState, props) => ({
+    //                 Lheight: height,
+    //                 LTabSwitch: false,
+    //             }));
+    //         } else if (this.LrState === 'Right' && this.state.RTabSwitch) {
+    //             this.setState((prevState, props) => ({
+    //                 Rheight: height,
+    //                 RTabSwitch: false,
+    //             }));
+    //         }
+    //         //判断是否是第一次取高度
+    //         if (!this.state.firstTabSwitch) {
+    //             //动态更改view的高度
+    //             if (this.LrState === 'Left')
+    //                 this.setState((prevState, props) => ({
+    //                     tabViewStyle: {height: this.state.Lheight + 40},
+    //                 }));
+    //             else
+    //                 this.setState((prevState, props) => ({
+    //                     tabViewStyle: {height: this.state.Rheight + 40},
+    //                 }));
+    //         } else {
+    //             this.setState({
+    //                 firstTabSwitch: false,
+    //             });
+    //         }
+    //     }
+    // };
 
     renderContent = (index, data) => {
         if (index === 0) {
@@ -204,9 +204,9 @@ export default class PrivateProduct extends Component {
                             <ScrollableTabView
                                 renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                                 initialPage={0}
-                                onChangeTab={(obj) => {
-                                    this._handleTabHeight(obj);
-                                }}
+                                // onChangeTab={(obj) => {
+                                //     this._handleTabHeight(obj);
+                                // }}
                                 tabBarActiveTextColor={'#D7AF74'}
                                 tabBarInactiveTextColor={'#545968'}>
                                 {data.tabs.map((item, index) => {

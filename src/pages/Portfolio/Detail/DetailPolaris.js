@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 17:00:52
+ * @LastEditTime: 2021-03-19 15:54:49
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -223,6 +223,7 @@ export default function DetailPolaris({route, navigation}) {
                                 {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                     return (
                                         <TouchableOpacity
+                                            activeOpacity={1}
                                             style={[
                                                 styles.btn_choose_sty,
                                                 {
@@ -274,7 +275,7 @@ export default function DetailPolaris({route, navigation}) {
                                     <Text style={styles.fund_title_sty}>
                                         {data?.part_pie?.pie?.table?.header?.hold_ratio_text}
                                     </Text>
-                                    <TouchableOpacity onPress={() => bottomModal.current.show()}>
+                                    <TouchableOpacity onPress={() => bottomModal.current.show()} activeOpacity={1}>
                                         <Text style={[styles.fund_title_sty, {textAlign: 'right'}]}>
                                             {data?.part_pie?.pie?.table?.header?.ratio_text}
                                             <AntDesign name={'questioncircleo'} size={12} color={'#BCBCBC'} />
@@ -355,6 +356,7 @@ export default function DetailPolaris({route, navigation}) {
                             {data?.gather_info?.map((_info, _idx) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={[
                                             Style.flexRow,
                                             {

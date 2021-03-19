@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 14:01:56
+ * @LastEditTime: 2021-03-19 15:53:52
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -78,6 +78,11 @@ export default function DetailAccount({route}) {
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             }
+
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
         },
         [getColor]
     );
@@ -202,6 +207,7 @@ export default function DetailAccount({route}) {
                             {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={[
                                             styles.btn_sty,
                                             {

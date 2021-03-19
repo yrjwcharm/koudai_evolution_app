@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:47:33
+ * @LastEditTime: 2021-03-19 15:41:47
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -104,7 +104,7 @@ export default class TradeRedeem extends Component {
         this.passwordModal.show();
     };
     submitData = (password) => {
-        Http.get('/trade/redeem/do/20210101', {
+        Http.post('/trade/redeem/do/20210101', {
             redeem_id: this.state.redeem_id,
             password,
             percent: this.state.inputValue / 100,
@@ -132,9 +132,11 @@ export default class TradeRedeem extends Component {
     };
     selectAge = () => {
         const option = [];
+        var _id;
         this.state.data.survey.option.forEach((_item, _index) => {
             option.push(_item.v);
         });
+
         this.setState({showMask: true});
         Picker.init({
             pickerTitleText: '您赎回的原因？',
@@ -145,10 +147,20 @@ export default class TradeRedeem extends Component {
             pickerData: option,
             pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                // reasonParams
-                // console.log(this.state.data.survey.option.indexOf(pickedIndex));
-                // console.log(pickedValue, pickedIndex);
-                this.passwordInput();
+                this.state.data.survey.option.forEach((_item, _index) => {
+                    if (_item.v === pickedValue[0]) {
+                        _id = _item.id;
+                    }
+                });
+                Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/survey/20210101', {
+                    id: _id,
+                }).then((res) => {
+                    this.setState({showMask: false});
+                    this.passwordInput();
+                });
+            },
+            onPickerCancel: () => {
+                this.setState({showMask: false});
             },
         });
         Picker.show();

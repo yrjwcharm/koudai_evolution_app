@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
- * @LastEditors: dx
- * @LastEditTime: 2021-03-10 20:38:35
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 16:29:00
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -35,7 +35,9 @@ export default function Table(props) {
                     ]}>
                     <Text style={styles.text_align_sty} />
                     <Text style={styles.text_align_sty} />
-                    <Text style={styles.text_align_sty}>{data?.th[2]}</Text>
+                    <Text style={{textAlign: 'right', paddingRight: text(15), fontSize: text(12), color: '#545968'}}>
+                        {data?.th[2]}
+                    </Text>
                 </View>
                 {data?.tr_list.map((_item, _index) => {
                     return (
@@ -50,14 +52,18 @@ export default function Table(props) {
                                 },
                             ]}
                             key={_index + '_item'}>
-                            <View style={styles.body_sty}>
-                                <Html style={styles.body_sty} html={_item[0]} />
+                            <View style={{paddingLeft: text(15)}}>
+                                <Html
+                                    style={{textAlign: 'right', fontSize: text(12), color: '#545968'}}
+                                    html={_item[0]}
+                                />
                             </View>
-                            <View style={styles.body_sty}>
-                                <Html style={styles.body_sty} html={''} />
-                            </View>
-                            <View style={styles.body_sty}>
-                                <Html style={styles.body_sty} html={_item[2]} />
+                            <View style={styles.body_sty}></View>
+                            <View style={{paddingRight: text(15)}}>
+                                <Html
+                                    style={{textAlign: 'right', fontSize: text(12), color: '#545968'}}
+                                    html={_item[2]}
+                                />
                             </View>
                         </View>
                     );
@@ -67,12 +73,12 @@ export default function Table(props) {
                 <LinearGradient
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 1}}
-                    locations={[0, 0.8]}
-                    style={{borderTopRightRadius: 10, borderTopLeftRadius: 10}}
+                    locations={[0, 0.9]}
+                    style={{borderRadius: 10}}
                     colors={['#FFD6D6', '#FFF1F1']}>
                     <Text style={{padding: px(13), paddingTop: px(17), textAlign: 'center'}}>{data.th[1]}</Text>
                 </LinearGradient>
-                {data.tr_list.map((_i, _d) => {
+                {data.tr_list.map((_i, _d, arr) => {
                     return (
                         <Text
                             style={[
@@ -98,7 +104,7 @@ const styles = StyleSheet.create({
     },
     ab_table_sty: {
         position: 'absolute',
-        top: '6%',
+        top: '5.5%',
         left: '35%',
         shadowColor: '#FFE6E4',
         shadowOffset: {h: 10, w: 10},
@@ -107,7 +113,8 @@ const styles = StyleSheet.create({
         width: '42%',
     },
     ab_text_sty: {
-        padding: px(14),
+        height: text(41),
+        lineHeight: text(41),
         textAlign: 'center',
         color: '#E74949',
     },

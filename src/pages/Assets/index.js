@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 18:48:53
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 16:19:21
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -289,7 +289,7 @@ function HomeScreen({navigation, route}) {
                                     start={{x: 0, y: 0}}
                                     end={{x: 1, y: 0}}
                                     style={[styles.memberCenter, Style.flexRow]}>
-                                    <Text style={styles.memberText}>{userBasicInfo?.member_info.title}</Text>
+                                    <Text style={styles.memberText}>{userBasicInfo?.member_info?.title}</Text>
                                     <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
                                 </LinearGradient>
                             </TouchableOpacity>
@@ -341,7 +341,7 @@ function HomeScreen({navigation, route}) {
                             onPress={() => jump(userBasicInfo?.top_menus[3]?.url)}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
                             <View style={[styles.noticeBox, Style.flexRow]}>
-                                <Text style={styles.noticeText}>{notice.trade.desc}</Text>
+                                <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
                                 <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                             </View>
                         </TouchableOpacity>
@@ -350,13 +350,13 @@ function HomeScreen({navigation, route}) {
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>累计收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit_acc : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit_acc : '****'}
                             </Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>日收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary.profit : '****'}
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit : '****'}
                             </Text>
                         </View>
                     </View>
@@ -400,8 +400,8 @@ function HomeScreen({navigation, route}) {
                                 key={`account0${item.id}`}
                                 activeOpacity={0.8}
                                 style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
-                                onPress={() => jump(item.portfolios[0].url)}>
-                                {renderTitle(item.portfolios[0])}
+                                onPress={() => jump(item?.portfolios[0].url)}>
+                                {renderTitle(item?.portfolios[0])}
                                 {renderPortfolios(item)}
                             </TouchableOpacity>
                         )
@@ -463,7 +463,7 @@ function HomeScreen({navigation, route}) {
                             style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
                             <View style={{flex: 1}}>
                                 <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
-                                <Text style={styles.accountName}>{item.desc}</Text>
+                                <Text style={styles.accountName}>{item?.desc}</Text>
                             </View>
                             <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                         </TouchableOpacity>

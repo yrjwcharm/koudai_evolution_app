@@ -204,6 +204,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[0].interval,
@@ -215,6 +216,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             </TouchableOpacity>
                                             <Text style={styles.count_num_sty}>{countFr}</Text>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[0].interval,
@@ -232,6 +234,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         </Text>
                                         <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[1].interval,
@@ -243,6 +246,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             </TouchableOpacity>
                                             <Text style={styles.count_num_sty}>{countM}</Text>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 onPress={() =>
                                                     countCalc(
                                                         data?.plan_info?.goal_info?.items[1].interval,
@@ -258,7 +262,10 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         <Text style={{color: '#545968'}}>
                                             {data?.plan_info?.goal_info?.items[2]?.key}
                                         </Text>
-                                        <TouchableOpacity style={Style.flexRow} onPress={_showDatePicker}>
+                                        <TouchableOpacity
+                                            style={Style.flexRow}
+                                            onPress={_showDatePicker}
+                                            activeOpacity={1}>
                                             <Text style={{color: '#545968'}}>{current}年</Text>
                                             <AntDesign name={'down'} color={'#8D96AF'} size={12} />
                                         </TouchableOpacity>
@@ -281,6 +288,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                         return (
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 style={[
                                                     styles.btn_sty,
                                                     {
@@ -311,6 +319,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 <Table data={data.asset_compare.table} />
                                 {data?.asset_compare?.tip_info?.title && (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
                                         onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
                                         <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
@@ -369,6 +378,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 })}
                                 {data?.asset_strategy?.tip_info?.title && (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={{
                                             flexDirection: 'row',
                                             alignItems: 'baseline',
@@ -390,6 +400,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 {data.gather_info.map((_q, _w) => {
                                     return (
                                         <TouchableOpacity
+                                            activeOpacity={1}
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},

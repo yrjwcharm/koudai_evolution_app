@@ -87,6 +87,10 @@ export default function DetailAccount({route, navigation}) {
                 style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
             });
         }
+        _textBenchmark.current.setNativeProps({
+            text: items[1]?.value,
+            style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+        });
     }, []);
     // 图表滑动结束
     const onHide = useCallback(({items}) => {
@@ -197,6 +201,7 @@ export default function DetailAccount({route, navigation}) {
                             {chartData?.sub_tabs?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={[
                                             styles.btn_sty,
                                             {
@@ -336,6 +341,7 @@ export default function DetailAccount({route, navigation}) {
                         {data.gather_info.map((_info, _idx) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[
                                         Style.flexRow,
                                         {
