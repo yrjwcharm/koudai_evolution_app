@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:13:48
+ * @LastEditTime: 2021-03-18 20:43:25
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -75,6 +75,17 @@ export default class WechatLogin extends Component {
                     onChange={(check) => {
                         this.setState({check});
                     }}
+                    data={[
+                        {
+                            title: '《用户协议》',
+                            id: 0,
+                        },
+
+                        {
+                            title: '《隐私权政策》',
+                            id: 32,
+                        },
+                    ]}
                 />
                 <Button
                     title="获取短信验证码"

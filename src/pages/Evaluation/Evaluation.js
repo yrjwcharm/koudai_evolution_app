@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-16 12:18:54
+ * @LastEditTime: 2021-03-19 11:06:41
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -77,6 +77,7 @@ export class question extends Component {
     //接口耗时
     startTime = '';
     endTime = '';
+    fr = this.props.route?.params?.fr; //risk来自个人资料
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/start/20210101').then((data) => {
@@ -106,6 +107,7 @@ export class question extends Component {
             questionnaire_cate,
             history,
             action,
+            fr: this.fr,
         };
         http.get('/questionnaire/questions/20210101', params).then((data) => {
             if (data.code === '000000') {
@@ -132,10 +134,15 @@ export class question extends Component {
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
-        if (action == 'submit') {
+        if (action == 'submit' && this.fr != 'risk') {
             this.setState({finishTest: true});
             setTimeout(() => {
                 this.props.navigation.replace('EvaluationResult', {upid: this.upid});
+            }, 2000);
+        } else if (this.fr == 'risk') {
+            setTimeout(() => {
+                this.setState({finishTest: true});
+                this.props.navigation.goBack();
             }, 2000);
         } else {
             this.setState({
@@ -351,12 +358,10 @@ export class question extends Component {
                     option_val: currentRes.value,
                     questionnaire_cate,
                     latency: this.endTime - this.startTime,
+                    fr: this.fr,
                 };
                 http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
-                        // setTimeout(() => {
-                        //     this.props.navigation.replace('EvaluationResult', {upid: res.result.upid});
-                        // }, 2000);
                         this.upid = res.result.upid;
                         this.setState({loading_text: res?.result?.loading_text});
                     }

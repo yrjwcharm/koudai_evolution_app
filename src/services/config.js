@@ -1,11 +1,11 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 18:11:41
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 20:54:38
  * @Description:环境
  */
-const env = 'wg'; //默认
+const env = 'online'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
@@ -23,6 +23,8 @@ const SERVER_URL = {
     },
     wg: {
         HTTP: 'http://kapi-web.wanggang.mofanglicai.com.cn:10080',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
     },
     ll: {
         HTTP: 'http://polaris-api.ll.mofanglicai.com.cn:10080',

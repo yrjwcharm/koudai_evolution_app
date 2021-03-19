@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 17:25:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 10:44:16
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -12,28 +12,54 @@ import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../components/hooks/';
-import {openSettings} from 'react-native-permissions';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
+import {Modal} from '../../components/Modal';
 export default function RemindMessage({navigation}) {
     const [data, setData] = useState({});
     const [hide, setHide] = useState(false);
     const jump = useJump();
+    const [showNotice, setShowNotice] = useState(false);
     const closeNotice = () => {
         setHide(true);
     };
     useEffect(() => {
+        checkNotifications().then(({status, settings}) => {
+            // …
+            if (status == 'denied' || status == 'blocked') {
+                setShowNotice(true);
+            }
+        });
         Http.get('/mapi/message/index/20210101').then((res) => {
             setData(res.result);
         });
     }, []);
     const openLink = () => {
-        openSettings().catch(() => console.warn('cannot open settings'));
+        requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+            // …
+            if (status == 'granted') {
+                setShowNotice(false);
+            } else {
+                blockCal();
+            }
+        });
     };
-
+    //权限提示弹窗
+    const blockCal = () => {
+        Modal.show({
+            title: '权限申请',
+            content: '避免错过调仓加仓消息，请打开通知权限',
+            confirm: true,
+            confirmText: '前往',
+            confirmCallBack: () => {
+                openSettings().catch(() => console.warn('cannot open settings'));
+            },
+        });
+    };
     return (
         <>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
-                    {!hide && data?.notice && (
+                    {!hide && showNotice && (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
                             <TouchableOpacity

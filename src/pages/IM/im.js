@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 19:02:25
+ * @LastEditTime: 2021-03-18 20:54:07
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -73,7 +73,6 @@ const IM = (props) => {
     let lastShowTimeStamp = useRef(null);
     let connectTime = useState(''); //链接时长
     let unverifiedMsg = useRef([]);
-    const [inverted, setInverted] = useState(false);
     const [messages, setMessages] = useState([]);
     const bottomModal = useRef(null);
     const clearIntelList = () => {
