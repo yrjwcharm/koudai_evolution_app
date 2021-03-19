@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 11:23:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 14:29:56
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -66,7 +66,7 @@ export default function PrivateAssets({navigation, route}) {
             setData(res.result);
             getChartInfo();
         });
-    }, [route, period]);
+    }, [route, period, getChartInfo]);
     const redeemBtn = () => {
         Modal.show({
             confirm: true,
@@ -88,18 +88,21 @@ export default function PrivateAssets({navigation, route}) {
         });
     }, [period, route]);
     // 图表滑动legend变化
-    const onChartChange = useCallback(({items}) => {
-        //时间取title setNativeProps中数据取前两条
-        _textTime.current.setNativeProps({text: items[0]?.title});
-        _textPortfolio.current.setNativeProps({
-            text: items[0]?.value,
-            style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-        });
-        _textBenchmark.current.setNativeProps({
-            text: items[1]?.value,
-            style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-        });
-    }, []);
+    const onChartChange = useCallback(
+        ({items}) => {
+            //时间取title setNativeProps中数据取前两条
+            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textPortfolio.current.setNativeProps({
+                text: items[0]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
+            });
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
+        },
+        [getColor]
+    );
 
     // 图表滑动结束
     const onHide = ({items}) => {
@@ -120,22 +123,19 @@ export default function PrivateAssets({navigation, route}) {
         setQa(qa);
         bottomModal.current.show();
     };
-    const getColor = useCallback(
-        (t) => {
-            if (!t) {
-                return Colors.defaultColor;
-            }
-            if (parseFloat(t.replace(/,/g, '')) > 0) {
-                return Colors.red;
-            } else if (parseFloat(t.replace(/,/g, '')) < 0) {
-                return Colors.green;
-            } else {
-                return Colors.defaultColor;
-            }
-        },
-        [getColor]
-    );
-    const renderContent = (index, data) => {
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) > 0) {
+            return Colors.red;
+        } else if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else {
+            return Colors.defaultColor;
+        }
+    }, []);
+    const renderContent = (index, contentData) => {
         if (index === 0) {
             return (
                 <View style={{height: 380, backgroundColor: '#fff'}}>
@@ -228,18 +228,18 @@ export default function PrivateAssets({navigation, route}) {
             return (
                 <>
                     <View style={[Style.flexRow, styles.item_list]}>
-                        <Text style={{flex: 1}}>{data.content.title}</Text>
-                        <Text>{data.content.subtitle}</Text>
+                        <Text style={{flex: 1}}>{contentData.content.title}</Text>
+                        <Text>{contentData.content.subtitle}</Text>
                     </View>
                     <View style={[Style.flexCenter]}>
-                        <Video url={data.content.video} />
+                        <Video url={contentData.content.video} />
                     </View>
                 </>
             );
         } else if (index === 2) {
             return (
                 <>
-                    {data.content.map((_i, _d) => {
+                    {contentData.content.map((_i, _d) => {
                         return (
                             <TouchableOpacity
                                 style={[
@@ -258,12 +258,12 @@ export default function PrivateAssets({navigation, route}) {
         }
     };
 
-    const renderItem = (index, data) => {
+    const renderItem = (index, itemData) => {
         if (index === 0) {
             return (
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={[Style.flexRow, {backgroundColor: '#F7F8FA'}]}>
-                        {data?.table?.th?.map((_head, _index) => {
+                        {itemData?.table?.th?.map((_head, _index) => {
                             return (
                                 <Text
                                     style={[
@@ -272,7 +272,7 @@ export default function PrivateAssets({navigation, route}) {
                                             textAlign:
                                                 _index == 0
                                                     ? 'left'
-                                                    : _index == data.table.th.length - 1
+                                                    : _index == itemData.table.th.length - 1
                                                     ? 'right'
                                                     : 'center',
                                             color: '#9095A5',
@@ -286,7 +286,7 @@ export default function PrivateAssets({navigation, route}) {
                         })}
                     </View>
                     <View>
-                        {data?.table?.tr_list?.slice(0, 6).map((_body, _index) => {
+                        {itemData?.table?.tr_list?.slice(0, 6).map((_body, _index) => {
                             return (
                                 <View
                                     key={_index + '_body'}
@@ -330,9 +330,9 @@ export default function PrivateAssets({navigation, route}) {
         } else {
             return (
                 <View>
-                    <Text style={styles.list_item_sty}>{data.table.th}</Text>
+                    <Text style={styles.list_item_sty}>{itemData.table.th}</Text>
                     <View>
-                        {data?.table?.tr_list?.map((_tr, _index) => {
+                        {itemData?.table?.tr_list?.map((_tr, _index) => {
                             return (
                                 <TouchableOpacity
                                     style={[Style.flexRow, {backgroundColor: _index % 2 == 0 ? '#fff' : '#F7F8FA'}]}
