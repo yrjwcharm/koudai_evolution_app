@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 18:48:53
+ * @LastEditTime: 2021-03-19 12:01:21
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -415,7 +415,10 @@ function HomeScreen({navigation, route}) {
                                     style={[styles.account, {padding: 0}]}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        style={[{padding: Space.padding}, Style.flexRow]}>
+                                        style={[{padding: Space.padding}, Style.flexRow]}
+                                        onPress={() => {
+                                            jump(item.url);
+                                        }}>
                                         <View style={[{flex: 1}, Style.flexRow]}>
                                             <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
                                                 {item.name}
@@ -440,7 +443,12 @@ function HomeScreen({navigation, route}) {
                 })}
                 {/* 投顾 */}
                 {userBasicInfo?.im_info && (
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.iaInfo, Style.flexRow]}
+                        onPress={() => {
+                            jump(userBasicInfo?.im_info.url);
+                        }}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
                             <View>

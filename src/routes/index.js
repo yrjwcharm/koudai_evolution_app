@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 10:51:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 12:20:02
  * @Description:路由表
  */
 import React from 'react';
@@ -137,6 +137,7 @@ import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
 import MyScore from '../pages/Assets/MyScore'; // 我的魔分
 import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
 import AboutLCMF from '../pages/Common/AboutLCMF'; // 关于理财魔方
+import WebView from '../pages/Common/WebView'; //webview
 
 const Stack = createStackNavigator();
 
@@ -459,6 +460,7 @@ export default function AppStack() {
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
             <Stack.Screen name="AboutLCMF" component={AboutLCMF} options={{title: '关于理财魔方'}} />
+            <Stack.Screen name="WebView" component={WebView} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
