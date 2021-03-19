@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 11:06:41
+ * @LastEditTime: 2021-03-19 16:16:09
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -139,7 +139,7 @@ export class question extends Component {
             setTimeout(() => {
                 this.props.navigation.replace('EvaluationResult', {upid: this.upid});
             }, 2000);
-        } else if (this.fr == 'risk') {
+        } else if (action == 'submit' && this.fr == 'risk') {
             setTimeout(() => {
                 this.setState({finishTest: true});
                 this.props.navigation.goBack();

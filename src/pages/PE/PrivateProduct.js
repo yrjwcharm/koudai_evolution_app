@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-18 17:21:32
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-19 14:29:43
+ * @LastEditTime: 2021-03-19 15:31:43
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -68,14 +68,15 @@ export default class PrivateProduct extends Component {
             //判断是否是第一次取高度
             if (!this.state.firstTabSwitch) {
                 //动态更改view的高度
-                if (this.LrState === 'Left')
+                if (this.LrState === 'Left') {
                     this.setState((prevState, props) => ({
                         tabViewStyle: {height: this.state.Lheight + 40},
                     }));
-                else
+                } else {
                     this.setState((prevState, props) => ({
                         tabViewStyle: {height: this.state.Rheight + 40},
                     }));
+                }
             } else {
                 this.setState({
                     firstTabSwitch: false,
@@ -89,7 +90,7 @@ export default class PrivateProduct extends Component {
             return (
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={{paddingHorizontal: text(16), flex: 1}} ref="Left">
-                        {data?.content && <Html html={data?.content}></Html>}
+                        {data?.content && <Html html={data?.content} />}
                     </View>
                 </View>
             );
@@ -144,7 +145,7 @@ export default class PrivateProduct extends Component {
         }
     };
     render() {
-        const {process_lines, data} = this.state;
+        const {data} = this.state;
         return (
             <>
                 {Object.keys(data).length > 0 && (
@@ -177,10 +178,8 @@ export default class PrivateProduct extends Component {
                                 {data?.progress && (
                                     <View style={styles.process_outer}>
                                         <View
-                                            style={[
-                                                styles.process_inner,
-                                                {width: data?.progress?.percent * 100 + '%'},
-                                            ]}></View>
+                                            style={[styles.process_inner, {width: data?.progress?.percent * 100 + '%'}]}
+                                        />
                                     </View>
                                 )}
                                 {data.progress && (

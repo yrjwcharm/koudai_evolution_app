@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 15:20:25
+ * @LastEditTime: 2021-03-19 16:07:17
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -63,14 +63,15 @@ export class planningHistory extends Component {
                         {plan_list && plan_list.length > 0
                             ? plan_list.map((item, index) => {
                                   return item.type == 1 ? (
-                                      <BoxShadow key={index} setting={{...shadow, height: px(96)}}>
+                                      <BoxShadow key={index} setting={{...shadow, height: px(126)}}>
                                           <TouchableOpacity
                                               activeOpacity={0.8}
-                                              style={[styles.card, {height: px(96)}]}
+                                              style={[styles.card, {height: px(126)}]}
                                               onPress={() => {
                                                   this.jumpNext(item?.url?.path, item?.url?.params);
                                               }}>
-                                              <View style={[Style.flexRow, {marginBottom: px(16)}]}>
+                                              <Text style={[styles.name, {marginBottom: px(20)}]}>{item.title}</Text>
+                                              <View style={[Style.flexRow, {marginBottom: px(10)}]}>
                                                   <Text style={styles.key}>目标年化收益率</Text>
                                                   <Text style={styles.plan_goal_amount}>
                                                       {item.plan_yield_info.val}

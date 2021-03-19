@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-11 18:23:46
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 16:25:52
+ * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -56,11 +56,11 @@ const BottomDesc = (props) => {
                     return (
                         <View style={styles.item} key={index}>
                             {item.title && <Text style={styles.text}>{item.title}</Text>}
-                            {item.btn && (
+                            {item?.btn?.text ? (
                                 <Text style={styles.button} onPress={() => navigation.navigate(item.btn.jump_to)}>
                                     {item.btn.text}
                                 </Text>
-                            )}
+                            ) : null}
                         </View>
                     );
                 })}
