@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 16:00:43
+ * @LastEditTime: 2021-03-18 19:31:29
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -125,20 +125,19 @@ function App(props) {
             }
         });
     };
+    global.ErrorUtils.setGlobalHandler((error) => {
+        console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
+        console.log(error.name, error.message, [{text: 'OK'}]);
+    }, true);
     React.useEffect(() => {
         heartBeat();
-        setTimeout(() => {
+        setInterval(() => {
             heartBeat();
-        }, 60 * 1000);
+        }, 60 * 5 * 1000);
     }, []);
     React.useEffect(() => {
-        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/')
-            .then((res) => {
-                console.log(res, '通用链接res');
-            })
-            .catch((error) => {
-                console.log(error, '通用链接');
-            });
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
+
         //热更新
         // syncImmediate();
 

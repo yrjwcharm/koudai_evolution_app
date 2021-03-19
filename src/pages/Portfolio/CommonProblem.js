@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-03-18 14:52:39
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 11:15:25
+ * @LastEditors: dx
  * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
@@ -57,7 +57,7 @@ const CommonProblem = ({navigation, route}) => {
     };
     return (
         <SafeAreaView style={[styles.container]} edges={['bottom']}>
-            {Object.keys(data).length > 0 && (
+            {Object.keys(data || {}).length > 0 && (
                 <ScrollView>
                     <Accordion
                         sections={data.rows}

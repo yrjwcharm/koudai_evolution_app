@@ -7108,6 +7108,11 @@ react-native-easy-chat-ui@^0.4.14:
   dependencies:
     moment "^2.22.2"
 
+react-native-exception-handler@^2.10.9:
+  version "2.10.9"
+  resolved "https://registry.npm.taobao.org/react-native-exception-handler/download/react-native-exception-handler-2.10.9.tgz#4935a9e106b02ebecc729bfaac8ac8e6b0340781"
+  integrity sha1-STWp4QawLr7Mcpv6rIrI5rA0B4E=
+
 react-native-fast-image@^8.3.4:
   version "8.3.4"
   resolved "https://registry.npm.taobao.org/react-native-fast-image/download/react-native-fast-image-8.3.4.tgz#79edca177e30311b19d59ff335625bcbe22650d7"

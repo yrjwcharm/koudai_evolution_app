@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 21:58:59
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 10:45:44
  * @Description:点赞模块
  */
 
@@ -46,7 +46,7 @@ export default function Praise(props) {
     };
 
     return (
-        <TouchableOpacity style={[Style.flexRow, style]} onPress={press}>
+        <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, style]} onPress={press}>
             {like == 1 ? (
                 <FastImage
                     resizeMode={FastImage.resizeMode.contain}

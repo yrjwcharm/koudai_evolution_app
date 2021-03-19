@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-27 15:40:08
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-01 19:35:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-18 19:37:50
  * @Description: 会员专属服务
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -12,9 +12,7 @@ import Swiper from 'react-native-swiper';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useHeaderHeight} from '@react-navigation/stack';
-import Feather from 'react-native-vector-icons/Feather';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil.js';
+import {px as text, deviceHeight} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -42,7 +40,7 @@ const MemberService = ({navigation, route}) => {
                 setData(res.result);
             }
         });
-    });
+    }, []);
     return (
         <View style={[styles.container, {paddingBottom: insets.bottom}]}>
             <ScrollView

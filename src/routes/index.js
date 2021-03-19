@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 15:37:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 10:51:05
  * @Description:路由表
  */
 import React from 'react';
@@ -134,6 +134,9 @@ import Loading from '../pages/Auth/Loading';
 import Index from '../pages/Index/index'; //
 import ArticleDetail from '../pages/Vision/ArticleDetail'; // 文章详情
 import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
+import MyScore from '../pages/Assets/MyScore'; // 我的魔分
+import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
+import AboutLCMF from '../pages/Common/AboutLCMF'; // 关于理财魔方
 
 const Stack = createStackNavigator();
 
@@ -451,8 +454,11 @@ export default function AppStack() {
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
             <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} />
-            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '文章详情'}} />
+            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: ''}} />
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
+            <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
+            <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
+            <Stack.Screen name="AboutLCMF" component={AboutLCMF} options={{title: '关于理财魔方'}} />
         </Stack.Navigator>
     );
 }

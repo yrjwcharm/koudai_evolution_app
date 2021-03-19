@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 11:00:17
+ * @LastEditTime: 2021-03-18 21:11:34
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -12,6 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
+import * as WeChat from 'react-native-wechat-lib';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
@@ -19,8 +20,10 @@ import HTML from '../../components/RenderHtml';
 import Mask from '../../components/Mask';
 import {InputModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 
 const Profile = ({navigation}) => {
+    const jump = useJump();
     const insets = useSafeAreaInsets();
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
@@ -40,10 +43,37 @@ const Profile = ({navigation}) => {
     const onPress = useCallback(
         (item) => {
             if (item.val?.type === 'jump') {
-                if (item.key === '银行卡管理') {
-                    return navigation.navigate('BankCardList');
+                if (item.key === '绑定微信') {
+                    WeChat.isWXAppInstalled().then((isInstalled) => {
+                        if (isInstalled) {
+                            const scope = 'snsapi_userinfo';
+                            const state = '_' + +new Date();
+                            try {
+                                WeChat.sendAuthRequest(scope, state).then((response) => {
+                                    // console.log(response.code);
+                                    if (response.code) {
+                                        http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
+                                            Toast.show(res.message);
+                                            if (res.code) {
+                                                init();
+                                            }
+                                        });
+                                    }
+                                });
+                            } catch (e) {
+                                if (e instanceof WeChat.WechatError) {
+                                    console.error(e.stack);
+                                } else {
+                                    throw e;
+                                }
+                            }
+                        } else {
+                            Toast.show('请安装微信');
+                        }
+                    });
+                } else {
+                    jump(item.val?.jump_url);
                 }
-                navigation.navigate(item.val.jump_url);
             } else if (item.val?.type === 'select') {
                 Keyboard.dismiss();
                 setShowMask(true);
@@ -84,7 +114,7 @@ const Profile = ({navigation}) => {
                 });
             }
         },
-        [navigation, init, confirmClick]
+        [init, confirmClick, jump]
     );
     // 隐藏选择器
     const hidePicker = useCallback(() => {

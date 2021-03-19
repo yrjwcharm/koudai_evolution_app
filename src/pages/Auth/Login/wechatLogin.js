@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 15:51:31
+ * @LastEditTime: 2021-03-18 20:43:25
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -26,8 +26,11 @@ export default class WechatLogin extends Component {
     };
     /**获取短信验证码 */
     getCode = () => {
-        http.post('/auth/user/mobile_can_bind/20210101', {mobile: this.state.mobile}).then((res) => {
-            if (res.code == '000000') {
+        http.post('/auth/user/mobile_can_bind/20210101', {
+            mobile: this.state.mobile,
+            muid: this.props.route?.params.muid,
+        }).then((res) => {
+            if (res.code == '000000' && res.result.status >= 1) {
                 this.props.navigation.navigate('SetLoginPassword', {
                     mobile: this.state.mobile,
                     union_id: this.props.route?.params?.union_id,
@@ -49,11 +52,12 @@ export default class WechatLogin extends Component {
                     <Image
                         style={styles.avatar}
                         source={{
-                            uri:
-                                'https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83epvw9iaibhbB1S0PqAWtjn02Phnoia3neR3JpXuaRC2P2jdllSP7PeYdgR41LSu0xicqu2UM4pKEQcIaQ/132',
+                            uri: this.props.route?.params.avatar,
                         }}
                     />
-                    <Text style={styles.welcome_title}>闫洪昌，您好</Text>
+                    {this.props.route?.params.nickname ? (
+                        <Text style={styles.welcome_title}>{this.props.route?.params.nickname}，您好</Text>
+                    ) : null}
                 </View>
                 <Text style={styles.title}>请绑定您的手机号</Text>
                 <InputView
@@ -71,6 +75,17 @@ export default class WechatLogin extends Component {
                     onChange={(check) => {
                         this.setState({check});
                     }}
+                    data={[
+                        {
+                            title: '《用户协议》',
+                            id: 0,
+                        },
+
+                        {
+                            title: '《隐私权政策》',
+                            id: 32,
+                        },
+                    ]}
                 />
                 <Button
                     title="获取短信验证码"
@@ -96,6 +111,7 @@ const styles = StyleSheet.create({
     avatar: {
         width: text(40),
         height: text(40),
+        borderRadius: 8,
     },
     welcome_title: {
         fontSize: text(22),

@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 15:28:43
+ * @LastEditTime: 2021-03-18 19:05:37
  * @Description: 微信登录
  */
 import React from 'react';
@@ -27,7 +27,7 @@ function Wechat(props) {
                 try {
                     WeChat.sendAuthRequest(scope, state).then((response) => {
                         if (response.code) {
-                            http.post('/auth/bind_mobile/20210101').then((res) => {
+                            http.post('/auth/user/login_wx/20210101', {code: response.code}).then((res) => {
                                 if (res.code == '000000') {
                                     if (res.result.bind_mobile) {
                                         dispatch(getUserInfo());
@@ -38,7 +38,12 @@ function Wechat(props) {
                                             },
                                         });
                                     } else {
-                                        navigation.replace('WechatLogin', {union_id: res.result.union_id});
+                                        navigation.replace('WechatLogin', {
+                                            union_id: res.result.union_id,
+                                            avatar: res.result.avatar,
+                                            nickname: res.result.nickname,
+                                            muid: res.result.muid,
+                                        });
                                     }
                                 }
                             });
@@ -55,7 +60,6 @@ function Wechat(props) {
                 Toast.show('请安装微信');
             }
         });
-        // navigation.navigate('WechatLogin');
     };
     return (
         <View style={[styles.Login, Style.flexCenter, props.style]}>

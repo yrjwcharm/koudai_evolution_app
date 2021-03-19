@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-16 18:56:26
+ * @LastEditTime: 2021-03-19 09:50:55
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -44,12 +44,12 @@ const ShareModal = React.forwardRef((props, ref) => {
         },
         {
             img: require('../../assets/img/share/like.png'),
-            title: '点赞',
+            title: shareContent?.favor_status ? '取消点赞' : '点赞',
             type: 'Like',
         },
         {
             img: require('../../assets/img/share/collect.png'),
-            title: '收藏',
+            title: shareContent?.collect_status ? '取消收藏' : '收藏',
             type: 'Collect',
         },
         {
@@ -167,12 +167,12 @@ const ShareModal = React.forwardRef((props, ref) => {
                 },
                 {
                     img: require('../../assets/img/share/like.png'),
-                    title: '点赞',
+                    title: shareContent?.favor_status ? '取消点赞' : '点赞',
                     type: 'Like',
                 },
                 {
                     img: require('../../assets/img/share/collect.png'),
-                    title: '收藏',
+                    title: shareContent?.collect_status ? '取消收藏' : '收藏',
                     type: 'Collect',
                 },
                 {
@@ -210,7 +210,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 },
             ]);
         }
-    }, [more]);
+    }, [more, shareContent]);
 
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
@@ -223,7 +223,9 @@ const ShareModal = React.forwardRef((props, ref) => {
                     {header ||
                         (title ? (
                             <View style={[Style.flexCenter, styles.header]}>
-                                <Text style={styles.title}>{title}</Text>
+                                <Text numberOfLines={1} style={styles.title}>
+                                    {title}
+                                </Text>
                             </View>
                         ) : null)}
                     <View style={[Style.flexRow, styles.optionBox]}>
@@ -270,6 +272,7 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         lineHeight: px(22),
         color: Colors.defaultColor,
+        maxWidth: px(160),
     },
     optionBox: {
         paddingTop: px(28),

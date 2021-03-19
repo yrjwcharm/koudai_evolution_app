@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 17:09:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 10:45:59
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -113,14 +113,18 @@ const FindDetail = (props) => {
                         </MagicMove.View>
 
                         <View style={{paddingHorizontal: px(16)}}>
-                            <View style={{marginBottom: px(20)}}>
-                                {renderTitle(data?.article_info?.cate_name, '查看更多')}
-                                <ArticleCard data={data?.article_info} />
-                            </View>
-                            <View style={{marginBottom: px(20)}}>
-                                {renderTitle('魔方问答', '查看更多')}
-                                <QuestionCard data={data?.qa_list} />
-                            </View>
+                            {data?.article_info && (
+                                <View style={{marginBottom: px(20)}}>
+                                    {renderTitle(data?.article_info?.cate_name)}
+                                    <ArticleCard data={data?.article_info} />
+                                </View>
+                            )}
+                            {data?.qa_list && (
+                                <View style={{marginBottom: px(20)}}>
+                                    {renderTitle('魔方问答')}
+                                    <QuestionCard data={data?.qa_list} />
+                                </View>
+                            )}
                         </View>
                     </ScrollView>
                 </Animatable.View>

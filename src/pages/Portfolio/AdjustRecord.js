@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 13:05:03
+ * @LastEditTime: 2021-03-18 17:56:40
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -24,7 +24,7 @@ const AdjustRecord = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/portfolio/adjust/20210101', {
                 poid: route.params?.poid,
                 upid: route.params?.upid,
@@ -84,7 +84,7 @@ const AdjustRecord = ({navigation, route}) => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={[styles.adjustRecord, Style.flexRow]}
-                onPress={() => navigation.navigate('HistoryAdjust', {id: item.id})}>
+                onPress={() => navigation.navigate('HistoryAdjust', {adjust_id: item.id, upid: route.params?.upid})}>
                 <View style={{flex: 1}}>
                     <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
                         <Text style={[styles.recordTitle, {fontWeight: '500'}]}>{item.title}</Text>
