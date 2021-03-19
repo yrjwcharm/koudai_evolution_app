@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 12:01:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 17:05:44
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -309,7 +309,7 @@ function HomeScreen({navigation, route}) {
                     {/* 资产信息 */}
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
-                        <Text style={styles.date}>{holdingData?.summary?.profit_date || '0000-00-00'}</Text>
+                        <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
                         <TouchableOpacity onPress={toggleEye}>
                             <Ionicons
                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}

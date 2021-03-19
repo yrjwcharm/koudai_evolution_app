@@ -87,6 +87,10 @@ export default function DetailAccount({route, navigation}) {
                     text: items[0]?.value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
+                _textBenchmark.current.setNativeProps({
+                    text: items[1]?.value,
+                    style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+                });
             }
         },
         [getColor, type]

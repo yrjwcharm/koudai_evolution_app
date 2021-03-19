@@ -90,7 +90,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setChart(res.result.chart);
             }
         });
-    }, [countFr, countM]);
+    }, [countFr, countM, type]);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
@@ -113,7 +113,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             setChartData(res.result);
             setChart(res.result?.yield_info?.chart);
         });
-    }, [period, type]);
+    }, [period, type, route]);
     useFocusEffect(
         useCallback(() => {
             init();

@@ -1,20 +1,21 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-17 20:52:32
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 16:21:14
+ * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Alert, Linking, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
 import {useNavigation} from '@react-navigation/native';
 import {BottomModal} from '../../../components/Modal';
+import Toast from '../../../components/Toast';
 
 const FixedBtn = (props) => {
     const {btns, style} = props;
@@ -22,6 +23,23 @@ const FixedBtn = (props) => {
     const bottomModal = useRef(null);
     // 咨询弹窗内容渲染
     const renderContactContent = () => {
+        const onPress = (item) => {
+            if (item.type === 'im') {
+                bottomModal.current.hide();
+                navigation.navigate('IM');
+            } else if (item.type === 'tel') {
+                bottomModal.current.hide();
+                const url = `tel:${item.sno}`;
+                Linking.canOpenURL(url)
+                    .then((supported) => {
+                        if (!supported) {
+                            return Toast.show(`您的设备不支持该功能，请手动拨打 ${item.sno}`);
+                        }
+                        return Linking.openURL(url);
+                    })
+                    .catch((err) => Alert(err));
+            }
+        };
         return (
             <View style={[styles.contactContainer]}>
                 {btns[0].subs &&
@@ -43,7 +61,10 @@ const FixedBtn = (props) => {
                                         <Text style={[styles.methodDesc]}>{sub.desc}</Text>
                                     </View>
                                 </View>
-                                <TouchableOpacity style={[styles.methodBtn, Style.flexCenter]} activeOpacity={1}>
+                                <TouchableOpacity
+                                    style={[styles.methodBtn, Style.flexCenter]}
+                                    activeOpacity={0.8}
+                                    onPress={() => onPress(sub)}>
                                     <Text style={[styles.methodBtnText]}>{sub.btn.title}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -57,6 +78,7 @@ const FixedBtn = (props) => {
             {btns?.length > 0 ? (
                 <>
                     <TouchableOpacity
+                        activeOpacity={0.8}
                         style={[styles.contactBtn, Style.flexCenter]}
                         onPress={() => bottomModal.current.show()}>
                         <Image source={{uri: btns[0].icon}} style={[styles.contactIcon]} />

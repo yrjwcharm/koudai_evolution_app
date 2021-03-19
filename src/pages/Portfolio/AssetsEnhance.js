@@ -1,14 +1,12 @@
 /*
  * @Date: 2021-01-22 10:51:10
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-02 19:04:52
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 16:14:26
  * @Description: 资产增强
  */
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import FitImage from 'react-native-fit-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -16,16 +14,18 @@ import http from '../../services';
 import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
 
-const AssetsEnhance = ({navigation}) => {
+const AssetsEnhance = ({navigation, route}) => {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('/portfolio/asset_enhance/20210101').then((res) => {
-            setData(res.result);
-            navigation.setOptions({title: res.result.title});
+        http.get('/portfolio/asset_enhance/20210101', {...(route.params || {})}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result);
+                navigation.setOptions({title: res.result.title || '资产增强'});
+            }
         });
-    }, [navigation]);
+    }, [navigation, route]);
     return (
-        <SafeAreaView edges={['bottom']} style={styles.container}>
+        <View style={styles.container}>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     <View style={styles.topPart}>
@@ -52,7 +52,7 @@ const AssetsEnhance = ({navigation}) => {
                 </ScrollView>
             )}
             {data.btns && <FixedBtn btns={data.btns} />}
-        </SafeAreaView>
+        </View>
     );
 };
 
