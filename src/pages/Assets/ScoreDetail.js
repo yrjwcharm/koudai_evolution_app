@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 19:06:31
+ * @LastEditTime: 2021-03-18 18:16:26
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,6 +16,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth, deviceHeight} from '../../utils/appUtil';
 import http from '../../services';
+import Empty from '../../components/EmptyTip';
 
 const ScoreDetail = ({navigation, route}) => {
     const insets = useSafeAreaInsets();
@@ -139,10 +140,7 @@ const ScoreDetail = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <>
-                <Image
-                    source={require('../../assets/personal/score-bg.png')}
-                    style={{width: deviceWidth, height: text(167), marginLeft: -Space.marginAlign}}
-                />
+                <Image source={require('../../assets/personal/score-bg.png')} style={styles.headerBg} />
                 <View style={[Style.flexCenter, styles.scoreNumContainer]}>
                     <View style={[Style.flexRowCenter, styles.scoreNum]}>
                         <Text style={styles.scoreNumText}>{data.bonus || '****'}</Text>
@@ -256,7 +254,7 @@ const ScoreDetail = ({navigation, route}) => {
             )}
 
             <SectionList
-                sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
+                sections={[{data: list, title: 'list'}]}
                 contentContainerStyle={styles.exchangeContainer}
                 initialNumToRender={10}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -271,6 +269,11 @@ const ScoreDetail = ({navigation, route}) => {
                 stickySectionHeadersEnabled={false}
                 style={{flex: 1, marginBottom: insets.bottom}}
             />
+            {list?.length === 0 && (
+                <View style={[Style.flexCenter, styles.emptyBox]}>
+                    <Empty text={'暂无魔分明细'} />
+                </View>
+            )}
         </View>
     );
 };
@@ -303,6 +306,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    headerBg: {
+        width: deviceWidth,
+        height: text(167),
+        marginLeft: -Space.marginAlign,
     },
     scoreNumContainer: {
         marginTop: text(-152),
@@ -387,6 +395,13 @@ const styles = StyleSheet.create({
         height: deviceHeight,
         backgroundColor: 'transparent',
         zIndex: 9,
+    },
+    emptyBox: {
+        position: 'absolute',
+        top: text(220),
+        bottom: 0,
+        left: 0,
+        right: 0,
     },
 });
 

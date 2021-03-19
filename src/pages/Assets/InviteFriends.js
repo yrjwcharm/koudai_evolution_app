@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 10:36:38
+ * @LastEditTime: 2021-03-19 09:48:32
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -31,6 +31,20 @@ const InviteFriends = ({navigation}) => {
             </View>
         );
     };
+    const renderFooter = (section, index, isActive) => {
+        return (
+            data?.invitees?.length === 0 &&
+            isActive && (
+                <Text
+                    style={[
+                        styles.moreText,
+                        {color: Colors.defaultColor, paddingBottom: text(8), textAlign: 'center'},
+                    ]}>
+                    {'暂无邀请记录'}
+                </Text>
+            )
+        );
+    };
     const renderContent = () => {
         return (
             <View style={{paddingHorizontal: Space.padding, paddingBottom: data.has_more ? 0 : Space.padding}}>
@@ -39,7 +53,7 @@ const InviteFriends = ({navigation}) => {
                     <Text style={[styles.desc, styles.headText]}>{'用户状态'}</Text>
                     <Text style={[styles.desc, styles.headText, {textAlign: 'right'}]}>{'获得魔分'}</Text>
                 </View>
-                {data.invitees?.map((item, index) => {
+                {data?.invitees?.map((item, index) => {
                     return (
                         <View key={`row${index}`} style={[Style.flexRow, {height: text(30)}]}>
                             <Text
@@ -109,7 +123,7 @@ const InviteFriends = ({navigation}) => {
                 <View style={[Style.flexRow, {marginBottom: text(28)}]}>
                     <View style={[Style.flexCenter, {flex: 1}, styles.borderRight]}>
                         <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(11)}]}>
-                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.bonus || '****'}</Text>
+                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.bonus || '0'}</Text>
                             <Text style={[styles.desc, {color: Colors.lightGrayColor, marginBottom: text(3)}]}>
                                 {'魔分'}
                             </Text>
@@ -118,7 +132,7 @@ const InviteFriends = ({navigation}) => {
                     </View>
                     <View style={[Style.flexCenter, {flex: 1}]}>
                         <View style={[Style.flexRow, {alignItems: 'flex-end', marginBottom: text(11)}]}>
-                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.count || '**'}</Text>
+                            <Text style={[styles.numStyle, {marginRight: text(5)}]}>{data.count || '0'}</Text>
                             <Text style={[styles.desc, {color: Colors.lightGrayColor, marginBottom: text(3)}]}>
                                 {'人'}
                             </Text>
@@ -153,6 +167,7 @@ const InviteFriends = ({navigation}) => {
                     activeSections={activeSections}
                     renderHeader={renderHeader}
                     renderContent={renderContent}
+                    renderFooter={renderFooter}
                     onChange={(active) => setActiveSections(active)}
                     sectionContainerStyle={styles.tableWrap}
                     touchableComponent={TouchableOpacity}
@@ -165,7 +180,7 @@ const InviteFriends = ({navigation}) => {
                     style={styles.rules}
                 />
             </View>
-            <ShareModal ref={shareModal} title={'邀请好友'} />
+            <ShareModal ref={shareModal} title={'邀请好友'} shareContent={{}} />
         </ScrollView>
     );
 };

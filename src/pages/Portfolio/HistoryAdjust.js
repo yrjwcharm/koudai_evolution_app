@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 10:37:40
+ * @LastEditTime: 2021-03-18 17:56:27
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -40,7 +40,7 @@ const HistoryAdjust = ({navigation, route}) => {
     useEffect(() => {
         http.get('/portfolio/adjust_history/20210101', {
             adjust_id: route.params?.adjust_id,
-            upid: route.params?.upid || 0,
+            upid: route.params?.upid,
             scene: route.params?.fr || 'portfolio',
         }).then((res) => {
             setData(res.result);

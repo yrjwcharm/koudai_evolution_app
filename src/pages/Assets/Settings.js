@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 17:41:46
+ * @LastEditTime: 2021-03-19 09:55:43
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -158,7 +158,7 @@ const Settings = ({navigation}) => {
                     );
                 })}
             </ScrollView>
-            <ShareModal ref={shareModal} title={'分享理财魔方'} />
+            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={{}} />
         </SafeAreaView>
     );
 };
