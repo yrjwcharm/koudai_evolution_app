@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 17:52:42
+ * @LastEditTime: 2021-03-19 12:12:10
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -50,7 +50,7 @@ export default function BankWithdraw({navigation, route}) {
     // 数据提交 verify_method. 0 交易密码 1验证码
     const submitData = (password) => {
         const pay_method = data.pay_info.pay_method;
-        Http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/bank/withdraw/do/20210101', {
+        Http.post('/trade/bank/withdraw/do/20210101', {
             bank_code: route.params.bank_code,
             poid: data.poid,
             amount,
@@ -60,7 +60,7 @@ export default function BankWithdraw({navigation, route}) {
             verify_code: code,
         }).then((res) => {
             if (res.code === '000000') {
-                // navigation.navigate('TradeProcessing', res.result);
+                navigation.navigate('TradeProcessing', res.result);
             } else {
                 Toast.show(res.message);
             }
@@ -71,7 +71,7 @@ export default function BankWithdraw({navigation, route}) {
         code = value;
         if (value.length === 6) {
             Http.post(
-                'http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/bank/send/verify_code/20210101',
+                '/trade/bank/send/verify_code/20210101',
                 {
                     bank_code: route.params.bank_code,
                     amount,
