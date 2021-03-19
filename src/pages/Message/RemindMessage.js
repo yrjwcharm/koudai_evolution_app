@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 17:25:35
+ * @LastEditTime: 2021-03-19 11:01:47
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -50,7 +50,7 @@ export default function RemindMessage({navigation}) {
                                     {data?.notice?.button?.text}
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => closeNotice()}>
+                            <TouchableOpacity onPress={closeNotice}>
                                 <AntDesign name={'close'} size={12} color={'#EB7121'} />
                             </TouchableOpacity>
                         </View>

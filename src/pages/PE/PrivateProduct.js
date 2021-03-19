@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-09 17:48:02
+ * @LastEditTime: 2021-03-19 11:23:17
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -163,13 +163,14 @@ export default class PrivateProduct extends Component {
                                 </View>
                                 <Text style={styles.card_desc}>{data.fund_remark}</Text>
                                 <View style={Style.flexRow}>
-                                    {data?.tags.map((_label, _index) => {
-                                        return (
-                                            <Text key={_index} style={styles.card_label}>
-                                                {_label}
-                                            </Text>
-                                        );
-                                    })}
+                                    {data?.tags &&
+                                        data?.tags.map((_label, _index) => {
+                                            return (
+                                                <Text key={_index} style={styles.card_label}>
+                                                    {_label}
+                                                </Text>
+                                            );
+                                        })}
                                 </View>
                                 <View style={styles.process_outer}>
                                     <View
@@ -178,16 +179,18 @@ export default class PrivateProduct extends Component {
                                             {width: data.progress.percent * 100 + '%'},
                                         ]}></View>
                                 </View>
-                                <View style={[Style.flexBetween, {width: deviceWidth - 60}]}>
-                                    <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
-                                        {data.progress.left_amount.name}
-                                        {data.progress.left_amount.val}
-                                    </Text>
-                                    <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
-                                        {data.progress.total_amount.name}
-                                        {data.progress.total_amount.val}
-                                    </Text>
-                                </View>
+                                {data.progress && (
+                                    <View style={[Style.flexBetween, {width: deviceWidth - 60}]}>
+                                        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
+                                            {data?.progress?.left_amount?.name}
+                                            {data?.progress?.left_amount?.val}
+                                        </Text>
+                                        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
+                                            {data?.progress?.total_amount?.name}
+                                            {data?.progress?.total_amount?.val}
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
                             <View>
                                 {data?.introduce.map((_img, _i) => {

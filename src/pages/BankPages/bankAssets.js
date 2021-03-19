@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:46:58
+ * @LastEditTime: 2021-03-19 10:30:26
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -58,7 +58,7 @@ export default function BankAssets(props) {
                             <View style={[styles.card_sty, Style.flexCenter]}>
                                 <View style={Style.flexRowCenter}>
                                     <Text style={Style.descSty}>{data.asset.amount.k}</Text>
-                                    <TouchableOpacity onPress={reasonShow}>
+                                    <TouchableOpacity onPress={reasonShow} activeOpacity={1}>
                                         <AntDesign
                                             name={'questioncircleo'}
                                             color={'#666666'}
@@ -83,6 +83,7 @@ export default function BankAssets(props) {
                                     </View>
                                 </View>
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     disabled={data.button.avail == 0}
                                     style={{
                                         backgroundColor: data.button.avail == 0 ? '#DDDDDD' : '#0051CC',
@@ -93,6 +94,7 @@ export default function BankAssets(props) {
                                     <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[Style.flexRow, styles.account_wrap_sty]}
                                     onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
@@ -133,6 +135,7 @@ export default function BankAssets(props) {
                                                 </View>
                                             </View>
                                             <TouchableOpacity
+                                                activeOpacity={1}
                                                 disabled={_s.button.avail == 0}
                                                 style={{
                                                     backgroundColor: _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',

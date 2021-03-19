@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
- * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:51:57
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 10:31:55
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -126,7 +126,7 @@ class BankRedeem extends Component {
                             />
                             <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
-                        <TouchableOpacity onPress={this.allAmount}>
+                        <TouchableOpacity onPress={this.allAmount} activeOpacity={1}>
                             <Text style={{color: '#0051CC'}}>{data.redeem_info?.btn}</Text>
                         </TouchableOpacity>
                     </View>

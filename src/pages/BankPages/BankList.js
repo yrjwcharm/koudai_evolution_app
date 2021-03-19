@@ -3,7 +3,7 @@
  * @Date: 2021-02-23 17:29:21
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 17:08:54
+ * @LastEditTime: 2021-03-19 10:31:43
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -47,6 +47,7 @@ export default function BankList({navigation, route}) {
                                 {_pro.products.map((_p, _i) => {
                                     return (
                                         <TouchableOpacity
+                                            activeOpacity={1}
                                             style={[
                                                 styles.card_sty,
                                                 {borderBottomWidth: _i < _pro.products.length - 1 ? 0.5 : 0},

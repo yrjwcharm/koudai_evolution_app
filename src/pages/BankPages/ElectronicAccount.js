@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 18:06:30
+ * @LastEditTime: 2021-03-19 10:32:33
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -51,7 +51,7 @@ export default function ElectronicAccount(props) {
                     <View style={styles.fixed_sty}>
                         <View style={[Style.flexRow, styles.fixed_wrap]}>
                             <Text style={styles.fixed_title_sty}>{data?.account?.bank}</Text>
-                            <TouchableOpacity onPress={() => copy(num)}>
+                            <TouchableOpacity onPress={() => copy(num)} activeOpacity={1}>
                                 <Text style={styles.copy_sty}>复制卡号</Text>
                             </TouchableOpacity>
                         </View>
@@ -70,6 +70,7 @@ export default function ElectronicAccount(props) {
                         {data?.items.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[Style.flexRow]}
                                     onPress={accountBtn}
                                     key={_index + '_item'}

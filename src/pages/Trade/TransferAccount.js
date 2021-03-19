@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:48:07
+ * @LastEditTime: 2021-03-19 10:41:18
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -17,7 +17,7 @@ import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-export default function TransferAccount({navigation}) {
+export default function TransferAccount({navigation, route}) {
     const [data, setData] = useState({});
     const [show, setShow] = useState(false);
     const passwordModal = useRef(null);
@@ -25,14 +25,30 @@ export default function TransferAccount({navigation}) {
         setShow(!show);
     };
     useEffect(() => {
-        Http.get('trade/price/transfer/20210101').then((res) => {
+        Http.get('trade/price/transfer/20210101', {
+            poid: route.params.poid,
+        }).then((res) => {
             setData(res.result);
         });
     }, [navigation]);
     const passwordInput = () => {
         passwordModal.current.show();
     };
-    const submit = () => {};
+
+    const submit = (password) => {
+        Http.post('/trade/adjust/do/20210101', {
+            adjust_id: data.adjust_id,
+            mode: data.mode,
+            password: password,
+            poid: route.params.poid,
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
     return (
         <>
             {Object.keys(data).length > 0 && (
