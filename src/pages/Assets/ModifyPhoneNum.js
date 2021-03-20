@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 15:56:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 15:29:10
+ * @LastEditTime: 2021-03-20 20:58:16
  * @Description: 修改预留手机号
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -96,7 +96,7 @@ const ModifyPhoneNum = ({navigation, route}) => {
                     pay_method: params.pay_method,
                     verify_code: value,
                 }).then((res) => {
-                    Toast.show(res.message);
+                    Toast.show(res.message, {position: text(120), showMask: false});
                     if (res.code === '000000') {
                         codeModal.current.hide();
                         navigation.goBack();

@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 16:03:54
+ * @LastEditTime: 2021-03-20 20:06:55
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -40,6 +40,7 @@ const MyScore = ({navigation, route}) => {
     const init = useCallback(() => {
         http.get('/promotion/my_point/20210101').then((res) => {
             if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
                 setData(res.result);
                 setRefreshing(false);
             }
