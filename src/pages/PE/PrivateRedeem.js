@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-09 19:06:14
+ * @LastEditTime: 2021-03-20 18:17:09
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -17,6 +17,7 @@ export default function PrivateRedeem({route, navigation}) {
     const [data, setData] = useState({});
     const [amount, setAmount] = useState('');
     const passwordModal = useRef(null);
+    const [enable, setEnable] = useState(true);
     useEffect(() => {
         console.log(navigation);
         Http.get('/pe/redeem_detail/20210101', {
@@ -28,6 +29,9 @@ export default function PrivateRedeem({route, navigation}) {
     }, []);
 
     const submitData = () => {
+        if (!amount) {
+            setEnable(true);
+        }
         Http.post('/pe/do_redeem/20210101', {
             fund_code: route.params?.fund_code,
             poid: route.params.poid,
@@ -42,11 +46,13 @@ export default function PrivateRedeem({route, navigation}) {
         });
     };
     const onInput = (amount) => {
+        if (!amount) return;
         if (amount >= data.share.share) {
             setAmount(data.share.share.toString());
         } else {
             setAmount(amount);
         }
+        setEnable(false);
     };
     //  const submit = () => {
     //     passwordModal.current.show();
@@ -111,6 +117,7 @@ export default function PrivateRedeem({route, navigation}) {
                     />
                    */}
                     <FixedButton
+                        disabled={enable}
                         title={data.share.button.text}
                         style={styles.btn_sty}
                         onPress={() => submitData()}

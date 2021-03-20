@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 15:54:49
+ * @LastEditTime: 2021-03-20 19:05:36
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -23,7 +23,6 @@ import Html from '../../../components/RenderHtml';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
-
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -81,6 +80,10 @@ export default function DetailPolaris({route, navigation}) {
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             }
+            _textBenchmark.current.setNativeProps({
+                text: items[1]?.value,
+                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+            });
         },
         [getColor]
     );

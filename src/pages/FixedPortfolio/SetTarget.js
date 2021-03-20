@@ -3,9 +3,9 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-25 14:08:06
+ * @LastEditTime: 2021-03-20 17:42:12
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
 // import Slider from '@react-native-community/slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -13,35 +13,39 @@ import {px, px as text} from '../../utils/appUtil';
 import Slider from 'react-native-slider';
 import Http from '../../services';
 import {Button} from '../../components/Button';
-import {Toast} from '../../components/Toast';
+import Toast from '../../components/Toast';
+import Html from '../../components/RenderHtml';
 const deviceWidth = Dimensions.get('window').width;
-export default function SetTarget(props) {
+var params;
+export default function SetTarget({route, navigation}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
-    const [target, setTarget] = useState('');
+    // const [target, setTarget] = useState('');
     const onChange = (val) => {
-        setNum(Number(val));
+        params = {poid: route.params.poid, target: val / 100};
+        init(params);
     };
-    var timer;
     useEffect(() => {
+        params = {poid: route.params.poid};
+        init(params);
+    }, [init]);
+    const init = useCallback(() => {
         Http.get('/trade/fix_invest/target_info/20210101', {
-            target_id: target,
+            ...params,
         }).then((res) => {
             setData(res.result);
-            setNum(res.result.target_info.default * 100);
+            setNum(res.result.target_info.default.toFixed(2) * 100);
         });
-        return clearTimeout(timer);
     }, []);
     const confirmData = () => {
         Http.get('/trade/set/invest_target/20210101', {
             target: num,
             possible: data.target_info.possible,
+            poid: route.params.poid,
         }).then((res) => {
-            Toast.show(data.message);
-            timer = setTimeout(() => {
-                // props.navigation.navigate(data.button.url);
-            }, 2000);
-            setTarget(res.result.target_id);
+            // Toast.show(res.message);
+            // setTarget(res.result.target_id);
+            navigation.goBack();
         });
     };
     return (
@@ -50,7 +54,7 @@ export default function SetTarget(props) {
                 <View style={styles.container}>
                     <Text style={{textAlign: 'center', color: Colors.defaultColor}}>{data.target_info.title}</Text>
                     <Text style={styles.ratio_sty}>{num}%</Text>
-                    <Text style={styles.desc_sty}>{data.target_info.desc}</Text>
+                    <Html style={styles.desc_sty} html={data.target_info.desc} />
                     <View style={{marginVertical: text(24)}}>
                         <Slider
                             value={num}

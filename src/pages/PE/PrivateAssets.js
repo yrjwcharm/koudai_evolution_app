@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 14:29:56
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 18:01:10
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -41,6 +41,8 @@ export default function PrivateAssets({navigation, route}) {
     const [qa, setQa] = useState({});
     const [chart, setChart] = useState({});
     const [labelInfo, setLabelInfo] = useState([]);
+    const [curIndex, setCurIndex] = useState(0);
+    const [curIndexNet, setCurIndexNet] = useState(0);
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -48,8 +50,14 @@ export default function PrivateAssets({navigation, route}) {
     const rightPress = () => {
         navigation.navigate('TradeRecord');
     };
-    const changeTab = (period) => {
+    const changePeriod = (period) => {
         setPeriod(period);
+    };
+    const ChangeTab = (i) => {
+        setCurIndex(i);
+    };
+    const changeNetTab = (i) => {
+        setCurIndexNet(i);
     };
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
@@ -135,6 +143,7 @@ export default function PrivateAssets({navigation, route}) {
             return Colors.defaultColor;
         }
     }, []);
+
     const renderContent = (index, contentData) => {
         if (index === 0) {
             return (
@@ -205,12 +214,13 @@ export default function PrivateAssets({navigation, route}) {
                         {chart?.sub_tabs?.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[
                                         styles.btn_sty,
                                         {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
                                     ]}
                                     key={_index + 'sub'}
-                                    onPress={() => changeTab(_item.val, _item.type)}>
+                                    onPress={() => changePeriod(_item.val, _item.type)}>
                                     <Text
                                         style={{
                                             color: period == _item.val ? '#0051CC' : '#555B6C',
@@ -226,7 +236,7 @@ export default function PrivateAssets({navigation, route}) {
             );
         } else if (index === 1) {
             return (
-                <>
+                <View style={{backgroundColor: '#fff'}}>
                     <View style={[Style.flexRow, styles.item_list]}>
                         <Text style={{flex: 1}}>{contentData.content.title}</Text>
                         <Text>{contentData.content.subtitle}</Text>
@@ -234,7 +244,7 @@ export default function PrivateAssets({navigation, route}) {
                     <View style={[Style.flexCenter]}>
                         <Video url={contentData.content.video} />
                     </View>
-                </>
+                </View>
             );
         } else if (index === 2) {
             return (
@@ -242,6 +252,7 @@ export default function PrivateAssets({navigation, route}) {
                     {contentData.content.map((_i, _d) => {
                         return (
                             <TouchableOpacity
+                                activeOpacity={1}
                                 style={[
                                     Style.flexRow,
                                     styles.item_list,
@@ -320,7 +331,10 @@ export default function PrivateAssets({navigation, route}) {
                                 </View>
                             );
                         })}
-                        <TouchableOpacity style={styles.text_sty} onPress={() => navigation.navigate('AssetNav')}>
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            style={styles.text_sty}
+                            onPress={() => navigation.navigate('AssetNav')}>
                             <Text>更多净值</Text>
                             <AntDesign name={'right'} size={12} color={'#9095A5'} />
                         </TouchableOpacity>
@@ -335,6 +349,7 @@ export default function PrivateAssets({navigation, route}) {
                         {itemData?.table?.tr_list?.map((_tr, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[Style.flexRow, {backgroundColor: _index % 2 == 0 ? '#fff' : '#F7F8FA'}]}
                                     onPress={() => tipShow(_tr.q, _tr.a)}
                                     key={_index + '_tr1'}>
@@ -382,7 +397,7 @@ export default function PrivateAssets({navigation, route}) {
                                 <View>
                                     <View style={[Style.flexRow, {marginBottom: text(15)}]}>
                                         <Text style={styles.profit_text_sty}>总金额(元)</Text>
-                                        <TouchableOpacity onPress={toggleEye}>
+                                        <TouchableOpacity onPress={toggleEye} activeOpacity={1}>
                                             <Ionicons
                                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
                                                 size={16}
@@ -411,32 +426,31 @@ export default function PrivateAssets({navigation, route}) {
                             initialPage={0}
                             style={{marginBottom: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
-                            tabBarInactiveTextColor={'#545968'}>
+                            onChangeTab={(obj) => ChangeTab(obj.i)}
+                            tabBarInactiveTextColor={'#545968'}
+                            style={{marginTop: text(12)}}>
                             {data?.tabs1.map((item, index) => {
-                                return (
-                                    <View tabLabel={item?.title} key={index + 'tab'}>
-                                        {renderContent(index, item)}
-                                    </View>
-                                );
+                                return <View tabLabel={item?.title} key={index + 'tab'}></View>;
                             })}
                         </ScrollableTabView>
+                        {renderContent(curIndex, data?.tabs1[curIndex])}
                         <ScrollableTabView
                             renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                             initialPage={0}
                             style={{marginBottom: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
-                            tabBarInactiveTextColor={'#545968'}>
+                            tabBarInactiveTextColor={'#545968'}
+                            onChangeTab={(obj) => changeNetTab(obj.i)}
+                            style={{marginTop: text(12)}}>
                             {data?.tabs2?.map((item, index) => {
-                                return (
-                                    <View tabLabel={item?.title} key={index + 'tab1'}>
-                                        {renderItem(index, item)}
-                                    </View>
-                                );
+                                return <View tabLabel={item?.title} key={index + 'tab1'}></View>;
                             })}
                         </ScrollableTabView>
+                        {renderItem(curIndexNet, data?.tabs2[curIndexNet])}
                         {data?.cards?.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={styles.list_sty}
                                     key={_index + 'card'}
                                     onPress={() => jump(_item.url)}>
@@ -465,6 +479,7 @@ export default function PrivateAssets({navigation, route}) {
                             },
                         ]}>
                         <TouchableOpacity
+                            activeOpacity={1}
                             style={[
                                 styles.button_sty,
                                 {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)},
@@ -472,7 +487,10 @@ export default function PrivateAssets({navigation, route}) {
                             onPress={() => redeemBtn()}>
                             <Text style={{textAlign: 'center', color: '#545968'}}>{data?.buttons[1]?.text}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}>
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}
+                            onPress={() => jump(data?.buttons[0].url)}>
                             <Text style={{textAlign: 'center', color: '#fff'}}>{data?.buttons[0]?.text}</Text>
                         </TouchableOpacity>
                     </View>

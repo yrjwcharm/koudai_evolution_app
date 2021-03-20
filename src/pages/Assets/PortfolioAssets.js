@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 20:39:56
+ * @LastEditTime: 2021-03-20 16:55:49
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -125,9 +125,7 @@ export default function PortfolioAssets(props) {
             storage.save('myAssetsEye', show);
         });
     }, []);
-    const jumpTo = (url) => {
-        props.navigation.navigate(url);
-    };
+
     const accountJump = (url, type) => {
         Http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
             if (res.result) {
@@ -149,7 +147,9 @@ export default function PortfolioAssets(props) {
         return (
             <View style={styles.plan_card_sty}>
                 <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                <Text style={styles.plan_desc_sty}>{card.desc}</Text>
+                <View style={{marginTop: text(10)}}>
+                    <Html style={styles.plan_desc_sty} html={card?.desc} />
+                </View>
                 {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
                         <Text style={styles.blue_text_style}>{card?.notice}</Text>
@@ -407,7 +407,7 @@ export default function PortfolioAssets(props) {
                 </View>
                 {/* 广告位 */}
                 {data?.ad_info && (
-                    <TouchableOpacity onPress={() => jumpTo(data.ad_info.url)}>
+                    <TouchableOpacity onPress={() => jump(data.ad_info.url)}>
                         <FitImage
                             source={{
                                 uri: data.ad_info.img,
@@ -421,29 +421,33 @@ export default function PortfolioAssets(props) {
                 <View style={styles.padding_sty}>
                     {Object.keys(card).length > 0 && renderBtn() /* 按钮 */}
                     {/* 反洗钱上传 */}
-                    <View style={[Style.flexRow, styles.upload_card_sty]}>
-                        <Text style={{color: '#4E556C', fontSize: Font.textH3, flex: 1, lineHeight: text(18)}}>
-                            {data?.notice_info?.content}
-                        </Text>
-                        <TouchableOpacity
-                            onPress={() => jumpTo(data?.notice_info?.button?.url)}
-                            style={styles.upload_btn_sty}>
-                            <Text
-                                style={{
-                                    color: '#0051CC',
-                                    paddingVertical: text(6),
-                                    paddingHorizontal: text(14),
-                                }}>
-                                {data?.notice_info?.button?.text}
+                    {data?.notice_info && (
+                        <View style={[Style.flexRow, styles.upload_card_sty]}>
+                            <Text style={{color: '#4E556C', fontSize: Font.textH3, flex: 1, lineHeight: text(18)}}>
+                                {data?.notice_info?.content}
                             </Text>
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                onPress={() => jump(data?.notice_info?.button?.url)}
+                                style={styles.upload_btn_sty}>
+                                <Text
+                                    style={{
+                                        color: '#0051CC',
+                                        paddingVertical: text(6),
+                                        paddingHorizontal: text(14),
+                                    }}>
+                                    {data?.notice_info?.button?.text}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                     {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
                         {data?.extend_buttons?.map((_e, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={{alignItems: 'center'}}
                                     key={_index + '_e'}
                                     onPress={() => jump(_e.url)}>
@@ -549,7 +553,6 @@ const styles = StyleSheet.create({
         color: '#545968',
         fontSize: Font.textH3,
         lineHeight: text(18),
-        marginTop: text(10),
         textAlign: 'center',
     },
     blue_wrap_style: {

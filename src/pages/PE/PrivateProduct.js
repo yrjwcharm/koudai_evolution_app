@@ -3,14 +3,14 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-20 14:55:10
+ * @LastEditTime: 2021-03-20 18:14:47
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
-import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Header from '../../components/NavBar';
 import Video from '../../components/Video';
 import FitImage from 'react-native-fit-image';
@@ -26,6 +26,7 @@ export default class PrivateProduct extends Component {
         this.state = {
             data: {},
             fund_code: props.route?.params?.fund_code || '',
+            curIndex: 0,
         };
     }
     componentDidMount() {
@@ -143,8 +144,13 @@ export default class PrivateProduct extends Component {
             this.props.navigation.navigate(url.path, url.params);
         }
     };
+    ChangeTab = (i) => {
+        this.setState({
+            curIndex: i,
+        });
+    };
     render() {
-        const {data} = this.state;
+        const {data, curIndex} = this.state;
         return (
             <>
                 {Object.keys(data).length > 0 && (
@@ -205,16 +211,19 @@ export default class PrivateProduct extends Component {
                                 // onChangeTab={(obj) => {
                                 //     this._handleTabHeight(obj);
                                 // }}
+
+                                onChangeTab={(obj) => this.ChangeTab(obj.i)}
                                 tabBarActiveTextColor={'#D7AF74'}
                                 tabBarInactiveTextColor={'#545968'}>
                                 {data.tabs.map((item, index) => {
                                     return (
                                         <View tabLabel={item.title} key={index + 'tab'}>
-                                            {this.renderContent(index, item)}
+                                            {/* {this.renderContent(index, item)} */}
                                         </View>
                                     );
                                 })}
                             </ScrollableTabView>
+                            {this.renderContent(curIndex, data.tabs[curIndex])}
                         </ScrollView>
                         <FixedButton
                             disabled={data.button.avail == 0}
@@ -222,6 +231,7 @@ export default class PrivateProduct extends Component {
                             style={{backgroundColor: '#CEA26B'}}
                             onPress={this.submitOrder}
                             disabledColor={'#ddd'}
+                            color={'#CEA26B'}
                         />
                     </View>
                 )}

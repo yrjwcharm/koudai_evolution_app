@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 20:10:56
+ * @LastEditTime: 2021-03-20 18:30:58
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -64,7 +64,7 @@ export default function StrategyPolaris(props) {
                                                 styles.radio_sty,
                                                 {color: _item.ratio > 0 ? Colors.red : Colors.green},
                                             ]}>
-                                            {_item.ratio}
+                                            {_item.ratio} <Text>%</Text>
                                         </Text>
                                         <Text style={{color: '#9AA1B2', fontSize: Font.textH3}}>
                                             {_item.ratio_desc}
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     radio_sty: {
         fontSize: text(22),
         fontFamily: Font.numFontFamily,
-        marginTop: text(16),
+        marginTop: text(6),
         marginBottom: text(4),
     },
 });

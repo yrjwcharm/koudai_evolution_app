@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: xjh
  * @Desc:私募预约
- * @LastEditTime: 2021-03-09 16:44:45
+ * @LastEditTime: 2021-03-20 16:41:26
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
@@ -13,7 +13,7 @@ import Picker from 'react-native-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import Http from '../../services';
-import {Toast} from '../../components/Toast';
+import Toast from '../../components/Toast';
 import {Modal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 export default class PrivateOrder extends Component {
@@ -35,7 +35,6 @@ export default class PrivateOrder extends Component {
             this.setState({
                 data: res.result,
                 amount: res.result.quote.start_amount,
-                phone: res.result.quote.phone,
             });
         });
     }
@@ -127,26 +126,29 @@ export default class PrivateOrder extends Component {
         });
     };
     submitOrder = () => {
-        const {data, amount, currentDate} = this.state;
+        console.log(111);
+        const {data, amount, currentDate, phone} = this.state;
         Http.post('/pe/do_appointment/20210101', {
             order_id: data.order_id,
             amount: amount,
             date: currentDate,
-            mobile: this.state.data.quote.phone,
+            mobile: phone,
         }).then((res) => {
             if (res.code === '000000') {
                 Modal.show({
                     title: '恭喜您预约成功',
                     content: `<div>已成功预约:${data.quote.name}</div><div>预约金额:${amount}</div>`,
                     confirmText: '确定',
-                    confirmCallBack: this.jumpTo,
+                    confirmCallBack: () =>
+                        this.props.navigation.replace(
+                            this.state.data.button.url.path,
+                            this.state.data.button.url.params
+                        ),
                 });
             }
         });
     };
-    jumpTo = () => {
-        this.props.navigation.replace(this.state.data.button.url.path, this.state.data.button.url.params);
-    };
+
     render() {
         const {currentDate, data, amount, phone, showMask} = this.state;
         return (
@@ -195,7 +197,7 @@ export default class PrivateOrder extends Component {
                 )}
                 {Object.keys(data).length > 0 && (
                     <FixedButton
-                        title={'立即申请'}
+                        title={data.button.text}
                         style={{backgroundColor: '#CEA26B'}}
                         onPress={this.submitOrder}
                         color={'#CEA26B'}

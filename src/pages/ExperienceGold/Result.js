@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 15:17:26
  * @Description:体验金结果页
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:40:41
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 15:36:13
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
@@ -68,6 +68,7 @@ export default function Result() {
                     {data.is_success == true && (
                         <View style={[Style.flexRow, {marginTop: text(15)}]}>
                             <TouchableOpacity
+                                activeOpacity={1}
                                 style={{
                                     flex: 1,
                                     borderRadius: text(10),
@@ -79,7 +80,9 @@ export default function Result() {
                                     {data.recommend.button[0].title}
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{flex: 1, borderRadius: text(10), backgroundColor: '#0051CC'}}>
+                            <TouchableOpacity
+                                style={{flex: 1, borderRadius: text(10), backgroundColor: '#0051CC'}}
+                                activeOpacity={1}>
                                 <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.recommend.button[1].title}</Text>
                             </TouchableOpacity>
                         </View>
