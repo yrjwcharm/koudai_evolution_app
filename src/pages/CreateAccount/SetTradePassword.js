@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 12:50:43
+ * @LastEditTime: 2021-03-19 18:00:23
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -15,8 +15,11 @@ import FastImage from 'react-native-fast-image';
 import Http from '../../services';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const SetTradePassword = ({navigation, route}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const [password, setPassword] = useState('');
     const [pwdFisrt, setPwdFisrt] = useState('');
@@ -60,6 +63,7 @@ const SetTradePassword = ({navigation, route}) => {
                             poid: route?.params?.poid || '',
                         }).then((data) => {
                             if (data.code === '000000') {
+                                dispatch(getUserInfo());
                                 if (route.params?.fr === 'BankCard') {
                                     textInput.current.blur();
                                     Modal.show({

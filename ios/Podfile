@@ -34,4 +34,3 @@ target 'EvolutionApp-tvOS' do
     # Pods for testing
   end
 end
-

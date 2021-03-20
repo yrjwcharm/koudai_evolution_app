@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-10 12:31:12
+ * @LastEditTime: 2021-03-19 18:02:38
  * @Description: 修改交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -61,11 +61,11 @@ const ModifyTradePwd = ({navigation}) => {
                     new_password: newPwd,
                     con_new_password: confirmPwd,
                 }).then((res) => {
-                    btnClick.current = true;
                     if (res.code === '000000') {
                         Toast.show(res.message);
                         navigation.goBack();
                     } else {
+                        btnClick.current = true;
                         Toast.show(res.message);
                     }
                 });

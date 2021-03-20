@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-04 18:15:58
+ * @LastEditTime: 2021-03-19 16:48:20
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -48,14 +48,17 @@ export class AssetsConfigDetail extends Component {
     }
     init = () => {
         const {amount} = this.state;
-        const {alloc_id, upid} = this.props.route.params || {};
+        const {poid, upid} = this.props.route.params || {};
 
         Http.get('/portfolio/asset_deploy/20210101', {
             amount,
-            alloc_id,
+            poid,
+            upid,
         }).then((res) => {
-            this.setState({data: res.result});
-            this.props.navigation.setOptions({title: res.result.title});
+            if (res.code === '000000') {
+                this.setState({data: res.result});
+                this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
+            }
         });
         // http.get('/portfolio/asset_deploy/20210101', {
         //     amount,
@@ -72,7 +75,7 @@ export class AssetsConfigDetail extends Component {
     };
     // 输入投资金额回调
     onChange = (val) => {
-        this.setState({amount: val}, () => this.init());
+        this.setState({amount: val}, () => val >= 2000 && this.init());
     };
     // 手风琴展开回调
     updateSections = (activeSections) => {
@@ -167,10 +170,12 @@ export class AssetsConfigDetail extends Component {
                                     />
                                 ))}
                             </View>
-                            <Text style={[styles.deploy_text]}>
-                                <Text style={[styles.deploy_title]}>{deploy_title}</Text>
-                                <Text style={[styles.deploy_content]}>{deploy_content}</Text>
-                            </Text>
+                            {deploy_title && deploy_content ? (
+                                <Text style={[styles.deploy_text]}>
+                                    <Text style={[styles.deploy_title]}>{deploy_title}</Text>
+                                    <Text style={[styles.deploy_content]}>{deploy_content}</Text>
+                                </Text>
+                            ) : null}
                         </View>
                         <View style={[styles.deploy_detail]}>
                             <Accordion

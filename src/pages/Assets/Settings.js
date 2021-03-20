@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 14:51:53
+ * @LastEditTime: 2021-03-19 17:12:13
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -48,7 +48,7 @@ const Settings = ({navigation}) => {
                         // Alert.alert('退出登录');
                         Storage.delete('loginStatus');
                         dispatch(getUserInfo());
-                        navigation.replace('Register');
+                        navigation.replace('Login');
                     },
                 });
             } else {

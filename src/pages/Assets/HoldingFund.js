@@ -2,15 +2,16 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 10:47:57
+ * @LastEditTime: 2021-03-19 17:24:55
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import {useHeaderHeight} from '@react-navigation/stack';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Tab from '../../components/TabBar';
-import {px as text} from '../../utils/appUtil';
+import {deviceHeight, deviceWidth, px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
@@ -33,16 +34,19 @@ const RatioColor = [
 ];
 
 const HoldingFund = ({navigation, route}) => {
+    const headerHeight = useHeaderHeight();
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [tabs, setTabs] = useState([]);
     const [curTab, setCurTab] = useState(0);
     const [list1, setList1] = useState([]);
     const [list2, setList2] = useState([]);
+    const [loading, setLoading] = useState(false);
     const urlRef = useRef('');
 
     const init = useCallback(
         (first) => {
+            setLoading(true);
             http.get(
                 curTab === 0 ? '/portfolio/funds/user_holding/20210101' : '/portfolio/funds/user_confirming/20210101',
                 {
@@ -55,6 +59,7 @@ const HoldingFund = ({navigation, route}) => {
                     curTab === 0 ? setList1(res.result.list) : setList2(res.result.list);
                     urlRef.current = res.result.url;
                 }
+                setLoading(false);
                 setRefreshing(false);
             });
         },
@@ -77,15 +82,20 @@ const HoldingFund = ({navigation, route}) => {
         }
     }, []);
     const onRefresh = useCallback(() => {
-        setRefreshing(true);
         init();
     }, [init]);
 
     const renderContent = useCallback(() => {
         return (
             <>
+                {loading && (
+                    <ActivityIndicator
+                        color={Colors.brandColor}
+                        style={{width: deviceWidth, height: deviceHeight - headerHeight - text(42)}}
+                    />
+                )}
                 <View style={styles.subContainer}>
-                    {(curTab === 0 ? list1 : list2).map((item, index) => {
+                    {(curTab === 0 ? list1 : list2)?.map((item, index) => {
                         return (
                             <View key={`type${index}`} style={{marginBottom: text(8)}}>
                                 <View style={[styles.titleContainer, Style.flexRow]}>
@@ -99,113 +109,109 @@ const HoldingFund = ({navigation, route}) => {
                                         </Text>
                                     )}
                                 </View>
-                                {item.funds &&
-                                    item.funds.map((fund, i) => {
-                                        return (
-                                            <TouchableOpacity
-                                                onPress={() => navigation.navigate('FundDetail', {code: fund.code})}
+                                {item?.funds?.map((fund, i) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => navigation.navigate('FundDetail', {code: fund.code})}
+                                            style={[
+                                                styles.fundContainer,
+                                                i === item.funds.length - 1 ? {marginBottom: 0} : {},
+                                                curTab === 1 ? {paddingVertical: text(12)} : {},
+                                            ]}
+                                            key={`${item.type}${fund.code}${i}`}>
+                                            <View
                                                 style={[
-                                                    styles.fundContainer,
-                                                    i === item.funds.length - 1 ? {marginBottom: 0} : {},
-                                                    curTab === 1 ? {paddingVertical: text(12)} : {},
-                                                ]}
-                                                key={`${item.type}${fund.code}${i}`}>
-                                                <View
-                                                    style={[
-                                                        styles.fundTitle,
-                                                        Style.flexBetween,
-                                                        curTab === 1 ? {marginBottom: text(8)} : {},
-                                                    ]}>
-                                                    <View style={Style.flexRow}>
-                                                        <Text style={[styles.name]}>{fund.name}</Text>
-                                                        <Text
-                                                            style={[
-                                                                styles.numStyle,
-                                                                {
-                                                                    fontFamily: Font.numRegular,
-                                                                    color: Colors.darkGrayColor,
-                                                                },
-                                                            ]}>
-                                                            ({fund.code})
-                                                        </Text>
-                                                    </View>
-                                                    <Text style={styles.subTitle}>
-                                                        {curTab === 0 ? fund.profit_date : fund.acked_date}
+                                                    styles.fundTitle,
+                                                    Style.flexBetween,
+                                                    curTab === 1 ? {marginBottom: text(8)} : {},
+                                                ]}>
+                                                <View style={Style.flexRow}>
+                                                    <Text style={[styles.name]}>{fund.name}</Text>
+                                                    <Text
+                                                        style={[
+                                                            styles.numStyle,
+                                                            {
+                                                                fontFamily: Font.numRegular,
+                                                                color: Colors.darkGrayColor,
+                                                            },
+                                                        ]}>
+                                                        ({fund.code})
                                                     </Text>
                                                 </View>
-                                                <View style={Style.flexRow}>
-                                                    {curTab === 0 && (
-                                                        <View style={{flex: 1}}>
-                                                            <View style={[Style.flexRow, {marginBottom: text(12)}]}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.subTitle,
-                                                                        {color: Colors.darkGrayColor},
-                                                                    ]}>
-                                                                    {'占比'}
-                                                                </Text>
-                                                                <Text style={[styles.numStyle]}>
-                                                                    {fund.percent < 0.01 ? '<0.01' : fund.percent}%
-                                                                </Text>
-                                                            </View>
-                                                            <View style={Style.flexRow}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.subTitle,
-                                                                        {color: Colors.darkGrayColor},
-                                                                    ]}>
-                                                                    {'份额(份)'}
-                                                                </Text>
-                                                                <Text style={[styles.numStyle]}>{fund.share}</Text>
-                                                            </View>
-                                                        </View>
-                                                    )}
-                                                    {curTab === 0 && (
-                                                        <View style={{flex: 1}}>
-                                                            <View style={[Style.flexRow, {marginBottom: text(12)}]}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.subTitle,
-                                                                        {color: Colors.darkGrayColor},
-                                                                    ]}>
-                                                                    {'累计收益(元)'}
-                                                                </Text>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.numStyle,
-                                                                        {color: getColor(fund.profit_acc)},
-                                                                    ]}>
-                                                                    {fund.profit_acc}
-                                                                </Text>
-                                                            </View>
-                                                            <View style={Style.flexRow}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.subTitle,
-                                                                        {color: Colors.darkGrayColor},
-                                                                    ]}>
-                                                                    {'金额(元)'}
-                                                                </Text>
-                                                                <Text style={[styles.numStyle]}>{fund.amount}</Text>
-                                                            </View>
-                                                        </View>
-                                                    )}
-                                                    {curTab === 1 && (
-                                                        <>
+                                                <Text style={styles.subTitle}>
+                                                    {curTab === 0 ? fund.profit_date : fund.acked_date}
+                                                </Text>
+                                            </View>
+                                            <View style={Style.flexRow}>
+                                                {curTab === 0 && (
+                                                    <View style={{flex: 1}}>
+                                                        <View style={[Style.flexRow, {marginBottom: text(12)}]}>
                                                             <Text
                                                                 style={[
                                                                     styles.subTitle,
                                                                     {color: Colors.darkGrayColor},
                                                                 ]}>
-                                                                {fund.key}
+                                                                {'占比'}
                                                             </Text>
-                                                            <Text style={[styles.numStyle]}>{fund.val}</Text>
-                                                        </>
-                                                    )}
-                                                </View>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
+                                                            <Text style={[styles.numStyle]}>
+                                                                {fund.percent < 0.01 ? '<0.01' : fund.percent}%
+                                                            </Text>
+                                                        </View>
+                                                        <View style={Style.flexRow}>
+                                                            <Text
+                                                                style={[
+                                                                    styles.subTitle,
+                                                                    {color: Colors.darkGrayColor},
+                                                                ]}>
+                                                                {'份额(份)'}
+                                                            </Text>
+                                                            <Text style={[styles.numStyle]}>{fund.share}</Text>
+                                                        </View>
+                                                    </View>
+                                                )}
+                                                {curTab === 0 && (
+                                                    <View style={{flex: 1}}>
+                                                        <View style={[Style.flexRow, {marginBottom: text(12)}]}>
+                                                            <Text
+                                                                style={[
+                                                                    styles.subTitle,
+                                                                    {color: Colors.darkGrayColor},
+                                                                ]}>
+                                                                {'累计收益(元)'}
+                                                            </Text>
+                                                            <Text
+                                                                style={[
+                                                                    styles.numStyle,
+                                                                    {color: getColor(fund.profit_acc)},
+                                                                ]}>
+                                                                {fund.profit_acc}
+                                                            </Text>
+                                                        </View>
+                                                        <View style={Style.flexRow}>
+                                                            <Text
+                                                                style={[
+                                                                    styles.subTitle,
+                                                                    {color: Colors.darkGrayColor},
+                                                                ]}>
+                                                                {'金额(元)'}
+                                                            </Text>
+                                                            <Text style={[styles.numStyle]}>{fund.amount}</Text>
+                                                        </View>
+                                                    </View>
+                                                )}
+                                                {curTab === 1 && (
+                                                    <>
+                                                        <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>
+                                                            {fund.key}
+                                                        </Text>
+                                                        <Text style={[styles.numStyle]}>{fund.val}</Text>
+                                                    </>
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })}
                             </View>
                         );
                     })}
@@ -213,6 +219,7 @@ const HoldingFund = ({navigation, route}) => {
                     {list2.length === 0 && curTab === 1 && <Empty text={'暂无确认中基金'} />}
                     {curTab === 0 && (
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             style={[styles.historyHolding, Style.flexBetween]}
                             onPress={() => jump(urlRef.current)}>
                             <Text style={[styles.name, {fontWeight: '500'}]}>{'历史持有基金'}</Text>
@@ -222,7 +229,7 @@ const HoldingFund = ({navigation, route}) => {
                 </View>
             </>
         );
-    }, [curTab, list1, list2, getColor, navigation, jump]);
+    }, [curTab, list1, list2, getColor, navigation, jump, loading, headerHeight]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -240,26 +247,29 @@ const HoldingFund = ({navigation, route}) => {
         });
         init(true);
     }, [init, navigation, route]);
-    return (
-        tabs.length > 0 && (
-            <ScrollableTabView
-                style={[styles.container]}
-                renderTabBar={() => <Tab />}
-                initialPage={0}
-                onChangeTab={(cur) => onChangeTab(cur.i)}>
-                {tabs.map((tab, index) => {
-                    return (
-                        <ScrollView
-                            key={`tab${index}`}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                            tabLabel={tab}
-                            style={[{transform: [{translateY: text(-1.5)}]}]}>
-                            {renderContent()}
-                        </ScrollView>
-                    );
-                })}
-            </ScrollableTabView>
-        )
+    return tabs.length > 0 ? (
+        <ScrollableTabView
+            style={[styles.container]}
+            renderTabBar={() => <Tab />}
+            initialPage={0}
+            onChangeTab={(cur) => onChangeTab(cur.i)}>
+            {tabs.map((tab, index) => {
+                return (
+                    <ScrollView
+                        key={`tab${index}`}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        tabLabel={tab}
+                        style={[{transform: [{translateY: text(-1.5)}]}]}>
+                        {renderContent()}
+                    </ScrollView>
+                );
+            })}
+        </ScrollableTabView>
+    ) : (
+        <ActivityIndicator
+            color={Colors.brandColor}
+            style={{width: deviceWidth, height: deviceHeight - headerHeight}}
+        />
     );
 };
 

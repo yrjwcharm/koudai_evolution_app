@@ -81,15 +81,15 @@ PODS:
     - React
   - JWT (3.0.0-beta.12):
     - Base64 (~> 1.1.2)
-  - libwebp (1.2.0):
-    - libwebp/demux (= 1.2.0)
-    - libwebp/mux (= 1.2.0)
-    - libwebp/webp (= 1.2.0)
-  - libwebp/demux (1.2.0):
+  - libwebp (1.1.0):
+    - libwebp/demux (= 1.1.0)
+    - libwebp/mux (= 1.1.0)
+    - libwebp/webp (= 1.1.0)
+  - libwebp/demux (1.1.0):
     - libwebp/webp
-  - libwebp/mux (1.2.0):
+  - libwebp/mux (1.1.0):
     - libwebp/demux
-  - libwebp/webp (1.2.0)
+  - libwebp/webp (1.1.0)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
@@ -671,7 +671,7 @@ SPEC CHECKSUMS:
   JCore: 1cb4afdeb092d8d0830e889012283c19056af8ab
   JPush: b389c8181b1a5f8978cd06a3811c76fbd848862c
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
-  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
+  libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
   Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
@@ -733,6 +733,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5ce059c7d62d2b1fedfdde4f6d38a0d9df98a18d
+PODFILE CHECKSUM: 591b19964e7c7557930ffdb5c987c445296c8fe7
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

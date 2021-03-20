@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 12:34:06
+ * @LastEditTime: 2021-03-20 14:43:56
+=======
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 19:41:14
+>>>>>>> dff7986ee5c39669e31ab4164c5cd25e8996d75d
  * @Description:路由表
  */
 import React from 'react';
@@ -457,7 +462,7 @@ export default function AppStack() {
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
-            <Stack.Screen name="LCMF" component={LCMF} options={{title: '关于理财魔方'}} />
+            <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
             <Stack.Screen name="WebView" component={WebView} options={{title: ''}} />
         </Stack.Navigator>
     );

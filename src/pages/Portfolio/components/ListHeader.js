@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 10:09:32
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 22:03:52
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 16:21:41
  */
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
@@ -26,7 +26,10 @@ export default function ListHeader(props) {
     const {data, color, style} = props;
     const jump = useJump();
     return (
-        <TouchableOpacity style={[Style.flexRow, {paddingBottom: text(12)}, style]} onPress={() => jump(data.url)}>
+        <TouchableOpacity
+            activeOpacity={0.8}
+            style={[Style.flexRow, {paddingBottom: text(12)}, style]}
+            onPress={() => jump(data.url)}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 {data.icon ? (
                     <Image
