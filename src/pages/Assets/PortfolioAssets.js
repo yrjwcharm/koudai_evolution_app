@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 20:11:04
+ * @LastEditTime: 2021-03-20 20:15:41
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -149,7 +149,11 @@ export default function PortfolioAssets(props) {
         return (
             <View style={styles.plan_card_sty}>
                 <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                <Text style={styles.plan_desc_sty}>{card.desc}</Text>
+                {card.desc && (
+                    <View style={{marginTop: px(13)}}>
+                        <Html style={styles.plan_desc_sty} html={card.desc} />
+                    </View>
+                )}
                 {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
                         <Text style={styles.blue_text_style}>{card?.notice}</Text>
@@ -549,8 +553,6 @@ const styles = StyleSheet.create({
         color: '#545968',
         fontSize: Font.textH3,
         lineHeight: text(18),
-        marginTop: text(10),
-        textAlign: 'center',
     },
     blue_wrap_style: {
         backgroundColor: '#DFEAFC',
