@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 15:46:50
+ * @LastEditTime: 2021-03-20 14:47:11
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -28,7 +28,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [more, setMore] = useState(false);
 
     const init = useCallback(() => {
-        http.get('/community/article/20210101', {article_id: route.params?.article_id}).then((res) => {
+        http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -138,7 +138,7 @@ const ArticleDetail = ({navigation, route}) => {
                         }
                         style={styles.actionIcon}
                     />
-                    <Text style={styles.finishText}>{`点赞${data?.favor_num}`}</Text>
+                    <Text style={styles.finishText}>{`点赞${data?.favor_num >= 0 ? data?.favor_num : 0}`}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} onPress={onCollect} style={[Style.flexCenter, {flex: 1}]}>
                     <Image
@@ -149,7 +149,7 @@ const ArticleDetail = ({navigation, route}) => {
                         }
                         style={styles.actionIcon}
                     />
-                    <Text style={styles.finishText}>{`收藏${data?.collect_num}`}</Text>
+                    <Text style={styles.finishText}>{`收藏${data?.collect_num >= 0 ? data?.collect_num : 0}`}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:50:24
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 15:21:31
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -206,7 +206,8 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            init();
+            userInfo?.toJS()?.is_login && init();
+            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
@@ -329,7 +330,16 @@ function HomeScreen({navigation, route}) {
                     </View>
                     <View>
                         <Text style={[styles.amount]}>
-                            {showEye === 'true' ? holdingData?.summary?.amount : '****'}
+                            {showEye === 'true' ? (
+                                <>
+                                    {holdingData?.summary?.amount?.split('.')[0] + '.'}
+                                    <Text style={{fontSize: text(24)}}>
+                                        {holdingData?.summary?.amount?.split('.')[1]}
+                                    </Text>
+                                </>
+                            ) : (
+                                '****'
+                            )}
                         </Text>
                     </View>
                     {/* 小黄条 */}

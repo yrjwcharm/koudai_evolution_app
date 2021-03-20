@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 13:35:55
+ * @LastEditTime: 2021-03-20 14:58:23
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -25,7 +25,7 @@ const CompanyFunds = ({navigation, route}) => {
         (status, first) => {
             // status === 'refresh' && setRefreshing(true);
             http.get('/fund/company/funds/20210101', {
-                company_id: (route.params && route.params.company_id) || '',
+                company_id: route.params?.company_id,
                 page,
             }).then((res) => {
                 setRefreshing(false);
