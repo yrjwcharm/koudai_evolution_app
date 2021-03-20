@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-23 17:29:21
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 10:31:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 20:01:12
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -12,7 +12,6 @@ import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FitImage from 'react-native-fit-image';
 export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
     useEffect(() => {

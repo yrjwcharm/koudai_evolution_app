@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 17:35:13
+ * @LastEditTime: 2021-03-20 17:38:30
  * @Description:点赞模块
  */
 
@@ -16,7 +16,6 @@ export default function Praise(props) {
     const {style, comment, type = ''} = props;
     const [like, setLike] = useState();
     const [num, setNum] = useState();
-    console.log(comment, num, like);
     useEffect(() => {
         setNum(comment.favor_num);
         setLike(comment.favor_status);
