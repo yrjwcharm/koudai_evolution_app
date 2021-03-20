@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 11:06:41
+ * @LastEditTime: 2021-03-19 16:35:17
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -78,9 +78,10 @@ export class question extends Component {
     startTime = '';
     endTime = '';
     fr = this.props.route?.params?.fr; //risk来自个人资料
+    plan_id = this.props.route?.params?.plan_id;
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
-        http.get('/questionnaire/start/20210101').then((data) => {
+        http.get('/questionnaire/start/20210101', {plan_id: this.plan_id}).then((data) => {
             if (data.code === '000000') {
                 this.setState({summary_id: data.result.summary_id}, () => {
                     this.getNextQuestion();
@@ -139,7 +140,7 @@ export class question extends Component {
             setTimeout(() => {
                 this.props.navigation.replace('EvaluationResult', {upid: this.upid});
             }, 2000);
-        } else if (this.fr == 'risk') {
+        } else if (action == 'submit' && this.fr == 'risk') {
             setTimeout(() => {
                 this.setState({finishTest: true});
                 this.props.navigation.goBack();

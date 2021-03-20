@@ -3,20 +3,18 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 15:53:52
+ * @LastEditTime: 2021-03-20 14:53:44
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text} from '../../../utils/appUtil';
-import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import FitImage from 'react-native-fit-image';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {baseAreaChart} from '../components/ChartOption';
 import FixedBtn from '../components/FixedBtn';
 import Header from '../../../components/NavBar';
@@ -235,7 +233,12 @@ export default function DetailAccount({route}) {
                         <View>
                             {data?.asset_intros?.map((_i, _d) => {
                                 return (
-                                    <FitImage source={{uri: _i}} resizeMode="contain" style={{marginTop: text(16)}} />
+                                    <FitImage
+                                        key={_d}
+                                        source={{uri: _i}}
+                                        resizeMode="contain"
+                                        style={{marginTop: text(16)}}
+                                    />
                                 );
                             })}
                         </View>

@@ -1,11 +1,11 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 11:24:33
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 17:04:06
  * @Description:环境
  */
-const env = 'online'; //默认
+const env = 'develop'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
@@ -16,7 +16,7 @@ const SERVER_URL = {
     develop: {
         HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
         WS: 'ws://192.168.88.68:39503',
-        IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
     },
     pre1: {
         HTTP: 'https://pre1-polaris-api.licaimofang.com',
@@ -27,7 +27,9 @@ const SERVER_URL = {
         IMApi: 'http://kapi-im-kp2.licaimofang.com',
     },
     ll: {
-        HTTP: 'http://polaris-api.ll.mofanglicai.com.cn:10080',
+        HTTP: 'http://kapi-web.ll.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
     },
     hjq: {
         HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',

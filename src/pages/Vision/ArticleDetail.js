@@ -2,11 +2,12 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 10:47:35
+ * @LastEditTime: 2021-03-19 15:46:50
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -18,8 +19,9 @@ import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
 
 const ArticleDetail = ({navigation, route}) => {
+    const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
-    const [webviewHeight, setHeight] = useState(deviceHeight);
+    const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
     const [injectedJS, setJSCode] = useState('');
     const [data, setData] = useState({});
     const shareModal = useRef(null);

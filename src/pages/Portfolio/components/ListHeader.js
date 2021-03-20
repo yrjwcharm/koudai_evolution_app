@@ -27,9 +27,9 @@ export default function ListHeader(props) {
     const jump = useJump();
     return (
         <TouchableOpacity
+            activeOpacity={0.8}
             style={[Style.flexRow, {paddingBottom: text(12)}, style]}
-            onPress={() => jump(data.url)}
-            activeOpacity={1}>
+            onPress={() => jump(data.url)}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 {data.icon ? (
                     <Image

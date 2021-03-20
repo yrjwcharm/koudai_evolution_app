@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 16:19:21
+ * @LastEditTime: 2021-03-20 14:50:24
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -207,7 +207,6 @@ function HomeScreen({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             init();
-            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
@@ -309,7 +308,7 @@ function HomeScreen({navigation, route}) {
                     {/* 资产信息 */}
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
-                        <Text style={styles.date}>{holdingData?.summary?.profit_date || '0000-00-00'}</Text>
+                        <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
                         <TouchableOpacity onPress={toggleEye}>
                             <Ionicons
                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
@@ -415,7 +414,10 @@ function HomeScreen({navigation, route}) {
                                     style={[styles.account, {padding: 0}]}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        style={[{padding: Space.padding}, Style.flexRow]}>
+                                        style={[{padding: Space.padding}, Style.flexRow]}
+                                        onPress={() => {
+                                            jump(item.url);
+                                        }}>
                                         <View style={[{flex: 1}, Style.flexRow]}>
                                             <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
                                                 {item.name}
@@ -440,7 +442,12 @@ function HomeScreen({navigation, route}) {
                 })}
                 {/* 投顾 */}
                 {userBasicInfo?.im_info && (
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.iaInfo, Style.flexRow]}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={[styles.iaInfo, Style.flexRow]}
+                        onPress={() => {
+                            jump(userBasicInfo?.im_info.url);
+                        }}>
                         <View style={[Style.flexRow, {flex: 1}]}>
                             <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
                             <View>

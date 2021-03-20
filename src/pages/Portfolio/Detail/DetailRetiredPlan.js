@@ -21,9 +21,7 @@ import {Chart} from '../../../components/Chart';
 import Header from '../../../components/NavBar';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
-import {baseAreaChart} from '../components/ChartOption';
 import Table from '../components/Table';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
@@ -35,9 +33,6 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
-    const _textTime = useRef(null);
-    const _textPortfolio = useRef(null);
-    const _textBenchmark = useRef(null);
     const [countFr, setCountFr] = useState(); //首投金额
     const [countM, setCountM] = useState(); //定投金额
     const [showMask, setShowMask] = useState(false);
@@ -95,7 +90,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setChart(res.result.chart);
             }
         });
-    }, [countFr, countM]);
+    }, [countFr, countM, type]);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
@@ -120,7 +115,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             setChartData(res.result);
             setChart(res.result?.yield_info?.chart);
         });
-    }, [period, type]);
+    }, [period, type, route]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -416,7 +411,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                     {showMask && <Mask />}
 
                     <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
-                        <View style={{padding: text(16)}}>{popup?.content && <Html html={popup?.content} />}</View>
+                        <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
                     </BottomModal>
                     <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
                 </View>

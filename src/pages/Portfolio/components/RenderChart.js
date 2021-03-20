@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 18:18:26
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-19 17:44:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -43,7 +43,7 @@ export default function RenderChart(props) {
                 style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
             });
         },
-        [getColor]
+        [getColor, type]
     );
     // 图表滑动结束
     const onHide = ({items}) => {
@@ -78,22 +78,29 @@ export default function RenderChart(props) {
                     <TextInput
                         ref={_textTime}
                         style={styles.legend_title_sty}
-                        defaultValue={chartData?.yield_info?.label[0]?.val}
+                        defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
                         editable={false}
                     />
 
-                    <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[0]?.key}</Text>
+                    <Text style={styles.legend_desc_sty}>
+                        {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
+                    </Text>
                 </View>
                 <View style={styles.legend_sty}>
                     <TextInput
-                        style={[styles.legend_title_sty, {color: getColor(chartData?.yield_info?.label[1]?.val)}]}
+                        style={[
+                            styles.legend_title_sty,
+                            {color: getColor(chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val)},
+                        ]}
                         ref={_textPortfolio}
-                        defaultValue={chartData?.yield_info?.label[1]?.val}
+                        defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val}
                         editable={false}
                     />
                     <Text>
                         <MaterialCommunityIcons name={'record-circle-outline'} color={'#E74949'} size={12} />
-                        <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[1]?.key}</Text>
+                        <Text style={styles.legend_desc_sty}>
+                            {chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.key}
+                        </Text>
                     </Text>
                 </View>
 

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-04 20:25:42
+ * @LastEditTime: 2021-03-19 17:16:03
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -24,7 +24,7 @@ const shadow = {
     x: 0,
     y: 4,
     width: deviceWidth - px(32),
-    height: px(158),
+    height: px(140),
     style: {
         marginBottom: px(16),
     },
@@ -62,7 +62,45 @@ export class planningHistory extends Component {
                     <Animatable.View animation="fadeInUp">
                         {plan_list && plan_list.length > 0
                             ? plan_list.map((item, index) => {
-                                  return (
+                                  return item.type == 1 ? (
+                                      <BoxShadow key={index} setting={{...shadow, height: px(116)}}>
+                                          <TouchableOpacity
+                                              activeOpacity={0.8}
+                                              style={[styles.card, {height: px(116)}]}
+                                              onPress={() => {
+                                                  this.jumpNext(item?.url?.path, item?.url?.params);
+                                              }}>
+                                              <Text style={[styles.name, {marginBottom: px(10)}]}>{item.title}</Text>
+                                              <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                                                  <Text style={styles.key}>目标年化收益率</Text>
+                                                  <Text style={styles.plan_goal_amount}>
+                                                      {item.plan_yield_info.val}
+                                                      {item.plan_yield_info.unit}
+                                                  </Text>
+                                              </View>
+                                              <View style={[Style.flexRow, {justifyContent: 'space-between'}]}>
+                                                  <View style={Style.flexRow}>
+                                                      <Text style={styles.key}>投资金额</Text>
+                                                      <Text style={styles.regular_text}>
+                                                          {item.plan_amount_info.val}
+                                                      </Text>
+                                                      <Text style={{marginRight: px(8)}}>
+                                                          {item.plan_amount_info.unit}
+                                                      </Text>
+                                                  </View>
+                                                  <View style={Style.flexRow}>
+                                                      <Text style={styles.key}>建议投资时长</Text>
+                                                      <Text style={styles.regular_text}>
+                                                          {item.plan_duration_info.val}
+                                                      </Text>
+                                                      <Text style={{marginRight: px(8)}}>
+                                                          {item.plan_duration_info.unit}
+                                                      </Text>
+                                                  </View>
+                                              </View>
+                                          </TouchableOpacity>
+                                      </BoxShadow>
+                                  ) : (
                                       <BoxShadow key={index} setting={shadow}>
                                           <TouchableOpacity
                                               activeOpacity={0.8}
@@ -70,7 +108,7 @@ export class planningHistory extends Component {
                                               onPress={() => {
                                                   this.jumpNext(item?.url?.path, item?.url?.params);
                                               }}>
-                                              <Text style={[styles.name, {marginBottom: px(20)}]}>{item.title}</Text>
+                                              <Text style={[styles.name, {marginBottom: px(10)}]}>{item.title}</Text>
                                               <View style={[Style.flexRow, {marginBottom: px(10)}]}>
                                                   <Text style={styles.key}>目标金额</Text>
                                                   <Text style={styles.plan_goal_amount}>{item.plan_goal_info.val}</Text>
@@ -152,7 +190,7 @@ const styles = StyleSheet.create({
         padding: px(16),
         backgroundColor: '#fff',
         borderRadius: px(8),
-        height: px(158),
+        height: px(140),
     },
     plan_goal_amount: {
         fontSize: px(18),

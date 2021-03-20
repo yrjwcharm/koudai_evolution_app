@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-13 11:11:07
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 17:11:14
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -31,9 +31,7 @@ const TradeRecordDetail = (props) => {
         arr[index] = e.nativeEvent.layout.height;
         setHeightArr(arr);
     };
-    useEffect(() => {});
     const getData = useCallback(() => {
-        console.log('chedan');
         http.get('/order/detail/20210101', {
             txn_id,
             type,

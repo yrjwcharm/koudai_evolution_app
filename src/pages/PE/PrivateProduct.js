@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-19 17:25:01
+ * @LastEditTime: 2021-03-20 14:55:10
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -89,7 +89,7 @@ export default class PrivateProduct extends Component {
             return (
                 <View style={{backgroundColor: '#fff'}}>
                     <View style={{paddingHorizontal: text(16), flex: 1}} ref="Left">
-                        {data?.content && <Html html={data?.content}></Html>}
+                        {data?.content && <Html html={data?.content} />}
                     </View>
                 </View>
             );
@@ -144,7 +144,7 @@ export default class PrivateProduct extends Component {
         }
     };
     render() {
-        const {process_lines, data} = this.state;
+        const {data} = this.state;
         return (
             <>
                 {Object.keys(data).length > 0 && (
@@ -177,10 +177,8 @@ export default class PrivateProduct extends Component {
                                 {data?.progress && (
                                     <View style={styles.process_outer}>
                                         <View
-                                            style={[
-                                                styles.process_inner,
-                                                {width: data?.progress?.percent * 100 + '%'},
-                                            ]}></View>
+                                            style={[styles.process_inner, {width: data?.progress?.percent * 100 + '%'}]}
+                                        />
                                     </View>
                                 )}
                                 {data.progress && (

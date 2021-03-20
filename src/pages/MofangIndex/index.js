@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:41:01
+ * @LastEditTime: 2021-03-20 14:42:41
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -88,13 +88,17 @@ const Index = (props) => {
         },
         [isFocused, readInterface]
     );
-
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     useEffect(() => {
         JPush.init();
         setTimeout(() => {
             //连接状态
             JPush.addConnectEventListener((result) => {
-                console.log('1111');
                 console.log('connectListener:' + JSON.stringify(result));
             });
             JPush.setBadge({badge: 10, appbadge: '123'});
@@ -119,18 +123,16 @@ const Index = (props) => {
                 console.log('customMessageListener:' + JSON.stringify(result));
             });
         }, 100);
+    }, [props.navigation]);
+    useEffect(() => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
-            isFocused && getData('refresh');
-            isFocused && scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
+            if (isFocused) {
+                getData('refresh');
+                scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
+            }
         });
         return unsubscribe;
-    }, [getData, props.navigation, isFocused]);
-
-    useFocusEffect(
-        useCallback(() => {
-            getData();
-        }, [getData])
-    );
+    }, [isFocused, props.navigation, getData]);
 
     const readInterface = useCallback(() => {
         http.get('/message/unread/20210101').then((res) => {
@@ -142,7 +144,12 @@ const Index = (props) => {
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
                 {menu_list.map((item, index) => (
                     <BoxShadow key={index} setting={{...shadow, width: px(165), height: px(61)}}>
-                        <View style={[Style.flexBetween, styles.secure_card, styles.common_card]}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={[Style.flexBetween, styles.secure_card, styles.common_card]}
+                            onPress={() => {
+                                jump(item?.url);
+                            }}>
                             <View>
                                 <View style={[Style.flexRow, {marginBottom: px(4)}]}>
                                     <FastImage
@@ -155,7 +162,7 @@ const Index = (props) => {
                                 <Text style={styles.light_text}>{item.desc}</Text>
                             </View>
                             <FontAwesome name={'angle-right'} size={18} color={'#9397A3'} />
-                        </View>
+                        </TouchableOpacity>
                     </BoxShadow>
                 ))}
             </View>
@@ -252,7 +259,7 @@ const Index = (props) => {
                                                 key={index}
                                                 activeOpacity={0.9}
                                                 onPress={() => {
-                                                    jump({path: 'ArticleDetail'});
+                                                    jump(banner.url);
                                                 }}>
                                                 <FastImage
                                                     style={styles.slide}
@@ -456,7 +463,12 @@ const Index = (props) => {
                                 {/* 安全保障 */}
                                 {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
                                 <BoxShadow setting={{...shadow, height: px(191)}}>
-                                    <View style={styles.aboutCard}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={styles.aboutCard}
+                                        onPress={() => {
+                                            jump(data?.about_info?.url);
+                                        }}>
                                         <ImageBackground
                                             style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
                                             source={require('../../assets/img/index/aboutOur.png')}>
@@ -500,7 +512,7 @@ const Index = (props) => {
                                                 </View>
                                             ))}
                                         </View>
-                                    </View>
+                                    </TouchableOpacity>
                                 </BoxShadow>
                             </View>
 

@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-19 18:00:57
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-20 11:35:07
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-19 15:30:10
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
@@ -24,9 +24,7 @@ export default class App extends React.Component {
     static defaultProps = {
         url: '',
     };
-    static propTypes = {
-        checked: PropTypes.string.isRequired,
-    };
+
     constructor(props) {
         super(props);
         this.changePausedState = this.changePausedState.bind(this);
