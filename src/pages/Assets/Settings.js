@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 17:12:13
+ * @LastEditTime: 2021-03-20 20:49:38
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -59,7 +59,7 @@ const Settings = ({navigation}) => {
     );
     const confirmClick = useCallback(() => {
         if (!inviteCodeRef.current) {
-            Toast.show('邀请码不能为空');
+            Toast.show('邀请码不能为空', {position: text(180), showMask: false});
             return false;
         }
         inputModal.current.hide();

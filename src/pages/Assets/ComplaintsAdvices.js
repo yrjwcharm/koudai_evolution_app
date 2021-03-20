@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-16 20:41:27
+ * @LastEditTime: 2021-03-20 20:36:59
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -148,6 +148,7 @@ const ComplaintsAdvices = ({navigation}) => {
                             {data.type_cates?.map((item, index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={0.8}
                                         key={item.type + index}
                                         style={[Style.flexRow, {marginLeft: index !== 0 ? text(48) : 0}]}
                                         onPress={() => setType(index)}>
@@ -161,7 +162,10 @@ const ComplaintsAdvices = ({navigation}) => {
                         </View>
                     </View>
                     <View style={styles.borderTop}>
-                        <TouchableOpacity style={[Style.flexBetween, {height: text(56)}]} onPress={showPicker}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[Style.flexBetween, {height: text(56)}]}
+                            onPress={showPicker}>
                             <Text style={styles.title}>{'分类'}</Text>
                             <View style={Style.flexRow}>
                                 <Text style={[styles.title, styles.val, {marginRight: text(12)}]}>{sort.value}</Text>

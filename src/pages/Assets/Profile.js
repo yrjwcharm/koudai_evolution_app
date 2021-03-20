@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 17:37:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 20:49:18
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -116,7 +116,7 @@ const Profile = ({navigation}) => {
                 });
             }
         },
-        [init, confirmClick, jump]
+        [init, confirmClick, jump, dispatch]
     );
     // 隐藏选择器
     const hidePicker = useCallback(() => {

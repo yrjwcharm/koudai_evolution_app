@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 17:23:37
+ * @LastEditTime: 2021-03-20 20:05:15
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -321,7 +321,7 @@ function HomeScreen({navigation, route}) {
                                 style={[styles.experienceGold, Style.flexRow]}
                                 onPress={() => jump(userBasicInfo?.free_fund?.url)}>
                                 <Image
-                                    source={{uri: userBasicInfo?.free_fund?.icon}}
+                                    source={require('../../assets/personal/jinbi.png')}
                                     style={{width: text(15), height: text(15)}}
                                 />
                                 <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
         marginRight: text(12),
     },
     noticeBox: {
-        marginTop: text(-4.5),
+        marginTop: text(-5),
         paddingVertical: text(2),
         paddingHorizontal: Space.marginAlign,
         backgroundColor: 'rgba(157, 187, 255, 0.68)',
