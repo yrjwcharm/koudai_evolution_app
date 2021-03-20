@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 16:30:42
+ * @LastEditTime: 2021-03-20 17:12:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -316,6 +316,7 @@ function HomeScreen({navigation, route}) {
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             style={[styles.experienceGold, Style.flexRow]}
                             onPress={() => navigation.navigate('ExperienceGoldDetail')}>
                             <Image

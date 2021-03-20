@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 15:14:47
+ * @LastEditTime: 2021-03-20 16:49:49
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,8 +20,11 @@ import Mask from '../../components/Mask';
 import {InputModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const Profile = ({navigation}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
@@ -52,7 +55,8 @@ const Profile = ({navigation}) => {
                                     if (response.code) {
                                         http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
                                             Toast.show(res.message);
-                                            if (res.code) {
+                                            if (res.code === '000000') {
+                                                dispatch(getUserInfo());
                                                 init();
                                             }
                                         });

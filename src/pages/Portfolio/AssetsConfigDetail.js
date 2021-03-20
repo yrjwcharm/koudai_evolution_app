@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-19 16:48:20
+ * @LastEditTime: 2021-03-20 16:58:01
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -88,7 +88,11 @@ export class AssetsConfigDetail extends Component {
                 {section.items &&
                     section.items.map((item, index) => {
                         return (
-                            <View key={item.code} style={[styles.assets_l2, Style.flexBetween]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={item.code}
+                                onPress={() => this.props.navigation.navigate('FundDetail', {code: item.code})}
+                                style={[styles.assets_l2, Style.flexBetween]}>
                                 <View>
                                     <Text style={[styles.assets_l2_name]}>{item.name}</Text>
                                     <Text style={[styles.assets_l2_code]}>{item.code}</Text>
@@ -101,7 +105,7 @@ export class AssetsConfigDetail extends Component {
                                         item.ratio * 100
                                     ).toFixed(2)}%`}</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })}
             </>
