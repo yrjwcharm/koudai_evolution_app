@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-18 17:56:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:36:38
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -63,10 +63,14 @@ const HistoryAdjust = ({navigation, route}) => {
                 <>
                     {section?.items?.map((item, index) => {
                         return (
-                            <View key={item.code} style={[styles.assets_l2, Style.flexBetween]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={item.code || item.fund_code}
+                                onPress={() => navigation.navigate('FundDetail', {code: item.code || item.fund_code})}
+                                style={[styles.assets_l2, Style.flexBetween]}>
                                 <View>
-                                    <Text style={[styles.assets_l2_name]}>{item.name}</Text>
-                                    <Text style={[styles.assets_l2_code]}>{item.code}</Text>
+                                    <Text style={[styles.assets_l2_name]}>{item.name || item.fund_name}</Text>
+                                    <Text style={[styles.assets_l2_code]}>{item.code || item.fund_code}</Text>
                                 </View>
                                 <View style={[styles.assets_l2_right, {flexDirection: 'row'}]}>
                                     <Text style={[styles.assets_l2_last_ratio, styles.assets_l2_right]}>
@@ -75,13 +79,13 @@ const HistoryAdjust = ({navigation, route}) => {
                                     <Icon name={'arrow-right-alt'} size={20} color={Colors.darkGrayColor} />
                                     <Text style={[styles.assets_l2_ratio, styles.assets_l2_right]}>{item.percent}</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })}
                 </>
             );
         },
-        []
+        [navigation]
     );
     const renderHeader = useCallback(
         // 手风琴头部渲染
@@ -135,12 +139,12 @@ const HistoryAdjust = ({navigation, route}) => {
                         <View style={{height: text(288)}}>
                             <Chart initScript={basicPieChart(chart)} data={chart} />
                         </View>
-                        {data?.intros?.content && (
+                        {data?.intros?.content ? (
                             <View style={{marginTop: text(8)}}>
                                 <Text style={[styles.intro_title]}>{data.intros.title}</Text>
                                 <Text style={[styles.intro_content]}>{data.intros.content}</Text>
                             </View>
-                        )}
+                        ) : null}
                     </View>
                     <View style={[styles.deploy_detail]}>
                         <Accordion

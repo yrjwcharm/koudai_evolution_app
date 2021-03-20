@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:09:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:09:31
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -132,22 +132,24 @@ export default function MfbIndex(props) {
                                 />
                             </View>
                         </View>
-                        <View>
-                            <Text style={styles.title_sty}>持有信息</Text>
-                            <View style={styles.card_list_sty}>
-                                <Accordion
-                                    sections={data.funds}
-                                    expandMultiple
-                                    touchableProps={{activeOpacity: 1}}
-                                    activeSections={activeSections}
-                                    renderHeader={renderHeader}
-                                    renderContent={renderContent}
-                                    onChange={updateSections}
-                                    sectionContainerStyle={{marginBottom: text(12)}}
-                                    touchableComponent={TouchableOpacity}
-                                />
+                        {data?.funds?.length > 0 && (
+                            <View>
+                                <Text style={styles.title_sty}>持有信息</Text>
+                                <View style={styles.card_list_sty}>
+                                    <Accordion
+                                        sections={data.funds}
+                                        expandMultiple
+                                        touchableProps={{activeOpacity: 1}}
+                                        activeSections={activeSections}
+                                        renderHeader={renderHeader}
+                                        renderContent={renderContent}
+                                        onChange={updateSections}
+                                        sectionContainerStyle={{marginBottom: text(12)}}
+                                        touchableComponent={TouchableOpacity}
+                                    />
+                                </View>
                             </View>
-                        </View>
+                        )}
                         <View>
                             <View style={[Style.flexRow, {marginTop: text(20)}]}>
                                 <Text style={[styles.title_sty, {flex: 1, marginTop: 0}]}>魔方宝</Text>

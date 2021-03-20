@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-03-19 11:15:25
+ * @LastEditTime: 2021-03-20 14:57:46
  * @LastEditors: dx
  * @Description: 常见问题
  */
@@ -21,7 +21,7 @@ const CommonProblem = ({navigation, route}) => {
     const [activeSections, setActiveSections] = useState([0]);
     useEffect(() => {
         http.get('/portfolio/qa/20210101', {
-            upid: route.params?.upid || 1,
+            upid: route.params?.upid,
             poid: route.params?.poid,
         }).then((res) => {
             if (res.code === '000000') {

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 15:46:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 16:21:39
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,7 @@ import http from '../../services/index.js';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
-
+import BaseUrl from '../../services/config';
 const ArticleDetail = ({navigation, route}) => {
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
@@ -28,7 +28,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [more, setMore] = useState(false);
 
     const init = useCallback(() => {
-        http.get('/community/article/20210101', {article_id: route.params?.article_id}).then((res) => {
+        http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
             }
@@ -111,10 +111,9 @@ const ArticleDetail = ({navigation, route}) => {
                 onLoadEnd={onLoadEnd}
                 onMessage={onMessage}
                 originWhitelist={['*']}
-                renderLoading={() => <ActivityIndicator color={Colors.brandColor} />}
                 ref={webviewRef}
                 source={{
-                    uri: `http://koudai-evolution-h5.bae.mofanglicai.com.cn/article/${route.params?.article_id || 1}`,
+                    uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
                 }}
                 startInLoadingState
                 style={{height: webviewHeight}}
@@ -138,7 +137,7 @@ const ArticleDetail = ({navigation, route}) => {
                         }
                         style={styles.actionIcon}
                     />
-                    <Text style={styles.finishText}>{`点赞${data?.favor_num}`}</Text>
+                    <Text style={styles.finishText}>{`点赞${data?.favor_num >= 0 ? data?.favor_num : 0}`}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} onPress={onCollect} style={[Style.flexCenter, {flex: 1}]}>
                     <Image
@@ -149,7 +148,7 @@ const ArticleDetail = ({navigation, route}) => {
                         }
                         style={styles.actionIcon}
                     />
-                    <Text style={styles.finishText}>{`收藏${data?.collect_num}`}</Text>
+                    <Text style={styles.finishText}>{`收藏${data?.collect_num >= 0 ? data?.collect_num : 0}`}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.8}

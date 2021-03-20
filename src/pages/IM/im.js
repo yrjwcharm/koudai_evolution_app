@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 20:54:07
+ * @LastEditTime: 2021-03-20 16:02:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -18,6 +18,7 @@ import {
     ScrollView,
     ActivityIndicator,
     TouchableHighlight,
+    Linking,
 } from 'react-native';
 // import { Header, NavigationActions } from 'react-navigation'
 // import {AudioRecorder, AudioUtils} from 'react-native-audio'
@@ -41,6 +42,7 @@ import {useSelector} from 'react-redux';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import BaseUrl from '../../services/config';
+import Toast from '../../components/Toast';
 const url = BaseUrl.WS;
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
 const _timeout = 4000; //检测消息是否发送成功
@@ -79,11 +81,28 @@ const IM = (props) => {
         intellectList && setIntellectList([]);
     };
     useEffect(() => {
+        props.navigation.setOptions({
+            headerRight: (props) => (
+                <TouchableOpacity activeOpacity={0.8} style={[{marginRight: px(20)}, Style.flexCenter]} onPress={phone}>
+                    <Text style={styles.btnText}>电话咨询</Text>
+                </TouchableOpacity>
+            ),
+        });
         initWebSocket();
         Keyboard.addListener('keyboardWillHide', clearIntelList);
         return props.navigation.addListener('beforeRemove', closeWs);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    const phone = () => {
+        Linking.canOpenURL('tel:4000808208')
+            .then((supported) => {
+                if (!supported) {
+                    return Toast.show('您的设备不支持该功能，请手动拨打4000808208');
+                }
+                return Linking.openURL('tel:4000808208');
+            })
+            .catch((err) => Toast.show(err));
+    };
     /**
      * 初始化WebSocket
      */

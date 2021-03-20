@@ -52,6 +52,7 @@
 		<string>weixin</string>
 		<string>wechat</string>
 		<string>weixinULAPI</string>
+		<string>tel</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 18:30:58
+ * @LastEditTime: 2021-03-20 19:06:25
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -18,7 +18,7 @@ import * as Animatable from 'react-native-animatable';
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('http://kapi-web.bae.mofanglicai.com.cn:10080/polaris/strategy/20210101').then((res) => {
+        http.get('/polaris/strategy/20210101').then((res) => {
             setData(res.result);
         });
     }, [props.route]);
@@ -51,6 +51,7 @@ export default function StrategyPolaris(props) {
                         {data.portfolios.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={[styles.card_sty, Style.flexBetween]}
                                     key={_index + '_item'}
                                     onPress={() => jumpTo(_item.url)}>
@@ -64,7 +65,7 @@ export default function StrategyPolaris(props) {
                                                 styles.radio_sty,
                                                 {color: _item.ratio > 0 ? Colors.red : Colors.green},
                                             ]}>
-                                            {_item.ratio} <Text>%</Text>
+                                            {_item.ratio}%
                                         </Text>
                                         <Text style={{color: '#9AA1B2', fontSize: Font.textH3}}>
                                             {_item.ratio_desc}

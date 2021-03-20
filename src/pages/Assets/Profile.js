@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 15:14:47
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:37:02
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -20,8 +20,11 @@ import Mask from '../../components/Mask';
 import {InputModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const Profile = ({navigation}) => {
+    const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
@@ -52,7 +55,8 @@ const Profile = ({navigation}) => {
                                     if (response.code) {
                                         http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
                                             Toast.show(res.message);
-                                            if (res.code) {
+                                            if (res.code === '000000') {
+                                                dispatch(getUserInfo());
                                                 init();
                                             }
                                         });
@@ -126,7 +130,7 @@ const Profile = ({navigation}) => {
         (item) => {
             console.log(iptValRef.current);
             if (!iptValRef.current) {
-                Toast.show(`${item.key}不能为空`);
+                Toast.show(`${item.key}不能为空`, {position: text(180), showMask: false});
                 return false;
             }
             inputModal.current.hide();

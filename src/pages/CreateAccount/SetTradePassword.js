@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 18:00:23
+ * @LastEditTime: 2021-03-20 15:54:04
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -64,8 +64,8 @@ const SetTradePassword = ({navigation, route}) => {
                         }).then((data) => {
                             if (data.code === '000000') {
                                 dispatch(getUserInfo());
-                                if (route.params?.fr === 'BankCard') {
-                                    textInput.current.blur();
+                                textInput.current.blur();
+                                if (route.params?.action === 'modify_phone') {
                                     Modal.show({
                                         confirmCallBack: () => jump(route.params?.url, 'replace'),
                                         confirmText: '立即跳转',
@@ -73,6 +73,11 @@ const SetTradePassword = ({navigation, route}) => {
                                         isTouchMaskToClose: false,
                                     });
                                     return false;
+                                } else if (route.params?.action === 'modify_phone') {
+                                    Toast.show(data.message);
+                                    setTimeout(() => {
+                                        navigation.goBack();
+                                    }, 1000);
                                 }
                                 Toast.show(data.message);
                                 setTimeout(() => {
@@ -100,7 +105,7 @@ const SetTradePassword = ({navigation, route}) => {
                 }
             }
         }
-    }, [jump, navigation, password, pwdFisrt, route]);
+    }, [jump, navigation, password, pwdFisrt, route, dispatch]);
 
     return (
         <View style={Style.containerPadding}>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:50:24
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 17:23:37
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -104,9 +104,7 @@ function HomeScreen({navigation, route}) {
             }
             setRefreshing(false);
         });
-        http.get('/asset/notice/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
+        http.get('/asset/notice/20210101').then((res) => {
             if (res.code === '000000') {
                 setNotice(res.result);
             }
@@ -206,7 +204,8 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            init();
+            userInfo?.toJS()?.is_login && init();
+            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
@@ -316,20 +315,32 @@ function HomeScreen({navigation, route}) {
                                 color={'rgba(255, 255, 255, 0.8)'}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.experienceGold, Style.flexRow]}
-                            onPress={() => navigation.navigate('ExperienceGoldDetail')}>
-                            <Image
-                                source={require('../../assets/personal/jinbi.png')}
-                                style={{width: text(15), height: text(15)}}
-                            />
-                            <Text style={styles.goldText}>{'体验金'}</Text>
-                            <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
-                        </TouchableOpacity>
+                        {userBasicInfo?.free_fund && (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.experienceGold, Style.flexRow]}
+                                onPress={() => jump(userBasicInfo?.free_fund?.url)}>
+                                <Image
+                                    source={{uri: userBasicInfo?.free_fund?.icon}}
+                                    style={{width: text(15), height: text(15)}}
+                                />
+                                <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
+                                <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <View>
                         <Text style={[styles.amount]}>
-                            {showEye === 'true' ? holdingData?.summary?.amount : '****'}
+                            {showEye === 'true' ? (
+                                <>
+                                    {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
+                                    <Text style={{fontSize: text(24)}}>
+                                        {holdingData?.summary?.amount?.split('.')[1] || '00'}
+                                    </Text>
+                                </>
+                            ) : (
+                                '****'
+                            )}
                         </Text>
                     </View>
                     {/* 小黄条 */}

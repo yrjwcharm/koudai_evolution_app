@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 14:27:51
+ * @LastEditTime: 2021-03-20 14:59:31
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -25,15 +25,17 @@ class DynamicAdjustment extends Component {
         };
     }
     init = () => {
-        const {upid} = this.props.route.params || {};
+        const {poid, upid} = this.props.route.params || {};
         http.get('/portfolio/adjust/20210101', {
-            upid: upid,
+            poid,
+            upid,
         }).then((res) => {
             this.setState({data: res.result, refreshing: false});
             this.props.navigation.setOptions({title: res.result.title});
         });
         http.get('/portfolio/adjust_chart/20210101', {
-            upid: upid,
+            poid,
+            upid,
         }).then((res) => {
             // let num = 0;
             // res.result.chart?.map((item, index) => {

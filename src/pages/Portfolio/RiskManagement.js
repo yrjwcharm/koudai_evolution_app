@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-03-06 09:58:48
+ * @LastEditTime: 2021-03-20 14:56:08
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -97,8 +97,8 @@ class RiskManagement extends Component {
         this.init();
     }
     init = () => {
-        const {upid} = this.props.route.params || {};
-        http.get('/portfolio/risk_control/20210101', {upid: upid || 8}).then((res) => {
+        const {poid, upid} = this.props.route.params || {};
+        http.get('/portfolio/risk_control/20210101', {upid, poid}).then((res) => {
             if (res.code === '000000') {
                 const alias = [];
                 res.result.chart.map((item) => {

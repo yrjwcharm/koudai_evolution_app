@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 12:30:36
+ * @LastEditTime: 2021-03-20 16:23:05
  * @Description:webview
  */
 import React, {useEffect, useRef} from 'react';
@@ -52,7 +52,6 @@ export default function LCMF({route, navigation}) {
             <RNWebView
                 javaScriptEnabled
                 originWhitelist={['*']}
-                renderLoading={() => <ActivityIndicator color={Colors.brandColor} />}
                 source={{
                     uri: route?.params?.link,
                 }}

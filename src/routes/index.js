@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:52:32
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 16:30:30
  * @Description:路由表
  */
 import React from 'react';
@@ -130,7 +130,7 @@ import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录�
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
 import Loading from '../pages/Auth/Loading';
-import Index from '../pages/Index/index'; //
+// import Index from '../pages/Index/index'; //
 import ArticleDetail from '../pages/Vision/ArticleDetail'; // 文章详情
 import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
 import MyScore from '../pages/Assets/MyScore'; // 我的魔分
@@ -347,7 +347,7 @@ export default function AppStack() {
             <Stack.Screen
                 name="Evaluation"
                 component={Evaluation}
-                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+                options={{headerShown: false, ...TransitionPresets.ModalTransition, gestureEnabled: false}}
             />
             <Stack.Screen
                 name="EvaluationHistory"
@@ -452,7 +452,7 @@ export default function AppStack() {
             />
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
-            <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} />
+            {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
             <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: ''}} />
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />

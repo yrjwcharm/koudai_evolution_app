@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-03-19 15:50:02
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 16:19:01
+ * @LastEditors: yhc
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
@@ -271,7 +271,7 @@ const Part3 = () => {
     const [data, setData] = useState({});
     useEffect(() => {
         const {upid, poid, allocation_id} = route.params || {};
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/mustknow/20210101', {
+        http.get('/portfolio/mustknow/20210101', {
             upid,
             type: 'trade_amount',
             poid,

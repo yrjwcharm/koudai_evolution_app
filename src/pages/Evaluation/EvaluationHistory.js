@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 17:16:03
+ * @LastEditTime: 2021-03-20 15:14:10
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -24,7 +24,7 @@ const shadow = {
     x: 0,
     y: 4,
     width: deviceWidth - px(32),
-    height: px(140),
+    height: px(156),
     style: {
         marginBottom: px(16),
     },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         padding: px(16),
         backgroundColor: '#fff',
         borderRadius: px(8),
-        height: px(140),
+        height: px(156),
     },
     plan_goal_amount: {
         fontSize: px(18),

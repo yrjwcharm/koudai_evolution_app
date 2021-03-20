@@ -2,7 +2,7 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 18:05:52
+ * @LastEditTime: 2021-03-20 16:01:54
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -72,7 +72,7 @@ const AccountRemove = ({navigation, route}) => {
                         codeModal.current.hide();
                         Storage.delete('loginStatus');
                         dispatch(getUserInfo());
-                        navigation.navigate('Home');
+                        navigation.navigate('Index');
                     }
                 });
             }

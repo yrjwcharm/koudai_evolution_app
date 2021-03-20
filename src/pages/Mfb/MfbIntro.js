@@ -2,8 +2,8 @@
  * @Description:魔方宝说明
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 16:54:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:11:24
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -20,7 +20,7 @@ export default function MfbIntro(props) {
         });
     }, []);
     return (
-        <ScrollView style={Style.containerPadding}>
+        <ScrollView style={[Style.containerPadding, {backgroundColor: '#fff'}]}>
             {Object.keys(data).length > 0 &&
                 data?.content?.map((_item, _index) => {
                     return (

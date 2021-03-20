@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 12:32:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 15:21:12
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
+import {ActionSheetIOS, View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {constants} from './util';
@@ -141,7 +141,19 @@ const ShareModal = React.forwardRef((props, ref) => {
                 Toast.show('复制成功');
             }, 500);
         } else if (item.type === 'MoreOptions') {
-            console.log('dx');
+            // console.log('dx');
+            hide();
+            if (Object.keys(shareContent).length > 0) {
+                ActionSheetIOS.showShareActionSheetWithOptions(
+                    {
+                        url: shareContent.link,
+                        message: shareContent.content,
+                        subject: shareContent.title,
+                    },
+                    () => Toast.show('分享失败'),
+                    () => Toast.show('分享成功')
+                );
+            }
         }
     };
 
@@ -151,66 +163,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             hide: hide,
         };
     });
-
-    useEffect(() => {
-        if (more) {
-            setList([
-                {
-                    img: require('../../assets/img/share/wechat.png'),
-                    title: '发送微信好友',
-                    type: 'ShareAppMessage',
-                },
-                {
-                    img: require('../../assets/img/share/timeline.png'),
-                    title: '分享到朋友圈',
-                    type: 'ShareTimeline',
-                },
-                {
-                    img: require('../../assets/img/share/like.png'),
-                    title: shareContent?.favor_status ? '取消点赞' : '点赞',
-                    type: 'Like',
-                },
-                {
-                    img: require('../../assets/img/share/collect.png'),
-                    title: shareContent?.collect_status ? '取消收藏' : '收藏',
-                    type: 'Collect',
-                },
-                {
-                    img: require('../../assets/img/share/copy.png'),
-                    title: '复制链接',
-                    type: 'Copy',
-                },
-                {
-                    img: require('../../assets/img/share/more.png'),
-                    title: '更多',
-                    type: 'MoreOptions',
-                },
-            ]);
-        } else {
-            setList([
-                {
-                    img: require('../../assets/img/share/wechat.png'),
-                    title: '发送微信好友',
-                    type: 'ShareAppMessage',
-                },
-                {
-                    img: require('../../assets/img/share/timeline.png'),
-                    title: '分享到朋友圈',
-                    type: 'ShareTimeline',
-                },
-                {
-                    img: require('../../assets/img/share/copy.png'),
-                    title: '复制链接',
-                    type: 'Copy',
-                },
-                {
-                    img: require('../../assets/img/share/more.png'),
-                    title: '更多',
-                    type: 'MoreOptions',
-                },
-            ]);
-        }
-    }, [more, shareContent]);
 
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
@@ -230,6 +182,17 @@ const ShareModal = React.forwardRef((props, ref) => {
                         ) : null)}
                     <View style={[Style.flexRow, styles.optionBox]}>
                         {list.map((item, index) => {
+                            if (item.type === 'Like') {
+                                item.title = shareContent?.favor_status ? '取消点赞' : '点赞';
+                            }
+                            if (item.type === 'Collect') {
+                                item.title = shareContent?.collect_status ? '取消收藏' : '收藏';
+                            }
+                            if (!more) {
+                                if (item.type === 'Like' || item.type === 'Collect') {
+                                    return null;
+                                }
+                            }
                             return (
                                 <TouchableOpacity
                                     key={index}
