@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 17:12:40
+ * @LastEditTime: 2021-03-20 17:23:37
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -315,17 +315,19 @@ function HomeScreen({navigation, route}) {
                                 color={'rgba(255, 255, 255, 0.8)'}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[styles.experienceGold, Style.flexRow]}
-                            onPress={() => navigation.navigate('ExperienceGoldDetail')}>
-                            <Image
-                                source={require('../../assets/personal/jinbi.png')}
-                                style={{width: text(15), height: text(15)}}
-                            />
-                            <Text style={styles.goldText}>{'体验金'}</Text>
-                            <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
-                        </TouchableOpacity>
+                        {userBasicInfo?.free_fund && (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.experienceGold, Style.flexRow]}
+                                onPress={() => jump(userBasicInfo?.free_fund?.url)}>
+                                <Image
+                                    source={{uri: userBasicInfo?.free_fund?.icon}}
+                                    style={{width: text(15), height: text(15)}}
+                                />
+                                <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
+                                <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <View>
                         <Text style={[styles.amount]}>
