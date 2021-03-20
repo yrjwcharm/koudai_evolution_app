@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-20 16:49:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:37:02
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -130,7 +130,7 @@ const Profile = ({navigation}) => {
         (item) => {
             console.log(iptValRef.current);
             if (!iptValRef.current) {
-                Toast.show(`${item.key}不能为空`);
+                Toast.show(`${item.key}不能为空`, {position: text(180), showMask: false});
                 return false;
             }
             inputModal.current.hide();

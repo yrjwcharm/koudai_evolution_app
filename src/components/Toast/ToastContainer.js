@@ -31,6 +31,7 @@ let styles = StyleSheet.create({
     defaultStyle: {
         position: 'absolute',
         left: 0,
+        zIndex: 100,
         right: 0,
         justifyContent: 'center',
         alignItems: 'center',
@@ -100,6 +101,7 @@ class ToastContainer extends Component {
         hideOnPress: false,
         keyboardAvoiding: true,
         loading: false,
+        showMask: true,
     };
 
     constructor() {
@@ -235,7 +237,12 @@ class ToastContainer extends Component {
               };
 
         return this.state.visible || this._animating ? (
-            <View style={[styles.defaultStyle, position]}>
+            <View
+                style={[
+                    styles.defaultStyle,
+                    position,
+                    {backgroundColor: props.showMask ? 'rgba(0,0,0,0.2)' : 'transparent'},
+                ]}>
                 <TouchableWithoutFeedback
                     onPress={() => {
                         typeof this.props.onPress === 'function' ? this.props.onPress() : null;

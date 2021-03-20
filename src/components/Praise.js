@@ -2,11 +2,11 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 14:49:21
+ * @LastEditTime: 2021-03-20 17:35:13
  * @Description:点赞模块
  */
 
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {px, formaNum} from '../utils/appUtil';
 import FastImage from 'react-native-fast-image';
@@ -14,9 +14,13 @@ import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 export default function Praise(props) {
     const {style, comment, type = ''} = props;
-    const [like, setLike] = useState(comment.favor_status);
-    const [num, setNum] = useState(comment.favor_num);
-    // console.log(comment, num);
+    const [like, setLike] = useState();
+    const [num, setNum] = useState();
+    console.log(comment, num, like);
+    useEffect(() => {
+        setNum(comment.favor_num);
+        setLike(comment.favor_status);
+    }, [comment]);
     const postLike = useCallback(
         (_like) => {
             if (type == 'article') {

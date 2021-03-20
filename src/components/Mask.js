@@ -2,7 +2,7 @@
  * @Date: 2021-01-19 13:09:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-05 18:37:02
+ * @LastEditTime: 2021-03-20 16:57:30
  * @Description:蒙层
  */
 
@@ -23,7 +23,7 @@ export default class Mask extends Component {
                         left: 0,
                         bottom: 0,
                         width: width,
-                        zIndex: 100,
+                        zIndex: 80,
                     }}>
                     <TouchableOpacity
                         style={{flex: 1}}

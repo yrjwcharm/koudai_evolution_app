@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:19:48
+ * @LastEditTime: 2021-03-20 16:39:10
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -51,6 +51,7 @@ export default function StrategyPolaris(props) {
                         {data.portfolios.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={[styles.card_sty, Style.flexBetween]}
                                     key={_index + '_item'}
                                     onPress={() => jumpTo(_item.url)}>
@@ -64,7 +65,7 @@ export default function StrategyPolaris(props) {
                                                 styles.radio_sty,
                                                 {color: _item.ratio > 0 ? Colors.red : Colors.green},
                                             ]}>
-                                            {_item.ratio}
+                                            {_item.ratio}%
                                         </Text>
                                         <Text style={{color: '#9AA1B2', fontSize: Font.textH3}}>
                                             {_item.ratio_desc}

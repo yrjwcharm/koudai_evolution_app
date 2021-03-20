@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-20 17:31:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 17:36:38
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -85,7 +85,7 @@ const HistoryAdjust = ({navigation, route}) => {
                 </>
             );
         },
-        []
+        [navigation]
     );
     const renderHeader = useCallback(
         // 手风琴头部渲染
