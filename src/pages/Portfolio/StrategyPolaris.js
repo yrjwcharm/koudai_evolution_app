@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 20:10:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 16:19:48
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -18,7 +18,7 @@ import * as Animatable from 'react-native-animatable';
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('http://kapi-web.bae.mofanglicai.com.cn:10080/polaris/strategy/20210101').then((res) => {
+        http.get('/polaris/strategy/20210101').then((res) => {
             setData(res.result);
         });
     }, [props.route]);

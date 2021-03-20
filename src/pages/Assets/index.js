@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-20 15:21:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 15:22:25
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -104,9 +104,7 @@ function HomeScreen({navigation, route}) {
             }
             setRefreshing(false);
         });
-        http.get('/asset/notice/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
+        http.get('/asset/notice/20210101').then((res) => {
             if (res.code === '000000') {
                 setNotice(res.result);
             }

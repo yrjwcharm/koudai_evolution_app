@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-11 10:03:53
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 11:13:13
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 16:19:09
  * @Description: 邀请好友得体验金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -24,7 +24,7 @@ const InviteExperienceGold = ({navigation}) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/freefund/invite/20210101').then((res) => {
+        http.get('/freefund/invite/20210101').then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '理财魔方体验金'});
                 setData(res.result);

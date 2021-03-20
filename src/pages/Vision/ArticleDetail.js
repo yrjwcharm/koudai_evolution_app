@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-20 14:47:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 16:21:39
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,7 @@ import http from '../../services/index.js';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
-
+import BaseUrl from '../../services/config';
 const ArticleDetail = ({navigation, route}) => {
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
@@ -111,10 +111,9 @@ const ArticleDetail = ({navigation, route}) => {
                 onLoadEnd={onLoadEnd}
                 onMessage={onMessage}
                 originWhitelist={['*']}
-                renderLoading={() => <ActivityIndicator color={Colors.brandColor} />}
                 ref={webviewRef}
                 source={{
-                    uri: `http://koudai-evolution-h5.bae.mofanglicai.com.cn/article/${route.params?.article_id || 1}`,
+                    uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
                 }}
                 startInLoadingState
                 style={{height: webviewHeight}}

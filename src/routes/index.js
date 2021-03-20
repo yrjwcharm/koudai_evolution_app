@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:52:32
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 15:33:01
  * @Description:路由表
  */
 import React from 'react';
@@ -347,7 +347,7 @@ export default function AppStack() {
             <Stack.Screen
                 name="Evaluation"
                 component={Evaluation}
-                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+                options={{headerShown: false, ...TransitionPresets.ModalTransition, gestureEnabled: false}}
             />
             <Stack.Screen
                 name="EvaluationHistory"

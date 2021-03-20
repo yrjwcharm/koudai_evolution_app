@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 17:37:31
+ * @LastEditTime: 2021-03-20 16:26:01
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -29,7 +29,7 @@ export default function QuestionCard({data = []}) {
     return (
         <>
             {data.map((item, index) => {
-                let height = item?.content.length > 18 ? px(190) : px(168);
+                let height = item?.name?.length > 18 ? px(190) : px(168);
                 return (
                     <BoxShadow setting={{...shadow, height}} key={index}>
                         <TouchableOpacity
