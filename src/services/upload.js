@@ -2,20 +2,26 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-13 17:05:52
+ * @LastEditTime: 2021-03-20 22:17:48
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
 import baseConfig from './config';
-const upload = (url, file, otherParams, succ, failed) => {
+import Storage from '../utils/storage';
+
+const upload = async (url, file, otherParams, succ, failed) => {
+    let result = await Storage.get('loginStatus');
+
     const PATH = Platform.OS === 'android' ? file.uri : file.uri.replace('file:///', '');
     try {
         RNFetchBlob.fetch(
             'POST',
-            url.indexOf('http') > -1 ? url : `${baseConfig.SERVER_URL}${url}`,
+            url.indexOf('http') > -1 ? url : `${baseConfig.HTTP}${url}`,
             {
                 'Content-Type': 'multipart/form-data',
+                // eslint-disable-next-line prettier/prettier
+                'Authorization': result.access_token,
             },
             [
                 {

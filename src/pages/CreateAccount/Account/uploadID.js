@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-13 17:07:01
+ * @LastEditTime: 2021-03-20 22:16:11
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -64,11 +64,12 @@ export class uploadID extends Component {
             });
         }
     };
-    uploadImage = (response) => {
+    uploadImage = async (response) => {
         const {clickIndex} = this.state;
         let toast = Toast.showLoading('正在上传');
+
         upload(
-            'mapi/identity/upload/20210101',
+            '/mapi/identity/upload/20210101',
             response,
             [{name: 'desc', data: clickIndex == 1 ? 'front' : 'back'}],
             (res) => {
