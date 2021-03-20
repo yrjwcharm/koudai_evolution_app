@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:41:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:41:39
+ * @LastEditTime: 2021-03-20 15:50:32
  * @Description: 银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -35,7 +35,7 @@ const BankCard = ({navigation, route}) => {
                             title: item.text,
                             confirm: true,
                             confirmCallBack: () =>
-                                navigation.navigate('SetTradePassword', {fr: 'BankCard', url: item.url}),
+                                navigation.navigate('SetTradePassword', {action: 'modify_phone', url: item.url}),
                             confirmText: '设置交易密码',
                             content: `为了资金安全，修改预留手机号需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
                         });
@@ -43,7 +43,18 @@ const BankCard = ({navigation, route}) => {
                 }
             } else {
                 if (item.type === 'unbind') {
-                    passwordModal.current.show();
+                    if (userInfo.toJS().has_trade_pwd) {
+                        passwordModal.current.show();
+                    } else {
+                        Modal.show({
+                            title: item.text,
+                            confirm: true,
+                            confirmCallBack: () =>
+                                navigation.navigate('SetTradePassword', {action: 'unbind', url: item.url}),
+                            confirmText: '设置交易密码',
+                            content: `为了资金安全，修改预留手机号需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
+                        });
+                    }
                 }
             }
         },

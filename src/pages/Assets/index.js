@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 15:22:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-20 16:30:42
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -330,9 +330,9 @@ function HomeScreen({navigation, route}) {
                         <Text style={[styles.amount]}>
                             {showEye === 'true' ? (
                                 <>
-                                    {holdingData?.summary?.amount?.split('.')[0] + '.'}
+                                    {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
                                     <Text style={{fontSize: text(24)}}>
-                                        {holdingData?.summary?.amount?.split('.')[1]}
+                                        {holdingData?.summary?.amount?.split('.')[1] || '00'}
                                     </Text>
                                 </>
                             ) : (
