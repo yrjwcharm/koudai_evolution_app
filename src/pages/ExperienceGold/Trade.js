@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:40:54
+ * @LastEditTime: 2021-03-20 15:36:58
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -56,6 +56,7 @@ export default function Trade({navigation, route}) {
                 <>
                     <Header title={data.title} leftIcon="chevron-left" />
                     <TouchableOpacity
+                        activeOpacity={1}
                         style={[Style.flexRow, styles.yellow_wrap_sty]}
                         onPress={() => jump(data?.tip_info?.processing_url)}>
                         <Html style={styles.yellow_sty} html={data?.tip_info?.processing} />
@@ -138,6 +139,7 @@ export default function Trade({navigation, route}) {
                             );
                         })}
                     <Button
+                        activeOpacity={1}
                         title={data?.button?.text}
                         color={'#D4AC6F'}
                         onPress={passwordInput}

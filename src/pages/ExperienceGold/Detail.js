@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:34:43
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 15:38:06
  * @Description: 体验金首页
  */
 
@@ -119,6 +119,7 @@ const ExperienceGold = ({navigation}) => {
                         <Text style={[styles.noticeText, styles.expireText]}>{data?.part1?.expire}</Text>
                         {data?.part1?.button?.title && (
                             <Button
+                                activeOpacity={1}
                                 title={data?.part1?.button?.title}
                                 disabled={false}
                                 color={'#D7AF74'}
@@ -141,6 +142,7 @@ const ExperienceGold = ({navigation}) => {
                             </View>
                             <View style={{alignItems: 'flex-end', marginTop: text(4), position: 'relative'}}>
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[Style.flexCenter, styles.fill]}
                                     onPress={() => bottomModal.current.show()}>
                                     <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
@@ -169,7 +171,7 @@ const ExperienceGold = ({navigation}) => {
                     {data.part2?.cards?.map((_item, _index) => {
                         return (
                             <TouchableOpacity
-                                activeOpacity={0.8}
+                                activeOpacity={1}
                                 style={[Style.flexBetween, styles.productBox]}
                                 key={_index + '_i'}
                                 onPress={() => Jump(_item.url)}>
@@ -223,6 +225,7 @@ const ExperienceGold = ({navigation}) => {
                         data?.part2?.portfolios?.map((_p, _index, arr) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[
                                         Style.flexBetween,
                                         styles.productBox,

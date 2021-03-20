@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:39:10
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 19:06:25
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     radio_sty: {
         fontSize: text(22),
         fontFamily: Font.numFontFamily,
-        marginTop: text(16),
+        marginTop: text(6),
         marginBottom: text(4),
     },
 });

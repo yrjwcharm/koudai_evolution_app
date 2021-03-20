@@ -55,7 +55,6 @@ export default function GesturePassword({navigation, route}) {
                 setStatus(true);
                 setIsWarning(false);
                 dispatch(updateVerifyGesture());
-                Toast.show('登陆成功');
             } else {
                 setStatus(false);
                 setIsWarning(true);
