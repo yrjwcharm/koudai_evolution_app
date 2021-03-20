@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 10:45:44
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-20 14:41:23
  * @Description:点赞模块
  */
 
@@ -16,6 +16,7 @@ export default function Praise(props) {
     const {style, comment, type = ''} = props;
     const [like, setLike] = useState(comment.favor_status);
     const [num, setNum] = useState(comment.favor_num);
+    // console.log(comment, num);
     const postLike = useCallback(
         (_like) => {
             if (type == 'article') {
@@ -31,7 +32,6 @@ export default function Praise(props) {
         [comment.id, type]
     );
     const press = () => {
-        console.log(comment);
         if (like == 1) {
             setLike(0);
             let like_num = num - 1;

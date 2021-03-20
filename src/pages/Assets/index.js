@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 12:01:21
+ * @LastEditTime: 2021-03-19 19:06:09
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -207,7 +207,6 @@ function HomeScreen({navigation, route}) {
     useFocusEffect(
         useCallback(() => {
             init();
-            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });

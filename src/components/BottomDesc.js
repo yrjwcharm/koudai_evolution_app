@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-19 16:25:52
+ * @LastEditTime: 2021-03-20 12:32:28
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -34,7 +34,7 @@ const BottomDesc = (props) => {
                     type === 'xuanyuan'
                         ? {
                               text: '详情',
-                              jump_to: 'FundSafe',
+                              jump_to: 'LCMF',
                           }
                         : '',
             },
@@ -57,7 +57,13 @@ const BottomDesc = (props) => {
                         <View style={styles.item} key={index}>
                             {item.title && <Text style={styles.text}>{item.title}</Text>}
                             {item?.btn?.text ? (
-                                <Text style={styles.button} onPress={() => navigation.navigate(item.btn.jump_to)}>
+                                <Text
+                                    style={styles.button}
+                                    onPress={() =>
+                                        navigation.navigate(item.btn.jump_to, {
+                                            link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
+                                        })
+                                    }>
                                     {item.btn.text}
                                 </Text>
                             ) : null}

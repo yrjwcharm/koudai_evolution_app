@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 12:20:02
+ * @LastEditTime: 2021-03-20 12:34:06
  * @Description:路由表
  */
 import React from 'react';
@@ -35,7 +35,6 @@ import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
 import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投
-import FundSafe from '../pages/Common/FundSafe'; // 资金安全
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知
 import CommonProblem from '../pages/Portfolio/CommonProblem'; // 常见问题
 import RiskManagement from '../pages/Portfolio/RiskManagement'; // 风险控制
@@ -136,7 +135,7 @@ import ArticleDetail from '../pages/Vision/ArticleDetail'; // 文章详情
 import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
 import MyScore from '../pages/Assets/MyScore'; // 我的魔分
 import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
-import AboutLCMF from '../pages/Common/AboutLCMF'; // 关于理财魔方
+import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 
 const Stack = createStackNavigator();
@@ -316,7 +315,6 @@ export default function AppStack() {
             <Stack.Screen name="Agreement" component={Agreement} options={{title: '用户协议'}} />
             <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: '基金组合协议'}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
-            <Stack.Screen name="FundSafe" component={FundSafe} options={{title: '资金安全'}} />
             <Stack.Screen name="TradeRules" component={TradeRules} options={{title: '交易须知'}} />
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
@@ -459,7 +457,7 @@ export default function AppStack() {
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
-            <Stack.Screen name="AboutLCMF" component={AboutLCMF} options={{title: '关于理财魔方'}} />
+            <Stack.Screen name="LCMF" component={LCMF} options={{title: '关于理财魔方'}} />
             <Stack.Screen name="WebView" component={WebView} options={{title: ''}} />
         </Stack.Navigator>
     );
