@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 19:16:36
+ * @LastEditTime: 2021-03-20 11:54:48
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -236,7 +236,8 @@ class MfbOut extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(index) => {
+                    onDone={(item, index) => {
+                        console.log(item, index);
                         this.getBankInfo(
                             index,
                             pay_methods[index]?.common_withdraw_amount,

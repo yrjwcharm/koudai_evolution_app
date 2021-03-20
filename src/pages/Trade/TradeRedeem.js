@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 15:41:47
+ * @LastEditTime: 2021-03-20 12:32:02
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -152,10 +152,10 @@ export default class TradeRedeem extends Component {
                         _id = _item.id;
                     }
                 });
-                Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/trade/redeem/survey/20210101', {
+                this.setState({showMask: false});
+                Http.get('/trade/redeem/survey/20210101', {
                     id: _id,
                 }).then((res) => {
-                    this.setState({showMask: false});
                     this.passwordInput();
                 });
             },

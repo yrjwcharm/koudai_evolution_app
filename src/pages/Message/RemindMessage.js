@@ -3,9 +3,9 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 11:24:42
+ * @LastEditTime: 2021-03-20 14:41:09
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -14,6 +14,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../components/hooks/';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import {Modal} from '../../components/Modal';
+import {useFocusEffect} from '@react-navigation/native';
 export default function RemindMessage({navigation}) {
     const [data, setData] = useState({});
     const [hide, setHide] = useState(false);
@@ -22,7 +23,12 @@ export default function RemindMessage({navigation}) {
     const closeNotice = () => {
         setHide(true);
     };
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
+    const init = () => {
         checkNotifications().then(({status, settings}) => {
             // …
             if (status == 'denied' || status == 'blocked') {
@@ -32,7 +38,7 @@ export default function RemindMessage({navigation}) {
         Http.get('/mapi/message/index/20210101').then((res) => {
             setData(res.result);
         });
-    }, []);
+    };
     const openLink = () => {
         requestNotifications(['alert', 'sound']).then(({status, settings}) => {
             // …
@@ -56,7 +62,7 @@ export default function RemindMessage({navigation}) {
         });
     };
     return (
-        <>
+        <View>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     {!hide && showNotice && (
@@ -173,7 +179,7 @@ export default function RemindMessage({navigation}) {
                     </View>
                 </ScrollView>
             )}
-        </>
+        </View>
     );
 }
 const styles = StyleSheet.create({

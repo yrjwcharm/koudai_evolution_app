@@ -1,9 +1,9 @@
 /*
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
- * @Description:交易通知
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 20:45:27
+ * @Description:交易通知和活动通知
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 14:47:20
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -15,21 +15,24 @@ import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FitImage from 'react-native-fit-image';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function MessageNotice({navigation, route}) {
-    const [list, setList] = useState([]);
+    const [list, setList] = useState({});
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [title, setTitle] = useState('');
     const jump = useJump();
-    useEffect(() => {
-        if (page === 1) {
-            init('refresh', true);
-        } else {
-            init('loadmore');
-        }
-    }, [page, init]);
+    useFocusEffect(
+        useCallback(() => {
+            if (page === 1) {
+                init('refresh', true);
+            } else {
+                init('loadmore');
+            }
+        }, [page, init, readInterface])
+    );
     const init = useCallback(
         (status, first) => {
             Http.get('/mapi/message/list/20210101', {
@@ -48,7 +51,7 @@ export default function MessageNotice({navigation, route}) {
                 }
             });
         },
-        [route, page]
+        [route, page, readInterface]
     );
 
     // 下拉刷新
@@ -89,11 +92,9 @@ export default function MessageNotice({navigation, route}) {
             } else {
                 _params = {id};
             }
-            Http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/read/20210101', {..._params}).then(
-                (res) => {
-                    init();
-                }
-            );
+            Http.get('/message/read/20210101', {..._params}).then((res) => {
+                init();
+            });
         } else {
             jump(url);
         }
@@ -101,7 +102,7 @@ export default function MessageNotice({navigation, route}) {
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (
-            <>
+            <View>
                 {item.content_type == 0 && (
                     <TouchableOpacity
                         style={styles.card_sty}
@@ -159,36 +160,42 @@ export default function MessageNotice({navigation, route}) {
                         </View>
                     </TouchableOpacity>
                 )}
-            </>
+            </View>
         );
     };
 
     return (
-        <>
+        <View style={styles.container}>
             <Header
                 title={title}
                 leftIcon="chevron-left"
-                rightText={list?.message_type ? '' : '全部已读'}
+                rightText={Object.keys(list).length > 0 ? '全部已读' : ''}
                 rightPress={() => readInterface(list?.message_type, 'all')}
                 rightTextStyle={styles.right_sty}
             />
 
-            <FlatList
-                data={list}
-                initialNumToRender={10}
-                keyExtractor={(item, index) => item + index}
-                ListFooterComponent={renderFooter}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                renderItem={renderItem}
-                extraData={list}
-            />
-        </>
+            {Object.keys(list).length > 0 && (
+                <FlatList
+                    data={list}
+                    initialNumToRender={10}
+                    keyExtractor={(item, index) => item + index}
+                    ListFooterComponent={renderFooter}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.5}
+                    onRefresh={onRefresh}
+                    refreshing={refreshing}
+                    renderItem={renderItem}
+                    extraData={list}
+                />
+            )}
+        </View>
     );
 }
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F6F8',
+    },
     card_sty: {
         backgroundColor: '#fff',
         padding: text(16),

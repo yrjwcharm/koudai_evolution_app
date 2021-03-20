@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:41:56
+ * @LastEditTime: 2021-03-20 11:31:06
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -21,7 +21,7 @@ class MfbIn extends Component {
             data: '',
             amount: '',
             password: '',
-            bankSelect: 0,
+            bankSelect: '',
             tips: '',
             enable: false,
             code: props?.route?.code || '',
@@ -31,12 +31,13 @@ class MfbIn extends Component {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
                 data: data.result,
+                bankSelect: data.result?.pay_methods[0],
             });
         });
     }
     onInput = (amount) => {
         const {data, bankSelect} = this.state;
-        const pay_methods = data.pay_methods[bankSelect];
+        // const pay_methods = data.pay_methods[bankSelect];
 
         if (amount) {
             if (amount < data.recharge_info.start_amount) {
@@ -46,15 +47,15 @@ class MfbIn extends Component {
                     enable: false,
                     amount,
                 });
-            } else if (amount > pay_methods.single_amount) {
+            } else if (amount > bankSelect.single_amount) {
                 const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
                     amount,
                 });
-            } else if (amount > Number(pay_methods.left_amount)) {
-                const tips = '由于银行卡单日限额，今日最多可转入金额为' + pay_methods.single_amount + '元';
+            } else if (amount > Number(bankSelect.left_amount)) {
+                const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
@@ -97,7 +98,7 @@ class MfbIn extends Component {
                     code: code,
                     amount: this.state.amount,
                     password: password,
-                    pay_method: data.pay_methods[bankSelect].pay_method,
+                    pay_method: bankSelect.pay_method,
                 }).then((res) => {
                     if (res.code === '000000') {
                         this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
@@ -122,15 +123,15 @@ class MfbIn extends Component {
                             <Image
                                 style={styles.bank_icon}
                                 source={{
-                                    uri: pay_methods[bankSelect].bank_icon,
+                                    uri: bankSelect.bank_icon,
                                 }}
                             />
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {pay_methods[bankSelect]?.bank_name}
+                                    {bankSelect?.bank_name}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                    {pay_methods[bankSelect]?.limit_desc}
+                                    {bankSelect?.limit_desc}
                                 </Text>
                             </View>
                             <TouchableOpacity onPress={this.changeBankCard}>
@@ -226,8 +227,8 @@ class MfbIn extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(index) => {
-                        this.setState({bankSelect: index});
+                    onDone={(select) => {
+                        this.setState({bankSelect: select});
                     }}
                 />
             </ScrollView>

@@ -133,7 +133,7 @@ const Index = (props) => {
     );
 
     const readInterface = useCallback(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/message/unread/20210101').then((res) => {
+        http.get('/message/unread/20210101').then((res) => {
             setAll(res.result.all);
         });
     }, []);

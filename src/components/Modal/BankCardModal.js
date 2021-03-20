@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-12 16:51:28
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 11:55:50
  * @Description: 银行卡选择
  */
 
@@ -52,7 +52,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         setSelect(index);
         setTimeout(() => {
             hide();
-            onDone && onDone(data[index]);
+            onDone && onDone(data[index], index);
         }, 200);
     };
     const addCard = useCallback(() => {

@@ -30,7 +30,7 @@ import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
-var _params, _current, allocation_id;
+var _params, _current, allocation_id, _poid;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -87,7 +87,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             year: _current,
             type,
         };
-        Http.get('http://kmapi.huangjianquan.mofanglicai.com.cn:10080/portfolio/future/yield_chart/20210101', {
+        Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,
         }).then((res) => {
             setRemark(res.result.remark);
@@ -102,6 +102,7 @@ export default function DetailRetiredPlan({navigation, route}) {
         }).then((res) => {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
+            _poid = res.result?.poid;
             setData(res.result);
             setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
             setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
@@ -114,6 +115,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             upid: route.params.upid,
             period: period,
             type: type,
+            poid: _poid,
         }).then((res) => {
             setChartData(res.result);
             setChart(res.result?.yield_info?.chart);
@@ -383,13 +385,9 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             flexDirection: 'row',
                                             alignItems: 'baseline',
                                             marginTop: text(16),
-                                        }}>
-                                        <AntDesign
-                                            name={'exclamationcircleo'}
-                                            color={'#0051CC'}
-                                            size={15}
-                                            onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}
-                                        />
+                                        }}
+                                        onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}>
+                                        <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
                                         <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
                                             {data?.asset_strategy?.tip_info?.title}
                                         </Text>

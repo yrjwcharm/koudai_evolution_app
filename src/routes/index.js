@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 10:51:05
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-19 18:57:28
  * @Description:路由表
  */
 import React from 'react';
@@ -86,7 +86,7 @@ import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投�
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
-import MessageNotice from '../pages/Message/MessageNotice'; //交易通知
+import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
 import Settings from '../pages/Assets/Settings'; // 个人设置
 import Profile from '../pages/Assets/Profile'; // 个人资料

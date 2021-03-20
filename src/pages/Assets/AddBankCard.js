@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-12 16:50:46
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-20 12:31:51
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -55,7 +55,7 @@ const AddBankCard = ({navigation, route}) => {
             return false;
         } else {
             btnClick.current = false;
-            http.post('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/bank_card/bind_prepare/20210101', {
+            http.post('/passport/bank_card/bind_prepare/20210101', {
                 bank_code: bankCode.current,
                 bank_no: cardNum,
                 mobile: phone,
@@ -137,7 +137,7 @@ const AddBankCard = ({navigation, route}) => {
     }, [bankName, cardNum, code, phone, navigation]);
 
     useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/passport/bank_list/20210101', {
+        http.get('/passport/bank_list/20210101', {
             channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
         }).then((res) => {
             if (res.code === '000000') {
