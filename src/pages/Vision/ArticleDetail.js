@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 21:50:15
+ * @LastEditTime: 2021-03-21 21:56:32
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -57,8 +57,11 @@ const ArticleDetail = ({navigation, route}) => {
             resource_cate: 'article',
             action_type: data?.favor_status ? 0 : 1,
         }).then((res) => {
-            Toast.show(res.message);
-            btnClick.current = true;
+            Toast.show(res.message, {
+                onHidden: () => {
+                    btnClick.current = true;
+                },
+            });
             if (res.code === '000000') {
                 init();
             }
@@ -73,8 +76,11 @@ const ArticleDetail = ({navigation, route}) => {
             resource_cate: 'article',
             action_type: data?.collect_status ? 0 : 1,
         }).then((res) => {
-            Toast.show(res.message);
-            btnClick.current = true;
+            Toast.show(res.message, {
+                onHidden: () => {
+                    btnClick.current = true;
+                },
+            });
             if (res.code === '000000') {
                 init();
             }
