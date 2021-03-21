@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 19:05:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-21 21:06:48
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -49,15 +49,15 @@ export default function DetailPolaris({route, navigation}) {
                 setChartData(res.result);
             });
         });
-    }, [route.params, period]);
+    }, [route.params, period, type]);
 
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
     };
-    const jumpTo = (url) => {
-        navigation.navigate({name: url.path, params});
-    };
+    // const jumpTo = (url) => {
+    //     navigation.navigate({name: url.path, params});
+    // };
     useFocusEffect(
         useCallback(() => {
             init();
@@ -85,7 +85,7 @@ export default function DetailPolaris({route, navigation}) {
                 style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
             });
         },
-        [getColor]
+        [getColor, type]
     );
     // 图表滑动结束
     const onHide = ({items}) => {
@@ -260,7 +260,7 @@ export default function DetailPolaris({route, navigation}) {
                                 <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
                             </View>
                             <View style={{height: 220}}>
-                                <Chart initScript={pie(data?.part_texts?.parts_addition_data?.pie?.rows, [])} />
+                                <Chart initScript={pie(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
                             </View>
 
                             <View style={styles.fund_card_sty}>
@@ -349,7 +349,7 @@ export default function DetailPolaris({route, navigation}) {
                                 resizeMode="contain"
                             />
                         </View>
-                        {showMask && <Mask />}
+                        {/* {showMask && <Mask />} */}
                         <BottomModal ref={bottomModal} confirmText={'确认'}>
                             <View style={{padding: text(16)}}>
                                 <Text style={{lineHeight: text(18)}}>{data?.parts_addition_data?.pie?.tip?.desc}</Text>

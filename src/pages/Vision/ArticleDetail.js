@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:21:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-21 20:27:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -26,6 +26,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [data, setData] = useState({});
     const shareModal = useRef(null);
     const [more, setMore] = useState(false);
+    const btnClick = useRef(true);
 
     const init = useCallback(() => {
         http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
@@ -47,24 +48,33 @@ const ArticleDetail = ({navigation, route}) => {
         setHeight(eventData * 1 || deviceHeight);
     };
     const onFavor = useCallback(() => {
+        if (!btnClick.current) {
+            return false;
+        }
+        btnClick.current = false;
         http.post('/community/favor/20210101', {
             resource_id: data?.id,
             resource_cate: 'article',
             action_type: data?.favor_status ? 0 : 1,
         }).then((res) => {
             Toast.show(res.message);
+            btnClick.current = true;
             if (res.code === '000000') {
                 init();
             }
         });
     }, [data, init]);
     const onCollect = useCallback(() => {
+        if (!btnClick.current) {
+            return false;
+        }
         http.post('/community/collect/20210101', {
             resource_id: data?.id,
             resource_cate: 'article',
             action_type: data?.collect_status ? 0 : 1,
         }).then((res) => {
             Toast.show(res.message);
+            btnClick.current = true;
             if (res.code === '000000') {
                 init();
             }
