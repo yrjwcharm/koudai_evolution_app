@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:05:15
+ * @LastEditTime: 2021-03-21 21:48:06
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -442,7 +442,10 @@ function HomeScreen({navigation, route}) {
                                 </LinearGradient>
                             ) : (
                                 item.id === 11 && (
-                                    <TouchableOpacity activeOpacity={0.8} style={[styles.account]}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.account]}
+                                        onPress={() => jump(item.url)}>
                                         {renderTitle(item)}
                                         {item.has_bought && renderPortfolios(item)}
                                     </TouchableOpacity>

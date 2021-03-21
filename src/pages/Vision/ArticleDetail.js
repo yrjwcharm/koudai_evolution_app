@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 20:27:45
+ * @LastEditTime: 2021-03-21 21:50:15
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -112,7 +112,11 @@ const ArticleDetail = ({navigation, route}) => {
                 collectCallback={onCollect}
                 ref={shareModal}
                 more={more}
-                shareContent={{favor_status: !!data?.favor_status, collect_status: !!data?.collect_status}}
+                shareContent={{
+                    favor_status: !!data?.favor_status,
+                    collect_status: !!data?.collect_status,
+                    ...data?.share_info,
+                }}
                 title={data?.title}
             />
             <RNWebView
