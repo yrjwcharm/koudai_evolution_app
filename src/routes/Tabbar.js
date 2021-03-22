@@ -1,8 +1,8 @@
 /*
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 11:42:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 19:19:27
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -22,6 +22,7 @@ export default function Tabbar() {
             initialRouteName="Index"
             screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
+                    global.navigation = navigation;
                     if (route.name === 'Find') {
                         if (focused) {
                             return (
