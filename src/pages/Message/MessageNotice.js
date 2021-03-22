@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 18:28:48
+ * @LastEditTime: 2021-03-22 19:00:25
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -17,7 +17,7 @@ import FitImage from 'react-native-fit-image';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import _ from 'lodash';
-
+var _type;
 export default function MessageNotice({navigation, route}) {
     const [list, setList] = useState([]);
     const [page, setPage] = useState(1);
@@ -32,7 +32,7 @@ export default function MessageNotice({navigation, route}) {
             } else {
                 init('loadmore');
             }
-        }, [page, init])
+        }, [page, init, readInterface])
     );
     const init = useCallback(
         (status, first) => {
@@ -44,6 +44,7 @@ export default function MessageNotice({navigation, route}) {
                     setRefreshing(false);
                     setHasMore(res.result.has_more);
                     first && setTitle(res.result.title);
+                    _type = res.result.message_type;
                     if (status === 'refresh') {
                         setList(res.result.messages);
                     } else if (status === 'loadmore') {
@@ -86,17 +87,24 @@ export default function MessageNotice({navigation, route}) {
     // 已读接口
     const readInterface = (id, type, url, read, index) => {
         // is_read==0没读
-        if (!url && !read) {
+        if (!url) {
+            if (read) return;
             let _params;
             if (type) {
-                _params = {type};
+                _params = {type: _type};
             } else {
                 _params = {id};
             }
             Http.get('/message/read/20210101', {..._params}).then((res) => {
                 if (res.code === '000000') {
                     if (type == 'all') {
-                        init('refresh');
+                        setList((prev) => {
+                            const _listAll = _.cloneDeep(prev);
+                            _listAll.forEach((item) => {
+                                item.is_read = 1;
+                            });
+                            return _listAll;
+                        });
                     } else {
                         setList((prev) => {
                             const _list = _.cloneDeep(prev);
@@ -182,7 +190,7 @@ export default function MessageNotice({navigation, route}) {
                 title={title}
                 leftIcon="chevron-left"
                 rightText={Object.keys(list).length > 0 ? '全部已读' : ''}
-                rightPress={() => readInterface(list?.message_type, 'all')}
+                rightPress={() => readInterface('', 'all')}
                 rightTextStyle={styles.right_sty}
             />
 

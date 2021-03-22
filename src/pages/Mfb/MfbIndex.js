@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 17:58:34
+ * @LastEditTime: 2021-03-22 18:35:19
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -56,7 +56,7 @@ export default function MfbIndex(props) {
                             <Text style={[styles.section_num_sty, {textAlign: 'center'}]}>{section.profit}</Text>
                         </View>
                         <View style={{flex: 1}}>
-                            <Text style={[styles.section_title_sty, {textAlign: 'right'}]}>累计受益</Text>
+                            <Text style={[styles.section_title_sty, {textAlign: 'right'}]}>累计收益</Text>
                             <Text style={[styles.section_num_sty, {textAlign: 'right'}]}>{section.profit_acc}</Text>
                         </View>
                     </View>
@@ -76,11 +76,11 @@ export default function MfbIndex(props) {
                 <View style={Style.flexRow}>
                     <View style={{width: '33%'}}>
                         <Text style={styles.section_title_sty}>七日年化(%)</Text>
-                        <Text style={[styles.section_num_sty]}>{section.return_daily}</Text>
+                        <Text style={[styles.section_num_sty]}>{section.return_week}</Text>
                     </View>
                     <View style={{width: '33%'}}>
                         <Text style={[styles.section_title_sty, {textAlign: 'center'}]}>万份收益(元)</Text>
-                        <Text style={[styles.section_num_sty, {textAlign: 'center'}]}>{section.return_week}</Text>
+                        <Text style={[styles.section_num_sty, {textAlign: 'center'}]}>{section.return_daily}</Text>
                     </View>
                 </View>
             </View>

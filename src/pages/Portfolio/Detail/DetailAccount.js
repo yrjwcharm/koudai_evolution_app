@@ -374,7 +374,7 @@ export default function DetailAccount({route, navigation}) {
 const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
-        width: text(70),
+        width: text(90),
     },
     container_sty: {
         paddingHorizontal: text(16),

@@ -295,7 +295,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                                 : '#fff',
                                                     },
                                                 ]}
-                                                key={_index}
+                                                key={_index + '_sub'}
                                                 onPress={() => changeTab(_item.val, _item.type)}>
                                                 <Text
                                                     style={{
@@ -393,6 +393,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 {data.gather_info.map((_q, _w) => {
                                     return (
                                         <TouchableOpacity
+                                            key={_w + '_q'}
                                             activeOpacity={1}
                                             style={[
                                                 Style.flexRow,
