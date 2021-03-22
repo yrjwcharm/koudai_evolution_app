@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 22:06:16
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 14:56:00
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -28,3 +28,9 @@ export const updateVerifyGesture = () => {
         payload: {verifyGesture: true},
     };
 };
+
+export function getVerifyGesture() {
+    return (dispatch) => {
+        dispatch(updateVerifyGesture());
+    };
+}

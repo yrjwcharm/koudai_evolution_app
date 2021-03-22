@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 11:46:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 14:56:19
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import http from '../../../services/';
 import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
 import {connect} from 'react-redux';
-import {getUserInfo} from '../../../redux/actions/userInfo';
+import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +28,7 @@ class Login extends Component {
         };
     }
     componentDidMount() {
+        console.log(this.props);
         Storage.delete('loginStatus');
     }
     login = () => {
@@ -37,6 +38,7 @@ class Login extends Component {
             Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.getUserInfo();
+                this.props.getVerifyGesture();
                 Toast.show('登录成功', {
                     onHidden: () => {
                         this.props.navigation.goBack();
@@ -119,6 +121,7 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {
     getUserInfo,
+    getVerifyGesture,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 const styles = StyleSheet.create({

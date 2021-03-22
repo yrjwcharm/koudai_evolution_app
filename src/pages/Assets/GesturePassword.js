@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import OkGesturePassword from '../../components/gesturePassword/OkGesturePassword';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {px as text} from '../../utils/appUtil';
+import {Colors, Space, Style} from '../../common/commonStyle';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
-import Header from '../../components/NavBar';
 import {updateVerifyGesture} from '../../redux/actions/userInfo';
 import {useDispatch} from 'react-redux';
 var isOpen,
@@ -11,7 +14,8 @@ var isOpen,
     refresh = true;
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
-export default function GesturePassword({navigation, route}) {
+export default function GesturePassword({option, route}) {
+    const navigation = useNavigation();
     const [data, setData] = useState({
         point1: '#FFFFFF', //从0开始
         point2: '#FFFFFF',
@@ -26,13 +30,16 @@ export default function GesturePassword({navigation, route}) {
     // const [password, setPassword] = useState('');
     const [status, setStatus] = useState(false);
     const [isWarning, setIsWarning] = useState(false); //设置警告
-    const [title, setTitle] = useState('请绘制解锁图案');
+    const [title, setTitle] = useState(option === 'verify' ? '请输入手势密码' : '请绘制解锁图案');
     const dispatch = useDispatch();
     useEffect(() => {
         // storage.delete('gesturePwd');
         // 修改手势密码
         if (route?.params?.option == 'modify') {
+            navigation.setOptions({title: '修改手势密码'});
             setTitle('请输入旧的手势密码');
+        } else if (route?.params?.option == 'firstSet') {
+            navigation.setOptions({title: '设置手势密码'});
         }
         storage.get('gesturePwd').then((res) => {
             if (res) {
@@ -44,7 +51,7 @@ export default function GesturePassword({navigation, route}) {
         storage.get('openGesturePwd').then((result) => {
             isOpen = result;
         });
-    }, []);
+    }, [navigation, route]);
 
     const _onEnd = (pwd) => {
         console.log(pwd);
@@ -61,7 +68,7 @@ export default function GesturePassword({navigation, route}) {
                 setTimeout(() => {
                     setIsWarning(false);
                 }, 1000);
-                setTitle('手势密码错误');
+                setTitle('密码输入错误，请重新输入');
             }
             // 修改手势密码
         } else if (route?.params?.option == 'modify' && refresh) {
@@ -85,10 +92,10 @@ export default function GesturePassword({navigation, route}) {
             refreshPwd(pwd);
         }
     };
-    const refreshPwd = (pwd, status) => {
+    const refreshPwd = (pwd, _status) => {
         if (!password) {
             password = pwd;
-            if (!status) {
+            if (!_status) {
                 setTitle('请再次绘制解锁图案');
             }
             // setPassword(pwd);
@@ -103,6 +110,7 @@ export default function GesturePassword({navigation, route}) {
             if (route?.params?.option == 'modify') {
                 Toast.show('修改成功');
             } else {
+                dispatch(updateVerifyGesture());
                 Toast.show('设置成功');
             }
             setTimeout(() => {
@@ -213,6 +221,15 @@ export default function GesturePassword({navigation, route}) {
                     }, 500);
                 }}
             />
+            {option === 'verify' && (
+                <TouchableOpacity
+                    style={[Style.flexRow, styles.forgotPwd]}
+                    activeOpacity={0.8}
+                    onPress={() => navigation.navigate('Login')}>
+                    <Text style={{marginRight: text(4)}}>{'忘记手势密码'}</Text>
+                    <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
+                </TouchableOpacity>
+            )}
         </View>
     );
 }
@@ -248,5 +265,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#333333',
         marginBottom: 5,
+    },
+    forgotPwd: {
+        marginTop: Space.marginVertical,
+        paddingRight: Space.padding,
+        width: '100%',
+        justifyContent: 'flex-end',
     },
 });
