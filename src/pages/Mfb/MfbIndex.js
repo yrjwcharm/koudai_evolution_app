@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 17:09:31
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 17:58:34
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -79,7 +79,7 @@ export default function MfbIndex(props) {
                         <Text style={[styles.section_num_sty]}>{section.return_daily}</Text>
                     </View>
                     <View style={{width: '33%'}}>
-                        <Text style={[styles.section_title_sty, {textAlign: 'center'}]}>万份受益(元)</Text>
+                        <Text style={[styles.section_title_sty, {textAlign: 'center'}]}>万份收益(元)</Text>
                         <Text style={[styles.section_num_sty, {textAlign: 'center'}]}>{section.return_week}</Text>
                     </View>
                 </View>
@@ -111,7 +111,7 @@ export default function MfbIndex(props) {
                                     <Text style={styles.bottom_num_sty}>{data?.holding?.profit}</Text>
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
-                                    <Text style={styles.top_text_sty}>累计受益</Text>
+                                    <Text style={styles.top_text_sty}>累计收益</Text>
                                     <Text style={styles.bottom_num_sty}>{data?.holding?.profit_acc}</Text>
                                 </View>
                             </View>

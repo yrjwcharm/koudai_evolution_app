@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-19 18:00:57
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 15:30:10
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 16:34:21
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
@@ -181,7 +181,7 @@ export default class App extends React.Component {
                         style={{
                             width: this.state.videoWidth,
                             height: this.state.videoHeight,
-                            backgroundColor: '#FFC1C1',
+                            backgroundColor: '#eee',
                         }}
                         volume={this.state.volume} //调节音量
                         allowsExternalPlayback={false} // 不允许导出 或 其他播放器播放
@@ -195,7 +195,7 @@ export default class App extends React.Component {
                 {/* 播放的按钮：点击之后需要消失 */}
                 {pausedBtn}
                 {/* 暂停按钮，进度条，全屏按钮 */}
-                {pausedSliderFull}
+                {/* {pausedSliderFull} */}
             </View>
         );
     }
