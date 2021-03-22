@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 16:29:00
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 20:25:08
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -58,7 +58,7 @@ export default function Table(props) {
                                     html={_item[0]}
                                 />
                             </View>
-                            <View style={styles.body_sty}></View>
+                            <View style={styles.body_sty} />
                             <View style={{paddingRight: text(15)}}>
                                 <Html
                                     style={{textAlign: 'right', fontSize: text(12), color: '#545968'}}
@@ -81,6 +81,7 @@ export default function Table(props) {
                 {data.tr_list.map((_i, _d, arr) => {
                     return (
                         <Text
+                            key={_i + _d}
                             style={[
                                 styles.ab_text_sty,
                                 {

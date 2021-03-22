@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:53:44
+ * @LastEditTime: 2021-03-22 19:16:25
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -110,15 +110,20 @@ export default function DetailAccount({route}) {
         }
     }, []);
     return (
-        <>
+        <View style={{flex: 1}}>
             {Object.keys(data).length > 0 ? <Header title={data?.title} leftIcon="chevron-left" /> : null}
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{marginBottom: 100, flex: 1}}>
+                <ScrollView>
                     <View style={[styles.container_sty]}>
                         <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
                             {data?.ratio_info?.title}
                         </Text>
-                        <Text style={{paddingTop: text(16), paddingBottom: text(8)}}>
+                        <Text
+                            style={{
+                                paddingTop: text(16),
+                                paddingBottom: text(8),
+                                textAlign: 'center',
+                            }}>
                             <Text style={styles.amount_sty}>{data?.ratio_info?.ratio_val}</Text>
                             <Text style={styles.radio_sty}> {data?.ratio_info?.ratio_desc}</Text>
                         </Text>
@@ -304,10 +309,8 @@ export default function DetailAccount({route}) {
                     <BottomDesc />
                 </ScrollView>
             )}
-            {Object.keys(data).length > 0 && (
-                <FixedBtn btns={data.btns} style={{position: 'absolute', bottom: 0}} activeOpacity={1} />
-            )}
-        </>
+            {Object.keys(data).length > 0 && <FixedBtn btns={data.btns} activeOpacity={1} />}
+        </View>
     );
 }
 const styles = StyleSheet.create({

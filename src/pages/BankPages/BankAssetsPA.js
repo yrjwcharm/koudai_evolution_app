@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:26:41
  * @Description:银行持仓(平安)
  * @LastEditors: xjh
- * @LastEditTime: 2021-02-04 16:09:08
+ * @LastEditTime: 2021-03-22 18:36:18
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -61,11 +61,11 @@ export default function BankAssetsPA(props) {
                                     <Html style={styles.bottom_num_sty} html={data.part1.profit} />
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
-                                    <Text style={styles.top_text_sty}>累计受益</Text>
+                                    <Text style={styles.top_text_sty}>累计收益</Text>
                                     <Html style={styles.bottom_num_sty} html={data.part1.profit_acc} />
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
-                                    <Text style={styles.top_text_sty}>累计受益</Text>
+                                    <Text style={styles.top_text_sty}>累计收益</Text>
                                     <Html style={styles.bottom_num_sty} html={data.part1.profit_acc} />
                                 </View>
                             </View>

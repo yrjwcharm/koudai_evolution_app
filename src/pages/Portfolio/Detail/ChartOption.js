@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 18:27:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 20:34:19
  */
-import _ from 'lodash';
+// import _ from 'lodash';
 export const baseChart = (data) => `(function(){
   const chart = new F2.Chart({
     id: 'chart',
@@ -59,7 +59,7 @@ export const pie = (data, map) => `
     chart.legend({
       position: 'right',
       itemFormatter: function itemFormatter(val) {
-        return val + '  '+ (${JSON.stringify(map)}[val]).toFixed(2)+'%'
+        return val + '  '+ (${JSON.stringify(map)}[val] * 100).toFixed(2)+'%'
       }
     });
     chart.tooltip(true);

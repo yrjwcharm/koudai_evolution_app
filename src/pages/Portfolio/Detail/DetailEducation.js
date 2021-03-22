@@ -30,7 +30,7 @@ import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
-var _params, _current, allocation_id, _choose;
+var _params, _current, allocation_id, _choose, _age;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -94,7 +94,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     };
     const _createDateData = () => {
         let _dep = [];
-        for (let i = 1; i <= 60; i++) {
+        for (let i = _age; i <= 18; i++) {
             _dep.push(i);
         }
 
@@ -151,6 +151,7 @@ export default function DetailRetiredPlan({navigation, route}) {
         }).then((res) => {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
+            _age = res.result.plan_info.personal_info.age;
             setData(res.result);
             setAge(res.result.plan_info.personal_info.age);
             setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
@@ -172,7 +173,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     useEffect(() => {
         init();
         return () => Picker.hide();
-    }, [route]);
+    }, []);
     useFocusEffect(
         useCallback(() => {
             init();
