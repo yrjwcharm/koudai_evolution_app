@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -36,9 +36,9 @@ export default function DetailAccount({route, navigation}) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const [type, setType] = useState(1);
-    const changeTab = (p, type) => {
+    const changeTab = (p, t) => {
         setPeriod(p);
-        setType(type);
+        setType(t);
     };
     const jumpPage = (url, params) => {
         if (!url) {
@@ -49,6 +49,7 @@ export default function DetailAccount({route, navigation}) {
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
             upid: route?.params?.upid,
+            fr: route.params?.fr,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);

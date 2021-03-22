@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 15:36:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-21 22:17:46
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -35,10 +35,11 @@ export default function Trade({navigation, route}) {
         http.get('/freefund/buy/20210101', {}).then((res) => {
             setData(res.result);
             http.get('trade/buy/plan/20210101', {
+                poid: route.params?.poid,
                 amount: res.result.buy_info.amount,
                 pay_method: res.result.buy_info.pay_method,
-            }).then((data) => {
-                setList(data.result);
+            }).then((resp) => {
+                setList(resp.result);
             });
         });
     }, [route]);
@@ -47,7 +48,9 @@ export default function Trade({navigation, route}) {
             amount: data.buy_info.amount,
             password,
         }).then((res) => {
-            navigation.navigate(data?.button?.url?.path);
+            if (res.code === '000000') {
+                navigation.navigate(data?.button?.url?.path);
+            }
         });
     };
     return (

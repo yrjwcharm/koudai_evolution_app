@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 15:38:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-21 22:08:05
  * @Description: 体验金首页
  */
 
@@ -166,7 +166,9 @@ const ExperienceGold = ({navigation}) => {
                     )}
                     {/* 未购买稳健组合后展示的样式 */}
                     {data.part2?.cards && (
-                        <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign}]}>{data?.part2?.title}</Text>
+                        <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign, marginTop: text(12)}]}>
+                            {data?.part2?.title}
+                        </Text>
                     )}
                     {data.part2?.cards?.map((_item, _index) => {
                         return (
