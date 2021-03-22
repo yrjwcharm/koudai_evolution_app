@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:47:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 16:29:31
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -31,7 +31,7 @@ export default function MessageNotice({navigation, route}) {
             } else {
                 init('loadmore');
             }
-        }, [page, init, readInterface])
+        }, [page, init])
     );
     const init = useCallback(
         (status, first) => {
@@ -51,7 +51,7 @@ export default function MessageNotice({navigation, route}) {
                 }
             });
         },
-        [route, page, readInterface]
+        [route, page]
     );
 
     // 下拉刷新
