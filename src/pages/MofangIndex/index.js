@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 14:42:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 15:37:10
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -298,7 +298,10 @@ const Index = (props) => {
                                         jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: px(14)}}>
-                                    <FastImage style={styles.robot} source={require('../../assets/img/robot.png')} />
+                                    <FastImage
+                                        style={styles.robot}
+                                        source={require('../../assets/img/index/robot.png')}
+                                    />
                                     <View style={styles.recommen_card}>
                                         <ImageBackground
                                             source={require('../../assets/img/index/recommendBg.png')}
@@ -591,8 +594,8 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     robot: {
-        width: px(86),
-        height: px(86),
+        width: px(80),
+        height: px(81),
         top: px(-20),
         left: px(4),
         position: 'absolute',

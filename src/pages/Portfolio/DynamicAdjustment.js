@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 14:59:31
+ * @LastEditTime: 2021-03-22 17:33:54
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -14,6 +14,7 @@ import http from '../../services';
 import HTML from '../../components/RenderHtml';
 import {percentStackColumn} from './components/ChartOption';
 import {Chart} from '../../components/Chart';
+import Empty from '../../components/EmptyTip';
 
 class DynamicAdjustment extends Component {
     constructor(props) {
@@ -60,64 +61,79 @@ class DynamicAdjustment extends Component {
             <ScrollView
                 style={[styles.container]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
-                <View style={[styles.topPart]}>
-                    <Chart initScript={percentStackColumn(chartData)} data={chartData} style={{width: '100%'}} />
-                </View>
-                <View style={[styles.adjustListContainer]}>
-                    <Text style={[styles.adjustTitle]}>{data.record?.title}</Text>
-                    {data.record?.items?.map((item, index) => {
-                        return (
-                            <View
-                                key={item.id}
-                                style={[
-                                    styles.borderTop,
-                                    index === data.record.items.length - 1 ? styles.borderBottom : {},
-                                ]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[styles.adjustRecord, Style.flexRow]}
-                                    onPress={() =>
-                                        navigation.navigate('HistoryAdjust', {
-                                            adjust_id: item.id,
-                                            upid: route.params?.upid || 1,
-                                            fr: 'portfolio',
-                                        })
-                                    }>
-                                    <View style={{flex: 1}}>
-                                        <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
-                                            <Text style={[styles.recordTitle, {fontWeight: '500'}]}>{item.title}</Text>
-                                            <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
-                                                &nbsp;&nbsp;({item.date})
-                                            </Text>
-                                        </Text>
-                                        <HTML numberOfLines={1} html={item.content} style={styles.recordDesc} />
+                {data?.record?.items?.length > 0 ? (
+                    <>
+                        <View style={[styles.topPart]}>
+                            <Chart
+                                initScript={percentStackColumn(chartData)}
+                                data={chartData}
+                                style={{width: '100%'}}
+                            />
+                        </View>
+                        <View style={[styles.adjustListContainer]}>
+                            <Text style={[styles.adjustTitle]}>{data.record?.title}</Text>
+                            {data.record?.items?.map((item, index) => {
+                                return (
+                                    <View
+                                        key={item.id}
+                                        style={[
+                                            styles.borderTop,
+                                            index === data.record.items.length - 1 ? styles.borderBottom : {},
+                                        ]}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.adjustRecord, Style.flexRow]}
+                                            onPress={() =>
+                                                navigation.navigate('HistoryAdjust', {
+                                                    adjust_id: item.id,
+                                                    upid: route.params?.upid || 1,
+                                                    fr: 'portfolio',
+                                                })
+                                            }>
+                                            <View style={{flex: 1}}>
+                                                <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
+                                                    <Text style={[styles.recordTitle, {fontWeight: '500'}]}>
+                                                        {item.title}
+                                                    </Text>
+                                                    <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
+                                                        &nbsp;&nbsp;({item.date})
+                                                    </Text>
+                                                </Text>
+                                                <HTML numberOfLines={1} html={item.content} style={styles.recordDesc} />
+                                            </View>
+                                            <FontAwesome
+                                                name={'angle-right'}
+                                                size={20}
+                                                color={Colors.descColor}
+                                                style={{marginLeft: text(12)}}
+                                            />
+                                        </TouchableOpacity>
                                     </View>
+                                );
+                            })}
+                            {data?.record?.btn && (
+                                <TouchableOpacity
+                                    style={[styles.moreRecord, Style.flexCenter]}
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            data?.record?.btn?.url?.path,
+                                            data?.record?.btn?.url?.params
+                                        )
+                                    }>
+                                    <Text style={[styles.moreText]}>{data.record?.btn.title}</Text>
                                     <FontAwesome
                                         name={'angle-right'}
                                         size={20}
-                                        color={Colors.descColor}
-                                        style={{marginLeft: text(12)}}
+                                        color={Colors.brandColor}
+                                        style={{marginLeft: text(4)}}
                                     />
                                 </TouchableOpacity>
-                            </View>
-                        );
-                    })}
-                    {data?.record?.btn && (
-                        <TouchableOpacity
-                            style={[styles.moreRecord, Style.flexCenter]}
-                            onPress={() =>
-                                navigation.navigate(data?.record?.btn?.url?.path, data?.record?.btn?.url?.params)
-                            }>
-                            <Text style={[styles.moreText]}>{data.record?.btn.title}</Text>
-                            <FontAwesome
-                                name={'angle-right'}
-                                size={20}
-                                color={Colors.brandColor}
-                                style={{marginLeft: text(4)}}
-                            />
-                        </TouchableOpacity>
-                    )}
-                </View>
+                            )}
+                        </View>
+                    </>
+                ) : (
+                    <Empty text={'暂无调仓信息'} />
+                )}
             </ScrollView>
         );
     }
