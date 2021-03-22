@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 20:01:19
+ * @LastEditTime: 2021-03-22 21:08:38
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -363,15 +363,15 @@ function HomeScreen({navigation, route}) {
                     ) : null}
                     <View style={[styles.profitContainer, Style.flexRow]}>
                         <View style={[Style.flexCenter, {flex: 1}]}>
-                            <Text style={styles.profitKey}>累计收益</Text>
-                            <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit_acc : '****'}
-                            </Text>
-                        </View>
-                        <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>日收益</Text>
                             <Text style={styles.profitVal}>
                                 {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit : '****'}
+                            </Text>
+                        </View>
+                        <View style={[Style.flexCenter, {flex: 1}]}>
+                            <Text style={styles.profitKey}>累计收益</Text>
+                            <Text style={styles.profitVal}>
+                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit_acc : '****'}
                             </Text>
                         </View>
                     </View>
