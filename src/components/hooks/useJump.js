@@ -1,14 +1,15 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:45:41
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 18:47:41
  * @Description: 自定义跳转钩子
  */
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Linking} from 'react-native';
 import Toast from '../Toast';
+import * as WeChat from 'react-native-wechat-lib';
 function useJump() {
     const navigation = useNavigation();
     return (url, type = 'navigate') => {
@@ -24,6 +25,18 @@ function useJump() {
                     .catch((err) => Toast.show(err));
             } else if (url.type === 3) {
                 navigation[type]('OpenPdf', {url: url.path});
+            } else if (url.type == 5) {
+                WeChat.isWXAppInstalled().then((isInstalled) => {
+                    if (isInstalled) {
+                        WeChat.launchMiniProgram({
+                            userName: 'gh_476ff6861b86',
+                            miniProgramType: 0,
+                            path: url.path,
+                        });
+                    } else {
+                        Toast.show('请安装微信');
+                    }
+                });
             } else {
                 navigation[type](url.path, url.params || {});
             }

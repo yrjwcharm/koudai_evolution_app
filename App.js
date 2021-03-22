@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:31:29
+ * @LastEditTime: 2021-03-22 18:02:17
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -26,8 +26,6 @@ import http from './src/services';
 import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
 
-// import {useDispatch} from 'react-redux';
-// import {updateUserInfo} from './src/redux/actions/userInfo';
 import JPush from 'jpush-react-native';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {

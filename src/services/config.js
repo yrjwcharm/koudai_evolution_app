@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 12:05:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 18:51:50
  * @Description:环境
  */
 const env = 'develop'; //默认
@@ -30,6 +30,7 @@ const SERVER_URL = {
         HTTP: 'http://kapi-web.wanggang.mofanglicai.com.cn:10080',
         WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
         IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
     },
     ll: {
         HTTP: 'http://kapi-web.ll.mofanglicai.com.cn:10080/',
