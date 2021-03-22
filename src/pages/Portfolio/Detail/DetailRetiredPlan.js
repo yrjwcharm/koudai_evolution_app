@@ -151,7 +151,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     };
     const _createDateData = () => {
         let _dep = [];
-        for (let i = 18; i <= 85; i++) {
+        for (let i = 1; i <= 60; i++) {
             _dep.push(i);
         }
         return _dep;

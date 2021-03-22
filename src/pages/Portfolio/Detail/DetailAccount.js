@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: xjh
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -57,7 +57,7 @@ export default function DetailAccount({route, navigation}) {
                     allocation_id: res.result.allocation_id,
                     benchmark_id: res.result.benchmark_id,
                     period: period,
-                    type: 1,
+                    type: type,
                 }).then((resp) => {
                     setLabelInfo(resp.result.yield_info.label);
                     setChartData(resp.result.yield_info);
@@ -65,7 +65,7 @@ export default function DetailAccount({route, navigation}) {
                 });
             }
         });
-    }, [route.params, period]);
+    }, [route.params, period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -300,45 +300,45 @@ export default function DetailAccount({route, navigation}) {
                         <ListHeader data={data.risk_info.header} />
                         <View style={{height: 300, position: 'relative'}}>
                             <View style={[Style.flexRow, {marginTop: text(13), marginLeft: text(30)}]}>
-                                <View style={{flex: 1}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info.chart.data[0].key}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info.chart.data[0].val}</Text>
+                                <View style={{flex: 1, position: 'relative'}}>
+                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[0]?.title}</Text>
+                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[0]?.val}</Text>
                                     {/* <Image
                                         source={require('../../../assets/img/detail/zan.png')}
-                                        style={styles.zan_sty}
+                                        style={[styles.zan_sty]}
                                     /> */}
                                 </View>
                                 <View style={{flex: 1}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info.chart.data[1].key}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info.chart.data[1].val}</Text>
+                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[1]?.title}</Text>
+                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[1]?.val}</Text>
                                 </View>
                                 <View style={{flex: 1}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info.chart.data[2].key}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info.chart.data[2].val}</Text>
+                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[2]?.title}</Text>
+                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[2]?.val}</Text>
                                 </View>
                             </View>
                             {/* <Text style={{borderColor: '#ddd', borderWidth: 0.5}}></Text> */}
                             <Chart
-                                initScript={histogram(data.risk_info.chart.data, data.risk_info.min_ratio)}
+                                initScript={histogram(data.risk_info.chart, data.risk_info?.label[2]?.ratio)}
                                 style={{marginTop: text(-20), zIndex: 9}}
                             />
 
                             <View style={{flexDirection: 'row', marginLeft: text(30)}}>
                                 <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                     <Ionicons name={'square'} color={'#E74949'} size={10} />
-                                    <Text> {data.risk_info.chart.label.y[0].key}</Text>
+                                    <Text> {data.risk_info?.label[0]?.key}</Text>
                                 </View>
                                 <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                     <Ionicons name={'square'} color={'#545968'} size={10} />
-                                    <Text> {data.risk_info.chart.label.y[1].key}</Text>
+                                    <Text> {data.risk_info?.label[1]?.key}</Text>
                                 </View>
                                 <View style={{width: text(100), fontSize: text(12), flexShrink: 0}}>
-                                    <Text style={{fontSize: text(12)}}>---{data.risk_info.chart.label.x[0].key}</Text>
+                                    <Text style={{fontSize: text(12)}}>---{data.risk_info?.label[2]?.key}</Text>
                                     <Text
                                         style={{
                                             fontSize: text(10),
                                         }}>
-                                        {data.risk_info.chart.label.x[0].val}
+                                        {data.risk_info?.label[2]?.val}
                                     </Text>
                                 </View>
                             </View>
@@ -443,5 +443,7 @@ const styles = StyleSheet.create({
     zan_sty: {
         width: text(24),
         height: text(24),
+        position: 'absolute',
+        bottom: 0,
     },
 });

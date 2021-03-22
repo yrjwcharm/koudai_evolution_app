@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 14:41:09
+ * @LastEditTime: 2021-03-22 16:22:30
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -28,7 +28,7 @@ export default function RemindMessage({navigation}) {
             init();
         }, [init])
     );
-    const init = () => {
+    const init = useCallback(() => {
         checkNotifications().then(({status, settings}) => {
             // …
             if (status == 'denied' || status == 'blocked') {
@@ -38,7 +38,7 @@ export default function RemindMessage({navigation}) {
         Http.get('/mapi/message/index/20210101').then((res) => {
             setData(res.result);
         });
-    };
+    }, []);
     const openLink = () => {
         requestNotifications(['alert', 'sound']).then(({status, settings}) => {
             // …
@@ -62,9 +62,9 @@ export default function RemindMessage({navigation}) {
         });
     };
     return (
-        <View>
+        <View style={{flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <View>
                     {!hide && showNotice && (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
@@ -88,7 +88,7 @@ export default function RemindMessage({navigation}) {
                         </View>
                     )}
 
-                    <View style={{padding: text(16)}}>
+                    <ScrollView style={{padding: text(16)}}>
                         <TouchableOpacity
                             activeOpacity={0.9}
                             style={styles.im_card_sty}
@@ -176,8 +176,8 @@ export default function RemindMessage({navigation}) {
                                 );
                             })}
                         </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </View>
             )}
         </View>
     );

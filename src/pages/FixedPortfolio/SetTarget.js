@@ -3,7 +3,7 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 11:05:21
+ * @LastEditTime: 2021-03-22 14:46:30
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
@@ -34,12 +34,12 @@ export default function SetTarget({route, navigation}) {
             ...params,
         }).then((res) => {
             setData(res.result);
-            setNum(res.result.target_info.default.toFixed(2) * 100);
+            setNum(res.result.target_info.default * 100);
         });
     }, []);
     const confirmData = () => {
         Http.get('/trade/set/invest_target/20210101', {
-            target: num,
+            target: num / 100,
             possible: data.target_info.possible,
             poid: route.params.poid,
         }).then((res) => {
@@ -53,12 +53,12 @@ export default function SetTarget({route, navigation}) {
             {Object.keys(data).length > 0 && (
                 <View style={styles.container}>
                     <Text style={{textAlign: 'center', color: Colors.defaultColor}}>{data.target_info.title}</Text>
-                    <Text style={styles.ratio_sty}>{num}%</Text>
+                    <Text style={styles.ratio_sty}>{Number(num).toFixed(2)}%</Text>
                     <Html style={styles.desc_sty} html={data.target_info.desc} />
                     <View style={{marginVertical: text(24)}}>
                         <Slider
                             value={num}
-                            onValueChange={onChange}
+                            onSlidingComplete={onChange}
                             maximumValue={data.target_info.max * 100}
                             minimumValue={data.target_info.min * 100}
                             step={1}
