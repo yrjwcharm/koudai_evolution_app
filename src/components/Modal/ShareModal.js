@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 15:21:12
+ * @LastEditTime: 2021-03-22 10:22:28
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -43,12 +43,16 @@ const ShareModal = React.forwardRef((props, ref) => {
             type: 'ShareTimeline',
         },
         {
-            img: require('../../assets/img/share/like.png'),
+            img: shareContent?.favor_status
+                ? require('../../assets/img/share/likeActive.png')
+                : require('../../assets/img/share/like.png'),
             title: shareContent?.favor_status ? '取消点赞' : '点赞',
             type: 'Like',
         },
         {
-            img: require('../../assets/img/share/collect.png'),
+            img: shareContent?.collect_status
+                ? require('../../assets/img/share/collectActive.png')
+                : require('../../assets/img/share/collect.png'),
             title: shareContent?.collect_status ? '取消收藏' : '收藏',
             type: 'Collect',
         },
@@ -184,9 +188,15 @@ const ShareModal = React.forwardRef((props, ref) => {
                         {list.map((item, index) => {
                             if (item.type === 'Like') {
                                 item.title = shareContent?.favor_status ? '取消点赞' : '点赞';
+                                item.img = shareContent?.favor_status
+                                    ? require('../../assets/img/share/likeActive.png')
+                                    : require('../../assets/img/share/like.png');
                             }
                             if (item.type === 'Collect') {
                                 item.title = shareContent?.collect_status ? '取消收藏' : '收藏';
+                                item.img = shareContent?.collect_status
+                                    ? require('../../assets/img/share/collectActive.png')
+                                    : require('../../assets/img/share/collect.png');
                             }
                             if (!more) {
                                 if (item.type === 'Like' || item.type === 'Collect') {

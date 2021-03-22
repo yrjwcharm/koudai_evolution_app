@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 21:56:32
+ * @LastEditTime: 2021-03-22 10:23:24
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -119,8 +119,8 @@ const ArticleDetail = ({navigation, route}) => {
                 ref={shareModal}
                 more={more}
                 shareContent={{
-                    favor_status: !!data?.favor_status,
-                    collect_status: !!data?.collect_status,
+                    favor_status: data?.favor_status,
+                    collect_status: data?.collect_status,
                     ...data?.share_info,
                 }}
                 title={data?.title}
