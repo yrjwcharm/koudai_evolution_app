@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 18:28:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 21:06:12
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -177,7 +177,7 @@ export default function MessageNotice({navigation, route}) {
     };
 
     return (
-        <View style={styles.container}>
+        <>
             <Header
                 title={title}
                 leftIcon="chevron-left"
@@ -185,29 +185,25 @@ export default function MessageNotice({navigation, route}) {
                 rightPress={() => readInterface(list?.message_type, 'all')}
                 rightTextStyle={styles.right_sty}
             />
-
-            {list.length > 0 && (
-                <FlatList
-                    data={list}
-                    initialNumToRender={10}
-                    keyExtractor={(item, index) => item + index}
-                    ListFooterComponent={renderFooter}
-                    onEndReached={onEndReached}
-                    onEndReachedThreshold={0.5}
-                    onRefresh={onRefresh}
-                    refreshing={refreshing}
-                    renderItem={renderItem}
-                    style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical}}
-                    extraData={list}
-                />
-            )}
-        </View>
+            <FlatList
+                data={list}
+                initialNumToRender={10}
+                keyExtractor={(item, index) => item + index}
+                ListFooterComponent={renderFooter}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.5}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                renderItem={renderItem}
+                style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical, backgroundColor: Colors.bgColor}}
+                extraData={list}
+            />
+        </>
     );
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F6F8',
     },
     card_sty: {
         backgroundColor: '#fff',

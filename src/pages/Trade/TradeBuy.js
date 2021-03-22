@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 19:46:08
+ * @LastEditTime: 2021-03-22 20:30:26
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -504,7 +504,7 @@ class TradeBuy extends Component {
         const {showMask, data, type, has_tab, buyBtnCanClick} = this.state;
         const {button} = data;
         return (
-            <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
+            <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51), backgroundColor: Colors.bgColor}}>
                 {has_tab ? (
                     <ScrollableTabView
                         onChangeTab={this.changeBuyStatus}

@@ -2,12 +2,12 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-05 10:50:58
+ * @LastEditTime: 2021-03-22 18:57:59
  * @Description:规划结果页
  */
 
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Vibration, Image} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -102,7 +102,6 @@ export default class planResult extends Component {
         this.animationTimer && clearTimeout(this.animationTimer);
     }
     jumpNext = (url, params) => {
-        Vibration.vibrate(10);
         this.props.navigation.replace(url, params);
     };
     render() {
