@@ -3,12 +3,12 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 16:29:31
+ * @LastEditTime: 2021-03-22 18:16:40
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
@@ -16,9 +16,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FitImage from 'react-native-fit-image';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import _ from 'lodash';
 
 export default function MessageNotice({navigation, route}) {
-    const [list, setList] = useState({});
+    const [list, setList] = useState([]);
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -83,7 +84,7 @@ export default function MessageNotice({navigation, route}) {
         );
     }, [hasMore, list]);
     // 已读接口
-    const readInterface = (id, type, url, read) => {
+    const readInterface = (id, type, url, read, index) => {
         // is_read==0没读
         if (!url && !read) {
             let _params;
@@ -93,7 +94,13 @@ export default function MessageNotice({navigation, route}) {
                 _params = {id};
             }
             Http.get('/message/read/20210101', {..._params}).then((res) => {
-                init();
+                if (res.code === '000000') {
+                    setList((prev) => {
+                        const _list = _.cloneDeep(prev);
+                        _list[index].is_read = 1;
+                        return _list;
+                    });
+                }
             });
         } else {
             jump(url);
@@ -105,18 +112,19 @@ export default function MessageNotice({navigation, route}) {
             <View>
                 {item.content_type == 0 && (
                     <TouchableOpacity
+                        activeOpacity={0.8}
                         style={styles.card_sty}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read)}>
+                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read, index)}>
                         <View style={Style.flexBetween}>
-                            <Text style={[styles.title_sty, {color: item.is_read == 1 ? '#9AA1B2' : ''}]}>
+                            <Text style={[styles.title_sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.title}
                             </Text>
-                            <Text style={[styles.time_Sty, {color: item.is_read == 1 ? '#9AA1B2' : ''}]}>
+                            <Text style={[styles.time_Sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.post_time}
                             </Text>
                         </View>
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
-                            <Text style={[styles.content_sty, {color: item.is_read == 1 ? '#9AA1B2' : ''}]}>
+                            <Text style={[styles.content_sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.content}
                             </Text>
                             <AntDesign name={'right'} size={12} color={'#8F95A7'} />
@@ -126,7 +134,7 @@ export default function MessageNotice({navigation, route}) {
                 {item.content_type == 1 && (
                     <TouchableOpacity
                         style={[styles.card_sty, {paddingBottom: 0}]}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read)}>
+                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read, index)}>
                         <View
                             style={{
                                 borderTopLeftRadius: text(10),
@@ -174,7 +182,7 @@ export default function MessageNotice({navigation, route}) {
                 rightTextStyle={styles.right_sty}
             />
 
-            {Object.keys(list).length > 0 && (
+            {list.length > 0 && (
                 <FlatList
                     data={list}
                     initialNumToRender={10}
@@ -185,6 +193,7 @@ export default function MessageNotice({navigation, route}) {
                     onRefresh={onRefresh}
                     refreshing={refreshing}
                     renderItem={renderItem}
+                    style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical}}
                     extraData={list}
                 />
             )}
