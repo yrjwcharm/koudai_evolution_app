@@ -6,7 +6,7 @@
  * @Description:数字键盘
  */
 import React from 'react';
-import {View, Text, TouchableHighlight, Dimensions, StyleSheet, Vibration} from 'react-native';
+import {View, Text, TouchableHighlight, Dimensions, StyleSheet} from 'react-native';
 import {constants} from './util';
 import {px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
@@ -81,7 +81,6 @@ const DATA_SOURCES = [
 
 const Keyboard = (props) => {
     const onPress = (item) => {
-        Vibration.vibrate(10);
         if (item.onPress) {
             item.onPress(item.value);
             return;

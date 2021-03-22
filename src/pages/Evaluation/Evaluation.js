@@ -2,8 +2,8 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
 <<<<<<< HEAD
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 11:24:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 19:19:53
 =======
  * @LastEditors: yhc
  * @LastEditTime: 2021-03-22 16:55:15
@@ -203,8 +203,9 @@ class Question extends Component {
             return;
         }
         this.canNextClick = true;
-        Vibration.vibrate(10);
-
+        if (Platform.OS == 'android') {
+            Vibration.vibrate(10);
+        }
         const {translateY, offsetY, opacity} = this.state;
         this.reportResult(option);
         if (option.action == 'url') {
@@ -242,6 +243,9 @@ class Question extends Component {
         Keyboard.dismiss();
         if (this.canNextClick) {
             return;
+        }
+        if (Platform.OS == 'android') {
+            Vibration.vibrate(10);
         }
         this.canNextClick = true;
         Vibration.vibrate(10);

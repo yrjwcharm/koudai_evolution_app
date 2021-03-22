@@ -179,7 +179,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     useEffect(() => {
         init();
         return () => Picker.hide();
-    }, [route]);
+    }, []);
     useFocusEffect(
         useCallback(() => {
             init();

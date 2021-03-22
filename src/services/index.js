@@ -55,9 +55,12 @@ axios.interceptors.request.use(async (config) => {
 axios.interceptors.response.use(
     (response) => {
         //请求返回数据处理
-        // if (response.data.code == 'A00001') {
-        //     Storage.delete('loginStatus');
-        // }
+        if (response?.data?.code == 'A00001') {
+            Storage.delete('loginStatus');
+            setTimeout(() => {
+                global.navigation?.navigate('Login');
+            }, 1000);
+        }
         return response.data.data || response.data;
     },
     (err) => {

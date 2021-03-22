@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import OkGesturePassword from '../../components/gesturePassword/OkGesturePassword';
@@ -9,9 +9,6 @@ import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {updateVerifyGesture} from '../../redux/actions/userInfo';
 import {useDispatch} from 'react-redux';
-var isOpen,
-    password,
-    refresh = true;
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
 export default function GesturePassword({option, route}) {
@@ -32,6 +29,9 @@ export default function GesturePassword({option, route}) {
     const [isWarning, setIsWarning] = useState(false); //设置警告
     const [title, setTitle] = useState(option === 'verify' ? '请输入手势密码' : '请绘制解锁图案');
     const dispatch = useDispatch();
+    const isOpenRef = useRef(false);
+    const passwordRef = useRef('');
+    const refreshRef = useRef(true);
     useEffect(() => {
         // storage.delete('gesturePwd');
         // 修改手势密码
@@ -43,13 +43,14 @@ export default function GesturePassword({option, route}) {
         }
         storage.get('gesturePwd').then((res) => {
             if (res) {
-                password = res;
+                passwordRef.current = res;
                 // setPassword(res);
             }
         });
         // 开启手势密码
         storage.get('openGesturePwd').then((result) => {
-            isOpen = result;
+            // isOpen = result;
+            isOpenRef.current = result;
         });
     }, [navigation, route]);
 
@@ -57,8 +58,8 @@ export default function GesturePassword({option, route}) {
         console.log(pwd);
         // Alert.alert('密码', password);
         //手势密码登陆
-        if (isOpen && route?.params?.option !== 'modify') {
-            if (password == pwd) {
+        if (isOpenRef.current && route?.params?.option !== 'modify') {
+            if (passwordRef.current == pwd) {
                 setStatus(true);
                 setIsWarning(false);
                 dispatch(updateVerifyGesture());
@@ -71,14 +72,14 @@ export default function GesturePassword({option, route}) {
                 setTitle('密码输入错误，请重新输入');
             }
             // 修改手势密码
-        } else if (route?.params?.option == 'modify' && refresh) {
-            if (password == pwd) {
+        } else if (route?.params?.option == 'modify' && refreshRef.current) {
+            if (passwordRef.current == pwd) {
                 setStatus(true);
                 setIsWarning(false);
                 setTitle('请输入新的手势密码');
-                password = '';
-                refresh = false;
-                console.log(password, '---password');
+                passwordRef.current = '';
+                refreshRef.current = false;
+                // console.log(password, '---password');
                 // setPassword('');
             } else {
                 setStatus(false);
@@ -93,13 +94,13 @@ export default function GesturePassword({option, route}) {
         }
     };
     const refreshPwd = (pwd, _status) => {
-        if (!password) {
-            password = pwd;
+        if (!passwordRef.current) {
+            passwordRef.current = pwd;
             if (!_status) {
                 setTitle('请再次绘制解锁图案');
             }
             // setPassword(pwd);
-        } else if (password == pwd) {
+        } else if (passwordRef.current == pwd) {
             //第二次绘制密码
             setStatus(true);
             setIsWarning(false);

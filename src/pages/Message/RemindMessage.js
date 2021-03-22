@@ -2,8 +2,13 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
+<<<<<<< HEAD
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 21:13:39
+=======
  * @LastEditors: xjh
  * @LastEditTime: 2021-03-22 19:04:39
+>>>>>>> 1a0a7583334330c59a1cf6bec01ef68230f315be
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -62,29 +67,7 @@ export default function RemindMessage({navigation}) {
         });
     };
     return (
-        <View style={{flex: 1}}>
-            {!hide && showNotice && data?.notice && (
-                <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                    <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
-                        onPress={openLink}>
-                        <Text
-                            style={{
-                                color: '#fff',
-                                fontSize: text(13),
-                                paddingHorizontal: text(10),
-                                paddingVertical: text(5),
-                            }}>
-                            {data?.notice?.button?.text}
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={closeNotice}>
-                        <AntDesign name={'close'} size={12} color={'#EB7121'} />
-                    </TouchableOpacity>
-                </View>
-            )}
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{flex: 1, padding: text(16)}}>
                     <TouchableOpacity
