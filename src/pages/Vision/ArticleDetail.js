@@ -2,11 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 21:56:32
+ * @LastEditTime: 2021-03-22 11:35:48
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -22,7 +22,6 @@ const ArticleDetail = ({navigation, route}) => {
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
-    const [injectedJS, setJSCode] = useState('');
     const [data, setData] = useState({});
     const shareModal = useRef(null);
     const [more, setMore] = useState(false);
@@ -38,7 +37,6 @@ const ArticleDetail = ({navigation, route}) => {
     const onLoadEnd = () => {
         storage.get('loginStatus').then((res) => {
             if (res) {
-                // setJSCode(`window.localStorage.setItem('loginStatus', '${JSON.stringify(res)}')`);
                 webviewRef.current.postMessage(JSON.stringify(res));
             }
         });
@@ -71,6 +69,7 @@ const ArticleDetail = ({navigation, route}) => {
         if (!btnClick.current) {
             return false;
         }
+        btnClick.current = false;
         http.post('/community/collect/20210101', {
             resource_id: data?.id,
             resource_cate: 'article',
@@ -119,14 +118,13 @@ const ArticleDetail = ({navigation, route}) => {
                 ref={shareModal}
                 more={more}
                 shareContent={{
-                    favor_status: !!data?.favor_status,
-                    collect_status: !!data?.collect_status,
+                    favor_status: data?.favor_status,
+                    collect_status: data?.collect_status,
                     ...data?.share_info,
                 }}
                 title={data?.title}
             />
             <RNWebView
-                injectedJavaScript={injectedJS}
                 javaScriptEnabled
                 onLoadEnd={onLoadEnd}
                 onMessage={onMessage}

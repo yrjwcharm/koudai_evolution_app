@@ -1,15 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-20 12:32:28
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 10:53:43
+ * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet} from 'react-native';
-import {px as text} from '../utils/appUtil';
+import {deviceWidth, px as text} from '../utils/appUtil';
 import {Colors, Font, Space} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         marginVertical: Space.marginVertical,
     },
     img: {
-        width: text(343),
+        width: deviceWidth - Space.marginAlign * 2,
         height: text(30),
         marginBottom: text(12),
     },
