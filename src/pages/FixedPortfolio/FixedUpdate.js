@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 20:28:46
+ * @LastEditTime: 2021-03-22 21:23:13
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -91,7 +91,7 @@ export default function FixedUpdate({navigation, route}) {
     return (
         <>
             {Object.keys(data).length > 0 && (
-                <>
+                <View style={{backgroundColor: Colors.bgColor}}>
                     <View style={styles.wrap_sty}>
                         <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
                         <Text style={styles.input_sty}> {data?.target_info?.target_amount?.value}</Text>
@@ -145,7 +145,7 @@ export default function FixedUpdate({navigation, route}) {
                             <Text style={[styles.btn_sty, {color: '#fff'}]}>确认修改</Text>
                         </TouchableOpacity>
                     </View>
-                </>
+                </View>
             )}
         </>
     );

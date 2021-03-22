@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-18 17:24:17
+ * @LastEditTime: 2021-03-22 21:37:13
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -34,6 +34,15 @@ const LargeAmount = (props) => {
     useEffect(() => {
         Http.get('/trade/large_transfer/info/20210101').then((res) => {
             setData(res.result);
+            props.navigation.setOptions({
+                headerRight: () => {
+                    return (
+                        <TouchableOpacity onPress={rightPress}>
+                            <Text style={styles.right_sty}>{'汇款说明'}</Text>
+                        </TouchableOpacity>
+                    );
+                },
+            });
             tips[2].tel = res.result.phone;
         });
     });
@@ -66,14 +75,14 @@ const LargeAmount = (props) => {
         props.navigation.navigate('LargeAmountIntro');
     };
     return (
-        <>
-            <Header
+        <View style={{backgroundColor: Colors.bgColor}}>
+            {/* <Header
                 title={data?.title}
                 leftIcon="chevron-left"
                 rightText={'汇款说明'}
                 rightPress={rightPress}
                 rightTextStyle={styles.right_sty}
-            />
+            /> */}
             {Object.keys(data).length > 0 && (
                 <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: btnHeight})}>
                     <Notice content={data?.processing} isClose={true} />
@@ -181,7 +190,7 @@ const LargeAmount = (props) => {
                 </ScrollView>
             )}
             {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={btnClick} />}
-        </>
+        </View>
     );
 };
 
@@ -260,6 +269,11 @@ const styles = StyleSheet.create({
         borderColor: Colors.defaultColor,
         borderWidth: 0.5,
         borderRadius: text(5),
+    },
+    header_right: {
+        fontSize: px(14),
+        width: px(48),
+        color: Colors.defaultColor,
     },
 });
 export default LargeAmount;

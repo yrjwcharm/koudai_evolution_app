@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-11 11:23:21
+ * @LastEditTime: 2021-03-22 21:19:22
  */
 import React from 'react';
 import {ScrollView, Linking, Alert} from 'react-native';
@@ -31,7 +31,7 @@ const LargeAmountIntro = () => {
         'https://static.licaimofang.com/wp-content/uploads/2020/12/remit_intro3.png',
     ];
     return (
-        <>
+        <View style={{backgroundColor: Colors.bgColor}}>
             <ScrollView style={{marginBottom: btnHeight}}>
                 {img_list.map((_item, _index) => {
                     return <FitImage key={_index} source={{uri: _item}} resizeMode="contain" />;
@@ -43,7 +43,7 @@ const LargeAmountIntro = () => {
                 />
             </ScrollView>
             <FixedButton title={'魔方客服电话:400-080-8208'} onPress={() => callTel()} />
-        </>
+        </View>
     );
 };
 export default LargeAmountIntro;

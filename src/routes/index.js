@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:01:04
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 21:28:08
  * @Description:路由表
  */
 import React from 'react';
@@ -319,7 +319,7 @@ export default function AppStack() {
             <Stack.Screen name="CommonProblem" component={CommonProblem} options={{title: '常见问题'}} />
             <Stack.Screen name="RiskManagement" component={RiskManagement} options={{title: '风险控制'}} />
             <Stack.Screen name="TradeProcessing" component={TradeProcessing} options={{headerShown: false}} />
-            <Stack.Screen name="LargeAmount" component={LargeAmount} options={{headerShown: false}} />
+            <Stack.Screen name="LargeAmount" component={LargeAmount} options={{title: '大额极速汇款'}} />
             <Stack.Screen name="LargeAmountIntro" component={LargeAmountIntro} options={{title: '大额转账说明'}} />
             <Stack.Screen name="MfbIndex" component={MfbIndex} options={{headerShown: false}} />
             <Stack.Screen name="MfbIntro" component={MfbIntro} options={{title: '魔方宝说明'}} />

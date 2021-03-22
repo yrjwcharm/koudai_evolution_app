@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 20:26:17
+ * @LastEditTime: 2021-03-22 21:23:47
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -43,7 +43,7 @@ export default function FixedPlan(props) {
         });
     }, []);
     return (
-        <>
+        <View style={{backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <View style={{marginBottom: FixedBtn.btnHeight}}>
                     <Header title={data.title} leftIcon="chevron-left" />
@@ -121,7 +121,7 @@ export default function FixedPlan(props) {
                     onPress={() => jump(data.button.url)}
                 />
             )}
-        </>
+        </View>
     );
 }
 const styles = StyleSheet.create({

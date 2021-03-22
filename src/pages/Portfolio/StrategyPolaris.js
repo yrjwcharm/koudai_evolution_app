@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 19:06:25
+ * @LastEditTime: 2021-03-22 21:18:49
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -26,7 +26,7 @@ export default function StrategyPolaris(props) {
         props.navigation.navigate(url.path, url.params);
     };
     return (
-        <>
+        <View style={{backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && <Header title={data.title} leftIcon="chevron-left" />}
             {Object.keys(data).length > 0 && (
                 <ScrollView>
@@ -78,7 +78,7 @@ export default function StrategyPolaris(props) {
                     </View>
                 </ScrollView>
             )}
-        </>
+        </View>
     );
 }
 const styles = StyleSheet.create({

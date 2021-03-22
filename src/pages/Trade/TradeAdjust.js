@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-12 17:45:23
+ * @LastEditTime: 2021-03-22 21:19:34
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -79,7 +79,7 @@ export default class TradeAdjust extends Component {
     render() {
         const {toggle, data} = this.state;
         return (
-            <>
+            <View style={{backgroundColor: Colors.bgColor}}>
                 {Object.keys(data).length > 0 && (
                     <ScrollView style={styles.container}>
                         <View style={{marginBottom: text(10)}}>
@@ -260,7 +260,7 @@ export default class TradeAdjust extends Component {
                     </ScrollView>
                 )}
                 <FixedButton title="确认调仓" onPress={this.confirmBtn} />
-            </>
+            </View>
         );
     }
 }

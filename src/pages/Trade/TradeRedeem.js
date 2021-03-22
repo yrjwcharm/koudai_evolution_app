@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 12:32:02
+ * @LastEditTime: 2021-03-22 21:20:27
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -168,7 +168,7 @@ export default class TradeRedeem extends Component {
     render() {
         const {data, tableData, toggleList, btnClick} = this.state;
         return (
-            <View style={{flex: 1}}>
+            <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
                     <ScrollView>
                         <Text style={styles.redeem_desc}>赎回至银行卡</Text>

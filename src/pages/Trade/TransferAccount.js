@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 10:41:18
+ * @LastEditTime: 2021-03-22 21:20:50
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -50,7 +50,7 @@ export default function TransferAccount({navigation, route}) {
         });
     };
     return (
-        <>
+        <View style={{backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     <View style={styles.card_sty}>
@@ -176,7 +176,7 @@ export default function TransferAccount({navigation, route}) {
             )}
             <PasswordModal ref={passwordModal} onDone={submit} />
             {Object.keys(data).length > 0 && <FixedButton title={data.button.text} onPress={passwordInput} />}
-        </>
+        </View>
     );
 }
 const styles = StyleSheet.create({
