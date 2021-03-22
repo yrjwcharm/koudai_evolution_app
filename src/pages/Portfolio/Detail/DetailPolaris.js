@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:11:16
+ * @LastEditTime: 2021-03-22 21:49:16
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -117,7 +117,7 @@ export default function DetailPolaris({route, navigation}) {
         <>
             {<Header title={data?.title} leftIcon="chevron-left" />}
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{marginBottom: FixedBtn.btnHeight, backgroundColor: Colors.bgColor}}>
+                <ScrollView style={{marginBottom: FixedBtn.btnHeight, backgroundColor: Colors.bgColor, flex: 1}}>
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     <View style={{padding: text(16)}}>
                         <View style={styles.card_sty}>
@@ -378,7 +378,7 @@ export default function DetailPolaris({route, navigation}) {
                     </View>
                 </ScrollView>
             )}
-            <FixedBtn btns={data?.fixed_bottom} style={{position: 'absolute', bottom: 0}} />
+            {data?.fixed_bottom && <FixedBtn btns={data?.fixed_bottom} style={{position: 'absolute', bottom: 0}} />}
         </>
     );
 }
