@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 18:16:40
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 18:28:48
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -95,11 +95,15 @@ export default function MessageNotice({navigation, route}) {
             }
             Http.get('/message/read/20210101', {..._params}).then((res) => {
                 if (res.code === '000000') {
-                    setList((prev) => {
-                        const _list = _.cloneDeep(prev);
-                        _list[index].is_read = 1;
-                        return _list;
-                    });
+                    if (type == 'all') {
+                        init('refresh');
+                    } else {
+                        setList((prev) => {
+                            const _list = _.cloneDeep(prev);
+                            _list[index].is_read = 1;
+                            return _list;
+                        });
+                    }
                 }
             });
         } else {
