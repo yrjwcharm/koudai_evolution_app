@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 20:14:19
+ * @LastEditTime: 2021-03-22 18:42:05
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -20,7 +20,7 @@ import {useJump} from '../../components/hooks';
 import {Chart, chartOptions} from '../../components/Chart';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useSelector} from 'react-redux';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 const Index = (props) => {
     const isFocused = useIsFocused();
     const userInfo = useSelector((store) => store.userInfo);
@@ -30,9 +30,12 @@ const Index = (props) => {
     const [loading, setLoading] = useState(true);
 
     const jump = useJump();
-    useEffect(() => {
-        getData();
-    }, [getData]);
+    useFocusEffect(
+        useCallback(() => {
+            getData();
+        }, [getData])
+    );
+
     // let scrollingRight = '';
     // let lastx = '';
     // const snapScroll = useRef(null);

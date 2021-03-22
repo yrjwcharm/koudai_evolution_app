@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 16:01:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 15:13:03
  * @Description:路由表
  */
 import React from 'react';
@@ -458,7 +458,7 @@ export default function AppStack() {
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
             <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
-            <Stack.Screen name="WebView" component={WebView} options={{title: ''}} />
+            <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

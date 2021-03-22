@@ -1,8 +1,13 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: xjh
  * @LastEditTime: 2021-03-22 11:24:30
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-22 16:55:15
+>>>>>>> 保险auth
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -36,6 +41,7 @@ import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 const bottom = isIphoneX() ? 84 : 50;
 const defaultAge = 25;
 //机器人动画
@@ -52,7 +58,7 @@ const layoutAnimation = () => {
     });
 };
 
-export class question extends Component {
+class Question extends Component {
     state = {
         questions: [],
         questionnaire_cate: '',
@@ -80,6 +86,7 @@ export class question extends Component {
     fr = this.props.route?.params?.fr; //risk来自个人资料
     plan_id = this.props.route?.params?.plan_id;
     componentDidMount() {
+        console.log(this.props);
         BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/start/20210101', {plan_id: this.plan_id}).then((data) => {
             if (data.code === '000000') {
@@ -201,7 +208,7 @@ export class question extends Component {
         const {translateY, offsetY, opacity} = this.state;
         this.reportResult(option);
         if (option.action == 'url') {
-            this.props.navigation.replace('EvaluationHistory');
+            this.props.jump(option.url, 'replace');
             return;
         }
         Animated.sequence([
@@ -749,6 +756,10 @@ export class question extends Component {
         );
     }
 }
+export default (props) => {
+    const jump = useJump();
+    return <Question {...props} jump={jump} />;
+};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -864,5 +875,3 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
 });
-
-export default question;
