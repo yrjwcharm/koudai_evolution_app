@@ -2,15 +2,14 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 11:31:24
+ * @LastEditTime: 2021-03-22 15:01:43
  * @Description: 邀请好友注册(得魔分)
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Accordion from 'react-native-collapsible/Accordion';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -180,7 +179,7 @@ const InviteFriends = ({navigation}) => {
                     style={styles.rules}
                 />
             </View>
-            <ShareModal ref={shareModal} title={'邀请好友'} shareContent={data?.share_info} />
+            <ShareModal ref={shareModal} title={'邀请好友'} shareContent={data?.share_info || {}} />
         </ScrollView>
     );
 };

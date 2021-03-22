@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:49:38
+ * @LastEditTime: 2021-03-22 12:35:20
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -22,6 +22,7 @@ const Settings = ({navigation}) => {
     const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
+    const [shareContent, setShareContent] = useState({});
     const shareModal = useRef(null);
     const inputModal = useRef(null);
     const [modalProps, setModalProps] = useState({});
@@ -81,6 +82,11 @@ const Settings = ({navigation}) => {
         Http.get('/mapi/config/20210101').then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
+            }
+        });
+        Http.get('/share/common/info/20210101', {scene: 'about_lcmf'}).then((res) => {
+            if (res.code === '000000') {
+                setShareContent(res.result);
             }
         });
     }, []);
@@ -164,7 +170,7 @@ const Settings = ({navigation}) => {
                     );
                 })}
             </ScrollView>
-            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={{}} />
+            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={shareContent?.share_info || {}} />
         </View>
     );
 };

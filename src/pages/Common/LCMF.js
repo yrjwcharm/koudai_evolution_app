@@ -1,19 +1,22 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:23:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 14:00:03
  * @Description:webview
  */
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Feather from 'react-native-vector-icons/Feather';
 import {ShareModal} from '../../components/Modal';
+import http from '../../services';
 export default function LCMF({route, navigation}) {
     const shareModal = useRef(null);
+    const [data, setData] = useState({});
+
     useEffect(() => {
         navigation.setOptions({
             headerBackImage: () => {
@@ -47,6 +50,15 @@ export default function LCMF({route, navigation}) {
             StatusBar.setBarStyle('dark-content');
         };
     }, [navigation, route]);
+    useEffect(() => {
+        http.get('/share/common/info/20210101', {scene: route.params?.scene || 'fund_safe'}).then((res) => {
+            if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
+                setData(res.result);
+            }
+        });
+    }, [route]);
+
     return (
         <View style={{flex: 1, backgroundColor: '#ddd'}}>
             <RNWebView
@@ -58,7 +70,7 @@ export default function LCMF({route, navigation}) {
                 startInLoadingState={true}
                 style={{flex: 1}}
             />
-            <ShareModal ref={shareModal} title={'分享理财魔方'} />
+            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
         </View>
     );
 }

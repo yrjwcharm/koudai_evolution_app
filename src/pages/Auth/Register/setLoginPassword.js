@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:14:16
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-22 14:57:29
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import http from '../../../services/';
 import Toast from '../../../components/Toast';
 import Storage from '../../../utils/storage';
 import {connect} from 'react-redux';
-import {getUserInfo} from '../../../redux/actions/userInfo';
+import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
 class SetLoginPassword extends Component {
     state = {
         code: '',
@@ -90,6 +90,7 @@ class SetLoginPassword extends Component {
                         password,
                     }).then((data) => {
                         this.props.getUserInfo();
+                        this.props.getVerifyGesture();
                         this.props.navigation.pop(2);
                         Storage.save('loginStatus', data.result);
                     });
@@ -203,6 +204,7 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {
     getUserInfo,
+    getVerifyGesture,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(SetLoginPassword);
 const styles = StyleSheet.create({
