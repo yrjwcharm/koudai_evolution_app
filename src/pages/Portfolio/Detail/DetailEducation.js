@@ -39,8 +39,8 @@ export default function DetailRetiredPlan({navigation, route}) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const [countFr, setCountFr] = useState();
-    const [countM, setCountM] = useState();
-    const [choose, setChoose] = useState();
+    const [countM, setCountM] = useState(0);
+    const [choose, setChoose] = useState(0);
     const [showMask, setShowMask] = useState(false);
     const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
@@ -104,7 +104,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const countCalc = (interval, action, type) => {
         const _interval = Number(interval);
         if (type == 'begin') {
-            if (countFr <= 2000 || countFr >= 1000000) {
+            if (countFr < 2000 || countFr > 1000000) {
                 return;
             }
             if (action == 'increase') {
@@ -112,8 +112,8 @@ export default function DetailRetiredPlan({navigation, route}) {
             } else {
                 setCountFr(countFr - _interval);
             }
-        } else {
-            if (countM <= 2000 || countM >= 1000000) {
+        } else if (type == 'auto') {
+            if (countM < 2000 || countM > 1000000) {
                 return;
             }
             if (action == 'increase') {
@@ -154,8 +154,14 @@ export default function DetailRetiredPlan({navigation, route}) {
             _age = res.result.plan_info.personal_info.age;
             setData(res.result);
             setAge(res.result.plan_info.personal_info.age);
-            setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
-            setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
+            res.result?.plan_info?.goal_info?.items.forEach((item) => {
+                if (item.type == 'begin') {
+                    setCountFr(Number(res.result?.plan_info?.trade_amount));
+                } else {
+                    setCountM(Number(res.result?.plan_info?.trade_amount));
+                }
+            });
+
             setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
             setRemark(res.result.plan_info?.goal_info?.remark);
             setChoose(res.result.school_id || 1);
@@ -255,66 +261,35 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         style={{borderRadius: text(25), marginBottom: text(7)}}>
                                         <Text style={styles.tip_sty}>{remark}</Text>
                                     </LinearGradient>
-                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>
-                                            {data?.plan_info?.goal_info?.items[0]?.key}
-                                        </Text>
-                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[0].interval,
-                                                        'decrease',
-                                                        data?.plan_info?.goal_info?.items[0].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                            <Text style={styles.count_num_sty}>{countFr}</Text>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[0].interval,
-                                                        'increase',
-                                                        data?.plan_info?.goal_info?.items[0].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>
-                                            {data?.plan_info?.goal_info?.items[1]?.key}
-                                        </Text>
-                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[1].interval,
-                                                        'decrease',
-                                                        data?.plan_info?.goal_info?.items[1].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                            <Text style={styles.count_num_sty}>{countM}</Text>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[1].interval,
-                                                        'increase',
-                                                        data?.plan_info?.goal_info?.items[1].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+
+                                    {data?.plan_info?.goal_info.items.map((_item, _index) => {
+                                        return (
+                                            <View
+                                                style={[Style.flexBetween, styles.count_wrap_sty]}
+                                                key={_item + 'goal_info'}>
+                                                <Text style={{color: '#545968', flex: 1}}>{_item?.key}</Text>
+                                                <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        onPress={() =>
+                                                            countCalc(_item.interval, 'decrease', _item.type)
+                                                        }>
+                                                        <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
+                                                    </TouchableOpacity>
+                                                    <Text style={styles.count_num_sty}>
+                                                        {_item.type == 'begin' ? countFr : countM}
+                                                    </Text>
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        onPress={() =>
+                                                            countCalc(_item.interval, 'increase', _item.type)
+                                                        }>
+                                                        <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        );
+                                    })}
                                 </View>
                             </View>
                         </View>
