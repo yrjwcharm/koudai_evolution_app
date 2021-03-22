@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 10:45:59
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 11:39:02
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -37,7 +37,10 @@ const FindDetail = (props) => {
         );
     };
     useEffect(() => {
-        Http.get('/discovery/plan/detail/20210101').then((res) => {
+        console.log(props.route);
+        Http.get('/discovery/plan/detail/20210101', {
+            plan_id: props.route.params?.plan_id,
+        }).then((res) => {
             setData(res.result);
         });
     }, [props.route]);

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 20:18:19
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 12:04:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -48,8 +48,8 @@ export default function PortfolioAssets(props) {
             poid: props.route?.params?.poid,
         }).then((res) => {
             setData(res.result);
-            if (res.result.progress_bar) {
-                const _left = res.result.progress_bar.percent_text;
+            if (res.result?.progress_bar) {
+                const _left = res.result?.progress_bar?.percent_text;
                 if (_left.split('%')[0] < 10) {
                     // eslint-disable-next-line react-hooks/exhaustive-deps
                     _l = _left.split('%')[0] - 1 + '%';
@@ -147,11 +147,11 @@ export default function PortfolioAssets(props) {
         return (
             <View style={styles.plan_card_sty}>
                 <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                {card.desc && (
+                {card?.desc ? (
                     <View style={{marginTop: px(13)}}>
                         <Html style={styles.plan_desc_sty} html={card?.desc} />
                     </View>
-                )}
+                ) : null}
 
                 {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
@@ -286,16 +286,16 @@ export default function PortfolioAssets(props) {
     const renderFixedPlan = () => {
         return (
             <>
-                <TouchableOpacity style={Style.flexBetween} onPress={() => jump(data.asset_deploy.header.url)}>
-                    <Text style={styles.title_sty}>{data.asset_deploy.header.title}</Text>
-                    <Text style={{color: '#0051CC', fontSize: text(12)}}>{data.asset_deploy.header.text}</Text>
+                <TouchableOpacity style={Style.flexBetween} onPress={() => jump(data.asset_deploy?.header.url)}>
+                    <Text style={styles.title_sty}>{data.asset_deploy?.header?.title}</Text>
+                    <Text style={{color: '#0051CC', fontSize: text(12)}}>{data.asset_deploy?.header?.text}</Text>
                 </TouchableOpacity>
                 <View style={styles.fund_card_sty}>
                     <View style={[Style.flexBetween, {paddingBottom: text(10)}]}>
-                        <Text style={styles.fund_title_sty}>{data.asset_deploy.th.name}</Text>
-                        <Text style={styles.fund_title_sty}>{data.asset_deploy.th.ratio}</Text>
+                        <Text style={styles.fund_title_sty}>{data.asset_deploy?.th?.name}</Text>
+                        <Text style={styles.fund_title_sty}>{data.asset_deploy?.th?.ratio}</Text>
                     </View>
-                    {data.asset_deploy.items.map((_i, _d) => {
+                    {data?.asset_deploy?.items.map((_i, _d) => {
                         return (
                             <View style={[Style.flexBetween, styles.fund_item_sty]} key={_d + '_i'}>
                                 <View>
@@ -410,10 +410,10 @@ export default function PortfolioAssets(props) {
                 </View>
                 {/* 广告位 */}
                 {data?.ad_info && (
-                    <TouchableOpacity onPress={() => jump(data.ad_info.url)}>
+                    <TouchableOpacity onPress={() => jump(data?.ad_info?.url)}>
                         <FitImage
                             source={{
-                                uri: data.ad_info.img,
+                                uri: data?.ad_info?.img,
                             }}
                             resizeMode="contain"
                             style={{marginBottom: text(10)}}

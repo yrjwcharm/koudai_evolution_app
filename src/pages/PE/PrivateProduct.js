@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-20 18:14:47
+ * @LastEditTime: 2021-03-22 11:20:16
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';

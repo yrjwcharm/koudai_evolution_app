@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: dx
- * @LastEditTime: 2021-03-21 21:06:48
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 10:43:40
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -259,7 +259,7 @@ export default function DetailPolaris({route, navigation}) {
                                 </Text>
                                 <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
                             </View>
-                            <View style={{height: 220}}>
+                            <View style={{height: 340}}>
                                 <Chart initScript={pie(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
                             </View>
 

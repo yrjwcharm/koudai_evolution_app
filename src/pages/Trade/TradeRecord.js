@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-10 13:43:40
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-22 11:35:57
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -30,6 +30,7 @@ const TradeRecord = ({route, navigation}) => {
             type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
             page: page,
             poid: route.params?.poid,
+            prod_code: route.params?.prod_code,
         })
             .then((res) => {
                 setLoading(false);
