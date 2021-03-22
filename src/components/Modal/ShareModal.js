@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 10:22:28
+ * @LastEditTime: 2021-03-22 16:16:10
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
         fontSize: px(16),
         lineHeight: px(22),
         color: Colors.defaultColor,
-        maxWidth: px(160),
+        maxWidth: px(280),
     },
     optionBox: {
         paddingTop: px(28),
