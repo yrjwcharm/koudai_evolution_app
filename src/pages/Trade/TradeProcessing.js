@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-22 21:20:01
+ * @LastEditTime: 2021-03-23 11:49:13
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -106,7 +106,7 @@ const TradeProcessing = ({navigation, route}) => {
         return () => clearTimeout(timerRef.current);
     }, [init, timerRef]);
     return (
-        <View style={{backgroundColor: Colors.bgColor}}>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
                 title="交易确认页"
                 rightText={'完成'}
