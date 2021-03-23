@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-18 10:31:28
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-23 15:35:37
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         marginTop: text(12),
         paddingHorizontal: Space.padding,
         borderRadius: text(4),
-        ...Space.boxShadow('#767FB6', 0, text(2), 0.08, text(10)),
+        // ...Space.boxShadow('#767FB6', 0, text(2), 0.08, text(10)),
         backgroundColor: '#fff',
     },
     titleBox: {

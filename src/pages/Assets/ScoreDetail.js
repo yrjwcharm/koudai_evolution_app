@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-18 18:16:26
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-23 15:10:57
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -311,9 +311,12 @@ const styles = StyleSheet.create({
         width: deviceWidth,
         height: text(167),
         marginLeft: -Space.marginAlign,
+        position: 'absolute',
+        top: 0,
+        left: 0,
     },
     scoreNumContainer: {
-        marginTop: text(-152),
+        // marginTop: text(-152),
     },
     scoreNum: {
         marginBottom: text(8),
@@ -330,10 +333,11 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     exchangeContainer: {
-        marginHorizontal: Space.marginAlign,
+        // marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         minHeight: text(90),
         backgroundColor: '#fff',
+        paddingHorizontal: text(16),
     },
     availableScore: {
         fontSize: text(20),

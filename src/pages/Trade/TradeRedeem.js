@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:20:27
+ * @LastEditTime: 2021-03-23 15:13:19
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -89,9 +89,14 @@ export default class TradeRedeem extends Component {
         });
     }
     pressChange(percent) {
-        this.setState({
-            inputValue: (percent * 100).toString(),
-        });
+        this.setState(
+            {
+                inputValue: (percent * 100).toString(),
+            },
+            () => {
+                this.getPlanInfo();
+            }
+        );
     }
     toggleFund() {
         const toggleList = this.state.toggleList;

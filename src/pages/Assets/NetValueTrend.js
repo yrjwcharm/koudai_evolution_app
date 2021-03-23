@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-10 19:14:03
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-23 15:29:05
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -15,6 +15,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -105,8 +106,8 @@ const NetValueTrend = ({poid}) => {
                                 />
                                 <View style={Style.flexRow}>
                                     {index !== 0 && (
-                                        <FontAwesome5
-                                            name={'dot-circle'}
+                                        <MaterialCommunityIcons
+                                            name={'record-circle-outline'}
                                             color={index === 1 ? Colors.red : Colors.descColor}
                                             size={12}
                                         />

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-23 11:49:13
+ * @LastEditTime: 2021-03-23 15:01:33
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -115,7 +115,7 @@ const TradeProcessing = ({navigation, route}) => {
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView style={[styles.container]}>
-                <Text style={[styles.title]}>购买进度明细</Text>
+                {Object.keys(data).length > 0 && <Text style={[styles.title]}>{data?.desc}</Text>}
                 <View style={[styles.processContainer]}>
                     {Object.keys(data).length > 0 &&
                         data.items.map((item, index) => {

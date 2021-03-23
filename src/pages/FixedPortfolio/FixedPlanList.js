@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:31:54
+ * @LastEditTime: 2021-03-23 14:06:41
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -13,6 +13,7 @@ import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import {Button} from '../../components/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Empty from '../../components/EmptyTip';
 
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
@@ -27,8 +28,7 @@ export default function PlanDetail(props) {
     };
     return (
         <ScrollView style={Style.containerPadding}>
-            {Object.keys(data).length > 0 &&
-                data.length > 0 &&
+            {Object.keys(data).length > 0 ? (
                 data.map((_item, _index) => {
                     return (
                         <TouchableOpacity
@@ -72,7 +72,10 @@ export default function PlanDetail(props) {
                             )}
                         </TouchableOpacity>
                     );
-                })}
+                })
+            ) : (
+                <Empty text={'暂无数据'} />
+            )}
         </ScrollView>
     );
 }

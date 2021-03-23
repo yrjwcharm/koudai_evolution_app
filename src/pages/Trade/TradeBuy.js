@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 20:30:26
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-23 14:40:14
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -268,7 +268,9 @@ class TradeBuy extends Component {
                         <TouchableOpacity
                             onPress={() => {
                                 Modal.show({
-                                    content: '111',
+                                    title: '购买明细',
+                                    content:
+                                        '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
                                 });
                             }}>
                             <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
@@ -312,9 +314,11 @@ class TradeBuy extends Component {
                                                                 {fund.name}
                                                             </Text>
                                                             <Text style={[styles.config_title_desc, {width: px(60)}]}>
-                                                                {fund.percent * 100}%
+                                                                {Number(fund.percent * 100).toFixed(2)}%
                                                             </Text>
-                                                            <Text style={styles.config_title_desc}>{fund.amount}</Text>
+                                                            <Text style={styles.config_title_desc}>
+                                                                {Number(fund.amount).toFixed(2)}
+                                                            </Text>
                                                         </View>
                                                     );
                                                 })}
