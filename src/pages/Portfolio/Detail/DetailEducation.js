@@ -42,7 +42,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [countM, setCountM] = useState(0);
     const [choose, setChoose] = useState(0);
     const [showMask, setShowMask] = useState(false);
-    const [current, setCurrent] = useState();
+    // const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
     const bottomModal = React.useRef(null);
     const [age, setAge] = useState('');
@@ -154,15 +154,17 @@ export default function DetailRetiredPlan({navigation, route}) {
             _age = res.result.plan_info.personal_info.age;
             setData(res.result);
             setAge(res.result.plan_info.personal_info.age);
-            res.result?.plan_info?.goal_info?.items.forEach((item) => {
+            res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
                     setCountFr(Number(res.result?.plan_info?.trade_amount));
-                } else {
+                } else if (item.type == 'auto') {
                     setCountM(Number(res.result?.plan_info?.trade_amount));
                 }
+                // else if (item.type == 'duration') {
+                //     setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
+                // }
             });
 
-            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
             setRemark(res.result.plan_info?.goal_info?.remark);
             setChoose(res.result.school_id || 1);
             Http.get('/portfolio/yield_chart/20210101', {

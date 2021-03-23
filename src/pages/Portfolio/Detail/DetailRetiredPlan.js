@@ -33,8 +33,8 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
-    const [countFr, setCountFr] = useState(); //首投金额
-    const [countM, setCountM] = useState(); //定投金额
+    const [countFr, setCountFr] = useState(0); //首投金额
+    const [countM, setCountM] = useState(0); //定投金额
     const [showMask, setShowMask] = useState(false);
     const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
@@ -54,7 +54,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const countCalc = (interval, action, type) => {
         const _interval = Number(interval);
         if (type == 'begin') {
-            if (countFr <= 2000 || countFr >= 1000000) {
+            if (countFr < 2000 || countFr > 1000000) {
                 return;
             }
             if (action == 'increase') {
@@ -63,7 +63,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setCountFr(countFr - _interval);
             }
         } else {
-            if (countM <= 2000 || countM >= 1000000) {
+            if (countM < 2000 || countM > 1000000) {
                 return;
             }
             if (action == 'increase') {
@@ -99,9 +99,15 @@ export default function DetailRetiredPlan({navigation, route}) {
             allocation_id = res.result.allocation_id;
             _poid = res.result?.poid;
             setData(res.result);
-            setCountFr(Number(res.result?.plan_info?.goal_info?.items[0]?.val));
-            setCountM(Number(res.result?.plan_info?.goal_info?.items[1]?.val));
-            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
+            res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                if (item.type == 'begin') {
+                    setCountFr(Number(res.result?.plan_info?.trade_amount));
+                } else if (item.type == 'auto') {
+                    setCountM(Number(res.result?.plan_info?.trade_amount));
+                } else if (item.type == 'duration') {
+                    setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
+                }
+            });
             setRemark(res.result.plan_info?.goal_info?.remark);
         });
     }, [route.params]);
@@ -195,78 +201,61 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         style={{borderRadius: text(25), marginBottom: text(7)}}>
                                         <Text style={styles.tip_sty}>{remark}</Text>
                                     </LinearGradient>
-                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>
-                                            {data?.plan_info?.goal_info?.items[0]?.key}
-                                        </Text>
-                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[0].interval,
-                                                        'decrease',
-                                                        data?.plan_info?.goal_info?.items[0].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                            <Text style={styles.count_num_sty}>{countFr}</Text>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[0].interval,
-                                                        'increase',
-                                                        data?.plan_info?.goal_info?.items[0].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968', flex: 1}}>
-                                            {data?.plan_info?.goal_info?.items[1]?.key}
-                                        </Text>
-                                        <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[1].interval,
-                                                        'decrease',
-                                                        data?.plan_info?.goal_info?.items[1].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                            <Text style={styles.count_num_sty}>{countM}</Text>
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                onPress={() =>
-                                                    countCalc(
-                                                        data?.plan_info?.goal_info?.items[1].interval,
-                                                        'increase',
-                                                        data?.plan_info?.goal_info?.items[1].type
-                                                    )
-                                                }>
-                                                <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                        <Text style={{color: '#545968'}}>
-                                            {data?.plan_info?.goal_info?.items[2]?.key}
-                                        </Text>
-                                        <TouchableOpacity
-                                            style={Style.flexRow}
-                                            onPress={_showDatePicker}
-                                            activeOpacity={1}>
-                                            <Text style={{color: '#545968'}}>{current}年</Text>
-                                            <AntDesign name={'down'} color={'#8D96AF'} size={12} />
-                                        </TouchableOpacity>
-                                    </View>
+                                    {data?.plan_info?.goal_info?.items.map((_item, _index) => {
+                                        return (
+                                            <>
+                                                {(_item.type == 'auto' || _item.type == 'begin') && (
+                                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                                        <Text style={{color: '#545968', flex: 1}}>{_item.key}</Text>
+                                                        <View
+                                                            style={[
+                                                                Style.flexRow,
+                                                                {flex: 1, justifyContent: 'flex-end'},
+                                                            ]}>
+                                                            <TouchableOpacity
+                                                                activeOpacity={1}
+                                                                onPress={() =>
+                                                                    countCalc(_item.interval, 'decrease', _item.type)
+                                                                }>
+                                                                <Ionicons
+                                                                    name={'remove-circle'}
+                                                                    size={25}
+                                                                    color={'#0051CC'}
+                                                                />
+                                                            </TouchableOpacity>
+
+                                                            <Text style={styles.count_num_sty}>
+                                                                {_item.type == 'begin' ? countFr : countM}
+                                                            </Text>
+                                                            <TouchableOpacity
+                                                                activeOpacity={1}
+                                                                onPress={() =>
+                                                                    countCalc(_item.interval, 'increase', _item.type)
+                                                                }>
+                                                                <Ionicons
+                                                                    name={'add-circle'}
+                                                                    size={25}
+                                                                    color={'#0051CC'}
+                                                                />
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    </View>
+                                                )}
+                                                {_item.type == 'duration' && (
+                                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                                        <Text style={{color: '#545968'}}>{_item.key}</Text>
+                                                        <TouchableOpacity
+                                                            style={Style.flexRow}
+                                                            onPress={_showDatePicker}
+                                                            activeOpacity={1}>
+                                                            <Text style={{color: '#545968'}}>{current}年</Text>
+                                                            <AntDesign name={'down'} color={'#8D96AF'} size={12} />
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                )}
+                                            </>
+                                        );
+                                    })}
                                 </View>
                             </View>
                         </View>

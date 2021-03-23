@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 12:04:27
+ * @LastEditTime: 2021-03-23 17:08:20
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -341,22 +341,18 @@ export default function PortfolioAssets(props) {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
+                                <Text style={[styles.profit_num_sty, {fontSize: text(24), lineHeight: text(24)}]}>
                                     {showEye ? data.amount : '***'}
                                 </Text>
                             </View>
                             <View>
                                 <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
                                     <Text style={styles.profit_text_sty}>日收益</Text>
-                                    <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
-                                        {showEye ? data.profit : '***'}
-                                    </Text>
+                                    <Text style={[styles.profit_num_sty]}>{showEye ? data.profit : '***'}</Text>
                                 </View>
-                                <View style={Style.flexRow}>
+                                <View style={[Style.flexRow]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>
-                                    <Text style={[styles.profit_num_sty, {marginTop: !showEye ? text(5) : 0}]}>
-                                        {showEye ? data.profit_acc : '***'}
-                                    </Text>
+                                    <Text style={[styles.profit_num_sty]}>{showEye ? data.profit_acc : '***'}</Text>
                                 </View>
                             </View>
                         </View>
@@ -485,11 +481,13 @@ const styles = StyleSheet.create({
         opacity: 0.4,
         fontSize: Font.textH3,
         marginRight: text(5),
+        lineHeight: text(17),
     },
     profit_num_sty: {
         color: '#fff',
         fontSize: text(17),
         fontFamily: Font.numFontFamily,
+        lineHeight: text(17),
     },
     process_outer: {
         backgroundColor: '#F5F6F8',

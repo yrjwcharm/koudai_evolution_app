@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:19:34
+ * @LastEditTime: 2021-03-23 16:45:55
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -38,7 +38,6 @@ export default class TradeAdjust extends Component {
         });
     };
     componentDidMount() {
-        console.log(this.state.poid);
         Http.get('/trade/adjust/plan/20210101', {
             poid: this.state.poid,
             mode: this.state.mode,
@@ -79,7 +78,7 @@ export default class TradeAdjust extends Component {
     render() {
         const {toggle, data} = this.state;
         return (
-            <View style={{backgroundColor: Colors.bgColor}}>
+            <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {Object.keys(data).length > 0 && (
                     <ScrollView style={styles.container}>
                         <View style={{marginBottom: text(10)}}>
@@ -139,16 +138,15 @@ export default class TradeAdjust extends Component {
                                                                     {_i?.name}
                                                                 </Text>
                                                                 <Text style={styles.content_item_text}>
-                                                                    {_i?.ratio_src}
+                                                                    {(Number(_i?.ratio_src) * 100).toFixed(2)}%
                                                                 </Text>
                                                                 <View style={[Style.flexRow, styles.fund_text_sty]}>
                                                                     <Text
                                                                         style={{
                                                                             fontSize: Font.textH3,
-
                                                                             color: _color,
                                                                         }}>
-                                                                        {_i?.ratio_dst}
+                                                                        {(Number(_i?.ratio_dst) * 100).toFixed(2)}%
                                                                     </Text>
                                                                     {_i.compare != 'et' && (
                                                                         <Icon
