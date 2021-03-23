@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 17:12:16
+ * @LastEditTime: 2021-03-23 17:29:12
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -135,14 +135,7 @@ class TradeBuy extends Component {
             poid: this.state.poid,
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
-            if (res.code === '000000') {
-                this.setState({planData: data.result});
-            } else {
-                Toast.show(res.massage);
-                this.setState({
-                    amount: '',
-                });
-            }
+            this.setState({planData: data.result});
         });
     };
 
