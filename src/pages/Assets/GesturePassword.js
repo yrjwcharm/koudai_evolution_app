@@ -62,7 +62,9 @@ export default function GesturePassword({option, route}) {
             if (passwordRef.current == pwd) {
                 setStatus(true);
                 setIsWarning(false);
-                dispatch(updateVerifyGesture());
+                setTimeout(() => {
+                    dispatch(updateVerifyGesture());
+                }, 500);
             } else {
                 setStatus(false);
                 setIsWarning(true);
