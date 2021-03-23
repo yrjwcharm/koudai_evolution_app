@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:53:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-23 10:18:34
  * @Description:路由表
  */
 import React from 'react';
@@ -453,7 +453,7 @@ export default function AppStack() {
             <Stack.Screen name="MemberRule" component={MemberRule} options={{title: '理财魔方生日增幅券规则'}} />
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
             {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
-            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '', headerShown: false}} />
+            <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: ''}} />
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
             <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
