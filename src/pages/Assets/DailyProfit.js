@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 19:04:09
+ * @LastEditTime: 2021-03-23 11:32:21
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -91,11 +91,7 @@ const DailyProfit = ({poid}) => {
                     <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
                         {'说明'}
                     </Text>
-                    <Text
-                        style={[
-                            styles.tableCell,
-                            {paddingVertical: text(6), paddingHorizontal: text(8), textAlign: 'justify'},
-                        ]}>
+                    <Text style={[styles.tableCell, styles.bigCell]}>
                         {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
                     </Text>
                 </View>
@@ -138,10 +134,12 @@ const DailyProfit = ({poid}) => {
     const renderFooter = useCallback(() => {
         return (
             <>
-                {list.length > 0 && (
+                {list.length > 0 ? (
                     <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
                         {hasMore ? '正在加载...' : '暂无更多了'}
                     </Text>
+                ) : (
+                    <Empty text={'暂无日收益数据'} />
                 )}
             </>
         );
@@ -219,23 +217,19 @@ const DailyProfit = ({poid}) => {
     }, [list]);
     return (
         <View style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            {list?.length === 0 && renderSectionHeader()}
             <SectionList
-                // data={list}
-                sections={list?.length > 0 ? [{title: 'list', data: list}] : []}
-                contentContainerStyle={{backgroundColor: '#fff'}}
+                sections={[{title: 'list', data: list}]}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
-                // ListHeaderComponent={renderSectionHeader}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderSectionHeader={renderSectionHeader}
                 renderItem={renderItem}
-                style={{flex: 1, paddingBottom: insets.bottom}}
+                style={[styles.sectionList, {paddingBottom: insets.bottom}]}
                 stickySectionHeadersEnabled={false}
             />
         </View>
@@ -311,6 +305,16 @@ const styles = StyleSheet.create({
         lineHeight: text(18),
         color: Colors.darkGrayColor,
         textAlign: 'center',
+    },
+    sectionList: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    bigCell: {
+        paddingVertical: text(6),
+        paddingHorizontal: text(8),
+        textAlign: 'justify',
+        flex: 1,
     },
 });
 

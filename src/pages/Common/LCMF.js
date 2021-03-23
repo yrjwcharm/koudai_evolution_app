@@ -1,13 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 14:00:03
-=======
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 11:05:25
->>>>>>> 保险auth
+ * @LastEditTime: 2021-03-23 10:50:43
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';

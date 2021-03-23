@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 19:04:30
+ * @LastEditTime: 2021-03-23 11:33:08
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -87,11 +87,7 @@ const AccProfit = ({poid}) => {
                     <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
                         {'说明'}
                     </Text>
-                    <Text
-                        style={[
-                            styles.tableCell,
-                            {paddingVertical: text(6), paddingHorizontal: text(8), textAlign: 'justify'},
-                        ]}>
+                    <Text style={[styles.tableCell, styles.bigCell]}>
                         {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
                     </Text>
                 </View>
@@ -303,6 +299,12 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: Colors.brandColor,
+    },
+    bigCell: {
+        paddingVertical: text(6),
+        paddingHorizontal: text(8),
+        textAlign: 'justify',
+        flex: 1,
     },
 });
 
