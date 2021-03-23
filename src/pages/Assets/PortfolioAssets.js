@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 17:08:20
+ * @LastEditTime: 2021-03-23 18:50:12
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -348,11 +348,15 @@ export default function PortfolioAssets(props) {
                             <View>
                                 <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
                                     <Text style={styles.profit_text_sty}>日收益</Text>
-                                    <Text style={[styles.profit_num_sty]}>{showEye ? data.profit : '***'}</Text>
+                                    <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
+                                        {showEye ? data.profit : '***'}
+                                    </Text>
                                 </View>
                                 <View style={[Style.flexRow]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>
-                                    <Text style={[styles.profit_num_sty]}>{showEye ? data.profit_acc : '***'}</Text>
+                                    <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
+                                        {showEye ? data.profit_acc : '***'}
+                                    </Text>
                                 </View>
                             </View>
                         </View>

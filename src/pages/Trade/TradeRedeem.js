@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:13:19
+ * @LastEditTime: 2021-03-23 18:21:30
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -126,13 +126,15 @@ export default class TradeRedeem extends Component {
         });
     };
     onChange = (text) => {
-        if (text > 0) {
+        if (text) {
             this.getPlanInfo();
             if (text > 100) {
                 text = '100';
             }
-            text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+            // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             this.setState({inputValue: text, btnClick: true});
+        } else {
+            this.setState({inputValue: '', btnClick: false});
         }
     };
     selectAge = () => {
@@ -236,7 +238,7 @@ export default class TradeRedeem extends Component {
                                 ]}>
                                 <TextInput
                                     style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
-                                    placeholder={data?.redeem_info?.redeem_text}
+                                    placeholder={this.state.inputValue ? '' : data?.redeem_info?.redeem_text}
                                     value={this.state.inputValue}
                                     onChangeText={(text) => this.onChange(text)}
                                 />
@@ -255,8 +257,8 @@ export default class TradeRedeem extends Component {
                                 <View>
                                     <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
                                         <Text style={styles.head_sty}></Text>
-                                        <Text style={styles.head_sty}>{tableData?.head?.amount_total}</Text>
-                                        <Text style={styles.head_sty}>{tableData?.head?.amount}</Text>
+                                        <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
+                                        <Text style={[styles.body_item_sty]}>{tableData?.head?.amount}</Text>
                                     </View>
                                     <View>
                                         {tableData?.body?.map((_item, _index) => {
@@ -264,11 +266,13 @@ export default class TradeRedeem extends Component {
                                                 <View
                                                     key={_index + 'item'}
                                                     style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                                    <Text style={[styles.body_sty, {textAlign: 'left', flexShrink: 1}]}>
+                                                    <Text style={[styles.body_sty, {textAlign: 'left', flexShrink: 0}]}>
                                                         {_item.name}
                                                     </Text>
-                                                    <Text style={styles.body_sty}>{_item?.amount_total}</Text>
-                                                    <Text style={styles.body_sty}>{_item?.amount}</Text>
+                                                    <Text style={[styles.body_item_sty, {textAlign: 'center'}]}>
+                                                        {_item?.amount_total}
+                                                    </Text>
+                                                    <Text style={styles.body_item_sty}>{_item?.amount}</Text>
                                                 </View>
                                             );
                                         })}
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
         marginTop: text(12),
     },
     btn_percent: {
-        borderRadius: text(10),
+        borderRadius: text(15),
         backgroundColor: '#F1F6FF',
         paddingHorizontal: text(8),
         paddingVertical: text(3),
@@ -342,5 +346,11 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         textAlign: 'right',
         flex: 1,
+    },
+    body_item_sty: {
+        color: '#4E556C',
+        fontSize: text(12),
+        textAlign: 'right',
+        width: text(80),
     },
 });
