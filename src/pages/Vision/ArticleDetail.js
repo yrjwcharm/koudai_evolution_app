@@ -2,27 +2,26 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 16:18:49
+ * @LastEditTime: 2021-03-23 10:26:17
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil.js';
+import {px as text, deviceHeight} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import Header from '../../components/NavBar';
 import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
 import BaseUrl from '../../services/config';
 const ArticleDetail = ({navigation, route}) => {
-    const insets = useSafeAreaInsets();
+    const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
-    const [webviewHeight, setHeight] = useState(deviceHeight - insets.top - text(44));
+    const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
     const [data, setData] = useState({});
     const shareModal = useRef(null);
     const [more, setMore] = useState(false);
@@ -93,40 +92,13 @@ const ArticleDetail = ({navigation, route}) => {
         });
     }, [data, init]);
 
-    // useEffect(() => {
-    //     navigation.setOptions({
-    //         headerBackImage: () => {
-    //             return <Icon name={'close'} size={24} style={{marginLeft: Space.marginAlign}} />;
-    //         },
-    //         headerRight: () => {
-    //             return (
-    //                 <TouchableOpacity
-    //                     activeOpacity={0.8}
-    //                     onPress={() => {
-    //                         setMore(true);
-    //                         shareModal.current.show();
-    //                     }}
-    //                     style={[styles.topRightBtn]}>
-    //                     <Text style={{fontSize: text(30), lineHeight: text(30)}}>{'...'}</Text>
-    //                 </TouchableOpacity>
-    //             );
-    //         },
-    //     });
-    // }, [navigation]);
     useEffect(() => {
-        init();
-    }, [init]);
-
-    return (
-        <View style={[styles.container, {paddingTop: insets.top + text(44)}]}>
-            <Header
-                title={scrollY > 80 ? '文章内容' : ''}
-                renderLeft={
-                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()}>
-                        <Icon name={'close'} size={24} />
-                    </TouchableOpacity>
-                }
-                renderRight={
+        navigation.setOptions({
+            headerBackImage: () => {
+                return <Icon name={'close'} size={24} style={{marginLeft: Space.marginAlign}} />;
+            },
+            headerRight: () => {
+                return (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
@@ -136,14 +108,23 @@ const ArticleDetail = ({navigation, route}) => {
                         style={[styles.topRightBtn]}>
                         <Text style={{fontSize: text(30), lineHeight: text(30)}}>{'...'}</Text>
                     </TouchableOpacity>
-                }
-                style={{
-                    opacity: 1,
-                    position: 'absolute',
-                    width: deviceWidth,
-                    backgroundColor: '#fff',
-                }}
-            />
+                );
+            },
+        });
+    }, [navigation]);
+    useEffect(() => {
+        if (scrollY > 80) {
+            navigation.setOptions({title: '文章内容'});
+        } else {
+            navigation.setOptions({title: ''});
+        }
+    }, [navigation, scrollY]);
+    useEffect(() => {
+        init();
+    }, [init]);
+
+    return (
+        <View style={[styles.container]}>
             <ScrollView style={{flex: 1}} onScroll={onScroll} scrollEventThrottle={16}>
                 <ShareModal
                     likeCallback={onFavor}
@@ -223,10 +204,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     topRightBtn: {
-        // flex: 1,
+        flex: 1,
         width: text(36),
-        marginTop: text(-12),
-        marginRight: text(-16),
+        marginRight: text(4),
     },
     finishBox: {
         paddingTop: text(24),
