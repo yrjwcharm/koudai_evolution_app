@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:18:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-23 14:19:15
  * @Description:头部组件
  */
 
@@ -106,12 +106,12 @@ const NavBar = React.forwardRef((props, ref) => {
     let opacityPercent = scrollY / 50;
     if (navRef && navRef.current && scrollY) {
         if (scrollY < 50) {
-            console.log(opacityPercent);
+            // console.log(opacityPercent);
             navRef.current.setNativeProps({
                 style: {opacity: opacityPercent},
             });
         } else {
-            console.log(opacityPercent);
+            // console.log(opacityPercent);
             navRef.current.setNativeProps({
                 style: {opacity: 1},
             });

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 21:08:38
+ * @LastEditTime: 2021-03-23 14:51:43
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -33,7 +33,7 @@ import LoginMask from '../../components/LoginMask';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import storage from '../../utils/storage';
 import http from '../../services/index.js';
-import {useJump} from '../../components/hooks';
+import {useJump, useShowGesture} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import GesturePassword from './GesturePassword';
 function HomeScreen({navigation, route}) {
@@ -50,7 +50,7 @@ function HomeScreen({navigation, route}) {
     const jump = useJump();
     const isFocused = useIsFocused();
     const scrollRef = useRef(null);
-    const [showGesture, setShowGesture] = useState(false);
+    const showGesture = useShowGesture();
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -210,25 +210,6 @@ function HomeScreen({navigation, route}) {
                 setShowEye(res ? res : 'true');
             });
             StatusBar.setBarStyle('light-content');
-            storage.get('gesturePwd').then((res) => {
-                if (res) {
-                    storage.get('openGesturePwd').then((result) => {
-                        if (result) {
-                            if (userInfo?.toJS()?.is_login && !userInfo?.toJS()?.verifyGesture) {
-                                setShowGesture(true);
-                            } else {
-                                setShowGesture(false);
-                            }
-                        } else {
-                            // 展示我的资产内容
-                            setShowGesture(false);
-                        }
-                    });
-                } else {
-                    // 展示我的资产内容
-                    setShowGesture(false);
-                }
-            });
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
