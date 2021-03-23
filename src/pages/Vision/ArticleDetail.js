@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 10:26:17
+ * @LastEditTime: 2021-03-23 15:53:57
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -27,6 +27,8 @@ const ArticleDetail = ({navigation, route}) => {
     const [more, setMore] = useState(false);
     const btnClick = useRef(true);
     const [scrollY, setScrollY] = useState(0);
+    const [finishRead, setFinishRead] = useState(false);
+    const timeRef = useRef(Date.now());
 
     // 滚动回调
     const onScroll = useCallback((event) => {
@@ -36,6 +38,7 @@ const ArticleDetail = ({navigation, route}) => {
     const init = useCallback(() => {
         http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
             if (res.code === '000000') {
+                timeRef.current = Date.now();
                 setData(res.result);
             }
         });
@@ -118,7 +121,16 @@ const ArticleDetail = ({navigation, route}) => {
         } else {
             navigation.setOptions({title: ''});
         }
-    }, [navigation, scrollY]);
+        if (scrollY > webviewHeight - deviceHeight + headerHeight && Object.keys(data).length > 0) {
+            setFinishRead(true);
+        }
+    }, [navigation, scrollY, webviewHeight, headerHeight, data]);
+    useEffect(() => {
+        if (finishRead) {
+            timeRef.current = Date.now() - timeRef.current;
+            console.log(timeRef.current);
+        }
+    }, [finishRead]);
     useEffect(() => {
         init();
     }, [init]);
@@ -155,7 +167,7 @@ const ArticleDetail = ({navigation, route}) => {
                         styles.finishText,
                         {color: Colors.lightGrayColor, paddingHorizontal: Space.padding},
                     ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
-                <View style={[Style.flexCenter, styles.finishBox]}>
+                <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
                     <Image source={require('../../assets/img/article/finish.png')} style={styles.finishImg} />
                     <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
                 </View>
