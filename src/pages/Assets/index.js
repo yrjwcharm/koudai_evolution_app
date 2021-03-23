@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 14:51:43
+ * @LastEditTime: 2021-03-23 18:41:18
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -204,7 +204,7 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            userInfo?.toJS()?.is_login && init();
+            userInfo?.toJS()?.is_login && !showGesture && init();
             // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
@@ -213,17 +213,17 @@ function HomeScreen({navigation, route}) {
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [init, userInfo])
+        }, [init, userInfo, showGesture])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
             if (isFocused && userInfo?.toJS()?.is_login) {
                 scrollRef.current.scrollTo({x: 0, y: 0, animated: false});
-                userInfo?.toJS()?.is_login && init('refresh');
+                userInfo?.toJS()?.is_login && !showGesture && init('refresh');
             }
         });
         return listener;
-    }, [isFocused, navigation, init, userInfo]);
+    }, [isFocused, navigation, init, userInfo, showGesture]);
 
     return !showGesture ? (
         <View style={styles.container}>
@@ -247,7 +247,7 @@ function HomeScreen({navigation, route}) {
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
-                        onRefresh={() => userInfo?.toJS()?.is_login && init('refresh')}
+                        onRefresh={() => userInfo?.toJS()?.is_login && !showGesture && init('refresh')}
                     />
                 }>
                 <View style={[styles.assetsContainer]}>

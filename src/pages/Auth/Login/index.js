@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 14:56:19
+ * @LastEditTime: 2021-03-23 19:38:25
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -29,7 +29,7 @@ class Login extends Component {
     }
     componentDidMount() {
         console.log(this.props);
-        Storage.delete('loginStatus');
+        // Storage.delete('loginStatus');
     }
     login = () => {
         const {mobile, password} = this.state;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 11:33:08
+ * @LastEditTime: 2021-03-23 17:59:46
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -28,6 +28,7 @@ const AccProfit = ({poid}) => {
     const [period, setPeriod] = useState('this_year');
     const [chartData, setChartData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
+    const [onlyAll, setOnlyAll] = useState(false);
     const init = useCallback(() => {
         if (!poid) {
             http.get('/profit/user_portfolios/20210101').then((res) => {
@@ -46,6 +47,9 @@ const AccProfit = ({poid}) => {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
+                if (res.result.subtabs?.length === 1) {
+                    setOnlyAll(true);
+                }
                 setChartData(res.result);
             }
         });
@@ -107,6 +111,7 @@ const AccProfit = ({poid}) => {
             return Colors.red;
         }
     }, []);
+
     useEffect(() => {
         init();
         getChart();
@@ -148,7 +153,7 @@ const AccProfit = ({poid}) => {
                                 chartData.chart,
                                 [Colors.red],
                                 [Colors.red],
-                                {value: chartData.title},
+                                {value: '累计收益(元)'},
                                 false,
                                 0
                             )}
@@ -162,12 +167,21 @@ const AccProfit = ({poid}) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 key={tab.val + index}
-                                onPress={() => setPeriod(tab.val)}
-                                style={[Style.flexCenter, styles.subtab, period === tab.val ? styles.active : {}]}>
+                                onPress={() => !onlyAll && setPeriod(tab.val)}
+                                style={[
+                                    Style.flexCenter,
+                                    styles.subtab,
+                                    period === tab.val || onlyAll ? styles.active : {},
+                                ]}>
                                 <Text
                                     style={[
                                         styles.tabText,
-                                        {color: period === tab.val ? Colors.brandColor : Colors.lightBlackColor},
+                                        {
+                                            color:
+                                                period === tab.val || onlyAll
+                                                    ? Colors.brandColor
+                                                    : Colors.lightBlackColor,
+                                        },
                                     ]}>
                                     {tab.key}
                                 </Text>

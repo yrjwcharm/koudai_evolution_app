@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 14:59:50
+ * @LastEditTime: 2021-03-23 18:41:38
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -34,8 +34,8 @@ const Index = (props) => {
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
-            userInfo?.toJS()?.is_login && getData();
-        }, [getData, userInfo])
+            userInfo?.toJS()?.is_login && !showGesture && getData();
+        }, [getData, userInfo, showGesture])
     );
 
     // let scrollingRight = '';

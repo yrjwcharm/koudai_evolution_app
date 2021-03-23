@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 18:40:23
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-23 18:36:52
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -11,6 +11,9 @@ import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 export default function Loading({navigation}) {
     const dispatch = useDispatch();
+    global.getUserInfo = () => {
+        dispatch(getUserInfo());
+    };
     dispatch(getUserInfo());
     useEffect(() => {
         Storage.get('AppGuide').then((res) => {

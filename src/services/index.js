@@ -57,6 +57,7 @@ axios.interceptors.response.use(
         //请求返回数据处理
         if (response?.data?.code == 'A00001') {
             Storage.delete('loginStatus');
+            global.getUserInfo();
             setTimeout(() => {
                 global.navigation?.navigate('Login');
             }, 1000);
