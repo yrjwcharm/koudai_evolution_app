@@ -97,7 +97,7 @@ const _matchContentString = (textContent, data, reg, type) => {
     // 匹配得到index并放入数组中
     let currentTextLength = textContent.length;
 
-    let emojiIndex = textContent?.search(reg) || -1;
+    let emojiIndex = typeof textContent === 'string' ? textContent.search(reg) : -1;
 
     let checkIndexArray = [];
 

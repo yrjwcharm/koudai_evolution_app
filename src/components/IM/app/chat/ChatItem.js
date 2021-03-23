@@ -57,7 +57,7 @@ export default class ChatItem extends PureComponent {
         if (textContent.length === 0) {
             return;
         }
-        let emojiIndex = textContent?.search(PATTERNS.emoji) || -1;
+        let emojiIndex = typeof textContent === 'string' ? textContent.search(PATTERNS.emoji) : -1;
         let checkIndexArray = [];
 
         // 若匹配不到，则直接返回一个全文本
