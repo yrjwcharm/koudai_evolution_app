@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:23:47
+ * @LastEditTime: 2021-03-23 10:45:07
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -16,6 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
 import FixedBtn from '../Portfolio/components/FixedBtn';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
@@ -23,6 +24,7 @@ export default function FixedPlan(props) {
     const [widthD, setWidthD] = useState('40%');
     const [moveRight, setMoveRight] = useState(false);
     const jump = useJump();
+    // 下期进度条 边界处理
     const onLayout = useCallback(
         (e) => {
             const layWidth = e.nativeEvent.layout.width;
@@ -30,20 +32,25 @@ export default function FixedPlan(props) {
             const curWidth = layWidth + widthAll * (left.split('%')[0] / 100);
             if (widthAll <= curWidth) {
                 const reSetLeft = 100 - left.split('%')[0] - 21 + '%';
-                console.log(reSetLeft);
                 setLeft(reSetLeft);
                 setMoveRight(true);
             }
         },
         [left]
     );
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
+
+    const init = useCallback(() => {
         Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
             setData(res.result);
         });
     }, []);
     return (
-        <View style={{backgroundColor: Colors.bgColor}}>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <View style={{marginBottom: FixedBtn.btnHeight}}>
                     <Header title={data.title} leftIcon="chevron-left" />

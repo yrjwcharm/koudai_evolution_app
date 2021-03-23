@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 20:24:31
+ * @LastEditTime: 2021-03-23 10:31:54
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -54,7 +54,7 @@ export default function PlanDetail(props) {
                             <View style={[Style.flexBetween, {marginTop: text(8)}]}>
                                 {_item?.items.map((_i, _d) => {
                                     return (
-                                        <View>
+                                        <View key={_d + '_i'}>
                                             <Text style={styles.desc_sty}>{_i?.key}</Text>
                                             <Text style={[styles.num_sty, {textAlign: _d == 1 ? 'right' : 'left'}]}>
                                                 {_i?.val}

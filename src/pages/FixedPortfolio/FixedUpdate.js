@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:23:13
+ * @LastEditTime: 2021-03-23 10:42:04
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -18,7 +18,7 @@ var interval, _cycle, _timing;
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState(1000);
-    const [cycle, setCycle] = useState('每周周一');
+    const [cycle, setCycle] = useState('');
 
     const addNum = () => {
         setNum(num + interval);
@@ -32,6 +32,11 @@ export default function FixedUpdate({navigation, route}) {
         }).then((res) => {
             interval = res.result.target_info.invest.incr;
             setData(res.result);
+            const _date = res.result.target_info.fix_period.current_date;
+            setCycle(_date);
+            _cycle = _date.slice(0, 2);
+            _timing = _date.slice(2);
+            console.log(_cycle, _timing, '000');
         });
     }, []);
     const selectTime = () => {
@@ -68,6 +73,7 @@ export default function FixedUpdate({navigation, route}) {
     };
 
     const jumpTo = (type) => {
+        console.log(_cycle, _timing);
         if (type == 'redeem') {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: data.invest_id,

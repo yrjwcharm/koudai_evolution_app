@@ -3,15 +3,16 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:19:22
+ * @LastEditTime: 2021-03-23 10:23:05
  */
 import React from 'react';
-import {ScrollView, Linking, Alert} from 'react-native';
+import {ScrollView, Linking, Alert, View} from 'react-native';
 import FitImage from 'react-native-fit-image';
 import Agreement from '../../components/Agreements';
 import {FixedButton} from '../../components/Button';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Toast from '../../components/Toast/';
+import {Colors} from '../../common/commonStyle';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const LargeAmountIntro = () => {
     const callTel = () => {

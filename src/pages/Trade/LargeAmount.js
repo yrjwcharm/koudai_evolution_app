@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:37:13
+ * @LastEditTime: 2021-03-23 10:21:06
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -269,11 +269,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.defaultColor,
         borderWidth: 0.5,
         borderRadius: text(5),
-    },
-    header_right: {
-        fontSize: px(14),
-        width: px(48),
-        color: Colors.defaultColor,
+        marginRight: text(16),
     },
 });
 export default LargeAmount;
