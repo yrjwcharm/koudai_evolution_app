@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 11:50:19
+ * @LastEditTime: 2021-03-24 15:36:35
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -227,7 +227,7 @@ export class bankInfo extends Component {
         const {verifyText, bank_no, bankList, selectBank, phone, code} = this.state;
         return (
             <View style={{flex: 1}}>
-                <ScrollView style={styles.con}>
+                <ScrollView style={styles.con} keyboardShouldPersistTaps="handled">
                     <KeyboardAvoidingView
                         behavior="position"
                         keyboardVerticalOffset={px(120)}

@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 18:21:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 15:37:05
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -67,8 +67,8 @@ export default class TradeRedeem extends Component {
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
         }).then((res) => {
-            tableData['head'] = res.result.header;
-            tableData['body'] = res.result.body;
+            tableData.head = res.result.header;
+            tableData.body = res.result.body;
             this.setState({
                 tableData,
                 redeem_id: res.result.redeem_id,
@@ -177,7 +177,7 @@ export default class TradeRedeem extends Component {
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
-                    <ScrollView>
+                    <ScrollView keyboardShouldPersistTaps="handled">
                         <Text style={styles.redeem_desc}>赎回至银行卡</Text>
                         {data?.pay_methods?.methods.map((_item, index) => {
                             return (
@@ -256,7 +256,7 @@ export default class TradeRedeem extends Component {
                             {toggleList && Object.keys(tableData).length > 0 && (
                                 <View>
                                     <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                        <Text style={styles.head_sty}></Text>
+                                        <Text style={styles.head_sty} />
                                         <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
                                         <Text style={[styles.body_item_sty]}>{tableData?.head?.amount}</Text>
                                     </View>

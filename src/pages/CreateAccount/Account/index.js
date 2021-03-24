@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 11:50:32
+ * @LastEditTime: 2021-03-24 15:36:28
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -147,7 +147,7 @@ export class index extends Component {
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
-                <ScrollView style={{paddingHorizontal: px(16)}}>
+                <ScrollView style={{paddingHorizontal: px(16)}} keyboardShouldPersistTaps="handled">
                     <FastImage
                         style={styles.pwd_img}
                         source={require('../../../assets/img/account/first.png')}

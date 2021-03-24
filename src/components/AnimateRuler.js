@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 14:11:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-03 17:21:17
+ * @LastEditTime: 2021-03-24 17:17:50
  * @Description:
  */
 import React from 'react';
@@ -152,7 +152,7 @@ type Props = {
     onChangeValue: Function,
 };
 
-class Ruler extends React.Component<Props> {
+class Ruler extends React.PureComponent<Props> {
     constructor(props: Props) {
         super(props);
 
@@ -172,24 +172,27 @@ class Ruler extends React.Component<Props> {
     }
     UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.defaultValue !== this.props.defaultValue) {
-            this.scroll(nextProps.defaultValue);
+            this.rulerWidth =
+                nextProps.width - nextProps.segmentWidth + (nextProps.maximum - nextProps.minimum) * this.snapSegment;
+            this.scroll(nextProps.defaultValue, nextProps.minimum);
         }
     }
-    scroll = (value) => {
-        console.log(value);
-        const {minimum} = this.props;
+
+    scroll = (value, _minimum) => {
         this.timer = setTimeout(() => {
             this.scrollViewRef?.current?.scrollTo({
-                x: (value - minimum) * this.snapSegment,
+                x: (value - _minimum) * this.snapSegment,
                 y: 0,
                 animated: false,
             });
         });
+        // this.textInputRef.current.setNativeProps({
+        //     text: `${value}`,
+        // });
     };
     componentDidMount() {
         const {minimum, defaultValue} = this.props;
-
-        defaultValue && this.scroll(defaultValue);
+        defaultValue && this.scroll(defaultValue, minimum);
         // Create a listener
         this.scrollListener = this.state.scrollX.addListener(
             lodash.debounce(({value}) => {
@@ -198,10 +201,10 @@ class Ruler extends React.Component<Props> {
                 }
                 if (this.textInputRef && this.textInputRef.current) {
                     this.textInputRef.current.setNativeProps({
-                        text: `${Math.round(value / this.snapSegment) + minimum}`,
+                        text: `${Math.round(value / this.snapSegment) + this.props.minimum}`,
                     });
                     this.setState({
-                        value: Math.round(value / this.snapSegment) + minimum,
+                        value: Math.round(value / this.snapSegment) + this.props.minimum,
                     });
                 }
             }, 0)
@@ -246,7 +249,7 @@ class Ruler extends React.Component<Props> {
                 <View>
                     {/* Ruler */}
                     <View>
-                        <View style={{height: 1, backgroundColor: '#E7E7E7', marginRight: px(32)}} />
+                        <View style={{height: 1, backgroundColor: '#E7E7E7', marginRight: px(38)}} />
                         <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
                             {Array.from(arr).map((item, i) => {
                                 return (
@@ -263,7 +266,7 @@ class Ruler extends React.Component<Props> {
                             })}
                         </View>
                     </View>
-                    <View style={{flexDirection: 'row', marginLeft: px(-10), marginTop: px(30)}}>
+                    <View style={{flexDirection: 'row', marginLeft: px(-5), marginTop: px(30)}}>
                         {data.map((i) => {
                             return (
                                 <Text
@@ -272,6 +275,8 @@ class Ruler extends React.Component<Props> {
                                         width: this.snapSegment,
                                         fontSize: px(18),
                                         color: '#D0D0D0',
+
+                                        // textAlign: '',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {i}

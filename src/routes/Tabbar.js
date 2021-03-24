@@ -1,8 +1,8 @@
 /*
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 19:19:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 16:28:07
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -23,23 +23,7 @@ export default function Tabbar() {
             screenOptions={({route, navigation}) => ({
                 tabBarIcon: ({focused}) => {
                     global.navigation = navigation;
-                    if (route.name === 'Find') {
-                        if (focused) {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/faxianActive.png')}
-                                />
-                            );
-                        } else {
-                            return (
-                                <FastImage
-                                    style={{width: tabIconSize, height: tabIconSize}}
-                                    source={require('../assets/img/tabIcon/faxian.png')}
-                                />
-                            );
-                        }
-                    } else if (route.name === 'Index') {
+                    if (route.name === 'Index') {
                         if (focused) {
                             return (
                                 <FastImage
@@ -52,6 +36,22 @@ export default function Tabbar() {
                                 <FastImage
                                     style={{width: tabIconSize, height: tabIconSize}}
                                     source={require('../assets/img/tabIcon/mofang.png')}
+                                />
+                            );
+                        }
+                    } else if (route.name === 'Find') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxianActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxian.png')}
                                 />
                             );
                         }
@@ -83,6 +83,7 @@ export default function Tabbar() {
                     fontSize: px(12),
                 },
             }}>
+            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen
                 name="Find"
                 component={Find}
@@ -90,7 +91,6 @@ export default function Tabbar() {
                     tabBarLabel: '发现',
                 }}
             />
-            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
         </Tab.Navigator>
     );

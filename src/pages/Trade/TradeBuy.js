@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 17:29:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 15:36:52
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -425,7 +425,7 @@ class TradeBuy extends Component {
         const {amount, data, type, planData} = this.state;
         const {buy_info, title, pay_methods} = data;
         return (
-            <ScrollView style={{color: Colors.bgColor}}>
+            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;

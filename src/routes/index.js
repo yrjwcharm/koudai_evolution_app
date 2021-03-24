@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-23 10:18:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 17:24:14
  * @Description:路由表
  */
 import React from 'react';
@@ -144,14 +144,14 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Loading"
+            // headerMode="screen"
             screenOptions={{
-                // headerShown: false,
-
                 headerBackImage: () => {
                     return <Feather name="chevron-left" size={30} />;
                 },
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
+
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
                     fontSize: px(18),

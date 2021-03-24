@@ -52,7 +52,7 @@ export default class index extends Component {
     render() {
         const {btnClick, mobile} = this.state;
         return (
-            <ScrollView style={styles.login_content}>
+            <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <View style={[Style.flexRow, {marginBottom: text(36), marginTop: text(20)}]}>
                     <FastImage
                         style={{width: text(42), height: text(42), marginRight: text(8)}}

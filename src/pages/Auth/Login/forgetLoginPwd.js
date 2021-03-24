@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 18:58:06
+ * @LastEditTime: 2021-03-24 15:36:03
  * @Description:找回登录密码
  */
 /*
@@ -53,7 +53,7 @@ export default class index extends Component {
     render() {
         const {btnClick, mobile} = this.state;
         return (
-            <ScrollView style={styles.login_content}>
+            <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <View style={{marginBottom: text(30), marginTop: text(20)}}>
                     <Text style={styles.title}>找回登录密码</Text>
                 </View>

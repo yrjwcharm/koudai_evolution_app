@@ -1,13 +1,8 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 19:19:53
-=======
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 16:55:15
->>>>>>> 保险auth
+ * @LastEditTime: 2021-03-24 17:19:40
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -43,7 +38,6 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 const bottom = isIphoneX() ? 84 : 50;
-const defaultAge = 25;
 //机器人动画
 const layoutAnimation = () => {
     LayoutAnimation.configureNext({
@@ -86,7 +80,6 @@ class Question extends Component {
     fr = this.props.route?.params?.fr; //risk来自个人资料
     plan_id = this.props.route?.params?.plan_id;
     componentDidMount() {
-        console.log(this.props);
         BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/start/20210101', {plan_id: this.plan_id}).then((data) => {
             if (data.code === '000000') {
@@ -182,7 +175,7 @@ class Question extends Component {
                     this.quesBtnView?.fadeInRight(500);
                 });
                 if (questions[this.state.current].style == 'age_cursor') {
-                    this.setState({value: defaultAge, inputBtnCanClick: true});
+                    this.setState({value: questions[this.state.current].default_value, inputBtnCanClick: true});
                 } else {
                     if (!value && questions[this.state.current].type == 3) {
                         this.setState({inputBtnCanClick: false});
@@ -248,7 +241,6 @@ class Question extends Component {
             Vibration.vibrate(10);
         }
         this.canNextClick = true;
-        Vibration.vibrate(10);
         const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
         let _current = this.state.current - count;
         //点击上一题按钮变为可点击
@@ -326,12 +318,12 @@ class Question extends Component {
                     return item.key == questions[current].name;
                 });
                 if (findIndex > -1) {
-                    list[findIndex] = {key: questions[current].name, val: value || option.content};
+                    list[findIndex] = {key: questions[current].name, val: value === '' ? option.content : value};
                 } else {
-                    list.push({key: questions[current].name, val: value || option.content});
+                    list.push({key: questions[current].name, val: value === '' ? option.content : value});
                 }
             } else {
-                list.push({key: questions[current].name, val: value || option.content});
+                list.push({key: questions[current].name, val: value === '' ? option.content : value});
             }
         }
         handleList = [];
@@ -672,9 +664,13 @@ class Question extends Component {
                                                         this.inputValue(age, 'age');
                                                     }}
                                                     step={2}
-                                                    defaultValue={value || defaultAge}
-                                                    minimum={18}
-                                                    maximum={100}
+                                                    defaultValue={value === '' ? current_ques.default_value : value}
+                                                    minimum={
+                                                        current_ques.id == 26
+                                                            ? questions[previousTest].value + 1
+                                                            : current_ques.min_value
+                                                    }
+                                                    maximum={current_ques.max_value}
                                                     unit="岁"
                                                 />
                                             ) : null}
