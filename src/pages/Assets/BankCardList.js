@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 16:11:23
+ * @LastEditTime: 2021-03-24 16:05:46
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,8 +16,10 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Button} from '../../components/Button';
 import Empty from '../../components/EmptyTip';
+import {useJump} from '../../components/hooks';
 
 const BankCardList = ({navigation}) => {
+    const jump = useJump();
     const [data, setData] = useState({});
 
     useFocusEffect(
@@ -84,19 +86,15 @@ const BankCardList = ({navigation}) => {
                     <>
                         <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
                         <Button
-                            title={'添加新银行卡'}
+                            title={data?.button?.text}
                             style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}
-                            onPress={() => navigation.navigate('AddBankCard', {action: 'add'})}
+                            onPress={() => jump(data?.button?.url)}
                         />
                     </>
                 ) : null}
             </ScrollView>
             {Object.keys(data).length === 0 || (data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0) ? null : (
-                <Button
-                    title={'添加新银行卡'}
-                    style={styles.btn}
-                    onPress={() => navigation.navigate('AddBankCard', {action: 'add'})}
-                />
+                <Button title={data?.button?.text} style={styles.btn} onPress={() => jump(data?.button?.url)} />
             )}
         </SafeAreaView>
     );

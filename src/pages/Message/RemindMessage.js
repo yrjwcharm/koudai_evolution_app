@@ -2,13 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
-<<<<<<< HEAD
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:13:39
-=======
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 19:04:39
->>>>>>> 1a0a7583334330c59a1cf6bec01ef68230f315be
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 17:48:53
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 15:36:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 17:48:36
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -99,6 +99,7 @@ export class index extends Component {
                     rname,
                     rcode,
                     poid: this.props.route?.params?.poid,
+                    fr: this.props.route?.params?.fr || '',
                 });
             } else {
                 Toast.show(res.message);
