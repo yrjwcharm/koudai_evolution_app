@@ -2,11 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 11:46:10
+ * @LastEditTime: 2021-03-24 18:16:26
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -115,7 +115,13 @@ const ArticleDetail = ({navigation, route}) => {
     useEffect(() => {
         navigation.setOptions({
             headerBackImage: () => {
-                return <Icon name={'close'} size={24} style={{marginLeft: Space.marginAlign}} />;
+                return (
+                    <Icon
+                        name={'close'}
+                        size={24}
+                        style={{marginLeft: Platform.select({ios: Space.marginAlign, android: 0})}}
+                    />
+                );
             },
             headerRight: () => {
                 return (
@@ -125,8 +131,8 @@ const ArticleDetail = ({navigation, route}) => {
                             setMore(true);
                             shareModal.current.show();
                         }}
-                        style={[styles.topRightBtn]}>
-                        <Text style={{fontSize: text(30), lineHeight: text(30)}}>{'...'}</Text>
+                        style={[Style.flexCenter, styles.topRightBtn]}>
+                        <Image source={require('../../assets/img/article/more.png')} style={styles.moreImg} />
                     </TouchableOpacity>
                 );
             },
@@ -262,7 +268,11 @@ const styles = StyleSheet.create({
     topRightBtn: {
         flex: 1,
         width: text(36),
-        marginRight: text(4),
+        marginRight: Platform.select({ios: text(10), android: text(6)}),
+    },
+    moreImg: {
+        width: text(30),
+        height: text(30),
     },
     finishBox: {
         paddingTop: text(24),

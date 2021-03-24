@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:10:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 20:23:27
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -143,7 +143,7 @@ const ScoreDetail = ({navigation, route}) => {
                 <Image source={require('../../assets/personal/score-bg.png')} style={styles.headerBg} />
                 <View style={[Style.flexCenter, styles.scoreNumContainer]}>
                     <View style={[Style.flexRowCenter, styles.scoreNum]}>
-                        <Text style={styles.scoreNumText}>{data.bonus || '****'}</Text>
+                        <Text style={styles.scoreNumText}>{data.bonus || '0'}</Text>
                     </View>
                     <View style={Style.flexRowCenter}>
                         <Text style={[styles.tipText, {marginRight: text(50)}]}>{`累计获取 ${
@@ -151,14 +151,14 @@ const ScoreDetail = ({navigation, route}) => {
                                 ? data.acquired_acc > 0
                                     ? '+' + data.acquired_acc
                                     : data.acquired_acc
-                                : '**'
+                                : '0'
                         }`}</Text>
                         <Text style={styles.tipText}>{`累计使用 ${
                             data.used_acc !== undefined
                                 ? data.used_acc > 0
                                     ? '-' + data.used_acc
                                     : data.used_acc
-                                : '**'
+                                : '0'
                         }`}</Text>
                     </View>
                 </View>
@@ -190,7 +190,7 @@ const ScoreDetail = ({navigation, route}) => {
                         activeOpacity={0.8}
                         style={[Style.flexRowCenter, styles.selectCon]}
                         onPress={() => setShow((prev) => !prev)}>
-                        <Text style={[styles.detail, {marginRight: text(4)}]}>{tabs[type - 1]?.text}</Text>
+                        <Text style={[styles.detail, {marginRight: text(4)}]}>{tabs[type - 1]?.text || '全部'}</Text>
                         <AntDesign name={show ? 'caretup' : 'caretdown'} size={8} color={'#fff'} />
                     </TouchableOpacity>
                 );

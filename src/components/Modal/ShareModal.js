@@ -2,11 +2,11 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 16:16:10
+ * @LastEditTime: 2021-03-24 18:41:55
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActionSheetIOS, View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
+import {ActionSheetIOS, Platform, View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {constants} from './util';
@@ -202,6 +202,9 @@ const ShareModal = React.forwardRef((props, ref) => {
                                 if (item.type === 'Like' || item.type === 'Collect') {
                                     return null;
                                 }
+                            }
+                            if (Platform.OS === 'android' && item.type === 'MoreOptions') {
+                                return null;
                             }
                             return (
                                 <TouchableOpacity

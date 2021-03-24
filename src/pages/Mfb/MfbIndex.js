@@ -2,10 +2,10 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 18:35:19
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 20:54:03
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -18,6 +18,7 @@ import {Button} from '../../components/Button';
 import Accordion from 'react-native-collapsible/Accordion';
 import BottomDesc from '../../components/BottomDesc';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function MfbIndex(props) {
     const [data, setData] = useState({});
@@ -27,11 +28,13 @@ export default function MfbIndex(props) {
     const rightPress = () => {
         props.navigation.navigate('TradeRecord', {fr: 'mfb'});
     };
-    useEffect(() => {
-        Http.get('/wallet/holding/20210101').then((res) => {
-            setData(res.result);
-        });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/wallet/holding/20210101').then((res) => {
+                setData(res.result);
+            });
+        }, [])
+    );
     // const jumpPage = (url, params) => {
     //     props.navigation.navigate(url, params);
     // };
