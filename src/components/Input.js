@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:49:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 15:23:23
+ * @LastEditTime: 2021-03-24 11:50:44
  * @Description:带lable的输入框
  */
 /**
@@ -58,11 +58,6 @@ class Input extends Component {
         // };
     }
 
-    _onChangeText = (val) => {
-        // this.setState({value: val}, () => {});
-        this.props.onChange && this.props.onChange(val);
-    };
-
     render() {
         const {
             label,
@@ -109,7 +104,6 @@ class Input extends Component {
                     <View style={[{flexDirection: 'row', flex: 1, padding: 0}, styles.center]}>
                         <TextInput
                             {...this.props}
-                            onChangeText={this._onChangeText}
                             onBlur={this._onBlur}
                             onFocus={this._onFocus}
                             style={[

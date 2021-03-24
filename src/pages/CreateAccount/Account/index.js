@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 16:10:36
+ * @LastEditTime: 2021-03-24 11:50:32
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -164,7 +164,7 @@ export class index extends Component {
                         <Input
                             label="姓名"
                             placeholder="请输入您的姓名"
-                            onChange={(name) => {
+                            onChangeText={(name) => {
                                 this.setState({name});
                             }}
                             value={name}
@@ -174,7 +174,7 @@ export class index extends Component {
                             <Input
                                 label="身份证"
                                 placeholder="请输入您的身份证号"
-                                onChange={(id_no) => {
+                                onChangeText={(id_no) => {
                                     this.setState({id_no});
                                 }}
                                 value={id_no}

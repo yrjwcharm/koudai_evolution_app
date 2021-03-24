@@ -1,14 +1,14 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-11 20:22:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 11:50:19
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {px} from '../../../utils/appUtil';
+import {px, inputInt} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
 import Input from '../../../components/Input';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -19,6 +19,7 @@ import {formCheck} from '../../../utils/validator';
 import Toast from '../../../components/Toast';
 import http from '../../../services';
 import {Modal} from '../../../components/Modal';
+import _ from 'lodash';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -223,7 +224,7 @@ export class bankInfo extends Component {
         });
     };
     render() {
-        const {verifyText, bank_no, bankList, selectBank} = this.state;
+        const {verifyText, bank_no, bankList, selectBank, phone, code} = this.state;
         return (
             <View style={{flex: 1}}>
                 <ScrollView style={styles.con}>
@@ -262,7 +263,7 @@ export class bankInfo extends Component {
                                 keyboardType={'number-pad'}
                                 maxLength={25}
                                 value={bank_no}
-                                onChange={this.onChangeBankNo}
+                                onChangeText={this.onChangeBankNo}
                             />
                             <View style={Style.flexRow}>
                                 <Input
@@ -287,8 +288,9 @@ export class bankInfo extends Component {
                                 placeholder="请输入您的手机号"
                                 keyboardType={'number-pad'}
                                 maxLength={11}
-                                onChange={(phone) => {
-                                    this.setState({phone});
+                                value={phone}
+                                onChangeText={(_phone) => {
+                                    this.setState({phone: inputInt(_phone)});
                                 }}
                             />
                             <View style={Style.flexRow}>
@@ -297,14 +299,15 @@ export class bankInfo extends Component {
                                     placeholder="请输入验证码"
                                     keyboardType={'number-pad'}
                                     maxLength={6}
-                                    onChange={(code) => {
-                                        this.setState({code});
+                                    value={code}
+                                    onChangeText={(_code) => {
+                                        this.setState({code: inputInt(_code)});
                                     }}
                                     inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 />
                                 <View style={[styles.border, {width: verifyText.length > 5 ? px(110) : px(84)}]}>
                                     <Text
-                                        onPress={this.sendCode}
+                                        onPress={_.debounce(this.sendCode, 500)}
                                         style={{
                                             color: Colors.btnColor,
                                         }}>
@@ -331,7 +334,7 @@ export class bankInfo extends Component {
                         />
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FixedButton title={'立即开户'} onPress={this.confirm} />
+                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500)} />
             </View>
         );
     }
