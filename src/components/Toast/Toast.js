@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 17:57:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 15:54:48
+ * @LastEditTime: 2021-03-24 20:13:56
  * @Description:
  */
 import React, {Component} from 'react';
@@ -16,6 +16,9 @@ class Toast extends Component {
     static durations = durations;
 
     static show = (message, options) => {
+        if (root) {
+            root.destroy();
+        }
         return (root = new RootSiblings(
             (
                 <ToastContainer

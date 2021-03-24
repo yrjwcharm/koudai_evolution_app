@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:52:28
+ * @LastEditTime: 2021-03-24 21:22:46
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -68,7 +68,12 @@ class SetLoginPassword extends Component {
                         password,
                     }).then((data) => {
                         this.props.getUserInfo();
-                        this.props.navigation.pop(2);
+                        this.props.getVerifyGesture();
+                        if (this.fr == 'register') {
+                            this.props.navigation.pop(4);
+                        } else {
+                            this.props.navigation.pop(3);
+                        }
                         Storage.save('loginStatus', data.result);
                     });
                 } else {
@@ -92,7 +97,7 @@ class SetLoginPassword extends Component {
                     }).then((data) => {
                         this.props.getUserInfo();
                         this.props.getVerifyGesture();
-                        this.props.navigation.pop(2);
+                        this.props.navigation.pop(3);
                         Storage.save('loginStatus', data.result);
                     });
                 } else {

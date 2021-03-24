@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:53:51
+ * @LastEditTime: 2021-03-24 21:20:19
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -45,9 +45,8 @@ export default class index extends Component {
         let value = inputInt(mobile);
         this.setState({mobile: value, btnClick: !(value.length >= 11)});
     };
-    jumpPage = (nav) => {
-        global.LogTool();
-        this.props.navigation.replace(nav);
+    jumpPage = (nav, params) => {
+        this.props.navigation.navigate(nav, params);
     };
     render() {
         const {btnClick, mobile} = this.state;
@@ -97,13 +96,13 @@ export default class index extends Component {
                     <Text style={styles.text}>已有账号</Text>
                     <Text
                         onPress={() => {
-                            this.jumpPage('Login');
+                            this.jumpPage('Login', {fr: 'register'});
                         }}
                         style={[styles.text, {color: Colors.btnColor, marginLeft: 2}]}>
                         去登录
                     </Text>
                 </View>
-                <WechatView />
+                <WechatView fr="register" />
             </ScrollView>
         );
     }

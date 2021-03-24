@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:24:14
+ * @LastEditTime: 2021-03-24 20:01:12
  * @Description:路由表
  */
 import React from 'react';
@@ -169,11 +169,7 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen
-                name="Tab"
-                component={TabScreen}
-                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
-            />
+            <Stack.Screen name="Tab" component={TabScreen} options={{headerShown: false}} />
             <Stack.Screen name="Loading" component={Loading} options={{headerShown: false}} />
 
             <Stack.Screen

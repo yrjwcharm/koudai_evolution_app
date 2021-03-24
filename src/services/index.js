@@ -65,24 +65,17 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        // NetInfo.fetch().then((state) => {
-        //     if (state.isConnected) {
-        //         //判断网络是否链接
-        //         // setTimeout(() => {
-        //         //   Toast.showInfo('服务器开小差了...')
-        //         // }, 100)
-        //     } else {
-        //         if (err && err.stack.indexOf('timeout') > -1) {
-        //             // setTimeout(() => {
-        //             //   Toast.showInfo('您的网络环境不稳定...')
-        //             // }, 100)
-        //         } else {
-        //             // setTimeout(() => {
-        //             //   Toast.showInfo('网络请求失败,请检查您的网络')
-        //             // }, 100)
-        //         }
-        //     }
-        // });
+        NetInfo.fetch().then((state) => {
+            if (state.isConnected) {
+                Toast.show('服务器开小差了...');
+            } else {
+                if (err && err.stack.indexOf('timeout') > -1) {
+                    Toast.show('您的网络环境不稳定...');
+                } else {
+                    Toast.show('网络请求失败,请检查您的网络');
+                }
+            }
+        });
         Promise.reject(err);
     }
 );
@@ -99,15 +92,8 @@ export default class http {
             let res = null;
             if (!params) {
                 res = await axios.get(url);
-                if (showLoading) {
-                    // Toast.hide();
-                }
             } else {
                 res = await axios.get(url + '?' + query);
-
-                if (showLoading) {
-                    // Toast.hide();
-                }
             }
             return res;
         } catch (error) {

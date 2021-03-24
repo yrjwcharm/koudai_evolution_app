@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 10:28:01
+ * @LastEditTime: 2021-03-24 20:25:50
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -25,7 +25,7 @@ import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
-
+import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
@@ -132,6 +132,13 @@ function App(props) {
         setInterval(() => {
             heartBeat();
         }, 60 * 5 * 1000);
+    }, []);
+    React.useEffect(() => {
+        NetInfo.addEventListener((state) => {
+            if (!state.isConnected) {
+                Toast.show('网络已断开,请检查您的网络');
+            }
+        });
     }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');

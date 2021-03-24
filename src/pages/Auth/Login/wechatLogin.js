@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:47:49
+ * @LastEditTime: 2021-03-24 20:58:06
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -37,6 +37,7 @@ export default class WechatLogin extends Component {
                 this.props.navigation.navigate('SetLoginPassword', {
                     mobile: this.state.mobile,
                     union_id: this.props.route?.params?.union_id,
+                    fr: this.props.route?.params?.fr,
                 });
             } else {
                 Toast.show(res.message);

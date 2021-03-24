@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 15:35:49
+ * @LastEditTime: 2021-03-24 21:20:33
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -26,11 +26,9 @@ class Login extends Component {
             check: true,
             btnClick: true,
         };
+        this.fr = this.props.route?.params?.fr;
     }
-    componentDidMount() {
-        console.log(this.props);
-        // Storage.delete('loginStatus');
-    }
+
     login = () => {
         const {mobile, password} = this.state;
         let toast = Toast.showLoading('正在登录...');
@@ -41,7 +39,11 @@ class Login extends Component {
                 this.props.getVerifyGesture();
                 Toast.show('登录成功', {
                     onHidden: () => {
-                        this.props.navigation.goBack();
+                        if (this.fr == 'register') {
+                            this.props.navigation.pop(2);
+                        } else {
+                            this.props.navigation.goBack();
+                        }
                     },
                 });
                 Storage.save('loginStatus', res.result);
@@ -93,7 +95,7 @@ class Login extends Component {
                 />
                 <Text
                     onPress={() => {
-                        this.jumpPage('ForgetLoginPwd');
+                        this.jumpPage('ForgetLoginPwd', {fr: this.fr});
                     }}
                     style={[styles.text, {color: Colors.btnColor, height: text(30), alignSelf: 'flex-end'}]}>
                     忘记密码
@@ -107,13 +109,13 @@ class Login extends Component {
 
                 <Text
                     onPress={() => {
-                        this.props.navigation.replace('Register');
+                        this.props.navigation.navigate('Register');
                     }}
                     style={[styles.text, {color: Colors.btnColor, alignSelf: 'center', height: px(30)}]}>
                     立即注册
                 </Text>
 
-                <WechatView weChatLogin={this.weChatLogin} style={{marginTop: px(16)}} />
+                <WechatView weChatLogin={this.weChatLogin} fr="login" style={{marginTop: px(16)}} />
             </ScrollView>
         );
     }

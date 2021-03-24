@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:05:37
+ * @LastEditTime: 2021-03-24 21:21:06
  * @Description: 微信登录
  */
 import React from 'react';
@@ -38,11 +38,12 @@ function Wechat(props) {
                                             },
                                         });
                                     } else {
-                                        navigation.replace('WechatLogin', {
+                                        navigation.navigate('WechatLogin', {
                                             union_id: res.result.union_id,
                                             avatar: res.result.avatar,
                                             nickname: res.result.nickname,
                                             muid: res.result.muid,
+                                            fr: props.fr,
                                         });
                                     }
                                 }
