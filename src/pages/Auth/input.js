@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-09 16:39:46
+ * @LastEditTime: 2021-03-24 17:45:53
  * @Description:
  */
 import React from 'react';
@@ -18,7 +18,7 @@ export default function input(props) {
             </View>
             <TextInput
                 {...props}
-                style={styles.input}
+                style={[styles.input, {fontSize: props.value ? px(16) : px(14)}]}
                 placeholderTextColor="#BBBBBB"
                 underlineColorAndroid="transparent"
             />

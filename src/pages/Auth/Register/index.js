@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 14:07:35
+ * @LastEditTime: 2021-03-24 17:53:51
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -29,7 +29,7 @@ export default class index extends Component {
         global.LogTool('Register');
         const {mobile, check} = this.state;
         if (!check) {
-            Toast.show('请勾选协议');
+            Toast.show('请勾选并同意理财魔方相关协议');
             return;
         }
         http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
@@ -80,10 +80,7 @@ export default class index extends Component {
                             title: '《用户协议》',
                             id: 0,
                         },
-                        {
-                            title: '《投资人权益协议》',
-                            id: 19,
-                        },
+
                         {
                             title: '《隐私权政策》',
                             id: 32,

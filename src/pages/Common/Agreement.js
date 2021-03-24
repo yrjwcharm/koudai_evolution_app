@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 10:31:10
- * @LastEditTime: 2021-03-06 13:31:04
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 17:35:49
+ * @LastEditors: yhc
  * @Description: 用户协议(接口返回内容)
  * @FilePath: /koudai_evolution_app/src/pages/Index/Agreement.js
  */
@@ -30,7 +30,7 @@ export class Agreement extends Component {
         const {agreement} = this.state.data;
         return (
             <SafeAreaView edges={['bottom']}>
-                <ScrollView>
+                <ScrollView style={{backgroundColor: '#fff'}}>
                     <View style={{padding: text(14)}}>
                         {agreement && <Html html={agreement} style={{fontSize: text(14), lineHeight: text(18)}} />}
                     </View>

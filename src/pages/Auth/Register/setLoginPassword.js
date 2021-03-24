@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 14:06:27
+ * @LastEditTime: 2021-03-24 17:52:28
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -46,7 +46,7 @@ class SetLoginPassword extends Component {
                 Toast.hide(toast);
                 if (res.code === '000000') {
                     Toast.show('找回成功');
-                    this.props.navigation.goBack();
+                    this.props.navigation.pop(2);
                 } else {
                     Toast.show(res.message);
                 }
@@ -165,7 +165,7 @@ class SetLoginPassword extends Component {
                         title="验证码"
                         onChangeText={this.onChangeCode}
                         value={code}
-                        placeholder="验证码"
+                        placeholder="请输入验证码"
                         maxLength={6}
                         keyboardType={'number-pad'}
                         autoFocus={true}

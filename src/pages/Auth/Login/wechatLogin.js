@@ -2,15 +2,15 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 20:43:25
+ * @LastEditTime: 2021-03-24 17:47:49
  * @Description:微信登录
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputView from '../input';
-import {px as text, handlePhone} from '../../../utils/appUtil';
+import {px as text, handlePhone, inputInt} from '../../../utils/appUtil';
 import {Style} from '../../../common/commonStyle';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {View, Text, ScrollView, StyleSheet, Image} from 'react-native';
 import Agreements from '../../../components/Agreements';
 import {Button} from '../../../components/Button';
 import http from '../../../services';
@@ -21,11 +21,14 @@ export default class WechatLogin extends Component {
     // };
     state = {
         mobile: '',
-        check: true,
+        check: false,
         btnClick: true,
     };
     /**获取短信验证码 */
     getCode = () => {
+        if (!this.state.check) {
+            Toast.show('请勾选并同意理财魔方相关协议');
+        }
         http.post('/auth/user/mobile_can_bind/20210101', {
             mobile: this.state.mobile,
             muid: this.props.route?.params.muid,
@@ -41,13 +44,13 @@ export default class WechatLogin extends Component {
         });
     };
     onChangeMobile = (mobile) => {
-        this.setState({mobile, btnClick: !(mobile.length >= 11)});
+        this.setState({mobile: inputInt(mobile), btnClick: !(mobile.length >= 11)});
     };
 
     render() {
         const {mobile, btnClick} = this.state;
         return (
-            <View style={styles.login_content}>
+            <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <View style={Style.flexRow}>
                     <Image
                         style={styles.avatar}
@@ -75,6 +78,7 @@ export default class WechatLogin extends Component {
                     onChange={(check) => {
                         this.setState({check});
                     }}
+                    check={false}
                     data={[
                         {
                             title: '《用户协议》',
@@ -93,7 +97,7 @@ export default class WechatLogin extends Component {
                     onPress={this.getCode}
                     style={{marginTop: text(38)}}
                 />
-            </View>
+            </ScrollView>
         );
     }
 }

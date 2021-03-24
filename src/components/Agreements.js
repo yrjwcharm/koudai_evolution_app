@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 16:24:07
+ * @LastEditTime: 2021-03-24 17:34:50
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -43,7 +43,7 @@ function Agreements(props) {
                                   onPress={() => {
                                       jumpPage(item);
                                   }}
-                                  style={{fontSize: px(12), color: '#0051CC'}}
+                                  style={{fontSize: px(11), color: '#0051CC'}}
                                   key={index}>
                                   {item.title}
                               </Text>
