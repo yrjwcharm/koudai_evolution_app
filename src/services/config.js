@@ -1,15 +1,21 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:16:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 14:21:57
  * @Description:环境
  */
-const env = 'develop'; //默认
+const env = 'test'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
         HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    test: {
+        HTTP: 'http://kapi-web.yitao.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
         IMApi: 'http://kapi-im-kp2.licaimofang.com',
         H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
@@ -39,12 +45,6 @@ const SERVER_URL = {
     },
     hjq: {
         HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',
-    },
-    test: {
-        HTTP: 'http://kapi-web.yitao.mofanglicai.com.cn:10080/',
-        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
-        IMApi: 'http://kapi-im-kp2.licaimofang.com',
-        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
     },
 };
 

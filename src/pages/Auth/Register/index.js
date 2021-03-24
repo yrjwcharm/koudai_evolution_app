@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 11:11:59
+ * @LastEditTime: 2021-03-24 14:07:35
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -51,7 +51,6 @@ export default class index extends Component {
     };
     render() {
         const {btnClick, mobile} = this.state;
-        console.log(mobile);
         return (
             <ScrollView style={styles.login_content}>
                 <View style={[Style.flexRow, {marginBottom: text(36), marginTop: text(20)}]}>

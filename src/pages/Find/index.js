@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-23 18:41:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 14:21:00
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -16,12 +16,11 @@ import Header from '../../components/NavBar';
 import BottomDesc from '../../components/BottomDesc';
 import LoginMask from '../../components/LoginMask';
 import http from '../../services';
-import {useJump, useShowGesture} from '../../components/hooks';
+import {useJump} from '../../components/hooks';
 import {Chart, chartOptions} from '../../components/Chart';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
-import GesturePassword from '../Assets/GesturePassword';
 const Index = (props) => {
     const isFocused = useIsFocused();
     const userInfo = useSelector((store) => store.userInfo);
@@ -29,13 +28,12 @@ const Index = (props) => {
     const [data, SetData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
-    const showGesture = useShowGesture();
 
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
-            userInfo?.toJS()?.is_login && !showGesture && getData();
-        }, [getData, userInfo, showGesture])
+            getData();
+        }, [getData])
     );
 
     // let scrollingRight = '';
@@ -71,10 +69,7 @@ const Index = (props) => {
             </View>
         );
     };
-    return showGesture ? (
-        // 手势密码
-        <GesturePassword option={'verify'} />
-    ) : loading ? (
+    return loading ? (
         renderLoading()
     ) : (
         <>
