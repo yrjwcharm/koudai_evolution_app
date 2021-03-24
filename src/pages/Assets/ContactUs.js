@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 09:56:37
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-16 21:04:47
+ * @LastEditTime: 2021-03-24 20:36:09
  * @Description: 联系我们
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -77,6 +77,7 @@ const ContactUs = ({navigation}) => {
             {data.service?.map((item, index) => {
                 return (
                     <TouchableOpacity
+                        activeOpacity={0.8}
                         key={index}
                         style={[Style.flexRow, styles.contactBox]}
                         onPress={() => onPress(item)}>

@@ -2,7 +2,7 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 16:01:54
+ * @LastEditTime: 2021-03-24 20:02:48
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -67,7 +67,7 @@ const AccountRemove = ({navigation, route}) => {
                 http.post('/passport/account/destroy/20210101', {
                     verify_code: value,
                 }).then((res) => {
-                    Toast.show(res.message);
+                    Toast.show(res.message, {position: text(120), showMask: false});
                     if (res.code === '000000') {
                         codeModal.current.hide();
                         Storage.delete('loginStatus');

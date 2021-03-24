@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 16:39:13
+ * @LastEditTime: 2021-03-24 20:41:32
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -73,7 +73,11 @@ const SetTradePassword = ({navigation, route}) => {
                                         isTouchMaskToClose: false,
                                     });
                                     return false;
-                                } else if (route.params?.action === 'unbind' || route.params?.fr === 'add_bank_card') {
+                                } else if (
+                                    route.params?.action === 'unbind' ||
+                                    route.params?.fr === 'add_bank_card' ||
+                                    route.params?.fr === 'wallet'
+                                ) {
                                     Toast.show(data.message);
                                     setTimeout(() => {
                                         navigation.goBack();
