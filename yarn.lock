@@ -1175,7 +1175,7 @@
   resolved "https://registry.npm.taobao.org/@react-native-community/netinfo/download/@react-native-community/netinfo-5.9.10.tgz?cache=0&sync_timestamp=1609944435589&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40react-native-community%2Fnetinfo%2Fdownload%2F%40react-native-community%2Fnetinfo-5.9.10.tgz#97d3a9fa62a3a4838ec7a6ec91cfec5a26e365b6"
   integrity sha1-l9Op+mKjpIOOx6bskc/sWibjZbY=
 
-"@react-native-community/progress-bar-android@^1.0.3":
+"@react-native-community/progress-bar-android@^1.0.3", "@react-native-community/progress-bar-android@^1.0.4":
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/@react-native-community/progress-bar-android/download/@react-native-community/progress-bar-android-1.0.4.tgz#2601353b23a7ad76a59e5b0981e0b08c39902708"
   integrity sha1-JgE1OyOnrXalnlsJgeCwjDmQJwg=

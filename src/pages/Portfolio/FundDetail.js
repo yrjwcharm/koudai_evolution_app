@@ -2,11 +2,11 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:54:20
+ * @LastEditTime: 2021-03-24 17:34:42
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -102,7 +102,7 @@ const FundDetail = ({navigation, route}) => {
                         );
                     })}
                 </View>
-                <View style={{height: 260}}>
+                <View style={{height: Platform.select({ios: text(240), android: text(192)})}}>
                     {data.part1 && !data.part1.fund.is_monetary ? (
                         <>
                             {curTab === 0 ? (
@@ -342,99 +342,95 @@ const FundDetail = ({navigation, route}) => {
                 {data.part2 && (
                     <ScrollableTabView
                         locked
-                        style={[styles.groupContainer, {overflow: 'hidden'}]}
+                        style={[styles.groupContainer, {overflow: 'hidden', minHeight: text(362)}]}
                         renderTabBar={() => <Tab />}
                         initialPage={0}
                         onChangeTab={(cur) => onChangeTab(cur.i)}>
                         {data.part2.map((item, index) => {
                             return (
-                                <View
-                                    key={item.tab + index}
-                                    tabLabel={item.tab}
-                                    style={[{transform: [{translateY: text(-1.5)}]}]}>
-                                    <View style={styles.chartContainer}>{renderChart()}</View>
+                                <View key={item.tab + index} tabLabel={item.tab} style={[styles.chartContainer]}>
+                                    {renderChart()}
                                 </View>
                             );
                         })}
                     </ScrollableTabView>
                 )}
-                {data.part3 &&
-                    data.part3.map((item, index) => {
+                {data?.part3?.map((item, index) => {
+                    return (
+                        <View style={styles.groupContainer} key={item.group + index}>
+                            {item?.items?.length === 0 && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[Style.flexBetween, {padding: Space.padding}]}
+                                    onPress={() => jump(item.url)}>
+                                    <Text style={[styles.title, {color: Colors.defaultColor, fontWeight: '500'}]}>
+                                        {item.group}
+                                    </Text>
+                                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                                </TouchableOpacity>
+                            )}
+                            {item?.items?.length >= 1 && (
+                                <View style={[{paddingHorizontal: Space.padding}]}>
+                                    <Text
+                                        style={[
+                                            styles.title,
+                                            {
+                                                color: Colors.defaultColor,
+                                                fontWeight: '500',
+                                                paddingVertical: text(13),
+                                            },
+                                        ]}>
+                                        {item.group}
+                                    </Text>
+                                    {item.items.map((v, i) => {
+                                        return (
+                                            <View
+                                                style={{
+                                                    borderTopWidth: Space.borderWidth,
+                                                    borderColor: Colors.borderColor,
+                                                }}
+                                                key={v.key + i}>
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={[{paddingVertical: text(20)}, Style.flexBetween]}
+                                                    onPress={() => jump(v.url)}>
+                                                    <Text style={styles.title}>{v.key}</Text>
+                                                    <Text style={styles.groupVal}>
+                                                        {Object.prototype.toString.call(v.val) === '[object Object]' ? (
+                                                            <>
+                                                                <Text style={styles.origin}>{v.val.origin}</Text>
+                                                                &nbsp;&nbsp;
+                                                                <Text>{v.val.mofang}</Text>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {v.val}
+                                                                &nbsp;&nbsp;
+                                                                <FontAwesome
+                                                                    name={'angle-right'}
+                                                                    size={20}
+                                                                    color={Colors.descColor}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            )}
+                        </View>
+                    );
+                })}
+                <View style={styles.bottom}>
+                    {data?.bottom?.map((item, index) => {
                         return (
-                            <View style={styles.groupContainer} key={item.group + index}>
-                                {item.items.length === 0 && (
-                                    <TouchableOpacity
-                                        style={[Style.flexBetween, {padding: Space.padding}]}
-                                        onPress={() => jump(item.url)}>
-                                        <Text style={[styles.title, {color: Colors.defaultColor, fontWeight: '500'}]}>
-                                            {item.group}
-                                        </Text>
-                                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                                    </TouchableOpacity>
-                                )}
-                                {item.items.length >= 1 && (
-                                    <View style={[{paddingHorizontal: Space.padding}]}>
-                                        <Text
-                                            style={[
-                                                styles.title,
-                                                {
-                                                    color: Colors.defaultColor,
-                                                    fontWeight: '500',
-                                                    paddingVertical: text(13),
-                                                },
-                                            ]}>
-                                            {item.group}
-                                        </Text>
-                                        {item.items.map((v, i) => {
-                                            return (
-                                                <View
-                                                    style={{
-                                                        borderTopWidth: Space.borderWidth,
-                                                        borderColor: Colors.borderColor,
-                                                    }}
-                                                    key={v.key + i}>
-                                                    <TouchableOpacity
-                                                        style={[{paddingVertical: text(20)}, Style.flexBetween]}
-                                                        onPress={() => jump(v.url)}>
-                                                        <Text style={styles.title}>{v.key}</Text>
-                                                        <Text style={styles.groupVal}>
-                                                            {Object.prototype.toString.call(v.val) ===
-                                                            '[object Object]' ? (
-                                                                <>
-                                                                    <Text style={styles.origin}>{v.val.origin}</Text>
-                                                                    &nbsp;&nbsp;
-                                                                    <Text>{v.val.mofang}</Text>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    {v.val}
-                                                                    &nbsp;&nbsp;
-                                                                    <FontAwesome
-                                                                        name={'angle-right'}
-                                                                        size={20}
-                                                                        color={Colors.descColor}
-                                                                    />
-                                                                </>
-                                                            )}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
-                                )}
-                            </View>
+                            <Text style={styles.bottomText} key={item + index}>
+                                {item}
+                            </Text>
                         );
                     })}
-                <View style={styles.bottom}>
-                    {data.bottom &&
-                        data.bottom.map((item, index) => {
-                            return (
-                                <Text style={styles.bottomText} key={item + index}>
-                                    {item}
-                                </Text>
-                            );
-                        })}
                 </View>
             </ScrollView>
         )
@@ -521,7 +517,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E2E4EA',
     },
     chartContainer: {
-        minHeight: text(320),
+        minHeight: text(318),
         paddingVertical: Space.padding,
     },
     legendItem: {

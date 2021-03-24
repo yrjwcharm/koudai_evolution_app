@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 17:00:44
+ * @LastEditTime: 2021-03-24 17:42:06
  * @Description: 基金公司
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,9 +20,9 @@ const FundCompany = ({navigation, route}) => {
     const [list, setList] = useState([]);
     const shadow = useRef({
         color: '#E0E2E7',
-        border: 6,
-        radius: Space.borderRadius,
-        opacity: 0.5,
+        border: 12,
+        radius: 1,
+        opacity: 0.3,
         x: 0,
         y: 2,
         width: deviceWidth - 2 * Space.marginAlign,

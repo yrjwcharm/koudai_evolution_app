@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 15:53:57
+ * @LastEditTime: 2021-03-24 11:46:10
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -29,6 +29,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [scrollY, setScrollY] = useState(0);
     const [finishRead, setFinishRead] = useState(false);
     const timeRef = useRef(Date.now());
+    const [finishLoad, setFinishLoad] = useState(false);
 
     // 滚动回调
     const onScroll = useCallback((event) => {
@@ -38,8 +39,8 @@ const ArticleDetail = ({navigation, route}) => {
     const init = useCallback(() => {
         http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
             if (res.code === '000000') {
-                timeRef.current = Date.now();
                 setData(res.result);
+                setFinishRead(!!res.result.read_info?.done_status);
             }
         });
     }, [route]);
@@ -52,6 +53,9 @@ const ArticleDetail = ({navigation, route}) => {
     };
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
+        if (eventData) {
+            setFinishLoad(true);
+        }
         setHeight(eventData * 1 || deviceHeight);
     };
     const onFavor = useCallback(() => {
@@ -94,6 +98,19 @@ const ArticleDetail = ({navigation, route}) => {
             }
         });
     }, [data, init]);
+    const postProgress = useCallback((params) => {
+        http.post('/community/article/progress/20210101', params || {});
+    }, []);
+    const back = useCallback(() => {
+        let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
+        progress = progress > 100 ? 100 : progress;
+        postProgress({
+            article_id: route.params?.article_id,
+            latency: Date.now() - timeRef.current,
+            done_status: data?.read_info?.done_status || +finishRead,
+            article_progress: progress,
+        });
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -121,19 +138,29 @@ const ArticleDetail = ({navigation, route}) => {
         } else {
             navigation.setOptions({title: ''});
         }
-        if (scrollY > webviewHeight - deviceHeight + headerHeight && Object.keys(data).length > 0) {
-            setFinishRead(true);
-        }
-    }, [navigation, scrollY, webviewHeight, headerHeight, data]);
+    }, [navigation, scrollY]);
     useEffect(() => {
-        if (finishRead) {
-            timeRef.current = Date.now() - timeRef.current;
-            console.log(timeRef.current);
+        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad) {
+            setFinishRead((prev) => {
+                if (!prev) {
+                    postProgress({
+                        article_id: route.params?.article_id,
+                        latency: Date.now() - timeRef.current,
+                        done_status: 1,
+                        article_progress: 100,
+                    });
+                }
+                return true;
+            });
         }
-    }, [finishRead]);
+    }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
         init();
     }, [init]);
+    useEffect(() => {
+        const listener = navigation.addListener('beforeRemove', back);
+        return () => listener();
+    }, [back, navigation]);
 
     return (
         <View style={[styles.container]}>
@@ -162,49 +189,66 @@ const ArticleDetail = ({navigation, route}) => {
                     startInLoadingState
                     style={{height: webviewHeight}}
                 />
-                <Text
-                    style={[
-                        styles.finishText,
-                        {color: Colors.lightGrayColor, paddingHorizontal: Space.padding},
-                    ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
-                <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
-                    <Image source={require('../../assets/img/article/finish.png')} style={styles.finishImg} />
-                    <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
-                </View>
-                <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
-                    <TouchableOpacity activeOpacity={0.8} onPress={onFavor} style={[Style.flexCenter, {flex: 1}]}>
-                        <Image
-                            source={
-                                data?.favor_status
-                                    ? require('../../assets/img/article/bigZanActive.png')
-                                    : require('../../assets/img/article/bigZan.png')
-                            }
-                            style={styles.actionIcon}
-                        />
-                        <Text style={styles.finishText}>{`点赞${data?.favor_num >= 0 ? data?.favor_num : 0}`}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} onPress={onCollect} style={[Style.flexCenter, {flex: 1}]}>
-                        <Image
-                            source={
-                                data?.collect_status
-                                    ? require('../../assets/img/article/collectActive.png')
-                                    : require('../../assets/img/article/collect.png')
-                            }
-                            style={styles.actionIcon}
-                        />
-                        <Text style={styles.finishText}>{`收藏${data?.collect_num >= 0 ? data?.collect_num : 0}`}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => {
-                            setMore(false);
-                            shareModal.current.show();
-                        }}
-                        style={[Style.flexCenter, {flex: 1}]}>
-                        <Image source={require('../../assets/img/article/share.png')} style={styles.actionIcon} />
-                        <Text style={styles.finishText}>{'分享'}</Text>
-                    </TouchableOpacity>
-                </View>
+                {finishLoad && (
+                    <>
+                        <Text
+                            style={[
+                                styles.finishText,
+                                {color: Colors.lightGrayColor, paddingHorizontal: Space.padding},
+                            ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
+                        <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
+                            <Image source={require('../../assets/img/article/finish.png')} style={styles.finishImg} />
+                            <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
+                        </View>
+                        <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={onFavor}
+                                style={[Style.flexCenter, {flex: 1}]}>
+                                <Image
+                                    source={
+                                        data?.favor_status
+                                            ? require('../../assets/img/article/bigZanActive.png')
+                                            : require('../../assets/img/article/bigZan.png')
+                                    }
+                                    style={styles.actionIcon}
+                                />
+                                <Text style={styles.finishText}>{`点赞${
+                                    data?.favor_num >= 0 ? data?.favor_num : 0
+                                }`}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={onCollect}
+                                style={[Style.flexCenter, {flex: 1}]}>
+                                <Image
+                                    source={
+                                        data?.collect_status
+                                            ? require('../../assets/img/article/collectActive.png')
+                                            : require('../../assets/img/article/collect.png')
+                                    }
+                                    style={styles.actionIcon}
+                                />
+                                <Text style={styles.finishText}>{`收藏${
+                                    data?.collect_num >= 0 ? data?.collect_num : 0
+                                }`}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    setMore(false);
+                                    shareModal.current.show();
+                                }}
+                                style={[Style.flexCenter, {flex: 1}]}>
+                                <Image
+                                    source={require('../../assets/img/article/share.png')}
+                                    style={styles.actionIcon}
+                                />
+                                <Text style={styles.finishText}>{'分享'}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )}
             </ScrollView>
         </View>
     );

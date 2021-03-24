@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:08:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:27:47
+ * @LastEditTime: 2021-03-24 16:28:46
  * @Description: 基金规模
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -13,10 +13,7 @@ import http from '../../services/index.js';
 
 const FundScale = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [list, setList] = useState([
-        ['基金规模', '5.68亿'],
-        ['成立日期', '2018-06-01'],
-    ]);
+    const [list, setList] = useState([]);
 
     const init = useCallback(
         (first) => {

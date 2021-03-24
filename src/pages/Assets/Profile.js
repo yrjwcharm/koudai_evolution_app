@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:49:18
+ * @LastEditTime: 2021-03-24 13:40:23
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -124,7 +124,41 @@ const Profile = ({navigation}) => {
         setShowMask(false);
     }, []);
     const onKeyPress = (e) => {
-        console.log(e.nativeEvent.key);
+        const {key} = e.nativeEvent;
+        // console.log(key);
+        const pos = iptVal.indexOf(key);
+        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
+            return false;
+        }
+        if (key === '.') {
+            setIptVal((prev) => {
+                if (prev === '') {
+                    return prev;
+                } else {
+                    if (pos !== -1) {
+                        return prev;
+                    } else {
+                        return prev + '.';
+                    }
+                }
+            });
+        } else if (key === '0') {
+            setIptVal((prev) => {
+                if (prev === '') {
+                    return prev + '0';
+                } else {
+                    if (prev === '0') {
+                        return prev;
+                    } else {
+                        return prev + '0';
+                    }
+                }
+            });
+        } else if (key === 'Backspace') {
+            setIptVal((prev) => prev.slice(0, prev.length - 1));
+        } else {
+            setIptVal((prev) => prev + key);
+        }
     };
     const confirmClick = useCallback(
         (item) => {
@@ -169,10 +203,10 @@ const Profile = ({navigation}) => {
                         <Text style={[styles.unit, {marginRight: text(4)}]}>{'￥'}</Text>
                         <TextInput
                             autoFocus={true}
-                            clearButtonMode={'while-editing'}
+                            clearButtonMode={'never'}
                             keyboardType={'decimal-pad'}
                             onKeyPress={onKeyPress}
-                            onChangeText={(value) => setIptVal(value)}
+                            // onChangeText={(value) => setIptVal(value)}
                             placeholder={modalProps?.placeholder}
                             style={styles.input}
                             value={iptVal}

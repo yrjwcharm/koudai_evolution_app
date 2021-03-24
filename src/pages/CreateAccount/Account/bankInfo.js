@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 15:36:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-24 17:48:29
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -101,6 +101,7 @@ export class bankInfo extends Component {
                     onHidden: () => {
                         this.props.navigation.replace(res.result?.jump_url?.path, {
                             ...res.result?.jump_url?.params,
+                            fr: this.props.route?.params?.fr || '',
                         });
                     },
                 });
