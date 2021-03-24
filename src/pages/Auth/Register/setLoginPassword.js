@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 14:57:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 11:29:44
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
 import InputView from '../input';
-import {px as text, handlePhone} from '../../../utils/appUtil';
+import {px as text, handlePhone, inputInt} from '../../../utils/appUtil';
 import {View, Text, TouchableHighlight, StyleSheet, ScrollView} from 'react-native';
 import {Colors} from '../../../common/commonStyle';
 import {Button} from '../../../components/Button';
@@ -17,6 +17,7 @@ import Toast from '../../../components/Toast';
 import Storage from '../../../utils/storage';
 import {connect} from 'react-redux';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
+import _ from 'lodash';
 class SetLoginPassword extends Component {
     state = {
         code: '',
@@ -146,7 +147,8 @@ class SetLoginPassword extends Component {
     }
     onChangeCode = (code) => {
         const {password} = this.state;
-        this.setState({code, btnClick: !(code.length >= 6 && password.length >= 6)});
+        let _code = inputInt(code);
+        this.setState({code: _code, btnClick: !(_code.length >= 6 && password.length >= 6)});
     };
     onChangePassword = (password) => {
         const {code} = this.state;
@@ -174,7 +176,7 @@ class SetLoginPassword extends Component {
                     <TouchableHighlight
                         underlayColor="#f4ae86"
                         style={[styles.verify_button, Style.flexCenter, !code_btn_click && styles.disabled]}
-                        onPress={this.sendCode}>
+                        onPress={_.debounce(this.sendCode, 500)}>
                         <Text style={{color: '#fff', fontSize: text(12)}}>{verifyText}</Text>
                     </TouchableHighlight>
                 </View>

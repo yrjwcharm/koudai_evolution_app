@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 20:37:31
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-11 15:38:58
+ * @LastEditTime: 2021-03-24 10:46:39
  * @Description: 相机扫描
  */
 import React, {Component} from 'react';
@@ -10,6 +10,7 @@ import {Text, View, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {deviceWidth as width, deviceHeight as height, px} from '../../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
+import _ from 'lodash';
 const color = '#61A8FF';
 export default class camera extends Component {
     takePicture = async () => {
@@ -85,7 +86,7 @@ export default class camera extends Component {
                         />
                     </View>
                     <TouchableOpacity
-                        onPress={this.takePicture}
+                        onPress={_.debounce(this.takePicture, 500)}
                         style={{position: 'absolute', zIndex: 100, bottom: px(160), left: width / 2 - px(30)}}>
                         <Icon name={'camerao'} size={px(60)} color="#fff" />
                     </TouchableOpacity>

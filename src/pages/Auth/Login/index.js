@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-23 19:38:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 11:06:04
  * @Description: 登录
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
-import {px as text, px} from '../../../utils/appUtil';
+import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
@@ -55,7 +55,8 @@ class Login extends Component {
     };
     onChangeMobile = (mobile) => {
         const {password} = this.state;
-        this.setState({mobile, btnClick: !(mobile.length >= 11 && password.length >= 6)});
+        let _mobile = inputInt(mobile);
+        this.setState({mobile: _mobile, btnClick: !(_mobile.length >= 11 && password.length >= 6)});
     };
     onChangePassword = (password) => {
         const {mobile} = this.state;

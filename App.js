@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 18:02:17
+ * @LastEditTime: 2021-03-24 10:28:01
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -224,6 +224,7 @@ function App(props) {
                                     ts = new Date().getTime();
                                     const previousRouteName = routeNameRef.current;
                                     const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                    console.log(navigationRef.current.getCurrentRoute());
                                     global.previousRouteName = previousRouteName;
                                     global.currentRouteName = currentRouteName;
                                     if (previousRouteName !== currentRouteName) {

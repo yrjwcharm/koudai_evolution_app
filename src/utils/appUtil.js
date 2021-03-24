@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-17 18:25:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 11:04:27
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -190,6 +190,10 @@ const parseAmount = (value) => {
     }
     return value;
 };
+//输入正整数
+const inputInt = (value) => {
+    return value.replace(/[^\d]/g, '');
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -213,4 +217,5 @@ export {
     tagColor,
     getTradeColor,
     parseAmount,
+    inputInt,
 };

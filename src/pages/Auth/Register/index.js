@@ -2,12 +2,12 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 19:13:25
+ * @LastEditTime: 2021-03-24 11:11:59
  * @Description: 注册
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
@@ -21,13 +21,17 @@ export default class index extends Component {
         super(props);
         this.state = {
             mobile: '',
-            check: true,
+            check: false,
             btnClick: true,
         };
     }
     register = () => {
         global.LogTool('Register');
-        const {mobile} = this.state;
+        const {mobile, check} = this.state;
+        if (!check) {
+            Toast.show('请勾选协议');
+            return;
+        }
         http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
             if (res.code === '000000') {
                 this.props.navigation.navigate('SetLoginPassword', {mobile});
@@ -36,8 +40,10 @@ export default class index extends Component {
             }
         });
     };
+
     onChangeMobile = (mobile) => {
-        this.setState({mobile, btnClick: !(mobile.length >= 11)});
+        let value = inputInt(mobile);
+        this.setState({mobile: value, btnClick: !(value.length >= 11)});
     };
     jumpPage = (nav) => {
         global.LogTool();
@@ -45,6 +51,7 @@ export default class index extends Component {
     };
     render() {
         const {btnClick, mobile} = this.state;
+        console.log(mobile);
         return (
             <ScrollView style={styles.login_content}>
                 <View style={[Style.flexRow, {marginBottom: text(36), marginTop: text(20)}]}>
@@ -68,6 +75,7 @@ export default class index extends Component {
                     onChange={(check) => {
                         this.setState({check});
                     }}
+                    check={false}
                     data={[
                         {
                             title: '《用户协议》',
