@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:49:16
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 12:03:30
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -433,6 +433,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

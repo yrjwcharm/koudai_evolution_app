@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 11:31:06
+ * @LastEditTime: 2021-03-25 10:21:15
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -14,6 +14,7 @@ import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import http from '../../services';
+import BottomDesc from '../../components/BottomDesc';
 class MfbIn extends Component {
     constructor(props) {
         super(props);
@@ -244,6 +245,7 @@ class MfbIn extends Component {
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
+                <BottomDesc />
             </View>
         );
     }

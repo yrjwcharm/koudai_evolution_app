@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 18:50:12
+ * @LastEditTime: 2021-03-25 12:22:17
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -204,7 +204,7 @@ export default function PortfolioAssets(props) {
                         paddingTop: text(16),
                         paddingBottom: text(10),
                     }}>
-                    <View style={[Style.flexRow]}>
+                    <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
                         <View style={styles.legend_sty}>
                             <TextInput
                                 ref={_textTime}
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(5),
     },
     legend_sty: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
     },
     legend_title_sty: {
@@ -581,6 +581,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0,
     },
     legend_desc_sty: {
         fontSize: text(11),

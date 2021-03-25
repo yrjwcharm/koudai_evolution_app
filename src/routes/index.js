@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 10:44:17
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 12:23:24
  * @Description:路由表
  */
 import React from 'react';
@@ -325,10 +325,10 @@ export default function AppStack() {
             <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
             <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
-            <Stack.Screen name="DetailAccount" component={DetailAccount} options={{headerShown: false}} />
+            <Stack.Screen name="DetailAccount" component={DetailAccount} options={{title: ''}} />
             <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />
-            <Stack.Screen name="DetailEducation" component={DetailEducation} options={{headerShown: false}} />
-            <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{headerShown: false}} />
+            <Stack.Screen name="DetailEducation" component={DetailEducation} options={{title: ''}} />
+            <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
             <Stack.Screen name="HistoryAdjust" component={HistoryAdjust} options={{title: '历史调仓记录'}} />
             <Stack.Screen name="TotalIncomeDetail" component={TotalIncomeDetail} options={{title: '收益明细'}} />

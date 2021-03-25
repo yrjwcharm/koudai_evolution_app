@@ -99,6 +99,17 @@ export default function DetailRetiredPlan({navigation, route}) {
             allocation_id = res.result.allocation_id;
             _poid = res.result?.poid;
             setData(res.result);
+            navigation.setOptions({
+                title: res.result.title,
+                headerRight: () => {
+                    return (
+                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                            <Text style={styles.right_sty}>{'重新测评'}</Text>
+                        </TouchableOpacity>
+                    );
+                },
+            });
+
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
                     setCountFr(Number(res.result?.plan_info?.trade_amount));
@@ -167,251 +178,233 @@ export default function DetailRetiredPlan({navigation, route}) {
         bottomModal.current.show();
     };
     return (
-        <>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 ? (
-                <View style={{flex: 1}}>
-                    <Header
-                        title={data?.title}
-                        leftIcon="chevron-left"
-                        rightText={'重新测评'}
-                        rightPress={rightPress}
-                        rightTextStyle={styles.right_sty}
-                    />
-                    <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
-                        <View style={styles.container_sty}>
-                            <View>
-                                <View style={Style.flexRow}>
-                                    <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
-                                    <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
-                                        <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
-                                    </View>
+                <ScrollView style={{flex: 1}}>
+                    <View style={styles.container_sty}>
+                        <View>
+                            <View style={Style.flexRow}>
+                                <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
+                                <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
+                                    <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                 </View>
-                                <Text style={styles.fund_input_sty}>{data?.plan_info?.goal_info?.amount}</Text>
-                                <View style={{position: 'relative', marginTop: text(5)}}>
-                                    <FontAwesome
-                                        name={'caret-up'}
-                                        color={'#E9EAED'}
-                                        size={30}
-                                        style={{left: text(25), top: text(-18), position: 'absolute'}}
-                                    />
-                                    <LinearGradient
-                                        start={{x: 0, y: 0.25}}
-                                        end={{x: 0.8, y: 0.8}}
-                                        colors={['#E9EAED', '#F5F6F8']}
-                                        style={{borderRadius: text(25), marginBottom: text(7)}}>
-                                        <Text style={styles.tip_sty}>{remark}</Text>
-                                    </LinearGradient>
-                                    {data?.plan_info?.goal_info?.items.map((_item, _index) => {
-                                        return (
-                                            <>
-                                                {(_item.type == 'auto' || _item.type == 'begin') && (
-                                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                                        <Text style={{color: '#545968', flex: 1}}>{_item.key}</Text>
-                                                        <View
-                                                            style={[
-                                                                Style.flexRow,
-                                                                {flex: 1, justifyContent: 'flex-end'},
-                                                            ]}>
-                                                            <TouchableOpacity
-                                                                activeOpacity={1}
-                                                                onPress={() =>
-                                                                    countCalc(_item.interval, 'decrease', _item.type)
-                                                                }>
-                                                                <Ionicons
-                                                                    name={'remove-circle'}
-                                                                    size={25}
-                                                                    color={'#0051CC'}
-                                                                />
-                                                            </TouchableOpacity>
-
-                                                            <Text style={styles.count_num_sty}>
-                                                                {_item.type == 'begin' ? countFr : countM}
-                                                            </Text>
-                                                            <TouchableOpacity
-                                                                activeOpacity={1}
-                                                                onPress={() =>
-                                                                    countCalc(_item.interval, 'increase', _item.type)
-                                                                }>
-                                                                <Ionicons
-                                                                    name={'add-circle'}
-                                                                    size={25}
-                                                                    color={'#0051CC'}
-                                                                />
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                    </View>
-                                                )}
-                                                {_item.type == 'duration' && (
-                                                    <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                                        <Text style={{color: '#545968'}}>{_item.key}</Text>
+                            </View>
+                            <Text style={styles.fund_input_sty}>{data?.plan_info?.goal_info?.amount}</Text>
+                            <View style={{position: 'relative', marginTop: text(5)}}>
+                                <FontAwesome
+                                    name={'caret-up'}
+                                    color={'#E9EAED'}
+                                    size={30}
+                                    style={{left: text(25), top: text(-18), position: 'absolute'}}
+                                />
+                                <LinearGradient
+                                    start={{x: 0, y: 0.25}}
+                                    end={{x: 0.8, y: 0.8}}
+                                    colors={['#E9EAED', '#F5F6F8']}
+                                    style={{borderRadius: text(25), marginBottom: text(7)}}>
+                                    <Text style={styles.tip_sty}>{remark}</Text>
+                                </LinearGradient>
+                                {data?.plan_info?.goal_info?.items.map((_item, _index) => {
+                                    return (
+                                        <>
+                                            {(_item.type == 'auto' || _item.type == 'begin') && (
+                                                <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                                    <Text style={{color: '#545968', flex: 1}}>{_item.key}</Text>
+                                                    <View
+                                                        style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                                         <TouchableOpacity
-                                                            style={Style.flexRow}
-                                                            onPress={_showDatePicker}
-                                                            activeOpacity={1}>
-                                                            <Text style={{color: '#545968'}}>{current}年</Text>
-                                                            <AntDesign name={'down'} color={'#8D96AF'} size={12} />
+                                                            activeOpacity={1}
+                                                            onPress={() =>
+                                                                countCalc(_item.interval, 'decrease', _item.type)
+                                                            }>
+                                                            <Ionicons
+                                                                name={'remove-circle'}
+                                                                size={25}
+                                                                color={'#0051CC'}
+                                                            />
+                                                        </TouchableOpacity>
+
+                                                        <Text style={styles.count_num_sty}>
+                                                            {_item.type == 'begin' ? countFr : countM}
+                                                        </Text>
+                                                        <TouchableOpacity
+                                                            activeOpacity={1}
+                                                            onPress={() =>
+                                                                countCalc(_item.interval, 'increase', _item.type)
+                                                            }>
+                                                            <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
                                                         </TouchableOpacity>
                                                     </View>
-                                                )}
-                                            </>
-                                        );
-                                    })}
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.content_sty}>
-                            <View style={styles.card_sty}>
-                                <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        height: 50,
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginHorizontal: 20,
-                                    }}>
-                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                style={[
-                                                    styles.btn_sty,
-                                                    {
-                                                        backgroundColor:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#F1F6FF'
-                                                                : '#fff',
-                                                    },
-                                                ]}
-                                                key={_index + '_sub'}
-                                                onPress={() => changeTab(_item.val, _item.type)}>
-                                                <Text
-                                                    style={{
-                                                        color:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#0051CC'
-                                                                : '#555B6C',
-                                                        fontSize: text(12),
-                                                    }}>
-                                                    {_item.name}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                </View>
-
-                                {/* 表格 */}
-                                <Table data={data.asset_compare.table} />
-                                {data?.asset_compare?.tip_info?.title && (
-                                    <TouchableOpacity
-                                        activeOpacity={1}
-                                        style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
-                                        onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
-                                        <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                            {data?.asset_compare?.tip_info?.title}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            {/* 饼图 */}
-                            <View style={styles.card_sty}>
-                                <ListHeader
-                                    data={data.asset_deploy.header}
-                                    style={{paddingHorizontal: text(16)}}
-                                    color={'#0051CC'}
-                                />
-                                <View style={{height: 200}}>
-                                    <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
-                                </View>
-                            </View>
-                            <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                                <ListHeader data={data.asset_strategy.header} style={{paddingHorizontal: text(16)}} />
-                                {data.asset_strategy.items.map((_s, _d) => {
-                                    return (
-                                        <View
-                                            style={{
-                                                flexDirection: 'row',
-                                                alignItems: 'flex-start',
-                                                marginTop: text(20),
-                                            }}
-                                            key={_d + '_s'}>
-                                            <Image
-                                                source={{
-                                                    uri: _s.icon,
-                                                }}
-                                                resizeMode="contain"
-                                                style={{width: text(69), height: text(69), marginRight: text(10)}}
-                                            />
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                }}>
-                                                <Text style={{color: '#111111'}}>{_s.title}</Text>
-                                                <Text
-                                                    style={{
-                                                        color: '#9AA1B2',
-                                                        fontSize: text(12),
-                                                        marginTop: text(8),
-                                                        lineHeight: text(16),
-                                                    }}>
-                                                    {_s.content}
-                                                </Text>
-                                            </View>
-                                        </View>
+                                                </View>
+                                            )}
+                                            {_item.type == 'duration' && (
+                                                <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                                    <Text style={{color: '#545968'}}>{_item.key}</Text>
+                                                    <TouchableOpacity
+                                                        style={Style.flexRow}
+                                                        onPress={_showDatePicker}
+                                                        activeOpacity={1}>
+                                                        <Text style={{color: '#545968'}}>{current}年</Text>
+                                                        <AntDesign name={'down'} color={'#8D96AF'} size={12} />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )}
+                                        </>
                                     );
                                 })}
-                                {data?.asset_strategy?.tip_info?.title && (
-                                    <TouchableOpacity
-                                        activeOpacity={1}
-                                        style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'baseline',
-                                            marginTop: text(16),
-                                        }}
-                                        onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}>
-                                        <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
-                                        <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
-                                            {data?.asset_strategy?.tip_info?.title}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
                             </View>
-                            <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
-                                {data.gather_info.map((_q, _w) => {
+                        </View>
+                    </View>
+                    <View style={styles.content_sty}>
+                        <View style={styles.card_sty}>
+                            <Text style={styles.title_sty}>{chartData?.title}</Text>
+                            <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    height: 50,
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginHorizontal: 20,
+                                }}>
+                                {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
                                     return (
                                         <TouchableOpacity
-                                            key={_w + '_q'}
                                             activeOpacity={1}
                                             style={[
-                                                Style.flexRow,
-                                                {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
+                                                styles.btn_sty,
+                                                {
+                                                    backgroundColor:
+                                                        period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                },
                                             ]}
-                                            onPress={() => jump(_q.url)}>
-                                            <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
-                                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                            key={_index + '_sub'}
+                                            onPress={() => changeTab(_item.val, _item.type)}>
+                                            <Text
+                                                style={{
+                                                    color:
+                                                        period == _item.val && type == _item.type
+                                                            ? '#0051CC'
+                                                            : '#555B6C',
+                                                    fontSize: text(12),
+                                                }}>
+                                                {_item.name}
+                                            </Text>
                                         </TouchableOpacity>
                                     );
                                 })}
                             </View>
-                        </View>
-                        <BottomDesc />
-                    </ScrollView>
-                    {showMask && <Mask />}
 
-                    <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
-                        <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
-                    </BottomModal>
-                    <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
-                </View>
+                            {/* 表格 */}
+                            <Table data={data.asset_compare.table} />
+                            {data?.asset_compare?.tip_info?.title && (
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={{marginLeft: text(16), flexDirection: 'row', alignItems: 'baseline'}}
+                                    onPress={() => showTips(data?.asset_compare?.tip_info?.popup)}>
+                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                        {data?.asset_compare?.tip_info?.title}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        {/* 饼图 */}
+                        <View style={styles.card_sty}>
+                            <ListHeader
+                                data={data.asset_deploy.header}
+                                style={{paddingHorizontal: text(16)}}
+                                color={'#0051CC'}
+                            />
+                            <View style={{height: 200}}>
+                                <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                            </View>
+                        </View>
+                        <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
+                            <ListHeader data={data.asset_strategy.header} style={{paddingHorizontal: text(16)}} />
+                            {data.asset_strategy.items.map((_s, _d) => {
+                                return (
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'flex-start',
+                                            marginTop: text(20),
+                                        }}
+                                        key={_d + '_s'}>
+                                        <Image
+                                            source={{
+                                                uri: _s.icon,
+                                            }}
+                                            resizeMode="contain"
+                                            style={{width: text(69), height: text(69), marginRight: text(10)}}
+                                        />
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                            }}>
+                                            <Text style={{color: '#111111'}}>{_s.title}</Text>
+                                            <Text
+                                                style={{
+                                                    color: '#9AA1B2',
+                                                    fontSize: text(12),
+                                                    marginTop: text(8),
+                                                    lineHeight: text(16),
+                                                }}>
+                                                {_s.content}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                            {data?.asset_strategy?.tip_info?.title && (
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'baseline',
+                                        marginTop: text(16),
+                                    }}
+                                    onPress={() => showTips(data?.asset_strategy?.tip_info?.popup)}>
+                                    <AntDesign name={'exclamationcircleo'} color={'#0051CC'} size={15} />
+                                    <Text style={{fontSize: text(12), color: '#0051CC', marginLeft: text(5)}}>
+                                        {data?.asset_strategy?.tip_info?.title}
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
+                            {data.gather_info.map((_q, _w) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={_w + '_q'}
+                                        activeOpacity={1}
+                                        style={[
+                                            Style.flexRow,
+                                            {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
+                                        ]}
+                                        onPress={() => jump(_q.url)}>
+                                        <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
+                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    </View>
+                    <BottomDesc />
+                </ScrollView>
             ) : null}
-        </>
+            {showMask && <Mask />}
+            <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
+                <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
+            </BottomModal>
+            <FixedBtn btns={data?.btns} />
+        </View>
     );
 }
 const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
+        marginRight: text(10),
     },
     container_sty: {
         backgroundColor: '#fff',

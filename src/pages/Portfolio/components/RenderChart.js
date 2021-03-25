@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-03-19 17:44:42
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 12:03:09
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -73,7 +73,7 @@ export default function RenderChart(props) {
     }, []);
     return (
         <View style={{height: 240, backgroundColor: '#fff', marginTop: text(20)}}>
-            <View style={[Style.flexRow]}>
+            <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={styles.legend_sty}>
                     <TextInput
                         ref={_textTime}
@@ -134,7 +134,7 @@ export default function RenderChart(props) {
 }
 const styles = StyleSheet.create({
     legend_sty: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
     },
     legend_title_sty: {
@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

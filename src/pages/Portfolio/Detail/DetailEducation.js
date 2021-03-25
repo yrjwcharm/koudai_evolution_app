@@ -31,7 +31,7 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 var _params, _current, allocation_id, _choose, _age;
-export default function DetailRetiredPlan({navigation, route}) {
+export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
@@ -153,6 +153,16 @@ export default function DetailRetiredPlan({navigation, route}) {
             allocation_id = res.result.allocation_id;
             _age = res.result.plan_info.personal_info.age;
             setData(res.result);
+            navigation.setOptions({
+                title: data.title,
+                headerRight: () => {
+                    return (
+                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                            <Text style={styles.right_sty}>{'重新测评'}</Text>
+                        </TouchableOpacity>
+                    );
+                },
+            });
             setAge(res.result.plan_info.personal_info.age);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
@@ -195,13 +205,6 @@ export default function DetailRetiredPlan({navigation, route}) {
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
-                    <Header
-                        title={data?.title}
-                        leftIcon="chevron-left"
-                        rightText={'重新测评'}
-                        rightPress={rightPress}
-                        rightTextStyle={styles.right_sty}
-                    />
                     <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
                         <View style={styles.container_sty}>
                             <View style={[Style.flexBetween, styles.select_wrap_sty]}>
