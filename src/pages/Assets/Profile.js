@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 13:40:23
+ * @LastEditTime: 2021-03-25 14:20:30
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -43,6 +43,7 @@ const Profile = ({navigation}) => {
     }, [navigation]);
     const onPress = useCallback(
         (item) => {
+            global.LogTool('click', item.key);
             if (item.val?.type === 'jump') {
                 if (item.key === '绑定微信') {
                     WeChat.isWXAppInstalled().then((isInstalled) => {
@@ -56,6 +57,7 @@ const Profile = ({navigation}) => {
                                         http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
                                             Toast.show(res.message);
                                             if (res.code === '000000') {
+                                                global.LogTool('bindWX', 'success');
                                                 dispatch(getUserInfo());
                                                 init();
                                             }
@@ -101,6 +103,7 @@ const Profile = ({navigation}) => {
                             ...(item.val?.options[pickedIndex] || {}),
                         }).then((res) => {
                             if (res.code === '000000') {
+                                global.LogTool('select', item.key);
                                 init();
                             }
                         });
@@ -162,7 +165,7 @@ const Profile = ({navigation}) => {
     };
     const confirmClick = useCallback(
         (item) => {
-            console.log(iptValRef.current);
+            // console.log(iptValRef.current);
             if (!iptValRef.current) {
                 Toast.show(`${item.key}不能为空`, {position: text(180), showMask: false});
                 return false;
@@ -174,6 +177,7 @@ const Profile = ({navigation}) => {
             }).then((res) => {
                 Toast.show(res.message);
                 if (res.code === '000000') {
+                    global.LogTool('input', item.key);
                     init();
                 }
             });

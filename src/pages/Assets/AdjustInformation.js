@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:35:37
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 16:02:23
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -29,16 +29,16 @@ const AdjustInformation = ({navigation, route}) => {
                 page,
             }).then((res) => {
                 setRefreshing(false);
-                if (res.result?.length < 20) {
+                if (res.result?.list?.length < 20) {
                     setHasMore(false);
                 } else {
                     setHasMore(true);
                 }
                 first && navigation.setOptions({title: res.result.title || '调仓信息'});
                 if (status === 'refresh') {
-                    setList(res.result || []);
+                    setList(res.result.list || []);
                 } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
                 }
             });
         },
@@ -82,12 +82,13 @@ const AdjustInformation = ({navigation, route}) => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={[Style.flexRow, styles.infoItem]}
-                onPress={() =>
+                onPress={() => {
+                    global.LogTool('click', 'adjust_record', item.lcmf_adjust_id);
                     navigation.navigate('HistoryAdjust', {
                         adjust_id: item.lcmf_adjust_id,
                         fr: 'holding',
-                    })
-                }>
+                    });
+                }}>
                 <View style={{flex: 1, marginRight: text(12)}}>
                     <View style={[Style.flexRow, styles.titleBox]}>
                         <Text style={[styles.title, {marginRight: text(12)}]}>{item.adjust_name}</Text>

@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 12:35:20
+ * @LastEditTime: 2021-03-25 15:34:47
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -31,6 +31,10 @@ const Settings = ({navigation}) => {
 
     const onPress = useCallback(
         (item) => {
+            if (item.type === 'about') {
+                return false;
+            }
+            global.LogTool('click', item.type);
             if (item.type === 'bind_invitor') {
                 setInviteCode('');
                 setModalProps({
@@ -71,6 +75,8 @@ const Settings = ({navigation}) => {
             if (res.code === '000000') {
                 Http.get('/mapi/config/20210101').then((resp) => {
                     if (resp.code === '000000') {
+                        global.LogTool('bind', 'success');
+                        dispatch(getUserInfo());
                         setData(resp.result);
                     }
                 });

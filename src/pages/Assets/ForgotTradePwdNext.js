@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 15:59:40
+ * @LastEditTime: 2021-03-25 13:52:21
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -27,6 +27,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
     const subBtnClick = useRef(true);
 
     const getCode = useCallback(() => {
+        global.LogTool('click', 'getCode');
         if (btnClick.current) {
             btnClick.current = false;
             http.post('/passport/reset_trade_password_prepare/20210101', {
@@ -63,6 +64,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
     }, []);
     // 完成找回密码
     const submit = useCallback(() => {
+        global.LogTool('click', 'submit');
         if (!subBtnClick.current) {
             return false;
         }
@@ -91,6 +93,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
             }).then((res) => {
                 subBtnClick.current = true;
                 if (res.code === '000000') {
+                    global.LogTool('submit', 'success');
                     Toast.show(res.message);
                     navigation.pop(2);
                 } else {

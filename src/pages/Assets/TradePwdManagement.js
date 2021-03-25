@@ -2,19 +2,20 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-23 16:31:12
+ * @LastEditTime: 2021-03-25 15:40:32
  * @Description: 交易密码管理
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, {useCallback, useState} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
-import Toast from '../../components/Toast';
+import {Modal} from '../../components/Modal';
+import {useSelector} from 'react-redux';
 
 const TradePwdManagement = ({navigation}) => {
+    const userInfo = useSelector((store) => store.userInfo);
     const [data, setData] = useState([
         [
             {
@@ -32,9 +33,34 @@ const TradePwdManagement = ({navigation}) => {
 
     const onPress = useCallback(
         (item) => {
-            navigation.navigate(item.jump_to);
+            global.LogTool('click', item.jump_to);
+            if (userInfo.toJS().has_account) {
+                if (item.jump_to === 'ModifyTradePwd') {
+                    if (userInfo.toJS().has_trade_pwd) {
+                        navigation.navigate(item.jump_to);
+                    } else {
+                        Modal.show({
+                            title: '您还未设置交易密码',
+                            confirm: true,
+                            confirmCallBack: () => navigation.navigate('SetTradePassword', {action: 'firstSet'}),
+                            confirmText: '设置交易密码',
+                            content: `为了交易安全，您必须先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
+                        });
+                    }
+                } else if (item.jump_to === 'ForgotTradePwd') {
+                    navigation.navigate(item.jump_to);
+                }
+            } else {
+                Modal.show({
+                    title: '您还未开户',
+                    confirm: true,
+                    confirmCallBack: () => navigation.navigate('CreateAccount', {fr: 'TradePwdManagement'}),
+                    confirmText: '开户',
+                    content: '在您操作之前，需要先进行开户',
+                });
+            }
         },
-        [navigation]
+        [navigation, userInfo]
     );
 
     return (
@@ -52,6 +78,7 @@ const TradePwdManagement = ({navigation}) => {
                                             borderColor: Colors.borderColor,
                                         }}>
                                         <TouchableOpacity
+                                            activeOpacity={0.8}
                                             onPress={() => onPress(item)}
                                             style={[Style.flexBetween, styles.item, {borderTopWidth: 0}]}>
                                             <Text style={styles.title}>{item.title}</Text>

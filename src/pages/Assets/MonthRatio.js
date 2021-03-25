@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:31:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 14:04:12
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
