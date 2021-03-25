@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 14:11:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:17:50
+ * @LastEditTime: 2021-03-25 11:35:21
  * @Description:
  */
 import React from 'react';
@@ -340,7 +340,7 @@ class Ruler extends React.PureComponent<Props> {
                     snapToAlignment="center"
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={100}
-                    snapToInterval={this.snapSegment}
+                    // snapToInterval={this.snapSegment}
                     onScroll={Animated.event(
                         [
                             {

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 20:21:00
+ * @LastEditTime: 2021-03-25 11:25:13
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -66,6 +66,9 @@ const Index = (props) => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [allMsg, setAll] = useState(0);
+    let scrollingRight = '';
+    let lastx = '';
+    const snapScroll = useRef(null);
     const getData = useCallback(
         (params) => {
             params == 'refresh' && setRefreshing(true);
@@ -417,12 +420,24 @@ const Index = (props) => {
                             <View>
                                 <RenderTitle title={'听听魔方用户怎么说'} />
                                 <ScrollView
-                                    loop={true}
                                     showsPagination={false}
                                     horizontal={true}
                                     height={px(188)}
-                                    snapToInterval={px(298)}
-                                    decelerationRate={0.99}
+                                    ref={snapScroll}
+                                    onScrollEndDrag={() => {
+                                        var interval = px(298); // WIDTH OF 1 CHILD COMPONENT
+                                        var snapTo = scrollingRight
+                                            ? Math.ceil(lastx / interval)
+                                            : Math.floor(lastx / interval);
+                                        var scrollTo = snapTo * interval;
+                                        snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+                                    }}
+                                    scrollEventThrottle={100}
+                                    onScroll={(event) => {
+                                        var nextx = event.nativeEvent.contentOffset.x;
+                                        scrollingRight = nextx > lastx;
+                                        lastx = nextx;
+                                    }}
                                     showsHorizontalScrollIndicator={false}>
                                     {data?.comment_list?.map((comment) => (
                                         <BoxShadow

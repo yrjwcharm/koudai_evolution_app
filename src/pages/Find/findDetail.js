@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 21:25:40
+ * @LastEditTime: 2021-03-25 11:13:26
  * @Description:发现
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -89,7 +89,9 @@ const FindDetail = (props) => {
                                     <Text style={[styles.card_title, {fontSize: px(16)}]}>{data?.plan_info?.name}</Text>
                                     <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                         <Text style={styles.radio}>{data?.plan_info?.yield?.ratio}</Text>
-                                        <TouchableOpacity onPress={() => jump(data?.plan_info?.button.url)}>
+                                        <TouchableOpacity
+                                            onPress={() => jump(data?.plan_info?.button.url)}
+                                            activeOpacity={0.9}>
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
                                                 end={{x: 0, y: 0.8}}
