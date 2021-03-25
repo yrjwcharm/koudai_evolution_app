@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-12 18:26:31
+ * @LastEditTime: 2021-03-25 14:29:13
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -24,6 +24,7 @@ const ResetLoginPwd = ({navigation}) => {
 
     // 完成密码重设
     const submit = useCallback(() => {
+        global.LogTool('click', 'submit');
         if (!btnClick.current) {
             return false;
         }
@@ -54,6 +55,7 @@ const ResetLoginPwd = ({navigation}) => {
                 }).then((res) => {
                     btnClick.current = true;
                     if (res.code === '000000') {
+                        global.LogTool('submit', 'success');
                         Toast.show(res.message);
                         navigation.goBack();
                     } else {

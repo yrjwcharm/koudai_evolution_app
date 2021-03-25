@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 15:56:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:58:16
+ * @LastEditTime: 2021-03-25 13:46:39
  * @Description: 修改预留手机号
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -26,6 +26,7 @@ const ModifyPhoneNum = ({navigation, route}) => {
     const tradePwdVerified = useRef(false);
 
     const submit = useCallback(() => {
+        global.LogTool('click', 'modify');
         if (!btnClick.current) {
             return false;
         }
@@ -98,6 +99,7 @@ const ModifyPhoneNum = ({navigation, route}) => {
                 }).then((res) => {
                     Toast.show(res.message, {position: text(120), showMask: false});
                     if (res.code === '000000') {
+                        global.LogTool('modifySuccess');
                         codeModal.current.hide();
                         navigation.goBack();
                     }

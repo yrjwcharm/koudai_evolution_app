@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 19:16:48
+ * @LastEditTime: 2021-03-25 15:40:19
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -11,8 +11,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
-import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 
 const PasswordManagement = ({navigation}) => {
@@ -53,11 +51,13 @@ const PasswordManagement = ({navigation}) => {
 
     const onPress = useCallback(
         (item) => {
+            global.LogTool('click', item.jump_to);
             navigation.navigate(item.jump_to, item.params || {});
         },
         [navigation]
     );
     const onToggle = useCallback(() => {
+        global.LogTool('click', 'toggle');
         setOpen((prev) => !prev);
         if (!open) {
             // Toast.show('开启手势密码');
@@ -100,6 +100,7 @@ const PasswordManagement = ({navigation}) => {
                                             borderColor: Colors.borderColor,
                                         }}>
                                         <TouchableOpacity
+                                            activeOpacity={0.8}
                                             onPress={() => onPress(item)}
                                             style={[Style.flexBetween, styles.item, {borderTopWidth: 0}]}>
                                             <Text style={styles.title}>{item.title}</Text>

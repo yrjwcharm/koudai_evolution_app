@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 12:31:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 11:05:48
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,6 +34,7 @@ const AddBankCard = ({navigation, route}) => {
     const bankModal = useRef(null);
 
     const getCode = useCallback(() => {
+        global.LogTool('click', 'getCode');
         if (!btnClick.current) {
             return false;
         }
@@ -92,8 +93,9 @@ const AddBankCard = ({navigation, route}) => {
             });
         }, 1000);
     }, []);
-    // 完成找回密码
+    // 完成添加银行卡
     const submit = useCallback(() => {
+        global.LogTool('click', 'submit');
         if (!subBtnClick.current) {
             return false;
         }
@@ -177,7 +179,10 @@ const AddBankCard = ({navigation, route}) => {
             <InputView
                 clearButtonMode={'while-editing'}
                 editable={false}
-                onPress={() => bankModal.current.show()}
+                onPress={() => {
+                    global.LogTool('click', 'chooseBank');
+                    bankModal.current.show();
+                }}
                 placeholder={'请选择银行'}
                 style={styles.input}
                 textContentType={'newPassword'}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:48:36
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 17:24:05
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -19,7 +19,8 @@ import {formCheck} from '../../../utils/validator';
 import http from '../../../services';
 import Toast from '../../../components/Toast';
 import {Modal} from '../../../components/Modal';
-
+import BottomDesc from '../../../components/BottomDesc';
+import _ from 'lodash';
 export class index extends Component {
     constructor(props) {
         super(props);
@@ -35,6 +36,7 @@ export class index extends Component {
     componentWillUnmount() {
         this._unsubscribe();
         this.closePicker();
+        this.subscription.remove();
     }
     back = (e) => {
         if (e.data.action.type == 'REPLACE') {
@@ -176,7 +178,10 @@ export class index extends Component {
                                 label="身份证"
                                 placeholder="请输入您的身份证号"
                                 onChangeText={(id_no) => {
-                                    this.setState({id_no});
+                                    let _no = id_no;
+                                    this.setState({
+                                        id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no,
+                                    });
                                 }}
                                 value={id_no}
                                 maxLength={18}
@@ -202,12 +207,17 @@ export class index extends Component {
                             <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
                         </View>
                     </View>
+                    <BottomDesc />
                 </ScrollView>
                 <FixedButton
                     title={'下一步'}
-                    onPress={() => {
-                        this.jumpBank('BankInfo');
-                    }}
+                    onPress={_.debounce(
+                        () => {
+                            this.jumpBank('BankInfo');
+                        },
+                        500,
+                        {leading: true}
+                    )}
                 />
             </View>
         );

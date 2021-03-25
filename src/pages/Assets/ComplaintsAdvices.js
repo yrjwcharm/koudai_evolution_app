@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:36:59
+ * @LastEditTime: 2021-03-25 13:51:45
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -31,6 +31,7 @@ const ComplaintsAdvices = ({navigation}) => {
 
     // 显示选择器
     const showPicker = useCallback(() => {
+        global.LogTool('click', 'show_cates');
         Keyboard.dismiss();
         setShowMask(true);
         Picker.init({
@@ -84,6 +85,7 @@ const ComplaintsAdvices = ({navigation}) => {
         [keyboardHeight]
     );
     const submit = useCallback(() => {
+        global.LogTool('click', 'submit');
         if (!btnClick.current) {
             return false;
         } else {
@@ -94,6 +96,7 @@ const ComplaintsAdvices = ({navigation}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     // Toast.show(res.result.tips);
+                    global.LogTool('submit', 'success');
                     Modal.show({
                         content: res.result.tips,
                         confirmCallBack: () => navigation.goBack(),
@@ -151,7 +154,10 @@ const ComplaintsAdvices = ({navigation}) => {
                                         activeOpacity={0.8}
                                         key={item.type + index}
                                         style={[Style.flexRow, {marginLeft: index !== 0 ? text(48) : 0}]}
-                                        onPress={() => setType(index)}>
+                                        onPress={() => {
+                                            global.LogTool('click', item.type);
+                                            setType(index);
+                                        }}>
                                         <View style={[Style.flexCenter, styles.radioBox]}>
                                             {type === index && <View style={styles.radio} />}
                                         </View>

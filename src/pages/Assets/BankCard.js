@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:41:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 15:50:32
+ * @LastEditTime: 2021-03-25 14:48:57
  * @Description: 银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -26,6 +26,7 @@ const BankCard = ({navigation, route}) => {
 
     const onPress = useCallback(
         (item) => {
+            global.LogTool('click', item.type);
             if (item.url) {
                 if (item.type === 'modify_phone') {
                     if (userInfo.toJS().has_trade_pwd) {
@@ -37,7 +38,7 @@ const BankCard = ({navigation, route}) => {
                             confirmCallBack: () =>
                                 navigation.navigate('SetTradePassword', {action: 'modify_phone', url: item.url}),
                             confirmText: '设置交易密码',
-                            content: `为了资金安全，修改预留手机号需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
+                            content: `为了资金安全，${item.text}需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
                         });
                     }
                 }
@@ -49,10 +50,9 @@ const BankCard = ({navigation, route}) => {
                         Modal.show({
                             title: item.text,
                             confirm: true,
-                            confirmCallBack: () =>
-                                navigation.navigate('SetTradePassword', {action: 'unbind', url: item.url}),
+                            confirmCallBack: () => navigation.navigate('SetTradePassword', {action: 'unbind'}),
                             confirmText: '设置交易密码',
-                            content: `为了资金安全，修改预留手机号需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
+                            content: `为了资金安全，${item.text}需先设置<font style="color: ${Colors.red};">数字交易密码</font>`,
                         });
                     }
                 }
@@ -68,6 +68,7 @@ const BankCard = ({navigation, route}) => {
             }).then((res) => {
                 Toast.show(res.message);
                 if (res.code === '000000') {
+                    global.LogTool('unbind', 'success');
                     navigation.goBack();
                 }
             });

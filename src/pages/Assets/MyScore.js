@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:06:55
+ * @LastEditTime: 2021-03-25 14:07:14
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -48,9 +48,11 @@ const MyScore = ({navigation, route}) => {
     }, []);
 
     const onWithdraw = () => {
+        global.LogTool('click', 'withdraw');
         if (click) {
             http.post('/promotion/point/withdraw/20210101').then((res) => {
                 if (res.code === '000000') {
+                    global.LogTool('withdraw', 'success');
                     Modal.show({
                         title: res.result.title,
                         content: res.result.content,
@@ -89,6 +91,7 @@ const MyScore = ({navigation, route}) => {
                 <TouchableOpacity
                     style={styles.detailCon}
                     onPress={() => {
+                        global.LogTool('click', 'scoreDetail');
                         navigation.navigate(data.top_button?.url || 'ScoreDetail');
                     }}>
                     <Text style={styles.detail}>{data.top_button?.text || '魔分明细'}</Text>
@@ -117,7 +120,8 @@ const MyScore = ({navigation, route}) => {
                 <View style={styles.scoreNum}>
                     <Text style={styles.scoreNumText}>{data.points_info?.point || '****'}</Text>
                     <TouchableOpacity
-                        onPress={() =>
+                        onPress={() => {
+                            global.LogTool('click', 'showTips');
                             Modal.show({
                                 title: '魔分兑换申购费规则',
                                 content: data.points_info?.tip,
@@ -127,8 +131,8 @@ const MyScore = ({navigation, route}) => {
                                     fontSize: Font.textH2,
                                     lineHeight: text(22),
                                 },
-                            })
-                        }>
+                            });
+                        }}>
                         <SimpleLineIcons name={'question'} size={16} color={'#fff'} />
                     </TouchableOpacity>
                 </View>
@@ -172,7 +176,10 @@ const MyScore = ({navigation, route}) => {
                                 </Text>
                             </View>
                             <Button
-                                onPress={() => navigation.navigate(item.button.jump_to, item.button.params || {})}
+                                onPress={() => {
+                                    global.LogTool('click', 'mission');
+                                    navigation.navigate(item.button.jump_to, item.button.params || {});
+                                }}
                                 title={item.button.title}
                                 style={styles.btn}
                             />

@@ -1,15 +1,14 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:29:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 14:08:19
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
@@ -141,7 +140,10 @@ const NetValueTrend = ({poid}) => {
                         return (
                             <TouchableOpacity
                                 key={item.val + index}
-                                onPress={() => setPeriod(item.val)}
+                                onPress={() => {
+                                    global.LogTool('click', item.val);
+                                    setPeriod(item.val);
+                                }}
                                 style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
                                 <Text
                                     style={[

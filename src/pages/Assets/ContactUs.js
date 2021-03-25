@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 09:56:37
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 20:36:09
+ * @LastEditTime: 2021-03-25 11:24:38
  * @Description: 联系我们
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -20,6 +20,7 @@ const ContactUs = ({navigation}) => {
     const [data, setData] = useState({});
 
     const onPress = (item) => {
+        global.LogTool('click', item.type);
         if (item.type === 'online') {
             navigation.navigate('IM');
         } else if (item.type === 'phone') {

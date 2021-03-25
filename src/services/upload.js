@@ -2,7 +2,7 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 12:03:19
+ * @LastEditTime: 2021-03-25 16:57:54
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
@@ -42,9 +42,11 @@ const upload = async (url, file, otherParams, succ, failed) => {
                 }
             })
             .catch((err) => {
+                failed && failed();
                 console.log(err);
             });
     } catch (error) {
+        failed && failed();
         console.log(error);
     }
 };

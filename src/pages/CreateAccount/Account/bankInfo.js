@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:25:57
+ * @LastEditTime: 2021-03-25 17:53:18
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -20,7 +20,11 @@ import Toast from '../../../components/Toast';
 import http from '../../../services';
 import {Modal} from '../../../components/Modal';
 import _ from 'lodash';
-export class bankInfo extends Component {
+import BottomDesc from '../../../components/BottomDesc';
+import {connect} from 'react-redux';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+
+class BankInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -97,6 +101,7 @@ export class bankInfo extends Component {
             '正在提交数据...'
         ).then((res) => {
             if (res.code == '000000') {
+                this.props.getUserInfo();
                 Toast.show('开户成功', {
                     onHidden: () => {
                         this.props.navigation.replace(res.result?.jump_url?.path, {
@@ -262,7 +267,7 @@ export class bankInfo extends Component {
                                 label="银行卡号"
                                 placeholder="请输入您的银行卡号"
                                 keyboardType={'number-pad'}
-                                maxLength={25}
+                                maxLength={23}
                                 value={bank_no}
                                 onChangeText={this.onChangeBankNo}
                             />
@@ -333,9 +338,10 @@ export class bankInfo extends Component {
                                 },
                             ]}
                         />
+                        <BottomDesc />
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500)} />
+                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500, {leading: true})} />
             </View>
         );
     }
@@ -374,4 +380,9 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
 });
-export default bankInfo;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+    getUserInfo,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BankInfo);

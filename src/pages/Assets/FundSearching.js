@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 14:23:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-02-27 18:21:50
+ * @LastEditTime: 2021-03-25 12:33:04
  * @Description: 基金查询
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,6 +16,7 @@ const FundSearching = ({route}) => {
     const [data, setData] = useState({});
     // 打开查询网址
     const openSite = useCallback((site) => {
+        global.LogTool('click', 'openSite', site);
         Linking.canOpenURL(site)
             .then((supported) => {
                 if (!supported) {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 12:04:54
+ * @LastEditTime: 2021-03-25 17:04:47
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -24,6 +24,7 @@ import {Modal, SelectModal} from '../../../components/Modal';
 import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
 import upload from '../../../services/upload';
 import Toast from '../../../components/Toast';
+import _ from 'lodash';
 const typeArr = ['从相册中获取', '拍照'];
 export class uploadID extends Component {
     state = {
@@ -34,20 +35,25 @@ export class uploadID extends Component {
         frontStatus: false,
         backStatus: false,
     };
+    toast = '';
     showPop = (clickIndex) => {
         this.setState({showTypePop: true, clickIndex});
     };
     componentDidMount() {
-        this.subscription = DeviceEventEmitter.addListener('EventType', (uri) => {
-            this.uri = uri;
-            if (this.uri) {
-                this.uploadImage({uri, type: 'image/png', name: 'name'});
-            }
-            // 刷新界面等
-        });
+        this.subscription = DeviceEventEmitter.addListener(
+            'EventType',
+            _.debounce((uri) => {
+                this.uri = uri;
+                if (this.uri) {
+                    this.uploadImage({uri, type: 'image/png', name: 'name'});
+                }
+                // 刷新界面等
+            }, 500)
+        );
     }
     componentWillUnmount() {
-        DeviceEventEmitter.removeListener(this.subscription);
+        this.uri = '';
+        this.subscription.remove();
     }
     handleBack = () => {
         this.props.navigation.goBack();
@@ -64,16 +70,15 @@ export class uploadID extends Component {
             });
         }
     };
-    uploadImage = async (response) => {
+    uploadImage = (response) => {
         const {clickIndex} = this.state;
-        let toast = Toast.showLoading('正在上传');
-
+        this.toast = Toast.showLoading('正在上传');
         upload(
             'mapi/identity/upload/20210101',
             response,
             [{name: 'desc', data: clickIndex == 1 ? 'front' : 'back'}],
             (res) => {
-                Toast.hide(toast);
+                Toast.hide(this.toast);
                 if (res) {
                     this.uri = '';
                     if (res?.code == '000000') {
@@ -95,7 +100,7 @@ export class uploadID extends Component {
                 }
             },
             () => {
-                Toast.hide(toast);
+                Toast.hide(this.toast);
                 if (clickIndex == 1) {
                     this.setState({frontSource: ''});
                 } else {
