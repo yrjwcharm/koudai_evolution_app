@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 17:24:05
+ * @LastEditTime: 2021-03-25 18:55:02
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -39,7 +39,7 @@ export class index extends Component {
         this.subscription.remove();
     }
     back = (e) => {
-        if (e.data.action.type == 'REPLACE') {
+        if (e.data.action.type == 'REPLACE' || e.data.action.type == 'GO_BACK') {
             return;
         }
         e.preventDefault();
@@ -94,15 +94,26 @@ export class index extends Component {
             id_no,
             name,
         }).then((res) => {
-            if (res.code == '000000') {
-                this.props.navigation.replace(nav, {
-                    name,
-                    id_no,
-                    rname,
-                    rcode,
-                    poid: this.props.route?.params?.poid,
-                    fr: this.props.route?.params?.fr || '',
-                });
+            if (res.code === '000000') {
+                if (res.result.pop?.content) {
+                    Modal.show({
+                        content: res.result.pop.content,
+                        isTouchMaskToClose: false,
+                        confirmText: '确定',
+                        confirmCallBack: () => {
+                            this.props.navigation.goBack();
+                        },
+                    });
+                } else {
+                    this.props.navigation.replace(nav, {
+                        name,
+                        id_no,
+                        rname,
+                        rcode,
+                        poid: this.props.route?.params?.poid,
+                        fr: this.props.route?.params?.fr || '',
+                    });
+                }
             } else {
                 Toast.show(res.message);
             }

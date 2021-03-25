@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 15:38:10
+ * @LastEditTime: 2021-03-25 18:28:11
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -138,6 +138,7 @@ class TradeBuy extends Component {
             amount,
             pay_method: this.state.bankSelect?.pay_method,
             poid: this.state.poid,
+            init: this.state.amount ? 0 : 1,
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
             if (data.code === '000000') {
@@ -338,7 +339,9 @@ class TradeBuy extends Component {
                                                                 {Number(fund.percent * 100).toFixed(2)}%
                                                             </Text>
                                                             <Text style={styles.config_title_desc}>
-                                                                {Number(fund.amount).toFixed(2)}
+                                                                {fund.amount == '--'
+                                                                    ? '--'
+                                                                    : Number(fund.amount).toFixed(2)}
                                                             </Text>
                                                         </View>
                                                     );
