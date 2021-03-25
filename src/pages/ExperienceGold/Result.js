@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-02-25 15:17:26
  * @Description:体验金结果页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 15:36:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 20:30:29
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
 
 import {Colors, Space, Font, Style} from '../../common/commonStyle';
@@ -15,8 +15,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Button} from '../../components/Button';
 import Http from '../../services';
-export default function Result() {
+import {useJump} from '../../components/hooks';
+import {ShareModal} from '../../components/Modal';
+
+export default function Result({navigation}) {
+    const jump = useJump();
     const [data, setData] = useState({});
+    const shareModal = useRef(null);
     useEffect(() => {
         Http.post('/freefund/do_cash_out/20210101').then((res) => {
             if (res.code === '000000') {
@@ -26,6 +31,7 @@ export default function Result() {
     }, []);
     return (
         <ScrollView style={styles.container}>
+            <ShareModal ref={shareModal} title={'理财魔方体验金'} shareContent={data?.share_info || {}} />
             {Object.keys(data).length > 0 && (
                 <View style={styles.top_sty}>
                     {data.is_success == true ? (
@@ -52,26 +58,32 @@ export default function Result() {
                             backgroundColor: '#F5F6F8',
                             padding: text(16),
                             marginVertical: text(16),
-                            borderRadius: text(4),
+                            borderRadius: text(6),
                             marginTop: text(30),
                         }}>
                         <View style={{position: 'relative'}}>
                             <Html html={data.recommend.suggestion} style={{lineHeight: text(18), color: '#4E556C'}} />
-                            <AntDesign
-                                name={'caretdown'}
-                                size={20}
-                                color={'#F5F6F8'}
-                                style={{position: 'absolute', right: '20%', bottom: text(-28)}}
-                            />
+                            {data.is_success == true && (
+                                <AntDesign
+                                    name={'caretdown'}
+                                    size={20}
+                                    color={'#F5F6F8'}
+                                    style={{position: 'absolute', right: '20%', bottom: text(-28)}}
+                                />
+                            )}
                         </View>
                     </View>
                     {data.is_success == true && (
                         <View style={[Style.flexRow, {marginTop: text(15)}]}>
                             <TouchableOpacity
-                                activeOpacity={1}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    global.LogTool('click', 'assets');
+                                    navigation.navigate('Home');
+                                }}
                                 style={{
                                     flex: 1,
-                                    borderRadius: text(10),
+                                    borderRadius: text(6),
                                     borderColor: '#545968',
                                     borderWidth: 0.5,
                                     marginRight: text(10),
@@ -81,8 +93,12 @@ export default function Result() {
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={{flex: 1, borderRadius: text(10), backgroundColor: '#0051CC'}}
-                                activeOpacity={1}>
+                                onPress={() => {
+                                    global.LogTool('click', 'share');
+                                    shareModal.current.show();
+                                }}
+                                style={{flex: 1, borderRadius: text(6), backgroundColor: '#0051CC'}}
+                                activeOpacity={0.8}>
                                 <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.recommend.button[1].title}</Text>
                             </TouchableOpacity>
                         </View>
@@ -90,9 +106,15 @@ export default function Result() {
                 </View>
             )}
             {data.is_success == false &&
-                data.recommend.cards.map((_item, _index) => {
+                data?.recommend?.cards?.map((_item, _index) => {
                     return (
-                        <View style={styles.card_sty} key={_index + '_item1'}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                global.LogTool('click', 'account', _item.plan_id);
+                                jump(_item.url);
+                            }}
+                            style={styles.card_sty}
+                            key={_index + '_item1'}>
                             <View>
                                 <View style={Style.flexRow}>
                                     <Text
@@ -112,7 +134,7 @@ export default function Result() {
                                 <Text style={{color: '#9AA1B2', fontSize: text(12)}}>{_item.ratio_desc}</Text>
                             </View>
                             <AntDesign name={'right'} size={12} color={'#9095A5'} />
-                        </View>
+                        </TouchableOpacity>
                     );
                 })}
         </ScrollView>
