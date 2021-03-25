@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 20:37:31
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 10:46:39
+ * @LastEditTime: 2021-03-25 16:39:16
  * @Description: 相机扫描
  */
 import React, {Component} from 'react';
