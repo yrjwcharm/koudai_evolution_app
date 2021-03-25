@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 17:09:54
+ * @LastEditTime: 2021-03-25 17:24:05
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -211,9 +211,13 @@ export class index extends Component {
                 </ScrollView>
                 <FixedButton
                     title={'下一步'}
-                    onPress={_.debounce(() => {
-                        this.jumpBank('BankInfo');
-                    }, 500)}
+                    onPress={_.debounce(
+                        () => {
+                            this.jumpBank('BankInfo');
+                        },
+                        500,
+                        {leading: true}
+                    )}
                 />
             </View>
         );

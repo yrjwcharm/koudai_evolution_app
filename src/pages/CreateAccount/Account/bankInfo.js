@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-25 16:48:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 17:53:18
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -267,7 +267,7 @@ class BankInfo extends Component {
                                 label="银行卡号"
                                 placeholder="请输入您的银行卡号"
                                 keyboardType={'number-pad'}
-                                maxLength={25}
+                                maxLength={23}
                                 value={bank_no}
                                 onChangeText={this.onChangeBankNo}
                             />
@@ -341,7 +341,7 @@ class BankInfo extends Component {
                         <BottomDesc />
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500)} />
+                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500, {leading: true})} />
             </View>
         );
     }
