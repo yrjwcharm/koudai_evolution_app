@@ -2,8 +2,8 @@
  * @Description:大额转账汇款
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 10:44:28
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 13:09:10
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -45,7 +45,7 @@ const LargeAmount = (props) => {
             });
             tips[2].tel = res.result.phone;
         });
-    });
+    }, []);
     const jumpPage = (url) => {
         if (!url) {
             return;

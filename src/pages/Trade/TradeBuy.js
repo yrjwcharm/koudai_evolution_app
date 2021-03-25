@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 10:24:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 13:10:16
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -20,6 +20,7 @@ import http from '../../services';
 import Picker from 'react-native-picker';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
+import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 class TradeBuy extends Component {
     constructor(props) {
@@ -46,9 +47,9 @@ class TradeBuy extends Component {
             buyBtnCanClick: false,
         };
     }
-    componentDidMount() {
-        this.getTab();
-    }
+    // componentDidMount() {
+    //     this.getTab();
+    // }
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
@@ -491,6 +492,8 @@ class TradeBuy extends Component {
                         等相关内容
                     </Text>
                 )}
+                <BottomDesc />
+
                 <BankCardModal
                     data={pay_methods || []}
                     select={0}
@@ -509,34 +512,45 @@ class TradeBuy extends Component {
         const {showMask, data, type, has_tab, buyBtnCanClick} = this.state;
         const {button} = data;
         return (
-            <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51), backgroundColor: Colors.bgColor}}>
-                {has_tab ? (
-                    <ScrollableTabView
-                        onChangeTab={this.changeBuyStatus}
-                        initialPage={type}
-                        renderTabBar={() => <TabBar />}>
-                        <View tabLabel="购买" style={{flex: 1}}>
-                            {this.render_buy()}
-                        </View>
-                        <View tabLabel="定投" style={{flex: 1}}>
-                            {this.render_buy()}
-                        </View>
-                    </ScrollableTabView>
-                ) : (
-                    this.render_buy()
-                )}
-                {button && (
-                    <FixedButton
-                        title={button.text}
-                        disabled={button.avail == 0 || !buyBtnCanClick}
-                        onPress={this.buyClick}
-                    />
-                )}
-                {showMask && <Mask />}
-                <BottomDesc />
-            </View>
+            <>
+                <Focus init={this.getTab} />
+                <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51), backgroundColor: Colors.bgColor}}>
+                    {has_tab ? (
+                        <ScrollableTabView
+                            onChangeTab={this.changeBuyStatus}
+                            initialPage={type}
+                            renderTabBar={() => <TabBar />}>
+                            <View tabLabel="购买" style={{flex: 1}}>
+                                {this.render_buy()}
+                            </View>
+                            <View tabLabel="定投" style={{flex: 1}}>
+                                {this.render_buy()}
+                            </View>
+                        </ScrollableTabView>
+                    ) : (
+                        this.render_buy()
+                    )}
+                    {button && (
+                        <FixedButton
+                            title={button.text}
+                            disabled={button.avail == 0 || !buyBtnCanClick}
+                            onPress={this.buyClick}
+                        />
+                    )}
+                    {showMask && <Mask />}
+                </View>
+            </>
         );
     }
+}
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+
+    return null;
 }
 const styles = StyleSheet.create({
     title: {fontSize: px(13), paddingVertical: px(12), paddingLeft: px(16)},

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 22:16:11
+ * @LastEditTime: 2021-03-25 12:04:54
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -69,7 +69,7 @@ export class uploadID extends Component {
         let toast = Toast.showLoading('正在上传');
 
         upload(
-            '/mapi/identity/upload/20210101',
+            'mapi/identity/upload/20210101',
             response,
             [{name: 'desc', data: clickIndex == 1 ? 'front' : 'back'}],
             (res) => {
@@ -85,9 +85,23 @@ export class uploadID extends Component {
                             this.setState({backStatus: true});
                         }
                     } else {
+                        if (clickIndex == 1) {
+                            this.setState({frontSource: ''});
+                        } else {
+                            this.setState({behindSource: ''});
+                        }
                         Toast.show(res.message);
                     }
                 }
+            },
+            () => {
+                Toast.hide(toast);
+                if (clickIndex == 1) {
+                    this.setState({frontSource: ''});
+                } else {
+                    this.setState({behindSource: ''});
+                }
+                Toast.show('上传失败');
             }
         );
         this.showImg(response.uri);
