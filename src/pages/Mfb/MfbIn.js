@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 10:21:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 15:17:33
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -223,6 +223,7 @@ class MfbIn extends Component {
                 <Text style={{color: Colors.darkGrayColor, paddingHorizontal: Space.padding}}>
                     点击确认购买即代表您已知悉该基金组合的
                 </Text>
+                <BottomDesc />
                 <BankCardModal
                     data={pay_methods || []}
                     ref={(ref) => {
@@ -245,7 +246,6 @@ class MfbIn extends Component {
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
-                <BottomDesc />
             </View>
         );
     }

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:25:57
+ * @LastEditTime: 2021-03-25 15:41:24
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -20,6 +20,7 @@ import Toast from '../../../components/Toast';
 import http from '../../../services';
 import {Modal} from '../../../components/Modal';
 import _ from 'lodash';
+import BottomDesc from '../../../components/BottomDesc';
 export class bankInfo extends Component {
     constructor(props) {
         super(props);
@@ -333,6 +334,7 @@ export class bankInfo extends Component {
                                 },
                             ]}
                         />
+                        <BottomDesc />
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500)} />

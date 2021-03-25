@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 11:47:38
+ * @LastEditTime: 2021-03-25 14:45:58
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -194,6 +194,27 @@ const parseAmount = (value) => {
 const inputInt = (value) => {
     return value ? value.replace(/[^\d]/g, '') : '';
 };
+//金额输入框
+const onlyNumber = (value) => {
+    //获得第一个字符是否为负号
+    var t = value.charAt(0);
+    //先把非数字的都替换掉，除了数字和.和-号
+    value = value.replace(/[^\d\.\-]/g, '');
+    //前两位不能是0加数字
+    value = value.replace(/^0\d[0-9]*/g, '');
+    //必须保证第一个为数字而不是.
+    value = value.replace(/^\./g, '');
+    //保证只有出现一个.而没有多个.
+    value = value.replace(/\.{2,}/g, '.');
+    //保证.只出现一次，而不能出现两次以上
+    value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+    //若是第一位是负号，则容许添加
+    value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+    if (t == '-') {
+        return '';
+    }
+    return value;
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -218,4 +239,5 @@ export {
     getTradeColor,
     parseAmount,
     inputInt,
+    onlyNumber,
 };

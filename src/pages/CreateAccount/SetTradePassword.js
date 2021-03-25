@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 20:41:32
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 15:42:21
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -17,6 +17,7 @@ import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
+import BottomDesc from '../../components/BottomDesc';
 
 const SetTradePassword = ({navigation, route}) => {
     const dispatch = useDispatch();
@@ -150,6 +151,7 @@ const SetTradePassword = ({navigation, route}) => {
                     </Text>
                 </View>
             </View>
+            <BottomDesc />
         </View>
     );
 };

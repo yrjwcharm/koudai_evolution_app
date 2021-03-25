@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 13:09:10
+ * @LastEditTime: 2021-03-25 14:01:30
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -14,7 +14,6 @@ import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import Toast from '../../components/Toast/';
-import Header from '../../components/NavBar';
 import Clipboard from '@react-native-community/clipboard';
 import Notice from '../../components/Notice';
 import {Modal} from '../../components/Modal';

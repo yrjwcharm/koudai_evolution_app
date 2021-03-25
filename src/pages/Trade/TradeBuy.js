@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 13:10:16
+ * @LastEditTime: 2021-03-25 15:38:10
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -10,7 +10,7 @@ import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import {Colors, Font, Style} from '../../common/commonStyle.js';
-import {px, isIphoneX} from '../../utils/appUtil.js';
+import {px, isIphoneX, onlyNumber} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
@@ -45,11 +45,14 @@ class TradeBuy extends Component {
             currentDate: '', //定投日期
             nextday: '',
             buyBtnCanClick: false,
+            fee_text: '',
+            errTip: '', //错误提示
         };
+        this.isFirst = true;
     }
-    // componentDidMount() {
-    //     this.getTab();
-    // }
+    componentDidMount() {
+        this.isFirst = false;
+    }
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
@@ -69,7 +72,7 @@ class TradeBuy extends Component {
             if (res.code === '000000') {
                 this.setState({
                     data: res.result,
-                    bankSelect: res.result?.pay_methods[0],
+                    bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
                     currentDate: res.result?.period_info?.current_date,
                     nextday: res.result?.period_info?.nextday,
                 });
@@ -137,7 +140,11 @@ class TradeBuy extends Component {
             poid: this.state.poid,
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
-            this.setState({planData: data.result});
+            if (data.code === '000000') {
+                this.setState({planData: data.result, fee_text: data.result.fee_text, errTip: ''});
+            } else {
+                this.setState({errTip: this.state.amount ? data.message : '', buyBtnCanClick: false});
+            }
         });
     };
 
@@ -147,12 +154,23 @@ class TradeBuy extends Component {
      * @return {*}
      */
     onInput = (amount) => {
-        this.setState({amount});
-        if (amount > this.state.data.buy_info.initial_amount) {
-            this.setState({buyBtnCanClick: true});
-            this.plan(amount);
+        let _amount = onlyNumber(amount);
+        this.setState({amount: _amount});
+        if (_amount > this.state.bankSelect.single_amount) {
+            this.setState({
+                buyBtnCanClick: false,
+                errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+            });
+        } else if (_amount >= this.state.data.buy_info.initial_amount) {
+            this.setState({buyBtnCanClick: this.state.errTip != '' ? true : false});
+            this.plan(_amount);
         } else {
             this.setState({buyBtnCanClick: false});
+            if (_amount) {
+                this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+            } else {
+                this.setState({errTip: ''});
+            }
         }
     };
     /**
@@ -189,6 +207,7 @@ class TradeBuy extends Component {
     //清空输入框
     clearInput = () => {
         this.setState({amount: ''});
+        this.onInput('');
     };
     //切换银行卡
     changeBankCard = () => {
@@ -338,8 +357,11 @@ class TradeBuy extends Component {
         const {pay_methods, large_pay_method} = data;
         return (
             <View style={{marginBottom: px(12)}}>
-                <View style={[styles.bankCard, Style.flexBetween]}>
-                    {pay_methods ? (
+                <TouchableOpacity
+                    onPress={this.changeBankCard}
+                    activeOpacity={0.8}
+                    style={[styles.bankCard, Style.flexBetween]}>
+                    {pay_methods?.length > 0 ? (
                         <>
                             <Image
                                 style={styles.bank_icon}
@@ -350,20 +372,32 @@ class TradeBuy extends Component {
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                     {bankSelect?.bank_name}
+                                    {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                     {bankSelect?.limit_desc}
                                 </Text>
                             </View>
-                            <TouchableOpacity onPress={this.changeBankCard}>
+                            {bankSelect.pay_method == 'wallet' ? (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        this.jumpPage('MfbIn');
+                                    }}>
+                                    <Text style={{color: Colors.btnColor}}>
+                                        充值
+                                        <Icon name={'right'} size={px(12)} />
+                                    </Text>
+                                </TouchableOpacity>
+                            ) : (
                                 <Text style={{color: Colors.lightGrayColor}}>
                                     切换
                                     <Icon name={'right'} size={px(12)} />
                                 </Text>
-                            </TouchableOpacity>
+                            )}
                         </>
                     ) : null}
-                </View>
+                </TouchableOpacity>
                 {large_pay_method ? (
                     <View
                         style={[
@@ -424,10 +458,10 @@ class TradeBuy extends Component {
     }
     //购买
     render_buy() {
-        const {amount, data, type, planData} = this.state;
+        const {amount, data, type, planData, errTip} = this.state;
         const {buy_info, sub_title, pay_methods} = data;
         return (
-            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
+            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="never">
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
@@ -455,14 +489,18 @@ class TradeBuy extends Component {
                             )}
                         </View>
 
-                        <View style={styles.tip}>
-                            {planData.fee_text ? (
+                        {planData.fee_text && errTip == '' ? (
+                            <View style={styles.tip}>
                                 <HTML
                                     style={{fontSize: px(12), color: Colors.lightGrayColor}}
                                     html={planData?.fee_text}
                                 />
-                            ) : null}
-                        </View>
+                            </View>
+                        ) : errTip ? (
+                            <View style={styles.tip}>
+                                <Text style={{color: Colors.red}}>{errTip}</Text>
+                            </View>
+                        ) : null}
                     </View>
                 ) : null}
                 {/* 银行卡 */}
@@ -502,6 +540,7 @@ class TradeBuy extends Component {
                     }}
                     onDone={(select) => {
                         this.setState({bankSelect: select});
+                        this.init();
                     }}
                 />
             </ScrollView>
