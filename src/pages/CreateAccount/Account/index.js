@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 16:05:03
+ * @LastEditTime: 2021-03-25 17:04:29
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -36,6 +36,7 @@ export class index extends Component {
     componentWillUnmount() {
         this._unsubscribe();
         this.closePicker();
+        this.subscription.remove();
     }
     back = (e) => {
         if (e.data.action.type == 'REPLACE') {

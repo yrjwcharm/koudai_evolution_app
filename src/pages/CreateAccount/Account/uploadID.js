@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 16:39:30
+ * @LastEditTime: 2021-03-25 17:04:47
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -52,8 +52,8 @@ export class uploadID extends Component {
         );
     }
     componentWillUnmount() {
-        this.toast && Toast.hide(this.toast);
-        DeviceEventEmitter.removeListener(this.subscription);
+        this.uri = '';
+        this.subscription.remove();
     }
     handleBack = () => {
         this.props.navigation.goBack();

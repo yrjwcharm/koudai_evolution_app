@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:02:06
+ * @LastEditTime: 2021-03-25 16:50:10
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -803,13 +803,13 @@ const IM = (props) => {
                                     sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id}, 1);
                                 }}
                                 style={{
-                                    height: px(43),
+                                    paddingVertical: px(11),
                                     justifyContent: 'center',
                                     borderTopColor: '#E2E4EA',
                                     borderTopWidth: index == 0 ? 0 : 0.5,
                                 }}>
                                 <View style={Style.flexBetween}>
-                                    <Text>{item.question}</Text>
+                                    <Text style={{flex: 1}}>{item.question}</Text>
                                     <FontAwesome name={'angle-right'} size={18} color={'#9AA1B2'} />
                                 </View>
                             </TouchableHighlight>
