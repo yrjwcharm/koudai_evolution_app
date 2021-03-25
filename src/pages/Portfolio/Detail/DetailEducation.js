@@ -30,7 +30,7 @@ import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
-var _params, _current, allocation_id, _choose, _age;
+var _params, _current, allocation_id, _age;
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -61,7 +61,6 @@ export default function DetailEducation({navigation, route}) {
     };
     // 选择大学
     const chooseBtn = (id) => {
-        _choose = id;
         setChoose(id);
         changeNotice();
     };
@@ -131,7 +130,7 @@ export default function DetailEducation({navigation, route}) {
             allocation_id: allocation_id,
             year: _current,
             type,
-            goal_amount: _choose,
+            goal_amount: data.plan_info.goal_info.amount,
         };
         Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,
@@ -152,7 +151,6 @@ export default function DetailEducation({navigation, route}) {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
             _age = res.result.plan_info.personal_info.age;
-            setData(res.result);
             navigation.setOptions({
                 title: data.title,
                 headerRight: () => {
@@ -163,6 +161,8 @@ export default function DetailEducation({navigation, route}) {
                     );
                 },
             });
+            setData(res.result);
+            setChoose(res.result.plan_info.school_id);
             setAge(res.result.plan_info.personal_info.age);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
@@ -176,7 +176,6 @@ export default function DetailEducation({navigation, route}) {
             });
 
             setRemark(res.result.plan_info?.goal_info?.remark);
-            setChoose(res.result.school_id || 1);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
                 period: period,
@@ -453,6 +452,7 @@ export default function DetailEducation({navigation, route}) {
 const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
+        marginRight: text(16),
     },
     container_sty: {
         backgroundColor: '#fff',

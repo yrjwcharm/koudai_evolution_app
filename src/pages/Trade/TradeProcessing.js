@@ -1,13 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-23 15:01:33
+ * @LastEditTime: 2021-03-25 16:55:09
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, TouchableOpacity, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -115,6 +115,19 @@ const TradeProcessing = ({navigation, route}) => {
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView style={[styles.container]}>
+                {Object.keys(data).length > 0 && data?.header && (
+                    <View style={styles.contentStyle}>
+                        <Image source={{uri: data.header.img}} style={styles.coverImage}></Image>
+                        <Text style={{fontSize: text(20), fontWeight: 'bold', paddingVertical: text(10)}}>
+                            {data.header.status}
+                        </Text>
+                        {data.header.amount ? (
+                            <Text style={{color: '#4C4C4C', paddingBottom: text(5)}}>{data.header.amount}</Text>
+                        ) : null}
+                        <Text style={{color: '#4C4C4C', paddingBottom: text(5)}}>{data.header.pay_method}</Text>
+                    </View>
+                )}
+
                 {Object.keys(data).length > 0 && <Text style={[styles.title]}>{data?.desc}</Text>}
                 <View style={[styles.processContainer]}>
                     {Object.keys(data).length > 0 &&
@@ -206,7 +219,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        paddingHorizontal: Space.marginAlign,
+        // paddingHorizontal: Space.marginAlign,
     },
     title: {
         fontSize: Font.textH2,
@@ -216,7 +229,7 @@ const styles = StyleSheet.create({
         paddingLeft: text(8),
     },
     processContainer: {
-        paddingLeft: text(8),
+        paddingLeft: text(16),
     },
     processItem: {
         flexDirection: 'row',
@@ -279,6 +292,19 @@ const styles = StyleSheet.create({
         top: text(10),
         left: text(-2),
         zIndex: 1,
+    },
+    contentStyle: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        paddingVertical: text(10),
+        borderBottomWidth: 1,
+        borderColor: '#DDDDDD',
+        paddingBottom: text(20),
+        backgroundColor: '#fff',
+    },
+    coverImage: {
+        width: text(50),
+        height: text(50),
     },
 });
 

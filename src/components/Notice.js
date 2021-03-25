@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 20:09:09
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 17:21:00
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated, LayoutAnimation} from 'react-native';
@@ -46,10 +46,10 @@ const styles = StyleSheet.create({
 });
 
 Notice.defaultProps = {
-    content: '',
+    content: {},
     isClose: false,
 };
 Notice.propTypes = {
-    content: PropTypes.string.isRequired,
+    content: PropTypes.object.isRequired,
     isClose: PropTypes.bool,
 };

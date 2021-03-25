@@ -271,6 +271,7 @@ dependencies {
     implementation project(':react-native-splash-screen') //启动页
     implementation project(':react-native-fs') //文件读写
     implementation project(path: ':react-native-community_viewpager')
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

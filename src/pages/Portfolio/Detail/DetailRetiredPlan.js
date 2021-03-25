@@ -79,6 +79,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             initial_amount: countFr,
             per_amount: countM,
             allocation_id: allocation_id,
+            goal_amount: data.plan_info.goal_info.amount,
             year: _current,
             type,
         };
