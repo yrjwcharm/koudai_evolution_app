@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:18:49
+ * @LastEditTime: 2021-03-25 15:46:29
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -15,6 +15,7 @@ import {Font, Style, Colors} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import http from '../../services';
 import * as Animatable from 'react-native-animatable';
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
@@ -29,7 +30,7 @@ export default function StrategyPolaris(props) {
         <View style={{backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && <Header title={data.title} leftIcon="chevron-left" />}
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView style={{marginBottom: btnHeight}}>
                     <View style={{backgroundColor: '#fff'}}>
                         <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
                         <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>

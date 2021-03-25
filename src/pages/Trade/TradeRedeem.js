@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 13:56:34
+ * @LastEditTime: 2021-03-25 16:12:03
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -20,7 +20,7 @@ import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 const deviceWidth = Dimensions.get('window').width;
-var inputValue = '';
+var inputValue = 0;
 export default class TradeRedeem extends Component {
     constructor(props) {
         super(props);
@@ -93,6 +93,7 @@ export default class TradeRedeem extends Component {
         inputValue = percent * 100;
         this.setState({
             inputValue: (percent * 100).toString(),
+            btnClick: true,
         });
         this.getPlanInfo();
     }
