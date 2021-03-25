@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 19:16:25
+ * @LastEditTime: 2021-03-25 12:03:22
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         marginBottom: text(4),
         fontFamily: Font.numFontFamily,
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

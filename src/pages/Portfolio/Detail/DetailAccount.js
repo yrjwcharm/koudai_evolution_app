@@ -40,11 +40,9 @@ export default function DetailAccount({route, navigation}) {
         setPeriod(p);
         setType(t);
     };
-    const jumpPage = (url, params) => {
-        if (!url) {
-            return;
-        }
-        navigation.navigate(url, params);
+
+    const rightPress = () => {
+        navigation.navigate('ProductIntro', {upid: route?.params?.upid});
     };
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
@@ -53,6 +51,16 @@ export default function DetailAccount({route, navigation}) {
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
+                navigation.setOptions({
+                    title: res.result.title,
+                    headerRight: () => {
+                        return (
+                            <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                                <Text style={styles.right_sty}>{'产品说明书'}</Text>
+                            </TouchableOpacity>
+                        );
+                    },
+                });
                 Http.get('/portfolio/yield_chart/20210101', {
                     allocation_id: res.result.allocation_id,
                     benchmark_id: res.result.benchmark_id,
@@ -126,23 +134,13 @@ export default function DetailAccount({route, navigation}) {
     return (
         <>
             {Object.keys(data).length > 0 ? (
-                <Header
-                    title={data.title}
-                    leftIcon="chevron-left"
-                    rightText={'产品说明书'}
-                    titleStyle={{marginRight: text(-20)}}
-                    rightPress={() => jumpPage('ProductIntro', {upid: route?.params?.upid})}
-                    rightTextStyle={styles.right_sty}
-                />
-            ) : null}
-            {Object.keys(data).length > 0 ? (
                 <ScrollView style={{flex: 1}}>
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                     </View>
                     <View style={{height: 380, backgroundColor: '#fff'}}>
-                        <View style={[Style.flexRow]}>
+                        <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                             <View style={styles.legend_sty}>
                                 <TextInput
                                     ref={_textTime}
@@ -299,7 +297,7 @@ export default function DetailAccount({route, navigation}) {
                     <View style={styles.card_sty}>
                         <ListHeader data={data.risk_info.header} />
                         <View style={{height: 300, position: 'relative'}}>
-                            <View style={[Style.flexRow, {marginTop: text(13), marginLeft: text(30)}]}>
+                            <View style={[Style.flexRow, {marginTop: text(13)}]}>
                                 <View style={{flex: 1, position: 'relative'}}>
                                     <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[0]?.title}</Text>
                                     <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[0]?.val}</Text>
@@ -323,7 +321,7 @@ export default function DetailAccount({route, navigation}) {
                                 style={{marginTop: text(-20), zIndex: 9}}
                             />
 
-                            <View style={{flexDirection: 'row', marginLeft: text(30)}}>
+                            <View style={{flexDirection: 'row', marginLeft: text(10)}}>
                                 <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                     <Ionicons name={'square'} color={'#E74949'} size={10} />
                                     <Text> {data.risk_info?.label[0]?.key}</Text>
@@ -375,6 +373,7 @@ const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
         width: text(90),
+        marginRight: text(-10),
     },
     container_sty: {
         paddingHorizontal: text(16),
@@ -388,7 +387,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     legend_sty: {
-        flex: 1,
+        // flex: 1,
         alignItems: 'center',
     },
     legend_title_sty: {
@@ -397,6 +396,7 @@ const styles = StyleSheet.create({
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

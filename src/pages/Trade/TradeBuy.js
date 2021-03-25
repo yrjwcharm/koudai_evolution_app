@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 15:36:52
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 10:24:43
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -20,6 +20,7 @@ import http from '../../services';
 import Picker from 'react-native-picker';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
+import BottomDesc from '../../components/BottomDesc';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -423,7 +424,7 @@ class TradeBuy extends Component {
     //购买
     render_buy() {
         const {amount, data, type, planData} = this.state;
-        const {buy_info, title, pay_methods} = data;
+        const {buy_info, sub_title, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
@@ -432,7 +433,7 @@ class TradeBuy extends Component {
                     }}
                     onDone={this.submit}
                 />
-                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.title}>{sub_title}</Text>
                 {buy_info ? (
                     <View style={styles.buyCon}>
                         <Text style={{fontSize: px(16), marginVertical: px(4)}}>{buy_info.title}</Text>
@@ -532,6 +533,7 @@ class TradeBuy extends Component {
                     />
                 )}
                 {showMask && <Mask />}
+                <BottomDesc />
             </View>
         );
     }

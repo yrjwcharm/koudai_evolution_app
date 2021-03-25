@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:46:12
+ * @LastEditTime: 2021-03-25 10:44:28
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -37,7 +37,7 @@ const LargeAmount = (props) => {
             props.navigation.setOptions({
                 headerRight: () => {
                     return (
-                        <TouchableOpacity onPress={rightPress}>
+                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
                             <Text style={styles.right_sty}>{'汇款说明'}</Text>
                         </TouchableOpacity>
                     );
@@ -76,13 +76,6 @@ const LargeAmount = (props) => {
     };
     return (
         <View style={{backgroundColor: Colors.bgColor}}>
-            {/* <Header
-                title={data?.title}
-                leftIcon="chevron-left"
-                rightText={'汇款说明'}
-                rightPress={rightPress}
-                rightTextStyle={styles.right_sty}
-            /> */}
             {Object.keys(data).length > 0 && (
                 <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: btnHeight})}>
                     <Notice content={data?.processing} isClose={true} />

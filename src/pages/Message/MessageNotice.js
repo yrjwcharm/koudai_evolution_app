@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:17:59
+ * @LastEditTime: 2021-03-25 12:12:49
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -20,7 +20,7 @@ import Empty from '../../components/EmptyTip';
 import _ from 'lodash';
 var _type;
 export default function MessageNotice({navigation, route}) {
-    const [list, setList] = useState([]);
+    const [list, setList] = useState({});
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);

@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 20:54:03
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 12:10:01
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -90,7 +90,7 @@ export default function MfbIndex(props) {
         );
     };
     return (
-        <View>
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             <Header
                 title={'魔方宝'}
                 leftIcon="chevron-left"

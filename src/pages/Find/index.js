@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 14:21:00
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 11:41:03
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -156,7 +156,7 @@ const Index = (props) => {
                                         jump(item?.url);
                                     }}
                                     key={index}
-                                    style={[styles.card, {borderRadius: 8}, Style.flexRow]}>
+                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
                                     <View style={{padding: Space.cardPadding, flex: 1}}>
                                         <View style={Style.flexRow}>
                                             <Text style={styles.card_title}>{item?.name}</Text>
