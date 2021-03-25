@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 11:15:35
+ * @LastEditTime: 2021-03-25 12:23:24
  * @Description:路由表
  */
 import React from 'react';
@@ -144,7 +144,7 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Loading"
-            // headerMode="screen"
+            headerMode="float" //兼容部分安卓
             screenOptions={{
                 headerBackImage: () => {
                     return <Feather name="chevron-left" size={30} />;

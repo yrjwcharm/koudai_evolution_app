@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:20:33
+ * @LastEditTime: 2021-03-25 10:18:49
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -95,7 +95,7 @@ class Login extends Component {
                 />
                 <Text
                     onPress={() => {
-                        this.jumpPage('ForgetLoginPwd', {fr: this.fr});
+                        this.jumpPage('ForgetLoginPwd');
                     }}
                     style={[styles.text, {color: Colors.btnColor, height: text(30), alignSelf: 'flex-end'}]}>
                     忘记密码
@@ -115,7 +115,7 @@ class Login extends Component {
                     立即注册
                 </Text>
 
-                <WechatView weChatLogin={this.weChatLogin} fr="login" style={{marginTop: px(16)}} />
+                <WechatView weChatLogin={this.weChatLogin} fr={this.fr || 'login'} style={{marginTop: px(16)}} />
             </ScrollView>
         );
     }

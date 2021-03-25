@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:48:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-24 21:25:57
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -286,7 +286,7 @@ export class bankInfo extends Component {
 
                             <Input
                                 label="手机号"
-                                placeholder="请输入您的手机号"
+                                placeholder="请输入您的银行预留手机号"
                                 keyboardType={'number-pad'}
                                 maxLength={11}
                                 value={phone}

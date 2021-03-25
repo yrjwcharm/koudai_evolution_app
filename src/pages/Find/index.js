@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 11:41:03
+ * @LastEditTime: 2021-03-25 12:23:14
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -36,9 +36,9 @@ const Index = (props) => {
         }, [getData])
     );
 
-    // let scrollingRight = '';
-    // let lastx = '';
-    // const snapScroll = useRef(null);
+    let scrollingRight = '';
+    let lastx = '';
+    const snapScroll = useRef(null);
     const getData = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
         http.get('/discovery/index/20210101')
@@ -156,7 +156,12 @@ const Index = (props) => {
                                         jump(item?.url);
                                     }}
                                     key={index}
-                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
+                                    style={[
+                                        styles.card,
+                                        {borderRadius: 8},
+                                        Style.flexRow,
+                                        {marginTop: index != 0 ? px(12) : 0},
+                                    ]}>
                                     <View style={{padding: Space.cardPadding, flex: 1}}>
                                         <View style={Style.flexRow}>
                                             <Text style={styles.card_title}>{item?.name}</Text>
@@ -187,14 +192,24 @@ const Index = (props) => {
                         {/* 专业理财 */}
                         <View style={{marginBottom: px(20)}}>
                             <Text style={styles.large_title}>{data?.part2?.group_name}</Text>
-
                             <ScrollView
-                                loop={true}
-                                showsPagination={false}
                                 horizontal={true}
                                 height={px(217)}
-                                decelerationRate={0.99}
-                                snapToInterval={px(214)}
+                                ref={snapScroll}
+                                onScrollEndDrag={() => {
+                                    var interval = px(202); // WIDTH OF 1 CHILD COMPONENT
+                                    var snapTo = scrollingRight
+                                        ? Math.ceil(lastx / interval)
+                                        : Math.floor(lastx / interval);
+                                    var scrollTo = snapTo * interval;
+                                    snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+                                }}
+                                scrollEventThrottle={100}
+                                onScroll={(event) => {
+                                    var nextx = event.nativeEvent.contentOffset.x;
+                                    scrollingRight = nextx > lastx;
+                                    lastx = nextx;
+                                }}
                                 showsHorizontalScrollIndicator={false}>
                                 {data?.part2?.plans?.map((item, index) => (
                                     <TouchableOpacity
