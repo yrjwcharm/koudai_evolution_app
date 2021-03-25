@@ -106,6 +106,7 @@ export default class MyModal extends Component {
                                 <View style={styles.centerBottomBtns}>
                                     <TouchableOpacity
                                         style={[styles.centerBtn, Style.flexCenter]}
+                                        activeOpacity={1}
                                         onPress={this.cancel.bind(this)}>
                                         <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
                                             {this.cancelText}
@@ -113,6 +114,7 @@ export default class MyModal extends Component {
                                     </TouchableOpacity>
                                     <View style={styles.borderRight} />
                                     <TouchableOpacity
+                                        activeOpacity={1}
                                         style={[Style.flexCenter, styles.centerBtn]}
                                         onPress={this.confirm.bind(this)}>
                                         <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>
@@ -122,6 +124,7 @@ export default class MyModal extends Component {
                                 </View>
                             ) : (
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={[Style.flexCenter, styles.confirmBtn]}
                                     onPress={this.confirm.bind(this)}>
                                     <Text

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 11:35:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 11:44:57
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -63,9 +63,8 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
     const changeTab = (obj) => {
-        // setData([]);
-        setPage(1);
         setHasMore(false);
+        setPage(1);
         setActiveTab(obj.i);
     };
 
@@ -147,7 +146,7 @@ const TradeRecord = ({route, navigation}) => {
                         </View>
                         {item.notice ? (
                             <View style={styles.notice}>
-                                <Text style={styles.notice_text}>预计2020/12/12确认成功</Text>
+                                <Text style={styles.notice_text}>{item.notice}</Text>
                             </View>
                         ) : null}
                     </>
