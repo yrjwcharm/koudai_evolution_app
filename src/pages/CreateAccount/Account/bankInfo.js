@@ -2,11 +2,20 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 17:53:18
+ * @LastEditTime: 2021-03-25 20:16:09
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
+import {
+    Text,
+    View,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px, inputInt} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -18,11 +27,11 @@ import {BankCardModal} from '../../../components/Modal';
 import {formCheck} from '../../../utils/validator';
 import Toast from '../../../components/Toast';
 import http from '../../../services';
-import {Modal} from '../../../components/Modal';
 import _ from 'lodash';
 import BottomDesc from '../../../components/BottomDesc';
 import {connect} from 'react-redux';
 import {getUserInfo} from '../../../redux/actions/userInfo';
+import {CommonActions} from '@react-navigation/native';
 
 class BankInfo extends Component {
     constructor(props) {
@@ -42,13 +51,11 @@ class BankInfo extends Component {
     }
 
     componentDidMount() {
-        this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
         http.get('/passport/bank_list/20210101').then((data) => {
             this.setState({bankList: data.result});
         });
     }
     componentWillUnmount() {
-        this._unsubscribe && this._unsubscribe();
         this.time && clearInterval(this.time);
     }
     /**
@@ -104,9 +111,20 @@ class BankInfo extends Component {
                 this.props.getUserInfo();
                 Toast.show('开户成功', {
                     onHidden: () => {
-                        this.props.navigation.replace(res.result?.jump_url?.path, {
-                            ...res.result?.jump_url?.params,
-                            fr: this.props.route?.params?.fr || '',
+                        this.props.navigation.dispatch((state) => {
+                            // Remove the home route from the stack
+                            const routes = state.routes.filter((r) => r.name !== 'CreateAccount');
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                                index: routes.length - 1,
+                            });
+                        });
+                        setTimeout(() => {
+                            this.props.navigation.replace(res.result?.jump_url?.path, {
+                                ...res.result?.jump_url?.params,
+                                fr: this.props.route?.params?.fr || '',
+                            });
                         });
                     },
                 });
@@ -193,20 +211,6 @@ class BankInfo extends Component {
         this.props.navigation.navigate('BankInfo');
     };
 
-    back = (e) => {
-        if (e.data.action.type == 'REPLACE') {
-            return;
-        }
-        e.preventDefault();
-        Modal.show({
-            title: '结束开户',
-            content: '您马上就开户完成了，确定要离开吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.dispatch(e.data.action);
-            },
-        });
-    };
     /**
      * @description: 回填银行信息，格式化
      * @param {*} onChangeBankNo
@@ -236,7 +240,7 @@ class BankInfo extends Component {
                 <ScrollView style={styles.con} keyboardShouldPersistTaps="handled">
                     <KeyboardAvoidingView
                         behavior="position"
-                        keyboardVerticalOffset={px(120)}
+                        keyboardVerticalOffset={Platform.OS == 'android' ? px(-30) : px(30)}
                         style={{paddingHorizontal: px(16)}}>
                         <BankCardModal
                             title="请选择银行卡"
@@ -252,10 +256,7 @@ class BankInfo extends Component {
                             source={require('../../../assets/img/account/second.png')}
                             resizeMode={FastImage.resizeMode.contain}
                         />
-                        <View
-                            // style={{height: height}}
-
-                            style={styles.card}>
+                        <View style={styles.card}>
                             <View style={styles.card_header}>
                                 <Image
                                     source={require('../../../assets/img/account/cardMes.png')}

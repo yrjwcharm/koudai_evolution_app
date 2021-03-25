@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 18:55:02
+ * @LastEditTime: 2021-03-25 20:08:59
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -34,27 +34,11 @@ export class index extends Component {
         };
     }
     componentWillUnmount() {
-        this._unsubscribe();
         this.closePicker();
         this.subscription.remove();
     }
-    back = (e) => {
-        if (e.data.action.type == 'REPLACE' || e.data.action.type == 'GO_BACK') {
-            return;
-        }
-        e.preventDefault();
-        Modal.show({
-            title: '结束开户',
-            content: '您马上就开户完成了，确定要离开吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.dispatch(e.data.action);
-            },
-        });
-    };
 
     componentDidMount() {
-        this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
             if (params && Object.keys(params).length == 2) {
                 this.setState({name: params.name, id_no: params.id_no});
@@ -105,7 +89,7 @@ export class index extends Component {
                         },
                     });
                 } else {
-                    this.props.navigation.replace(nav, {
+                    this.props.navigation.navigate(nav, {
                         name,
                         id_no,
                         rname,
