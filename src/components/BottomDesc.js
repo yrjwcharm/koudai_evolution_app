@@ -1,12 +1,12 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-22 10:53:43
+ * @LastEditTime: 2021-03-25 15:50:02
  * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet} from 'react-native';
 import {deviceWidth, px as text} from '../utils/appUtil';
@@ -18,8 +18,8 @@ import {useSelector} from 'react-redux';
 const BottomDesc = (props) => {
     const userInfo = useSelector((store) => store.userInfo);
     const {style} = props;
-    const type = userInfo.toJS().po_ver === 0 ? 'yingmi' : 'xuanyuan';
-    const data = {
+    const [type, setType] = useState(userInfo.toJS().po_ver === 0 ? 'yingmi' : 'xuanyuan');
+    const [data, setData] = useState({
         image:
             type === 'xuanyuan'
                 ? 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_CMBC.png'
@@ -42,8 +42,39 @@ const BottomDesc = (props) => {
                 title: '市场有风险，投资需谨慎',
             },
         ],
-    };
+    });
     const navigation = useNavigation();
+
+    useEffect(() => {
+        setType(userInfo.toJS().po_ver === 0 ? 'yingmi' : 'xuanyuan');
+    }, [userInfo]);
+    useEffect(() => {
+        setData({
+            image:
+                type === 'xuanyuan'
+                    ? 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_CMBC.png'
+                    : 'https://static.licaimofang.com/wp-content/uploads/2020/12/endorce_PABC.png',
+            desc: [
+                {
+                    title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,
+                },
+                {
+                    title: `基金销售资格证号:${type === 'xuanyuan' ? '000000803' : '000000378'}`,
+                    btn:
+                        type === 'xuanyuan'
+                            ? {
+                                  text: '详情',
+                                  jump_to: 'LCMF',
+                              }
+                            : '',
+                },
+                {
+                    title: '市场有风险，投资需谨慎',
+                },
+            ],
+        });
+    }, [type]);
+
     return (
         <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
             {data.image && (
@@ -59,11 +90,12 @@ const BottomDesc = (props) => {
                             {item?.btn?.text ? (
                                 <Text
                                     style={styles.button}
-                                    onPress={() =>
+                                    onPress={() => {
+                                        global.LogTool('bottomDesc');
                                         navigation.navigate(item.btn.jump_to, {
                                             link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
-                                        })
-                                    }>
+                                        });
+                                    }}>
                                     {item.btn.text}
                                 </Text>
                             ) : null}

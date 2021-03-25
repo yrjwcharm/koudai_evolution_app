@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 15:41:24
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 16:48:58
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -21,7 +21,10 @@ import http from '../../../services';
 import {Modal} from '../../../components/Modal';
 import _ from 'lodash';
 import BottomDesc from '../../../components/BottomDesc';
-export class bankInfo extends Component {
+import {connect} from 'react-redux';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+
+class BankInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -98,6 +101,7 @@ export class bankInfo extends Component {
             '正在提交数据...'
         ).then((res) => {
             if (res.code == '000000') {
+                this.props.getUserInfo();
                 Toast.show('开户成功', {
                     onHidden: () => {
                         this.props.navigation.replace(res.result?.jump_url?.path, {
@@ -376,4 +380,9 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
 });
-export default bankInfo;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+    getUserInfo,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BankInfo);

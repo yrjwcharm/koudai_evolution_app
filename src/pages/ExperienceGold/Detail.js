@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 22:08:05
+ * @LastEditTime: 2021-03-25 16:31:13
  * @Description: 体验金首页
  */
 
@@ -125,7 +125,10 @@ const ExperienceGold = ({navigation}) => {
                                 color={'#D7AF74'}
                                 style={styles.useBtn}
                                 textStyle={{...styles.title, color: '#fff', fontWeight: '500'}}
-                                onPress={() => Jump(data?.part1?.button?.url)}
+                                onPress={() => {
+                                    global.LogTool('click', 'use');
+                                    Jump(data?.part1?.button?.url);
+                                }}
                             />
                         )}
                     </View>
@@ -144,11 +147,17 @@ const ExperienceGold = ({navigation}) => {
                                 <TouchableOpacity
                                     activeOpacity={1}
                                     style={[Style.flexCenter, styles.fill]}
-                                    onPress={() => bottomModal.current.show()}>
+                                    onPress={() => {
+                                        global.LogTool('click', 'showTips');
+                                        bottomModal.current.show();
+                                    }}>
                                     <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
                                 </TouchableOpacity>
                                 <Button
-                                    onPress={() => Jump(data?.part1?.cashout_button?.url)}
+                                    onPress={() => {
+                                        global.LogTool('click', 'cashout');
+                                        Jump(data?.part1?.cashout_button?.url);
+                                    }}
                                     title={data?.part1?.cashout_button?.title}
                                     disabled={!data?.part1?.cashout_button?.avail}
                                     disabledColor={'#F2F2F2'}
@@ -173,10 +182,13 @@ const ExperienceGold = ({navigation}) => {
                     {data.part2?.cards?.map((_item, _index) => {
                         return (
                             <TouchableOpacity
-                                activeOpacity={1}
+                                activeOpacity={0.8}
                                 style={[Style.flexBetween, styles.productBox]}
                                 key={_index + '_i'}
-                                onPress={() => Jump(_item.url)}>
+                                onPress={() => {
+                                    global.LogTool('click', 'portfolio', _item.poid);
+                                    Jump(_item.url);
+                                }}>
                                 <View style={{flex: 1}}>
                                     <View style={[styles.title, Style.flexRow]}>
                                         <Text style={{fontWeight: '500'}}>{_item.name}</Text>
@@ -227,7 +239,7 @@ const ExperienceGold = ({navigation}) => {
                         data?.part2?.portfolios?.map((_p, _index, arr) => {
                             return (
                                 <TouchableOpacity
-                                    activeOpacity={1}
+                                    activeOpacity={0.8}
                                     style={[
                                         Style.flexBetween,
                                         styles.productBox,
@@ -270,7 +282,10 @@ const ExperienceGold = ({navigation}) => {
                                         disabled={false}
                                         color={'#fff'}
                                         style={styles.buyBtn}
-                                        onPress={() => Jump(_p.button.url)}
+                                        onPress={() => {
+                                            global.LogTool('click', 'portfolio', _p.poid);
+                                            Jump(_p.button.url);
+                                        }}
                                         textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
                                     />
                                 </TouchableOpacity>

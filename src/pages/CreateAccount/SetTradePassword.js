@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 15:42:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 16:48:24
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -77,7 +77,9 @@ const SetTradePassword = ({navigation, route}) => {
                                 } else if (
                                     route.params?.action === 'unbind' ||
                                     route.params?.fr === 'add_bank_card' ||
-                                    route.params?.fr === 'wallet'
+                                    route.params?.fr === 'wallet' ||
+                                    route.params?.action === 'firstSet' ||
+                                    route.params?.fr === 'TradePwdManagement'
                                 ) {
                                     Toast.show(data.message);
                                     setTimeout(() => {
@@ -127,7 +129,7 @@ const SetTradePassword = ({navigation, route}) => {
                     <EvilIcons name="lock" size={25} />
                     <Text style={styles.title}>{pwdMsg}</Text>
                 </View>
-                <View style={{marginTop: text(25)}}>
+                <View style={{marginTop: text(25), position: 'relative'}}>
                     {render_box()}
                     <TextInput
                         ref={textInput}
@@ -146,6 +148,7 @@ const SetTradePassword = ({navigation, route}) => {
                             fontSize: text(12),
                             textAlign: 'center',
                             color: '#0051CC',
+                            marginTop: text(20),
                         }}>
                         重新设置密码
                     </Text>
@@ -202,7 +205,11 @@ const styles = StyleSheet.create({
     input: {
         // width: text(300),
         opacity: 0,
-        height: text(20),
+        height: text(46),
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
     },
 });
 

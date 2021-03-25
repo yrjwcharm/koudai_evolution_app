@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-11 10:03:53
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:19:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 16:39:42
  * @Description: 邀请好友得体验金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,7 +34,7 @@ const InviteExperienceGold = ({navigation}) => {
 
     return (
         <ScrollView style={styles.container}>
-            <ShareModal ref={shareModal} />
+            <ShareModal ref={shareModal} title={'理财魔方体验金'} shareContent={data?.share_info || {}} />
             <Image source={{uri: data?.top_bg}} style={styles.topBg} />
             <ImageBackground
                 source={{uri: data?.bag_bg}}
@@ -47,11 +47,11 @@ const InviteExperienceGold = ({navigation}) => {
                     </Text> */}
                     <View style={[Style.flexRow, styles.profitBox]}>
                         <View style={[Style.flexCenter, {flex: 1}]}>
-                            <Text style={styles.profitText}>{data?.profit_info?.profit}</Text>
+                            <Text style={styles.profitText}>{data?.profit_info?.profit || '0.00'}</Text>
                             <Text style={[styles.stepText, {color: Colors.defaultColor}]}>{'累计收益(元)'}</Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
-                            <Text style={styles.profitText}>{data?.profit_info?.profit_acc}</Text>
+                            <Text style={styles.profitText}>{data?.profit_info?.profit_acc || '0.00'}</Text>
                             <Text style={[styles.stepText, {color: Colors.defaultColor}]}>{'可提现收益(元)'}</Text>
                         </View>
                     </View>
@@ -71,7 +71,7 @@ const InviteExperienceGold = ({navigation}) => {
                             start={{x: 0, y: 0}}
                             end={{x: 1, y: 0}}
                             style={[Style.flexCenter, styles.hbTips, {width: text(144)}]}>
-                            <Text style={styles.hbTipsText}>{`剩余名额：${data?.profit_info?.left_num}`}</Text>
+                            <Text style={styles.hbTipsText}>{`剩余名额：${data?.profit_info?.left_num || 0}`}</Text>
                         </LinearGradient>
                     </View>
                 </View>
@@ -83,7 +83,10 @@ const InviteExperienceGold = ({navigation}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[Style.flexCenter, {height: '100%'}]}
-                        onPress={() => shareModal.current.show()}>
+                        onPress={() => {
+                            global.LogTool('share');
+                            shareModal.current.show();
+                        }}>
                         <Text style={styles.btnText}>{'立即邀请'}</Text>
                     </TouchableOpacity>
                 </LinearGradient>
@@ -93,59 +96,61 @@ const InviteExperienceGold = ({navigation}) => {
                 style={[Style.flexCenter, styles.titleBg]}>
                 <Text style={styles.partTitle}>{!data?.has_invite ? '参与步骤' : '邀请进度'}</Text>
             </ImageBackground>
-            <View style={[styles.partBox, styles.processBox]}>
-                {data?.invite_list?.map((item, index) => {
-                    return (
-                        <View key={item + index} style={{marginBottom: text(24)}}>
-                            <View style={[Style.flexRow, {marginBottom: Space.marginVertical}]}>
-                                <Image source={{uri: item.avatar}} style={styles.avatar} />
-                                <Text style={[styles.name, {marginRight: text(8)}]}>{item.name}</Text>
-                                <Text style={styles.stepText}>{item.date}</Text>
-                            </View>
-                            <View style={[Style.flexBetween, {position: 'relative'}]}>
-                                <View style={styles.processBar}>
-                                    <View
-                                        style={[
-                                            styles.activeBar,
-                                            {
-                                                width:
-                                                    _.findLastIndex(item?.progress || [], (p) => p.val === 1) * 25 +
-                                                    '%',
-                                            },
-                                        ]}
-                                    />
+            {data?.has_invite ? (
+                <View style={[styles.partBox, styles.processBox]}>
+                    {data?.invite_list?.map((item, index) => {
+                        return (
+                            <View key={item + index} style={{marginBottom: text(24)}}>
+                                <View style={[Style.flexRow, {marginBottom: Space.marginVertical}]}>
+                                    <Image source={{uri: item.avatar}} style={styles.avatar} />
+                                    <Text style={[styles.name, {marginRight: text(8)}]}>{item.name}</Text>
+                                    <Text style={styles.stepText}>{item.date}</Text>
                                 </View>
-                                {item?.progress?.map((p, idx, arr) => {
-                                    return (
+                                <View style={[Style.flexBetween, {position: 'relative'}]}>
+                                    <View style={styles.processBar}>
                                         <View
-                                            key={p + idx}
-                                            style={{
-                                                alignItems:
-                                                    idx === 0
-                                                        ? 'flex-start'
-                                                        : idx === arr.length - 1
-                                                        ? 'flex-end'
-                                                        : 'center',
-                                                position: 'relative',
-                                            }}>
+                                            style={[
+                                                styles.activeBar,
+                                                {
+                                                    width:
+                                                        _.findLastIndex(item?.progress || [], (p) => p.val === 1) * 25 +
+                                                        '%',
+                                                },
+                                            ]}
+                                        />
+                                    </View>
+                                    {item?.progress?.map((p, idx, arr) => {
+                                        return (
                                             <View
-                                                style={[
-                                                    styles.dot,
-                                                    {
-                                                        borderWidth: p?.val ? text(4) : text(2),
-                                                        backgroundColor: p?.val ? Colors.red : '#fff',
-                                                    },
-                                                ]}
-                                            />
-                                            <Text style={styles.processText}>{p?.key}</Text>
-                                        </View>
-                                    );
-                                })}
+                                                key={p + idx}
+                                                style={{
+                                                    alignItems:
+                                                        idx === 0
+                                                            ? 'flex-start'
+                                                            : idx === arr.length - 1
+                                                            ? 'flex-end'
+                                                            : 'center',
+                                                    position: 'relative',
+                                                }}>
+                                                <View
+                                                    style={[
+                                                        styles.dot,
+                                                        {
+                                                            borderWidth: p?.val ? text(4) : text(2),
+                                                            backgroundColor: p?.val ? Colors.red : '#fff',
+                                                        },
+                                                    ]}
+                                                />
+                                                <Text style={styles.processText}>{p?.key}</Text>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
                             </View>
-                        </View>
-                    );
-                })}
-            </View>
+                        );
+                    })}
+                </View>
+            ) : null}
             {!data?.has_invite && (
                 <View style={[styles.partBox, {marginBottom: Space.marginVertical, paddingBottom: Space.padding}]}>
                     <Image source={{uri: data?.join_step_image}} style={styles.stepImg} />

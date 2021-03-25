@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-03 11:03:43
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 16:05:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-25 16:45:02
  * @Description: 答题提现
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -21,6 +21,7 @@ const QuestionWithdraw = ({navigation}) => {
 
     const handleAnswer = useCallback(
         (item) => {
+            global.LogTool('click', 'answer', item.name);
             setAnswer([item.name]);
             if (item.val === 1) {
                 setCurrent((prev) => {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 17:59:46
+ * @LastEditTime: 2021-03-25 11:03:02
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -136,7 +136,11 @@ const AccProfit = ({poid}) => {
             <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
                 <View style={[Style.flexRow, {justifyContent: 'center'}]}>
                     <Text style={styles.subTitle}>{chartData.title}</Text>
-                    <TouchableOpacity onPress={() => Modal.show({content: chartData.desc})}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            global.LogTool('click', 'showTips');
+                            Modal.show({content: chartData.desc});
+                        }}>
                         <AntDesign
                             style={{marginLeft: text(4)}}
                             name={'questioncircleo'}
@@ -167,7 +171,10 @@ const AccProfit = ({poid}) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 key={tab.val + index}
-                                onPress={() => !onlyAll && setPeriod(tab.val)}
+                                onPress={() => {
+                                    global.LogTool('click', tab.val);
+                                    !onlyAll && setPeriod(tab.val);
+                                }}
                                 style={[
                                     Style.flexCenter,
                                     styles.subtab,
@@ -205,8 +212,11 @@ const AccProfit = ({poid}) => {
                             Style.flexBetween,
                             {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
                         ]}
-                        key={index}
-                        onPress={() => jump(item.url)}>
+                        key={item + index}
+                        onPress={() => {
+                            global.LogTool('click', 'portfolio', item.poid);
+                            jump(item.url);
+                        }}>
                         <View style={Style.flexRow}>
                             <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>{item.name}</Text>
                             <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} />

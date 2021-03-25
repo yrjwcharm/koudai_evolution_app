@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-23 18:41:18
+ * @LastEditTime: 2021-03-25 10:50:08
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -63,6 +63,7 @@ function HomeScreen({navigation, route}) {
     }, []);
     // 隐藏系统消息
     const hideSystemMsg = useCallback(() => {
+        global.LogTool('click', 'hideSystemMsg');
         Animated.timing(fadeAnim, {
             toValue: 0,
             duration: 500,
@@ -77,8 +78,9 @@ function HomeScreen({navigation, route}) {
     // 显示|隐藏金额信息
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
-            setShowEye(show === 'true' ? 'false' : 'true');
+            global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
             storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
+            return show === 'true' ? 'false' : 'true';
         });
     }, []);
     // navigation.addListener('tabPress', e => {
@@ -179,7 +181,10 @@ function HomeScreen({navigation, route}) {
                                     activeOpacity={0.8}
                                     key={`portfolio${po.poid}`}
                                     style={Style.flexRow}
-                                    onPress={() => jump(po.url)}>
+                                    onPress={() => {
+                                        global.LogTool('click', 'portfolio', po.poid);
+                                        jump(po.url);
+                                    }}>
                                     <View
                                         style={[
                                             styles.portfolio,
@@ -305,7 +310,10 @@ function HomeScreen({navigation, route}) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={[styles.experienceGold, Style.flexRow]}
-                                onPress={() => jump(userBasicInfo?.free_fund?.url)}>
+                                onPress={() => {
+                                    global.LogTool('click', 'free_fund');
+                                    jump(userBasicInfo?.free_fund?.url);
+                                }}>
                                 <Image
                                     source={require('../../assets/personal/jinbi.png')}
                                     style={{width: text(15), height: text(15)}}
@@ -334,7 +342,10 @@ function HomeScreen({navigation, route}) {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.tradeNotice, Style.flexCenter]}
-                            onPress={() => jump(userBasicInfo?.top_menus[3]?.url)}>
+                            onPress={() => {
+                                global.LogTool('click', 'tradeMsg');
+                                jump(userBasicInfo?.top_menus[3]?.url);
+                            }}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
                             <View style={[styles.noticeBox, Style.flexRow]}>
                                 <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
@@ -346,13 +357,13 @@ function HomeScreen({navigation, route}) {
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>日收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit : '****'}
+                                {showEye === 'true' ? holdingData?.summary?.profit || '0.00' : '****'}
                             </Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
                             <Text style={styles.profitKey}>累计收益</Text>
                             <Text style={styles.profitVal}>
-                                {holdingData?.summary && showEye === 'true' ? holdingData?.summary?.profit_acc : '****'}
+                                {showEye === 'true' ? holdingData?.summary?.profit_acc || '0.00' : '****'}
                             </Text>
                         </View>
                     </View>
@@ -363,7 +374,10 @@ function HomeScreen({navigation, route}) {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => jump(item.url)}
+                                onPress={() => {
+                                    global.LogTool('click', 'top_menus', item.id);
+                                    jump(item.url);
+                                }}
                                 key={`topmenu${item.id}`}
                                 style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
                                 <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
@@ -396,7 +410,10 @@ function HomeScreen({navigation, route}) {
                                 key={`account0${item.id}`}
                                 activeOpacity={0.8}
                                 style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
-                                onPress={() => jump(item?.portfolios[0].url)}>
+                                onPress={() => {
+                                    global.LogTool('click', 'portfolio', item?.portfolios[0].poid);
+                                    jump(item?.portfolios[0].url);
+                                }}>
                                 {renderTitle(item?.portfolios[0])}
                                 {renderPortfolios(item)}
                             </TouchableOpacity>
@@ -413,6 +430,7 @@ function HomeScreen({navigation, route}) {
                                         activeOpacity={0.8}
                                         style={[{padding: Space.padding}, Style.flexRow]}
                                         onPress={() => {
+                                            global.LogTool('click', 'vip');
                                             jump(item.url);
                                         }}>
                                         <View style={[{flex: 1}, Style.flexRow]}>
@@ -431,7 +449,10 @@ function HomeScreen({navigation, route}) {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={[styles.account]}
-                                        onPress={() => jump(item.url)}>
+                                        onPress={() => {
+                                            global.LogTool('click', 'insurance');
+                                            jump(item.url);
+                                        }}>
                                         {renderTitle(item)}
                                         {item.has_bought && renderPortfolios(item)}
                                     </TouchableOpacity>
@@ -446,6 +467,7 @@ function HomeScreen({navigation, route}) {
                         activeOpacity={0.8}
                         style={[styles.iaInfo, Style.flexRow]}
                         onPress={() => {
+                            global.LogTool('click', 'im');
                             jump(userBasicInfo?.im_info.url);
                         }}>
                         <View style={[Style.flexRow, {flex: 1}]}>
@@ -466,7 +488,10 @@ function HomeScreen({navigation, route}) {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             key={`article${index}`}
-                            onPress={() => jump(item.url)}
+                            onPress={() => {
+                                global.LogTool('click', 'article', item.title);
+                                jump(item.url);
+                            }}
                             style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
                             <View style={{flex: 1}}>
                                 <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
@@ -484,7 +509,10 @@ function HomeScreen({navigation, route}) {
                                 activeOpacity={0.8}
                                 key={`bottommenu${item.id}`}
                                 style={[Style.flexCenter, {flex: 1, height: '100%'}]}
-                                onPress={() => jump(item.url)}>
+                                onPress={() => {
+                                    global.LogTool('click', 'bottom_menus', item.id);
+                                    jump(item.url);
+                                }}>
                                 <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                 <Text style={styles.topMenuTitle}>{item.title}</Text>
                             </TouchableOpacity>

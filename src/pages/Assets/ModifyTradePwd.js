@@ -2,15 +2,13 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 18:02:38
+ * @LastEditTime: 2021-03-25 13:59:36
  * @Description: 修改交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {ScrollView, StyleSheet} from 'react-native';
 import {px as text} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
@@ -25,6 +23,7 @@ const ModifyTradePwd = ({navigation}) => {
 
     // 完成密码修改
     const submit = useCallback(() => {
+        global.LogTool('click', 'submit');
         if (!btnClick.current) {
             return false;
         }
@@ -62,6 +61,7 @@ const ModifyTradePwd = ({navigation}) => {
                     con_new_password: confirmPwd,
                 }).then((res) => {
                     if (res.code === '000000') {
+                        global.LogTool('submit', 'success');
                         Toast.show(res.message);
                         navigation.goBack();
                     } else {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 17:24:55
+ * @LastEditTime: 2021-03-25 13:56:30
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -113,7 +113,10 @@ const HoldingFund = ({navigation, route}) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            onPress={() => navigation.navigate('FundDetail', {code: fund.code})}
+                                            onPress={() => {
+                                                global.LogTool('click', 'fund', item.code);
+                                                navigation.navigate('FundDetail', {code: fund.code});
+                                            }}
                                             style={[
                                                 styles.fundContainer,
                                                 i === item.funds.length - 1 ? {marginBottom: 0} : {},
@@ -221,7 +224,10 @@ const HoldingFund = ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.historyHolding, Style.flexBetween]}
-                            onPress={() => jump(urlRef.current)}>
+                            onPress={() => {
+                                global.LogTool('click', 'history');
+                                jump(urlRef.current);
+                            }}>
                             <Text style={[styles.name, {fontWeight: '500'}]}>{'历史持有基金'}</Text>
                             <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                         </TouchableOpacity>
@@ -237,9 +243,10 @@ const HoldingFund = ({navigation, route}) => {
                 <>
                     <TouchableOpacity
                         style={[styles.topRightBtn, Style.flexCenter]}
-                        onPress={() =>
-                            navigation.navigate('FundSearching', {poid: route.params?.poid || 'X00F000003'})
-                        }>
+                        onPress={() => {
+                            global.LogTool('click', 'search');
+                            navigation.navigate('FundSearching', {poid: route.params?.poid || ''});
+                        }}>
                         <Text>基金查询</Text>
                     </TouchableOpacity>
                 </>

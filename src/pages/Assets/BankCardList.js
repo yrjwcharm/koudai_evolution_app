@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 16:05:46
+ * @LastEditTime: 2021-03-25 11:11:56
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -44,7 +44,10 @@ const BankCardList = ({navigation}) => {
                         <TouchableOpacity
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
-                            onPress={() => navigation.navigate('BankCard', {pay_method: item.pay_method})}>
+                            onPress={() => {
+                                global.LogTool('click', 'bankcard', item.pay_method);
+                                navigation.navigate('BankCard', {pay_method: item.pay_method});
+                            }}>
                             <View style={[Style.flexRow, {flex: 1}]}>
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
@@ -67,7 +70,10 @@ const BankCardList = ({navigation}) => {
                         <TouchableOpacity
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
-                            onPress={() => navigation.navigate('BankCard', {pay_method: item.pay_method})}>
+                            onPress={() => {
+                                global.LogTool('click', 'bankcard', item.pay_method);
+                                navigation.navigate('BankCard', {pay_method: item.pay_method});
+                            }}>
                             <View style={[Style.flexRow, {flex: 1}]}>
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
@@ -82,19 +88,33 @@ const BankCardList = ({navigation}) => {
                         </TouchableOpacity>
                     );
                 })}
-                {Object.keys(data).length === 0 || (data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0) ? (
+                {Object.keys(data).length === 0 ||
+                (!data?.xy?.cards && !data?.ym?.cards) ||
+                (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? (
                     <>
                         <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
                         <Button
                             title={data?.button?.text}
                             style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}
-                            onPress={() => jump(data?.button?.url)}
+                            onPress={() => {
+                                global.LogTool('click', 'addBankCard');
+                                jump(data?.button?.url);
+                            }}
                         />
                     </>
                 ) : null}
             </ScrollView>
-            {Object.keys(data).length === 0 || (data.xy?.cards?.length === 0 && data.ym?.cards?.length === 0) ? null : (
-                <Button title={data?.button?.text} style={styles.btn} onPress={() => jump(data?.button?.url)} />
+            {Object.keys(data).length === 0 ||
+            (!data?.xy?.cards && !data?.ym?.cards) ||
+            (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? null : (
+                <Button
+                    title={data?.button?.text}
+                    style={styles.btn}
+                    onPress={() => {
+                        global.LogTool('click', 'addBankCard');
+                        jump(data?.button?.url);
+                    }}
+                />
             )}
         </SafeAreaView>
     );

@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 20:23:27
+ * @LastEditTime: 2021-03-25 14:34:42
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -189,7 +189,10 @@ const ScoreDetail = ({navigation, route}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[Style.flexRowCenter, styles.selectCon]}
-                        onPress={() => setShow((prev) => !prev)}>
+                        onPress={() => {
+                            global.LogTool('click', 'cateToggle');
+                            setShow((prev) => !prev);
+                        }}>
                         <Text style={[styles.detail, {marginRight: text(4)}]}>{tabs[type - 1]?.text || '全部'}</Text>
                         <AntDesign name={show ? 'caretup' : 'caretdown'} size={8} color={'#fff'} />
                     </TouchableOpacity>
@@ -235,14 +238,20 @@ const ScoreDetail = ({navigation, route}) => {
                                 <View key={tab.type} style={[styles.border, {flex: 1, height: '100%'}]}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => onTab(tab.type)}
+                                        onPress={() => {
+                                            global.LogTool('click', 'cate', tab.type);
+                                            onTab(tab.type);
+                                        }}
                                         style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
                                         <Text style={[styles.tipText, {color: '#101A30'}]}>{tab.text}</Text>
                                     </TouchableOpacity>
                                 </View>
                             ) : (
                                 <TouchableOpacity
-                                    onPress={() => onTab(tab.type)}
+                                    onPress={() => {
+                                        global.LogTool('click', 'cate', tab.type);
+                                        onTab(tab.type);
+                                    }}
                                     key={tab.type}
                                     style={[{flex: 1, height: '100%'}, Style.flexCenter]}>
                                     <Text style={[styles.tipText, {color: '#101A30'}]}>{tab.text}</Text>

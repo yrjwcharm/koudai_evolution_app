@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 14:55:29
+ * @LastEditTime: 2021-03-25 13:49:07
  * @Description: 找回交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -22,6 +22,7 @@ const ResetLoginPwd = ({navigation}) => {
 
     // 下一步
     const submit = useCallback(() => {
+        global.LogTool('submit');
         if (!btnClick.current) {
             return false;
         }
@@ -45,6 +46,7 @@ const ResetLoginPwd = ({navigation}) => {
             }).then((res) => {
                 btnClick.current = true;
                 if (res.code === '000000') {
+                    global.LogTool('next');
                     Toast.show(res.message);
                     navigation.navigate('ForgotTradePwdNext', {msg: res.result.msg, name, id_no: idCardNum});
                 } else {

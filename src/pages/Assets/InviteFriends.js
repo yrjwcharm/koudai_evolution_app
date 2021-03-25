@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 15:01:43
+ * @LastEditTime: 2021-03-25 13:44:25
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -77,7 +77,10 @@ const InviteFriends = ({navigation}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.moreRecord, Style.flexCenter]}
-                        onPress={() => navigation.navigate('InviteRecord')}>
+                        onPress={() => {
+                            global.LogTool('click', 'more');
+                            navigation.navigate('InviteRecord');
+                        }}>
                         <Text style={[styles.moreText]}>{'查看更多'}</Text>
                         <Icon name={'angle-right'} size={20} color={Colors.brandColor} style={{marginLeft: text(4)}} />
                     </TouchableOpacity>
@@ -92,7 +95,10 @@ const InviteFriends = ({navigation}) => {
                 <>
                     <TouchableOpacity
                         style={[Style.flexCenter, styles.topRightBtn]}
-                        onPress={() => navigation.navigate('MyScore')}>
+                        onPress={() => {
+                            global.LogTool('click', 'exchange');
+                            navigation.navigate('MyScore');
+                        }}>
                         <Text style={styles.title}>{'兑换魔分'}</Text>
                     </TouchableOpacity>
                 </>
@@ -148,7 +154,10 @@ const InviteFriends = ({navigation}) => {
                 </TouchableOpacity> */}
                 {/* <Button title={'邀请好友赚魔分'} color={'#FFD666'} style={styles.btn} textStyle={styles.btnText} /> */}
                 <TouchableOpacity
-                    onPress={() => shareModal.current.show()}
+                    onPress={() => {
+                        global.LogTool('click', 'showShare');
+                        shareModal.current.show();
+                    }}
                     activeOpacity={0.8}
                     style={[styles.btn, {backgroundColor: 'transparent'}]}>
                     <LinearGradient

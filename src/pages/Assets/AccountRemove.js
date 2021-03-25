@@ -2,7 +2,7 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 20:02:48
+ * @LastEditTime: 2021-03-25 10:59:15
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -29,6 +29,7 @@ const AccountRemove = ({navigation, route}) => {
     const codeModal = useRef(null);
 
     const onPress = () => {
+        global.LogTool('accountRemove', 'apply');
         if (data?.avail) {
             Modal.show({
                 confirm: true,
@@ -69,6 +70,7 @@ const AccountRemove = ({navigation, route}) => {
                 }).then((res) => {
                     Toast.show(res.message, {position: text(120), showMask: false});
                     if (res.code === '000000') {
+                        global.LogTool('accountRemove', 'success');
                         codeModal.current.hide();
                         Storage.delete('loginStatus');
                         dispatch(getUserInfo());
