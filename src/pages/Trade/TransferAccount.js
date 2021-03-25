@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 21:20:50
+ * @LastEditTime: 2021-03-25 14:46:16
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -98,7 +98,8 @@ export default function TransferAccount({navigation, route}) {
                                         <View key={_index + '_item'}>
                                             <View style={[Style.flexRow]}>
                                                 <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
-                                                    <View style={[styles.circle]}></View>
+                                                    <View
+                                                        style={[styles.circle, {backgroundColor: _item.color}]}></View>
                                                     <Text style={{color: _item.color, fontSize: text(12)}}>
                                                         {_item.title}
                                                     </Text>
@@ -106,7 +107,7 @@ export default function TransferAccount({navigation, route}) {
                                                 <Text style={styles.content_head_title}>
                                                     {data.fund_compare.header.ratio_src}
                                                 </Text>
-                                                <Text style={styles.content_head_title}>
+                                                <Text style={[styles.content_head_title, {textAlign: 'right'}]}>
                                                     {data.fund_compare.header.ratio_dst}
                                                 </Text>
                                             </View>
@@ -119,7 +120,7 @@ export default function TransferAccount({navigation, route}) {
                                                         ? Colors.green
                                                         : '#4E556C';
                                                 return (
-                                                    <View style={Style.flexRow} key={_i + _d}>
+                                                    <View style={[Style.flexRow, {paddingTop: text(10)}]} key={_i + _d}>
                                                         <Text
                                                             style={[
                                                                 styles.content_item_text,
@@ -127,14 +128,15 @@ export default function TransferAccount({navigation, route}) {
                                                             ]}>
                                                             {_i?.name}
                                                         </Text>
-                                                        <Text style={styles.content_item_text}>{_i?.ratio_src}</Text>
+                                                        <Text style={styles.content_item_text}>
+                                                            {Number(_i?.ratio_src * 100).toFixed(2)}
+                                                        </Text>
                                                         <View
                                                             style={[
                                                                 Style.flexRow,
                                                                 {
                                                                     width: text(90),
                                                                     justifyContent: 'flex-end',
-                                                                    paddingTop: text(15),
                                                                 },
                                                             ]}>
                                                             <Text
@@ -143,7 +145,7 @@ export default function TransferAccount({navigation, route}) {
 
                                                                     color: _color,
                                                                 }}>
-                                                                {_i?.ratio_dst}
+                                                                {Number(_i?.ratio_dst * 100).toFixed(2)}%
                                                             </Text>
                                                             {_i.compare != 'et' && (
                                                                 <Icon

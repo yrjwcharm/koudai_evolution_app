@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: xjh
  * @Desc:私募产品公告
- * @LastEditTime: 2021-03-22 11:20:16
+ * @LastEditTime: 2021-03-25 14:26:13
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -18,6 +18,7 @@ import {FixedButton} from '../../components/Button';
 import Http from '../../services';
 import TabBar from '../../components/TabBar.js';
 import {Modal} from '../../components/Modal';
+// import Videoplayer from 'react-native-rn-videoplayer';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default class PrivateProduct extends Component {
@@ -102,7 +103,16 @@ export default class PrivateProduct extends Component {
                         <Text>{data?.content?.subtitle}</Text>
                     </View>
                     <View style={[Style.flexCenter]}>
-                        <Video url={data?.content?.video} />
+                        {/* <Videoplayer
+                            url={data?.content?.video}
+                            navigation={this.props.navigation} //路由 用于小屏屏播放的返回按钮
+                            ref={(ref) => (this.player = ref)}
+                            poster={
+                                'https://static.licaimofang.com/wp-content/uploads/2020/05/151590048433_.pic_hd.png'
+                            } //视频封面
+                        /> */}
+
+                        {/* <Video url={data?.content?.video} /> */}
                     </View>
                 </>
             );

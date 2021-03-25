@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 15:37:05
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-25 13:56:34
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
@@ -20,6 +20,7 @@ import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 const deviceWidth = Dimensions.get('window').width;
+var inputValue = '';
 export default class TradeRedeem extends Component {
     constructor(props) {
         super(props);
@@ -63,7 +64,7 @@ export default class TradeRedeem extends Component {
     getPlanInfo() {
         const {tableData} = this.state;
         Http.get('/trade/redeem/plan/20210101', {
-            percent: this.state.inputValue / 100,
+            percent: inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
         }).then((res) => {
@@ -89,14 +90,11 @@ export default class TradeRedeem extends Component {
         });
     }
     pressChange(percent) {
-        this.setState(
-            {
-                inputValue: (percent * 100).toString(),
-            },
-            () => {
-                this.getPlanInfo();
-            }
-        );
+        inputValue = percent * 100;
+        this.setState({
+            inputValue: (percent * 100).toString(),
+        });
+        this.getPlanInfo();
     }
     toggleFund() {
         const toggleList = this.state.toggleList;
@@ -112,7 +110,7 @@ export default class TradeRedeem extends Component {
         Http.post('/trade/redeem/do/20210101', {
             redeem_id: this.state.redeem_id,
             password,
-            percent: this.state.inputValue / 100,
+            percent: inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
         }).then((res) => {
@@ -127,12 +125,13 @@ export default class TradeRedeem extends Component {
     };
     onChange = (text) => {
         if (text) {
-            this.getPlanInfo();
             if (text > 100) {
                 text = '100';
             }
+            inputValue = text;
             // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             this.setState({inputValue: text, btnClick: true});
+            this.getPlanInfo();
         } else {
             this.setState({inputValue: '', btnClick: false});
         }
