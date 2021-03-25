@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 16:48:24
+ * @LastEditTime: 2021-03-25 17:15:39
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -62,6 +62,7 @@ const SetTradePassword = ({navigation, route}) => {
                         Http.post('/passport/set_trade_password/20210101', {
                             password: password,
                             poid: route?.params?.poid || '',
+                            fr: route?.params?.fr,
                         }).then((data) => {
                             if (data.code === '000000') {
                                 dispatch(getUserInfo());
