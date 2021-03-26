@@ -94,7 +94,7 @@ export default class MyModal extends Component {
                                 <Text style={styles.title}>{this.title}</Text>
                             ) : null}
                             {/* 内容 */}
-                            <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(16)}]}>
+                            <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(20)}]}>
                                 <HTML style={styles.contentText} html={this.props.content} />
                             </View>
                             {/* 分割线 */}
@@ -130,7 +130,8 @@ export default class MyModal extends Component {
                                     <Text
                                         style={{
                                             color: Colors.btnColor,
-                                            fontSize: text(14),
+                                            fontSize: text(16),
+                                            fontWeight: 'bold',
                                         }}>
                                         {this.confirmText}
                                     </Text>
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     },
     confirmBtn: {
         width: '100%',
-        height: text(40),
+        height: text(48),
     },
     centerBtn: {
         flex: 1,
@@ -208,8 +209,8 @@ const styles = StyleSheet.create({
         fontSize: text(14),
     },
     contentCon: {
-        paddingBottom: px(16),
-        paddingHorizontal: text(18),
+        paddingBottom: px(20),
+        paddingHorizontal: text(20),
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},
     borderRight: {backgroundColor: '#DCDEE3', width: 0.5, height: text(40)},

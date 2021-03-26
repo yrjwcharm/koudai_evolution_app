@@ -2,15 +2,15 @@
  * @Author: xjh
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 20:25:08
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 17:33:31
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {px, px as text} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import {View, Text, StyleSheet} from 'react-native';
-import {Style} from '../../../common/commonStyle';
+import {Font, Style, Colors} from '../../../common/commonStyle';
 import PropTypes from 'prop-types';
 export default function Table(props) {
     Table.propTypes = {
@@ -35,7 +35,14 @@ export default function Table(props) {
                     ]}>
                     <Text style={styles.text_align_sty} />
                     <Text style={styles.text_align_sty} />
-                    <Text style={{textAlign: 'right', paddingRight: text(15), fontSize: text(12), color: '#545968'}}>
+                    <Text
+                        style={{
+                            textAlign: 'right',
+                            paddingRight: text(15),
+                            fontSize: text(12),
+                            color: Colors.defaultFontColor,
+                            fontWeight: 'bold',
+                        }}>
                         {data?.th[2]}
                     </Text>
                 </View>
@@ -71,12 +78,21 @@ export default function Table(props) {
             </View>
             <View style={styles.ab_table_sty}>
                 <LinearGradient
-                    start={{x: 0, y: 0}}
+                    start={{x: 0, y: 0.3}}
                     end={{x: 0, y: 1}}
                     locations={[0, 0.9]}
-                    style={{borderRadius: 10}}
+                    style={{borderRadius: 6}}
                     colors={['#FFD6D6', '#FFF1F1']}>
-                    <Text style={{padding: px(13), paddingTop: px(17), textAlign: 'center'}}>{data.th[1]}</Text>
+                    <Text
+                        style={{
+                            padding: px(13),
+                            paddingTop: px(17),
+                            textAlign: 'center',
+                            fontSize: text(12),
+                            fontWeight: 'bold',
+                        }}>
+                        {data.th[1]}
+                    </Text>
                 </LinearGradient>
                 {data.tr_list.map((_i, _d, arr) => {
                     return (
@@ -118,6 +134,7 @@ const styles = StyleSheet.create({
         lineHeight: text(41),
         textAlign: 'center',
         color: '#E74949',
+        fontSize: text(12),
     },
     text_align_sty: {
         flex: 1,

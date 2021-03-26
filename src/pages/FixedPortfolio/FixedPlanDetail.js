@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:45:07
+ * @LastEditTime: 2021-03-26 15:29:20
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -17,6 +17,7 @@ import Header from '../../components/NavBar';
 import FixedBtn from '../Portfolio/components/FixedBtn';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import EmptyTip from '../../components/EmptyTip';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
@@ -69,11 +70,26 @@ export default function FixedPlan(props) {
                         </View>
                         <Text style={styles.time_sty}>{data?.fix_info?.next_date}</Text>
                     </View>
+
                     <View style={styles.records_sty}>
                         <View style={Style.flexBetween}>
-                            <Text style={{color: '#1F2432', fontSize: text(16)}}>{data?.fix_records?.title}</Text>
-                            <Text style={{color: '#1F2432', fontSize: text(12)}}>{data?.fix_records?.start_date}</Text>
+                            <Text style={{color: Colors.defaultFontColor, fontSize: text(16), fontWeight: 'bold'}}>
+                                {data?.fix_records?.title}
+                            </Text>
+                            <View style={Style.flexRow}>
+                                <Text>开始时间</Text>
+                                <Text
+                                    style={{
+                                        color: Colors.defaultFontColor,
+                                        fontSize: text(12),
+                                        fontFamily: Font.numFontFamily,
+                                        marginLeft: text(5),
+                                    }}>
+                                    {data?.fix_records?.start_date}
+                                </Text>
+                            </View>
                         </View>
+
                         {/* 定投进度 */}
                         {/* <View style={styles.process_wrap_sty}>
                     <View style={[styles.bubbles_sty, {left: left}]} onLayout={(e) => onLayout(e)}>
@@ -99,7 +115,8 @@ export default function FixedPlan(props) {
                 <View style={styles.process_outer}>
                     <View style={[styles.process_inner, {width: widthD}]}></View>
                 </View> */}
-                        {data?.fix_records?.list?.length > 0 && (
+
+                        {data?.fix_records?.list?.length > 0 ? (
                             <ScrollView style={{marginTop: text(28)}}>
                                 <View style={[Style.flexBetween, styles.border_sty]}>
                                     <Text style={styles.desc_sty}>{data?.fix_records?.header?.date}</Text>
@@ -116,6 +133,8 @@ export default function FixedPlan(props) {
                                     );
                                 })}
                             </ScrollView>
+                        ) : (
+                            <EmptyTip text="暂无定投记录" />
                         )}
                     </View>
                 </View>
@@ -142,14 +161,15 @@ const styles = StyleSheet.create({
         marginLeft: text(10),
     },
     title_sty: {
-        color: '#333',
+        color: Colors.defaultFontColor,
         fontSize: Font.textH1,
         fontWeight: 'bold',
+        fontFamily: Font.numFontFamily,
     },
     time_sty: {
         color: '#555B6C',
         fontSize: Font.textH3,
-        paddingTop: text(7),
+        paddingTop: text(12),
     },
     records_sty: {
         paddingVertical: text(13),

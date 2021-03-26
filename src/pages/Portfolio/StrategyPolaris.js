@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 15:46:29
+ * @LastEditTime: 2021-03-26 17:59:28
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -47,7 +47,7 @@ export default function StrategyPolaris(props) {
                             <Text style={styles.desc_sty}>{data.strategy}</Text>
                         </View>
                     </View>
-                    <View style={{padding: text(16)}}>
+                    <View style={{padding: text(16), paddingTop: text(20)}}>
                         <Text style={styles.title_sty}>{data.portfolios_title}</Text>
                         {data.portfolios.map((_item, _index) => {
                             return (
@@ -56,7 +56,7 @@ export default function StrategyPolaris(props) {
                                     style={[styles.card_sty, Style.flexBetween]}
                                     key={_index + '_item'}
                                     onPress={() => jumpTo(_item.url)}>
-                                    <View>
+                                    <View style={{marginRight: text(10)}}>
                                         <Text style={styles.card_title_sty}>{_item.name}</Text>
                                         <Text style={{color: '#555B6C', fontSize: text(13), lineHeight: text(18)}}>
                                             {_item.desc}
@@ -99,18 +99,18 @@ const styles = StyleSheet.create({
     content_title_sty: {
         fontSize: text(18),
         fontWeight: 'bold',
-        marginBottom: text(8),
+        marginBottom: text(12),
     },
     desc_sty: {
         color: '#555B6C',
         fontSize: Font.textH3,
-        marginTop: text(8),
+        marginTop: text(16),
         lineHeight: text(20),
     },
     title_sty: {
         fontSize: text(17),
         fontWeight: 'bold',
-        color: Colors.defaultColor,
+        color: Colors.defaultFontColor,
         paddingBottom: text(16),
     },
     card_sty: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         marginBottom: text(16),
     },
     card_title_sty: {
-        color: Colors.defaultColor,
+        color: Colors.defaultFontColor,
         fontSize: text(15),
         fontWeight: 'bold',
         paddingBottom: text(6),
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     radio_sty: {
         fontSize: text(22),
         fontFamily: Font.numFontFamily,
-        marginTop: text(6),
+        marginTop: text(14),
         marginBottom: text(4),
     },
 });

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 13:00:07
+ * @LastEditTime: 2021-03-26 14:16:46
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -327,6 +327,7 @@ const styles = StyleSheet.create({
         paddingTop: px(15),
         paddingHorizontal: px(15),
         marginTop: px(12),
+        paddingBottom: px(10),
     },
     buyInput: {
         // borderBottomWidth: 0.5,
@@ -334,7 +335,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: px(20),
-        // paddingBottom: px(13),
     },
     inputStyle: {
         flex: 1,
@@ -403,9 +403,8 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        paddingVertical: px(8),
         marginLeft: px(14),
-        // backgroundColor: '#fff',
+        paddingTop: px(5),
     },
 });
 

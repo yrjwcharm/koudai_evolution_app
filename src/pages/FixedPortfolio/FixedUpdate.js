@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:42:04
+ * @LastEditTime: 2021-03-26 15:35:32
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -26,6 +26,7 @@ export default function FixedUpdate({navigation, route}) {
     const subtractNum = () => {
         setNum(num - interval);
     };
+    // 金额每隔三个加个，
     useEffect(() => {
         Http.get('/trade/update/invest_plan/info/20210101', {
             invest_id: route.params.invest_id,
@@ -122,7 +123,7 @@ export default function FixedUpdate({navigation, route}) {
                         <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                             <Text style={{color: '#545968'}}>{data?.target_info?.fix_period?.text}</Text>
                             <TouchableOpacity style={Style.flexRow} onPress={selectTime}>
-                                <Text style={{color: '#545968'}}>{cycle}</Text>
+                                <Text style={{color: Colors.defaultFontColor}}>{cycle}</Text>
                                 <AntDesign name={'down'} color={'#8D96AF'} size={12} />
                             </TouchableOpacity>
                         </View>
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontSize: text(34),
         fontFamily: Font.numFontFamily,
-        marginTop: text(4),
+        marginVertical: text(12),
     },
     count_wrap_sty: {
         paddingVertical: text(19),
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
     count_num_sty: {
-        color: '#292D39',
+        color: Colors.defaultFontColor,
         fontSize: text(20),
         fontFamily: Font.numFontFamily,
         minWidth: text(130),

@@ -24,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
+import Notice from '../../../components/Notice';
 
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
@@ -135,11 +136,12 @@ export default function DetailAccount({route, navigation}) {
         <>
             {Object.keys(data).length > 0 ? (
                 <ScrollView style={{flex: 1}}>
+                    {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                     </View>
-                    <View style={{height: 380, backgroundColor: '#fff'}}>
+                    <View style={{height: 480, backgroundColor: '#fff'}}>
                         <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                             <View style={styles.legend_sty}>
                                 <TextInput
@@ -212,6 +214,7 @@ export default function DetailAccount({route, navigation}) {
                                             {
                                                 backgroundColor:
                                                     period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
                                             },
                                         ]}
                                         key={_index}
@@ -253,7 +256,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 全球配置 */}
                     <View style={styles.card_sty}>
                         <ListHeader data={data.asset_deploy.header} color={'#0051CC'} />
-                        <View style={{height: 220}}>
+                        <View style={{height: 200}}>
                             <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
                         </View>
                     </View>
@@ -270,10 +273,10 @@ export default function DetailAccount({route, navigation}) {
                                             paddingTop: text(16),
                                             paddingRight: _d == 0 || _d == 2 ? text(20) : 0,
                                         }}>
-                                        <View style={Style.flexRow}>
+                                        <View style={[Style.flexRow, {marginBottom: text(2)}]}>
                                             <Image
                                                 source={{uri: _i.icon}}
-                                                style={{height: text(15), width: text(15)}}
+                                                style={{height: text(15), width: text(15), marginRight: text(4)}}
                                                 resizeMode="contain"
                                             />
                                             <Text style={styles.row_title_sty}>{_i.title}</Text>
@@ -362,7 +365,7 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-                    <BottomDesc />
+                    <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
@@ -411,7 +414,7 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(12),
         paddingVertical: text(5),
         borderRadius: text(15),
     },

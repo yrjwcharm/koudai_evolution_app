@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:03:22
+ * @LastEditTime: 2021-03-26 18:20:36
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -21,6 +21,7 @@ import Header from '../../../components/NavBar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
+import Notice from '../../../components/Notice';
 export default function DetailAccount({route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -114,6 +115,7 @@ export default function DetailAccount({route}) {
             {Object.keys(data).length > 0 ? <Header title={data?.title} leftIcon="chevron-left" /> : null}
             {Object.keys(data).length > 0 && (
                 <ScrollView>
+                    {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
                             {data?.ratio_info?.title}
@@ -131,7 +133,7 @@ export default function DetailAccount({route}) {
                             {data?.ratio_info?.label.map((_label, _index) => {
                                 return (
                                     <View style={styles.label_sty} key={_index + 'label'}>
-                                        <Text style={{color: '#266EFF', fontSize: text(11)}}>{_label}</Text>
+                                        <Text style={{color: '#0051CC', fontSize: text(11)}}>{_label}</Text>
                                     </View>
                                 );
                             })}
@@ -216,6 +218,7 @@ export default function DetailAccount({route}) {
                                             {
                                                 backgroundColor:
                                                     period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
                                             },
                                         ]}
                                         key={_index}
@@ -273,7 +276,10 @@ export default function DetailAccount({route}) {
                                             key={_index + '_a'}>
                                             <View>
                                                 <Text style={styles.content_title_sty}>{_a.name}</Text>
-                                                <Text style={{color: '#9397A3', fontSize: text(11)}}>({_a.code})</Text>
+                                                <Text
+                                                    style={{color: '#9397A3', fontSize: text(11), marginTop: text(5)}}>
+                                                    ({_a.code})
+                                                </Text>
                                             </View>
                                             <Text style={[styles.content_title_sty, {fontFamily: Font.numFontFamily}]}>
                                                 {_a.percent}
@@ -306,7 +312,7 @@ export default function DetailAccount({route}) {
                             })}
                         </View>
                     </View>
-                    <BottomDesc />
+                    <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             )}
             {Object.keys(data).length > 0 && <FixedBtn btns={data.btns} activeOpacity={1} />}
@@ -351,9 +357,9 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(12),
         paddingVertical: text(5),
-        borderRadius: text(12),
+        borderRadius: text(15),
     },
     card_sty: {
         backgroundColor: '#fff',
@@ -388,13 +394,12 @@ const styles = StyleSheet.create({
         fontSize: text(12),
     },
     content_warp_sty: {
-        paddingTop: text(13),
+        paddingVertical: text(13),
         paddingHorizontal: text(9),
-        paddingBottom: text(9),
         borderColor: Colors.borderColor,
     },
     content_title_sty: {
-        color: '#4E556C',
+        color: Colors.defaultFontColor,
         fontSize: text(13),
     },
     card_sty: {

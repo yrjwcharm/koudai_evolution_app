@@ -3,7 +3,7 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 14:46:30
+ * @LastEditTime: 2021-03-26 15:01:04
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
@@ -86,6 +86,8 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: text(25),
         paddingHorizontal: text(42),
+        backgroundColor: '#fff',
+        flex: 1,
     },
     ratio_sty: {
         color: '#E13D37',

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-03-22 20:34:19
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 16:51:41
  */
 // import _ from 'lodash';
 export const baseChart = (data) => `(function(){
@@ -69,7 +69,7 @@ export const pie = (data, map) => `
       radius: 0.85
     });
     chart.axis(false);
-    chart.interval().position('1*ratio').color('name', ['#1890FF', '#13C2C2', '#2FC25B', '#FACC14', '#F04864', '#8543E0']).adjust('stack').style({
+    chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#F04864', '#8543E0']).adjust('stack').style({
       lineWidth: 1,
       stroke: '#fff',
       lineJoin: 'round',

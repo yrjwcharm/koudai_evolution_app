@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 15:52:26
+ * @LastEditTime: 2021-03-26 17:43:00
  */
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
@@ -34,27 +34,31 @@ export default function ListHeader(props) {
                 {data.icon ? (
                     <Image
                         source={{uri: data.icon}}
-                        style={{width: text(20), height: text(20), marginRight: text(5)}}
+                        style={{width: text(20), height: text(20), marginRight: text(4)}}
                     />
                 ) : null}
                 <View style={Style.flexRow}>
-                    <Text style={{fontSize: text(15), fontWeight: 'bold'}}>{data.title}</Text>
-                    <Text style={styles.desc_sty}>{data.tip && data.tip}</Text>
+                    <Text style={{fontSize: text(15), fontWeight: 'bold', color: Colors.defaultFontColor}}>
+                        {data.title}
+                    </Text>
+                    {data?.tip ? <Text style={styles.desc_sty}>{data?.tip}</Text> : null}
                 </View>
             </View>
 
-            <Text style={{color: '#0051CC'}}>
-                {data?.text}
-                <AntDesign name={'right'} color={color} size={12} />
-            </Text>
+            {data?.text ? (
+                <Text style={{color: '#0051CC'}}>
+                    {data?.text}
+                    <AntDesign name={'right'} color={color} size={12} />
+                </Text>
+            ) : null}
         </TouchableOpacity>
     );
 }
 const styles = StyleSheet.create({
     desc_sty: {
         color: '#4E556C',
-        fontSize: text(13),
-        marginLeft: text(5),
+        fontSize: text(12),
+        marginLeft: text(8),
         fontWeight: 'normal',
     },
 });
