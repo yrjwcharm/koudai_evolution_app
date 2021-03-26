@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:59:36
+ * @LastEditTime: 2021-03-26 11:53:59
  * @Description: 修改交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -42,6 +42,9 @@ const ModifyTradePwd = ({navigation}) => {
             },
         ];
         if (!formCheck(checkData)) {
+            return false;
+        } else if (newPwd !== confirmPwd) {
+            Toast.show('两次输入的密码不一致');
             return false;
         } else {
             if (oldPwd.length < 6) {
