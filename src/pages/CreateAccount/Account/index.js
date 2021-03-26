@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 14:37:01
+ * @LastEditTime: 2021-03-26 18:17:00
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -22,13 +22,13 @@ import {Modal} from '../../../components/Modal';
 import BottomDesc from '../../../components/BottomDesc';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {updateAccountInfo} from '../../../redux/actions/accountInfo';
+import {updateUserInfo} from '../../../redux/actions/userInfo';
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: props.accountInfo?.name || '', //姓名
-            id_no: props.accountInfo?.id_no || '', //身份证号
+            name: this.props?.userInfo?.name || '', //姓名
+            id_no: this.props?.userInfo?.id_no || '', //身份证号
             rname: '', //职业名称
             rcode: '', //职业代码
             showMask: false,
@@ -41,7 +41,6 @@ class Index extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.accountInfo, '1231');
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
             if (params && Object.keys(params).length == 2) {
                 this.setState({name: params.name, id_no: params.id_no});
@@ -222,16 +221,19 @@ class Index extends Component {
         );
     }
 }
-const mapStateToProps = (state) => ({
-    accountInfo: state.accountInfo,
-});
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo?.toJS(),
+    };
+};
 const mapDispatchToProps = (dispatch) => {
     return {
         update: (params) => {
-            dispatch(updateAccountInfo(params));
+            dispatch(updateUserInfo(params));
         },
     };
 };
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
 const styles = StyleSheet.create({
     con: {
         flex: 1,
@@ -265,4 +267,3 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
     },
 });
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
