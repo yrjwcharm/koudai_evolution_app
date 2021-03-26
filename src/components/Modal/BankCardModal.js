@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 11:19:32
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 11:38:04
  * @Description: 银行卡选择
  */
 
@@ -104,7 +104,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                     <Image
                         style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
                         source={{
-                            uri: 'https://static.licaimofang.com/wp-content/uploads/2020/09/yinhangka.png',
+                            uri: 'https://static.licaimofang.com/wp-content/uploads/2021/03/yhk2@3x.png',
                         }}
                     />
                     <View style={{flex: 1}}>

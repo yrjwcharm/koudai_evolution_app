@@ -3,12 +3,12 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 14:46:16
+ * @LastEditTime: 2021-03-26 13:19:22
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/';
 import Http from '../../services';
@@ -16,7 +16,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
 import Icon from 'react-native-vector-icons/AntDesign';
-
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function TransferAccount({navigation, route}) {
     const [data, setData] = useState({});
     const [show, setShow] = useState(false);
@@ -50,7 +50,7 @@ export default function TransferAccount({navigation, route}) {
         });
     };
     return (
-        <View style={{backgroundColor: Colors.bgColor}}>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     <View style={styles.card_sty}>
@@ -93,7 +93,7 @@ export default function TransferAccount({navigation, route}) {
                                 paddingHorizontal: text(15),
                             }}>
                             <View style={{borderTopWidth: 0.5, borderColor: Colors.borderColor}}>
-                                {data.fund_compare.fund_list.map((_item, _index) => {
+                                {data?.fund_compare?.fund_list?.map((_item, _index) => {
                                     return (
                                         <View key={_index + '_item'}>
                                             <View style={[Style.flexRow]}>
@@ -112,7 +112,7 @@ export default function TransferAccount({navigation, route}) {
                                                 </Text>
                                             </View>
 
-                                            {_item.funds.map((_i, _d) => {
+                                            {_item?.funds?.map((_i, _d) => {
                                                 const _color =
                                                     _i.compare == 'gt'
                                                         ? Colors.red

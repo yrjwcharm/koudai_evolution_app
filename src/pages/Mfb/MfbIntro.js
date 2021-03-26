@@ -2,16 +2,16 @@
  * @Description:魔方宝说明
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 17:11:24
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 11:11:42
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Font, Style} from '../../common/commonStyle';
 import Http from '../../services';
-import {px as text} from '../../utils/appUtil';
-
+import {px as text, isIphoneX} from '../../utils/appUtil';
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function MfbIntro(props) {
     const [data, setData] = useState({});
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function MfbIntro(props) {
         });
     }, []);
     return (
-        <ScrollView style={[Style.containerPadding, {backgroundColor: '#fff'}]}>
+        <ScrollView style={[Style.containerPadding, {backgroundColor: '#fff', marginBottom: btnHeight}]}>
             {Object.keys(data).length > 0 &&
                 data?.content?.map((_item, _index) => {
                     return (
@@ -30,7 +30,7 @@ export default function MfbIntro(props) {
                                 {_item.type == 1 &&
                                     _item?.val?.map((_i, _d) => {
                                         return (
-                                            <Text style={[Style.descSty, {lineHeight: text(18)}]} key={_d + '_i'}>
+                                            <Text style={[Style.descSty, {lineHeight: text(22)}]} key={_d + '_i'}>
                                                 {_i}
                                             </Text>
                                         );
@@ -58,6 +58,7 @@ export default function MfbIntro(props) {
                                         </View>
                                         {_item?.val?.body.map((_tbody, _e, arr) => {
                                             const backgroundColor = _e % 2 == 0 ? '#fff' : '#F7F8FA';
+                                            // 圆角----最后的线条 叠加了
                                             return (
                                                 <View
                                                     key={_e + '_tbody'}
@@ -110,10 +111,11 @@ const styles = StyleSheet.create({
     table_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        marginTop: text(10),
+        marginTop: text(7),
     },
 
     text_sty: {
         textAlign: 'center',
+        fontSize: text(12),
     },
 });

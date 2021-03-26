@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:13:18
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 11:20:52
  * @Description:主题及公共样式表
  */
 
@@ -25,7 +25,7 @@ export const Colors = {
     // 默认分割线颜色
     lineColor: '#E2D4EA',
     // 默认placeholder颜色
-    placeholderColor: '#CCCCCC',
+    placeholderColor: '#BDC2CC',
     // borderColor
     borderColor: '#E2E4EA',
     // 链接颜色

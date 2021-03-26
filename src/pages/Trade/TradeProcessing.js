@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-25 16:55:09
+ * @LastEditTime: 2021-03-26 11:57:55
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -108,7 +108,7 @@ const TradeProcessing = ({navigation, route}) => {
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
-                title="交易确认页"
+                title="交易确认"
                 rightText={'完成'}
                 // titleStyle={{marginRight: text(-20)}}
                 rightPress={() => navigation.navigate('Home')}
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.descColor,
         paddingVertical: Space.marginVertical,
-        paddingLeft: text(8),
+        paddingLeft: text(16),
     },
     processContainer: {
         paddingLeft: text(16),
