@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 20:05:51
+ * @LastEditTime: 2021-03-26 20:29:55
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -169,7 +169,7 @@ export default function PortfolioAssets(props) {
                     </View>
                 ) : null}
                 <View style={[Style.flexRow, {justifyContent: 'space-between', marginTop: text(14)}]}>
-                    {card.button_list.map((_button, _index) => {
+                    {card.button_list.map((_button, _index, arr) => {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
@@ -178,10 +178,14 @@ export default function PortfolioAssets(props) {
                                 activeOpacity={1}
                                 style={{
                                     borderColor: '#4E556C',
-                                    borderWidth: _index == 0 && _button.avail !== 0 ? 0.5 : 0,
+                                    borderWidth: _index == arr.length - 1 && _button.avail !== 0 ? 0.5 : 0,
                                     borderRadius: text(6),
                                     backgroundColor:
-                                        _button.avail !== 0 ? (_index == 0 ? '#fff' : '#0051CC') : '#C7D8F0',
+                                        _button.avail !== 0
+                                            ? _index == arr.length - 1
+                                                ? '#fff'
+                                                : '#0051CC'
+                                            : '#C7D8F0',
                                     flex: 1,
                                     marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
                                     height: text(40),
@@ -191,7 +195,12 @@ export default function PortfolioAssets(props) {
                                     style={{
                                         textAlign: 'center',
                                         fontSize: px(14),
-                                        color: _index == 0 ? (_button.avail == 0 ? '#fff' : '#545968') : '#fff',
+                                        color:
+                                            _index == arr.length - 1
+                                                ? _button.avail == 0
+                                                    ? '#fff'
+                                                    : '#545968'
+                                                : '#fff',
                                     }}>
                                     {_button.text}
                                 </Text>
