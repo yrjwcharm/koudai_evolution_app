@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 10:43:26
+ * @LastEditTime: 2021-03-26 19:00:55
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -37,6 +37,7 @@ import _ from 'lodash';
 import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const bottom = isIphoneX() ? 84 : 50;
 //机器人动画
 const layoutAnimation = () => {
@@ -79,8 +80,7 @@ class Question extends Component {
     endTime = '';
     fr = this.props.route?.params?.fr; //risk来自个人资料
     plan_id = this.props.route?.params?.plan_id;
-    componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
+    init = () => {
         http.get('/questionnaire/start/20210101', {plan_id: this.plan_id}).then((data) => {
             if (data.code === '000000') {
                 this.setState({summary_id: data.result.summary_id}, () => {
@@ -90,6 +90,9 @@ class Question extends Component {
                 Toast.show(data.message);
             }
         });
+    };
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
     }
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
@@ -482,6 +485,7 @@ class Question extends Component {
                         )
                     }
                 />
+                <Focus init={this.init} />
                 {current_ques ? (
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
@@ -765,6 +769,15 @@ export default (props) => {
     const jump = useJump();
     return <Question {...props} jump={jump} />;
 };
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+
+    return null;
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
