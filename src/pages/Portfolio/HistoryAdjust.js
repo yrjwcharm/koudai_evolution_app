@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-20 20:47:52
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 13:31:13
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -10,9 +10,8 @@ import {StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput as Input
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {connect} from 'react-redux';
 import http from '../../services';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import {Style, Colors, Space, Font} from '../../common/commonStyle';
 import {Chart} from '../../components/Chart';
 import {basicPieChart} from './components/ChartOption';

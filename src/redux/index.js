@@ -1,3 +1,10 @@
+/*
+ * @Date: 2021-03-25 10:57:56
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 13:59:08
+ * @Description:
+ */
 import {applyMiddleware, createStore, compose} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist'; //数据持久化 存到缓存
 import {combineReducers} from 'redux';
@@ -5,7 +12,7 @@ import thunkMiddleware from 'redux-thunk';
 import UserReducer from './reducers/userReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
-
+import AccoutInfo from './reducers/accountReducer';
 const persistConfig = {
     transforms: [immutableTransform()],
     key: 'root',
@@ -22,6 +29,7 @@ if (__DEV__) {
 
 const reducer = combineReducers({
     userInfo: UserReducer,
+    accoutInfo: AccoutInfo,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
