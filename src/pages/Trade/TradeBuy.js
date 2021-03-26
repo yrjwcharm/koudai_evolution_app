@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 18:58:39
+ * @LastEditTime: 2021-03-26 21:49:26
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -36,7 +36,7 @@ class TradeBuy extends Component {
             has_tab: true,
             //默认tab
             initialPage: 0,
-            amount: '',
+            amount: props.route?.params?.amount || '',
             password: '',
             configExpand: false, //买入明细是否展开
             showMask: false,
@@ -49,7 +49,6 @@ class TradeBuy extends Component {
             errTip: '', //错误提示
         };
     }
-
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
@@ -60,6 +59,7 @@ class TradeBuy extends Component {
             this.init(data.result.active);
         });
     };
+
     init = (_type) => {
         const {type, poid} = this.state;
         http.get('/trade/buy/info/20210101', {
@@ -73,7 +73,7 @@ class TradeBuy extends Component {
                     currentDate: res.result?.period_info?.current_date,
                     nextday: res.result?.period_info?.nextday,
                 });
-                this.plan(res.result.buy_info.initial_amount);
+                this.plan(this.state.amount || res.result.buy_info.initial_amount);
             }
         });
     };
@@ -147,8 +147,14 @@ class TradeBuy extends Component {
             if (data.code === '000000') {
                 this.setState({planData: data.result, fee_text: data.result.fee_text, errTip: ''});
             } else {
-                this.setState({errTip: this.state.amount ? data.message : '', buyBtnCanClick: false});
+                this.setState({
+                    buyBtnCanClick: false,
+                    errTip: data.message,
+                });
             }
+            // setTimeout(() => {
+            //     this.state.amount && this.onInput(amount);
+            // });
         });
     };
 
@@ -465,7 +471,7 @@ class TradeBuy extends Component {
     }
     //购买
     render_buy() {
-        const {amount, data, type, planData, errTip} = this.state;
+        const {data, type, planData, errTip, amount} = this.state;
         const {buy_info, sub_title, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="never">

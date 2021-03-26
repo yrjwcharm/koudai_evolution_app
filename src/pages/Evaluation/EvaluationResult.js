@@ -2,12 +2,12 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 18:57:59
+ * @LastEditTime: 2021-03-26 20:06:17
  * @Description:规划结果页
  */
 
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -18,6 +18,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {Chart, chartOptions} from '../../components/Chart';
 import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
+import FastImage from 'react-native-fast-image';
 const animation = [
     {
         type: 'top',
@@ -136,7 +137,10 @@ export default class planResult extends Component {
                     chart && (
                         <Animatable.View style={styles.animation_con}>
                             <View>
-                                <Image style={styles.gif} source={require('../../assets/animation/animation.gif')} />
+                                <FastImage
+                                    style={styles.gif}
+                                    source={require('../../assets/animation/animation.gif')}
+                                />
                                 {labels
                                     ? labels.map((item, index) => (
                                           <Animatable.View

@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-19 16:21:14
- * @LastEditors: dx
+ * @LastEditTime: 2021-03-26 21:22:12
+ * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -42,15 +42,15 @@ const FixedBtn = (props) => {
         };
         return (
             <View style={[styles.contactContainer]}>
-                {btns[0].subs &&
-                    btns[0].subs.map((sub, index) => {
+                {btns[0]?.subs &&
+                    btns[0]?.subs.map((sub, index) => {
                         return (
                             <View
                                 key={index}
                                 style={[
                                     styles.methodItem,
                                     Style.flexRow,
-                                    index === btns[0].subs.length - 1 ? {marginBottom: 0} : {},
+                                    index === btns[0]?.subs.length - 1 ? {marginBottom: 0} : {},
                                 ]}>
                                 <View style={[Style.flexRow]}>
                                     <View style={[styles.iconBox, Style.flexCenter]}>
@@ -75,7 +75,7 @@ const FixedBtn = (props) => {
     };
     return (
         <View style={[styles.container, Style.flexRow, style]}>
-            {btns?.length > 0 ? (
+            {btns?.length > 0 && btns?.length == 2 ? (
                 <>
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -85,8 +85,8 @@ const FixedBtn = (props) => {
                         <Text style={[styles.contactText]}>{btns[0].title}</Text>
                     </TouchableOpacity>
                     <Button
-                        title={btns[1].title}
-                        desc={btns[1].desc}
+                        title={btns[1]?.title}
+                        desc={btns[1]?.desc}
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
@@ -96,7 +96,18 @@ const FixedBtn = (props) => {
                     />
                     <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />
                 </>
-            ) : null}
+            ) : (
+                <Button
+                    title={btns[0]?.title}
+                    desc={btns[0]?.desc}
+                    style={styles.btn}
+                    textStyle={styles.btnText}
+                    descStyle={styles.descText}
+                    onPress={() => {
+                        navigation.navigate(btns[0]?.url.path, btns[0]?.url.params);
+                    }}
+                />
+            )}
         </View>
     );
 };
