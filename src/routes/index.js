@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:23:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-25 20:49:26
  * @Description:路由表
  */
 import React from 'react';
@@ -367,8 +367,8 @@ export default function AppStack() {
                 component={FindDetail}
                 options={{
                     headerShown: false,
-                    cardStyle: {backgroundColor: 'transparent'},
-                    ...TransitionPresets.ModalTransition,
+                    // cardStyle: {backgroundColor: 'transparent'},
+                    // ...TransitionPresets.ModalTransition,
                     // cardOverlayEnabled: true,
                     // cardStyleInterpolator: ({current: {progress}}) => ({
                     //     cardStyle: {

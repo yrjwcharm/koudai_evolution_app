@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 10:18:49
+ * @LastEditTime: 2021-03-25 19:26:00
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -17,6 +17,7 @@ import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
 import {connect} from 'react-redux';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
+
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -28,7 +29,6 @@ class Login extends Component {
         };
         this.fr = this.props.route?.params?.fr;
     }
-
     login = () => {
         const {mobile, password} = this.state;
         let toast = Toast.showLoading('正在登录...');

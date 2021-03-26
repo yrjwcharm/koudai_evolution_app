@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 15:38:10
+ * @LastEditTime: 2021-03-26 11:36:15
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -105,7 +105,13 @@ class TradeBuy extends Component {
                       if (res.code === '000000') {
                           this.props.navigation.navigate('TradeProcessing', res.result);
                       } else {
-                          Toast.show(res.message);
+                          Toast.show(res.message, {
+                              onHidden: () => {
+                                  if (res.code === 'TA2803') {
+                                      this.passwordModal.show();
+                                  }
+                              },
+                          });
                       }
                   })
             : http
@@ -138,6 +144,7 @@ class TradeBuy extends Component {
             amount,
             pay_method: this.state.bankSelect?.pay_method,
             poid: this.state.poid,
+            init: this.state.amount ? 0 : 1,
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
             if (data.code === '000000') {
@@ -155,23 +162,24 @@ class TradeBuy extends Component {
      */
     onInput = (amount) => {
         let _amount = onlyNumber(amount);
-        this.setState({amount: _amount});
-        if (_amount > this.state.bankSelect.single_amount) {
-            this.setState({
-                buyBtnCanClick: false,
-                errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
-            });
-        } else if (_amount >= this.state.data.buy_info.initial_amount) {
-            this.setState({buyBtnCanClick: this.state.errTip != '' ? true : false});
-            this.plan(_amount);
-        } else {
-            this.setState({buyBtnCanClick: false});
-            if (_amount) {
-                this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+        this.setState({amount: _amount, errTip: ''}, () => {
+            if (_amount > this.state.bankSelect.single_amount) {
+                this.setState({
+                    buyBtnCanClick: false,
+                    errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+                });
+            } else if (_amount >= this.state.data.buy_info.initial_amount) {
+                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false});
+                this.plan(_amount);
             } else {
-                this.setState({errTip: ''});
+                this.setState({buyBtnCanClick: false});
+                if (_amount) {
+                    this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                } else {
+                    this.setState({errTip: ''});
+                }
             }
-        }
+        });
     };
     /**
      * @description: 购买按钮
@@ -338,7 +346,9 @@ class TradeBuy extends Component {
                                                                 {Number(fund.percent * 100).toFixed(2)}%
                                                             </Text>
                                                             <Text style={styles.config_title_desc}>
-                                                                {Number(fund.amount).toFixed(2)}
+                                                                {fund.amount == '--'
+                                                                    ? '--'
+                                                                    : Number(fund.amount).toFixed(2)}
                                                             </Text>
                                                         </View>
                                                     );

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:56:30
+ * @LastEditTime: 2021-03-25 17:02:51
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -56,7 +56,7 @@ const HoldingFund = ({navigation, route}) => {
                 if (res.code === '000000') {
                     first && navigation.setOptions({title: res.result.title || '持有基金'});
                     first && setTabs(res.result.tabs);
-                    curTab === 0 ? setList1(res.result.list) : setList2(res.result.list);
+                    curTab === 0 ? setList1(res.result.list || []) : setList2(res.result.list || []);
                     urlRef.current = res.result.url;
                 }
                 setLoading(false);
@@ -109,7 +109,7 @@ const HoldingFund = ({navigation, route}) => {
                                         </Text>
                                     )}
                                 </View>
-                                {item?.funds?.map((fund, i) => {
+                                {item?.funds?.map((fund, i, arr) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -119,7 +119,7 @@ const HoldingFund = ({navigation, route}) => {
                                             }}
                                             style={[
                                                 styles.fundContainer,
-                                                i === item.funds.length - 1 ? {marginBottom: 0} : {},
+                                                i === arr.length - 1 ? {marginBottom: 0} : {},
                                                 curTab === 1 ? {paddingVertical: text(12)} : {},
                                             ]}
                                             key={`${item.type}${fund.code}${i}`}>
@@ -218,8 +218,8 @@ const HoldingFund = ({navigation, route}) => {
                             </View>
                         );
                     })}
-                    {list1.length === 0 && curTab === 0 && <Empty text={'暂无持有中基金'} />}
-                    {list2.length === 0 && curTab === 1 && <Empty text={'暂无确认中基金'} />}
+                    {list1?.length === 0 && curTab === 0 && <Empty text={'暂无持有中基金'} />}
+                    {list2?.length === 0 && curTab === 1 && <Empty text={'暂无确认中基金'} />}
                     {curTab === 0 && (
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -254,7 +254,7 @@ const HoldingFund = ({navigation, route}) => {
         });
         init(true);
     }, [init, navigation, route]);
-    return tabs.length > 0 ? (
+    return tabs?.length > 0 ? (
         <ScrollableTabView
             style={[styles.container]}
             renderTabBar={() => <Tab />}

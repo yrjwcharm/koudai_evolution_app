@@ -79,7 +79,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                         <View style={{flex: 1}}>
                             <Text style={[{marginBottom: 8}, styles.text]}>
                                 {item?.bank_name}
-                                <Text>{item?.bank_no}</Text>
+                                {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
                             </Text>
                             <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc}</Text>
                         </View>

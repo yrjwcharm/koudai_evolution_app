@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: dx
- * @LastEditTime: 2021-03-21 22:17:46
+ * @LastEditTime: 2021-03-25 20:36:52
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -25,9 +25,11 @@ export default function Trade({navigation, route}) {
     const jump = useJump();
 
     const toggle = () => {
-        setExpand(!expand);
+        global.LogTool('click', 'expand');
+        setExpand((prev) => !prev);
     };
     const passwordInput = () => {
+        global.LogTool('click', 'buy');
         passwordModal.current.show();
     };
 
@@ -61,7 +63,10 @@ export default function Trade({navigation, route}) {
                     <TouchableOpacity
                         activeOpacity={1}
                         style={[Style.flexRow, styles.yellow_wrap_sty]}
-                        onPress={() => jump(data?.tip_info?.processing_url)}>
+                        onPress={() => {
+                            global.LogTool('click', 'processing_url');
+                            jump(data?.tip_info?.processing_url);
+                        }}>
                         <Html style={styles.yellow_sty} html={data?.tip_info?.processing} />
                     </TouchableOpacity>
                     <View style={styles.list_sty}>

@@ -2,10 +2,10 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 11:13:26
+ * @LastEditTime: 2021-03-25 20:49:17
  * @Description:发现
  */
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
@@ -17,6 +17,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {QuestionCard, ArticleCard} from '../../components/Article';
 import Http from '../../services';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const FindDetail = (props) => {
     const [data, setData] = useState({});
     const containerRef = useRef(null);
@@ -36,13 +37,16 @@ const FindDetail = (props) => {
             </View>
         );
     };
-    useEffect(() => {
-        Http.get('/discovery/plan/detail/20210101', {
-            plan_id: props.route.params?.plan_id,
-        }).then((res) => {
-            setData(res.result);
-        });
-    }, [props.route]);
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/discovery/plan/detail/20210101', {
+                plan_id: props.route.params?.plan_id,
+            }).then((res) => {
+                setData(res.result);
+            });
+        }, [props.route])
+    );
+
     return (
         <MagicMove.Scene>
             {Object.keys(data).length > 0 && (

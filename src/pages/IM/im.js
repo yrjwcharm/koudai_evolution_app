@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 16:50:10
+ * @LastEditTime: 2021-03-25 18:59:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -143,7 +143,7 @@ const IM = (props) => {
                     connect = true;
                 })
                 .catch(() => {
-                    handelSystemMes('连接错误');
+                    handelSystemMes('网络异常连接断开,立即重新连接');
                 });
             console.log('WebSocket:', 'connect to server');
         };
@@ -240,7 +240,6 @@ const IM = (props) => {
         //连接错误
         WS.current.onerror = function () {
             console.log('WebSocket:', 'connect to server error');
-            handelSystemMes('连接失败');
             connect = false;
             //重连
             WsColseType = 0;
@@ -251,7 +250,7 @@ const IM = (props) => {
         WS.current.onclose = function () {
             console.log('WebSocket:', 'connect close');
             connect = false;
-            handelSystemMes('连接已断开');
+            handelSystemMes('网络异常连接断开,立即重新连接');
             if (WsColseType !== 'timeout') {
                 WsColseType = 0;
             }

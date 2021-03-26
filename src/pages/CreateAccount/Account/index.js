@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 17:24:05
+ * @LastEditTime: 2021-03-25 20:08:59
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -34,27 +34,11 @@ export class index extends Component {
         };
     }
     componentWillUnmount() {
-        this._unsubscribe();
         this.closePicker();
         this.subscription.remove();
     }
-    back = (e) => {
-        if (e.data.action.type == 'REPLACE') {
-            return;
-        }
-        e.preventDefault();
-        Modal.show({
-            title: '结束开户',
-            content: '您马上就开户完成了，确定要离开吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.dispatch(e.data.action);
-            },
-        });
-    };
 
     componentDidMount() {
-        this._unsubscribe = this.props.navigation.addListener('beforeRemove', this.back);
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
             if (params && Object.keys(params).length == 2) {
                 this.setState({name: params.name, id_no: params.id_no});
@@ -94,15 +78,26 @@ export class index extends Component {
             id_no,
             name,
         }).then((res) => {
-            if (res.code == '000000') {
-                this.props.navigation.replace(nav, {
-                    name,
-                    id_no,
-                    rname,
-                    rcode,
-                    poid: this.props.route?.params?.poid,
-                    fr: this.props.route?.params?.fr || '',
-                });
+            if (res.code === '000000') {
+                if (res.result.pop?.content) {
+                    Modal.show({
+                        content: res.result.pop.content,
+                        isTouchMaskToClose: false,
+                        confirmText: '确定',
+                        confirmCallBack: () => {
+                            this.props.navigation.goBack();
+                        },
+                    });
+                } else {
+                    this.props.navigation.navigate(nav, {
+                        name,
+                        id_no,
+                        rname,
+                        rcode,
+                        poid: this.props.route?.params?.poid,
+                        fr: this.props.route?.params?.fr || '',
+                    });
+                }
             } else {
                 Toast.show(res.message);
             }
