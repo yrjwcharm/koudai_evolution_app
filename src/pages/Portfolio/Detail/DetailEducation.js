@@ -36,14 +36,11 @@ export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
-    const _textTime = useRef(null);
-    const _textPortfolio = useRef(null);
-    const _textBenchmark = useRef(null);
+
     const [countFr, setCountFr] = useState();
     const [countM, setCountM] = useState(0);
     const [choose, setChoose] = useState(0);
     const [showMask, setShowMask] = useState(false);
-    // const [current, setCurrent] = useState();
     const [popup, setPopup] = useState();
     const bottomModal = React.useRef(null);
     const [age, setAge] = useState('');
@@ -151,7 +148,7 @@ export default function DetailEducation({navigation, route}) {
         }).then((res) => {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
-            _age = res.result.plan_info.personal_info.age;
+            _age = res.result.plan_info.personal_info?.age;
             navigation.setOptions({
                 title: res.result.title,
                 headerRight: () => {
@@ -164,7 +161,7 @@ export default function DetailEducation({navigation, route}) {
             });
             setData(res.result);
             setChoose(res.result.plan_info.school_id);
-            setAge(res.result.plan_info.personal_info.age);
+            setAge(res.result.plan_info.personal_info?.age);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
                     setCountFr(Number(res.result?.plan_info?.trade_amount));
@@ -189,7 +186,6 @@ export default function DetailEducation({navigation, route}) {
         });
     }, [route.params, period, type]);
     useEffect(() => {
-        init();
         return () => Picker.hide();
     }, []);
     useFocusEffect(
@@ -210,7 +206,7 @@ export default function DetailEducation({navigation, route}) {
                         <View style={styles.container_sty}>
                             <View style={[Style.flexBetween, styles.select_wrap_sty]}>
                                 <Text style={styles.select_text_sty}>
-                                    {data.plan_info.personal_info.title}
+                                    {data.plan_info.personal_info?.title}
                                     <Text>({data?.plan_info?.personal_info?.tip})</Text>
                                 </Text>
                                 <TouchableOpacity style={Style.flexRow} onPress={selectAge} activeOpacity={1}>
@@ -221,7 +217,7 @@ export default function DetailEducation({navigation, route}) {
                                 </TouchableOpacity>
                             </View>
                             <View style={[Style.flexRow, {marginTop: text(7)}]}>
-                                {data?.plan_info?.schoolList.map((_s, _i) => {
+                                {data?.plan_info?.schoolList?.map((_s, _i) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={1}
@@ -273,7 +269,7 @@ export default function DetailEducation({navigation, route}) {
                                         return (
                                             <View
                                                 style={[Style.flexBetween, styles.count_wrap_sty]}
-                                                key={_item + 'goal_info'}>
+                                                key={_index + 'goal_info'}>
                                                 <Text style={{color: '#545968', flex: 1}}>{_item?.key}</Text>
                                                 <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                                     <TouchableOpacity

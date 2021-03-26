@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -185,18 +185,20 @@ export default function DetailAccount({route, navigation}) {
                                 </Text>
                             </View>
                         </View>
-                        <Chart
-                            initScript={baseAreaChart(
-                                chartData?.chart,
-                                [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                true
-                            )}
-                            onChange={onChartChange}
-                            data={chartData?.chart}
-                            onHide={onHide}
-                            style={{width: '100%'}}
-                        />
+                        {chartData?.chart && (
+                            <Chart
+                                initScript={baseAreaChart(
+                                    chartData?.chart,
+                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                    true
+                                )}
+                                onChange={onChartChange}
+                                data={chartData?.chart}
+                                onHide={onHide}
+                                style={{width: '100%'}}
+                            />
+                        )}
                         <View
                             style={{
                                 flexDirection: 'row',

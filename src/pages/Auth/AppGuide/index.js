@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 20:00:38
+ * @LastEditTime: 2021-03-26 14:48:01
  * @Description:app引导页
  */
 
@@ -22,9 +22,6 @@ const styles = StyleSheet.create({
 });
 
 export default function AppGuide({navigation}) {
-    useEffect(() => {
-        Storage.save('AppGuide', true);
-    }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
@@ -64,6 +61,7 @@ export default function AppGuide({navigation}) {
                         left: (deviceWidth - px(163)) / 2,
                     }}
                     onPress={() => {
+                        Storage.save('AppGuide', true);
                         navigation.replace('Tab');
                     }}
                 />

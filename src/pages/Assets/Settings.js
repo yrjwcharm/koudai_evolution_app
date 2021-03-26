@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-25 15:34:47
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 18:17:08
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,7 @@ import Storage from '../../utils/storage';
 import Toast from '../../components/Toast';
 import {InputModal} from '../../components/Modal';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
+import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 const Settings = ({navigation}) => {
     const dispatch = useDispatch();
     const jump = useJump();
@@ -50,9 +50,9 @@ const Settings = ({navigation}) => {
                     content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
                     confirm: true,
                     confirmCallBack: () => {
-                        // Alert.alert('退出登录');
                         Storage.delete('loginStatus');
                         dispatch(getUserInfo());
+                        dispatch(updateUserInfo({name: '', phone: '', id_no: '', selectBank: '', bank_no: ''}));
                         navigation.replace('Login');
                     },
                 });

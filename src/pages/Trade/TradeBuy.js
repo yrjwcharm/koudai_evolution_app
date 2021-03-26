@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 11:36:15
+ * @LastEditTime: 2021-03-26 18:58:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -48,11 +48,8 @@ class TradeBuy extends Component {
             fee_text: '',
             errTip: '', //错误提示
         };
-        this.isFirst = true;
     }
-    componentDidMount() {
-        this.isFirst = false;
-    }
+
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {

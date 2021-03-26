@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 15:38:43
+ * @LastEditTime: 2021-03-26 20:05:29
  * @Description:路由表
  */
 import React from 'react';
@@ -151,7 +151,7 @@ export default function AppStack() {
                 },
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
-
+                // animationEnabled: false,
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
                     fontSize: px(18),

@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 20:06:24
+ * @LastEditTime: 2021-03-26 16:49:29
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
 import {px as text, px} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -18,7 +18,6 @@ import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 import BottomDesc from '../../components/BottomDesc';
-import {isIPhoneX} from '../../components/IM/app/chat/utils';
 
 const SetTradePassword = ({navigation, route}) => {
     const dispatch = useDispatch();
@@ -118,7 +117,7 @@ const SetTradePassword = ({navigation, route}) => {
     }, [jump, navigation, password, pwdFisrt, route, dispatch]);
 
     return (
-        <View style={[Style.containerPadding, {position: 'relative'}]}>
+        <ScrollView style={[Style.containerPadding]}>
             <FastImage
                 style={styles.pwd_img}
                 source={{
@@ -156,8 +155,8 @@ const SetTradePassword = ({navigation, route}) => {
                     </Text>
                 </View>
             </View>
-            <BottomDesc style={{bottom: isIPhoneX() ? 40 : px(20), marginLeft: text(20), position: 'absolute'}} />
-        </View>
+            <BottomDesc style={{marginTop: text(120)}} />
+        </ScrollView>
     );
 };
 const styles = StyleSheet.create({

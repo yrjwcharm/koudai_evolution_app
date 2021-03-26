@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 20:16:09
+ * @LastEditTime: 2021-03-26 18:07:03
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -30,23 +30,22 @@ import http from '../../../services';
 import _ from 'lodash';
 import BottomDesc from '../../../components/BottomDesc';
 import {connect} from 'react-redux';
-import {getUserInfo} from '../../../redux/actions/userInfo';
+import {getUserInfo, updateUserInfo} from '../../../redux/actions/userInfo';
 import {CommonActions} from '@react-navigation/native';
-
 class BankInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            phone: '', //手机号
+            phone: props.userInfo?.phone || '', //手机号
             code: '', //验证码
-            bank_no: '', //银行卡号
+            bank_no: props.userInfo?.bank_no || '', //银行卡号
             btnClick: true, //开户按钮是否能点击
             verifyText: '获取验证码',
             second: 60,
             checked: true, //协议
             code_btn_click: true, //验证码按钮
             bankList: [],
-            selectBank: '',
+            selectBank: props.userInfo?.selectBank || '',
         };
     }
 
@@ -65,6 +64,7 @@ class BankInfo extends Component {
      */
     confirm = () => {
         const {phone, code, selectBank, bank_no, checked} = this.state;
+        this.props.update({phone, bank_no, selectBank});
         var checkData = [
             {
                 field: bank_no,
@@ -140,6 +140,7 @@ class BankInfo extends Component {
      */
     sendCode = () => {
         const {code_btn_click, phone, selectBank, bank_no} = this.state;
+        this.props.update({phone, bank_no, selectBank});
         if (code_btn_click) {
             var checkData = [
                 {
@@ -381,9 +382,18 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
 });
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {
-    getUserInfo,
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo?.toJS(),
+    };
 };
+const mapDispatchToProps = (dispatch) => {
+    return {
+        update: (params) => {
+            dispatch(updateUserInfo(params));
+        },
+        getUserInfo: getUserInfo,
+    };
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(BankInfo);
