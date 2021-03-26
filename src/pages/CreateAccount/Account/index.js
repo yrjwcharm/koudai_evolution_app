@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 14:12:25
+ * @LastEditTime: 2021-03-26 14:37:01
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -222,12 +222,9 @@ class Index extends Component {
         );
     }
 }
-const mapStateToProps = (state) => {
-    console.log(state.accoutInfo?.toJS());
-    return {
-        accountInfo: state.accountInfo?.toJS(),
-    };
-};
+const mapStateToProps = (state) => ({
+    accountInfo: state.accountInfo,
+});
 const mapDispatchToProps = (dispatch) => {
     return {
         update: (params) => {
