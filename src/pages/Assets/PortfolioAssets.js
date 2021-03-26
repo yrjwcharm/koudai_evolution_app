@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 16:54:16
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 20:29:55
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -169,7 +169,7 @@ export default function PortfolioAssets(props) {
                     </View>
                 ) : null}
                 <View style={[Style.flexRow, {justifyContent: 'space-between', marginTop: text(14)}]}>
-                    {card.button_list.map((_button, _index) => {
+                    {card.button_list.map((_button, _index, arr) => {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
@@ -178,10 +178,14 @@ export default function PortfolioAssets(props) {
                                 activeOpacity={1}
                                 style={{
                                     borderColor: '#4E556C',
-                                    borderWidth: _index == 0 && _button.avail !== 0 ? 0.5 : 0,
+                                    borderWidth: _index == arr.length - 1 && _button.avail !== 0 ? 0.5 : 0,
                                     borderRadius: text(6),
                                     backgroundColor:
-                                        _button.avail !== 0 ? (_index == 0 ? '#fff' : '#0051CC') : '#C7D8F0',
+                                        _button.avail !== 0
+                                            ? _index == arr.length - 1
+                                                ? '#fff'
+                                                : '#0051CC'
+                                            : '#C7D8F0',
                                     flex: 1,
                                     marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
                                     height: text(40),
@@ -191,7 +195,12 @@ export default function PortfolioAssets(props) {
                                     style={{
                                         textAlign: 'center',
                                         fontSize: px(14),
-                                        color: _index == 0 ? (_button.avail == 0 ? '#fff' : '#545968') : '#fff',
+                                        color:
+                                            _index == arr.length - 1
+                                                ? _button.avail == 0
+                                                    ? '#fff'
+                                                    : '#545968'
+                                                : '#fff',
                                     }}>
                                     {_button.text}
                                 </Text>
@@ -204,8 +213,8 @@ export default function PortfolioAssets(props) {
     };
     const renderChart = () => {
         return (
-            <>
-                <Text style={styles.title_sty}>{chart?.title}</Text>
+            <View>
+                <Text style={[styles.title_sty, {paddingVertical: text(16)}]}>{chart?.title}</Text>
                 <View
                     style={{
                         height: 300,
@@ -274,7 +283,10 @@ export default function PortfolioAssets(props) {
                                 <TouchableOpacity
                                     style={[
                                         styles.btn_sty,
-                                        {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                        {
+                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                            borderWidth: period == _item.val ? 0 : 0.5,
+                                        },
                                     ]}
                                     key={_index}
                                     onPress={() => changeTab(_item.val, _item.type)}>
@@ -290,17 +302,19 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-            </>
+            </View>
         );
     };
     const renderFixedPlan = () => {
         return (
             <>
-                <TouchableOpacity style={Style.flexBetween} onPress={() => jump(data.asset_deploy?.header.url)}>
+                <TouchableOpacity
+                    style={[Style.flexBetween, {marginBottom: text(12), marginTop: text(20)}]}
+                    onPress={() => jump(data.asset_deploy?.header.url)}>
                     <Text style={styles.title_sty}>{data.asset_deploy?.header?.title}</Text>
                     <Text style={{color: '#0051CC', fontSize: text(12)}}>{data.asset_deploy?.header?.text}</Text>
                 </TouchableOpacity>
-                <View style={styles.fund_card_sty}>
+                <View style={[styles.fund_card_sty, {paddingBottom: 0}]}>
                     <View style={[Style.flexBetween, {paddingBottom: text(10)}]}>
                         <Text style={styles.fund_title_sty}>{data.asset_deploy?.th?.name}</Text>
                         <Text style={styles.fund_title_sty}>{data.asset_deploy?.th?.ratio}</Text>
@@ -358,13 +372,17 @@ export default function PortfolioAssets(props) {
                                 </Text>
                             </View>
                             <View>
-                                <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
+                                <View
+                                    style={[
+                                        Style.flexRow,
+                                        {marginBottom: text(15), alignSelf: 'flex-end', alignItems: 'baseline'},
+                                    ]}>
                                     <Text style={styles.profit_text_sty}>日收益</Text>
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
                                         {showEye ? data.profit : '***'}
                                     </Text>
                                 </View>
-                                <View style={[Style.flexRow]}>
+                                <View style={[Style.flexRow, {alignItems: 'baseline'}]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
                                         {showEye ? data.profit_acc : '***'}
@@ -450,6 +468,7 @@ export default function PortfolioAssets(props) {
                                         color: '#0051CC',
                                         paddingVertical: text(6),
                                         paddingHorizontal: text(14),
+                                        fontSize: text(12),
                                     }}>
                                     {data?.notice_info?.button?.text}
                                 </Text>
@@ -531,6 +550,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(3),
         paddingHorizontal: text(2),
         fontSize: Font.textH3,
+        fontFamily: Font.numFontFamily,
     },
     ab_sty: {
         top: text(14),
@@ -608,17 +628,15 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
-        paddingVertical: text(5),
-        borderRadius: text(12),
+        paddingHorizontal: text(12),
+        paddingVertical: text(8),
+        borderRadius: text(20),
         marginRight: text(10),
     },
     title_sty: {
         color: '#1F2432',
         fontSize: Font.textH1,
         fontWeight: 'bold',
-        marginBottom: text(12),
-        marginTop: text(20),
     },
     fund_title_sty: {
         color: '#9AA1B2',
@@ -632,7 +650,7 @@ const styles = StyleSheet.create({
     fund_item_sty: {
         borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
-        paddingVertical: text(10),
+        paddingVertical: text(12),
     },
     upload_card_sty: {
         backgroundColor: '#fff',
@@ -644,7 +662,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#0051CC',
         borderRadius: text(20),
-        marginLeft: text(5),
+        marginLeft: text(10),
     },
     chart_list_sty: {
         flexDirection: 'row',

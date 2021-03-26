@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-25 11:03:02
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 14:35:21
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -19,7 +19,7 @@ import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {Chart} from '../../components/Chart';
 import {areaChart} from '../Portfolio/components/ChartOption';
-
+import EmptyTip from '../../components/EmptyTip';
 const AccProfit = ({poid}) => {
     const insets = useSafeAreaInsets();
     const jump = useJump();
@@ -133,70 +133,79 @@ const AccProfit = ({poid}) => {
                     touchableProps={{activeOpacity: 1}}
                 />
             </View>
-            <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
-                <View style={[Style.flexRow, {justifyContent: 'center'}]}>
-                    <Text style={styles.subTitle}>{chartData.title}</Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            global.LogTool('click', 'showTips');
-                            Modal.show({content: chartData.desc});
-                        }}>
-                        <AntDesign
-                            style={{marginLeft: text(4)}}
-                            name={'questioncircleo'}
-                            size={16}
-                            color={Colors.darkGrayColor}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>{chartData.profit_acc}</Text>
-                <View style={[styles.chart]}>
-                    {Object.keys(chartData).length > 0 && (
-                        <Chart
-                            initScript={areaChart(
-                                chartData.chart,
-                                [Colors.red],
-                                [Colors.red],
-                                {value: '累计收益(元)'},
-                                false,
-                                0
-                            )}
-                            data={chartData.chart}
-                        />
-                    )}
-                </View>
-                <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(30)}]}>
-                    {chartData?.subtabs?.map((tab, index) => {
-                        return (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                key={tab.val + index}
-                                onPress={() => {
-                                    global.LogTool('click', tab.val);
-                                    !onlyAll && setPeriod(tab.val);
-                                }}
-                                style={[
-                                    Style.flexCenter,
-                                    styles.subtab,
-                                    period === tab.val || onlyAll ? styles.active : {},
-                                ]}>
-                                <Text
+
+            {chartData.chart ? (
+                <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
+                    <View style={[Style.flexRow, {justifyContent: 'center'}]}>
+                        <Text style={styles.subTitle}>{chartData.title}</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                global.LogTool('click', 'showTips');
+                                Modal.show({content: chartData.desc});
+                            }}>
+                            <AntDesign
+                                style={{marginLeft: text(4)}}
+                                name={'questioncircleo'}
+                                size={16}
+                                color={Colors.darkGrayColor}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>
+                        {chartData.profit_acc}
+                    </Text>
+                    <View style={[styles.chart]}>
+                        {Object.keys(chartData).length > 0 && (
+                            <Chart
+                                initScript={areaChart(
+                                    chartData.chart,
+                                    [Colors.red],
+                                    [Colors.red],
+                                    {value: '累计收益(元)'},
+                                    false,
+                                    0
+                                )}
+                                data={chartData.chart}
+                            />
+                        )}
+                    </View>
+
+                    <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(30)}]}>
+                        {chartData?.subtabs?.map((tab, index) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={tab.val + index}
+                                    onPress={() => {
+                                        global.LogTool('click', tab.val);
+                                        !onlyAll && setPeriod(tab.val);
+                                    }}
                                     style={[
-                                        styles.tabText,
-                                        {
-                                            color:
-                                                period === tab.val || onlyAll
-                                                    ? Colors.brandColor
-                                                    : Colors.lightBlackColor,
-                                        },
+                                        Style.flexCenter,
+                                        styles.subtab,
+                                        period === tab.val || onlyAll ? styles.active : {},
                                     ]}>
-                                    {tab.key}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
+                                    <Text
+                                        style={[
+                                            styles.tabText,
+                                            {
+                                                color:
+                                                    period === tab.val || onlyAll
+                                                        ? Colors.brandColor
+                                                        : Colors.lightBlackColor,
+                                            },
+                                        ]}>
+                                        {tab.key}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
                 </View>
-            </View>
+            ) : (
+                <EmptyTip text="暂无数据" />
+            )}
+
             {list.length > 0 && (
                 <View style={[styles.poHeader, Style.flexBetween]}>
                     <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>{'组合名称'}</Text>
@@ -220,7 +229,11 @@ const AccProfit = ({poid}) => {
                         <View style={Style.flexRow}>
                             <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>{item.name}</Text>
                             <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} />
-                            {item.tag ? <Text style={styles.tag}>{item.tag}</Text> : null}
+                            {item.tag ? (
+                                <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(8)}}>
+                                    <Text style={styles.tag}>{item.tag}</Text>
+                                </View>
+                            ) : null}
                         </View>
                         <Text style={[styles.title, {fontWeight: '600', color: getColor(item.profit_acc)}]}>
                             {parseFloat(item.profit_acc?.replace(/,/g, '')) > 0
@@ -317,9 +330,8 @@ const styles = StyleSheet.create({
     tag: {
         paddingHorizontal: text(6),
         paddingVertical: text(2),
-        marginLeft: text(8),
+
         borderRadius: text(2),
-        backgroundColor: '#EFF5FF',
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: Colors.brandColor,

@@ -3,7 +3,7 @@
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 12:12:10
+ * @LastEditTime: 2021-03-26 19:41:54
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -22,7 +22,7 @@ export default function BankWithdraw({navigation, route}) {
     const [data, setData] = useState({});
     const passwordModal = useRef(null);
     const verifyCodeModel = useRef(null);
-    const [amount, setAmount] = useState();
+    const [amount, setAmount] = useState('');
     const [enable, setEnable] = useState(false);
     const [tips, setTips] = useState('');
     const passwordInput = () => {
@@ -93,7 +93,7 @@ export default function BankWithdraw({navigation, route}) {
             setEnable(false);
         } else {
             setTips('');
-            setAmount(amount);
+            setAmount(amount.toString());
             setEnable(true);
         }
     };
@@ -118,17 +118,25 @@ export default function BankWithdraw({navigation, route}) {
                     </View>
                     <View style={styles.card_sty}>
                         <Text style={styles.title_sty}>{data.withdraw_info.title}</Text>
-                        <View style={[Style.flexRow, {alignItems: 'baseline', marginTop: text(18)}]}>
-                            <Text style={{fontSize: text(22), fontWeight: 'bold'}}>¥</Text>
+                        <View style={[Style.flexRow, {alignItems: 'center', marginTop: text(18)}]}>
+                            <Text style={{fontSize: text(24)}}>¥</Text>
                             <TextInput
                                 keyboardType="numeric"
                                 value={amount}
-                                style={styles.num_sty}
+                                style={[
+                                    styles.num_sty,
+                                    {
+                                        fontFamily: amount.toString().length > 0 ? Font.numFontFamily : null,
+                                        fontSize: amount.toString().length > 0 ? text(35) : text(26),
+                                    },
+                                ]}
+                                placeholderTextColor={'#CCD0DB'}
+                                placeholder={'请输入提现金额'}
                                 onChangeText={(value) => onInput(value)}
                             />
                         </View>
-                        <Text style={{color: Colors.red}}>{tips}</Text>
                     </View>
+                    {tips ? <Text style={{color: Colors.red}}>{tips}</Text> : null}
                     <Text style={[{padding: text(15)}, Style.descSty]}>{data.pay_info.title}</Text>
                     <View style={[Style.flexRow, styles.card_item, styles.card_select]}>
                         <View style={Style.flexRow}>
@@ -140,7 +148,13 @@ export default function BankWithdraw({navigation, route}) {
                                 resizeMode={FastImage.resizeMode.contain}
                             />
                             <View>
-                                <Text style={{color: Colors.defaultColor, paddingLeft: text(10), fontWeight: 'bold'}}>
+                                <Text
+                                    style={{
+                                        color: Colors.defaultColor,
+                                        paddingLeft: text(10),
+                                        fontWeight: 'bold',
+                                        fontSize: text(14),
+                                    }}>
                                     {data.pay_info.pay_method.bank_name}
                                 </Text>
                                 <Text
@@ -186,7 +200,7 @@ const styles = StyleSheet.create({
         top: '50%',
         left: text(16),
         flexDirection: 'row',
-        alignItems: 'baseline',
+        alignItems: 'center',
     },
     bank_fund_sty: {
         color: '#fff',
@@ -206,9 +220,9 @@ const styles = StyleSheet.create({
     num_sty: {
         color: '#333333',
         fontSize: text(35),
-        fontFamily: Font.numFontFamily,
         marginLeft: text(5),
         flex: 1,
+        padding: 0,
     },
     card_select: {
         backgroundColor: '#fff',

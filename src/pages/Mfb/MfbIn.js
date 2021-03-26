@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 13:06:56
+ * @LastEditTime: 2021-03-26 17:01:28
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -235,7 +235,7 @@ class MfbIn extends Component {
                     点击确认购买即代表您已知悉该基金组合的
                 </Text>
 
-                <BottomDesc style={{marginTop: px(40)}} />
+                <BottomDesc />
                 <BankCardModal
                     data={pay_methods || []}
                     ref={(ref) => {

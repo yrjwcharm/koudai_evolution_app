@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-23 17:29:21
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 20:01:12
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 19:06:51
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -12,6 +12,7 @@ import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankList({navigation, route}) {
     const [data, setData] = useState({});
     useEffect(() => {
@@ -28,9 +29,9 @@ export default function BankList({navigation, route}) {
         }
     };
     return (
-        <View>
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             <Notice content={data.processing} />
-            <ScrollView style={{padding: text(16)}}>
+            <ScrollView style={{padding: text(16), paddingBottom: btnHeight}}>
                 {Object.keys(data).length > 0 &&
                     data.products.map((_pro, _index) => {
                         return (

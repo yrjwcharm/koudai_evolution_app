@@ -30,6 +30,7 @@ import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
+import Notice from '../../../components/Notice';
 var _params, _current, allocation_id, _age;
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
@@ -149,11 +150,11 @@ export default function DetailEducation({navigation, route}) {
             allocation_id = res.result.allocation_id;
             _age = res.result.plan_info.personal_info?.age;
             navigation.setOptions({
-                title: res.result?.title,
+                title: res.result.title,
                 headerRight: () => {
                     return (
                         <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                            <Text style={styles.right_sty}>{'重新测评'}</Text>
+                            <Text style={styles.right_sty}>{'重新定制'}</Text>
                         </TouchableOpacity>
                     );
                 },
@@ -201,6 +202,7 @@ export default function DetailEducation({navigation, route}) {
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
                     <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
+                        {data?.processing_info && <Notice content={data?.processing_info} />}
                         <View style={styles.container_sty}>
                             <View style={[Style.flexBetween, styles.select_wrap_sty]}>
                                 <Text style={styles.select_text_sty}>
@@ -234,6 +236,7 @@ export default function DetailEducation({navigation, route}) {
                                             <Text
                                                 style={{
                                                     color: choose == _s.id ? '#DC4949' : '#545968',
+                                                    marginLeft: text(6),
                                                 }}>
                                                 {_s.name}
                                             </Text>
@@ -316,6 +319,8 @@ export default function DetailEducation({navigation, route}) {
                                                             period == _item.val && type == _item.type
                                                                 ? '#F1F6FF'
                                                                 : '#fff',
+                                                        borderWidth:
+                                                            period == _item.val && type == _item.type ? 0 : 0.5,
                                                     },
                                                 ]}
                                                 key={_index}
@@ -362,13 +367,14 @@ export default function DetailEducation({navigation, route}) {
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
                                 <ListHeader data={data.asset_strategy.header} />
-                                {data.asset_strategy.items.map((_s, _d) => {
+                                {data.asset_strategy.items.map((_s, _d, arr) => {
                                     return (
                                         <View
                                             style={{
                                                 flexDirection: 'row',
-                                                alignItems: 'flex-start',
-                                                marginTop: text(20),
+                                                alignItems: 'center',
+                                                // marginTop: text(20),
+                                                marginTop: _d !== 0 ? text(36) : text(20),
                                             }}
                                             key={_d + '_s'}>
                                             <Image
@@ -429,7 +435,7 @@ export default function DetailEducation({navigation, route}) {
                                 })}
                             </View>
                         </View>
-                        <BottomDesc />
+                        <BottomDesc style={{marginTop: text(80)}} />
                     </ScrollView>
                     {showMask && <Mask />}
                     {popup?.content && (
@@ -541,7 +547,7 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(12),
         paddingVertical: text(5),
         borderRadius: text(15),
     },

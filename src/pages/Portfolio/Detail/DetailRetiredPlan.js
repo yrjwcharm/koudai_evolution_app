@@ -28,6 +28,7 @@ import Mask from '../../../components/Mask';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
+import Notice from '../../../components/Notice';
 var _params, _current, allocation_id, _poid;
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
@@ -104,7 +105,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 headerRight: () => {
                     return (
                         <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                            <Text style={styles.right_sty}>{'重新测评'}</Text>
+                            <Text style={styles.right_sty}>{'重新定制'}</Text>
                         </TouchableOpacity>
                     );
                 },
@@ -181,11 +182,12 @@ export default function DetailRetiredPlan({navigation, route}) {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 ? (
                 <ScrollView style={{flex: 1}}>
+                    {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={styles.container_sty}>
                         <View>
                             <View style={Style.flexRow}>
                                 <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
-                                <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF'}}>
+                                <View style={{borderRadius: text(4), backgroundColor: '#F1F6FF', marginLeft: text(8)}}>
                                     <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                 </View>
                             </View>
@@ -241,7 +243,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                                     <Text style={{color: '#545968'}}>{_item.key}</Text>
                                                     <TouchableOpacity
-                                                        style={Style.flexRow}
+                                                        style={[Style.flexRow, {paddingVertical: text(5)}]}
                                                         onPress={_showDatePicker}
                                                         activeOpacity={1}>
                                                         <Text style={{color: '#545968'}}>{current}年</Text>
@@ -276,6 +278,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 {
                                                     backgroundColor:
                                                         period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                    borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
                                                 },
                                             ]}
                                             key={_index + '_sub'}
@@ -286,6 +289,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                         period == _item.val && type == _item.type
                                                             ? '#0051CC'
                                                             : '#555B6C',
+
                                                     fontSize: text(12),
                                                 }}>
                                                 {_item.name}
@@ -321,14 +325,15 @@ export default function DetailRetiredPlan({navigation, route}) {
                             </View>
                         </View>
                         <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                            <ListHeader data={data.asset_strategy.header} style={{paddingHorizontal: text(16)}} />
-                            {data.asset_strategy.items.map((_s, _d) => {
+                            <ListHeader data={data.asset_strategy.header} />
+                            {data.asset_strategy.items.map((_s, _d, arr) => {
                                 return (
                                     <View
                                         style={{
                                             flexDirection: 'row',
-                                            alignItems: 'flex-start',
-                                            marginTop: text(20),
+                                            alignItems: 'center',
+                                            // marginTop: text(20),
+                                            marginTop: _d !== 0 ? text(36) : text(20),
                                         }}
                                         key={_d + '_s'}>
                                         <Image
@@ -380,7 +385,10 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         activeOpacity={1}
                                         style={[
                                             Style.flexRow,
-                                            {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},
+                                            {
+                                                borderTopWidth: _w == 0 ? 0 : 0.5,
+                                                borderColor: '#ddd',
+                                            },
                                         ]}
                                         onPress={() => jump(_q.url)}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
@@ -390,7 +398,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                             })}
                         </View>
                     </View>
-                    <BottomDesc />
+                    <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}
             {showMask && <Mask />}
@@ -404,7 +412,7 @@ export default function DetailRetiredPlan({navigation, route}) {
 const styles = StyleSheet.create({
     right_sty: {
         color: '#1F2432',
-        marginRight: text(10),
+        marginRight: text(16),
     },
     container_sty: {
         backgroundColor: '#fff',
@@ -497,12 +505,12 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(12),
         paddingVertical: text(5),
         borderRadius: text(15),
     },
     age_text_sty: {
-        color: '#6B9AE3',
+        color: '#0051CC',
         paddingHorizontal: text(3),
         fontSize: text(11),
         paddingVertical: text(2),

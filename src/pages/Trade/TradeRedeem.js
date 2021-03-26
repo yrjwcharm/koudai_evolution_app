@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 16:12:03
+ * @LastEditTime: 2021-03-26 20:13:02
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
@@ -138,6 +138,7 @@ export default class TradeRedeem extends Component {
         }
     };
     selectAge = () => {
+        Keyboard.dismiss();
         const option = [];
         var _id;
         this.state.data.survey.option.forEach((_item, _index) => {

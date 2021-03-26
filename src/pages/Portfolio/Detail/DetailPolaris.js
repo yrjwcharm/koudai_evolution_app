@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:03:30
+ * @LastEditTime: 2021-03-26 18:16:16
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -23,6 +23,8 @@ import Html from '../../../components/RenderHtml';
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import BottomDesc from '../../../components/BottomDesc';
+import Notice from '../../../components/Notice';
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -118,8 +120,9 @@ export default function DetailPolaris({route, navigation}) {
             {<Header title={data?.title} leftIcon="chevron-left" />}
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: FixedBtn.btnHeight, backgroundColor: Colors.bgColor, flex: 1}}>
+                    {data?.processing_info && <Notice content={data?.processing_info} />}
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
-                    <View style={{padding: text(16)}}>
+                    <View style={{padding: text(16), marginTop: text(-70)}}>
                         <View style={styles.card_sty}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
                                 {data?.top?.title}
@@ -147,7 +150,7 @@ export default function DetailPolaris({route, navigation}) {
                                 borderRadius: text(10),
                                 paddingVertical: text(16),
                             }}>
-                            <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>
+                            <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
                                 {data?.part_line?.title}
                             </Text>
                             <View style={[Style.flexRow]}>
@@ -232,6 +235,7 @@ export default function DetailPolaris({route, navigation}) {
                                                 {
                                                     backgroundColor:
                                                         period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                    borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
                                                 },
                                             ]}
                                             key={_index}
@@ -253,15 +257,15 @@ export default function DetailPolaris({route, navigation}) {
                         </View>
 
                         <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
-                            <View style={{paddingHorizontal: text(16)}}>
+                            <View style={{paddingHorizontal: text(16), marginBottom: text(16)}}>
                                 <Text style={[styles.card_title_sty, {paddingHorizontal: 0, paddingBottom: text(10)}]}>
                                     {data?.part_pie?.title}
                                 </Text>
                                 <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
                             </View>
-                            <View style={{height: 340}}>
+                            {/* <View style={{height: 340}}>
                                 <Chart initScript={pie(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
-                            </View>
+                            </View> */}
 
                             <View style={styles.fund_card_sty}>
                                 <View
@@ -325,7 +329,7 @@ export default function DetailPolaris({route, navigation}) {
                                                 </Text>
                                                 <Text
                                                     style={{
-                                                        color: '#CE4040',
+                                                        color: getColor(_table.ratio_text),
                                                         fontSize: text(13),
                                                         fontFamily: Font.numFontFamily,
                                                         textAlign: 'right',
@@ -376,8 +380,10 @@ export default function DetailPolaris({route, navigation}) {
                             })}
                         </View>
                     </View>
+                    <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             )}
+
             {data?.fixed_bottom && <FixedBtn btns={data?.fixed_bottom} style={{position: 'absolute', bottom: 0}} />}
         </>
     );
@@ -412,15 +418,17 @@ const styles = StyleSheet.create({
     desc_sty: {
         color: '#9AA1B2',
         textAlign: 'center',
+        fontSize: text(12),
     },
     btn_text_sty: {
         color: '#fff',
         textAlign: 'center',
         paddingVertical: text(14),
+        fontSize: text(15),
     },
     btn_sty: {
         backgroundColor: '#E74949',
-        borderRadius: text(10),
+        borderRadius: text(6),
         marginTop: text(18),
     },
     legend_sty: {
@@ -484,7 +492,7 @@ const styles = StyleSheet.create({
     btn_choose_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(8),
+        paddingHorizontal: text(12),
         paddingVertical: text(5),
         borderRadius: text(15),
     },

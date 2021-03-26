@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-17 20:26:46
+ * @LastEditTime: 2021-03-26 17:21:25
  * @Description:通用按钮
  */
 import React from 'react';
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     ButtonStyle: {
         backgroundColor: Colors.btnColor,
         height: text(45),
-        borderRadius: 8,
+        borderRadius: 6,
     },
     minorButtonStyle: {
         backgroundColor: '#fff',

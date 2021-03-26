@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:52:21
+ * @LastEditTime: 2021-03-26 11:51:53
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -83,6 +83,9 @@ const ForgotTradePwdNext = ({navigation, route}) => {
             },
         ];
         if (!formCheck(checkData)) {
+            return false;
+        } else if (newPwd !== confirmPwd) {
+            Toast.show('两次输入的密码不一致');
             return false;
         } else {
             subBtnClick.current = false;

@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 14:06:46
+ * @LastEditTime: 2021-03-26 20:27:36
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -42,7 +42,7 @@ export const baseAreaChart = (
     tickCount: 5,
     range: [ 0, 1 ],
     formatter: (value) => {
-      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
+      return ${percent ? 'Number((value * 100)) + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
   });
   chart.axis('date', {
@@ -137,7 +137,7 @@ chart.scale({
   date: {
     sortable: false,
     type: 'timeCat',
-    tickCount: 4,
+    tickCount: 3,
     range: [0, 1]
   },
   value: {

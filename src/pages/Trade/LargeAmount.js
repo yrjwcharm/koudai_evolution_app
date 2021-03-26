@@ -2,8 +2,8 @@
  * @Description:大额转账汇款
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 14:01:30
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 14:55:56
  */
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -23,7 +23,7 @@ const btnHeight = isIphoneX() ? text(90) : text(66);
 const tips = [
     {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款。'},
     {title: '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝。'},
-    {title: '3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：', tel: ''},
+    {title: '3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：', tel: '400-080-8208'},
     {title: '4. 民生银行是理财魔方的资金监管银行，您的汇款资金安全有保障。'},
 ];
 
@@ -42,9 +42,8 @@ const LargeAmount = (props) => {
                     );
                 },
             });
-            tips[2].tel = res.result.phone;
         });
-    }, []);
+    }, [props.navigation]);
     const jumpPage = (url) => {
         if (!url) {
             return;
@@ -104,7 +103,7 @@ const LargeAmount = (props) => {
                         <Text style={styles.title_sty}>支持银行卡</Text>
                         <Text style={styles.desc_sty}>仅支持以下银行卡的转账汇款，否则资金将原路返回</Text>
                         <>
-                            {data.pay_methods.map((_item, _index) => {
+                            {data?.pay_methods?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
                                         style={[Style.flexRow, styles.list_sty]}
@@ -128,7 +127,7 @@ const LargeAmount = (props) => {
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
                         <Text style={[styles.title_sty, {paddingBottom: text(15)}]}>
-                            魔方监管户<Text style={{color: '#E74949', fontSize: 12}}>(民生银行全程监管)</Text>
+                            魔方监管户<Text style={{color: '#E74949', fontSize: 12}}>（民生银行全程监管）</Text>
                         </Text>
                         <View>
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
@@ -168,7 +167,7 @@ const LargeAmount = (props) => {
                     </View>
                     <View style={styles.tip_sty}>
                         <Text style={{marginBottom: text(10), color: '#545968'}}>提示信息：</Text>
-                        {tips.map((_i, _d) => {
+                        {tips?.map((_i, _d) => {
                             return (
                                 <View style={{marginBottom: text(10)}} key={_d + '_i'}>
                                     <Text key={_i + _d} style={{lineHeight: text(18), color: '#545968'}}>
@@ -245,7 +244,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: text(12),
         paddingHorizontal: text(8),
-        paddingVertical: text(5),
+        paddingVertical: text(8),
     },
     item_wrap_sty: {
         borderTopWidth: 0.5,

@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 10:30:26
+ * @LastEditTime: 2021-03-26 19:20:30
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -52,7 +52,7 @@ export default function BankAssets(props) {
                         titleStyle={{marginLeft: text(16)}}
                         style={{backgroundColor: '#fff'}}
                     />
-                    <Notice content={data.processing} isClose={true} />
+                    {data?.processing ? <Notice content={data?.processing} isClose={true} /> : null}
                     {Object.keys(data).length > 0 && (
                         <ScrollView style={{marginBottom: btnHeight}}>
                             <View style={[styles.card_sty, Style.flexCenter]}>
@@ -95,7 +95,7 @@ export default function BankAssets(props) {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     activeOpacity={1}
-                                    style={[Style.flexRow, styles.account_wrap_sty]}
+                                    style={[Style.flexRow, styles.account_wrap_sty, {borderBottomWidth: 0}]}
                                     onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
                                         {data.elec_account.title}({data?.elec_account?.balance})
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
         fontSize: text(15),
         color: Colors.defaultColor,
         fontWeight: 'bold',
-        paddingBottom: text(10),
+        paddingBottom: text(14),
     },
     content_sty: {
         padding: text(16),

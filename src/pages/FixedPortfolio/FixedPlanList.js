@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 14:06:41
+ * @LastEditTime: 2021-03-26 15:29:55
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -28,54 +28,75 @@ export default function PlanDetail(props) {
     };
     return (
         <ScrollView style={Style.containerPadding}>
-            {Object.keys(data).length > 0 ? (
-                data.map((_item, _index) => {
-                    return (
-                        <TouchableOpacity
-                            style={styles.card_sty}
-                            key={_index + '_item'}
-                            activeOpacity={1}
-                            onPress={() => {
-                                jumpPage(_item.invest_id);
-                            }}>
-                            <View
-                                style={[
-                                    Style.flexBetween,
-                                    {borderBottomWidth: 0.5, borderColor: Colors.borderColor, paddingBottom: text(10)},
-                                ]}>
-                                <Text style={[styles.title_sty, {color: _item?.available == 1 ? '' : '#9AA1B2'}]}>
-                                    {_item?.title}
-                                </Text>
-                                <Text style={{color: '#9AA1B2'}}>
-                                    {_item?.status_text ? _item?.status_text : null}
-                                    <AntDesign name={'right'} color={'#4E556C'} size={12} />
-                                </Text>
-                            </View>
-                            <View style={[Style.flexBetween, {marginTop: text(8)}]}>
-                                {_item?.items.map((_i, _d) => {
-                                    return (
-                                        <View key={_d + '_i'}>
-                                            <Text style={styles.desc_sty}>{_i?.key}</Text>
-                                            <Text style={[styles.num_sty, {textAlign: _d == 1 ? 'right' : 'left'}]}>
-                                                {_i?.val}
-                                            </Text>
-                                        </View>
-                                    );
-                                })}
-                            </View>
-                            {_item?.notice && (
-                                <View style={styles.gray_wrap}>
-                                    <Text style={{fontSize: text(12), color: '#9AA1B2', lineHeight: text(18)}}>
-                                        {_item?.notice}
-                                    </Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    );
-                })
-            ) : (
-                <Empty text={'暂无数据'} />
-            )}
+            {
+                Object.keys(data).length > 0
+                    ? data.map((_item, _index) => {
+                          return (
+                              <TouchableOpacity
+                                  style={styles.card_sty}
+                                  key={_index + '_item'}
+                                  activeOpacity={1}
+                                  onPress={() => {
+                                      jumpPage(_item.invest_id);
+                                  }}>
+                                  <View
+                                      style={[
+                                          Style.flexBetween,
+                                          {
+                                              borderBottomWidth: 0.5,
+                                              borderColor: Colors.borderColor,
+                                              paddingBottom: text(10),
+                                          },
+                                      ]}>
+                                      <Text
+                                          style={[
+                                              styles.title_sty,
+                                              {color: _item?.status == 1 ? '#292d39' : '#9AA1B2'},
+                                          ]}>
+                                          {_item?.title}
+                                      </Text>
+                                      <Text style={{color: '#9AA1B2'}}>
+                                          {_item?.status_text ? _item?.status_text : null}
+                                          <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                      </Text>
+                                  </View>
+                                  <View style={[Style.flexBetween, {marginTop: text(8)}]}>
+                                      {_item?.items.map((_i, _d) => {
+                                          return (
+                                              <View key={_d + '_i'}>
+                                                  <Text style={styles.desc_sty}>{_i?.key}</Text>
+                                                  <Text
+                                                      style={[
+                                                          styles.num_sty,
+                                                          {
+                                                              textAlign: _d == 1 ? 'right' : 'left',
+                                                              color: _item?.status == 1 ? '#292d39' : '#9AA1B2',
+                                                          },
+                                                      ]}>
+                                                      {_i?.val}
+                                                  </Text>
+                                              </View>
+                                          );
+                                      })}
+                                  </View>
+                                  {_item?.notice && (
+                                      <View style={styles.gray_wrap}>
+                                          <Text
+                                              style={{
+                                                  fontSize: text(12),
+                                                  color: '#9AA1B2',
+                                                  lineHeight: text(18),
+                                              }}>
+                                              {_item?.notice}
+                                          </Text>
+                                      </View>
+                                  )}
+                              </TouchableOpacity>
+                          );
+                      })
+                    : null
+                // <Empty text={'暂无数据'} />
+            }
         </ScrollView>
     );
 }

@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 10:32:33
+ * @LastEditTime: 2021-03-26 19:27:28
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -26,9 +26,10 @@ export default function ElectronicAccount(props) {
             ...props.route.params,
         }).then((res) => {
             setData(res.result);
-            setNum(res.result.account.card);
+            // setNum(res.result.account.card);
         });
         setNum(num.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, '$1    '));
+        // console.log(num.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, '$1    '), '--num');
     }, []);
     const accountBtn = (url) => {
         props.navigation.navigate(url);
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultFontColor,
         fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
-        fontSize: text(16),
+        fontSize: text(14),
     },
     list_wrap_sty: {
         paddingVertical: text(20),

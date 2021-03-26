@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 10:23:05
+ * @LastEditTime: 2021-03-26 14:52:24
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View} from 'react-native';
@@ -40,7 +40,7 @@ const LargeAmountIntro = () => {
                 <Agreement
                     isHide={true}
                     data={[{title: '《理财魔方汇款交易须知》', id: 37}]}
-                    style={{marginLeft: text(16)}}
+                    style={{marginLeft: text(16), paddingTop: text(8), paddingBottom: text(6)}}
                 />
             </ScrollView>
             <FixedButton title={'魔方客服电话:400-080-8208'} onPress={() => callTel()} />

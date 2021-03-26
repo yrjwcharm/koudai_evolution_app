@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 11:05:48
+ * @LastEditTime: 2021-03-26 11:47:45
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -119,11 +119,14 @@ const AddBankCard = ({navigation, route}) => {
         ];
         if (!formCheck(checkData)) {
             return false;
+        } else if (!/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(phone)) {
+            Toast.show('手机号不合法');
+            return false;
         } else {
             subBtnClick.current = false;
             http.post('/passport/bank_card/bind/20210101', {
                 bank_code: bankCode.current,
-                bank_no: cardNum,
+                bank_no: cardNum.replace(/ /g, ''),
                 mobile: phone,
                 code,
             }).then((res) => {
@@ -170,7 +173,15 @@ const AddBankCard = ({navigation, route}) => {
             <InputView
                 clearButtonMode={'while-editing'}
                 keyboardType={'number-pad'}
-                onChangeText={(value) => setCardNum(value.replace(/\D/g, ''))}
+                maxLength={19}
+                onChangeText={(value) =>
+                    setCardNum(
+                        value
+                            .replace(/\s/g, '')
+                            .replace(/\D/g, '')
+                            .replace(/(\d{4})(?=\d)/g, '$1 ')
+                    )
+                }
                 placeholder={'请输入您的银行卡号'}
                 style={styles.input}
                 title={'银行卡号'}

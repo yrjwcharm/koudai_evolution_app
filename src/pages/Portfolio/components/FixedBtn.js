@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-26 21:22:12
+ * @LastEditTime: 2021-03-26 21:50:33
  * @LastEditors: yhc
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -54,18 +54,18 @@ const FixedBtn = (props) => {
                                 ]}>
                                 <View style={[Style.flexRow]}>
                                     <View style={[styles.iconBox, Style.flexCenter]}>
-                                        <Image source={{uri: sub.icon}} style={[styles.icon]} />
+                                        <Image source={{uri: sub?.icon}} style={[styles.icon]} />
                                     </View>
                                     <View>
-                                        <Text style={[styles.methodTitle]}>{sub.title}</Text>
-                                        <Text style={[styles.methodDesc]}>{sub.desc}</Text>
+                                        <Text style={[styles.methodTitle]}>{sub?.title}</Text>
+                                        <Text style={[styles.methodDesc]}>{sub?.desc}</Text>
                                     </View>
                                 </View>
                                 <TouchableOpacity
                                     style={[styles.methodBtn, Style.flexCenter]}
                                     activeOpacity={0.8}
                                     onPress={() => onPress(sub)}>
-                                    <Text style={[styles.methodBtnText]}>{sub.btn.title}</Text>
+                                    {sub?.btn?.title && <Text style={[styles.methodBtnText]}>{sub?.btn?.title}</Text>}
                                 </TouchableOpacity>
                             </View>
                         );

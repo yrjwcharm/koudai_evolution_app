@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:48:53
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 16:26:23
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -132,7 +132,14 @@ export default function RemindMessage({navigation}) {
                                         />
                                         {_item?.unread ? (
                                             <View style={styles.point_sty}>
-                                                <Text style={{color: '#fff', fontSize: text(11)}}>{_item?.unread}</Text>
+                                                <Text
+                                                    style={{
+                                                        color: '#fff',
+                                                        fontSize: text(11),
+                                                        fontFamily: Font.numFontFamily,
+                                                    }}>
+                                                    {_item?.unread}
+                                                </Text>
                                             </View>
                                         ) : null}
                                     </View>

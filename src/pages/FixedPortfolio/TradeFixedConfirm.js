@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 15:37:25
- * @LastEditors: yhc
+ * @LastEditors: xjh
  * @Description: 定投确认页
- * @LastEditTime: 2021-03-06 15:27:43
+ * @LastEditTime: 2021-03-26 15:03:26
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -43,7 +43,7 @@ export default class TradeFixedConfirm extends Component {
         return (
             <View style={styles.container}>
                 {Object.keys(data).length > 0 && (
-                    <>
+                    <View style={{paddingHorizontal: text(16)}}>
                         <View style={styles.top_sty}>
                             {data.is_success == true ? (
                                 <Ionicons
@@ -96,7 +96,7 @@ export default class TradeFixedConfirm extends Component {
                                 })}
                             <Button title={data.button.text} style={styles.btn_sty} onPress={this.jumpTo} />
                         </View>
-                    </>
+                    </View>
                 )}
             </View>
         );
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     content_sty: {
         paddingTop: text(24),
         paddingBottom: text(28),
-        marginHorizontal: text(31),
+        marginHorizontal: text(16),
     },
     circle_sty: {
         width: text(7),

@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 12:46:12
+ * @LastEditTime: 2021-03-26 18:21:45
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -104,7 +104,7 @@ export default function MfbIndex(props) {
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{flex: 1}}>
                     <View style={styles.bg_sty} />
-                    <View style={[Style.containerPadding, {marginBottom: btnHeight}]}>
+                    <View style={[Style.containerPadding]}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
                             <Text style={Style.descSty}>总金额(元){data.holding.date}</Text>
                             <Text style={styles.amount_sty}>{data.holding.amount}</Text>

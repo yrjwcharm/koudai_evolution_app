@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 16:51:12
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 20:05:29
  * @Description:路由表
  */
 import React from 'react';
@@ -147,7 +147,7 @@ export default function AppStack() {
             headerMode="float" //兼容部分安卓
             screenOptions={{
                 headerBackImage: () => {
-                    return <Feather name="chevron-left" size={30} />;
+                    return <Feather name="chevron-left" size={30} style={{marginLeft: 16}} />;
                 },
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
@@ -388,11 +388,7 @@ export default function AppStack() {
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
-            <Stack.Screen
-                name="FixedPlanDetail"
-                component={FixedPlanDetail}
-                options={{title: '计划详情', headerShown: false}}
-            />
+            <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{headerShown: false}} />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
             <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
