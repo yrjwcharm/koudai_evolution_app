@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 11:44:57
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 12:18:19
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -89,7 +89,7 @@ const TradeRecord = ({route, navigation}) => {
                         <Text style={{color: Colors.darkGrayColor, marginLeft: px(4)}}>正在加载...</Text>
                     </>
                 ) : (
-                    <Text style={{color: Colors.darkGrayColor}}>没有了...</Text>
+                    <Text style={{color: Colors.darkGrayColor, marginTop: px(16)}}>我们是有底线的...</Text>
                 )}
             </View>
         );
@@ -122,7 +122,7 @@ const TradeRecord = ({route, navigation}) => {
                         </View>
                         <View style={[Style.flexBetween, {paddingVertical: px(13)}]}>
                             {item?.items.map((_item, _index) => (
-                                <View style={{alignItems: 'center'}} key={_index}>
+                                <View key={_index}>
                                     <Text style={styles.light_text}>{_item.k}</Text>
                                     <Text
                                         style={[

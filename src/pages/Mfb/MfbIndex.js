@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:10:01
+ * @LastEditTime: 2021-03-26 12:46:12
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -38,7 +38,7 @@ export default function MfbIndex(props) {
     // const jumpPage = (url, params) => {
     //     props.navigation.navigate(url, params);
     // };
-
+    // 魔方宝 不下拉-----
     const renderHeader = (section, index, isActive) => {
         return (
             <>
@@ -102,9 +102,9 @@ export default function MfbIndex(props) {
                 style={{backgroundColor: '#0052CD'}}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{marginBottom: btnHeight}}>
+                <ScrollView style={{flex: 1}}>
                     <View style={styles.bg_sty} />
-                    <View style={Style.containerPadding}>
+                    <View style={[Style.containerPadding, {marginBottom: btnHeight}]}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
                             <Text style={Style.descSty}>总金额(元){data.holding.date}</Text>
                             <Text style={styles.amount_sty}>{data.holding.amount}</Text>
@@ -175,7 +175,7 @@ export default function MfbIndex(props) {
                             </View>
                         </View>
                     </View>
-                    {/* <BottomDesc data={bottom} style={{paddingBottom: 100}} /> */}
+                    <BottomDesc />
                 </ScrollView>
             )}
         </View>

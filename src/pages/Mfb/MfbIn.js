@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 15:17:33
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 13:06:56
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -74,6 +74,7 @@ class MfbIn extends Component {
             this.setState({
                 tips,
                 enable: false,
+                amount: '',
             });
         }
     };
@@ -128,7 +129,13 @@ class MfbIn extends Component {
                                 }}
                             />
                             <View style={{flex: 1}}>
-                                <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
+                                <Text
+                                    style={{
+                                        color: '#101A30',
+                                        fontSize: px(14),
+                                        marginBottom: px(4),
+                                        fontWeight: 'bold',
+                                    }}>
                                     {bankSelect?.bank_name}
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
@@ -136,7 +143,7 @@ class MfbIn extends Component {
                                 </Text>
                             </View>
                             <TouchableOpacity onPress={this.changeBankCard}>
-                                <Text style={{color: Colors.lightGrayColor}}>
+                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                     切换
                                     <Icon name={'right'} size={px(12)} />
                                 </Text>
@@ -197,33 +204,38 @@ class MfbIn extends Component {
                     <Text style={{fontSize: px(16), marginVertical: px(4)}}>{recharge_info?.text}</Text>
                     <View style={styles.buyInput}>
                         <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
-                        <View style={{flex: 1}}>
-                            <TextInput
-                                keyboardType="numeric"
-                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
-                                placeholder={recharge_info.placeholder}
-                                placeholderTextColor={Colors.lightGrayColor}
-                                onChangeText={(value) => {
-                                    this.onInput(value);
-                                }}
-                                value={amount.toString()}
-                            />
-                            <Text style={styles.tips_sty}>{tips}</Text>
-                        </View>
+                        <TextInput
+                            keyboardType="numeric"
+                            style={[
+                                styles.inputStyle,
+                                {
+                                    fontFamily: Font.numFontFamily,
+                                    fontSize: amount.toString().length > 0 ? px(35) : px(26),
+                                },
+                            ]}
+                            placeholder={recharge_info.placeholder}
+                            placeholderTextColor={Colors.placeholderColor}
+                            onChangeText={(value) => {
+                                this.onInput(value);
+                            }}
+                            value={amount.toString()}
+                        />
                         {amount.length > 0 && (
                             <TouchableOpacity onPress={this.clearInput}>
                                 <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
                             </TouchableOpacity>
                         )}
                     </View>
+                    {tips ? <Text style={styles.tips_sty}>{tips}</Text> : null}
                 </View>
                 {/* 银行卡 */}
                 {this.render_bank()}
 
-                <Text style={{color: Colors.darkGrayColor, paddingHorizontal: Space.padding}}>
+                <Text style={{color: Colors.darkGrayColor, paddingHorizontal: Space.padding, fontSize: px(12)}}>
                     点击确认购买即代表您已知悉该基金组合的
                 </Text>
-                <BottomDesc />
+
+                <BottomDesc style={{marginTop: px(40)}} />
                 <BankCardModal
                     data={pay_methods || []}
                     ref={(ref) => {
@@ -262,14 +274,14 @@ const styles = StyleSheet.create({
         marginBottom: px(12),
         paddingTop: px(15),
         paddingHorizontal: px(15),
+        paddingBottom: px(10),
     },
     buyInput: {
         // borderBottomWidth: 0.5,
         // borderColor: Colors.borderColor,
         flexDirection: 'row',
-        alignItems: 'baseline',
+        alignItems: 'center',
         marginTop: px(20),
-        paddingBottom: px(13),
     },
     inputStyle: {
         flex: 1,
@@ -317,8 +329,8 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        // paddingVertical: px(8),
         marginLeft: px(14),
+        paddingTop: px(5),
     },
 });
 

@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:22:17
+ * @LastEditTime: 2021-03-25 19:20:24
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -51,7 +51,6 @@ export default function PortfolioAssets(props) {
             if (res.result?.progress_bar) {
                 const _left = res.result?.progress_bar?.percent_text;
                 if (_left.split('%')[0] < 10) {
-                    // eslint-disable-next-line react-hooks/exhaustive-deps
                     _l = _left.split('%')[0] - 1 + '%';
                 } else {
                     _l = _left.split('%')[0] + '%';
@@ -129,15 +128,26 @@ export default function PortfolioAssets(props) {
     const accountJump = (url, type) => {
         Http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
             if (res.result) {
-                Modal.show({
-                    title: res.result?.title || '提示',
-                    content: res.result?.content || '确认赎回？',
-                    confirm: true,
-                    cancelText: res.result?.button_list[0]?.text || '确认赎回',
-                    confirmText: res.result?.button_list[1]?.text || '再想一想',
-                    cancelCallBack: () => jump(res?.result?.button_list[0]?.url || url),
-                    confirmCallBack: () => jump(res?.result?.button_list[1]?.url || url),
-                });
+                if (res.result?.button_list) {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: res.result?.button_list[0]?.text || '确认赎回',
+                        confirmText: res.result?.button_list[1]?.text || '再想一想',
+                        cancelCallBack: () => jump(res?.result?.button_list[0]?.url || url),
+                        confirmCallBack: () => jump(res?.result?.button_list[1]?.url || url),
+                    });
+                } else {
+                    Modal.show({
+                        title: res.result?.title || '提示',
+                        content: res.result?.content || '确认赎回？',
+                        confirm: true,
+                        cancelText: '确认赎回',
+                        confirmText: '再想一想',
+                        cancelCallBack: () => jump(url),
+                    });
+                }
             } else {
                 jump(url);
             }

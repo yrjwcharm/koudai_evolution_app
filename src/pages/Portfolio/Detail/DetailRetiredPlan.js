@@ -99,7 +99,6 @@ export default function DetailRetiredPlan({navigation, route}) {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
             _poid = res.result?.poid;
-            setData(res.result);
             navigation.setOptions({
                 title: res.result.title,
                 headerRight: () => {
@@ -110,7 +109,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                     );
                 },
             });
-
+            setData(res.result);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
                     setCountFr(Number(res.result?.plan_info?.trade_amount));

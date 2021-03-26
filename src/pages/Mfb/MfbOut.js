@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 11:54:48
+ * @LastEditTime: 2021-03-26 13:00:07
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -105,19 +105,23 @@ class MfbOut extends Component {
         if (this.state.optionChoose === 1) {
             this.setState({
                 amount: this.state.selectData.quickAmount.toString(),
+                enable: true,
             });
         } else {
             this.setState({
                 amount: this.state.selectData.comAmount.toString(),
+                enable: true,
             });
         }
         if (this.state.optionChoose === 1) {
             this.setState({
                 amount: this.state.selectData.quickAmount.toString(),
+                enable: true,
             });
         } else {
             this.setState({
                 amount: this.state.selectData.comAmount.toString(),
+                enable: true,
             });
         }
     };
@@ -214,7 +218,13 @@ class MfbOut extends Component {
                         <View style={{flex: 1}}>
                             <TextInput
                                 keyboardType="numeric"
-                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numFontFamily : null}]}
+                                style={[
+                                    styles.inputStyle,
+                                    {
+                                        fontFamily: amount.length > 0 ? Font.numFontFamily : null,
+                                        fontSize: amount.toString().length > 0 ? px(35) : px(26),
+                                    },
+                                ]}
                                 placeholder={withdraw_info?.placeholder}
                                 placeholderTextColor={'#CCD0DB'}
                                 onChangeText={(value) => {
@@ -222,12 +232,12 @@ class MfbOut extends Component {
                                 }}
                                 value={amount}
                             />
-                            <Text style={styles.tips_sty}>{tips}</Text>
                         </View>
                         <TouchableOpacity onPress={this.allAmount}>
                             <Text style={{color: '#0051CC'}}>{withdraw_info?.button.text}</Text>
                         </TouchableOpacity>
                     </View>
+                    {tips ? <Text style={styles.tips_sty}>{tips}</Text> : null}
                 </View>
 
                 {this.render_Radio()}
@@ -237,7 +247,6 @@ class MfbOut extends Component {
                         this.bankCard = ref;
                     }}
                     onDone={(item, index) => {
-                        console.log(item, index);
                         this.getBankInfo(
                             index,
                             pay_methods[index]?.common_withdraw_amount,
@@ -320,12 +329,12 @@ const styles = StyleSheet.create({
         marginTop: px(12),
     },
     buyInput: {
-        borderBottomWidth: 0.5,
-        borderColor: Colors.borderColor,
+        // borderBottomWidth: 0.5,
+        // borderColor: Colors.borderColor,
         flexDirection: 'row',
-        alignItems: 'baseline',
+        alignItems: 'center',
         marginTop: px(20),
-        paddingBottom: px(13),
+        // paddingBottom: px(13),
     },
     inputStyle: {
         flex: 1,
@@ -394,8 +403,9 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        // paddingVertical: px(8),
+        paddingVertical: px(8),
         marginLeft: px(14),
+        // backgroundColor: '#fff',
     },
 });
 
