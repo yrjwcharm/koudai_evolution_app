@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:48:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 10:43:26
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -339,12 +339,14 @@ class Question extends Component {
         let _profileList = this.handelTag(option, 'profile', 'profileList');
         let _balanceList = this.handelTag(option, 'balance', 'balanceList');
         let _complianceList = this.handelTag(option, 'compliance', 'complianceList');
+        let _childList = this.handelTag(option, 'child', 'childList');
         newQues = _.assign(ques[current], {
             answer: option.id,
             value,
             profileList: _profileList,
             balanceList: _balanceList,
             complianceList: _complianceList,
+            childList: _childList,
         });
         ques[current] = newQues;
         this.setState(
@@ -419,7 +421,7 @@ class Question extends Component {
         if (type && type == 'age') {
             this.setState({inputBtnCanClick: true});
         } else {
-            if (id == 16) {
+            if (id == 21) {
                 this.expendAmount = value; //记录月支出金额
             }
             this.checkInput(value);
@@ -450,6 +452,9 @@ class Question extends Component {
             }
             if (current_ques.tag == 'compliance') {
                 tagList = questions[previousTest].complianceList;
+            }
+            if (current_ques.tag == 'child') {
+                tagList = questions[previousTest].childList;
             }
         }
 
@@ -666,7 +671,7 @@ class Question extends Component {
                                                     step={2}
                                                     defaultValue={value === '' ? current_ques.default_value : value}
                                                     minimum={
-                                                        current_ques.id == 26
+                                                        current_ques.id == 31
                                                             ? questions[previousTest].value + 1
                                                             : current_ques.min_value
                                                     }

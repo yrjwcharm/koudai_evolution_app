@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 11:55:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 11:19:32
  * @Description: 银行卡选择
  */
 
@@ -79,7 +79,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                         <View style={{flex: 1}}>
                             <Text style={[{marginBottom: 8}, styles.text]}>
                                 {item?.bank_name}
-                                <Text>{item?.bank_no}</Text>
+                                {item?.bank_no ? <Text>({item?.bank_no})</Text> : null}
                             </Text>
                             <Text style={{color: '#80899B', fontSize: text(11)}}>{item?.limit_desc}</Text>
                         </View>
