@@ -100,7 +100,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             allocation_id = res.result.allocation_id;
             _poid = res.result?.poid;
             navigation.setOptions({
-                title: res.result.title,
+                title: res.result?.title,
                 headerRight: () => {
                     return (
                         <TouchableOpacity onPress={rightPress} activeOpacity={1}>
@@ -206,7 +206,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 </LinearGradient>
                                 {data?.plan_info?.goal_info?.items.map((_item, _index) => {
                                     return (
-                                        <>
+                                        <View key={_index}>
                                             {(_item.type == 'auto' || _item.type == 'begin') && (
                                                 <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                                     <Text style={{color: '#545968', flex: 1}}>{_item.key}</Text>
@@ -249,7 +249,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                     </TouchableOpacity>
                                                 </View>
                                             )}
-                                        </>
+                                        </View>
                                     );
                                 })}
                             </View>

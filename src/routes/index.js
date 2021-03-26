@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 16:48:32
+ * @LastEditTime: 2021-03-26 16:51:12
  * @Description:路由表
  */
 import React from 'react';
@@ -143,7 +143,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="SetTradePassword"
+            initialRouteName="Loading"
             headerMode="float" //兼容部分安卓
             screenOptions={{
                 headerBackImage: () => {
