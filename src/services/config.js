@@ -1,11 +1,11 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 18:56:36
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-26 20:09:00
  * @Description:环境
  */
-const env = 'develop'; //默认
+const env = 'test'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
