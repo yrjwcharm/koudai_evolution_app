@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 18:03:28
+ * @LastEditTime: 2021-03-25 18:51:51
  * @Description: 体验金首页
  */
 
@@ -139,12 +139,7 @@ const ExperienceGold = ({navigation}) => {
                                 </Text>
                             </Text>
                         </View>
-                        <View
-                            style={{
-                                justifyContent: data?.part1?.time_desc ? 'flex-end' : 'center',
-                                marginTop: data?.part1?.time_desc ? text(4) : 0,
-                                position: 'relative',
-                            }}>
+                        <View style={[styles.buttonBox, {marginTop: data?.part1?.time_desc ? text(4) : 0}]}>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 style={[Style.flexCenter, styles.fill]}
@@ -163,7 +158,7 @@ const ExperienceGold = ({navigation}) => {
                                 disabled={!data?.part1?.cashout_button?.avail}
                                 disabledColor={'#F2F2F2'}
                                 color={'#D7AF74'}
-                                style={[styles.withdrawBtn, !data?.part1?.time_desc ? {marginBottom: 0} : {}]}
+                                style={{...styles.withdrawBtn, marginBottom: !data?.part1?.time_desc ? 0 : text(6)}}
                                 textStyle={{
                                     ...styles.profitText,
                                     color: data?.part1?.cashout_button?.avail ? '#fff' : '#C1C1C1',
@@ -189,7 +184,7 @@ const ExperienceGold = ({navigation}) => {
                             style={[Style.flexBetween, styles.productBox]}
                             key={_index + '_i'}
                             onPress={() => {
-                                global.LogTool('click', 'account', _item.account_id);
+                                global.LogTool('click', 'account', _item.plan_id);
                                 Jump(_item.url);
                             }}>
                             <View style={{flex: 1}}>
@@ -248,7 +243,7 @@ const ExperienceGold = ({navigation}) => {
                             ]}
                             key={_index + '_p'}
                             onPress={() => {
-                                global.LogTool('click', 'account', _p.account_id);
+                                global.LogTool('click', 'account', _p.plan_id);
                                 Jump(_p.button.url);
                             }}>
                             <View style={{flex: 1}}>
@@ -284,7 +279,7 @@ const ExperienceGold = ({navigation}) => {
                                 color={'#fff'}
                                 style={styles.buyBtn}
                                 onPress={() => {
-                                    global.LogTool('click', 'account', _p.poid);
+                                    global.LogTool('click', 'account', _p.plan_id);
                                     Jump(_p.button.url);
                                 }}
                                 textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
@@ -475,6 +470,12 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(20),
         color: Colors.descColor,
+    },
+    buttonBox: {
+        flex: 1,
+        alignItems: 'flex-end',
+        marginTop: text(4),
+        position: 'relative',
     },
 });
 

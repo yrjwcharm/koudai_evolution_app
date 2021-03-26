@@ -2,7 +2,7 @@
  * @Date: 2021-03-03 11:03:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 16:45:02
+ * @LastEditTime: 2021-03-25 20:30:11
  * @Description: 答题提现
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -22,18 +22,20 @@ const QuestionWithdraw = ({navigation}) => {
     const handleAnswer = useCallback(
         (item) => {
             global.LogTool('click', 'answer', item.name);
-            setAnswer([item.name]);
+            setAnswer([item]);
             if (item.val === 1) {
-                setCurrent((prev) => {
-                    if (prev + 1 === 2) {
-                        setTimeout(() => {
-                            jump(data.jump_url, 'replace');
-                        }, 0);
-                        return prev;
-                    } else {
-                        return prev + 1;
-                    }
-                });
+                setTimeout(() => {
+                    setCurrent((prev) => {
+                        if (prev + 1 === 2) {
+                            setTimeout(() => {
+                                jump(data.jump_url, 'replace');
+                            }, 0);
+                            return prev;
+                        } else {
+                            return prev + 1;
+                        }
+                    });
+                }, 300);
             } else {
                 Toast.show('答案错误');
                 setTimeout(() => {
@@ -75,7 +77,11 @@ const QuestionWithdraw = ({navigation}) => {
                                 style={[
                                     styles.cardList,
                                     {
-                                        borderColor: answer.indexOf(item.name) >= 0 ? '#D4AC6F' : '#EEF0F6',
+                                        borderColor: answer.some((i) => i.name === item.name)
+                                            ? answer[0].val === 1
+                                                ? '#D4AC6F'
+                                                : Colors.red
+                                            : '#EEF0F6',
                                     },
                                 ]}
                                 onPress={() => handleAnswer(item)}>
@@ -83,8 +89,12 @@ const QuestionWithdraw = ({navigation}) => {
                                     style={[
                                         styles.cardText,
                                         {
-                                            fontWeight: answer.indexOf(item.name) >= 0 ? '500' : '400',
-                                            color: answer.indexOf(item.name) >= 0 ? '#C7964B' : '#262626',
+                                            fontWeight: answer.some((i) => i.name === item.name) ? '500' : '400',
+                                            color: answer.some((i) => i.name === item.name)
+                                                ? answer[0].val === 1
+                                                    ? '#C7964B'
+                                                    : Colors.red
+                                                : '#262626',
                                         },
                                     ]}>
                                     {item.name}
