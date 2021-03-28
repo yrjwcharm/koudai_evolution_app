@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 19:00:55
+ * @LastEditTime: 2021-03-28 20:28:29
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -38,7 +38,7 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
-const bottom = isIphoneX() ? 84 : 50;
+const bottom = isIphoneX() ? 84 : px(50);
 //机器人动画
 const layoutAnimation = () => {
     LayoutAnimation.configureNext({
@@ -407,7 +407,7 @@ class Question extends Component {
     };
     checkInput = (value) => {
         if (value) {
-            if (value < 0 || value >= 1000000) {
+            if (value < 0 || value >= 10000000) {
                 this.setState({warn: true, inputBtnCanClick: false});
                 return false;
             } else {
@@ -489,7 +489,7 @@ class Question extends Component {
                 {current_ques ? (
                     <ScrollView
                         keyboardShouldPersistTaps="handled"
-                        scrollEnabled={false}
+                        // scrollEnabled={false}
                         style={{
                             backgroundColor: '#fff',
                         }}>

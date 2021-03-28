@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 21:49:26
+ * @LastEditTime: 2021-03-28 20:29:20
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -145,7 +145,7 @@ class TradeBuy extends Component {
         };
         http.get('/trade/buy/plan/20210101', params).then((data) => {
             if (data.code === '000000') {
-                this.setState({planData: data.result, fee_text: data.result.fee_text, errTip: ''});
+                this.setState({planData: data.result, fee_text: data.result.fee_text});
             } else {
                 this.setState({
                     buyBtnCanClick: false,
@@ -554,6 +554,7 @@ class TradeBuy extends Component {
                     onDone={(select) => {
                         this.setState({bankSelect: select});
                         this.init();
+                        this.state.amount && this.onInput(this.state.amount);
                     }}
                 />
             </ScrollView>
