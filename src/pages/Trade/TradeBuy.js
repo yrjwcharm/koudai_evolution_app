@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:00:25
+ * @LastEditTime: 2021-03-29 17:06:07
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -76,11 +76,6 @@ class TradeBuy extends Component {
                         nextday: res.result?.period_info?.nextday,
                     },
                     () => {
-                        console.log(
-                            this.state.amount,
-                            `${res.result.buy_info.initial_amount}`,
-                            res.result.buy_info.initial_amount
-                        );
                         let amount = this.state.amount || `${res.result.buy_info.initial_amount}`;
                         this.plan(amount);
                         if (amount) {
@@ -93,7 +88,6 @@ class TradeBuy extends Component {
     };
     //默认金额校验
     checkData = (amount) => {
-        console.log(amount, this.state.bankSelect.single_amount);
         this.setState({errTip: ''}, () => {
             if (amount > this.state.bankSelect.single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {

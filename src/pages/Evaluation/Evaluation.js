@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 14:17:30
+ * @LastEditTime: 2021-03-29 19:11:39
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -177,10 +177,10 @@ class Question extends Component {
                     });
                     this.quesBtnView?.fadeInRight(500);
                 });
-                if (questions[this.state.current].style == 'age_cursor') {
+                if (questions[this.state.current]?.style == 'age_cursor') {
                     this.setState({value: questions[this.state.current].default_value, inputBtnCanClick: true});
                 } else {
-                    if (!value && questions[this.state.current].type == 3) {
+                    if (!value && questions[this.state.current]?.type == 3) {
                         this.setState({inputBtnCanClick: false});
                     }
                 }
@@ -243,6 +243,9 @@ class Question extends Component {
         if (Platform.OS == 'android') {
             Vibration.vibrate(10);
         }
+        if (this.state.previousCount) {
+            this.setState({previousCount: 0});
+        }
         this.canNextClick = true;
         const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
         let _current = this.state.current - count;
@@ -251,7 +254,7 @@ class Question extends Component {
             this.setState({inputBtnCanClick: true});
         }
         this.setState({current: _current}, () => {
-            this.setState({value: questions[this.state.current].value || ''});
+            this.setState({value: questions[this.state.current]?.value || ''});
         });
 
         layoutAnimation();
@@ -404,13 +407,18 @@ class Question extends Component {
     onLayout = (event) => {
         this.setState({offsetY: -event.nativeEvent.layout.y});
     };
-    checkInput = (value) => {
+    checkInput = (value, id) => {
         if (value) {
-            if (value < 0 || value >= 10000000) {
+            if (value < 0 || value > 10000000) {
                 this.setState({warn: true, inputBtnCanClick: false});
                 return false;
             } else {
-                this.setState({warn: false, inputBtnCanClick: true});
+                if (id == 33 && value < 2000) {
+                    //投资金额
+                    this.setState({warn: true, inputBtnCanClick: false});
+                } else {
+                    this.setState({warn: false, inputBtnCanClick: true});
+                }
             }
         } else {
             this.setState({inputBtnCanClick: false});
@@ -426,7 +434,7 @@ class Question extends Component {
             if (id == 21) {
                 this.expendAmount = onlyNumber(value); //记录月支出金额
             }
-            this.checkInput(onlyNumber(value));
+            this.checkInput(onlyNumber(value), id);
         }
     };
     render() {
@@ -459,7 +467,6 @@ class Question extends Component {
                 tagList = questions[previousTest].childList;
             }
         }
-
         return (
             <>
                 <Header

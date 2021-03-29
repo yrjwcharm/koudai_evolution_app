@@ -217,6 +217,7 @@ export default function DetailEducation({navigation, route}) {
                                 {data?.plan_info?.schoolList?.map((_s, _i) => {
                                     return (
                                         <TouchableOpacity
+                                            key={_i}
                                             activeOpacity={1}
                                             style={[
                                                 Style.flexRowCenter,
@@ -427,6 +428,7 @@ export default function DetailEducation({navigation, route}) {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={1}
+                                            key={_w}
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},

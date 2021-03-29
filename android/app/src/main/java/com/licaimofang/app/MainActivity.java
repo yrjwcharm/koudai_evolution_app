@@ -2,13 +2,15 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 13:55:15
+ * @LastEditTime: 2021-03-29 17:49:42
  * @Description: 
  */
 package com.licaimofang.app;
 import android.os.Bundle; // here
 import org.devio.rn.splashscreen.SplashScreen; // here
 import com.facebook.react.ReactActivity;
+import android.os.Build;
+import android.webkit.WebView;
 public class MainActivity extends ReactActivity {
 
   /**
@@ -21,6 +23,9 @@ public class MainActivity extends ReactActivity {
   }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //webview 调试
+        WebView.setWebContentsDebuggingEnabled(true);
+    }
       SplashScreen.show(this,R.style.SplashScreenTheme);  // here
       super.onCreate(savedInstanceState);
   }

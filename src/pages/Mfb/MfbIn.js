@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 16:10:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 18:12:57
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -61,7 +61,7 @@ class MfbIn extends Component {
                     amount,
                 });
             } else if (amount > Number(bankSelect.left_amount)) {
-                const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.single_amount + '元';
+                const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.left_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
@@ -112,11 +112,10 @@ class MfbIn extends Component {
                     pay_method: bankSelect.pay_method,
                 }).then((res) => {
                     if (res.code === '000000') {
-                        if (this.props.route.params.fr === 'trade_buy') {
-                            this.props.navigation.replace('TradeBuy');
-                        } else {
-                            this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
-                        }
+                        this.props.navigation.navigate('TradeProcessing', {
+                            txn_id: res.result.txn_id,
+                            fr: this.props.route?.params?.fr,
+                        });
                     } else {
                         Modal.show({
                             confirm: false,

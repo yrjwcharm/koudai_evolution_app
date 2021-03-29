@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 15:46:21
+ * @LastEditTime: 2021-03-29 17:45:13
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -68,6 +68,7 @@ class Chart extends PureComponent {
                 style={styles.webView}
                 injectedJavaScript={initScript}
                 source={source}
+                startInLoadingState={true}
                 originWhitelist={['*']}
                 onMessage={this.onMessage}
                 {...props}
