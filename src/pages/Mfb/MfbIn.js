@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 11:51:37
+ * @LastEditTime: 2021-03-29 16:10:09
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -29,10 +29,9 @@ class MfbIn extends Component {
             tips: '',
             enable: false,
             checked: true,
-            code: props?.route?.code || '',
+            code: props?.route?.params?.code || '',
         };
     }
-    UNSAFE_componentWillMount() {}
     init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
@@ -113,7 +112,11 @@ class MfbIn extends Component {
                     pay_method: bankSelect.pay_method,
                 }).then((res) => {
                     if (res.code === '000000') {
-                        this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+                        if (this.props.route.params.fr === 'trade_buy') {
+                            this.props.navigation.replace('TradeBuy');
+                        } else {
+                            this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+                        }
                     } else {
                         Modal.show({
                             confirm: false,

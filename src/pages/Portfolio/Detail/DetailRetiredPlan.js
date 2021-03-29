@@ -8,17 +8,16 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px, px as text, deviceWidth} from '../../../utils/appUtil';
+import {px, px as text, deviceWidth, formaNum} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {pie} from './ChartOption';
+import {pieChart} from './ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import Header from '../../../components/NavBar';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
 import Table from '../components/Table';
@@ -116,11 +115,11 @@ export default function DetailRetiredPlan({navigation, route}) {
             setData(res.result);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
-                    setCountFr(Number(res.result?.plan_info?.trade_amount));
+                    setCountFr(Number(item.val));
                 } else if (item.type == 'auto') {
-                    setCountM(Number(res.result?.plan_info?.trade_amount));
+                    setCountM(Number(item.val));
                 } else if (item.type == 'duration') {
-                    setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
+                    setCurrent(item.val);
                 }
             });
             setRemark(res.result.plan_info?.goal_info?.remark);
@@ -194,7 +193,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                 </View>
                             </View>
-                            <Text style={styles.fund_input_sty}>{data?.plan_info?.goal_info?.amount}</Text>
+                            <Text style={styles.fund_input_sty}>{formaNum(data?.plan_info?.goal_info?.amount)}</Text>
                             <View style={{position: 'relative', marginTop: text(5)}}>
                                 <FontAwesome
                                     name={'caret-up'}
@@ -230,7 +229,9 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                         </TouchableOpacity>
 
                                                         <Text style={styles.count_num_sty}>
-                                                            {_item.type == 'begin' ? countFr : countM}
+                                                            {_item.type == 'begin'
+                                                                ? formaNum(countFr)
+                                                                : formaNum(countM)}
                                                         </Text>
                                                         <TouchableOpacity
                                                             activeOpacity={1}
@@ -324,7 +325,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 color={'#0051CC'}
                             />
                             <View style={{height: 200}}>
-                                <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
                             </View>
                         </View>
                         <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>

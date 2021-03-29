@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:29:51
+ * @LastEditTime: 2021-03-29 14:54:06
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -105,7 +105,7 @@ const SetTradePassword = ({navigation, route}) => {
                         });
                     } else {
                         Toast.show('两次设置的交易密码不一致');
-                        handelReset();
+                        setPassword('');
                     }
                 } else {
                     setPwdMsg('请再次设置您的6位数字交易密码');
