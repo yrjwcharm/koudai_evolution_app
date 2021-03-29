@@ -3,9 +3,9 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 14:55:56
+ * @LastEditTime: 2021-03-29 11:59:43
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -18,6 +18,8 @@ import Clipboard from '@react-native-community/clipboard';
 import Notice from '../../components/Notice';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks/';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
 const tips = [
@@ -30,7 +32,7 @@ const tips = [
 const LargeAmount = (props) => {
     const [data, setData] = useState({});
     const jump = useJump();
-    useEffect(() => {
+    const init = () => {
         Http.get('/trade/large_transfer/info/20210101').then((res) => {
             setData(res.result);
             props.navigation.setOptions({
@@ -43,7 +45,7 @@ const LargeAmount = (props) => {
                 },
             });
         });
-    }, [props.navigation]);
+    };
     const jumpPage = (url) => {
         if (!url) {
             return;
@@ -72,13 +74,26 @@ const LargeAmount = (props) => {
     const rightPress = () => {
         props.navigation.navigate('LargeAmountIntro');
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init, props.navigation])
+    );
     return (
         <View style={{backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: btnHeight})}>
                     <Notice content={data?.processing} isClose={true} />
                     {/* <Text style={styles.yellow_sty}>{data.processing}</Text> */}
+
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
+                        <View>
+                            <Text style={styles.title_sty}>极速汇款</Text>
+                            <Text style={{marginVertical: text(16), lineHeight: text(18)}}>
+                                当您向魔方监管户中汇入资金，系统确认收到后将存入魔方宝。若需要购买其他任何组合您可立即使用。
+                            </Text>
+                        </View>
                         <Text style={styles.title_sty}>汇款流程</Text>
                         <View style={styles.process_wrap}>
                             <Image
@@ -123,6 +138,28 @@ const LargeAmount = (props) => {
                                     </TouchableOpacity>
                                 );
                             })}
+                            <TouchableOpacity
+                                style={[
+                                    styles.bankCard,
+                                    {
+                                        borderTopColor: Colors.borderColor,
+                                        borderTopWidth: 0.5,
+                                    },
+                                ]}
+                                onPress={() =>
+                                    props.navigation.navigate({name: 'AddBankCard', params: {action: 'add'}})
+                                }>
+                                <Image
+                                    style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
+                                    source={{
+                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/03/yhk2@3x.png',
+                                    }}
+                                />
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.text}>添加新银行卡</Text>
+                                </View>
+                                <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
+                            </TouchableOpacity>
                         </>
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
@@ -261,6 +298,21 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderRadius: text(5),
         marginRight: text(16),
+    },
+    bankCard: {
+        backgroundColor: '#fff',
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: text(62),
+        justifyContent: 'space-between',
+
+        // overflow: 'hidden'
+    },
+    bank_icon: {
+        width: text(32),
+        height: text(32),
+        marginRight: 14,
+        resizeMode: 'contain',
     },
 });
 export default LargeAmount;

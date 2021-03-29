@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 14:16:46
+ * @LastEditTime: 2021-03-29 12:10:26
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -26,7 +26,7 @@ class MfbOut extends Component {
             bankSelect: 0,
             check: [],
             selectData: {},
-            optionChoose: 0,
+            optionChoose: 1,
             tips: '',
             enable: false,
             code: props.route.code,
@@ -47,6 +47,7 @@ class MfbOut extends Component {
                 data: data.result,
                 selectData: selectData,
                 check: this.state.check,
+                optionChoose: withdraw_options[0]?.type,
             });
         });
     }
@@ -102,25 +103,34 @@ class MfbOut extends Component {
     };
     allAmount = () => {
         //optionChoose==1快速提现
+        console.log(this.state.optionChoose);
         if (this.state.optionChoose === 1) {
-            this.setState({
-                amount: this.state.selectData.quickAmount.toString(),
-                enable: true,
-            });
+            this.setState(
+                {
+                    amount: this.state.selectData.quickAmount.toString(),
+                },
+                () => {
+                    this.isEnAble();
+                }
+            );
         } else {
-            this.setState({
-                amount: this.state.selectData.comAmount.toString(),
-                enable: true,
-            });
+            this.setState(
+                {
+                    amount: this.state.selectData.comAmount.toString(),
+                },
+                () => {
+                    this.isEnAble();
+                }
+            );
         }
-        if (this.state.optionChoose === 1) {
+    };
+    isEnAble = () => {
+        if (!this.state.amount) {
             this.setState({
-                amount: this.state.selectData.quickAmount.toString(),
-                enable: true,
+                enable: false,
             });
         } else {
             this.setState({
-                amount: this.state.selectData.comAmount.toString(),
                 enable: true,
             });
         }
@@ -161,7 +171,11 @@ class MfbOut extends Component {
                 pay_method: data.pay_methods[bankSelect].pay_method,
                 type: optionChoose,
             }).then((res) => {
-                this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+                if (res.code === '000000') {
+                    this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
+                } else {
+                    Toast.show(res.message);
+                }
             });
         });
     };

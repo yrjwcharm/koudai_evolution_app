@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:34:50
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 11:18:31
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -30,7 +30,7 @@ function Agreements(props) {
     return (
         <View style={[{flexDirection: 'row'}, style]}>
             {!isHide && (
-                <TouchableHighlight onPress={toggle} underlayColor="white">
+                <TouchableHighlight onPress={toggle} underlayColor="transparent">
                     {container}
                 </TouchableHighlight>
             )}

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 17:01:28
+ * @LastEditTime: 2021-03-29 11:51:37
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -15,6 +15,9 @@ import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import http from '../../services';
 import BottomDesc from '../../components/BottomDesc';
+import {useFocusEffect} from '@react-navigation/native';
+import Agreements from '../../components/Agreements';
+import Toast from '../../components/Toast';
 class MfbIn extends Component {
     constructor(props) {
         super(props);
@@ -25,17 +28,20 @@ class MfbIn extends Component {
             bankSelect: '',
             tips: '',
             enable: false,
+            checked: true,
             code: props?.route?.code || '',
         };
     }
-    UNSAFE_componentWillMount() {
+    UNSAFE_componentWillMount() {}
+    init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
                 data: data.result,
                 bankSelect: data.result?.pay_methods[0],
             });
         });
-    }
+    };
+
     onInput = (amount) => {
         const {data, bankSelect} = this.state;
         // const pay_methods = data.pay_methods[bankSelect];
@@ -79,7 +85,11 @@ class MfbIn extends Component {
         }
     };
     submit = () => {
-        this.passwordModal.show();
+        if (!this.state.checked) {
+            Toast.show('请勾选协议！');
+        } else {
+            this.passwordModal.show();
+        }
     };
     //清空输入框
     clearInput = () => {
@@ -121,7 +131,7 @@ class MfbIn extends Component {
             <View style={{marginBottom: px(12)}}>
                 <View style={[styles.bankCard, Style.flexBetween]}>
                     {pay_methods.length > 0 ? (
-                        <>
+                        <TouchableOpacity onPress={this.changeBankCard} style={Style.flexRow} activeOpacity={1}>
                             <Image
                                 style={styles.bank_icon}
                                 source={{
@@ -142,13 +152,13 @@ class MfbIn extends Component {
                                     {bankSelect?.limit_desc}
                                 </Text>
                             </View>
-                            <TouchableOpacity onPress={this.changeBankCard}>
+                            <View>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                     切换
                                     <Icon name={'right'} size={px(12)} />
                                 </Text>
-                            </TouchableOpacity>
-                        </>
+                            </View>
+                        </TouchableOpacity>
                     ) : null}
                 </View>
                 {large_pay_method ? (
@@ -174,7 +184,7 @@ class MfbIn extends Component {
                                         {large_pay_method?.limit_desc}
                                     </Text>
                                 </View>
-                                <TouchableOpacity style={[styles.yel_btn]}>
+                                <TouchableOpacity style={[styles.yel_btn]} activeOpacity={1}>
                                     <Text style={{color: Colors.yellow}}>
                                         去汇款
                                         <Icon name={'right'} size={px(12)} />
@@ -221,7 +231,7 @@ class MfbIn extends Component {
                             value={amount.toString()}
                         />
                         {amount.length > 0 && (
-                            <TouchableOpacity onPress={this.clearInput}>
+                            <TouchableOpacity onPress={this.clearInput} activeOpacity={1}>
                                 <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
                             </TouchableOpacity>
                         )}
@@ -231,9 +241,23 @@ class MfbIn extends Component {
                 {/* 银行卡 */}
                 {this.render_bank()}
 
-                <Text style={{color: Colors.darkGrayColor, paddingHorizontal: Space.padding, fontSize: px(12)}}>
-                    点击确认购买即代表您已知悉该基金组合的
-                </Text>
+                <Agreements
+                    onChange={(checked) => {
+                        this.setState({checked});
+                    }}
+                    title="我已阅读并同意"
+                    style={{marginHorizontal: px(16)}}
+                    data={[
+                        {
+                            title: '《基金组合协议》',
+                            id: 18,
+                        },
+                        {
+                            title: '《魔方宝服务协议》',
+                            id: 21,
+                        },
+                    ]}
+                />
 
                 <BottomDesc />
                 <BankCardModal
@@ -254,6 +278,7 @@ class MfbIn extends Component {
         const {button, recharge_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
+                <Focus init={this.init} />
                 {recharge_info && this.render_buy()}
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
@@ -261,6 +286,14 @@ class MfbIn extends Component {
             </View>
         );
     }
+}
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+    return null;
 }
 const styles = StyleSheet.create({
     title: {
