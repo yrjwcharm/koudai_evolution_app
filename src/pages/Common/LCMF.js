@@ -1,12 +1,21 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 15:59:49
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 15:32:03
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
+import {
+    View,
+    Text,
+    ScrollView,
+    ActivityIndicator,
+    TouchableOpacity,
+    StyleSheet,
+    StatusBar,
+    Platform,
+} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -20,7 +29,14 @@ export default function LCMF({route, navigation}) {
     useEffect(() => {
         navigation.setOptions({
             headerBackImage: () => {
-                return <Feather name="chevron-left" size={30} color={'#fff'} />;
+                return (
+                    <Feather
+                        name="chevron-left"
+                        size={30}
+                        color={'#fff'}
+                        style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                    />
+                );
             },
             headerStyle: {
                 backgroundColor: Colors.brandColor,
@@ -60,15 +76,16 @@ export default function LCMF({route, navigation}) {
     }, [route]);
 
     return (
-        <View style={{flex: 1, backgroundColor: '#ddd'}}>
+        <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
             <RNWebView
+                bounces={false}
                 javaScriptEnabled
                 originWhitelist={['*']}
                 source={{
                     uri: route?.params?.link,
                 }}
                 startInLoadingState={true}
-                style={{flex: 1}}
+                style={{flex: 1, backgroundColor: Colors.brandColor}}
             />
             <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
         </View>

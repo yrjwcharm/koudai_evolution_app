@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 11:22:45
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 15:09:14
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -78,7 +78,7 @@ const FindDetail = (props) => {
                                 <View style={Style.flexRow}>
                                     <FastImage
                                         style={{height: px(24), width: px(24), marginTop: px(-6)}}
-                                        source={require('../../assets/img/logo-icon.png')}
+                                        source={require('../../assets/img/index/logo.png')}
                                     />
                                     <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
                                 </View>

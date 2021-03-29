@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 16:51:41
+ * @LastEditTime: 2021-03-29 17:13:12
  */
 // import _ from 'lodash';
 export const baseChart = (data) => `(function(){
@@ -105,6 +105,65 @@ export const pie = (data, map) => `
     });
     chart.get('canvas').draw();
 })();
+`;
+export const pieChart = (data, map) => `
+(function(){
+  const map = {};
+  // ${data}.forEach(function(obj) {
+  //   map[obj.name] = Number(obj.ratio*100).toFixed(2)+ '%';
+  // });
+  
+  const chart = new F2.Chart({
+    id: 'chart',
+    pixelRatio: window.devicePixelRatio,
+    padding: [ 20, 'auto' ]
+  });
+  chart.source(${JSON.stringify(data)},{
+    ratio: {
+      formatter: function formatter(val) {
+        return (val * 100).toFixed(2)+ '%';
+      }
+    }
+  });
+  chart.tooltip(false);
+  chart.legend({
+    position: 'right',
+    itemFormatter: function itemFormatter(val) {
+      return val + '  '+ (${JSON.stringify(map)}[val] * 100).toFixed(2)+'%'
+    }
+  });
+  chart.coord('polar', {
+    transposed: true,
+    innerRadius: 0.7,
+    radius: 0.85
+  });
+  chart.axis(false);
+  chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#F04864', '#8543E0']).adjust('stack').style({
+    lineWidth: 1,
+    stroke: '#fff',
+    lineJoin: 'round',
+    lineCap: 'round'
+  }).animate({
+    appear: {
+      duration: 600,
+      easing: 'bounceOut'
+    }
+  });
+  chart.pieLabel({
+    activeShape: true,
+    lineStyle:{
+        opacity:0
+    },
+    anchorStyle:{
+        opacity:0
+    }
+  });
+  chart.guide().html({
+    position: [ '50%', '45%' ],
+    html: '<div style="width: 250px;height: 10px;text-align: center;font-size:12px">'+'全球资产配置'+'</div>'
+  });
+  chart.render();
+})()
 `;
 export const histogram = (data, min) =>
     `

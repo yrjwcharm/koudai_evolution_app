@@ -2,18 +2,17 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 18:51:51
+ * @LastEditTime: 2021-03-29 16:39:01
  * @Description: 体验金首页
  */
 
 import React, {useCallback, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil.js';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Http from '../../services/index.js';
 import {Button} from '../../components/Button';
@@ -23,7 +22,6 @@ import Header from '../../components/NavBar';
 import {useJump} from '../../components/hooks';
 
 const ExperienceGold = ({navigation}) => {
-    const insets = useSafeAreaInsets();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const bottomModal = useRef(null);
@@ -112,7 +110,9 @@ const ExperienceGold = ({navigation}) => {
                             );
                         })}
                     </View>
-                    <Text style={[styles.noticeText, styles.expireText]}>{data?.part1?.expire}</Text>
+                    {data?.part1?.expire ? (
+                        <Text style={[styles.noticeText, styles.expireText]}>{data?.part1?.expire}</Text>
+                    ) : null}
                     {data?.part1?.button?.title && (
                         <Button
                             activeOpacity={1}
@@ -173,26 +173,33 @@ const ExperienceGold = ({navigation}) => {
                 )}
                 {/* 未购买稳健组合后展示的样式 */}
                 {data?.part2?.cards && (
-                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign, marginTop: text(12)}]}>
+                    <Text style={[styles.bigTitle, {marginLeft: Space.marginAlign, marginTop: text(20)}]}>
                         {data?.part2?.title}
                     </Text>
                 )}
-                {data?.part2?.cards?.map((_item, _index) => {
+                {data?.part2?.cards?.map((_item, _index, arr) => {
                     return (
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            style={[Style.flexBetween, styles.productBox]}
+                            style={[
+                                Style.flexBetween,
+                                styles.productBox,
+                                {
+                                    marginBottom: _index === arr.length - 1 ? (isIphoneX() ? 34 : 0) : 0,
+                                },
+                            ]}
                             key={_index + '_i'}
                             onPress={() => {
                                 global.LogTool('click', 'account', _item.plan_id);
                                 Jump(_item.url);
                             }}>
                             <View style={{flex: 1}}>
-                                <View style={[styles.title, Style.flexRow]}>
-                                    <Text style={{fontWeight: '500'}}>{_item.name}</Text>
+                                <View style={[Style.flexRow]}>
+                                    <Text style={[styles.title, {fontWeight: '500'}]}>{_item.name}</Text>
                                     <Text
                                         style={{
                                             fontSize: Font.textH3,
+                                            lineHeight: text(20),
                                             color: Colors.descColor,
                                             marginLeft: text(5),
                                         }}>
@@ -224,7 +231,7 @@ const ExperienceGold = ({navigation}) => {
 
                 {/* 购买稳健组合后展示的样式 */}
                 {data?.part2?.portfolios && (
-                    <View style={[Style.flexRow, {paddingLeft: Space.padding}]}>
+                    <View style={[Style.flexRow, {paddingLeft: Space.padding, paddingTop: text(20)}]}>
                         <Text style={{...styles.bigTitle, marginRight: text(8)}}>{data?.part2?.title}</Text>
                         <Text style={{...styles.noticeText, color: Colors.lightGrayColor}}>{data?.part2?.desc}</Text>
                     </View>
@@ -237,8 +244,7 @@ const ExperienceGold = ({navigation}) => {
                                 Style.flexBetween,
                                 styles.productBox,
                                 {
-                                    paddingRight: text(13),
-                                    marginBottom: _index === arr.length - 1 ? insets.bottom : 0,
+                                    marginBottom: _index === arr.length - 1 ? (isIphoneX() ? 34 : 0) : 0,
                                 },
                             ]}
                             key={_index + '_p'}
@@ -354,12 +360,12 @@ const styles = StyleSheet.create({
     },
     fill: {
         position: 'absolute',
-        left: 0,
+        left: text(2),
         top: 0,
         backgroundColor: '#F96450',
         borderTopRightRadius: text(16),
         borderBottomRightRadius: text(16),
-        borderTopLeftRadius: text(8),
+        borderTopLeftRadius: text(Platform.select({ios: 8, android: 12})),
         borderBottomLeftRadius: 0,
         width: text(21),
         height: text(16),
@@ -397,7 +403,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     items: {
-        paddingBottom: text(16),
+        paddingBottom: text(20),
         paddingHorizontal: text(10),
         width: '100%',
     },
@@ -409,7 +415,8 @@ const styles = StyleSheet.create({
     },
     withdrawBox: {
         margin: Space.marginAlign,
-        paddingHorizontal: text(18),
+        marginBottom: 0,
+        paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
         height: text(80),
         backgroundColor: '#fff',
@@ -443,7 +450,7 @@ const styles = StyleSheet.create({
         lineHeight: text(26),
         color: '#DC4949',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     yieldKey: {
         fontSize: Font.textSm,

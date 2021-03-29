@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 12:06:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 17:01:28
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -224,7 +224,7 @@ function HomeScreen({navigation, route}) {
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
             if (isFocused && userInfo?.toJS()?.is_login) {
-                scrollRef.current.scrollTo({x: 0, y: 0, animated: false});
+                scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
                 userInfo?.toJS()?.is_login && !showGesture && init('refresh');
             }
         });
@@ -307,6 +307,7 @@ function HomeScreen({navigation, route}) {
                                 color={'rgba(255, 255, 255, 0.8)'}
                             />
                         </TouchableOpacity>
+                        {/* 体验金 */}
                         {userBasicInfo?.free_fund && (
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -503,7 +504,7 @@ function HomeScreen({navigation, route}) {
                     );
                 })}
                 {/* 底部菜单 */}
-                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0, marginBottom: text(24)}]}>
+                <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
                     {userBasicInfo?.bottom_menus?.map((item, index) => {
                         return (
                             <TouchableOpacity
@@ -625,7 +626,7 @@ const styles = StyleSheet.create({
         lineHeight: text(40),
         color: '#fff',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         textAlign: 'center',
     },
     experienceGold: {
@@ -633,7 +634,7 @@ const styles = StyleSheet.create({
         top: text(-5),
         right: 0,
         padding: text(8),
-        backgroundColor: '#9DBBFF',
+        backgroundColor: '#6C9AEF',
         borderTopLeftRadius: text(100),
         borderBottomLeftRadius: text(100),
     },
@@ -753,7 +754,7 @@ const styles = StyleSheet.create({
         lineHeight: text(16),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     portfoliosName: {
         fontSize: text(13),

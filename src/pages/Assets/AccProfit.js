@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 14:35:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:00:51
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
         fontSize: text(26),
         lineHeight: text(30),
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         textAlign: 'center',
         marginTop: text(2),
     },

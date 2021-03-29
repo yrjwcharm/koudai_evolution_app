@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 18:07:03
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 15:37:27
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -14,6 +14,7 @@ import {
     TouchableOpacity,
     ScrollView,
     KeyboardAvoidingView,
+    Keyboard,
     Platform,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -121,6 +122,7 @@ class BankInfo extends Component {
                             });
                         });
                         setTimeout(() => {
+                            Keyboard.dismiss();
                             this.props.navigation.replace(res.result?.jump_url?.path, {
                                 ...res.result?.jump_url?.params,
                                 fr: this.props.route?.params?.fr || '',

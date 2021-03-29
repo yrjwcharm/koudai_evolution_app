@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:00:54
+ * @LastEditTime: 2021-03-29 18:01:20
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -43,7 +43,7 @@ export const baseAreaChart = (
     tickCount: 5,
     range: [ 0, 1 ],
     formatter: (value) => {
-      return ${percent ? 'Number(value * 100).toFixed(2) + "%"' : 'value.toFixed(' + tofixed + ')'};
+      return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
   });
   chart.axis('date', {
@@ -55,6 +55,13 @@ export const baseAreaChart = (
         textCfg.textAlign = 'right';
       }
       return textCfg;
+    }
+  });
+  chart.axis('value', {
+    label: function label(text) {
+      const cfg = {};
+      cfg.text = parseFloat(text) < 1 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+      return cfg;
     }
   });
   chart.legend(false);
@@ -351,7 +358,7 @@ export const percentStackColumn = (
       symbol: 'circle', // marker 的形状
       radius: 5 // 半径大小
     },
-    offsetX: -16,
+    offsetX: -12,
     titleStyle: {
       fontSize: 13,
       color: '#4E556C',

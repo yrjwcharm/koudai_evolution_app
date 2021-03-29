@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: xjh
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -16,7 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Header from '../../../components/NavBar';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import {histogram, pie} from './ChartOption';
+import {histogram, pieChart} from './ChartOption';
 import {baseAreaChart} from '../components/ChartOption';
 import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
@@ -241,7 +241,7 @@ export default function DetailAccount({route, navigation}) {
                                     style={{
                                         color: '#4BA471',
                                         fontSize: text(15),
-                                        fontWeight: 'bold',
+                                        // fontWeight: 'bold',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {chartData?.remark?.ratio}
@@ -259,7 +259,7 @@ export default function DetailAccount({route, navigation}) {
                     <View style={styles.card_sty}>
                         <ListHeader data={data.asset_deploy.header} color={'#0051CC'} />
                         <View style={{height: 200}}>
-                            <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                            <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
                         </View>
                     </View>
                     {/* 智能调仓 */}
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),

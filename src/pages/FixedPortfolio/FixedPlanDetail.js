@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:10:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 17:09:15
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -49,7 +49,7 @@ export default function FixedPlan(props) {
         Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
             setData(res.result);
         });
-    }, []);
+    }, [props.route]);
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     title_sty: {
         color: Colors.defaultFontColor,
         fontSize: Font.textH1,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
     },
     time_sty: {

@@ -3,30 +3,30 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:16:54
+ * @LastEditTime: 2021-03-29 16:18:11
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text} from '../../utils/appUtil';
+import {px, px as text, formaNum} from '../../utils/appUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import Http from '../../services';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks/';
 var interval, _cycle, _timing;
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState(1000);
     const [cycle, setCycle] = useState('');
-
+    const jump = useJump();
     const addNum = () => {
         setNum(num + interval);
     };
     const subtractNum = () => {
         setNum(num - interval);
     };
-    // 金额每隔三个加个，
     useEffect(() => {
         Http.get('/trade/update/invest_plan/info/20210101', {
             invest_id: route.params.invest_id,
@@ -37,7 +37,6 @@ export default function FixedUpdate({navigation, route}) {
             setCycle(_date);
             _cycle = _date.slice(0, 2);
             _timing = _date.slice(2);
-            console.log(_cycle, _timing, '000');
         });
     }, []);
     const selectTime = () => {
@@ -81,7 +80,7 @@ export default function FixedUpdate({navigation, route}) {
             }).then((res) => {
                 Toast.show(res.message);
                 setTimeout(() => {
-                    navigation.goBack();
+                    jump(data.button[0].url);
                 }, 1000);
             });
         } else {
@@ -92,6 +91,9 @@ export default function FixedUpdate({navigation, route}) {
                 timing: _timing,
             }).then((res) => {
                 Toast.show(res.message);
+                setTimeout(() => {
+                    jump(data.button[1].url);
+                }, 1000);
             });
         }
     };
@@ -104,11 +106,13 @@ export default function FixedUpdate({navigation, route}) {
                             <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
                         )}
                         {data?.target_info?.target_amount?.value && (
-                            <Text style={styles.input_sty}> {data?.target_info?.target_amount?.value}</Text>
+                            <Text style={styles.input_sty}> {formaNum(data?.target_info?.target_amount?.value)}</Text>
                         )}
                         {data?.target_info?.first_invest?.value && (
                             <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                                <Text style={{color: '#545968', flex: 1}}>{data?.target_info?.first_invest?.text}</Text>
+                                <Text style={{color: '#545968', flex: 1}}>
+                                    {formaNum(data?.target_info?.first_invest?.text)}
+                                </Text>
                                 <Text style={[styles.count_num_sty, {textAlign: 'right'}]}>
                                     {data?.target_info?.first_invest?.value}
                                 </Text>
@@ -120,7 +124,7 @@ export default function FixedUpdate({navigation, route}) {
                                 <TouchableOpacity onPress={subtractNum}>
                                     <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
                                 </TouchableOpacity>
-                                <Text style={styles.count_num_sty}>{num}</Text>
+                                <Text style={styles.count_num_sty}>{formaNum(num)}</Text>
                                 <TouchableOpacity onPress={addNum}>
                                     <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
                                 </TouchableOpacity>
@@ -149,13 +153,13 @@ export default function FixedUpdate({navigation, route}) {
                                 marginRight: text(10),
                             }}
                             onPress={() => jumpTo('redeem')}>
-                            <Text style={styles.btn_sty}>终止计划</Text>
+                            <Text style={styles.btn_sty}>{data.button[0].text}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={1}
                             style={{backgroundColor: '#0051CC', borderRadius: text(6), flex: 1}}
                             onPress={() => jumpTo('update')}>
-                            <Text style={[styles.btn_sty, {color: '#fff'}]}>确认修改</Text>
+                            <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

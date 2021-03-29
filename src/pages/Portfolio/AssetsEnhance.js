@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 10:51:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-19 16:14:26
+ * @LastEditTime: 2021-03-29 11:37:46
  * @Description: 资产增强
  */
 import React, {useState, useEffect} from 'react';
@@ -39,11 +39,17 @@ const AssetsEnhance = ({navigation, route}) => {
                         />
                     </View>
                     <View style={styles.details}>
-                        {data.info.items.map((_item, _index) => {
+                        {data.info.items.map((_item, _index, arr) => {
                             return (
                                 <View style={[styles.detail, {marginTop: 0}]} key={_index + '_item'}>
                                     <Text style={styles.title}>{_item.title}</Text>
-                                    <Text style={styles.content}>{_item.content}</Text>
+                                    <Text
+                                        style={[
+                                            styles.content,
+                                            _index !== arr.length - 1 ? {marginBottom: text(14)} : {},
+                                        ]}>
+                                        {_item.content}
+                                    </Text>
                                 </View>
                             );
                         })}

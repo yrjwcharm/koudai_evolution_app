@@ -1,14 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-03-20 14:57:46
+ * @LastEditTime: 2021-03-29 14:08:33
  * @LastEditors: dx
  * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import http from '../../services';
@@ -37,6 +36,7 @@ const CommonProblem = ({navigation, route}) => {
                     styles.header,
                     Style.flexBetween,
                     {borderBottomRightRadius: isActive ? 0 : text(8), borderBottomLeftRadius: isActive ? 0 : text(8)},
+                    index === 0 ? {marginTop: text(14)} : {},
                 ]}>
                 <View style={[Style.flexRow, {flex: 1, maxWidth: '90%'}]}>
                     <Image source={require('../../assets/img/detail/question.png')} style={styles.icon_ques} />
@@ -56,9 +56,9 @@ const CommonProblem = ({navigation, route}) => {
         );
     };
     return (
-        <SafeAreaView style={[styles.container]} edges={['bottom']}>
+        <>
             {Object.keys(data || {}).length > 0 && (
-                <ScrollView>
+                <ScrollView style={styles.container}>
                     <Accordion
                         sections={data.rows}
                         expandMultiple
@@ -72,7 +72,7 @@ const CommonProblem = ({navigation, route}) => {
                     />
                 </ScrollView>
             )}
-        </SafeAreaView>
+        </>
     );
 };
 
@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.bgColor,
         paddingHorizontal: text(12),
-        paddingTop: text(14),
     },
     header: {
         flexDirection: 'row',

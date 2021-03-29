@@ -1,16 +1,16 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-26 17:00:16
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 15:19:19
+ * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, ImageBackground} from 'react-native';
 import {deviceWidth, px as text} from '../utils/appUtil';
-import {Colors, Font, Space} from '../common/commonStyle';
+import {Colors, Font, Space, Style} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
@@ -82,26 +82,40 @@ const BottomDesc = (props) => {
                     <FastImage source={{uri: data.image}} style={[styles.img]} />
                 </View>
             )}
-            {data &&
-                data.desc.map((item, index) => {
-                    return (
-                        <View style={styles.item} key={index}>
-                            {item.title && <Text style={styles.text}>{item.title}</Text>}
-                            {item?.btn?.text ? (
+            {data?.desc?.map((item, index, arr) => {
+                return (
+                    <View style={styles.item} key={index}>
+                        {item.title &&
+                            (index === 0 ? (
+                                <ImageBackground
+                                    style={[Style.flexRowCenter, styles.bg]}
+                                    source={require('../assets/img/bottomBg.png')}>
+                                    <Text style={styles.text}>{item.title}</Text>
+                                </ImageBackground>
+                            ) : (
                                 <Text
-                                    style={styles.button}
-                                    onPress={() => {
-                                        global.LogTool('bottomDesc');
-                                        navigation.navigate(item.btn.jump_to, {
-                                            link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
-                                        });
-                                    }}>
-                                    {item.btn.text}
+                                    style={[
+                                        styles.text,
+                                        index === arr.length - 1 ? {color: '#B8C1D3', marginTop: text(8)} : {},
+                                    ]}>
+                                    {item.title}
                                 </Text>
-                            ) : null}
-                        </View>
-                    );
-                })}
+                            ))}
+                        {item?.btn?.text ? (
+                            <Text
+                                style={styles.button}
+                                onPress={() => {
+                                    global.LogTool('bottomDesc');
+                                    navigation.navigate(item.btn.jump_to, {
+                                        link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
+                                    });
+                                }}>
+                                {item.btn.text}
+                            </Text>
+                        ) : null}
+                    </View>
+                );
+            })}
         </View>
     );
 };
@@ -122,13 +136,17 @@ const styles = StyleSheet.create({
     },
     text: {
         color: Colors.darkGrayColor,
-        fontSize: Font.textH3,
-        lineHeight: text(20),
+        fontSize: text(11),
+        lineHeight: text(18),
     },
     button: {
         color: Colors.brandColor,
-        fontSize: Font.textH3,
+        fontSize: text(11),
         marginLeft: text(2),
+    },
+    bg: {
+        width: deviceWidth - Space.marginAlign * 2,
+        height: text(18),
     },
 });
 

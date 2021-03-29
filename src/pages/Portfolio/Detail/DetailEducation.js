@@ -8,11 +8,11 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px, px as text} from '../../../utils/appUtil';
+import {px, px as text, formaNum} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {pie} from './ChartOption';
+import {pieChart} from './ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
@@ -161,9 +161,9 @@ export default function DetailEducation({navigation, route}) {
             setAge(res.result.plan_info.personal_info?.age);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
-                    setCountFr(Number(res.result?.plan_info?.trade_amount));
+                    setCountFr(Number(item.val));
                 } else if (item.type == 'auto') {
-                    setCountM(Number(res.result?.plan_info?.trade_amount));
+                    setCountM(Number(item.val));
                 }
                 // else if (item.type == 'duration') {
                 //     setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
@@ -247,7 +247,9 @@ export default function DetailEducation({navigation, route}) {
                                 <View style={[Style.flexRow, {marginTop: text(24)}]}>
                                     <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
                                 </View>
-                                <Text style={styles.fund_input_sty}>{data?.plan_info?.goal_info?.amount}</Text>
+                                <Text style={styles.fund_input_sty}>
+                                    {formaNum(data?.plan_info?.goal_info?.amount)}
+                                </Text>
                                 <View style={{position: 'relative', marginTop: text(5)}}>
                                     <FontAwesome
                                         name={'caret-up'}
@@ -278,7 +280,7 @@ export default function DetailEducation({navigation, route}) {
                                                         <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
                                                     </TouchableOpacity>
                                                     <Text style={styles.count_num_sty}>
-                                                        {_item.type == 'begin' ? countFr : countM}
+                                                        {_item.type == 'begin' ? formaNum(countFr) : formaNum(countM)}
                                                     </Text>
                                                     <TouchableOpacity
                                                         activeOpacity={1}
@@ -360,7 +362,7 @@ export default function DetailEducation({navigation, route}) {
                                     color={'#0051CC'}
                                 />
                                 <View style={{height: 200}}>
-                                    <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                    <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
                                 </View>
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
@@ -528,10 +530,11 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

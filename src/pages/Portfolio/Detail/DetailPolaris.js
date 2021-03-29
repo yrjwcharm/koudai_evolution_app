@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:26:20
+ * @LastEditTime: 2021-03-29 17:14:13
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -12,7 +12,7 @@ import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
-import {pie} from './ChartOption';
+import {pieChart} from './ChartOption';
 import {baseAreaChart} from '../components/ChartOption';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     num_sty: {
         color: '#E74949',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(32),
         textAlign: 'center',
         marginTop: text(12),
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
