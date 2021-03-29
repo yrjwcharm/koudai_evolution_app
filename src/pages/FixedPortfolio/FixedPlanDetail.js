@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 15:29:20
+ * @LastEditTime: 2021-03-29 13:10:50
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -134,7 +134,7 @@ export default function FixedPlan(props) {
                                 })}
                             </ScrollView>
                         ) : (
-                            <EmptyTip text="暂无定投记录" />
+                            <EmptyTip text="暂无定投记录" style={{paddingTop: text(20)}} />
                         )}
                     </View>
                 </View>

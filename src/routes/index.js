@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-28 20:06:36
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 13:21:56
  * @Description:路由表
  */
 import React from 'react';
@@ -401,8 +401,8 @@ export default function AppStack() {
             <Stack.Screen name="MessageNotice" component={MessageNotice} options={{headerShown: false}} />
             <Stack.Screen name="PrivateRedeem" component={PrivateRedeem} options={{title: '赎回流程'}} />
             <Stack.Screen name="PrivateApply" component={PrivateApply} options={{title: '赎回流程'}} />
-            <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{headerShown: false}} />
-            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{headerShown: false}} />
+            <Stack.Screen name="DetailPolaris" component={DetailPolaris} options={{title: ''}} />
+            <Stack.Screen name="StrategyPolaris" component={StrategyPolaris} options={{title: ''}} />
             <Stack.Screen name="PrivateAssets" component={PrivateAssets} options={{headerShown: false}} />
             <Stack.Screen name="BankList" component={BankList} options={{title: '银行产品'}} />
             <Stack.Screen name="ContactUs" component={ContactUs} options={{title: '联系我们'}} />

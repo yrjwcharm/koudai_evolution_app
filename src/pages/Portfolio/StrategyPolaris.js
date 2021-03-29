@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 17:59:28
+ * @LastEditTime: 2021-03-29 13:25:13
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
@@ -12,14 +12,15 @@ import FitImage from 'react-native-fit-image';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Font, Style, Colors} from '../../common/commonStyle';
-import Header from '../../components/NavBar';
 import http from '../../services';
-import * as Animatable from 'react-native-animatable';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
-        http.get('/polaris/strategy/20210101').then((res) => {
+        Http.get('/polaris/strategy/20210101').then((res) => {
+            props.navigation.setOptions({
+                title: res.result.title,
+            });
             setData(res.result);
         });
     }, [props.route]);
@@ -27,10 +28,9 @@ export default function StrategyPolaris(props) {
         props.navigation.navigate(url.path, url.params);
     };
     return (
-        <View style={{backgroundColor: Colors.bgColor}}>
-            {Object.keys(data).length > 0 && <Header title={data.title} leftIcon="chevron-left" />}
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{marginBottom: btnHeight}}>
+                <ScrollView>
                     <View style={{backgroundColor: '#fff'}}>
                         <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
                         <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>

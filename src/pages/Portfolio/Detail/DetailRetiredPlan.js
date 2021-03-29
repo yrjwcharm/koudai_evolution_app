@@ -8,7 +8,7 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px, px as text} from '../../../utils/appUtil';
+import {px, px as text, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -29,7 +29,9 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
+import {BoxShadow} from 'react-native-shadow';
 var _params, _current, allocation_id, _poid;
+
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
@@ -44,6 +46,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [remark, setRemark] = useState();
     const [chart, setChart] = useState([]);
     const jump = useJump();
+
     const rightPress = () => {
         navigation.navigate('Evaluation');
     };
