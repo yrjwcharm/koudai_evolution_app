@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-28 20:28:29
+ * @LastEditTime: 2021-03-29 11:14:04
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px, isIphoneX, deviceHeight as height, deviceWidth} from '../../utils/appUtil';
+import {px, isIphoneX, deviceHeight as height, deviceWidth, onlyNumber} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import * as Animatable from 'react-native-animatable';
 import HTML from '../../components/RenderHtml';
@@ -382,9 +382,8 @@ class Question extends Component {
         );
     };
     goBackAndroid = () => {
-        if (Platform.OS == 'android') {
-            return true;
-        }
+        this.goBack();
+        return true;
     };
     goBack = () => {
         Modal.show({
@@ -420,14 +419,14 @@ class Question extends Component {
         return true;
     };
     inputValue = (value, type, id) => {
-        this.setState({value});
+        this.setState({value: type == 'age' ? value : onlyNumber(value)});
         if (type && type == 'age') {
             this.setState({inputBtnCanClick: true});
         } else {
             if (id == 21) {
-                this.expendAmount = value; //记录月支出金额
+                this.expendAmount = onlyNumber(value); //记录月支出金额
             }
-            this.checkInput(value);
+            this.checkInput(onlyNumber(value));
         }
     };
     render() {

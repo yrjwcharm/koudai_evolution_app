@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 20:27:16
+ * @LastEditTime: 2021-03-29 10:55:20
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -199,8 +199,8 @@ const onlyNumber = (value) => {
     if (value) {
         //获得第一个字符是否为负号
         var t = value.charAt(0);
-        //先把非数字的都替换掉，除了数字和.和-号
-        value = value.replace(/[^\d\.\-]/g, '');
+        //先把非数字的都替换掉，除了数字和.
+        value = value.replace(/[^\d\.]/g, '');
         //前两位不能是0加数字
         value = value.replace(/^0\d[0-9]*/g, '');
         //必须保证第一个为数字而不是.
@@ -211,9 +211,9 @@ const onlyNumber = (value) => {
         value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
         //若是第一位是负号，则容许添加
         value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
-        if (t == '-') {
-            return '';
-        }
+        // if (t == '-') {
+        //     return '';
+        // }
         return value;
     } else {
         return '';
