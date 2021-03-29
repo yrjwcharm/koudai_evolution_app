@@ -221,7 +221,7 @@ const Index = (props) => {
                                         }}>
                                         <Text style={styles.card_title}>{item.name}</Text>
                                         {item?.labels && (
-                                            <Text style={[styles.card_title_dexc, {marginTop: px(10)}]}>
+                                            <Text style={[styles.card_title_dexc, {marginTop: px(8)}]}>
                                                 {item?.labels.map((_item, _index) =>
                                                     _index == 0 ? (
                                                         <Text key={_index}>{_item}</Text>

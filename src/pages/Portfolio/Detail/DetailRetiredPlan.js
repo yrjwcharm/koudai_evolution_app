@@ -405,7 +405,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                 <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
             </BottomModal>
-            <FixedBtn btns={data?.btns} />
+            {data?.btns && <FixedBtn btns={data?.btns} />}
         </View>
     );
 }
