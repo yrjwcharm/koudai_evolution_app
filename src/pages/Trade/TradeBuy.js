@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 16:26:17
+ * @LastEditTime: 2021-03-29 16:29:29
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -36,7 +36,7 @@ class TradeBuy extends Component {
             has_tab: true,
             //默认tab
             initialPage: 0,
-            amount: `${props.route?.params?.amount}` || '', //${props.route?.params?.amount}
+            amount: props.route?.params?.amount || '', //${props.route?.params?.amount}
             password: '',
             configExpand: false, //买入明细是否展开
             showMask: false,
