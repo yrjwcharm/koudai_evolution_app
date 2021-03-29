@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 11:14:04
+ * @LastEditTime: 2021-03-29 14:17:30
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -38,7 +38,7 @@ import {Modal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
-const bottom = isIphoneX() ? 84 : px(50);
+const bottom = isIphoneX() ? 64 : px(30);
 //机器人动画
 const layoutAnimation = () => {
     LayoutAnimation.configureNext({
@@ -497,7 +497,12 @@ class Question extends Component {
                             behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                             style={[styles.container, {height: height - this.header.navBarHeight - bottom}]}>
                             <Robot />
-                            <Animated.View style={{transform: [{translateY}], opacity}} onLayout={this.onLayout}>
+                            <Animated.View
+                                style={{
+                                    transform: [{translateY}],
+                                    opacity,
+                                }}
+                                onLayout={this.onLayout}>
                                 <Animatable.View ref={this.handleContentView} animation="fadeInUp">
                                     {!finishTest ? (
                                         <>

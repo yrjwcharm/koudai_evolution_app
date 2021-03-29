@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 11:25:13
+ * @LastEditTime: 2021-03-29 13:54:49
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -31,7 +31,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
 import JPush from 'jpush-react-native';
-var _timer;
+import {Button} from '../../components/Button';
 const shadow = {
     color: '#E3E6EE',
     border: 10,
@@ -275,6 +275,16 @@ const Index = (props) => {
                                     </Swiper>
                                 ) : null}
                             </View>
+                            {/* <Button
+                                title="本地推送"
+                                onPress={() => {
+                                    JPush.addLocalNotification({
+                                        messageID: '123',
+                                        title: '哈哈',
+                                        content: '你好',
+                                    });
+                                }}
+                            /> */}
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
