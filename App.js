@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 17:51:45
+ * @LastEditTime: 2021-03-29 12:25:17
  * @Description: app全局入口文件
  */
 import React, {useRef} from 'react';
@@ -125,7 +125,8 @@ function App(props) {
     };
     global.ErrorUtils.setGlobalHandler((error) => {
         console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
-        console.log(error.name, error.message, [{text: 'OK'}]);
+        console.log(error, error.name, error.message);
+        http.post('/mapi/report/app_log/20210101', {error_type: error.name, error_msg: error.message});
     }, true);
     React.useEffect(() => {
         heartBeat();

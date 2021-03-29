@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:23:14
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 12:26:53
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -94,7 +94,13 @@ const Index = (props) => {
                                 }}
                                 style={[styles.recommend, styles.card]}>
                                 <View style={[styles.header]}>
-                                    <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                                    <View style={Style.flexRow}>
+                                        <FastImage
+                                            style={{height: px(24), width: px(24), marginTop: px(-6)}}
+                                            source={require('../../assets/img/logo-icon.png')}
+                                        />
+                                        <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                                    </View>
                                     <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
                                 </View>
                                 <FastImage

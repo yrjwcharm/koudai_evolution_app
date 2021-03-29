@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
+		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045532591A5B30083350B /* libRCTWeChat.a */; };
 		008045552591A5CD0083350B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB7F258B442700501EA5 /* libz.tbd */; };
 		0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045592591A5DA0083350B /* libc++.tbd */; };
@@ -118,6 +120,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
+				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
