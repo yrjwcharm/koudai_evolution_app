@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-28 20:29:20
+ * @LastEditTime: 2021-03-29 10:48:40
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -36,7 +36,7 @@ class TradeBuy extends Component {
             has_tab: true,
             //默认tab
             initialPage: 0,
-            amount: props.route?.params?.amount || '',
+            amount: props.route?.params?.amount || '2000',
             password: '',
             configExpand: false, //买入明细是否展开
             showMask: false,
@@ -74,6 +74,7 @@ class TradeBuy extends Component {
                     nextday: res.result?.period_info?.nextday,
                 });
                 this.plan(this.state.amount || res.result.buy_info.initial_amount);
+                this.onInput(this.state.amount || res.result.buy_info.initial_amount);
             }
         });
     };
@@ -554,7 +555,7 @@ class TradeBuy extends Component {
                     onDone={(select) => {
                         this.setState({bankSelect: select});
                         this.init();
-                        this.state.amount && this.onInput(this.state.amount);
+                        // this.state.amount && this.onInput(this.state.amount);
                     }}
                 />
             </ScrollView>

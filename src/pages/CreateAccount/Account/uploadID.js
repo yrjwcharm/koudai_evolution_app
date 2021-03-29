@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 17:04:47
+ * @LastEditTime: 2021-03-29 10:28:10
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -21,10 +21,11 @@ import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Modal, SelectModal} from '../../../components/Modal';
-import {check, PERMISSIONS, RESULTS, request, openSettings} from 'react-native-permissions';
+import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import upload from '../../../services/upload';
 import Toast from '../../../components/Toast';
 import _ from 'lodash';
+import http from '../../../services';
 const typeArr = ['从相册中获取', '拍照'];
 export class uploadID extends Component {
     state = {
@@ -40,6 +41,9 @@ export class uploadID extends Component {
         this.setState({showTypePop: true, clickIndex});
     };
     componentDidMount() {
+        http.get('/mapi/identity/uolodd_info/20210101').then((res) => {
+            console.log(res);
+        });
         this.subscription = DeviceEventEmitter.addListener(
             'EventType',
             _.debounce((uri) => {
