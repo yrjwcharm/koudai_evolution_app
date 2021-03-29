@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 20:13:02
+ * @LastEditTime: 2021-03-29 11:46:08
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -239,7 +239,7 @@ export default class TradeRedeem extends Component {
                                 ]}>
                                 <TextInput
                                     style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
-                                    placeholder={this.state.inputValue ? '' : data?.redeem_info?.redeem_text}
+                                    placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
                                     value={this.state.inputValue}
                                     onChangeText={(text) => this.onChange(text)}
                                 />

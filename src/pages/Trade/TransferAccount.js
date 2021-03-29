@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 13:19:22
+ * @LastEditTime: 2021-03-29 10:29:44
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -129,7 +129,7 @@ export default function TransferAccount({navigation, route}) {
                                                             {_i?.name}
                                                         </Text>
                                                         <Text style={styles.content_item_text}>
-                                                            {Number(_i?.ratio_src * 100).toFixed(2)}
+                                                            {Number(_i?.ratio_src * 100).toFixed(2)}%
                                                         </Text>
                                                         <View
                                                             style={[
