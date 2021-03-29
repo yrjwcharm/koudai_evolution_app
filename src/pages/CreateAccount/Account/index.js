@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 18:17:00
+ * @LastEditTime: 2021-03-29 17:02:21
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -42,7 +42,7 @@ class Index extends Component {
 
     componentDidMount() {
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
-            if (params && Object.keys(params).length == 2) {
+            if (params && Object.keys(params).length == 2 && params.name && params.id_no) {
                 this.setState({name: params.name, id_no: params.id_no});
             }
             // 刷新界面等

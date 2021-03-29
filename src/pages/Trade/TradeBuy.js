@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 16:29:29
+ * @LastEditTime: 2021-03-29 17:00:25
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -68,22 +68,32 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
-                this.setState({
-                    data: res.result,
-                    bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
-                    currentDate: res.result?.period_info?.current_date,
-                    nextday: res.result?.period_info?.nextday,
-                });
-                let amount = this.state.amount || `${res.result.buy_info.initial_amount}`;
-                this.plan(amount);
-                if (amount) {
-                    this.checkData(amount);
-                }
+                this.setState(
+                    {
+                        data: res.result,
+                        bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
+                        currentDate: res.result?.period_info?.current_date,
+                        nextday: res.result?.period_info?.nextday,
+                    },
+                    () => {
+                        console.log(
+                            this.state.amount,
+                            `${res.result.buy_info.initial_amount}`,
+                            res.result.buy_info.initial_amount
+                        );
+                        let amount = this.state.amount || `${res.result.buy_info.initial_amount}`;
+                        this.plan(amount);
+                        if (amount) {
+                            this.checkData(amount);
+                        }
+                    }
+                );
             }
         });
     };
     //默认金额校验
     checkData = (amount) => {
+        console.log(amount, this.state.bankSelect.single_amount);
         this.setState({errTip: ''}, () => {
             if (amount > this.state.bankSelect.single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
@@ -317,9 +327,6 @@ class TradeBuy extends Component {
         this.setState({type: obj.i}, () => {
             this.init();
         });
-        // this.setState({type: obj.i}, () => {
-        //     this.init();
-        // });
     };
     //买入明细
     render_config() {
@@ -529,13 +536,16 @@ class TradeBuy extends Component {
                             <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                             <TextInput
                                 keyboardType="numeric"
-                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numMedium : null}]}
+                                style={[
+                                    styles.inputStyle,
+                                    {fontFamily: `${amount}`.length > 0 ? Font.numMedium : null},
+                                ]}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.lightGrayColor}
                                 onChangeText={this.onInput}
-                                value={amount}
+                                value={`${amount}`}
                             />
-                            {amount.length > 0 && (
+                            {`${amount}`.length > 0 && (
                                 <TouchableOpacity onPress={this.clearInput}>
                                     <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
                                 </TouchableOpacity>

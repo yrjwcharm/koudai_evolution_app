@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 20:06:17
+ * @LastEditTime: 2021-03-29 16:32:46
  * @Description:规划结果页
  */
 
@@ -19,6 +19,7 @@ import {Chart, chartOptions} from '../../components/Chart';
 import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
 import FastImage from 'react-native-fast-image';
+import _ from 'lodash';
 const animation = [
     {
         type: 'top',
@@ -218,9 +219,13 @@ export default class planResult extends Component {
                         {button && (
                             <QuestionBtn
                                 style={{marginTop: px(16)}}
-                                onPress={() => {
-                                    this.jumpNext(button?.url?.path, button?.url?.params);
-                                }}
+                                onPress={_.debounce(
+                                    () => {
+                                        this.jumpNext(button?.url?.path, button?.url?.params);
+                                    },
+                                    500,
+                                    {leading: true}
+                                )}
                             />
                         )}
                     </View>
