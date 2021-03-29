@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 18:21:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:04:53
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     section_num_sty: {
         color: '#1F2432',
         fontSize: Font.textH2,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
         marginTop: text(10),
     },

@@ -2,7 +2,7 @@
  * @Date: 2021-02-25 15:37:01
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:50:34
+ * @LastEditTime: 2021-03-29 16:01:31
  * @Description: 会员中心
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -321,13 +321,13 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     itemVal: {
         fontSize: text(18),
         lineHeight: text(29),
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     itemKey: {
         fontSize: Font.textH3,

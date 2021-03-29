@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 18:17:08
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 10:28:10
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -82,7 +82,7 @@ const Settings = ({navigation}) => {
                 });
             }
         });
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         Http.get('/mapi/config/20210101').then((res) => {

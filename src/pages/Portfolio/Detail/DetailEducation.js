@@ -529,10 +529,11 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

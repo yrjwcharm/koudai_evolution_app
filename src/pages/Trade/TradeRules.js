@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-03-20 16:19:01
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 16:09:08
+ * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
@@ -87,8 +87,8 @@ const Part1 = () => {
             <Text style={[styles.title]}>调仓费率</Text>
             <View style={[styles.feeDescBox, {paddingTop: 0}]}>
                 <Text style={[styles.feeDesc, {color: Colors.descColor}]}>
-                    内容内容捏内容内容，基金卖出时一般按照先进先出规则, 部分基金卖出按照后进后出规则.
-                    基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.
+                    调仓费率分为赎回费和购买费，赎回费与您当前基金赎回份额和持有时间相关，购买费与您购买基金金额相关，具体参照购买费率和赎回费率。
+                    实际费用收取请以基金公司确认为准。
                 </Text>
             </View>
         </View>
@@ -191,7 +191,7 @@ const Part2 = () => {
                     source={require('../../assets/img/line.png')}
                     style={[styles.line]}
                 />
-                <View style={[styles.buyComfirmTime, {borderBottomWidth: 0}]}>
+                <View style={[styles.buyComfirmTime, {borderBottomWidth: 0, marginBottom: 0}]}>
                     {data[1]?.steps?.map((step, idx, arr) => {
                         return (
                             <View
@@ -534,7 +534,8 @@ const styles = StyleSheet.create({
         color: Colors.brandColor,
     },
     buyComfirmTime: {
-        paddingBottom: text(16),
+        marginBottom: Space.marginVertical,
+        paddingBottom: Space.padding,
         borderColor: Colors.borderColor,
         borderBottomWidth: Space.borderWidth,
         flexDirection: 'row',
@@ -555,6 +556,7 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
     },
     buyTableCell: {
+        paddingHorizontal: text(6),
         flex: 1,
         height: '100%',
         borderRightWidth: Space.borderWidth,
@@ -646,7 +648,7 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: '#FF7D41',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
     },
     feeDescBox: {
@@ -656,7 +658,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     feeDesc: {
-        fontSize: Font.textH3,
+        fontSize: text(13),
         lineHeight: text(22),
         color: Colors.darkGrayColor,
         textAlign: 'justify',

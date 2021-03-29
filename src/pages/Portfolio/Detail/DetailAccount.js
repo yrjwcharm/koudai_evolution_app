@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -241,7 +241,7 @@ export default function DetailAccount({route, navigation}) {
                                     style={{
                                         color: '#4BA471',
                                         fontSize: text(15),
-                                        fontWeight: 'bold',
+                                        // fontWeight: 'bold',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {chartData?.remark?.ratio}
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),

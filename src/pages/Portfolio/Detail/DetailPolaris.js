@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:26:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 17:09:24
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     num_sty: {
         color: '#E74949',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(32),
         textAlign: 'center',
         marginTop: text(12),
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),

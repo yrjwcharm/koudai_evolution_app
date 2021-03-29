@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-20 16:58:01
+ * @LastEditTime: 2021-03-29 16:05:16
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
         marginVertical: text(12),
         padding: 0,
         paddingHorizontal: Space.marginAlign,
+        fontFamily: Font.numMedium,
     },
     percent_bar: {
         marginBottom: text(8),
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(16),
         color: Colors.descColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
     },
     assets_l1_amount: {
         marginRight: text(12),
@@ -320,21 +321,21 @@ const styles = StyleSheet.create({
         lineHeight: text(12),
         color: Colors.darkGrayColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     assets_l2_right: {
         fontSize: Font.textH3,
         lineHeight: text(16),
         color: Colors.descColor,
         fontWeight: '500',
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
     },
     assets_l2_ratio: {
         textAlign: 'right',
-        width: text(40),
+        width: text(44),
     },
     assets_l2_amount: {
-        marginRight: text(20),
+        marginRight: text(18),
     },
 });
 export default AssetsConfigDetail;

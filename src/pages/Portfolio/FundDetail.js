@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:34:42
+ * @LastEditTime: 2021-03-29 16:06:36
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -357,7 +357,9 @@ const FundDetail = ({navigation, route}) => {
                 )}
                 {data?.part3?.map((item, index) => {
                     return (
-                        <View style={styles.groupContainer} key={item.group + index}>
+                        <View
+                            style={[styles.groupContainer, !item?.items ? {marginTop: 0} : {}]}
+                            key={item.group + index}>
                             {item?.items?.length === 0 && (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -395,25 +397,29 @@ const FundDetail = ({navigation, route}) => {
                                                     style={[{paddingVertical: text(20)}, Style.flexBetween]}
                                                     onPress={() => jump(v.url)}>
                                                     <Text style={styles.title}>{v.key}</Text>
-                                                    <Text style={styles.groupVal}>
-                                                        {Object.prototype.toString.call(v.val) === '[object Object]' ? (
-                                                            <>
-                                                                <Text style={styles.origin}>{v.val.origin}</Text>
-                                                                &nbsp;&nbsp;
-                                                                <Text>{v.val.mofang}</Text>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                {v.val}
-                                                                &nbsp;&nbsp;
-                                                                <FontAwesome
-                                                                    name={'angle-right'}
-                                                                    size={20}
-                                                                    color={Colors.descColor}
-                                                                />
-                                                            </>
+                                                    <View style={Style.flexRow}>
+                                                        <Text numberOfLines={1} style={styles.groupVal}>
+                                                            {Object.prototype.toString.call(v.val) ===
+                                                            '[object Object]' ? (
+                                                                <>
+                                                                    <Text style={styles.origin}>{v.val.origin}</Text>
+                                                                    &nbsp;&nbsp;
+                                                                    <Text>{v.val.mofang}</Text>
+                                                                </>
+                                                            ) : (
+                                                                v.val
+                                                            )}
+                                                        </Text>
+                                                        {Object.prototype.toString.call(v.val) !==
+                                                            '[object Object]' && (
+                                                            <FontAwesome
+                                                                name={'angle-right'}
+                                                                size={20}
+                                                                color={Colors.descColor}
+                                                                style={{marginLeft: text(8)}}
+                                                            />
                                                         )}
-                                                    </Text>
+                                                    </View>
                                                 </TouchableOpacity>
                                             </View>
                                         );
@@ -492,7 +498,7 @@ const styles = StyleSheet.create({
         lineHeight: text(24),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     incBox: {
         marginLeft: text(10),
@@ -505,7 +511,7 @@ const styles = StyleSheet.create({
         lineHeight: text(16),
         color: '#fff',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     rankBox: {
         flex: 1,
@@ -517,6 +523,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#E2E4EA',
     },
     chartContainer: {
+        borderTopWidth: Space.borderWidth,
+        borderTopColor: Colors.borderColor,
         minHeight: text(318),
         paddingVertical: Space.padding,
     },
@@ -529,7 +537,8 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legendDesc: {
         fontSize: Font.textSm,
@@ -568,6 +577,7 @@ const styles = StyleSheet.create({
         fontSize: text(15),
         lineHeight: text(21),
         color: Colors.defaultColor,
+        maxWidth: text(210),
     },
     origin: {
         marginRight: text(4),

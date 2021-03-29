@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 18:20:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:08:05
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         marginBottom: text(4),
         fontFamily: Font.numFontFamily,
