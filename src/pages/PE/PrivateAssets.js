@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 11:14:04
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:05:03
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -430,7 +430,7 @@ export default function PrivateAssets({navigation, route}) {
                             tabBarInactiveTextColor={'#545968'}
                             style={{marginTop: text(12)}}>
                             {data?.tabs1.map((item, index) => {
-                                return <View tabLabel={item?.title} key={index + 'tab'}></View>;
+                                return <View tabLabel={item?.title} key={index + 'tab'} />;
                             })}
                         </ScrollableTabView>
                         {renderContent(curIndex, data?.tabs1[curIndex])}
@@ -443,7 +443,7 @@ export default function PrivateAssets({navigation, route}) {
                             onChangeTab={(obj) => changeNetTab(obj.i)}
                             style={{marginTop: text(12)}}>
                             {data?.tabs2?.map((item, index) => {
-                                return <View tabLabel={item?.title} key={index + 'tab1'}></View>;
+                                return <View tabLabel={item?.title} key={index + 'tab1'} />;
                             })}
                         </ScrollableTabView>
                         {renderItem(curIndexNet, data?.tabs2[curIndexNet])}
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),

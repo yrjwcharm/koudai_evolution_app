@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-22 17:33:54
+ * @LastEditTime: 2021-03-29 11:32:29
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -146,7 +146,8 @@ const styles = StyleSheet.create({
     },
     topPart: {
         backgroundColor: '#fff',
-        height: text(228),
+        height: text(240),
+        paddingBottom: text(12),
     },
     adjustListContainer: {
         margin: Space.marginAlign,

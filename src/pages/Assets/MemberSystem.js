@@ -2,7 +2,7 @@
  * @Date: 2021-02-26 14:44:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-01 15:47:50
+ * @LastEditTime: 2021-03-29 16:01:41
  * @Description: 魔方会员体系
  */
 
@@ -1012,11 +1012,7 @@ const MemberSystem = ({navigation, route}) => {
                                                 <Text style={[styles.bigTitle, {marginRight: text(4)}]}>
                                                     {data.rational_info.title.split(' ')[0]}
                                                 </Text>
-                                                <Text
-                                                    style={[
-                                                        styles.bigTitle,
-                                                        {fontFamily: Font.numFontFamily, fontWeight: 'bold'},
-                                                    ]}>
+                                                <Text style={[styles.bigTitle, {fontFamily: Font.numFontFamily}]}>
                                                     {data.rational_info.title.split(' ')[1]}
                                                 </Text>
                                             </View>

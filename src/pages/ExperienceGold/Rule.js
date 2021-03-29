@@ -3,7 +3,7 @@
  * @Date: 2021-03-03 15:05:36
  * @Description:体验金规则
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:29:24
+ * @LastEditTime: 2021-03-29 16:45:44
  */
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StatusBar, View} from 'react-native';
@@ -30,16 +30,17 @@ export default function Rule() {
                 style={{backgroundColor: '#D4AC6F'}}
                 fontStyle={{color: '#fff'}}
             />
-            <ScrollView style={{marginTop: text(10)}}>
+            <ScrollView style={{flex: 1}}>
                 {Object.keys(data).length > 0 &&
                     data?.image_list?.map((_item, _index, arr) => {
                         return (
-                            <FitImage
-                                style={[_index === arr.length - 1 ? {marginBottom: isIphoneX() ? 34 : 0} : {}]}
-                                key={_item + _index}
-                                source={{uri: _item}}
-                                resizeMode="contain"
-                            />
+                            <View
+                                style={[
+                                    _index === arr.length - 1 ? {marginBottom: isIphoneX() ? 54 : 20} : {},
+                                    _index === 0 ? {marginTop: 20} : {},
+                                ]}>
+                                <FitImage key={_item + _index} source={{uri: _item}} resizeMode="contain" />
+                            </View>
                         );
                     })}
             </ScrollView>

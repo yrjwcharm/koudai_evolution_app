@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-26 21:50:33
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 15:08:12
+ * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
  */
@@ -86,7 +86,7 @@ const FixedBtn = (props) => {
                     </TouchableOpacity>
                     <Button
                         title={btns[1]?.title}
-                        desc={btns[1]?.desc}
+                        // desc={btns[1]?.desc}
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         flex: 1,
-        height: text(50),
+        // height: text(50),
     },
     btnText: {
         fontSize: text(15),
@@ -158,15 +158,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     iconBox: {
-        width: text(50),
-        height: text(50),
-        borderRadius: text(25),
-        backgroundColor: '#DFEAFC',
+        // width: text(50),
+        // height: text(50),
+        // borderRadius: text(25),
+        // backgroundColor: '#DFEAFC',
         marginRight: text(12),
     },
     icon: {
-        width: text(24),
-        height: text(24),
+        width: text(40),
+        height: text(40),
     },
     methodTitle: {
         fontSize: Font.textH1,

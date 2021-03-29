@@ -12,7 +12,7 @@ import {px, px as text, formaNum} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {pie} from './ChartOption';
+import {pieChart} from './ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
@@ -364,7 +364,7 @@ export default function DetailEducation({navigation, route}) {
                                     color={'#0051CC'}
                                 />
                                 <View style={{height: 200}}>
-                                    <Chart initScript={pie(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                    <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
                                 </View>
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
@@ -531,10 +531,11 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
+        padding: 0, //处理textInput 在安卓上的兼容问题
     },
     legend_desc_sty: {
         fontSize: text(11),

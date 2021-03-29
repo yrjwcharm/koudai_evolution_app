@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 10:29:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 13:47:16
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -30,7 +30,7 @@ export default function TransferAccount({navigation, route}) {
         }).then((res) => {
             setData(res.result);
         });
-    }, [navigation]);
+    }, [navigation, route]);
     const passwordInput = () => {
         passwordModal.current.show();
     };
@@ -63,7 +63,7 @@ export default function TransferAccount({navigation, route}) {
                             <Text style={{color: '#9AA1B2', fontSize: text(12), marginHorizontal: text(5)}}>
                                 {data.trans_info.trans}
                             </Text>
-                            <Text style={{height: text(0.5), backgroundColor: '#DDDDDD', flex: 1}}></Text>
+                            <Text style={{height: text(0.5), backgroundColor: '#DDDDDD', flex: 1}} />
                         </View>
                         <Text style={styles.title_sty}>{data.trans_info.to}</Text>
                     </View>
@@ -98,8 +98,7 @@ export default function TransferAccount({navigation, route}) {
                                         <View key={_index + '_item'}>
                                             <View style={[Style.flexRow]}>
                                                 <View style={[Style.flexRow, {flex: 1, alignItems: 'baseline'}]}>
-                                                    <View
-                                                        style={[styles.circle, {backgroundColor: _item.color}]}></View>
+                                                    <View style={[styles.circle, {backgroundColor: _item.color}]} />
                                                     <Text style={{color: _item.color, fontSize: text(12)}}>
                                                         {_item.title}
                                                     </Text>

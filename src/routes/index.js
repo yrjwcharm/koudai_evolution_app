@@ -1,11 +1,12 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:21:56
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 17:10:12
  * @Description:路由表
  */
 import React from 'react';
+import {Platform} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
@@ -147,7 +148,13 @@ export default function AppStack() {
             headerMode="float" //兼容部分安卓
             screenOptions={{
                 headerBackImage: () => {
-                    return <Feather name="chevron-left" size={30} style={{marginLeft: 16}} />;
+                    return (
+                        <Feather
+                            name="chevron-left"
+                            size={30}
+                            style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                        />
+                    );
                 },
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 13:31:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:05:42
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
         lineHeight: text(12),
         color: Colors.darkGrayColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     assets_l2_right: {
         fontSize: text(13),

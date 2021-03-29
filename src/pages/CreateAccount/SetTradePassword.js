@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 14:54:06
+ * @LastEditTime: 2021-03-29 17:14:01
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -75,9 +75,16 @@ const SetTradePassword = ({navigation, route}) => {
                                         isTouchMaskToClose: false,
                                     });
                                     return false;
+                                } else if (route.params?.fr === 'add_bank_card') {
+                                    Modal.show({
+                                        confirmCallBack: () => jump(route.params?.url, 'replace'),
+                                        confirmText: '立即跳转',
+                                        content: '交易密码设置成功，即将跳转至添加银行卡页面',
+                                        isTouchMaskToClose: false,
+                                    });
+                                    return false;
                                 } else if (
                                     route.params?.action === 'unbind' ||
-                                    route.params?.fr === 'add_bank_card' ||
                                     route.params?.fr === 'wallet' ||
                                     route.params?.action === 'firstSet' ||
                                     route.params?.fr === 'TradePwdManagement'

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 10:28:10
+ * @LastEditTime: 2021-03-29 16:39:56
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -35,15 +35,23 @@ export class uploadID extends Component {
         clickIndex: '',
         frontStatus: false,
         backStatus: false,
+        desc: '',
     };
     toast = '';
+    fr = this.props.route?.params?.fr;
     showPop = (clickIndex) => {
         this.setState({showTypePop: true, clickIndex});
     };
     componentDidMount() {
-        http.get('/mapi/identity/uolodd_info/20210101').then((res) => {
-            console.log(res);
-        });
+        if (this.fr == 'anti_money') {
+            http.get('/mapi/identity/upload_info/20210101', {scene: this.fr}).then((res) => {
+                this.setState({
+                    frontSource: res.result.identity?.front,
+                    behindSource: res.result.identity?.back,
+                    desc: res.result.desc,
+                });
+            });
+        }
         this.subscription = DeviceEventEmitter.addListener(
             'EventType',
             _.debounce((uri) => {
@@ -188,7 +196,7 @@ export class uploadID extends Component {
         }
     };
     render() {
-        const {frontStatus, backStatus, showTypePop, frontSource, behindSource} = this.state;
+        const {frontStatus, backStatus, showTypePop, frontSource, behindSource, desc} = this.state;
         return (
             <View style={styles.con}>
                 <SelectModal
@@ -210,6 +218,11 @@ export class uploadID extends Component {
                 <Text style={styles.text}>
                     根据反洗钱法律法规及证监会要求，需要您上传身份证照片，请如实完善身份信息
                 </Text>
+                {desc ? (
+                    <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>
+                        请上传 **************8293的身份证照片
+                    </Text>
+                ) : null}
                 <View style={{alignItems: 'center'}}>
                     <TouchableOpacity
                         onPress={() => {
@@ -250,7 +263,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         textAlign: 'center',
-        marginVertical: px(20),
+        marginVertical: px(12),
     },
     title: {
         fontSize: Font.textH1,

@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     legendDesc: {
         fontSize: Font.textSm,

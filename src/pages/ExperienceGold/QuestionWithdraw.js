@@ -2,7 +2,7 @@
  * @Date: 2021-03-03 11:03:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 20:30:11
+ * @LastEditTime: 2021-03-29 16:03:33
  * @Description: 答题提现
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
         lineHeight: text(48),
         color: '#D4AC6F',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     total: {
         fontSize: text(16),
         lineHeight: text(19),
         color: '#999',
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     cardTitle: {
         marginBottom: text(4),

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:26:41
  * @Description:银行持仓(平安)
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 18:36:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:02:48
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     account_sty: {
         color: Colors.defaultFontColor,
         flex: 1,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
     },
     title_sty: {

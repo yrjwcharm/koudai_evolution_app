@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-03-20 14:56:08
+ * @LastEditTime: 2021-03-29 12:15:35
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -78,7 +78,7 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
     });
   chart.area()
     .position('date*value')
-    .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor, 'transparent'])})
+    .color('type', ${JSON.stringify(['l(90) 0:#fff 1:#E74949', 'transparent', 'transparent'])})
     .shape('smooth');
   chart.render();
 })();
@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
     },
     topPart: {
         backgroundColor: '#fff',
-        paddingHorizontal: text(14),
-        paddingBottom: text(28),
+        paddingHorizontal: Space.padding,
+        paddingBottom: Space.padding,
     },
     chartContainer: {
         height: text(260),
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     noticeContent: {
-        fontSize: Font.textH3,
+        fontSize: text(13),
         lineHeight: text(20),
         color: Colors.descColor,
     },

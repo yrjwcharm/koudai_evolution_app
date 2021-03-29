@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:44:25
+ * @LastEditTime: 2021-03-29 16:01:09
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
         lineHeight: text(32),
         color: Colors.red,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     btn: {
         borderRadius: text(23),

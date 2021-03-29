@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 19:27:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 16:03:02
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     },
     account_sty: {
         color: Colors.defaultFontColor,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
         fontSize: text(14),
     },

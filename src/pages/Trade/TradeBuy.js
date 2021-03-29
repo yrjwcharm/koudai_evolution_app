@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 10:53:28
+ * @LastEditTime: 2021-03-29 17:00:25
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -36,7 +36,7 @@ class TradeBuy extends Component {
             has_tab: true,
             //默认tab
             initialPage: 0,
-            amount: props.route?.params?.amount || '',
+            amount: props.route?.params?.amount || '', //${props.route?.params?.amount}
             password: '',
             configExpand: false, //买入明细是否展开
             showMask: false,
@@ -47,6 +47,7 @@ class TradeBuy extends Component {
             buyBtnCanClick: false,
             fee_text: '',
             errTip: '', //错误提示
+            mfbTip: false,
         };
     }
     getTab = () => {
@@ -67,14 +68,56 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
-                this.setState({
-                    data: res.result,
-                    bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
-                    currentDate: res.result?.period_info?.current_date,
-                    nextday: res.result?.period_info?.nextday,
-                });
-                this.plan(this.state.amount || res.result.buy_info.initial_amount);
-                this.onInput(this.state.amount || res.result.buy_info.initial_amount);
+                this.setState(
+                    {
+                        data: res.result,
+                        bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
+                        currentDate: res.result?.period_info?.current_date,
+                        nextday: res.result?.period_info?.nextday,
+                    },
+                    () => {
+                        console.log(
+                            this.state.amount,
+                            `${res.result.buy_info.initial_amount}`,
+                            res.result.buy_info.initial_amount
+                        );
+                        let amount = this.state.amount || `${res.result.buy_info.initial_amount}`;
+                        this.plan(amount);
+                        if (amount) {
+                            this.checkData(amount);
+                        }
+                    }
+                );
+            }
+        });
+    };
+    //默认金额校验
+    checkData = (amount) => {
+        console.log(amount, this.state.bankSelect.single_amount);
+        this.setState({errTip: ''}, () => {
+            if (amount > this.state.bankSelect.single_amount) {
+                if (this.state.bankSelect.pay_method == 'wallet') {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: '魔方宝余额不足,建议',
+                        mfbTip: true,
+                    });
+                } else {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+                        mfbTip: false,
+                    });
+                }
+            } else if (amount >= this.state.data.buy_info.initial_amount) {
+                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false});
+            } else {
+                this.setState({buyBtnCanClick: false});
+                if (amount) {
+                    this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                } else {
+                    this.setState({errTip: ''});
+                }
             }
         });
     };
@@ -150,12 +193,9 @@ class TradeBuy extends Component {
             } else {
                 this.setState({
                     buyBtnCanClick: false,
-                    errTip: data.message,
+                    // errTip: data.message,
                 });
             }
-            // setTimeout(() => {
-            //     this.state.amount && this.onInput(amount);
-            // });
         });
     };
 
@@ -168,10 +208,19 @@ class TradeBuy extends Component {
         let _amount = onlyNumber(amount);
         this.setState({amount: _amount, errTip: ''}, () => {
             if (_amount > this.state.bankSelect.single_amount) {
-                this.setState({
-                    buyBtnCanClick: false,
-                    errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
-                });
+                if (this.state.bankSelect.pay_method == 'wallet') {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: '魔方宝余额不足,建议',
+                        mfbTip: true,
+                    });
+                } else {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+                        mfbTip: false,
+                    });
+                }
             } else if (_amount >= this.state.data.buy_info.initial_amount) {
                 this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false});
                 this.plan(_amount);
@@ -278,9 +327,6 @@ class TradeBuy extends Component {
         this.setState({type: obj.i}, () => {
             this.init();
         });
-        // this.setState({type: obj.i}, () => {
-        //     this.init();
-        // });
     };
     //买入明细
     render_config() {
@@ -396,7 +442,7 @@ class TradeBuy extends Component {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
-                                        this.jumpPage('MfbIn');
+                                        this.jumpPage('MfbIn', {fr: 'trade_buy'});
                                     }}>
                                     <Text style={{color: Colors.btnColor}}>
                                         充值
@@ -472,7 +518,7 @@ class TradeBuy extends Component {
     }
     //购买
     render_buy() {
-        const {data, type, planData, errTip, amount} = this.state;
+        const {data, type, planData, errTip, amount, mfbTip} = this.state;
         const {buy_info, sub_title, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="never">
@@ -490,13 +536,16 @@ class TradeBuy extends Component {
                             <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                             <TextInput
                                 keyboardType="numeric"
-                                style={[styles.inputStyle, {fontFamily: amount.length > 0 ? Font.numMedium : null}]}
+                                style={[
+                                    styles.inputStyle,
+                                    {fontFamily: `${amount}`.length > 0 ? Font.numMedium : null},
+                                ]}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.lightGrayColor}
                                 onChangeText={this.onInput}
-                                value={amount}
+                                value={`${amount}`}
                             />
-                            {amount.length > 0 && (
+                            {`${amount}`.length > 0 && (
                                 <TouchableOpacity onPress={this.clearInput}>
                                     <Icon name="closecircle" color="#CDCDCD" size={px(16)} />
                                 </TouchableOpacity>
@@ -512,7 +561,18 @@ class TradeBuy extends Component {
                             </View>
                         ) : errTip ? (
                             <View style={styles.tip}>
-                                <Text style={{color: Colors.red}}>{errTip}</Text>
+                                <Text style={{color: Colors.red}}>
+                                    {errTip}
+                                    {mfbTip ? (
+                                        <Text
+                                            style={{color: Colors.btnColor}}
+                                            onPress={() => {
+                                                this.jumpPage('MfbIn', {fr: 'trade_buy'});
+                                            }}>
+                                            立即充值
+                                        </Text>
+                                    ) : null}
+                                </Text>
                             </View>
                         ) : null}
                     </View>
@@ -553,8 +613,10 @@ class TradeBuy extends Component {
                         this.bankCard = ref;
                     }}
                     onDone={(select) => {
-                        this.setState({bankSelect: select});
-                        this.init();
+                        this.setState({bankSelect: select}, () => {
+                            this.plan(this.state.amount);
+                            this.checkData(this.state.amount);
+                        });
                         // this.state.amount && this.onInput(this.state.amount);
                     }}
                 />
@@ -568,31 +630,38 @@ class TradeBuy extends Component {
         return (
             <>
                 <Focus init={this.getTab} />
-                <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51), backgroundColor: Colors.bgColor}}>
-                    {has_tab ? (
-                        <ScrollableTabView
-                            onChangeTab={this.changeBuyStatus}
-                            initialPage={type}
-                            renderTabBar={() => <TabBar />}>
-                            <View tabLabel="购买" style={{flex: 1}}>
-                                {this.render_buy()}
-                            </View>
-                            <View tabLabel="定投" style={{flex: 1}}>
-                                {this.render_buy()}
-                            </View>
-                        </ScrollableTabView>
-                    ) : (
-                        this.render_buy()
-                    )}
-                    {button && (
-                        <FixedButton
-                            title={button.text}
-                            disabled={button.avail == 0 || !buyBtnCanClick}
-                            onPress={this.buyClick}
-                        />
-                    )}
-                    {showMask && <Mask />}
-                </View>
+                {data ? (
+                    <View
+                        style={{
+                            flex: 1,
+                            paddingBottom: isIphoneX() ? px(85) : px(51),
+                            backgroundColor: Colors.bgColor,
+                        }}>
+                        {has_tab ? (
+                            <ScrollableTabView
+                                onChangeTab={this.changeBuyStatus}
+                                initialPage={type}
+                                renderTabBar={() => <TabBar />}>
+                                <View tabLabel="购买" style={{flex: 1}}>
+                                    {this.render_buy()}
+                                </View>
+                                <View tabLabel="定投" style={{flex: 1}}>
+                                    {this.render_buy()}
+                                </View>
+                            </ScrollableTabView>
+                        ) : (
+                            this.render_buy()
+                        )}
+                        {button && (
+                            <FixedButton
+                                title={button.text}
+                                disabled={button.avail == 0 || !buyBtnCanClick}
+                                onPress={this.buyClick}
+                            />
+                        )}
+                        {showMask && <Mask />}
+                    </View>
+                ) : null}
             </>
         );
     }

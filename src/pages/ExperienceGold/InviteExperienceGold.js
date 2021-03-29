@@ -2,7 +2,7 @@
  * @Date: 2021-03-11 10:03:53
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 16:39:42
+ * @LastEditTime: 2021-03-29 16:03:23
  * @Description: 邀请好友得体验金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
         lineHeight: text(37),
         color: Colors.red,
         fontFamily: Font.numFontFamily,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     processBox: {
         marginBottom: Space.marginVertical,
