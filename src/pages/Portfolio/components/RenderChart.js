@@ -2,13 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:58:51
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:05:54
->>>>>>> 9547eb17ccce76a27bb3431f58276ace62a689d2
+ * @LastEditTime: 2021-03-29 18:03:28
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';

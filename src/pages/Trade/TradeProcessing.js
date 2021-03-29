@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-29 14:13:34
- * @LastEditors: xjh
+ * @LastEditTime: 2021-03-29 18:15:38
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -112,14 +112,19 @@ const TradeProcessing = ({navigation, route}) => {
             <Header
                 title="交易确认"
                 rightText={'完成'}
-                // titleStyle={{marginRight: text(-20)}}
-                rightPress={() => jump(data.button.url)}
+                rightPress={() => {
+                    if (route?.params?.fr == 'trade_buy') {
+                        navigation.pop(2);
+                    } else {
+                        jump(data.button.url);
+                    }
+                }}
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView style={[styles.container]}>
                 {Object.keys(data).length > 0 && data?.header && (
                     <View style={styles.contentStyle}>
-                        <Image source={{uri: data.header.img}} style={styles.coverImage}></Image>
+                        <Image source={{uri: data.header.img}} style={styles.coverImage} />
                         <Text style={{fontSize: text(20), fontWeight: 'bold', paddingVertical: text(10)}}>
                             {data.header.status}
                         </Text>
@@ -201,7 +206,13 @@ const TradeProcessing = ({navigation, route}) => {
                     <Button
                         title={data.button.text}
                         style={{margin: text(40), marginTop: text(20)}}
-                        onPress={() => jump(data.button.url)}
+                        onPress={() => {
+                            if (route?.params?.fr == 'trade_buy') {
+                                navigation.pop(2);
+                            } else {
+                                jump(data.button.url);
+                            }
+                        }}
                     />
                 )}
 
