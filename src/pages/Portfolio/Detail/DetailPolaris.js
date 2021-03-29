@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 17:14:13
+ * @LastEditTime: 2021-03-29 18:32:06
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -25,6 +25,7 @@ import {useJump} from '../../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../../components/BottomDesc';
 import Notice from '../../../components/Notice';
+import RenderChart from '../components/RenderChart';
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -51,6 +52,7 @@ export default function DetailPolaris({route, navigation}) {
                 allocation_id: res.result.parts_addition_data.line.allocation_id,
                 benchmark_id: res.result.parts_addition_data.line.benchmark_id,
             }).then((res) => {
+                setChart(res.result.yield_info.chart);
                 setChartData(res.result);
             });
         });
@@ -68,56 +70,6 @@ export default function DetailPolaris({route, navigation}) {
             init();
         }, [init])
     );
-    // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            if (type == 2) {
-                let range = items[0].origin.value;
-                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
-                _textPortfolio.current.setNativeProps({
-                    text: _value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            } else {
-                _textPortfolio.current.setNativeProps({
-                    text: items[0]?.value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            }
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
-        },
-        [getColor, type]
-    );
-    // 图表滑动结束
-    const onHide = ({items}) => {
-        const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label[0].val});
-        _textPortfolio.current.setNativeProps({
-            text: _data?.label[1].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
-        });
-        _textBenchmark.current.setNativeProps({
-            text: _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
-        });
-    };
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
-
     return (
         <>
             {Object.keys(data).length > 0 && (
@@ -155,70 +107,11 @@ export default function DetailPolaris({route, navigation}) {
                             <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
                                 {data?.part_line?.title}
                             </Text>
-                            <View style={[Style.flexRow]}>
-                                <View style={styles.legend_sty}>
-                                    <TextInput
-                                        ref={_textTime}
-                                        style={styles.legend_title_sty}
-                                        defaultValue={chartData?.yield_info?.label[0]?.val}
-                                        editable={false}
-                                    />
-                                    <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[0]?.key}</Text>
-                                </View>
-                                <View style={styles.legend_sty}>
-                                    <TextInput
-                                        style={[
-                                            styles.legend_title_sty,
-                                            {color: getColor(chartData?.yield_info?.label[1]?.val)},
-                                        ]}
-                                        ref={_textPortfolio}
-                                        defaultValue={chartData?.yield_info?.label[1]?.val}
-                                        editable={false}
-                                    />
-                                    <Text>
-                                        <MaterialCommunityIcons
-                                            name={'record-circle-outline'}
-                                            color={'#E74949'}
-                                            size={12}
-                                        />
-                                        <Text style={styles.legend_desc_sty}>
-                                            {chartData?.yield_info?.label[1]?.key}
-                                        </Text>
-                                    </Text>
-                                </View>
-                                <View style={styles.legend_sty}>
-                                    <TextInput
-                                        style={[
-                                            styles.legend_title_sty,
-                                            {color: getColor(chartData?.yield_info?.label[2]?.val)},
-                                        ]}
-                                        ref={_textBenchmark}
-                                        defaultValue={chartData?.yield_info?.label[2]?.val}
-                                        editable={false}
-                                    />
-                                    <Text>
-                                        <MaterialCommunityIcons
-                                            name={'record-circle-outline'}
-                                            color={'#545968'}
-                                            size={12}
-                                        />
-                                        <Text style={styles.legend_desc_sty}>
-                                            {chartData?.yield_info?.label[2]?.key}
-                                        </Text>
-                                    </Text>
-                                </View>
-                            </View>
-                            <Chart
-                                initScript={baseAreaChart(
-                                    chartData?.yield_info?.chart,
-                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                    true
-                                )}
-                                onChange={onChartChange}
-                                data={chartData?.yield_info?.chart}
-                                onHide={onHide}
-                                style={{width: '100%'}}
+                            <RenderChart
+                                chartData={chartData}
+                                chart={chart}
+                                type={type}
+                                style={{marginTop: text(20)}}
                             />
                             <View
                                 style={{

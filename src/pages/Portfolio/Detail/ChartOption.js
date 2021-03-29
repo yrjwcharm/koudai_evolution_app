@@ -3,9 +3,12 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 17:13:12
+ * @LastEditTime: 2021-03-29 19:34:13
  */
 // import _ from 'lodash';
+import {Dimensions} from 'react-native';
+const deviceWidth = Dimensions.get('window').width;
+import {px, px as text} from '../../../utils/appUtil';
 export const baseChart = (data) => `(function(){
   const chart = new F2.Chart({
     id: 'chart',
@@ -108,15 +111,12 @@ export const pie = (data, map) => `
 `;
 export const pieChart = (data, map) => `
 (function(){
-  const map = {};
-  // ${data}.forEach(function(obj) {
-  //   map[obj.name] = Number(obj.ratio*100).toFixed(2)+ '%';
-  // });
-  
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    padding: [ 20, 'auto' ]
+    padding: [16, 'auto' ],
+    width:${deviceWidth - text(50)},
+    height:200
   });
   chart.source(${JSON.stringify(data)},{
     ratio: {
@@ -129,17 +129,17 @@ export const pieChart = (data, map) => `
   chart.legend({
     position: 'right',
     itemFormatter: function itemFormatter(val) {
-      return val + '  '+ (${JSON.stringify(map)}[val] * 100).toFixed(2)+'%'
-    }
+      return val + (${JSON.stringify(map)}[val] * 100).toFixed(2)+'%'
+    },
   });
   chart.coord('polar', {
     transposed: true,
-    innerRadius: 0.7,
+    innerRadius: 0.75,
     radius: 0.85
   });
   chart.axis(false);
   chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#F04864', '#8543E0']).adjust('stack').style({
-    lineWidth: 1,
+    lineWidth: 0.5,
     stroke: '#fff',
     lineJoin: 'round',
     lineCap: 'round'
@@ -159,8 +159,8 @@ export const pieChart = (data, map) => `
     }
   });
   chart.guide().html({
-    position: [ '50%', '45%' ],
-    html: '<div style="width: 250px;height: 10px;text-align: center;font-size:12px">'+'全球资产配置'+'</div>'
+    position: [ '50%', '50%' ],
+    html: '<div style="width: 250px;text-align: center;font-size:12px">'+'全球资产配置'+'</div>'
   });
   chart.render();
 })()
@@ -170,7 +170,9 @@ export const histogram = (data, min) =>
 (function(){
   const chart = new F2.Chart({
     id: 'chart',
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio,
+    width:${deviceWidth - text(16)},
+    height:300
   });
   chart.source(${JSON.stringify(data)})
   chart.legend(false);

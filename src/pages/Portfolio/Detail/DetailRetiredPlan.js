@@ -264,7 +264,13 @@ export default function DetailRetiredPlan({navigation, route}) {
                     <View style={styles.content_sty}>
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
-                            <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                            <RenderChart
+                                chartData={chartData}
+                                period={period}
+                                chart={chart}
+                                type={type}
+                                style={{marginTop: text(20)}}
+                            />
                             <View
                                 style={{
                                     flexDirection: 'row',

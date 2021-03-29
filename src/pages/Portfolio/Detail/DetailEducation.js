@@ -18,12 +18,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import Header from '../../../components/NavBar';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
-import {baseAreaChart} from '../components/ChartOption';
 import Table from '../components/Table';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
@@ -301,7 +298,12 @@ export default function DetailEducation({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                                <RenderChart
+                                    chartData={chartData}
+                                    chart={chart}
+                                    type={type}
+                                    style={{marginTop: text(20)}}
+                                />
                                 <View
                                     style={{
                                         flexDirection: 'row',
