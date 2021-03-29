@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 10:31:35
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 18:00:54
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -28,9 +28,10 @@ export const baseAreaChart = (
     tofixed = 2
 ) => `
 (function(){
-  chart = new F2.Chart({
+   chart = new F2.Chart({
     id: 'chart',
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio,
+   
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {

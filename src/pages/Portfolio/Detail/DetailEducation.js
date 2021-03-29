@@ -18,12 +18,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FixedBtn from '../components/FixedBtn';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
-import Header from '../../../components/NavBar';
 import LinearGradient from 'react-native-linear-gradient';
 import ListHeader from '../components/ListHeader';
-import {baseAreaChart} from '../components/ChartOption';
 import Table from '../components/Table';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
@@ -220,6 +217,7 @@ export default function DetailEducation({navigation, route}) {
                                 {data?.plan_info?.schoolList?.map((_s, _i) => {
                                     return (
                                         <TouchableOpacity
+                                            key={_i}
                                             activeOpacity={1}
                                             style={[
                                                 Style.flexRowCenter,
@@ -423,6 +421,7 @@ export default function DetailEducation({navigation, route}) {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={1}
+                                            key={_w}
                                             style={[
                                                 Style.flexRow,
                                                 {borderTopWidth: _w == 0 ? 0 : 0.5, borderColor: '#ddd'},

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:03:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-29 17:58:51
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -11,7 +11,7 @@ import {baseAreaChart} from './ChartOption';
 import {px, px as text} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Chart} from '../../../components//Chart';
+import {Chart} from '../../../components/Chart';
 export default function RenderChart(props) {
     const chartData = props.chartData;
     const period = props.period;
