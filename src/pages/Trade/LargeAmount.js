@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 11:59:43
+ * @LastEditTime: 2021-03-29 13:55:34
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -85,8 +85,6 @@ const LargeAmount = (props) => {
             {Object.keys(data).length > 0 && (
                 <ScrollView style={(Style.containerPadding, {padding: 0, marginBottom: btnHeight})}>
                     <Notice content={data?.processing} isClose={true} />
-                    {/* <Text style={styles.yellow_sty}>{data.processing}</Text> */}
-
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
                         <View>
                             <Text style={styles.title_sty}>极速汇款</Text>

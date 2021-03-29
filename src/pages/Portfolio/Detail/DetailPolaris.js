@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 18:16:16
+ * @LastEditTime: 2021-03-29 13:26:20
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -40,6 +40,9 @@ export default function DetailPolaris({route, navigation}) {
         Http.get('/polaris/portfolio_detail/20210101', {
             poid: route.params.poid,
         }).then((res) => {
+            navigation.setOptions({
+                title: res.result.title,
+            });
             setData(res.result);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
@@ -117,7 +120,6 @@ export default function DetailPolaris({route, navigation}) {
 
     return (
         <>
-            {<Header title={data?.title} leftIcon="chevron-left" />}
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: FixedBtn.btnHeight, backgroundColor: Colors.bgColor, flex: 1}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}

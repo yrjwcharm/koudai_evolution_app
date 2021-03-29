@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 15:35:32
+ * @LastEditTime: 2021-03-29 13:16:54
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -100,14 +100,20 @@ export default function FixedUpdate({navigation, route}) {
             {Object.keys(data).length > 0 && (
                 <View style={{backgroundColor: Colors.bgColor}}>
                     <View style={styles.wrap_sty}>
-                        <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
-                        <Text style={styles.input_sty}> {data?.target_info?.target_amount?.value}</Text>
-                        <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                            <Text style={{color: '#545968', flex: 1}}>{data?.target_info?.first_invest?.text}</Text>
-                            <Text style={[styles.count_num_sty, {textAlign: 'right'}]}>
-                                {data?.target_info?.first_invest?.value}
-                            </Text>
-                        </View>
+                        {data?.target_info?.target_amount?.text && (
+                            <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
+                        )}
+                        {data?.target_info?.target_amount?.value && (
+                            <Text style={styles.input_sty}> {data?.target_info?.target_amount?.value}</Text>
+                        )}
+                        {data?.target_info?.first_invest?.value && (
+                            <View style={[Style.flexBetween, styles.count_wrap_sty]}>
+                                <Text style={{color: '#545968', flex: 1}}>{data?.target_info?.first_invest?.text}</Text>
+                                <Text style={[styles.count_num_sty, {textAlign: 'right'}]}>
+                                    {data?.target_info?.first_invest?.value}
+                                </Text>
+                            </View>
+                        )}
                         <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                             <Text style={{color: '#545968', flex: 1}}>每月投入金额(元)</Text>
                             <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>

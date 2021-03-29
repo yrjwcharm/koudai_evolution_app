@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-26 11:57:55
+ * @LastEditTime: 2021-03-29 14:13:34
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -16,6 +16,8 @@ import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
 import Header from '../../components/NavBar';
 import {Button} from '../../components/Button';
+import {useJump} from '../../components/hooks';
+
 const TradeProcessing = ({navigation, route}) => {
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
@@ -25,7 +27,7 @@ const TradeProcessing = ({navigation, route}) => {
     const [bankInfo, setBankInfo] = useState('');
     const [code, setCode] = useState('');
     const [isSign, setSign] = useState(false);
-
+    const jump = useJump();
     const loopRef = useRef(0);
     const timerRef = useRef(null);
     const init = useCallback(
@@ -111,7 +113,7 @@ const TradeProcessing = ({navigation, route}) => {
                 title="交易确认"
                 rightText={'完成'}
                 // titleStyle={{marginRight: text(-20)}}
-                rightPress={() => navigation.navigate('Home')}
+                rightPress={() => jump(data.button.url)}
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView style={[styles.container]}>
@@ -199,7 +201,7 @@ const TradeProcessing = ({navigation, route}) => {
                     <Button
                         title={data.button.text}
                         style={{margin: text(40), marginTop: text(20)}}
-                        onPress={() => navigation.navigate('Home')}
+                        onPress={() => jump(data.button.url)}
                     />
                 )}
 
