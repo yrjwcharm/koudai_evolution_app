@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 16:25:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 18:07:27
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -261,17 +261,22 @@ function HomeScreen({navigation, route}) {
                 <View style={[styles.assetsContainer]}>
                     {/* 用户头像 会员中心 */}
                     <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
-                        <Image
-                            source={
-                                userInfo?.toJS()?.avatar
-                                    ? {uri: userInfo.toJS().avatar}
-                                    : require('../../assets/personal/usercenter.png')
-                            }
-                            style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
-                        />
-                        <Text style={styles.username}>
-                            {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
-                        </Text>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={Style.flexRow}
+                            onPress={() => navigation.navigate('Settings')}>
+                            <Image
+                                source={
+                                    userInfo?.toJS()?.avatar
+                                        ? {uri: userInfo.toJS().avatar}
+                                        : require('../../assets/personal/usercenter.png')
+                                }
+                                style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
+                            />
+                            <Text style={styles.username}>
+                                {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
+                            </Text>
+                        </TouchableOpacity>
                         {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
                             <TouchableOpacity
                                 activeOpacity={0.8}

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-03-29 16:09:08
+ * @LastEditTime: 2021-03-30 16:11:25
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
@@ -26,12 +26,13 @@ const Part1 = () => {
     const route = useRoute();
     const [data, setData] = useState({});
     useEffect(() => {
-        const {upid, poid, allocation_id} = route.params || {};
+        const {upid, poid, allocation_id, risk} = route.params || {};
         http.get('/portfolio/mustknow/20210101', {
             upid,
             type: 'trade_rate',
             poid,
             allocation_id,
+            risk,
         }).then((res) => {
             if (res.code == '000000') {
                 setData(res.result.data || {});
@@ -86,10 +87,7 @@ const Part1 = () => {
             </View>
             <Text style={[styles.title]}>调仓费率</Text>
             <View style={[styles.feeDescBox, {paddingTop: 0}]}>
-                <Text style={[styles.feeDesc, {color: Colors.descColor}]}>
-                    调仓费率分为赎回费和购买费，赎回费与您当前基金赎回份额和持有时间相关，购买费与您购买基金金额相关，具体参照购买费率和赎回费率。
-                    实际费用收取请以基金公司确认为准。
-                </Text>
+                <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
             </View>
         </View>
     ) : (

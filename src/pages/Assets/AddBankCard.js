@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 14:34:55
+ * @LastEditTime: 2021-03-30 18:06:37
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,7 +34,32 @@ const AddBankCard = ({navigation, route}) => {
     const subBtnClick = useRef(true);
     const bankModal = useRef(null);
     const [check, setCheck] = useState(true);
+    const getBank = useRef(true);
 
+    const onInputCardNum = useCallback((value) => {
+        if (value && value.length >= 12) {
+            if (getBank.current) {
+                getBank.current = false;
+                http.get('/passport/match/bank_card_info/20210101', {
+                    bank_no: value.replace(/ /g, ''),
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        // console.log(res);
+                        setBankName(res.result.bank_name);
+                        bankCode.current = res.result.bank_code;
+                    }
+                });
+            }
+        } else {
+            getBank.current = true;
+        }
+        setCardNum(
+            value
+                .replace(/\s/g, '')
+                .replace(/\D/g, '')
+                .replace(/(\d{4})(?=\d)/g, '$1 ')
+        );
+    }, []);
     const getCode = useCallback(() => {
         global.LogTool('click', 'getCode');
         if (!btnClick.current) {
@@ -150,12 +175,19 @@ const AddBankCard = ({navigation, route}) => {
                 },
                 '正在提交数据...'
             ).then((res) => {
-                subBtnClick.current = true;
                 if (res.code === '000000') {
-                    Toast.show(res.message);
+                    Toast.show(res.message, {
+                        onHidden: () => {
+                            subBtnClick.current = true;
+                        },
+                    });
                     navigation.goBack();
                 } else {
-                    Toast.show(res.message);
+                    Toast.show(res.message, {
+                        onHidden: () => {
+                            subBtnClick.current = true;
+                        },
+                    });
                 }
             });
         }
@@ -186,6 +218,7 @@ const AddBankCard = ({navigation, route}) => {
                 data={bankList}
                 onDone={onSelectBank}
                 ref={bankModal}
+                select={bankList?.findIndex((item) => item.bank_name === bankName)}
                 style={{height: text(500)}}
                 title={'请选择银行'}
                 type={'hidden'}
@@ -194,14 +227,7 @@ const AddBankCard = ({navigation, route}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'number-pad'}
                 maxLength={23}
-                onChangeText={(value) =>
-                    setCardNum(
-                        value
-                            .replace(/\s/g, '')
-                            .replace(/\D/g, '')
-                            .replace(/(\d{4})(?=\d)/g, '$1 ')
-                    )
-                }
+                onChangeText={onInputCardNum}
                 placeholder={'请输入您的银行卡号'}
                 style={styles.input}
                 title={'银行卡号'}
