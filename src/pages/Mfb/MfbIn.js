@@ -3,10 +3,10 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 16:07:54
+ * @LastEditTime: 2021-03-30 16:48:39
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -32,6 +32,17 @@ class MfbIn extends Component {
             code: props?.route?.params?.code || '',
         };
     }
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
+    }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
+    }
+    goBackAndroid = () => {
+        this.setState({amount: ''});
+        this.init();
+        return true;
+    };
     init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
@@ -45,15 +56,15 @@ class MfbIn extends Component {
         const {data, bankSelect} = this.state;
         const _amount = amount.replace(/^[0]+[0-9]*$/gi, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
         if (amount) {
-            if (amount < data.recharge_info.start_amount) {
-                const tips = '最低转入金额' + data.recharge_info.start_amount + '元';
+            if (amount > bankSelect.single_amount) {
+                const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
                     amount: _amount,
                 });
-            } else if (amount > bankSelect.single_amount) {
-                const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
+            } else if (amount < data.recharge_info.start_amount) {
+                const tips = '最低转入金额' + data.recharge_info.start_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
@@ -166,7 +177,7 @@ class MfbIn extends Component {
     //购买
     render_buy() {
         const {amount, data, tips} = this.state;
-        const {recharge_info, pay_methods} = data;
+        const {recharge_info, pay_methods, remit_pay} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}}>
                 <PasswordModal
@@ -212,11 +223,11 @@ class MfbIn extends Component {
                     activeOpacity={1}
                     style={[styles.notice_sty, Style.flexRow]}
                     onPress={() => {
-                        this.props.navigation.navigate('LargeAmount');
+                        this.props.navigation.navigate(remit_pay?.button?.url.path);
                     }}>
-                    <Text style={{color: '#fff', flex: 1}}>额度不够？试试极速汇款</Text>
+                    <Text style={{color: '#fff', flex: 1}}>{remit_pay?.tip}</Text>
                     <View style={{backgroundColor: '#fff', borderRadius: px(3)}}>
-                        <Text style={styles.notice_btn_sty}>去汇款</Text>
+                        <Text style={styles.notice_btn_sty}>{remit_pay?.button?.text}</Text>
                     </View>
                 </TouchableOpacity>
                 {/* 银行卡 */}
@@ -268,6 +279,7 @@ class MfbIn extends Component {
         );
     }
 }
+
 function Focus({init}) {
     useFocusEffect(
         React.useCallback(() => {

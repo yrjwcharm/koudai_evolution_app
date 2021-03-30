@@ -3,7 +3,7 @@
  * @Date: 2021-03-29 17:35:00
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 17:46:28
+ * @LastEditTime: 2021-03-30 16:29:46
  */
 import React from 'react';
 import {View, StyleSheet, DynamicColorIOS} from 'react-native';
@@ -21,11 +21,12 @@ export default function CircleLegend(props) {
 const styles = StyleSheet.create({
     circle_black: {
         backgroundColor: '#E8EAEF',
-        width: text(10),
-        height: text(10),
+        width: text(12),
+        height: text(12),
         borderRadius: text(25),
         alignItems: 'center',
         justifyContent: 'center',
+        marginRight: text(2),
     },
     circle_inner_black: {
         backgroundColor: '#545968',

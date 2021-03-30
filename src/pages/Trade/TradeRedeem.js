@@ -3,12 +3,12 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 14:23:29
+ * @LastEditTime: 2021-03-30 16:58:27
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {px as text} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,6 +19,7 @@ import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
+const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 var inputValue = 0;
 export default class TradeRedeem extends Component {
@@ -185,7 +186,7 @@ export default class TradeRedeem extends Component {
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
-                    <ScrollView keyboardShouldPersistTaps="handled">
+                    <ScrollView keyboardShouldPersistTaps="handled" style={{marginBottom: btnHeight}}>
                         <Text style={styles.redeem_desc}>赎回至{redeemTo}</Text>
                         {data?.pay_methods?.methods.map((_item, index) => {
                             return (
