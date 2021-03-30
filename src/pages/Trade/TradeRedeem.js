@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 11:46:08
+ * @LastEditTime: 2021-03-30 14:23:29
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -37,6 +37,7 @@ export default class TradeRedeem extends Component {
             tableData: {},
             reasonParams: '',
             redeem_id: '',
+            redeemTo: '银行卡',
         };
     }
     componentDidMount() {
@@ -76,7 +77,7 @@ export default class TradeRedeem extends Component {
             });
         });
     }
-    radioChange(index, type) {
+    radioChange(index, type, name) {
         let check = this.state.check;
         // const lastIndex = check.indexOf(true);
         check = check.map((item) => false);
@@ -84,10 +85,16 @@ export default class TradeRedeem extends Component {
         //     check[index] = true;
         // }
         check[index] = true;
-        this.setState({
-            check,
-            trade_method: type,
-        });
+        this.setState(
+            {
+                check,
+                trade_method: type,
+                redeemTo: name,
+            },
+            () => {
+                this.getPlanInfo();
+            }
+        );
     }
     pressChange(percent) {
         inputValue = percent * 100;
@@ -174,12 +181,12 @@ export default class TradeRedeem extends Component {
         Picker.show();
     };
     render() {
-        const {data, tableData, toggleList, btnClick} = this.state;
+        const {data, tableData, toggleList, btnClick, redeemTo} = this.state;
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
                     <ScrollView keyboardShouldPersistTaps="handled">
-                        <Text style={styles.redeem_desc}>赎回至银行卡</Text>
+                        <Text style={styles.redeem_desc}>赎回至{redeemTo}</Text>
                         {data?.pay_methods?.methods.map((_item, index) => {
                             return (
                                 <View
@@ -209,7 +216,7 @@ export default class TradeRedeem extends Component {
                                     <Radio
                                         checked={this.state.check[index]}
                                         index={index}
-                                        onChange={() => this.radioChange(index, _item.pay_type)}
+                                        onChange={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
                                     />
                                 </View>
                             );
