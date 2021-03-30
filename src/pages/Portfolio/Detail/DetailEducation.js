@@ -45,10 +45,6 @@ export default function DetailEducation({navigation, route}) {
     const [remark, setRemark] = useState();
     const [chart, setChart] = useState([]);
     const jump = useJump();
-
-    const rightPress = () => {
-        navigation.navigate('Evaluation');
-    };
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
@@ -146,16 +142,18 @@ export default function DetailEducation({navigation, route}) {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
             _age = res.result.plan_info.personal_info?.age;
-            navigation.setOptions({
-                title: res.result.title,
-                headerRight: () => {
-                    return (
-                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                            <Text style={styles.right_sty}>{'重新定制'}</Text>
-                        </TouchableOpacity>
-                    );
-                },
-            });
+            if (res.result?.top_button) {
+                navigation.setOptions({
+                    title: res.result.title,
+                    headerRight: () => {
+                        return (
+                            <TouchableOpacity onPress={() => jump(res.result?.top_button?.url)} activeOpacity={1}>
+                                <Text style={styles.right_sty}>{res.result?.top_button?.title}</Text>
+                            </TouchableOpacity>
+                        );
+                    },
+                });
+            }
             setData(res.result);
             setChoose(res.result.plan_info.school_id);
             setAge(res.result.plan_info.personal_info?.age);

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-30 14:13:52
+ * @LastEditTime: 2021-03-30 14:42:03
  * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -163,6 +163,16 @@ const TradeProcessing = ({navigation, route}) => {
                                             />
                                         )}
                                     </View>
+                                    {index !== data.items.length - 1 && (
+                                        <View
+                                            style={[
+                                                styles.line,
+                                                {
+                                                    height: index == data?.items?.length - 1 ? 0 : heightArr[index],
+                                                },
+                                            ]}
+                                        />
+                                    )}
                                     <View style={[styles.contentBox]}>
                                         <FontAwesome
                                             name={'caret-left'}
@@ -190,16 +200,6 @@ const TradeProcessing = ({navigation, route}) => {
                                             )}
                                         </View>
                                     </View>
-                                    {index !== data.items.length - 1 && (
-                                        <View
-                                            style={[
-                                                styles.line,
-                                                {
-                                                    height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
-                                                },
-                                            ]}
-                                        />
-                                    )}
                                 </View>
                             );
                         })}
@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        top: text(28),
-        left: text(6.7),
+        top: text(30),
+        left: text(6.5),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,

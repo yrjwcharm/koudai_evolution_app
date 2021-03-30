@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:12:57
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-30 16:07:54
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -43,35 +43,34 @@ class MfbIn extends Component {
 
     onInput = (amount) => {
         const {data, bankSelect} = this.state;
-        // const pay_methods = data.pay_methods[bankSelect];
-
+        const _amount = amount.replace(/^[0]+[0-9]*$/gi, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
         if (amount) {
             if (amount < data.recharge_info.start_amount) {
                 const tips = '最低转入金额' + data.recharge_info.start_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
-                    amount,
+                    amount: _amount,
                 });
             } else if (amount > bankSelect.single_amount) {
                 const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
-                    amount,
+                    amount: _amount,
                 });
             } else if (amount > Number(bankSelect.left_amount)) {
                 const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.left_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
-                    amount,
+                    amount: _amount,
                 });
             } else {
                 this.setState({
                     tips: '',
                     enable: true,
-                    amount,
+                    amount: _amount,
                 });
             }
         } else {
@@ -92,10 +91,11 @@ class MfbIn extends Component {
     };
     //清空输入框
     clearInput = () => {
-        this.setState({amount: ''});
+        this.setState({amount: '', enable: false});
     };
     //切换银行卡
     changeBankCard = () => {
+        this.setState({amount: '', enable: false});
         this.bankCard.show();
     };
     submitData = (password) => {
@@ -117,10 +117,7 @@ class MfbIn extends Component {
                             fr: this.props.route?.params?.fr,
                         });
                     } else {
-                        Modal.show({
-                            confirm: false,
-                            content: res.message,
-                        });
+                        Toast.show(res.message);
                     }
                 });
             }
@@ -128,7 +125,7 @@ class MfbIn extends Component {
     };
     render_bank() {
         const {data, bankSelect} = this.state;
-        const {pay_methods, large_pay_method} = data;
+        const {pay_methods} = data;
         return (
             <View style={{marginBottom: px(12)}}>
                 <View style={[styles.bankCard, Style.flexBetween]}>
@@ -163,39 +160,6 @@ class MfbIn extends Component {
                         </TouchableOpacity>
                     ) : null}
                 </View>
-                {large_pay_method ? (
-                    <View
-                        style={[
-                            styles.bankCard,
-                            Style.flexBetween,
-                            {borderTopColor: Colors.borderColor, borderTopWidth: 0.5},
-                        ]}>
-                        {pay_methods ? (
-                            <>
-                                <Image
-                                    style={styles.bank_icon}
-                                    source={{
-                                        uri: large_pay_method?.bank_icon,
-                                    }}
-                                />
-                                <View style={{flex: 1}}>
-                                    <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                        {large_pay_method?.bank_name}
-                                    </Text>
-                                    <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                        {large_pay_method?.limit_desc}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity style={[styles.yel_btn]} activeOpacity={1}>
-                                    <Text style={{color: Colors.yellow}}>
-                                        去汇款
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
-                                </TouchableOpacity>
-                            </>
-                        ) : null}
-                    </View>
-                ) : null}
             </View>
         );
     }
@@ -217,7 +181,10 @@ class MfbIn extends Component {
                     <View style={styles.buyInput}>
                         <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                         <TextInput
-                            keyboardType="numeric"
+                            ref={(ref) => {
+                                this.textInput = ref;
+                            }}
+                            keyboardType="number-pad"
                             style={[
                                 styles.inputStyle,
                                 {
@@ -230,6 +197,7 @@ class MfbIn extends Component {
                             onChangeText={(value) => {
                                 this.onInput(value);
                             }}
+                            autoFocus={true}
                             value={amount.toString()}
                         />
                         {amount.length > 0 && (
@@ -240,6 +208,17 @@ class MfbIn extends Component {
                     </View>
                     {tips ? <Text style={styles.tips_sty}>{tips}</Text> : null}
                 </View>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    style={[styles.notice_sty, Style.flexRow]}
+                    onPress={() => {
+                        this.props.navigation.navigate('LargeAmount');
+                    }}>
+                    <Text style={{color: '#fff', flex: 1}}>额度不够？试试极速汇款</Text>
+                    <View style={{backgroundColor: '#fff', borderRadius: px(3)}}>
+                        <Text style={styles.notice_btn_sty}>去汇款</Text>
+                    </View>
+                </TouchableOpacity>
                 {/* 银行卡 */}
                 {this.render_bank()}
 
@@ -366,6 +345,20 @@ const styles = StyleSheet.create({
         color: '#DC4949',
         marginLeft: px(14),
         paddingTop: px(5),
+    },
+    notice_sty: {
+        backgroundColor: '#e7965b',
+        paddingVertical: px(10),
+        marginHorizontal: px(10),
+        paddingHorizontal: px(16),
+        borderRadius: px(6),
+        marginBottom: px(16),
+    },
+    notice_btn_sty: {
+        color: '#e7965b',
+        paddingHorizontal: px(10),
+        paddingVertical: px(4),
+        borderRadius: px(3),
     },
 });
 

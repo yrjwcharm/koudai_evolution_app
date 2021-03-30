@@ -2,8 +2,8 @@
  * @Description:魔方宝详情
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:04:53
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-30 15:49:13
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -35,10 +35,21 @@ export default function MfbIndex(props) {
             });
         }, [])
     );
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
+            return Colors.red;
+        } else {
+            return Colors.defaultColor;
+        }
+    }, []);
     // const jumpPage = (url, params) => {
     //     props.navigation.navigate(url, params);
     // };
-    // 魔方宝 不下拉-----
     const renderHeader = (section, index, isActive) => {
         return (
             <>
@@ -56,11 +67,23 @@ export default function MfbIndex(props) {
                         </View>
                         <View style={{flex: 1}}>
                             <Text style={[styles.section_title_sty, {textAlign: 'center'}]}>日收益</Text>
-                            <Text style={[styles.section_num_sty, {textAlign: 'center'}]}>{section.profit}</Text>
+                            <Text
+                                style={[
+                                    styles.section_num_sty,
+                                    {textAlign: 'center', color: getColor(section.profit)},
+                                ]}>
+                                {section.profit}
+                            </Text>
                         </View>
                         <View style={{flex: 1}}>
                             <Text style={[styles.section_title_sty, {textAlign: 'right'}]}>累计收益</Text>
-                            <Text style={[styles.section_num_sty, {textAlign: 'right'}]}>{section.profit_acc}</Text>
+                            <Text
+                                style={[
+                                    styles.section_num_sty,
+                                    {textAlign: 'right', color: getColor(section.profit_acc)},
+                                ]}>
+                                {section.profit_acc}
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -111,11 +134,15 @@ export default function MfbIndex(props) {
                             <View style={[Style.flexRowCenter, {marginTop: text(20)}]}>
                                 <View style={{flex: 1}}>
                                     <Text style={styles.top_text_sty}>日收益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data?.holding?.profit}</Text>
+                                    <Text style={[styles.bottom_num_sty, {color: getColor(data?.holding?.profit)}]}>
+                                        {data?.holding?.profit}
+                                    </Text>
                                 </View>
                                 <View style={{flex: 1, textAlign: 'center'}}>
                                     <Text style={styles.top_text_sty}>累计收益</Text>
-                                    <Text style={styles.bottom_num_sty}>{data?.holding?.profit_acc}</Text>
+                                    <Text style={[styles.bottom_num_sty, {color: getColor(data?.holding?.profit_acc)}]}>
+                                        {data?.holding?.profit_acc}
+                                    </Text>
                                 </View>
                             </View>
                             <View style={styles.btn_wrap_sty}>

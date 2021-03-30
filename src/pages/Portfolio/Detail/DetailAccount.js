@@ -30,7 +30,7 @@ export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y5');
+    const [period, setPeriod] = useState('y1');
     const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
     const changeTab = (p, t) => {

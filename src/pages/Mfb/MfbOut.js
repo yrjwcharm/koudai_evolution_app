@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 12:10:26
+ * @LastEditTime: 2021-03-30 16:05:41
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -245,6 +245,7 @@ class MfbOut extends Component {
                                     this.onInput(value);
                                 }}
                                 value={amount}
+                                autoFocus={true}
                             />
                         </View>
                         <TouchableOpacity onPress={this.allAmount}>
