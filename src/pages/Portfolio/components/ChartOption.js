@@ -1,11 +1,14 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:01:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 10:18:49
  * @Description: 基金相关图表配置
  */
 // 交互图例
+import {Dimensions} from 'react-native';
+const deviceWidth = Dimensions.get('window').width;
+import {px, px as text} from '../../../utils/appUtil';
 export const baseAreaChart = (
     data,
     colors = [
@@ -31,7 +34,8 @@ export const baseAreaChart = (
    chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-   
+    width:${deviceWidth - text(16)},
+    height:240
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
@@ -60,7 +64,7 @@ export const baseAreaChart = (
   chart.axis('value', {
     label: function label(text) {
       const cfg = {};
-      cfg.text = parseFloat(text) < 1 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+      cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(1) + "%" : parseFloat(text) + "%";
       return cfg;
     }
   });

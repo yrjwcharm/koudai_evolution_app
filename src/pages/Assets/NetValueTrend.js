@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:01:59
+ * @LastEditTime: 2021-03-30 11:33:28
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -13,6 +13,7 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
+import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -105,10 +106,11 @@ const NetValueTrend = ({poid}) => {
                                 />
                                 <View style={Style.flexRow}>
                                     {index !== 0 && (
-                                        <MaterialCommunityIcons
-                                            name={'record-circle-outline'}
+                                        <Dot
+                                            bgColor={
+                                                index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
+                                            }
                                             color={index === 1 ? Colors.red : Colors.descColor}
-                                            size={12}
                                         />
                                     )}
                                     <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
@@ -119,7 +121,7 @@ const NetValueTrend = ({poid}) => {
                         );
                     })}
                 </View>
-                <View style={{height: 220}}>
+                <View style={{height: 240}}>
                     {chartData.chart && (
                         <Chart
                             initScript={baseAreaChart(

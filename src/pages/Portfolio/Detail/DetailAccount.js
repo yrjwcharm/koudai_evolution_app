@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -25,26 +25,21 @@ import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
-
+import RenderChart from '../components/RenderChart';
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y5');
-    const [summary, setSummary] = useState([]);
-    const [labelInfo, setLabelInfo] = useState([]);
-    const _textTime = useRef(null);
-    const _textPortfolio = useRef(null);
-    const _textBenchmark = useRef(null);
+    const [period, setPeriod] = useState('y1');
+    const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
     };
-
-    const rightPress = () => {
+    const rightPress = useCallback(() => {
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});
-    };
+    }, [navigation, route]);
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
             upid: route?.params?.upid,
@@ -68,70 +63,18 @@ export default function DetailAccount({route, navigation}) {
                     period: period,
                     type: type,
                 }).then((resp) => {
-                    setLabelInfo(resp.result.yield_info.label);
-                    setChartData(resp.result.yield_info);
-                    setSummary(resp.result.yield_info.label);
+                    setChart(resp.result.yield_info.chart);
+                    setChartData(resp.result);
                 });
             }
         });
-    }, [route.params, period, type]);
+    }, [navigation, rightPress, route.params, period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
         }, [init])
     );
 
-    // 图表滑动legend变化
-    const onChartChange = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            if (type == 2) {
-                let range = items[0].origin.value;
-                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
-                _textPortfolio.current.setNativeProps({
-                    text: _value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            } else {
-                _textPortfolio.current.setNativeProps({
-                    text: items[0]?.value,
-                    style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
-                });
-            }
-            _textBenchmark.current.setNativeProps({
-                text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
-            });
-        },
-        [getColor, type]
-    );
-    // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            _textTime.current.setNativeProps({text: labelInfo[0].val});
-            _textPortfolio.current.setNativeProps({
-                text: labelInfo[1].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[1].val)}],
-            });
-            _textBenchmark.current.setNativeProps({
-                text: labelInfo[2].val,
-                style: [styles.legend_title_sty, {color: getColor(labelInfo[2].val)}],
-            });
-        },
-        [getColor, labelInfo]
-    );
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
     return (
         <>
             {Object.keys(data).length > 0 ? (
@@ -141,120 +84,63 @@ export default function DetailAccount({route, navigation}) {
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                     </View>
-                    <View style={{height: 480, backgroundColor: '#fff'}}>
-                        <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
-                            <View style={styles.legend_sty}>
-                                <TextInput
-                                    ref={_textTime}
-                                    style={styles.legend_title_sty}
-                                    defaultValue={summary[0]?.val}
-                                    editable={false}
-                                />
-                                <Text style={styles.legend_desc_sty}>{summary[0]?.key}</Text>
-                            </View>
-                            <View style={styles.legend_sty}>
-                                <TextInput
-                                    style={[styles.legend_title_sty, {color: getColor(summary[1]?.val)}]}
-                                    ref={_textPortfolio}
-                                    defaultValue={summary[1]?.val}
-                                    editable={false}
-                                />
-                                <Text>
-                                    <MaterialCommunityIcons
-                                        name={'record-circle-outline'}
-                                        color={'#E74949'}
-                                        size={12}
-                                    />
-                                    <Text style={styles.legend_desc_sty}>{summary[1]?.key}</Text>
-                                </Text>
-                            </View>
-                            <View style={styles.legend_sty}>
-                                <TextInput
-                                    style={[styles.legend_title_sty, {color: getColor(summary[2]?.val)}]}
-                                    ref={_textBenchmark}
-                                    defaultValue={summary[2]?.val}
-                                    editable={false}
-                                />
-                                <Text>
-                                    <MaterialCommunityIcons
-                                        name={'record-circle-outline'}
-                                        color={'#545968'}
-                                        size={12}
-                                    />
-                                    <Text style={styles.legend_desc_sty}>{summary[2]?.key}</Text>
-                                </Text>
-                            </View>
-                        </View>
-                        {chartData?.chart && (
-                            <Chart
-                                initScript={baseAreaChart(
-                                    chartData?.chart,
-                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                    true
-                                )}
-                                onChange={onChartChange}
-                                data={chartData?.chart}
-                                onHide={onHide}
-                                style={{width: '100%'}}
+                    <RenderChart chartData={chartData} chart={chart} type={type} />
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            height: 50,
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            backgroundColor: '#fff',
+                            paddingHorizontal: text(20),
+                        }}>
+                        {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={[
+                                        styles.btn_sty,
+                                        {
+                                            backgroundColor:
+                                                period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                            borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
+                                        },
+                                    ]}
+                                    key={_index}
+                                    onPress={() => changeTab(_item.val, _item.type)}>
+                                    <Text
+                                        style={{
+                                            color: period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
+                                            fontSize: text(12),
+                                        }}>
+                                        {_item.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                    <View style={{paddingBottom: text(20), paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                        <Text style={{marginTop: text(10), marginBottom: text(5)}}>
+                            <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
+                            <Text style={{fontSize: text(12)}}>{chartData?.yield_info?.remark?.title} </Text>
+                            <Text
+                                style={{
+                                    color: '#4BA471',
+                                    fontSize: text(15),
+                                    fontWeight: 'bold',
+                                    fontFamily: Font.numFontFamily,
+                                }}>
+                                {chartData?.yield_info?.remark?.ratio}
+                            </Text>
+                        </Text>
+                        {chartData?.yield_info?.remark?.content && (
+                            <Html
+                                html={chartData?.yield_info?.remark?.content}
+                                style={{fontSize: text(12), lineHeight: text(18), color: '#9397A3'}}
                             />
                         )}
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                height: 50,
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                marginHorizontal: 20,
-                            }}>
-                            {chartData?.sub_tabs?.map((_item, _index) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={1}
-                                        style={[
-                                            styles.btn_sty,
-                                            {
-                                                backgroundColor:
-                                                    period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
-                                                borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
-                                            },
-                                        ]}
-                                        key={_index}
-                                        onPress={() => changeTab(_item.val, _item.type)}>
-                                        <Text
-                                            style={{
-                                                color:
-                                                    period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
-                                                fontSize: text(12),
-                                            }}>
-                                            {_item.name}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                        <View style={{paddingBottom: text(20), paddingHorizontal: text(16)}}>
-                            <Text style={{marginTop: text(10), marginBottom: text(5)}}>
-                                <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
-                                <Text style={{fontSize: text(12)}}>{chartData?.remark?.title} </Text>
-                                <Text
-                                    style={{
-                                        color: '#4BA471',
-                                        fontSize: text(15),
-                                        // fontWeight: 'bold',
-                                        fontFamily: Font.numFontFamily,
-                                    }}>
-                                    {chartData?.remark?.ratio}
-                                </Text>
-                            </Text>
-                            {chartData?.remark?.content && (
-                                <Html
-                                    html={chartData?.remark?.content}
-                                    style={{fontSize: text(12), lineHeight: text(18)}}
-                                />
-                            )}
-                        </View>
                     </View>
+
                     {/* 全球配置 */}
                     <View style={styles.card_sty}>
                         <ListHeader data={data.asset_deploy.header} color={'#0051CC'} />
@@ -367,6 +253,16 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
+                    <Text
+                        style={{
+                            color: '#B8C1D3',
+                            paddingHorizontal: text(16),
+                            lineHeight: text(18),
+                            fontSize: text(11),
+                            marginTop: text(12),
+                        }}>
+                        {data.tip}
+                    </Text>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}

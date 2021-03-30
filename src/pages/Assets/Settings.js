@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 10:28:10
+ * @LastEditTime: 2021-03-29 18:37:32
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -144,7 +144,7 @@ const Settings = ({navigation}) => {
                                     <View key={item.text} style={[i === 0 ? {} : styles.borderTop]}>
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            style={[Style.flexBetween, {paddingVertical: text(18)}]}
+                                            style={[Style.flexBetween, {height: text(56)}]}
                                             onPress={() => onPress(item)}>
                                             <Text style={styles.title}>{item.text}</Text>
                                             <View style={Style.flexRow}>

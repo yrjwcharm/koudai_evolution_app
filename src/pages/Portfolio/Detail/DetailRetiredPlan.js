@@ -46,9 +46,6 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [chart, setChart] = useState([]);
     const jump = useJump();
 
-    const rightPress = () => {
-        navigation.navigate('Evaluation');
-    };
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
@@ -102,16 +99,18 @@ export default function DetailRetiredPlan({navigation, route}) {
             _current = res.result?.plan_info?.goal_info?.items[2]?.val;
             allocation_id = res.result.allocation_id;
             _poid = res.result?.poid;
-            navigation.setOptions({
-                title: res.result?.title,
-                headerRight: () => {
-                    return (
-                        <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                            <Text style={styles.right_sty}>{'重新定制'}</Text>
-                        </TouchableOpacity>
-                    );
-                },
-            });
+            if (res.result?.top_button) {
+                navigation.setOptions({
+                    title: res.result.title,
+                    headerRight: () => {
+                        return (
+                            <TouchableOpacity onPress={() => jump(res.result?.top_button?.url)} activeOpacity={1}>
+                                <Text style={styles.right_sty}>{res.result?.top_button?.title}</Text>
+                            </TouchableOpacity>
+                        );
+                    },
+                });
+            }
             setData(res.result);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
@@ -264,7 +263,13 @@ export default function DetailRetiredPlan({navigation, route}) {
                     <View style={styles.content_sty}>
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
-                            <RenderChart chartData={chartData} period={period} chart={chart} type={type} />
+                            <RenderChart
+                                chartData={chartData}
+                                period={period}
+                                chart={chart}
+                                type={type}
+                                style={{marginTop: text(20)}}
+                            />
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -402,6 +407,16 @@ export default function DetailRetiredPlan({navigation, route}) {
                             })}
                         </View>
                     </View>
+                    <Text
+                        style={{
+                            color: '#B8C1D3',
+                            paddingHorizontal: text(16),
+                            lineHeight: text(18),
+                            fontSize: text(11),
+                            marginTop: text(12),
+                        }}>
+                        {data.tip}
+                    </Text>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}

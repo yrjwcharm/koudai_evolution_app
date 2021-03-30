@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-29 18:15:38
- * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 14:42:03
+ * @LastEditors: xjh
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -17,7 +17,7 @@ import http from '../../services';
 import Header from '../../components/NavBar';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-
+import Toast from '../../components/Toast';
 const TradeProcessing = ({navigation, route}) => {
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
@@ -25,7 +25,6 @@ const TradeProcessing = ({navigation, route}) => {
     const [heightArr, setHeightArr] = useState([]);
     const verifyCodeModel = React.useRef(null);
     const [bankInfo, setBankInfo] = useState('');
-    const [code, setCode] = useState('');
     const [isSign, setSign] = useState(false);
     const jump = useJump();
     const loopRef = useRef(0);
@@ -39,8 +38,7 @@ const TradeProcessing = ({navigation, route}) => {
                 setData(res.result);
                 if (res.result.need_verify_code) {
                     verifyCodeModel.current.show();
-                    signSendVerify();
-                    return;
+                    return signSendVerify();
                 }
                 if (res.result.finish || res.result.finish === -2 || loopRef.current++ >= res.result.loop) {
                     setFinish(true);
@@ -68,8 +66,12 @@ const TradeProcessing = ({navigation, route}) => {
         http.get('/trade/recharge/verify_code_send/20210101', {
             txn_id: txn_id,
         }).then((res) => {
-            setSign(true);
-            setBankInfo(res.result);
+            if (res.code === '000000') {
+                setSign(true);
+                setBankInfo(res.result);
+            } else {
+                Toast.show(res.message);
+            }
         });
     }, [txn_id]);
     const modalCancelCallBack = useCallback(() => {
@@ -85,7 +87,6 @@ const TradeProcessing = ({navigation, route}) => {
     }, [navigation]);
     const onChangeText = useCallback(
         (value) => {
-            setCode(value);
             if (value.length === 6) {
                 http.post('/trade/recharge/verify_code_confirm/20210101', {
                     txn_id: bankInfo.txn_id,
@@ -97,6 +98,7 @@ const TradeProcessing = ({navigation, route}) => {
                             verifyCodeModel.current.hide();
                         }, 300);
                     } else {
+                        Toast.show(res.message);
                     }
                 });
             }
@@ -161,6 +163,16 @@ const TradeProcessing = ({navigation, route}) => {
                                             />
                                         )}
                                     </View>
+                                    {index !== data.items.length - 1 && (
+                                        <View
+                                            style={[
+                                                styles.line,
+                                                {
+                                                    height: index == data?.items?.length - 1 ? 0 : heightArr[index],
+                                                },
+                                            ]}
+                                        />
+                                    )}
                                     <View style={[styles.contentBox]}>
                                         <FontAwesome
                                             name={'caret-left'}
@@ -188,16 +200,6 @@ const TradeProcessing = ({navigation, route}) => {
                                             )}
                                         </View>
                                     </View>
-                                    {index !== data.items.length - 1 && (
-                                        <View
-                                            style={[
-                                                styles.line,
-                                                {
-                                                    height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
-                                                },
-                                            ]}
-                                        />
-                                    )}
                                 </View>
                             );
                         })}
@@ -293,8 +295,8 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        top: text(28),
-        left: text(6.7),
+        top: text(30),
+        left: text(6.5),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,

@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 15:40:32
+ * @LastEditTime: 2021-03-29 18:40:40
  * @Description: 交易密码管理
  */
 import React, {useCallback, useState} from 'react';
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     item: {
-        paddingVertical: Space.padding,
+        // paddingVertical: Space.padding,
+        height: text(56),
         borderTopWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
     },

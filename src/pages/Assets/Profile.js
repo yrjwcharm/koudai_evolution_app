@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 14:20:30
+ * @LastEditTime: 2021-03-29 17:52:16
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -10,6 +10,7 @@ import {Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, Vie
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
 import {px as text, isIphoneX, px} from '../../utils/appUtil.js';
@@ -160,7 +161,7 @@ const Profile = ({navigation}) => {
         } else if (key === 'Backspace') {
             setIptVal((prev) => prev.slice(0, prev.length - 1));
         } else {
-            setIptVal((prev) => prev + key);
+            setIptVal((prev) => prev + key.replace(/\D/g, ''));
         }
     };
     const confirmClick = useCallback(
@@ -202,20 +203,26 @@ const Profile = ({navigation}) => {
         <View style={styles.container}>
             {showMask && <Mask onClick={hidePicker} />}
             <InputModal {...modalProps} ref={inputModal}>
-                <View style={{backgroundColor: '#fff'}}>
-                    <View style={[Style.flexRow, styles.inputContainer]}>
-                        <Text style={[styles.unit, {marginRight: text(4)}]}>{'￥'}</Text>
-                        <TextInput
-                            autoFocus={true}
-                            clearButtonMode={'never'}
-                            keyboardType={'decimal-pad'}
-                            onKeyPress={onKeyPress}
-                            // onChangeText={(value) => setIptVal(value)}
-                            placeholder={modalProps?.placeholder}
-                            style={styles.input}
-                            value={iptVal}
-                        />
-                    </View>
+                <View style={[Style.flexRow, styles.inputContainer]}>
+                    <Text style={styles.unit}>¥</Text>
+                    <TextInput
+                        autoFocus={true}
+                        clearButtonMode={'never'}
+                        keyboardType={'decimal-pad'}
+                        onKeyPress={onKeyPress}
+                        placeholder={modalProps?.placeholder}
+                        placeholderTextColor={'#CCD0DB'}
+                        style={[
+                            styles.inputStyle,
+                            `${iptVal}`.length > 0 ? {fontFamily: Font.numMedium, fontSize: text(35)} : {},
+                        ]}
+                        value={iptVal}
+                    />
+                    {`${iptVal}`.length > 0 && (
+                        <TouchableOpacity onPress={() => setIptVal('')}>
+                            <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
+                        </TouchableOpacity>
+                    )}
                 </View>
             </InputModal>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
@@ -323,17 +330,15 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
     unit: {
-        fontSize: text(20),
-        lineHeight: text(24),
-        color: Colors.defaultColor,
-        fontWeight: 'bold',
+        fontSize: text(26),
+        fontFamily: Font.numFontFamily,
     },
-    input: {
+    inputStyle: {
         flex: 1,
         fontSize: text(26),
-        lineHeight: text(37),
-        color: Colors.defaultColor,
-        fontFamily: Font.numMedium,
+        marginLeft: text(14),
+        height: text(42),
+        padding: 0,
     },
 });
 

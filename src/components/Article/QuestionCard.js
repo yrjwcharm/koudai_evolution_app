@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 12:04:56
+ * @LastEditTime: 2021-03-30 16:26:42
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -20,6 +20,7 @@ export default function QuestionCard({data = []}) {
                 let height = item?.name?.length > 18 ? px(190) : px(168);
                 return (
                     <TouchableOpacity
+                        key={index}
                         activeOpacity={0.9}
                         onPress={() => {
                             jump(item?.url);

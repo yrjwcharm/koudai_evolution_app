@@ -2,16 +2,16 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:06:36
+ * @LastEditTime: 2021-03-30 11:00:36
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Tab from '../../components/TabBar';
 import {Chart} from '../../components/Chart';
+import Dot from './components/Dot';
 import {baseAreaChart, baseLineChart} from './components/ChartOption';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -88,10 +88,11 @@ const FundDetail = ({navigation, route}) => {
                                 />
                                 <View style={Style.flexRow}>
                                     {index !== 0 && (
-                                        <FontAwesome5
-                                            name={'dot-circle'}
+                                        <Dot
+                                            bgColor={
+                                                index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
+                                            }
                                             color={index === 1 ? Colors.red : Colors.descColor}
-                                            size={12}
                                         />
                                     )}
                                     <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
@@ -102,7 +103,7 @@ const FundDetail = ({navigation, route}) => {
                         );
                     })}
                 </View>
-                <View style={{height: Platform.select({ios: text(240), android: text(192)})}}>
+                <View style={{height: Platform.select({ios: text(240), android: text(224)})}}>
                     {data.part1 && !data.part1.fund.is_monetary ? (
                         <>
                             {curTab === 0 ? (
@@ -120,7 +121,7 @@ const FundDetail = ({navigation, route}) => {
                                 />
                             ) : (
                                 <Chart
-                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
+                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 3)}
                                     data={chart2?.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
@@ -536,7 +537,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         // fontWeight: 'bold',
         padding: 0, //处理textInput 在安卓上的兼容问题
     },

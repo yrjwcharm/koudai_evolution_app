@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 15:40:19
+ * @LastEditTime: 2021-03-29 18:38:18
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -149,7 +149,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     item: {
-        paddingVertical: Space.padding,
+        // paddingVertical: Space.padding,
+        height: text(56),
         borderTopWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
     },

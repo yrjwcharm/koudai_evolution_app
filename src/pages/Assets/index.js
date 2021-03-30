@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 15:59:14
+ * @LastEditTime: 2021-03-30 16:25:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -209,7 +209,7 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+            // scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
             userInfo?.toJS()?.is_login && !showGesture && init();
             // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
@@ -348,7 +348,7 @@ function HomeScreen({navigation, route}) {
                             style={[styles.tradeNotice, Style.flexCenter]}
                             onPress={() => {
                                 global.LogTool('click', 'tradeMsg');
-                                jump(userBasicInfo?.top_menus[3]?.url);
+                                jump(notice?.trade?.url);
                             }}>
                             <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
                             <View style={[styles.noticeBox, Style.flexRow]}>

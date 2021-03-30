@@ -2,25 +2,21 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:03:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 10:24:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import {baseAreaChart} from './ChartOption';
 import {px, px as text} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Chart} from '../../../components/Chart';
+import CircleLegend from '../../../components/CircleLegend';
 export default function RenderChart(props) {
-    const chartData = props.chartData;
-    const period = props.period;
-    const chart = props.chart;
-    const type = props.type;
+    const {chartData, chart, type, style} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
-
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -48,15 +44,15 @@ export default function RenderChart(props) {
     // 图表滑动结束
     const onHide = ({items}) => {
         const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textTime.current.setNativeProps({text: _data?.label && _data?.label[0].val});
         _textPortfolio.current.setNativeProps({
-            text: _data?.label[1].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+            text: _data?.label && _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[1].val)}],
         });
 
         _textBenchmark.current.setNativeProps({
-            text: _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+            text: _data?.label && _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[2].val)}],
         });
     };
     const getColor = useCallback((t) => {
@@ -72,7 +68,7 @@ export default function RenderChart(props) {
         }
     }, []);
     return (
-        <View style={{height: 240, backgroundColor: '#fff', marginTop: text(20)}}>
+        <View style={{height: 280, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={styles.legend_sty}>
                     <TextInput
@@ -96,12 +92,12 @@ export default function RenderChart(props) {
                         defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val}
                         editable={false}
                     />
-                    <Text>
-                        <MaterialCommunityIcons name={'record-circle-outline'} color={'#E74949'} size={12} />
+                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                        <CircleLegend color={['#FFECEC', '#E74949']} />
                         <Text style={styles.legend_desc_sty}>
                             {chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.key}
                         </Text>
-                    </Text>
+                    </View>
                 </View>
 
                 <View style={styles.legend_sty}>
@@ -111,10 +107,10 @@ export default function RenderChart(props) {
                         defaultValue={chartData?.yield_info?.label[2]?.val}
                         editable={false}
                     />
-                    <Text>
-                        <MaterialCommunityIcons name={'record-circle-outline'} color={'#545968'} size={12} />
+                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                        <CircleLegend color={['#E8EAEF', '#545968']} />
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
-                    </Text>
+                    </View>
                 </View>
             </View>
             <Chart
