@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 15:43:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 18:07:35
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -76,7 +76,7 @@ export default function LCMF({route, navigation}) {
                     uri: route?.params?.link,
                 }}
                 startInLoadingState={true}
-                style={{flex: 1, backgroundColor: Colors.brandColor}}
+                style={{flex: 1}}
             />
             <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
         </View>

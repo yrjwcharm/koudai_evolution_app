@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 10:51:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 11:37:46
+ * @LastEditTime: 2021-03-30 14:55:06
  * @Description: 资产增强
  */
 import React, {useState, useEffect} from 'react';
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
     details: {
         marginHorizontal: Space.marginAlign,
-        marginBottom: text(20),
+        // marginBottom: text(20),
         paddingVertical: Space.marginVertical,
         paddingRight: text(8),
         paddingLeft: text(14),

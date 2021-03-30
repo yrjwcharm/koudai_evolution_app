@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:07:20
+ * @LastEditTime: 2021-03-30 17:14:54
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -122,7 +122,12 @@ const MyScore = ({navigation, route}) => {
         <ScrollView
             style={styles.container}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={init} />}>
-            <Image source={require('../../assets/personal/score-bg.png')} style={{width: '100%', height: text(167)}} />
+            {data?.notice ? (
+                <View style={[Style.flexRow, styles.noticeBox]}>
+                    <Text style={styles.noticeText}>{data?.notice}</Text>
+                </View>
+            ) : null}
+            <View style={{width: '100%', height: text(167), backgroundColor: Colors.brandColor}} />
             <View style={styles.scoreNumContainer}>
                 <View style={styles.scoreNum}>
                     <Text style={styles.scoreNumText}>{data.points_info?.point || '****'}</Text>
@@ -213,6 +218,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    noticeBox: {
+        paddingHorizontal: Space.padding,
+        paddingVertical: text(8),
+        backgroundColor: '#FFF5E5',
+    },
+    noticeText: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: '#EB7121',
     },
     scoreNumContainer: {
         marginTop: text(-152),

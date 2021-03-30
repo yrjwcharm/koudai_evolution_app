@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-29 16:05:16
+ * @LastEditTime: 2021-03-30 14:54:31
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
     },
     deploy_detail: {
-        marginVertical: Space.marginVertical,
+        marginTop: Space.marginVertical,
         marginHorizontal: Space.marginAlign,
         backgroundColor: '#fff',
         borderRadius: Space.borderRadius,

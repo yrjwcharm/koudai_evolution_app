@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:30:18
+ * @LastEditTime: 2021-03-30 16:09:43
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -140,7 +140,7 @@ const ScoreDetail = ({navigation, route}) => {
     const renderHeader = useCallback(() => {
         return (
             <>
-                <Image source={require('../../assets/personal/score-bg.png')} style={styles.headerBg} />
+                <View style={styles.headerBg} />
                 <View style={[Style.flexCenter, styles.scoreNumContainer]}>
                     <View style={[Style.flexRowCenter, styles.scoreNum]}>
                         <Text style={styles.scoreNumText}>{data.bonus || '0'}</Text>
@@ -325,11 +325,12 @@ const styles = StyleSheet.create({
     },
     headerBg: {
         width: deviceWidth,
-        height: text(167),
+        height: text(156),
         marginLeft: -Space.marginAlign,
         position: 'absolute',
         top: 0,
         left: 0,
+        backgroundColor: Colors.brandColor,
     },
     scoreNumContainer: {
         // marginTop: text(-152),
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
         // marginHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         minHeight: text(90),
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
         paddingHorizontal: text(16),
     },
     availableScore: {

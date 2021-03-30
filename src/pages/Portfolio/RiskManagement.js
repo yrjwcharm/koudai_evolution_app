@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-03-29 20:47:56
+ * @LastEditTime: 2021-03-30 16:43:50
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -53,18 +53,19 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
       return textCfg;
     }
   });
-  chart.legend('type', {
-      position: 'bottom',
-      align: 'center',
-      marker: {
-        symbol: 'square',
-        radius: 4,
-      },
-      nameStyle: {
-        fill: '${Colors.defaultColor}', // 文本的颜色
-        fontSize: 12, // 文本大小
-      }
-  });
+//   chart.legend('type', {
+//       position: 'bottom',
+//       align: 'center',
+//       marker: {
+//         symbol: 'square',
+//         radius: 4,
+//       },
+//       nameStyle: {
+//         fill: '${Colors.defaultColor}', // 文本的颜色
+//         fontSize: 12, // 文本大小
+//       }
+//   });
+chart.legend(false);
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor, Colors.descColor])})
@@ -92,6 +93,7 @@ class RiskManagement extends Component {
             alias: [],
             refreshing: false,
         };
+        this.lineColor = [Colors.red, Colors.lightBlackColor, Colors.descColor];
     }
     componentDidMount() {
         this.init();
@@ -126,56 +128,76 @@ class RiskManagement extends Component {
                 <View style={[styles.topPart]}>
                     <View style={[styles.chartContainer]}>
                         <Text style={[styles.chartTitle]}>最大回撤走势图</Text>
-                        {data.chart && <Chart initScript={area(data.chart || [], alias)} data={data.chart || []} />}
-                    </View>
-                    {data.table && (
-                        <View style={[styles.tabelWrap]}>
-                            <View style={[styles.tabelRow, Style.flexRow]}>
-                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]} />
-                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
-                                    <Text style={[styles.tabelTitle]}>{data.table.th[1]}</Text>
-                                </View>
-                                <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
-                                    <Text style={[styles.tabelTitle]}>{data.table.th[2]}</Text>
-                                </View>
-                            </View>
-                            {data.table.tr_list.map((item, index) => {
+                        {data?.chart && <Chart initScript={area(data.chart || [], alias)} data={data.chart || []} />}
+                        <View style={Style.flexRow}>
+                            {data?.label?.map((item, index, arr) => {
                                 return (
-                                    <View
-                                        key={`row${index}`}
-                                        style={[
-                                            styles.tabelRow,
-                                            Style.flexRow,
-                                            {backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor},
-                                        ]}>
-                                        <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]}>
-                                            <Text style={[styles.columnText]}>{item[0].split(' ')[0]}</Text>
-                                            {item[0].split(' ')[1] && (
-                                                <Text
-                                                    style={[
-                                                        styles.columnText,
-                                                        {fontSize: Font.textSm, fontFamily: 'DIN-Regular'},
-                                                    ]}>
-                                                    {item[0].split(' ')[1]}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
-                                            <Text style={[styles.columnText, {color: Colors.green}]}>{item[1]}</Text>
-                                        </View>
-                                        <View
-                                            style={[
-                                                styles.tableCell,
-                                                Style.flexCenter,
-                                                {flex: 1, borderRightWidth: 0},
-                                            ]}>
-                                            <Text style={[styles.columnText, {color: Colors.green}]}>{item[2]}</Text>
-                                        </View>
+                                    <View style={[Style.flexRowCenter, {flex: 1}]}>
+                                        {index !== arr.length - 1 ? (
+                                            <View
+                                                style={{
+                                                    width: text(8),
+                                                    height: text(8),
+                                                    backgroundColor: this.lineColor[index],
+                                                }}
+                                            />
+                                        ) : (
+                                            <Text style={{color: this.lineColor[index], fontSize: text(12)}}>---</Text>
+                                        )}
+                                        <Text
+                                            style={{
+                                                ...styles.columnText,
+                                                color: Colors.defaultColor,
+                                                marginLeft: text(4),
+                                            }}>
+                                            {item.name}
+                                        </Text>
                                     </View>
                                 );
                             })}
                         </View>
-                    )}
+                    </View>
+                    <View style={[styles.tabelWrap]}>
+                        <View style={[styles.tabelRow, Style.flexRow]}>
+                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]} />
+                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
+                                <Text style={[styles.tabelTitle]}>{data?.table?.th && data?.table?.th[1]}</Text>
+                            </View>
+                            <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
+                                <Text style={[styles.tabelTitle]}>{data?.table?.th && data?.table?.th[2]}</Text>
+                            </View>
+                        </View>
+                        {data?.table?.tr_list?.map((item, index) => {
+                            return (
+                                <View
+                                    key={`row${index}`}
+                                    style={[
+                                        styles.tabelRow,
+                                        Style.flexRow,
+                                        {backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor},
+                                    ]}>
+                                    <View style={[styles.tableCell, Style.flexCenter, {flex: 1.5}]}>
+                                        <Text style={[styles.columnText]}>{item[0].split(' ')[0]}</Text>
+                                        {item[0].split(' ')[1] && (
+                                            <Text
+                                                style={[
+                                                    styles.columnText,
+                                                    {fontSize: Font.textSm, fontFamily: 'DIN-Regular'},
+                                                ]}>
+                                                {item[0].split(' ')[1]}
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <View style={[styles.tableCell, Style.flexCenter, {flex: 1}]}>
+                                        <Text style={[styles.columnText, {color: Colors.green}]}>{item[1]}</Text>
+                                    </View>
+                                    <View style={[styles.tableCell, Style.flexCenter, {flex: 1, borderRightWidth: 0}]}>
+                                        <Text style={[styles.columnText, {color: Colors.green}]}>{item[2]}</Text>
+                                    </View>
+                                </View>
+                            );
+                        })}
+                    </View>
                 </View>
                 <View style={[styles.riskNoticeWrap]}>
                     <View style={[styles.noticeTitleBox]}>
@@ -218,7 +240,7 @@ const styles = StyleSheet.create({
         borderRadius: text(4),
         borderWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
-        marginTop: Space.marginVertical,
+        marginTop: text(30),
     },
     tabelRow: {
         height: text(40),
@@ -243,6 +265,7 @@ const styles = StyleSheet.create({
     },
     riskNoticeWrap: {
         margin: Space.marginAlign,
+        marginBottom: 0,
         paddingHorizontal: Space.marginAlign,
         backgroundColor: '#fff',
         borderRadius: Space.borderRadius,
