@@ -2,8 +2,8 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 17:14:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 11:39:15
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -76,6 +76,7 @@ const SetTradePassword = ({navigation, route}) => {
                                     });
                                     return false;
                                 } else if (route.params?.fr === 'add_bank_card') {
+                                    console.log(route.params?.url);
                                     Modal.show({
                                         confirmCallBack: () => jump(route.params?.url, 'replace'),
                                         confirmText: '立即跳转',

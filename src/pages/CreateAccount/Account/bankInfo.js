@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 15:37:27
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 11:42:46
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -126,6 +126,7 @@ class BankInfo extends Component {
                             this.props.navigation.replace(res.result?.jump_url?.path, {
                                 ...res.result?.jump_url?.params,
                                 fr: this.props.route?.params?.fr || '',
+                                url: this.props.route?.params?.url || '',
                             });
                         });
                     },

@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -37,9 +37,9 @@ export default function DetailAccount({route, navigation}) {
         setPeriod(p);
         setType(t);
     };
-    const rightPress = () => {
+    const rightPress = useCallback(() => {
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});
-    };
+    }, [navigation, route]);
     const init = useCallback(() => {
         Http.get('/portfolio/detail/20210101', {
             upid: route?.params?.upid,
@@ -68,7 +68,7 @@ export default function DetailAccount({route, navigation}) {
                 });
             }
         });
-    }, [route.params, period, type]);
+    }, [navigation, rightPress, route.params, period, type]);
     useFocusEffect(
         useCallback(() => {
             init();

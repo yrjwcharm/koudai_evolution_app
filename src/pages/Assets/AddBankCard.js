@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-26 11:47:45
+ * @LastEditTime: 2021-03-30 14:34:55
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,6 +13,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
+import Agreements from '../../components/Agreements';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 import {BankCardModal} from '../../components/Modal';
@@ -32,6 +33,7 @@ const AddBankCard = ({navigation, route}) => {
     const [code, setCode] = useState('');
     const subBtnClick = useRef(true);
     const bankModal = useRef(null);
+    const [check, setCheck] = useState(true);
 
     const getCode = useCallback(() => {
         global.LogTool('click', 'getCode');
@@ -53,6 +55,12 @@ const AddBankCard = ({navigation, route}) => {
             },
         ];
         if (!formCheck(checkData)) {
+            return false;
+        } else if (!/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(phone)) {
+            Toast.show('手机号不合法');
+            return false;
+        } else if (cardNum.replace(/ /g, '').length < 16) {
+            Toast.show('银行卡号不能少于16位');
             return false;
         } else {
             btnClick.current = false;
@@ -116,20 +124,32 @@ const AddBankCard = ({navigation, route}) => {
                 field: code,
                 text: '验证码不能为空',
             },
+            {
+                field: check,
+                text: '必须同意服务协议才能完成开户',
+                append: '!',
+            },
         ];
         if (!formCheck(checkData)) {
             return false;
         } else if (!/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(phone)) {
             Toast.show('手机号不合法');
             return false;
+        } else if (cardNum.replace(/ /g, '').length < 16) {
+            Toast.show('银行卡号不能少于16位');
+            return false;
         } else {
             subBtnClick.current = false;
-            http.post('/passport/bank_card/bind/20210101', {
-                bank_code: bankCode.current,
-                bank_no: cardNum.replace(/ /g, ''),
-                mobile: phone,
-                code,
-            }).then((res) => {
+            http.post(
+                '/passport/bank_card/bind/20210101',
+                {
+                    bank_code: bankCode.current,
+                    bank_no: cardNum.replace(/ /g, ''),
+                    mobile: phone,
+                    code,
+                },
+                '正在提交数据...'
+            ).then((res) => {
                 subBtnClick.current = true;
                 if (res.code === '000000') {
                     Toast.show(res.message);
@@ -139,7 +159,7 @@ const AddBankCard = ({navigation, route}) => {
                 }
             });
         }
-    }, [bankName, cardNum, code, phone, navigation]);
+    }, [bankName, cardNum, check, code, phone, navigation]);
 
     useEffect(() => {
         http.get('/passport/bank_list/20210101', {
@@ -173,7 +193,7 @@ const AddBankCard = ({navigation, route}) => {
             <InputView
                 clearButtonMode={'while-editing'}
                 keyboardType={'number-pad'}
-                maxLength={19}
+                maxLength={23}
                 onChangeText={(value) =>
                     setCardNum(
                         value
@@ -225,6 +245,9 @@ const AddBankCard = ({navigation, route}) => {
                     {codeText}
                 </Text>
             </InputView>
+            <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
+                <Agreements onChange={(checked) => setCheck(checked)} data={[{title: '《委托支付协议》', id: 15}]} />
+            </View>
             <Button onPress={submit} style={styles.btn} title={'添加新银行卡'} />
         </ScrollView>
     );

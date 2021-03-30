@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:02:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 11:42:22
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -99,6 +99,7 @@ class Index extends Component {
                         rcode,
                         poid: this.props.route?.params?.poid,
                         fr: this.props.route?.params?.fr || '',
+                        url: this.props.route?.params?.url || '',
                     });
                 }
             } else {

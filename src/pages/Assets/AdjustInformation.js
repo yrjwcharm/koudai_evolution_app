@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 16:02:23
+ * @LastEditTime: 2021-03-30 09:55:17
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -29,16 +29,16 @@ const AdjustInformation = ({navigation, route}) => {
                 page,
             }).then((res) => {
                 setRefreshing(false);
-                if (res.result?.list?.length < 20) {
+                if (res.result?.items?.length < 20) {
                     setHasMore(false);
                 } else {
                     setHasMore(true);
                 }
                 first && navigation.setOptions({title: res.result.title || '调仓信息'});
                 if (status === 'refresh') {
-                    setList(res.result.list || []);
+                    setList(res.result.items || []);
                 } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.items || [])]);
                 }
             });
         },
