@@ -2,13 +2,13 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:21:06
+ * @LastEditTime: 2021-03-30 14:37:31
  * @Description: 微信登录
  */
 import React from 'react';
 import {Style, Colors} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
-import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
@@ -16,6 +16,7 @@ import Storage from '../../utils/storage';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 import http from '../../services';
+import FastImage from 'react-native-fast-image';
 function Wechat(props) {
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -70,7 +71,7 @@ function Wechat(props) {
                 <View style={styles.LoginLine} />
             </View>
             <TouchableOpacity onPress={weChatLogin}>
-                <Image source={require('../../assets/img/login/wechat_icon.png')} style={styles.LoginIcon} />
+                <FastImage source={require('../../assets/img/login/wechat_icon.png')} style={styles.LoginIcon} />
                 <Text style={styles.LoginDesc}>微信登录</Text>
             </TouchableOpacity>
         </View>
@@ -87,21 +88,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     text: {
-        color: '#666666',
+        color: Colors.darkGrayColor,
         fontSize: px(12),
     },
     LoginLine: {
-        borderColor: Colors.lineColor,
+        borderColor: Colors.borderColor,
         borderTopWidth: 0.5,
         borderStyle: 'solid',
         width: 100,
         position: 'relative',
         top: text(5),
-        marginHorizontal: 10,
+        marginHorizontal: px(10),
     },
     LoginDesc: {
-        color: '#333',
-        fontSize: 13,
+        color: Colors.lightBlackColor,
+        fontSize: px(13),
         marginTop: 10,
     },
     LoginIcon: {

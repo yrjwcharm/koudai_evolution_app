@@ -2,14 +2,14 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 20:58:06
+ * @LastEditTime: 2021-03-30 14:36:08
  * @Description:微信登录
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputView from '../input';
 import {px as text, handlePhone, inputInt} from '../../../utils/appUtil';
-import {Style} from '../../../common/commonStyle';
+import {Style, Colors} from '../../../common/commonStyle';
 import {View, Text, ScrollView, StyleSheet, Image} from 'react-native';
 import Agreements from '../../../components/Agreements';
 import {Button} from '../../../components/Button';
@@ -60,7 +60,7 @@ export default class WechatLogin extends Component {
                         }}
                     />
                     {this.props.route?.params.nickname ? (
-                        <Text style={styles.welcome_title}>{this.props.route?.params.nickname}，您好</Text>
+                        <Text style={styles.welcome_title}>{this.props.route?.params.nickname},您好</Text>
                     ) : null}
                 </View>
                 <Text style={styles.title}>请绑定您的手机号</Text>
@@ -110,7 +110,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: text(18),
-        fontWeight: '500',
+        fontWeight: 'bold',
+        color: Colors.defaultColor,
         marginVertical: text(31),
     },
     avatar: {
@@ -120,7 +121,8 @@ const styles = StyleSheet.create({
     },
     welcome_title: {
         fontSize: text(22),
-        fontWeight: '500',
+        fontWeight: 'bold',
+        color: Colors.defaultColor,
         marginLeft: text(11),
     },
 });

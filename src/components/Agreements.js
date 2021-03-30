@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 11:18:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 14:37:02
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -11,6 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
 import {px} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Colors} from '../common/commonStyle';
 function Agreements(props) {
     const navigation = useNavigation();
     const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
@@ -63,7 +64,7 @@ Agreements.propTypes = {
 };
 const styles = StyleSheet.create({
     text: {
-        color: '#666666',
+        color: Colors.lightBlackColor,
         fontSize: px(12),
     },
     aggrement_text: {

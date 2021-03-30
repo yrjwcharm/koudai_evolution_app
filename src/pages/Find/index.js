@@ -2,11 +2,11 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:05:01
+ * @LastEditTime: 2021-03-30 16:23:34
  * @Description:发现
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,10 +21,22 @@ import {Chart, chartOptions} from '../../components/Chart';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {BoxShadow} from 'react-native-shadow';
+const shadow = {
+    color: '#FF7328',
+    border: 6,
+    radius: 20,
+    opacity: 0.2,
+    x: 0,
+    y: 2,
+    width: px(88),
+    height: px(32),
+};
 const Index = (props) => {
     const isFocused = useIsFocused();
     const userInfo = useSelector((store) => store.userInfo);
-    const inset = useRef(useSafeAreaInsets()).current;
+    const inset = useSafeAreaInsets();
     const [data, SetData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -74,7 +86,14 @@ const Index = (props) => {
     ) : (
         <>
             {!userInfo.toJS().is_login && isFocused && <LoginMask />}
-            <Header renderLeft={<Text style={styles.header_title}>今日推荐</Text>} />
+            {/* <StatusBar
+                animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
+                hidden={false} //是否隐藏状态栏。
+                backgroundColor={'#fff'} //状态栏的背景色
+                translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
+                barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
+            /> */}
+            <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
             <ScrollView
                 style={{backgroundColor: Colors.bgColor}}
                 scrollEventThrottle={16}
@@ -85,6 +104,9 @@ const Index = (props) => {
                         end={{x: 0, y: 1}}
                         colors={['#fff', '#F5F6F8']}
                         style={{paddingHorizontal: Space.padding}}>
+                        <View style={{paddingTop: px(24), paddingBottom: px(12), backgroundColor: '#fff'}}>
+                            <Text style={styles.header_title}>推荐</Text>
+                        </View>
                         {/* 今日推荐 */}
                         <MagicMove.View id="logo" transition={MagicMove.Transition.morph}>
                             <TouchableOpacity
@@ -136,7 +158,7 @@ const Index = (props) => {
                                             ]}>
                                             {data?.recommend?.yield?.ratio}
                                         </Text>
-
+                                        {/* <BoxShadow setting={shadow}> */}
                                         <LinearGradient
                                             start={{x: 0, y: 0.25}}
                                             end={{x: 0, y: 0.8}}
@@ -144,6 +166,7 @@ const Index = (props) => {
                                             style={styles.recommend_btn}>
                                             <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
                                         </LinearGradient>
+                                        {/* </BoxShadow> */}
                                     </View>
                                     <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
                                 </View>
@@ -153,48 +176,6 @@ const Index = (props) => {
 
                     {/* 目标理财 */}
                     <View style={{paddingHorizontal: Space.padding}}>
-                        <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
-                            {data?.part1?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        jump(item?.url);
-                                    }}
-                                    key={index}
-                                    style={[
-                                        styles.card,
-                                        {borderRadius: 8},
-                                        Style.flexRow,
-                                        {marginTop: index != 0 ? px(12) : 0},
-                                    ]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                    </View>
-                                    <Image
-                                        style={{width: px(110), height: '100%'}}
-                                        source={{
-                                            uri: item?.background,
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            ))}
-                        </View>
                         {/* 专业理财 */}
                         <View style={{marginBottom: px(20)}}>
                             <Text style={styles.large_title}>{data?.part2?.group_name}</Text>
@@ -249,8 +230,54 @@ const Index = (props) => {
                                 ))}
                             </ScrollView>
                         </View>
-                        {/* 增值服务 */}
                         <View style={{marginBottom: px(20)}}>
+                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
+                            {data?.part1?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item?.url);
+                                    }}
+                                    key={index}
+                                    style={[
+                                        styles.card,
+                                        {borderRadius: 8},
+                                        Style.flexRow,
+                                        {marginTop: index != 0 ? px(12) : 0},
+                                    ]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                    </View>
+                                    <FastImage
+                                        style={styles.img_icon}
+                                        source={{
+                                            uri: item?.background,
+                                        }}
+                                    />
+                                    <View style={{position: 'relative', right: px(16)}}>
+                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+
+                        {/* 增值服务 */}
+                        <View>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
                             {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
@@ -278,12 +305,15 @@ const Index = (props) => {
                                         <Text style={styles.large_text}>{item?.desc}</Text>
                                         <Text style={styles.light_text}>{item?.slogan}</Text>
                                     </View>
-                                    <Image
-                                        style={{width: px(110), height: '100%'}}
+                                    <FastImage
+                                        style={styles.img_icon}
                                         source={{
                                             uri: item?.background,
                                         }}
                                     />
+                                    <View style={{position: 'relative', right: px(16)}}>
+                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                    </View>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -308,6 +338,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: px(14),
         marginBottom: px(10),
+    },
+    img_icon: {
+        width: px(82),
+        height: px(82),
+        marginTop: px(26),
+        alignSelf: 'flex-end',
     },
     recommend: {
         borderRadius: 8,
@@ -336,8 +372,9 @@ const styles = StyleSheet.create({
     recommend_btn: {
         height: px(32),
         justifyContent: 'center',
-        paddingHorizontal: px(22),
+        width: px(88),
         borderRadius: 20,
+        alignItems: 'center',
     },
     btn_text: {
         fontSize: px(13),
@@ -370,7 +407,7 @@ const styles = StyleSheet.create({
     header_title: {
         fontSize: px(22),
         fontWeight: '700',
-        paddingLeft: px(16),
+        color: Colors.defaultColor,
     },
     large_text: {
         marginTop: px(16),

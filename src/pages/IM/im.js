@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 18:59:06
+ * @LastEditTime: 2021-03-29 20:46:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -414,7 +414,6 @@ const IM = (props) => {
         let copyMes = [].concat(messages);
         copyMes.forEach((item) => {
             if (item.id == id) {
-                console.log(item, 'item');
                 item.content.buttons.forEach((button, index) => {
                     if (button.status == status) {
                         button.status = 2;
@@ -549,6 +548,7 @@ const IM = (props) => {
                             {name: 'token', data: token.current},
                         ],
                         (res) => {
+                            // console.log('object');
                             if (res.code == 20000) {
                                 wsSend('IMR', res.result.url, null, cmid, mewMes);
                             } else {
@@ -842,6 +842,7 @@ const IM = (props) => {
             </View>
         );
     };
+    // console.log(messages);
     return (
         <View style={{flex: 1}}>
             <BottomModal

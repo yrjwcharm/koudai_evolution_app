@@ -1,21 +1,12 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 15:32:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 15:43:53
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {
-    View,
-    Text,
-    ScrollView,
-    ActivityIndicator,
-    TouchableOpacity,
-    StyleSheet,
-    StatusBar,
-    Platform,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';

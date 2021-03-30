@@ -2,20 +2,19 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 16:28:07
+ * @LastEditTime: 2021-03-30 14:00:41
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../pages/Assets/index';
-import {px} from '../utils/appUtil';
+import {px, isIphoneX} from '../utils/appUtil';
 import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import {Colors} from '../common/commonStyle';
-
 const Tab = createBottomTabNavigator();
-const tabIconSize = px(24);
+const tabIconSize = px(22);
 export default function Tabbar() {
     return (
         <Tab.Navigator
@@ -80,8 +79,10 @@ export default function Tabbar() {
                 inactiveTintColor: '#4E556C',
                 allowFontScaling: false,
                 labelStyle: {
-                    fontSize: px(12),
+                    marginBottom: isIphoneX() ? px(18) : px(10),
+                    fontSize: px(11),
                 },
+                style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen

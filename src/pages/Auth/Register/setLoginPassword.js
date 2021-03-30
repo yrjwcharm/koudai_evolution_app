@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:22:46
+ * @LastEditTime: 2021-03-30 14:35:02
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -200,7 +200,7 @@ class SetLoginPassword extends Component {
                     title={this.fr == 'forget' ? '完成找回密码' : this.union_id ? '完成绑定' : '完成注册'}
                     disabled={btnClick}
                     onPress={this.register}
-                    style={{marginVertical: text(26)}}
+                    style={{marginVertical: text(20)}}
                 />
             </ScrollView>
         );
@@ -222,12 +222,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: text(22),
-        fontWeight: '500',
+        fontWeight: 'bold',
         marginBottom: text(11),
+        color: Colors.defaultColor,
         marginTop: text(20),
     },
     title_desc: {
-        color: Colors.darkGrayColor,
+        color: Colors.lightBlackColor,
         fontSize: text(14),
         marginBottom: text(24),
     },

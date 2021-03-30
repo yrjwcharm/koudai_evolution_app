@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 19:26:00
+ * @LastEditTime: 2021-03-30 14:33:11
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -136,8 +136,9 @@ const styles = StyleSheet.create({
 
     title: {
         fontSize: text(22),
-        fontWeight: '500',
+        fontWeight: 'bold',
         marginBottom: text(48),
+        color: Colors.defaultColor,
         marginTop: text(20),
     },
     text: {

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 15:44:25
+ * @LastEditTime: 2021-03-30 10:51:15
  * @Description:首页发现页文章卡片
  */
 
@@ -11,57 +11,45 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
-import {BoxShadow} from 'react-native-shadow';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
-const shadow = {
-    width: deviceWidth - px(32),
-    height: px(125),
-    color: '#E3E6EE',
-    border: 14,
-    radius: 10,
-    opacity: 0.4,
-    x: 0,
-    y: 6,
-};
+
 export default function ArticleCard({data = ''}) {
     const jump = useJump();
     return (
-        <BoxShadow setting={shadow}>
-            <TouchableOpacity
-                style={styles.card}
-                activeOpacity={0.9}
-                onPress={() => {
-                    jump(data?.url);
-                }}>
-                <View style={Style.flexRow}>
-                    <View style={{flex: 1}}>
-                        <Text numberOfLines={1} style={styles.article_title}>
-                            {data?.title}
+        <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.9}
+            onPress={() => {
+                jump(data?.url);
+            }}>
+            <View style={Style.flexRow}>
+                <View style={{flex: 1}}>
+                    <Text numberOfLines={1} style={styles.article_title}>
+                        {data?.title}
+                    </Text>
+                    {data?.detail ? (
+                        <Text numberOfLines={2} style={styles.article_content}>
+                            {data?.detail}
+                            <Text style={Style.more}>全文</Text>
                         </Text>
-                        {data?.detail ? (
-                            <Text numberOfLines={2} style={styles.article_content}>
-                                {data?.detail}
-                                <Text style={Style.more}>全文</Text>
-                            </Text>
-                        ) : (
-                            <Text style={{height: px(40)}} />
-                        )}
-                    </View>
-                    <FastImage
-                        style={styles.article_img}
-                        source={{
-                            uri: data?.cover,
-                        }}
-                    />
+                    ) : (
+                        <Text style={{height: px(40)}} />
+                    )}
                 </View>
-                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
+                <FastImage
+                    style={styles.article_img}
+                    source={{
+                        uri: data?.cover,
+                    }}
+                />
+            </View>
+            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
-                    <Praise comment={data} type={'article'} />
-                </View>
-            </TouchableOpacity>
-        </BoxShadow>
+                <Praise comment={data} type={'article'} />
+            </View>
+        </TouchableOpacity>
     );
 }
 const styles = StyleSheet.create({
