@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 18:32:06
+ * @LastEditTime: 2021-03-30 12:07:32
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -275,6 +275,16 @@ export default function DetailPolaris({route, navigation}) {
                             })}
                         </View>
                     </View>
+                    <Text
+                        style={{
+                            color: '#B8C1D3',
+                            paddingHorizontal: text(16),
+                            lineHeight: text(18),
+                            fontSize: text(11),
+                            marginTop: text(12),
+                        }}>
+                        {data.tip}
+                    </Text>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             )}

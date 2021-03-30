@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 18:40:28
+ * @LastEditTime: 2021-03-30 12:07:57
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -26,9 +26,6 @@ export default function DetailAccount({route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState();
-    const _textTime = useRef(null);
-    const _textPortfolio = useRef(null);
-    const _textBenchmark = useRef(null);
     const [type, setType] = useState(1);
     const [chart, setChart] = useState();
     const jump = useJump();
@@ -203,6 +200,16 @@ export default function DetailAccount({route}) {
                             })}
                         </View>
                     </View>
+                    <Text
+                        style={{
+                            color: '#B8C1D3',
+                            paddingHorizontal: text(16),
+                            lineHeight: text(18),
+                            fontSize: text(11),
+                            marginTop: text(12),
+                        }}>
+                        {data.tip}
+                    </Text>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             )}

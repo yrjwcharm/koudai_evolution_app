@@ -119,6 +119,28 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
+                    <View style={{paddingBottom: text(20), paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                        <Text style={{marginTop: text(10), marginBottom: text(5)}}>
+                            <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
+                            <Text style={{fontSize: text(12)}}>{chartData?.yield_info?.remark?.title} </Text>
+                            <Text
+                                style={{
+                                    color: '#4BA471',
+                                    fontSize: text(15),
+                                    fontWeight: 'bold',
+                                    fontFamily: Font.numFontFamily,
+                                }}>
+                                {chartData?.yield_info?.remark?.ratio}
+                            </Text>
+                        </Text>
+                        {chartData?.yield_info?.remark?.content && (
+                            <Html
+                                html={chartData?.yield_info?.remark?.content}
+                                style={{fontSize: text(12), lineHeight: text(18), color: '#9397A3'}}
+                            />
+                        )}
+                    </View>
+
                     {/* 全球配置 */}
                     <View style={styles.card_sty}>
                         <ListHeader data={data.asset_deploy.header} color={'#0051CC'} />
@@ -231,6 +253,16 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
+                    <Text
+                        style={{
+                            color: '#B8C1D3',
+                            paddingHorizontal: text(16),
+                            lineHeight: text(18),
+                            fontSize: text(11),
+                            marginTop: text(12),
+                        }}>
+                        {data.tip}
+                    </Text>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}

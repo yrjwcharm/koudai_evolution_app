@@ -441,6 +441,16 @@ export default function DetailEducation({navigation, route}) {
                                 })}
                             </View>
                         </View>
+                        <Text
+                            style={{
+                                color: '#B8C1D3',
+                                paddingHorizontal: text(16),
+                                lineHeight: text(18),
+                                fontSize: text(11),
+                                marginTop: text(12),
+                            }}>
+                            {data.tip}
+                        </Text>
                         <BottomDesc style={{marginTop: text(80)}} />
                     </ScrollView>
                     {showMask && <Mask />}
