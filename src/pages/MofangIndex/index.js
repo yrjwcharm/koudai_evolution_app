@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 13:54:49
+ * @LastEditTime: 2021-03-30 12:17:18
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -31,14 +31,13 @@ import BottomDesc from '../../components/BottomDesc';
 import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {useJump} from '../../components/hooks';
 import JPush from 'jpush-react-native';
-import {Button} from '../../components/Button';
 const shadow = {
     color: '#E3E6EE',
-    border: 10,
+    border: 8,
     radius: 1,
-    opacity: 0.3,
+    opacity: 0.2,
     x: 0,
-    y: 4,
+    y: 2,
     width: deviceWidth - px(32),
 };
 const RenderTitle = (props) => {
@@ -58,7 +57,6 @@ const RenderTitle = (props) => {
 
 const Index = (props) => {
     const inset = useSafeAreaInsets();
-    const linkTo = useLinkTo();
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
     const jump = useJump();
@@ -146,7 +144,7 @@ const Index = (props) => {
         return menu_list ? (
             <View style={[Style.flexBetween, {marginBottom: bottom || px(20)}]}>
                 {menu_list.map((item, index) => (
-                    <BoxShadow key={index} setting={{...shadow, width: px(165), height: px(61)}}>
+                    <BoxShadow key={index} setting={{...shadow, width: px(167), height: px(61)}}>
                         <TouchableOpacity
                             activeOpacity={0.9}
                             style={[Style.flexBetween, styles.secure_card, styles.common_card]}
@@ -195,23 +193,25 @@ const Index = (props) => {
                 renderLoading()
             ) : (
                 <>
-                    <View style={[styles.header, {paddingTop: inset.top + px(8)}]}>
-                        <View style={Style.flexBetween}>
-                            <View style={Style.flexRow}>
-                                <FastImage style={styles.logo} source={require('../../assets/img/index/logo.png')} />
-                                <Text style={styles.header_title}>理财魔方</Text>
-                            </View>
+                    <View style={[styles.header, {paddingTop: inset.top}]}>
+                        <View style={[Style.flexBetween, {alignItems: 'center'}]}>
+                            <FastImage
+                                style={styles.logo}
+                                resizeMode={FastImage.resizeMode.contain}
+                                source={require('../../assets/img/indexLogo.png')}
+                            />
                             {data?.login_status == 0 ? (
                                 <Text
                                     onPress={() => {
                                         jump({path: 'Register'});
                                         global.LogTool();
                                     }}
-                                    style={Style.more}>
+                                    style={[Style.more, {marginTop: px(-20)}]}>
                                     登录/注册
                                 </Text>
                             ) : (
                                 <TouchableOpacity
+                                    style={{marginTop: px(-20)}}
                                     onPress={() => {
                                         jump({path: 'RemindMessage'});
                                     }}>
@@ -223,7 +223,6 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             )}
                         </View>
-                        <Text style={styles.title_desc}>您的智能基金组合专家</Text>
                     </View>
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
@@ -234,7 +233,7 @@ const Index = (props) => {
                         }>
                         <LinearGradient
                             start={{x: 0, y: 0}}
-                            end={{x: 0, y: 1}}
+                            end={{x: 0, y: 0.3}}
                             colors={['#fff', Colors.bgColor]}
                             style={styles.container}>
                             <View style={styles.swiper}>
@@ -275,16 +274,7 @@ const Index = (props) => {
                                     </Swiper>
                                 ) : null}
                             </View>
-                            {/* <Button
-                                title="本地推送"
-                                onPress={() => {
-                                    JPush.addLocalNotification({
-                                        messageID: '123',
-                                        title: '哈哈',
-                                        content: '你好',
-                                    });
-                                }}
-                            /> */}
+
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -311,57 +301,63 @@ const Index = (props) => {
                                         jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: px(14)}}>
-                                    <FastImage
-                                        style={styles.robot}
-                                        source={require('../../assets/img/index/robot.png')}
-                                    />
+                                    <FastImage style={styles.robot} source={require('../../assets/img/robot1.png')} />
                                     <View style={styles.recommen_card}>
                                         <ImageBackground
                                             source={require('../../assets/img/index/recommendBg.png')}
-                                            style={{height: px(134)}}>
+                                            style={{height: px(196)}}>
                                             <Text style={[styles.secure_title, styles.recommen_title]}>
                                                 {data?.custom_info?.title}
                                             </Text>
                                             <View style={[Style.flexRow, styles.recommen_con]}>
                                                 <FastImage
                                                     style={{width: px(20), height: px(20)}}
-                                                    source={require('../../assets/img/index/douhao.png')}
+                                                    source={require('../../assets/img/index/categoryLeft.png')}
                                                 />
                                                 <Text style={styles.recommen_text}>{data?.custom_info?.desc}</Text>
+                                                <FastImage
+                                                    style={styles.cateRight}
+                                                    source={require('../../assets/img/index/categoryRight.png')}
+                                                />
+                                            </View>
+                                            <View style={[styles.recommen_bottom, Style.flexBetween]}>
+                                                <View style={Style.flexRow}>
+                                                    <View style={Style.flexRow}>
+                                                        {data?.custom_info?.user_avatar_list.map((avar, index) => {
+                                                            return (
+                                                                <FastImage
+                                                                    key={index}
+                                                                    source={{uri: avar}}
+                                                                    style={[
+                                                                        styles.user_avatar,
+                                                                        {marginLeft: index != 0 ? px(-6) : 0},
+                                                                    ]}
+                                                                />
+                                                            );
+                                                        })}
+                                                    </View>
+                                                    <Text style={{fontSize: px(12), marginLeft: px(8)}}>
+                                                        已有
+                                                        <Text
+                                                            style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
+                                                            1234
+                                                        </Text>
+                                                        人开启
+                                                    </Text>
+                                                </View>
+
+                                                <LinearGradient
+                                                    start={{x: 0, y: 0.25}}
+                                                    end={{x: 0, y: 0.8}}
+                                                    colors={['#FF9463', '#FF7D41']}
+                                                    style={[styles.recommend_btn, Style.flexRow]}>
+                                                    <Text style={styles.btn_text}>
+                                                        {data?.custom_info?.button.text}
+                                                    </Text>
+                                                    <FontAwesome name={'angle-right'} size={18} color="#fff" />
+                                                </LinearGradient>
                                             </View>
                                         </ImageBackground>
-                                        <View style={[styles.recommen_bottom, Style.flexBetween]}>
-                                            <View style={Style.flexRow}>
-                                                {data?.custom_info?.user_avatar_list.map((avar, index) => {
-                                                    return (
-                                                        <FastImage
-                                                            key={index}
-                                                            source={{uri: avar}}
-                                                            style={[
-                                                                styles.user_avatar,
-                                                                {marginLeft: index != 0 ? px(-6) : 0},
-                                                            ]}
-                                                        />
-                                                    );
-                                                })}
-                                            </View>
-                                            <Text style={{fontSize: px(12)}}>
-                                                已有
-                                                <Text style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
-                                                    1234
-                                                </Text>
-                                                人开启
-                                            </Text>
-
-                                            <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
-                                                colors={['#FF9463', '#FF7D41']}
-                                                style={[styles.recommend_btn, Style.flexRow]}>
-                                                <Text style={styles.btn_text}>{data?.custom_info?.button.text}</Text>
-                                                <FontAwesome name={'angle-right'} size={18} color="#fff" />
-                                            </LinearGradient>
-                                        </View>
                                     </View>
                                 </TouchableOpacity>
                             )}
@@ -373,43 +369,41 @@ const Index = (props) => {
                                     }}
                                     activeOpacity={0.8}
                                     style={{marginBottom: px(20)}}>
-                                    <BoxShadow setting={{...shadow, height: px(75), width: deviceWidth - px(32)}}>
-                                        <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
-                                            <FastImage
-                                                style={{
-                                                    width: px(40),
-                                                    height: px(40),
-                                                    marginRight: px(8),
-                                                    borderRadius: px(6),
-                                                }}
-                                                source={{uri: data?.polaris_info?.avatar}}
-                                            />
-                                            <View style={{flex: 1}}>
-                                                <View style={[Style.flexRow, {marginBottom: px(6)}]}>
-                                                    <Text style={[styles.secure_title, {marginRight: px(4)}]}>
-                                                        {data?.polaris_info?.name}
-                                                    </Text>
-                                                    <FastImage
-                                                        style={{width: px(17), height: px(17)}}
-                                                        source={{uri: data?.polaris_info?.v_img}}
+                                    <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
+                                        <FastImage
+                                            style={{
+                                                width: px(40),
+                                                height: px(40),
+                                                marginRight: px(8),
+                                                borderRadius: px(6),
+                                            }}
+                                            source={{uri: data?.polaris_info?.avatar}}
+                                        />
+                                        <View style={{flex: 1}}>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text style={[styles.secure_title, {marginRight: px(4)}]}>
+                                                    {data?.polaris_info?.name}
+                                                </Text>
+                                                <FastImage
+                                                    style={{width: px(17), height: px(17)}}
+                                                    source={{uri: data?.polaris_info?.v_img}}
+                                                />
+                                            </View>
+                                            <View style={Style.flexBetween}>
+                                                <Text numberOfLines={1} style={styles.v_text}>
+                                                    {data?.polaris_info?.detail}
+                                                </Text>
+                                                <View style={[Style.flexRow]}>
+                                                    <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
+                                                    <FontAwesome
+                                                        name={'angle-right'}
+                                                        color={Colors.btnColor}
+                                                        size={18}
                                                     />
-                                                </View>
-                                                <View style={Style.flexBetween}>
-                                                    <Text numberOfLines={1} style={styles.v_text}>
-                                                        {data?.polaris_info?.detail}
-                                                    </Text>
-                                                    <View style={[Style.flexRow]}>
-                                                        <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
-                                                        <FontAwesome
-                                                            name={'angle-right'}
-                                                            color={Colors.btnColor}
-                                                            size={18}
-                                                        />
-                                                    </View>
                                                 </View>
                                             </View>
                                         </View>
-                                    </BoxShadow>
+                                    </View>
                                 </TouchableOpacity>
                             )}
                             {/* 推荐阅读 */}
@@ -435,7 +429,7 @@ const Index = (props) => {
                                     height={px(188)}
                                     ref={snapScroll}
                                     onScrollEndDrag={() => {
-                                        var interval = px(298); // WIDTH OF 1 CHILD COMPONENT
+                                        var interval = Platform.OS == 'android' ? px(295) : px(293.5); // WIDTH OF 1 CHILD COMPONENT
                                         var snapTo = scrollingRight
                                             ? Math.ceil(lastx / interval)
                                             : Math.floor(lastx / interval);
@@ -450,98 +444,88 @@ const Index = (props) => {
                                     }}
                                     showsHorizontalScrollIndicator={false}>
                                     {data?.comment_list?.map((comment) => (
-                                        <BoxShadow
+                                        <TouchableOpacity
                                             key={comment.id}
-                                            setting={{
-                                                ...shadow,
-                                                width: px(282),
-                                                height: px(168),
-                                                style: {marginRight: px(16)},
+                                            style={[styles.about_our, styles.common_card]}
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump({path: 'MessageBoard', params: {id: comment.id}});
                                             }}>
-                                            <TouchableOpacity
-                                                style={[styles.about_our, styles.common_card]}
-                                                activeOpacity={0.8}
-                                                onPress={() => {
-                                                    jump({path: 'MessageBoard', params: {id: comment.id}});
-                                                }}>
-                                                <View style={Style.flexRow}>
-                                                    <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
-                                                    <View style={{flex: 1}}>
-                                                        <Text style={styles.avatar_name}>{comment.name}</Text>
-                                                        <Text
-                                                            style={{
-                                                                fontSize: px(12),
-                                                                color: Colors.darkGrayColor,
-                                                            }}>
-                                                            {comment.from}
-                                                        </Text>
-                                                    </View>
+                                            <View style={Style.flexRow}>
+                                                <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
+                                                <View style={{flex: 1}}>
+                                                    <Text style={styles.avatar_name}>{comment.name}</Text>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(12),
+                                                            color: Colors.darkGrayColor,
+                                                        }}>
+                                                        {comment.from}
+                                                    </Text>
                                                 </View>
-                                                <Text style={styles.about_text} numberOfLines={4}>
-                                                    {comment.content}
-                                                </Text>
-                                                <Praise comment={comment} style={styles.zan} />
-                                            </TouchableOpacity>
-                                        </BoxShadow>
+                                            </View>
+                                            <Text style={styles.about_text} numberOfLines={4}>
+                                                {comment.content}
+                                            </Text>
+                                            <Praise comment={comment} style={styles.zan} />
+                                        </TouchableOpacity>
                                     ))}
                                 </ScrollView>
                             </View>
-                            <View style={{marginBottom: px(20)}}>
+                            <View>
                                 <RenderTitle title={'关于理财魔方'} />
                                 {/* 安全保障 */}
                                 {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
-                                <BoxShadow setting={{...shadow, height: px(191)}}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        style={styles.aboutCard}
-                                        onPress={() => {
-                                            jump(data?.about_info?.url);
-                                        }}>
-                                        <ImageBackground
-                                            style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
-                                            source={require('../../assets/img/index/aboutOur.png')}>
-                                            {data?.about_info?.header.map((text, index) => (
-                                                <View key={index}>
-                                                    <View style={[Style.flexRow, {marginBottom: px(2)}]}>
-                                                        <Text style={styles.large_num}>{text?.value}</Text>
-                                                        <Text style={styles.num_unit}>{text?.unit}</Text>
-                                                    </View>
-                                                    <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
-                                                        {text?.content}
-                                                    </Text>
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    style={styles.aboutCard}
+                                    onPress={() => {
+                                        jump(data?.about_info?.url);
+                                    }}>
+                                    <ImageBackground
+                                        style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
+                                        source={require('../../assets/img/index/aboutOur.png')}>
+                                        {data?.about_info?.header.map((text, index) => (
+                                            <View key={index}>
+                                                <View style={[Style.flexRow, {marginBottom: px(2)}]}>
+                                                    <Text style={styles.large_num}>{text?.value}</Text>
+                                                    <Text style={styles.num_unit}>{text?.unit}</Text>
                                                 </View>
-                                            ))}
-                                            <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
-                                        </ImageBackground>
-                                        <View
-                                            style={[
-                                                Style.flexRow,
-                                                {
-                                                    flex: 1,
-                                                    backgroundColor: '#fff',
-                                                    justifyContent: 'space-evenly',
-                                                },
-                                            ]}>
-                                            {data?.about_info?.items?.map((item, index) => (
-                                                <View key={index} style={{alignItems: 'flex-start'}}>
-                                                    <FastImage source={{uri: item.icon}} style={styles.icon} />
-                                                    <Text
-                                                        style={{
-                                                            color: Colors.defaultColor,
-                                                            fontWeight: 'bold',
-                                                            fontSize: px(14),
-                                                            marginBottom: px(6),
-                                                        }}>
-                                                        {item.name}
-                                                    </Text>
-                                                    <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
-                                                        {item.name}
-                                                    </Text>
-                                                </View>
-                                            ))}
-                                        </View>
-                                    </TouchableOpacity>
-                                </BoxShadow>
+                                                <Text style={{fontSize: px(12), color: '#fff', opacity: 0.5}}>
+                                                    {text?.content}
+                                                </Text>
+                                            </View>
+                                        ))}
+                                        <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
+                                    </ImageBackground>
+                                    <View
+                                        style={[
+                                            Style.flexRow,
+                                            {
+                                                flex: 1,
+                                                backgroundColor: '#fff',
+                                                justifyContent: 'space-evenly',
+                                            },
+                                        ]}>
+                                        {data?.about_info?.items?.map((item, index) => (
+                                            <View key={index} style={{alignItems: 'flex-start'}}>
+                                                <FastImage source={{uri: item.icon}} style={styles.icon} />
+                                                <Text
+                                                    style={{
+                                                        color: Colors.defaultColor,
+                                                        fontWeight: 'bold',
+                                                        fontSize: px(14),
+                                                        marginBottom: px(6),
+                                                    }}>
+                                                    {item.name}
+                                                </Text>
+                                                <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
+                                                    {item.name}
+                                                </Text>
+                                            </View>
+                                        ))}
+                                    </View>
+                                </TouchableOpacity>
                             </View>
 
                             <BottomDesc />
@@ -563,7 +547,7 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
-        paddingBottom: px(8),
+        paddingLeft: px(7),
     },
     header_title: {
         fontSize: px(20),
@@ -571,13 +555,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     swiper: {
-        marginBottom: px(20),
-        marginTop: px(4),
+        marginBottom: px(12),
+        marginTop: px(5),
         height: px(120),
     },
     common_card: {
         backgroundColor: '#fff',
         borderRadius: px(6),
+        marginRight: px(12),
     },
     slide: {
         height: px(120),
@@ -589,9 +574,9 @@ const styles = StyleSheet.create({
         height: px(3),
     },
     logo: {
-        width: px(26),
-        height: px(26),
-        marginRight: px(9),
+        width: px(158),
+        height: px(63),
+        // marginRight: px(9),
     },
     secure_card: {
         width: px(165),
@@ -599,7 +584,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(14),
         height: px(61),
     },
-
+    cateRight: {
+        width: px(20),
+        height: px(20),
+        position: 'absolute',
+        bottom: 0,
+        right: px(16),
+    },
     V_card: {
         paddingHorizontal: px(16),
         height: px(75),
@@ -621,15 +612,16 @@ const styles = StyleSheet.create({
     robot: {
         width: px(80),
         height: px(81),
-        top: px(-20),
+        top: px(-24),
         left: px(4),
         position: 'absolute',
         zIndex: 10,
     },
     recommen_title: {
         fontSize: px(16),
-        marginTop: px(26),
-        marginLeft: px(84),
+        marginTop: px(25),
+        marginLeft: px(80),
+        fontWeight: 'bold',
     },
     recommen_text: {
         fontSize: px(14),
@@ -640,8 +632,9 @@ const styles = StyleSheet.create({
     },
     recommen_bottom: {
         height: px(62),
-        backgroundColor: '#fbecd9',
+        backgroundColor: '#FBEFDD',
         paddingHorizontal: px(16),
+        marginTop: px(24),
     },
     recommend_btn: {
         height: px(38),

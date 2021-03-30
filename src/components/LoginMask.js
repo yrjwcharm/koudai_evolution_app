@@ -2,7 +2,7 @@
  * @Date: 2021-03-17 17:44:16
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:19:16
+ * @LastEditTime: 2021-03-30 14:08:10
  * @Description: 登录注册蒙层
  */
 import React, {useState, useRef} from 'react';
@@ -37,10 +37,10 @@ const LoginMask = () => {
                 />
             </View>
             <BlurView
-                blurAmount={10}
+                blurAmount={4}
                 viewRef={blurRef}
                 blurType={'light'}
-                reducedTransparencyFallbackColor={'white'}
+                // reducedTransparencyFallbackColor={'white'}
                 style={styles.container}
             />
         </>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     loginBtn: {
         borderWidth: Space.borderWidth,
-        borderColor: Colors.borderColor,
+        borderColor: '#545968',
         backgroundColor: '#fff',
         width: width - text(40),
         marginBottom: text(40),

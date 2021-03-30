@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-22 18:41:10
+ * @LastEditTime: 2021-03-30 15:47:06
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -10,6 +10,7 @@ import {View, Platform, BackHandler} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
+import {Colors} from '../../common/commonStyle';
 export default function WebView({route, navigation}) {
     const webview = useRef(null);
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
@@ -50,7 +51,7 @@ export default function WebView({route, navigation}) {
         }
     };
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
             <NavBar leftIcon="chevron-left" leftPress={onBackAndroid} />
             <RNWebView
                 ref={webview}
@@ -61,7 +62,7 @@ export default function WebView({route, navigation}) {
                 javaScriptEnabled={true}
                 onNavigationStateChange={onNavigationStateChange}
                 startInLoadingState={true}
-                style={{flex: 1}}
+                style={{flex: 1, backgroundColor: Colors.brandColor}}
                 source={{
                     uri: route?.params?.link,
                     // headers: {'Cache-Control': 'no-cache'},

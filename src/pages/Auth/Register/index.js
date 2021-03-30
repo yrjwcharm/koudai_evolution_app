@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 21:20:19
+ * @LastEditTime: 2021-03-30 14:33:01
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -117,10 +117,11 @@ const styles = StyleSheet.create({
 
     title: {
         fontSize: text(22),
-        fontWeight: '500',
+        fontWeight: 'bold',
+        color: Colors.defaultColor,
     },
     text: {
-        color: '#666666',
+        color: Colors.lightBlackColor,
         fontSize: text(12),
     },
 });

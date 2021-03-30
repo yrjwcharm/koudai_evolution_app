@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 20:27:13
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 16:25:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -244,6 +244,8 @@ function HomeScreen({navigation, route}) {
                     width: deviceWidth,
                     backgroundColor: '#fff',
                     zIndex: scrollY === 0 ? 0 : 10,
+                    borderColor: Colors.bgColor,
+                    borderBottomWidth: 0.5,
                 }}
             />
             <ScrollView

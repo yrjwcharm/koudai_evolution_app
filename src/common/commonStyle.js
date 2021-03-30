@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 19:06:17
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 16:25:59
  * @Description:主题及公共样式表
  */
 
@@ -31,7 +31,7 @@ export const Colors = {
     // 链接颜色
     linkColor: '#0051CC',
     // 输入框背景色
-    inputBg: '#F4F4F4',
+    inputBg: '#F5F6F8',
     // 红色 涨、报错
     red: '#E74949',
     // 绿色 跌

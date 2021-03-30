@@ -733,6 +733,7 @@ class ChatWindow extends PureComponent {
             .slice()
             .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
+        console.log(currentList);
         return (
             <View
                 style={{backgroundColor: this.props.containerBackgroundColor, flex: 1, position: 'relative'}}
