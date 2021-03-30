@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 19:29:15
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-30 17:17:21
  * @Description:路由表
  */
 import React from 'react';
@@ -330,7 +330,7 @@ export default function AppStack() {
             <Stack.Screen name="BankAssetsPA" component={BankAssetsPA} options={{headerShown: false}} />
             <Stack.Screen name="DynamicAdjustment" component={DynamicAdjustment} options={{title: '动态调仓'}} />
             <Stack.Screen name="ElectronicAccount" component={ElectronicAccount} options={{title: '电子账户'}} />
-            <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝'}} />
+            <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝', gestureEnabled: false}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
             <Stack.Screen name="DetailAccount" component={DetailAccount} options={{title: ''}} />
             <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />

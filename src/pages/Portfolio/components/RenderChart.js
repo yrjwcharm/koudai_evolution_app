@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 10:24:23
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-30 18:10:13
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -12,6 +12,9 @@ import {px, px as text} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import {Modal} from '../../../components/Modal';
+
 export default function RenderChart(props) {
     const {chartData, chart, type, style} = props;
     const _textTime = useRef(null);
@@ -67,6 +70,14 @@ export default function RenderChart(props) {
             return Colors.red;
         }
     }, []);
+    const showTips = () => {
+        if (chartData?.yield_info.tips) {
+            Modal.show({
+                title: chartData?.yield_info.tips.title,
+                content: chartData?.yield_info.tips.content,
+            });
+        }
+    };
     return (
         <View style={{height: 280, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
@@ -110,6 +121,11 @@ export default function RenderChart(props) {
                     <View style={[Style.flexRow, {alignItems: 'center'}]}>
                         <CircleLegend color={['#E8EAEF', '#545968']} />
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
+                        {chartData?.yield_info.tips && (
+                            <TouchableOpacity onPress={showTips}>
+                                <EvilIcons name={'question'} size={15} />
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </View>
             </View>

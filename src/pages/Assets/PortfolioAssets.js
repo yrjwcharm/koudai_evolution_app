@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:02:17
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-30 18:13:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -24,6 +24,8 @@ import FitImage from 'react-native-fit-image';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import CircleLegend from '../../components/CircleLegend';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 
@@ -153,6 +155,7 @@ export default function PortfolioAssets(props) {
             }
         });
     };
+
     const renderBtn = () => {
         return (
             <View style={styles.plan_card_sty}>
@@ -211,6 +214,14 @@ export default function PortfolioAssets(props) {
             </View>
         );
     };
+    const showTips = () => {
+        if (chartData?.tips) {
+            Modal.show({
+                title: chart?.tips.title,
+                content: chart?.tips.content,
+            });
+        }
+    };
     const renderChart = () => {
         return (
             <View>
@@ -240,11 +251,12 @@ export default function PortfolioAssets(props) {
                                 defaultValue={chart?.label[1]?.val}
                                 editable={false}
                             />
-                            <Text>
-                                <MaterialCommunityIcons name={'record-circle-outline'} color={'#E74949'} size={12} />
+                            <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                <CircleLegend color={['#FFECEC', '#E74949']} />
                                 <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
-                            </Text>
+                            </View>
                         </View>
+
                         <View style={styles.legend_sty}>
                             <TextInput
                                 style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
@@ -252,10 +264,15 @@ export default function PortfolioAssets(props) {
                                 defaultValue={chart?.label[2]?.val}
                                 editable={false}
                             />
-                            <Text>
-                                <MaterialCommunityIcons name={'record-circle-outline'} color={'#545968'} size={12} />
+                            <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                <CircleLegend color={['#E8EAEF', '#545968']} />
                                 <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
-                            </Text>
+                                {chart?.tips && (
+                                    <TouchableOpacity onPress={showTips}>
+                                        <EvilIcons name={'question'} size={15} />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
                         </View>
                     </View>
                     <Chart

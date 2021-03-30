@@ -84,7 +84,7 @@ export default function DetailEducation({navigation, route}) {
     };
     const _createDateData = () => {
         let _dep = [];
-        for (let i = _age; i <= 18; i++) {
+        for (let i = 0; i <= 18; i++) {
             _dep.push(i);
         }
 

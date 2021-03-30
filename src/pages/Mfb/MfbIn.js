@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 16:48:39
+ * @LastEditTime: 2021-03-30 17:12:22
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -32,17 +32,7 @@ class MfbIn extends Component {
             code: props?.route?.params?.code || '',
         };
     }
-    componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
-    }
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
-    }
-    goBackAndroid = () => {
-        this.setState({amount: ''});
-        this.init();
-        return true;
-    };
+
     init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             this.setState({
@@ -219,17 +209,19 @@ class MfbIn extends Component {
                     </View>
                     {tips ? <Text style={styles.tips_sty}>{tips}</Text> : null}
                 </View>
-                <TouchableOpacity
-                    activeOpacity={1}
-                    style={[styles.notice_sty, Style.flexRow]}
-                    onPress={() => {
-                        this.props.navigation.navigate(remit_pay?.button?.url.path);
-                    }}>
-                    <Text style={{color: '#fff', flex: 1}}>{remit_pay?.tip}</Text>
-                    <View style={{backgroundColor: '#fff', borderRadius: px(3)}}>
-                        <Text style={styles.notice_btn_sty}>{remit_pay?.button?.text}</Text>
-                    </View>
-                </TouchableOpacity>
+                {remit_pay ? (
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={[styles.notice_sty, Style.flexRow]}
+                        onPress={() => {
+                            this.props.navigation.navigate(remit_pay?.button?.url.path);
+                        }}>
+                        <Text style={{color: '#fff', flex: 1}}>{remit_pay?.tip}</Text>
+                        <View style={{backgroundColor: '#fff', borderRadius: px(3)}}>
+                            <Text style={styles.notice_btn_sty}>{remit_pay?.button?.text}</Text>
+                        </View>
+                    </TouchableOpacity>
+                ) : null}
                 {/* 银行卡 */}
                 {this.render_bank()}
 
