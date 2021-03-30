@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:01:09
+ * @LastEditTime: 2021-03-29 18:33:34
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -32,12 +32,12 @@ const InviteFriends = ({navigation}) => {
     };
     const renderFooter = (section, index, isActive) => {
         return (
-            data?.invitees?.length === 0 &&
+            (data?.invitees?.length === 0 || !data?.invitees) &&
             isActive && (
                 <Text
                     style={[
                         styles.moreText,
-                        {color: Colors.defaultColor, paddingBottom: text(8), textAlign: 'center'},
+                        {color: Colors.defaultColor, paddingBottom: text(20), textAlign: 'center'},
                     ]}>
                     {'暂无邀请记录'}
                 </Text>

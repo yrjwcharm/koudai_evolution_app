@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 15:56:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:46:39
+ * @LastEditTime: 2021-03-29 18:18:27
  * @Description: 修改预留手机号
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -33,8 +33,9 @@ const ModifyPhoneNum = ({navigation, route}) => {
         if (phone.length === 0) {
             Toast.show('手机号不能为空');
         } else {
-            if (phone.length < 11) {
-                Toast.show('手机号格式错误');
+            if (!/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(phone)) {
+                Toast.show('手机号不合法');
+                return false;
             } else {
                 btnClick.current = false;
                 http.post('/passport/check/payment_mobile/20210101', {
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     },
     inputView: {
         marginHorizontal: text(22),
-        backgroundColor: '#F4F4F4',
+        backgroundColor: Colors.bgColor,
         height: text(50),
     },
     tips: {

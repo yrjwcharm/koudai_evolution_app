@@ -2,11 +2,11 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 14:07:14
+ * @LastEditTime: 2021-03-29 18:29:56
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -85,7 +85,14 @@ const MyScore = ({navigation, route}) => {
         navigation.setOptions({
             title: data.title || '我的魔分',
             headerBackImage: () => {
-                return <Feather name="chevron-left" size={30} color={'#fff'} />;
+                return (
+                    <Feather
+                        name="chevron-left"
+                        size={30}
+                        color={'#fff'}
+                        style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                    />
+                );
             },
             headerRight: () => (
                 <TouchableOpacity

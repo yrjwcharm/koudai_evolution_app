@@ -2,7 +2,7 @@
  * @Date: 2021-03-06 12:00:27
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-06 13:29:50
+ * @LastEditTime: 2021-03-29 19:25:29
  * @Description: 基金组合协议和产品概要
  */
 import React, {useEffect, useState} from 'react';
@@ -30,21 +30,26 @@ const TradeAgreements = ({navigation, route}) => {
     }, [navigation, route]);
     return (
         <ScrollView style={styles.container}>
-            {(data.funds || data.agreements)?.map((item, index) => {
-                return (
-                    <View
-                        key={item.name}
-                        style={{borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor}}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[Style.flexBetween, styles.item]}
-                            onPress={() => jump(item.url)}>
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
-                    </View>
-                );
-            })}
+            <View style={styles.partBox}>
+                {(data.funds || data.agreements)?.map((item, index, arr) => {
+                    return (
+                        <View
+                            key={item.name}
+                            style={{
+                                borderTopWidth: index !== 0 ? Space.borderWidth : 0,
+                                borderColor: Colors.borderColor,
+                            }}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[Style.flexBetween, styles.item]}
+                                onPress={() => jump(item.url)}>
+                                <Text style={styles.name}>{item.name}</Text>
+                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
+                        </View>
+                    );
+                })}
+            </View>
         </ScrollView>
     );
 };
@@ -54,9 +59,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.bgColor,
     },
-    item: {
-        padding: Space.padding,
+    partBox: {
+        marginTop: Space.marginVertical,
+        marginHorizontal: Space.marginAlign,
+        paddingHorizontal: Space.padding,
+        borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+    },
+    item: {
+        // paddingHorizontal: Space.padding,
+        // backgroundColor: '#fff',
+        height: text(56),
     },
     name: {
         fontSize: Font.textH2,

@@ -2,11 +2,11 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:54:41
+ * @LastEditTime: 2021-03-29 18:30:18
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {SectionList, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, SectionList, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -182,7 +182,14 @@ const ScoreDetail = ({navigation, route}) => {
         navigation.setOptions({
             title: route.params?.title || '魔分明细',
             headerBackImage: () => {
-                return <Feather name="chevron-left" size={30} color={'#fff'} />;
+                return (
+                    <Feather
+                        name="chevron-left"
+                        size={30}
+                        color={'#fff'}
+                        style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                    />
+                );
             },
             headerRight: () => {
                 return (

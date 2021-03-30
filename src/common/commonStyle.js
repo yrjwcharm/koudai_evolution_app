@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 19:19:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-29 19:06:17
  * @Description:主题及公共样式表
  */
 
@@ -17,7 +17,7 @@ export const Colors = {
     // 默认黑色字体颜色
     defaultColor: '#121D3A',
     //浅黑色
-    lightBlackColor: '#555B6C',
+    lightBlackColor: '#545968',
     // 默认深灰色字体颜色
     darkGrayColor: '#9aA1B2',
     // 默认浅灰色字体颜色

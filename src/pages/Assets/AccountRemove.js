@@ -2,7 +2,7 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 10:59:15
+ * @LastEditTime: 2021-03-29 19:12:44
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/Modal';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, handlePhone} from '../../utils/appUtil';
+import {px as text, handlePhone, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast';
@@ -103,20 +103,28 @@ const AccountRemove = ({navigation, route}) => {
             <View style={Style.flexCenter}>
                 <Image source={require('../../assets/personal/warn.png')} style={styles.warn} />
             </View>
-            <View style={[Style.flexCenter, {borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor}]}>
+            <View
+                style={[
+                    Style.flexCenter,
+                    {borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor, marginBottom: text(20)},
+                ]}>
                 <Text style={styles.bigTitle}>{'账号注销'}</Text>
                 <Text style={[styles.desc, styles.tips]}>{'当您决定注销账号时，请阅读以下内容'}</Text>
             </View>
-            {data?.body?.map((item, index) => {
+            {data?.body?.map((item, index, arr) => {
                 return (
-                    <View key={item + index}>
+                    <View key={item + index} style={{marginBottom: index !== arr.length - 1 ? text(20) : 0}}>
                         <Text style={[styles.title, {marginVertical: text(8)}]}>{item.title}</Text>
                         <HTML html={item.content} style={styles.desc} />
                     </View>
                 );
             })}
             {Object.keys(data).length > 0 && (
-                <Button title={'申请注销'} style={{...styles.btn, marginBottom: insets.bottom}} onPress={onPress} />
+                <Button
+                    title={'申请注销'}
+                    style={{...styles.btn, marginBottom: isIphoneX() ? 54 : 20}}
+                    onPress={onPress}
+                />
             )}
         </ScrollView>
     );
@@ -129,23 +137,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
     },
     warn: {
-        marginVertical: Space.padding,
-        width: text(50),
-        height: text(50),
+        marginTop: text(36),
+        marginBottom: Space.marginVertical,
+        width: text(40),
+        height: text(40),
     },
     bigTitle: {
-        fontSize: text(20),
+        fontSize: Font.textH1,
+        lineHeight: text(22),
         color: Colors.red,
-        fontWeight: '500',
+        // fontWeight: '500',
     },
     desc: {
         fontSize: text(13),
-        lineHeight: text(18),
-        color: Colors.lightGrayColor,
+        lineHeight: text(22),
+        color: Colors.darkGrayColor,
     },
     tips: {
-        marginTop: text(8),
-        marginBottom: text(16),
+        marginTop: text(12),
+        marginBottom: text(24),
         color: Colors.lightBlackColor,
     },
     title: {
@@ -155,7 +165,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     btn: {
-        marginTop: Space.marginVertical,
+        marginTop: text(32),
         marginHorizontal: text(20),
     },
 });
