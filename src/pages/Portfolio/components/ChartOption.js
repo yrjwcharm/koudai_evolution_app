@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 19:40:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 10:18:49
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -64,7 +64,7 @@ export const baseAreaChart = (
   chart.axis('value', {
     label: function label(text) {
       const cfg = {};
-      cfg.text = parseFloat(text) < 1 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+      cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(1) + "%" : parseFloat(text) + "%";
       return cfg;
     }
   });

@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:29:56
+ * @LastEditTime: 2021-03-30 11:07:20
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
     num: {
         fontSize: text(30),
         fontFamily: Font.numFontFamily,
+        fontWeight: '400',
     },
     smTips: {
         fontSize: Font.textH3,

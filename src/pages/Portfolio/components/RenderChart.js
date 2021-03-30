@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 19:38:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-30 10:24:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -44,15 +44,15 @@ export default function RenderChart(props) {
     // 图表滑动结束
     const onHide = ({items}) => {
         const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label[0].val});
+        _textTime.current.setNativeProps({text: _data?.label && _data?.label[0].val});
         _textPortfolio.current.setNativeProps({
-            text: _data?.label[1].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[1].val)}],
+            text: _data?.label && _data?.label[1].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[1].val)}],
         });
 
         _textBenchmark.current.setNativeProps({
-            text: _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label[2].val)}],
+            text: _data?.label && _data?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[2].val)}],
         });
     };
     const getColor = useCallback((t) => {
