@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:39:01
+ * @LastEditTime: 2021-03-31 17:54:13
  * @Description: 体验金首页
  */
 
@@ -156,17 +156,17 @@ const ExperienceGold = ({navigation}) => {
                                 }}
                                 title={data?.part1?.cashout_button?.title}
                                 disabled={!data?.part1?.cashout_button?.avail}
-                                disabledColor={'#F2F2F2'}
+                                disabledColor={Colors.bgColor}
                                 color={'#D7AF74'}
                                 style={{...styles.withdrawBtn, marginBottom: !data?.part1?.time_desc ? 0 : text(6)}}
                                 textStyle={{
                                     ...styles.profitText,
-                                    color: data?.part1?.cashout_button?.avail ? '#fff' : '#C1C1C1',
+                                    color: data?.part1?.cashout_button?.avail ? '#fff' : Colors.placeholderColor,
                                     fontWeight: '500',
                                 }}
                             />
                             {data?.part1?.time_desc ? (
-                                <Text style={{...styles.yieldKey, color: '#DC4949'}}>{data?.part1?.time_desc}</Text>
+                                <Text style={{...styles.yieldKey, color: Colors.red}}>{data?.part1?.time_desc}</Text>
                             ) : null}
                         </View>
                     </View>
@@ -288,7 +288,7 @@ const ExperienceGold = ({navigation}) => {
                                     global.LogTool('click', 'account', _p.plan_id);
                                     Jump(_p.button.url);
                                 }}
-                                textStyle={{...styles.profitText, color: '#376CCC', fontWeight: '500'}}
+                                textStyle={{...styles.profitText, color: Colors.brandColor, fontWeight: '500'}}
                             />
                         </TouchableOpacity>
                     );
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: text(2),
         top: 0,
-        backgroundColor: '#F96450',
+        backgroundColor: Colors.red,
         borderTopRightRadius: text(16),
         borderBottomRightRadius: text(16),
         borderTopLeftRadius: text(Platform.select({ios: 8, android: 12})),
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
         paddingVertical: text(7),
         paddingHorizontal: text(30),
         borderRadius: text(16),
-        backgroundColor: '#F7F7F7',
+        backgroundColor: Colors.bgColor,
         marginBottom: text(20),
     },
     profitText: {
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     yieldVal: {
         fontSize: text(22),
         lineHeight: text(26),
-        color: '#DC4949',
+        color: Colors.red,
         fontFamily: Font.numFontFamily,
         // fontWeight: 'bold',
     },
@@ -462,13 +462,13 @@ const styles = StyleSheet.create({
         paddingVertical: text(2),
         paddingHorizontal: text(6),
         backgroundColor: '#F0F6FD',
-        color: '#266EFF',
+        color: Colors.brandColor,
     },
     buyBtn: {
         marginLeft: text(32),
         borderRadius: text(6),
         borderWidth: Space.borderWidth,
-        borderColor: '#376CCC',
+        borderColor: Colors.brandColor,
         backgroundColor: '#fff',
         width: text(72),
         height: text(32),

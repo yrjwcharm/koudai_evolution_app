@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 17:15:20
+ * @LastEditTime: 2021-03-31 18:32:27
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -72,28 +72,42 @@ const DailyProfit = ({poid}) => {
     // 渲染收益更新表格
     const renderTable = useCallback(() => {
         return (
-            <View style={[styles.tableWrap, Style.flexRow]}>
-                <View style={[{flex: 1}, styles.borderRight]}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'基金种类'}
-                    </Text>
-                    <Text style={[styles.tableCell]}>{'普通基金'}</Text>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor}]}>{'QDII基金'}</Text>
+            <View style={[styles.tableWrap]}>
+                <View style={[Style.flexRow, {backgroundColor: Colors.bgColor}]}>
+                    <View style={[styles.borderRight, {flex: 1}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'基金种类'}</Text>
+                    </View>
+                    <View style={[styles.borderRight, {flex: 1.5}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'更新时间'}</Text>
+                    </View>
+                    <View style={[styles.borderRight, {flex: 1.76}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'说明'}</Text>
+                    </View>
                 </View>
-                <View style={[{flex: 1.5}, styles.borderRight]}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'更新时间'}
-                    </Text>
-                    <Text style={[styles.tableCell]}>{'1个交易日（T+1）'}</Text>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor}]}>{'2个交易日（T+2）'}</Text>
-                </View>
-                <View style={{flex: 1.76}}>
-                    <Text style={[styles.tableCell, {backgroundColor: Colors.bgColor, fontWeight: '500'}]}>
-                        {'说明'}
-                    </Text>
-                    <Text style={[styles.tableCell, styles.bigCell]}>
-                        {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
-                    </Text>
+                <View style={Style.flexRow}>
+                    <View style={{flex: 2.5}}>
+                        <View style={Style.flexRow}>
+                            <View style={[styles.borderRight, {flex: 1}]}>
+                                <Text style={styles.tableCell}>{'普通基金'}</Text>
+                            </View>
+                            <View style={[styles.borderRight, {flex: 1.5}]}>
+                                <Text style={styles.tableCell}>{'1个交易日（T+1）'}</Text>
+                            </View>
+                        </View>
+                        <View style={[Style.flexRow, {backgroundColor: Colors.bgColor, height: text(41)}]}>
+                            <View style={[styles.borderRight, {flex: 1}]}>
+                                <Text style={styles.tableCell}>{'QDII基金'}</Text>
+                            </View>
+                            <View style={[styles.borderRight, {flex: 1.5}]}>
+                                <Text style={styles.tableCell}>{'2个交易日（T+2）'}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={{flex: 1.76}}>
+                        <Text style={[styles.tableCell, styles.bigCell]}>
+                            {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
+                        </Text>
+                    </View>
                 </View>
             </View>
         );

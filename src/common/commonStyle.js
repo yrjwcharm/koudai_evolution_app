@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 16:25:59
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-31 17:40:43
  * @Description:主题及公共样式表
  */
 
@@ -21,7 +21,7 @@ export const Colors = {
     // 默认深灰色字体颜色
     darkGrayColor: '#9aA1B2',
     // 默认浅灰色字体颜色
-    lightGrayColor: '#9095A5',
+    lightGrayColor: '#9aA1B2',
     // 默认分割线颜色
     lineColor: '#E2D4EA',
     // 默认placeholder颜色
@@ -51,9 +51,9 @@ export const Colors = {
     navRightTitleColor: '#121D3A',
     iconGray: '#989898',
     iconBlack: '#262626',
-    defaultFontColor: '#292D39',
+    defaultFontColor: '#121D3A',
     // 描述文字颜色
-    descColor: '#4E556C',
+    descColor: '#545968',
 };
 export const Space = {
     /** space **/

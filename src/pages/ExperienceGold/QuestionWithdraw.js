@@ -2,7 +2,7 @@
  * @Date: 2021-03-03 11:03:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:03:33
+ * @LastEditTime: 2021-03-31 18:00:26
  * @Description: 答题提现
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -81,7 +81,7 @@ const QuestionWithdraw = ({navigation}) => {
                                             ? answer[0].val === 1
                                                 ? '#D4AC6F'
                                                 : Colors.red
-                                            : '#EEF0F6',
+                                            : Colors.borderColor,
                                     },
                                 ]}
                                 onPress={() => handleAnswer(item)}>
@@ -94,7 +94,7 @@ const QuestionWithdraw = ({navigation}) => {
                                                 ? answer[0].val === 1
                                                     ? '#C7964B'
                                                     : Colors.red
-                                                : '#262626',
+                                                : Colors.defaultColor,
                                         },
                                     ]}>
                                     {item.name}
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     total: {
         fontSize: text(16),
         lineHeight: text(19),
-        color: '#999',
+        color: Colors.lightGrayColor,
         fontFamily: Font.numFontFamily,
         // fontWeight: 'bold',
     },
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         marginBottom: text(4),
         fontSize: text(22),
         lineHeight: text(30),
-        color: '#333',
+        color: Colors.defaultColor,
         fontWeight: '600',
     },
     cardList: {
@@ -151,13 +151,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: Space.marginVertical,
         borderRadius: text(6),
-        borderColor: '#EEF0F6',
+        borderColor: Colors.borderColor,
         borderWidth: Space.borderWidth,
     },
     cardText: {
         fontSize: text(15),
         lineHeight: text(21),
-        color: '#333',
+        color: Colors.defaultColor,
     },
 });
 

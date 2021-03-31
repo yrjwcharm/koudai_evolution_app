@@ -1,13 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 10:31:10
-<<<<<<< HEAD
- * @LastEditTime: 2021-03-30 16:25:32
- * @LastEditors: yhc
-=======
- * @LastEditTime: 2021-03-29 19:28:19
+ * @LastEditTime: 2021-03-31 16:47:20
  * @LastEditors: dx
->>>>>>> ed47b3590583021ebc6e21dbc8a4d33363cd52fb
  * @Description: 用户协议(接口返回内容)
  * @FilePath: /koudai_evolution_app/src/pages/Index/Agreement.js
  */

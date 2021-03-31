@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:00:36
+ * @LastEditTime: 2021-03-31 17:17:28
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -103,7 +103,7 @@ const FundDetail = ({navigation, route}) => {
                         );
                     })}
                 </View>
-                <View style={{height: Platform.select({ios: text(240), android: text(224)})}}>
+                <View style={{height: Platform.select({ios: 220, android: 220})}}>
                     {data.part1 && !data.part1.fund.is_monetary ? (
                         <>
                             {curTab === 0 ? (
@@ -343,7 +343,7 @@ const FundDetail = ({navigation, route}) => {
                 {data.part2 && (
                     <ScrollableTabView
                         locked
-                        style={[styles.groupContainer, {overflow: 'hidden', minHeight: text(362)}]}
+                        style={[styles.groupContainer, {overflow: 'hidden', minHeight: 372}]}
                         renderTabBar={() => <Tab />}
                         initialPage={0}
                         onChangeTab={(cur) => onChangeTab(cur.i)}>
@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
     chartContainer: {
         borderTopWidth: Space.borderWidth,
         borderTopColor: Colors.borderColor,
-        minHeight: text(318),
+        minHeight: 330,
         paddingVertical: Space.padding,
     },
     legendItem: {
