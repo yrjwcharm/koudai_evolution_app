@@ -2,17 +2,22 @@
  * @Date: 2021-03-02 14:32:03
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 17:35:04
+ * @LastEditTime: 2021-03-31 14:14:38
  * @Description: 机器人
  */
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
+import * as Animatable from 'react-native-animatable';
 export default class Robot extends Component {
     render() {
         return (
-            <FastImage style={[styles.robot, this.props.style]} source={require('../../../assets/img/robot3x.png')} />
+            <Animatable.Image
+                animation="fadeInUp"
+                style={[styles.robot, this.props.style]}
+                source={require('../../../assets/img/robot3x.png')}
+            />
         );
     }
 }

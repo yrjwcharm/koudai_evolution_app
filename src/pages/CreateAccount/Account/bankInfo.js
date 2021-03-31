@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:42:46
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-31 15:10:35
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -47,6 +47,7 @@ class BankInfo extends Component {
             code_btn_click: true, //验证码按钮
             bankList: [],
             selectBank: props.userInfo?.selectBank || '',
+            btnDisable: true,
         };
     }
 
@@ -58,6 +59,13 @@ class BankInfo extends Component {
     componentWillUnmount() {
         this.time && clearInterval(this.time);
     }
+    checkData = (phone, code, selectBank, bank_no) => {
+        if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 23) {
+            this.setState({btnDisable: false});
+        } else {
+            this.setState({btnDisable: true});
+        }
+    };
     /**
      * @description: 开户
      * @param {*} confirm
@@ -221,6 +229,7 @@ class BankInfo extends Component {
      * @return {*}
      */
     onChangeBankNo = (value) => {
+        const {phone, code, selectBank} = this.state;
         if (value && value.length > 11) {
             http.get('/passport/match/bank_card_info/20210101', {
                 bank_no: this.state.bank_no.replace(/ /g, ''),
@@ -230,12 +239,17 @@ class BankInfo extends Component {
                 });
             });
         }
-        this.setState({
-            bank_no: (value + '')
-                .replace(/\s/g, '')
-                .replace(/\D/g, '')
-                .replace(/(\d{4})(?=\d)/g, '$1 '),
-        });
+        this.setState(
+            {
+                bank_no: (value + '')
+                    .replace(/\s/g, '')
+                    .replace(/\D/g, '')
+                    .replace(/(\d{4})(?=\d)/g, '$1 '),
+            },
+            () => {
+                this.checkData(phone, code, selectBank, value);
+            }
+        );
     };
     render() {
         const {verifyText, bank_no, bankList, selectBank, phone, code} = this.state;
@@ -243,15 +257,18 @@ class BankInfo extends Component {
             <View style={{flex: 1}}>
                 <ScrollView style={styles.con} keyboardShouldPersistTaps="handled">
                     <KeyboardAvoidingView
-                        behavior="position"
-                        keyboardVerticalOffset={Platform.OS == 'android' ? px(-30) : px(30)}
+                        behavior="padding"
+                        enabled={Platform.OS !== 'android'}
+                        keyboardVerticalOffset={px(0)}
                         style={{paddingHorizontal: px(16)}}>
                         <BankCardModal
                             title="请选择银行卡"
                             data={bankList}
                             style={{height: px(500)}}
                             onDone={(data) => {
-                                this.setState({selectBank: data});
+                                this.setState({selectBank: data}, () => {
+                                    this.checkData(phone, code, this.state.selectBank, bank_no);
+                                });
                             }}
                             ref={(ref) => (this.bankCard = ref)}
                         />
@@ -301,7 +318,9 @@ class BankInfo extends Component {
                                 maxLength={11}
                                 value={phone}
                                 onChangeText={(_phone) => {
-                                    this.setState({phone: inputInt(_phone)});
+                                    this.setState({phone: inputInt(_phone)}, () => {
+                                        this.checkData(this.state.phone, code, selectBank, bank_no);
+                                    });
                                 }}
                             />
                             <View style={Style.flexRow}>
@@ -312,7 +331,9 @@ class BankInfo extends Component {
                                     maxLength={6}
                                     value={code}
                                     onChangeText={(_code) => {
-                                        this.setState({code: inputInt(_code)});
+                                        this.setState({code: inputInt(_code)}, () => {
+                                            this.checkData(phone, this.state.code, selectBank, bank_no);
+                                        });
                                     }}
                                     inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 />
@@ -346,7 +367,11 @@ class BankInfo extends Component {
                         <BottomDesc />
                     </KeyboardAvoidingView>
                 </ScrollView>
-                <FixedButton title={'立即开户'} onPress={_.debounce(this.confirm, 500, {leading: true})} />
+                <FixedButton
+                    title={'立即开户'}
+                    disabled={this.state.btnDisable}
+                    onPress={_.debounce(this.confirm, 500, {leading: true})}
+                />
             </View>
         );
     }

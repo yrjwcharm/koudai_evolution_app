@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:42:22
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-31 14:30:22
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -33,6 +33,7 @@ class Index extends Component {
             rcode: '', //职业代码
             showMask: false,
             careerList: [],
+            btnDisable: true,
         };
     }
     componentWillUnmount() {
@@ -44,9 +45,13 @@ class Index extends Component {
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
             if (params && Object.keys(params).length == 2 && params.name && params.id_no) {
                 this.setState({name: params.name, id_no: params.id_no});
+                this.checkData(params.name, params.id_no);
             }
             // 刷新界面等
         });
+        if (this.state.name && this.state.id_no) {
+            this.checkData(this.state.name, this.state.id_no);
+        }
         http.get('/passport/xy_account/career_list/20210101').then((data) => {
             var career = data.result.career.filter((item) => {
                 return item.code == data.result.default_career;
@@ -60,6 +65,30 @@ class Index extends Component {
     }
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
+    };
+    checkData = (name, id_no) => {
+        if (id_no.length >= 18 && name.length >= 2) {
+            this.setState({
+                btnDisable: false,
+            });
+        } else {
+            this.setState({
+                btnDisable: true,
+            });
+        }
+    };
+    onChangeIdNo = (id_no) => {
+        const {name} = this.state;
+        let _no = id_no;
+        this.setState({
+            id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no,
+        });
+        this.checkData(name, _no);
+    };
+    onChangeName = (name) => {
+        const {id_no} = this.state;
+        this.setState({name});
+        this.checkData(name, id_no);
     };
     jumpBank = (nav) => {
         const {name, id_no, rcode, rname} = this.state;
@@ -145,7 +174,6 @@ class Index extends Component {
     };
     render() {
         const {showMask, name, id_no, rname} = this.state;
-        // console.log(rname);
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
@@ -166,9 +194,7 @@ class Index extends Component {
                         <Input
                             label="姓名"
                             placeholder="请输入您的姓名"
-                            onChangeText={(name) => {
-                                this.setState({name});
-                            }}
+                            onChangeText={this.onChangeName}
                             value={name}
                             returnKeyType={'next'}
                         />
@@ -176,12 +202,7 @@ class Index extends Component {
                             <Input
                                 label="身份证"
                                 placeholder="请输入您的身份证号"
-                                onChangeText={(id_no) => {
-                                    let _no = id_no;
-                                    this.setState({
-                                        id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no,
-                                    });
-                                }}
+                                onChangeText={this.onChangeIdNo}
                                 value={id_no}
                                 maxLength={18}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}
@@ -210,6 +231,7 @@ class Index extends Component {
                 </ScrollView>
                 <FixedButton
                     title={'下一步'}
+                    disabled={this.state.btnDisable}
                     onPress={_.debounce(
                         () => {
                             this.jumpBank('BankInfo');
