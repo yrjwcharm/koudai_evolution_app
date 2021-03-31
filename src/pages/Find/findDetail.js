@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:05:30
+ * @LastEditTime: 2021-03-30 17:00:03
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -75,20 +75,14 @@ const FindDetail = (props) => {
                                 source={{uri: data?.plan_info?.background}}
                             />
                             <View style={[styles.header, {top: insets.top + px(4)}]}>
-                                <View style={Style.flexRow}>
-                                    <FastImage
-                                        style={{height: px(24), width: px(24), marginTop: px(-6)}}
-                                        source={require('../../assets/img/logo.png')}
-                                    />
-                                    <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
-                                </View>
+                                <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
                                 <Text style={styles.img_title}>{data?.plan_info?.slogan[1]}</Text>
                             </View>
                             <View
                                 style={[
                                     styles.card,
                                     {
-                                        marginTop: px(-78),
+                                        marginTop: px(-60),
                                         marginHorizontal: px(16),
                                     },
                                 ]}>
@@ -111,15 +105,7 @@ const FindDetail = (props) => {
                                             </LinearGradient>
                                         </TouchableOpacity>
                                     </View>
-                                    <View style={Style.flexRow}>
-                                        {data?.plan_info?.slogan.map((_s, _i, arr) => {
-                                            return (
-                                                <Text style={styles.light_text} key={_i + '_s2'}>
-                                                    {_s} {_i < arr.length - 1 && '｜'}
-                                                </Text>
-                                            );
-                                        })}
-                                    </View>
+                                    <Text style={styles.light_text}>{data.plan_info.yield.title}</Text>
                                 </View>
                                 {data?.plan_info?.tip && <Text style={styles.tip_text}>{data?.plan_info?.tip}</Text>}
                             </View>

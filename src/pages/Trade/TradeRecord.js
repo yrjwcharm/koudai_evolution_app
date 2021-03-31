@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 12:18:19
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 17:32:53
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -178,10 +178,10 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="充值" style={styles.container}>
+                    <View tabLabel="转入" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="提现" style={styles.container}>
+                    <View tabLabel="转出" style={styles.container}>
                         {renderContent()}
                     </View>
                 </ScrollableTabView>
