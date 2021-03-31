@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 15:14:10
+ * @LastEditTime: 2021-03-30 17:51:32
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -18,12 +18,13 @@ import Robot from './components/Robot';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {
     color: '#E3E6EE',
-    border: 10,
+    border: 8,
     radius: 1,
-    opacity: 0.3,
+    opacity: 0.2,
     x: 0,
-    y: 4,
-    width: deviceWidth - px(32),
+    y: 2,
+
+    width: deviceWidth - px(40),
     height: px(156),
     style: {
         marginBottom: px(16),
@@ -161,7 +162,7 @@ export class planningHistory extends Component {
                             onPress={() => {
                                 this.jumpNext(button?.url?.path, button?.url?.params);
                             }}
-                            style={{marginTop: px(16)}}
+                            style={{marginTop: px(16), marginRight: 0}}
                             button={button}
                         />
                     )}

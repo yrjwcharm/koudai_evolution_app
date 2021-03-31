@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 16:09:43
+ * @LastEditTime: 2021-03-30 20:13:52
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -78,6 +78,7 @@ const ScoreDetail = ({navigation, route}) => {
     const onTab = (t) => {
         setShow(false);
         setPage(1);
+        setHasMore(true);
         setType(t);
     };
     // 下拉刷新
@@ -102,7 +103,8 @@ const ScoreDetail = ({navigation, route}) => {
                 style={[
                     styles.itemBox,
                     {marginTop: index === 0 ? text(20) : 0},
-                    index === 0 ? styles.borderRadius : {},
+                    index === 0 ? styles.borderTopRadius : {},
+                    index === list.length - 1 ? styles.borderBottomRadius : {},
                 ]}>
                 <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                     <Text
@@ -325,15 +327,15 @@ const styles = StyleSheet.create({
     },
     headerBg: {
         width: deviceWidth,
-        height: text(156),
+        height: text(167),
         marginLeft: -Space.marginAlign,
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        // position: 'absolute',
+        // top: 0,
+        // left: 0,
         backgroundColor: Colors.brandColor,
     },
     scoreNumContainer: {
-        // marginTop: text(-152),
+        marginTop: text(-152),
     },
     scoreNum: {
         marginBottom: text(8),
@@ -395,9 +397,13 @@ const styles = StyleSheet.create({
         padding: Space.padding,
         backgroundColor: '#fff',
     },
-    borderRadius: {
+    borderTopRadius: {
         borderTopLeftRadius: Space.borderRadius,
         borderTopRightRadius: Space.borderRadius,
+    },
+    borderBottomRadius: {
+        borderBottomRightRadius: Space.borderRadius,
+        borderBottomLeftRadius: Space.borderRadius,
     },
     footer: {
         marginHorizontal: Space.marginAlign,

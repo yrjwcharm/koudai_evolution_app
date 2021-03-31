@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 12:17:18
+ * @LastEditTime: 2021-03-30 19:00:22
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -217,7 +217,7 @@ const Index = (props) => {
                                     }}>
                                     {allMsg ? <View style={styles.new_message} /> : null}
                                     <FastImage
-                                        style={{width: px(24), height: px(24)}}
+                                        style={{width: px(32), height: px(32)}}
                                         source={require('../../assets/img/index/message.png')}
                                     />
                                 </TouchableOpacity>
@@ -719,11 +719,11 @@ const styles = StyleSheet.create({
     new_message: {
         width: px(6),
         height: px(6),
-        borderRadius: px(3),
-        backgroundColor: 'red',
+        borderRadius: px(4),
+        backgroundColor: Colors.red,
         position: 'absolute',
-        right: px(1),
-        top: px(3),
+        right: px(3),
+        top: px(5),
         zIndex: 10,
     },
     large_num: {

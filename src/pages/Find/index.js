@@ -2,17 +2,16 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 16:23:34
+ * @LastEditTime: 2021-03-30 16:48:26
  * @Description:发现
  */
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, StatusBar, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
+import React, {useState, useCallback, useRef} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import * as MagicMove from 'react-native-magic-move';
-import Header from '../../components/NavBar';
 import BottomDesc from '../../components/BottomDesc';
 import LoginMask from '../../components/LoginMask';
 import http from '../../services';
@@ -86,13 +85,7 @@ const Index = (props) => {
     ) : (
         <>
             {!userInfo.toJS().is_login && isFocused && <LoginMask />}
-            {/* <StatusBar
-                animated={true} //指定状态栏的变化是否应以动画形式呈现。目前支持这几种样式：backgroundColor, barStyle和hidden
-                hidden={false} //是否隐藏状态栏。
-                backgroundColor={'#fff'} //状态栏的背景色
-                translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
-                barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
-            /> */}
+
             <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
             <ScrollView
                 style={{backgroundColor: Colors.bgColor}}
@@ -174,41 +167,83 @@ const Index = (props) => {
                         </MagicMove.View>
                     </LinearGradient>
 
+                    {/* 专业理财 */}
+                    <View style={{marginBottom: px(20)}}>
+                        <Text style={[styles.large_title, {paddingLeft: px(16)}]}>{data?.part2?.group_name}</Text>
+                        <ScrollView
+                            horizontal={true}
+                            height={px(217)}
+                            ref={snapScroll}
+                            style={{paddingLeft: px(16)}}
+                            onScrollEndDrag={() => {
+                                var interval = px(214); // WIDTH OF 1 CHILD COMPONENT
+                                var snapTo = scrollingRight
+                                    ? Math.ceil(lastx / interval)
+                                    : Math.floor(lastx / interval);
+                                var scrollTo = snapTo * interval;
+                                snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+                            }}
+                            scrollEventThrottle={100}
+                            onScroll={(event) => {
+                                var nextx = event.nativeEvent.contentOffset.x;
+                                scrollingRight = nextx > lastx;
+                                lastx = nextx;
+                            }}
+                            showsHorizontalScrollIndicator={false}>
+                            {data?.part2?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    style={[styles.major_card, styles.card]}
+                                    key={index}
+                                    onPress={() => {
+                                        jump(item?.url);
+                                    }}>
+                                    <Text style={styles.card_title}>{item.name}</Text>
+                                    {item?.labels && (
+                                        <Text style={[styles.card_title_dexc, {marginTop: px(8)}]}>
+                                            {item?.labels.map((_item, _index) =>
+                                                _index == 0 ? (
+                                                    <Text key={_index}>{_item}</Text>
+                                                ) : (
+                                                    <Text key={_index}>｜{_item}</Text>
+                                                )
+                                            )}
+                                        </Text>
+                                    )}
+
+                                    <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                    <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                    {item?.yield?.chart && (
+                                        <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
+                                            <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
+                                        </View>
+                                    )}
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
                     {/* 目标理财 */}
-                    <View style={{paddingHorizontal: Space.padding}}>
-                        {/* 专业理财 */}
-                        <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>{data?.part2?.group_name}</Text>
-                            <ScrollView
-                                horizontal={true}
-                                height={px(217)}
-                                ref={snapScroll}
-                                onScrollEndDrag={() => {
-                                    var interval = px(202); // WIDTH OF 1 CHILD COMPONENT
-                                    var snapTo = scrollingRight
-                                        ? Math.ceil(lastx / interval)
-                                        : Math.floor(lastx / interval);
-                                    var scrollTo = snapTo * interval;
-                                    snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+
+                    <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                        <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
+                        {data?.part1?.plans?.map((item, index) => (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    jump(item?.url);
                                 }}
-                                scrollEventThrottle={100}
-                                onScroll={(event) => {
-                                    var nextx = event.nativeEvent.contentOffset.x;
-                                    scrollingRight = nextx > lastx;
-                                    lastx = nextx;
-                                }}
-                                showsHorizontalScrollIndicator={false}>
-                                {data?.part2?.plans?.map((item, index) => (
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        style={[styles.major_card, styles.card]}
-                                        key={index}
-                                        onPress={() => {
-                                            jump(item?.url);
-                                        }}>
-                                        <Text style={styles.card_title}>{item.name}</Text>
+                                key={index}
+                                style={[
+                                    styles.card,
+                                    {borderRadius: 8},
+                                    Style.flexRow,
+                                    {marginTop: index != 0 ? px(12) : 0},
+                                ]}>
+                                <View style={{padding: Space.cardPadding, flex: 1}}>
+                                    <View style={Style.flexRow}>
+                                        <Text style={styles.card_title}>{item?.name}</Text>
                                         {item?.labels && (
-                                            <Text style={[styles.card_title_dexc, {marginTop: px(8)}]}>
+                                            <Text style={styles.card_title_dexc}>
                                                 {item?.labels.map((_item, _index) =>
                                                     _index == 0 ? (
                                                         <Text key={_index}>{_item}</Text>
@@ -218,108 +253,68 @@ const Index = (props) => {
                                                 )}
                                             </Text>
                                         )}
-
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                        {item?.yield?.chart && (
-                                            <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
-                                                <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
-                                            </View>
-                                        )}
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </View>
-                        <View style={{marginBottom: px(20)}}>
-                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
-                            {data?.part1?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        jump(item?.url);
+                                    </View>
+                                    <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                    <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                </View>
+                                <FastImage
+                                    style={styles.img_icon}
+                                    resizeMode={FastImage.resizeMode.contain}
+                                    source={{
+                                        uri: item?.background,
                                     }}
-                                    key={index}
-                                    style={[
-                                        styles.card,
-                                        {borderRadius: 8},
-                                        Style.flexRow,
-                                        {marginTop: index != 0 ? px(12) : 0},
-                                    ]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                    </View>
-                                    <FastImage
-                                        style={styles.img_icon}
-                                        source={{
-                                            uri: item?.background,
-                                        }}
-                                    />
-                                    <View style={{position: 'relative', right: px(16)}}>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-
-                        {/* 增值服务 */}
-                        <View>
-                            <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                            {data?.part3?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        jump(item?.url);
-                                    }}
-                                    key={index}
-                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                        </View>
-                                        <Text style={styles.large_text}>{item?.desc}</Text>
-                                        <Text style={styles.light_text}>{item?.slogan}</Text>
-                                    </View>
-                                    <FastImage
-                                        style={styles.img_icon}
-                                        source={{
-                                            uri: item?.background,
-                                        }}
-                                    />
-                                    <View style={{position: 'relative', right: px(16)}}>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
+                                />
+                                <View style={{position: 'absolute', right: px(16)}}>
+                                    <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                </View>
+                            </TouchableOpacity>
+                        ))}
                     </View>
-                    <BottomDesc />
+
+                    {/* 增值服务 */}
+                    <View style={{paddingHorizontal: px(16)}}>
+                        <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
+                        {data?.part3?.plans?.map((item, index) => (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    jump(item?.url);
+                                }}
+                                key={index}
+                                style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
+                                <View style={{padding: Space.cardPadding, flex: 1}}>
+                                    <View style={Style.flexRow}>
+                                        <Text style={styles.card_title}>{item?.name}</Text>
+                                        {item?.labels && (
+                                            <Text style={styles.card_title_dexc}>
+                                                {item?.labels.map((_item, _index) =>
+                                                    _index == 0 ? (
+                                                        <Text key={_index}>{_item}</Text>
+                                                    ) : (
+                                                        <Text key={_index}>｜{_item}</Text>
+                                                    )
+                                                )}
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <Text style={styles.large_text}>{item?.desc}</Text>
+                                    <Text style={styles.light_text}>{item?.slogan}</Text>
+                                </View>
+                                <FastImage
+                                    style={[styles.img_icon, {width: px(78), height: px(70)}]}
+                                    resizeMode={FastImage.resizeMode.contain}
+                                    source={{
+                                        uri: item?.background,
+                                    }}
+                                />
+                                <View style={{position: 'absolute', right: px(16)}}>
+                                    <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
+                <BottomDesc />
             </ScrollView>
         </>
     );
@@ -340,9 +335,8 @@ const styles = StyleSheet.create({
         marginBottom: px(10),
     },
     img_icon: {
-        width: px(82),
-        height: px(82),
-        marginTop: px(26),
+        width: px(84),
+        height: px(80),
         alignSelf: 'flex-end',
     },
     recommend: {
@@ -406,7 +400,7 @@ const styles = StyleSheet.create({
     },
     header_title: {
         fontSize: px(22),
-        fontWeight: '700',
+        fontWeight: 'bold',
         color: Colors.defaultColor,
     },
     large_text: {

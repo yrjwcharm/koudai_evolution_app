@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 20:15:19
+ * @LastEditTime: 2021-03-30 19:21:41
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -486,7 +486,7 @@ class Question extends Component {
                                 onPress={() => {
                                     this.previous(1);
                                 }}>
-                                <Text>上一题</Text>
+                                <Text>上一步</Text>
                             </TouchableOpacity>
                         )
                     }
@@ -627,7 +627,7 @@ class Question extends Component {
                                                                     },
                                                                 ]}>
                                                                 <Image style={styles.icon} source={{uri: item.icon}} />
-                                                                <View style={{flex: 1, paddingTop: px(6)}}>
+                                                                <View style={{flex: 1, paddingTop: px(2)}}>
                                                                     <View style={{marginBottom: px(8)}}>
                                                                         <HTML style={styles.name} html={item.title} />
                                                                     </View>
@@ -876,9 +876,9 @@ const styles = StyleSheet.create({
         borderRadius: 4,
     },
     line: {
-        height: px(230),
-        width: px(46),
-        resizeMode: 'stretch',
+        height: px(175),
+        width: px(48),
+        // resizeMode: 'stretch',
         marginRight: px(10),
     },
     icon: {
@@ -899,8 +899,8 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
     },
     disabled: {
-        backgroundColor: '#ddd',
-        borderColor: '#ddd',
+        backgroundColor: '#CCDCF5',
+        borderColor: '#CCDCF5',
         color: '#fff',
     },
 });
