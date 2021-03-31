@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: xjh
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
@@ -187,7 +187,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 风险控制 */}
                     <View style={styles.card_sty}>
                         <ListHeader data={data.risk_info.header} />
-                        <View style={{height: 300, position: 'relative'}}>
+                        <View style={{height: 320, position: 'relative'}}>
                             <View style={[Style.flexRow, {marginTop: text(13)}]}>
                                 <View style={{flex: 1, position: 'relative'}}>
                                     <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[0]?.title}</Text>
@@ -212,7 +212,7 @@ export default function DetailAccount({route, navigation}) {
                                 style={{marginTop: text(-20), zIndex: 9}}
                             />
 
-                            <View style={{flexDirection: 'row', marginLeft: text(10)}}>
+                            <View style={{flexDirection: 'row', marginLeft: text(10), marginTop: text(16)}}>
                                 <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                     <Ionicons name={'square'} color={'#E74949'} size={10} />
                                     <Text> {data.risk_info?.label[0]?.key}</Text>

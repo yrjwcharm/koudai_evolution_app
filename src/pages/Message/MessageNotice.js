@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 12:12:49
+ * @LastEditTime: 2021-03-31 12:04:43
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -47,7 +47,11 @@ export default function MessageNotice({navigation, route}) {
                     first && setTitle(res.result.title);
                     _type = res.result.message_type;
                     if (status === 'refresh') {
-                        setList(res.result.messages);
+                        if (!res.result.messages) {
+                            setList([]);
+                        } else {
+                            setList(res.result.messages);
+                        }
                     } else if (status === 'loadmore') {
                         setList((prevList) => [...prevList, ...res.result.messages]);
                     }

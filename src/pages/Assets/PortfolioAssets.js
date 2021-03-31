@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 18:13:18
+ * @LastEditTime: 2021-03-31 11:57:38
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -224,69 +224,72 @@ export default function PortfolioAssets(props) {
     };
     const renderChart = () => {
         return (
-            <View>
+            <>
                 <Text style={[styles.title_sty, {paddingVertical: text(16)}]}>{chart?.title}</Text>
                 <View
                     style={{
-                        height: 300,
-                        backgroundColor: '#fff',
-                        borderRadius: text(10),
                         paddingTop: text(16),
                         paddingBottom: text(10),
+                        backgroundColor: '#fff',
+                        borderRadius: text(10),
                     }}>
-                    <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
-                        <View style={styles.legend_sty}>
-                            <TextInput
-                                ref={_textTime}
-                                style={styles.legend_title_sty}
-                                defaultValue={chart?.label[0]?.val}
-                                editable={false}
-                            />
-                            <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
-                        </View>
-                        <View style={styles.legend_sty}>
-                            <TextInput
-                                style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
-                                ref={_textPortfolio}
-                                defaultValue={chart?.label[1]?.val}
-                                editable={false}
-                            />
-                            <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                <CircleLegend color={['#FFECEC', '#E74949']} />
-                                <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
+                    <View
+                        style={{
+                            height: 260,
+                        }}>
+                        <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
+                            <View style={styles.legend_sty}>
+                                <TextInput
+                                    ref={_textTime}
+                                    style={styles.legend_title_sty}
+                                    defaultValue={chart?.label[0]?.val}
+                                    editable={false}
+                                />
+                                <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
+                            </View>
+                            <View style={styles.legend_sty}>
+                                <TextInput
+                                    style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
+                                    ref={_textPortfolio}
+                                    defaultValue={chart?.label[1]?.val}
+                                    editable={false}
+                                />
+                                <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                    <CircleLegend color={['#FFECEC', '#E74949']} />
+                                    <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.legend_sty}>
+                                <TextInput
+                                    style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
+                                    ref={_textBenchmark}
+                                    defaultValue={chart?.label[2]?.val}
+                                    editable={false}
+                                />
+                                <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                    <CircleLegend color={['#E8EAEF', '#545968']} />
+                                    <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
+                                    {chart?.tips && (
+                                        <TouchableOpacity onPress={showTips}>
+                                            <EvilIcons name={'question'} size={15} />
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
                             </View>
                         </View>
-
-                        <View style={styles.legend_sty}>
-                            <TextInput
-                                style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
-                                ref={_textBenchmark}
-                                defaultValue={chart?.label[2]?.val}
-                                editable={false}
-                            />
-                            <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                <CircleLegend color={['#E8EAEF', '#545968']} />
-                                <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
-                                {chart?.tips && (
-                                    <TouchableOpacity onPress={showTips}>
-                                        <EvilIcons name={'question'} size={15} />
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                        </View>
+                        <Chart
+                            initScript={baseAreaChart(
+                                chart?.chart,
+                                [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                true
+                            )}
+                            onChange={onChartChange}
+                            data={chart?.chart}
+                            onHide={onHide}
+                            style={{width: '100%'}}
+                        />
                     </View>
-                    <Chart
-                        initScript={baseAreaChart(
-                            chart?.chart,
-                            [Colors.red, Colors.lightBlackColor, 'transparent'],
-                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            true
-                        )}
-                        onChange={onChartChange}
-                        data={chart?.chart}
-                        onHide={onHide}
-                        style={{width: '100%'}}
-                    />
                     <View
                         style={{
                             flexDirection: 'row',
@@ -295,7 +298,7 @@ export default function PortfolioAssets(props) {
                             justifyContent: 'center',
                             marginHorizontal: 20,
                         }}>
-                        {chart?.sub_tabs?.map((_item, _index) => {
+                        {chart?.sub_tabs?.map((_item, _index, arr) => {
                             return (
                                 <TouchableOpacity
                                     style={[
@@ -303,6 +306,7 @@ export default function PortfolioAssets(props) {
                                         {
                                             backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
                                             borderWidth: period == _item.val ? 0 : 0.5,
+                                            marginRight: _index < arr.length - 1 ? text(10) : 0,
                                         },
                                     ]}
                                     key={_index}
@@ -319,7 +323,7 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-            </View>
+            </>
         );
     };
     const renderFixedPlan = () => {

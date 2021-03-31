@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 18:05:30
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-31 11:15:40
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -112,13 +112,14 @@ const FindDetail = (props) => {
                                         </TouchableOpacity>
                                     </View>
                                     <View style={Style.flexRow}>
-                                        {data?.plan_info?.slogan.map((_s, _i, arr) => {
+                                        {/* {data?.plan_info?.slogan.map((_s, _i, arr) => {
                                             return (
                                                 <Text style={styles.light_text} key={_i + '_s2'}>
                                                     {_s} {_i < arr.length - 1 && '｜'}
                                                 </Text>
                                             );
-                                        })}
+                                        })} */}
+                                        <Text style={styles.light_text}>{data?.plan_info?.yield.title}</Text>
                                     </View>
                                 </View>
                                 {data?.plan_info?.tip && <Text style={styles.tip_text}>{data?.plan_info?.tip}</Text>}

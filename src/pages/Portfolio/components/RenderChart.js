@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 18:10:13
+ * @LastEditTime: 2021-03-31 11:53:01
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -79,7 +79,7 @@ export default function RenderChart(props) {
         }
     };
     return (
-        <View style={{height: 280, backgroundColor: '#fff', ...style}}>
+        <View style={{height: 260, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={styles.legend_sty}>
                     <TextInput
@@ -110,7 +110,6 @@ export default function RenderChart(props) {
                         </Text>
                     </View>
                 </View>
-
                 <View style={styles.legend_sty}>
                     <TextInput
                         style={[styles.legend_title_sty, {color: getColor(chartData?.yield_info?.label[2]?.val)}]}

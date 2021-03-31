@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 17:12:22
+ * @LastEditTime: 2021-03-31 12:08:34
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -45,7 +45,8 @@ class MfbIn extends Component {
     onInput = (amount) => {
         const {data, bankSelect} = this.state;
         const _amount = amount.replace(/^[0]+[0-9]*$/gi, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
-        if (amount) {
+        if (amount > 0) {
+            console.log(amount);
             if (amount > bankSelect.single_amount) {
                 const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
@@ -96,7 +97,6 @@ class MfbIn extends Component {
     };
     //切换银行卡
     changeBankCard = () => {
-        this.setState({amount: '', enable: false});
         this.bankCard.show();
     };
     submitData = (password) => {
@@ -198,6 +198,7 @@ class MfbIn extends Component {
                             onChangeText={(value) => {
                                 this.onInput(value);
                             }}
+                            onEndEditing={() => this.setState({amount: Number(this.state.amount).toFixed(2)})}
                             autoFocus={true}
                             value={amount.toString()}
                         />
@@ -251,6 +252,7 @@ class MfbIn extends Component {
                     }}
                     onDone={(select) => {
                         this.setState({bankSelect: select});
+                        this.onInput(amount);
                     }}
                 />
             </ScrollView>

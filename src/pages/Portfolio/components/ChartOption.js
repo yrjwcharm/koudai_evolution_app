@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 17:40:43
+ * @LastEditTime: 2021-03-31 12:07:34
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -36,6 +36,7 @@ export const baseAreaChart = (
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - text(10)},
     height:220,
+    padding:['auto']
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {

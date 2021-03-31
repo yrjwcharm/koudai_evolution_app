@@ -3,10 +3,10 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 16:05:41
+ * @LastEditTime: 2021-03-31 12:09:11
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -16,6 +16,15 @@ import {PasswordModal} from '../../components/Password';
 import Radio from '../../components/Radio';
 import http from '../../services';
 import Toast from '../../components/Toast';
+import {useFocusEffect} from '@react-navigation/native';
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+    return null;
+}
 class MfbOut extends Component {
     constructor(props) {
         super(props);
@@ -32,8 +41,7 @@ class MfbOut extends Component {
             code: props.route.code,
         };
     }
-
-    UNSAFE_componentWillMount() {
+    init = () => {
         const {selectData, code} = this.state;
         http.get('/wallet/withdraw/info/20210101', {code: code}).then((data) => {
             selectData['comAmount'] = data.result.pay_methods[0].common_withdraw_amount;
@@ -50,12 +58,12 @@ class MfbOut extends Component {
                 optionChoose: withdraw_options[0]?.type,
             });
         });
-    }
+    };
     onInput = (amount) => {
         this.setState({amount});
         const {data, bankSelect} = this.state;
         const pay_methods = data.pay_methods[bankSelect];
-        if (Number(amount)) {
+        if (amount > 0) {
             //optionChoose==1快速提现
             if (this.state.optionChoose === 1) {
                 if (amount > pay_methods.quick_withdraw_amount || amount > pay_methods?.left_amount) {
@@ -98,12 +106,12 @@ class MfbOut extends Component {
             });
         }
     };
+
     submit = () => {
         this.passwordModal.show();
     };
     allAmount = () => {
         //optionChoose==1快速提现
-        console.log(this.state.optionChoose);
         if (this.state.optionChoose === 1) {
             this.setState(
                 {
@@ -125,7 +133,7 @@ class MfbOut extends Component {
         }
     };
     isEnAble = () => {
-        if (!this.state.amount) {
+        if (!Number(this.state.amount)) {
             this.setState({
                 enable: false,
             });
@@ -134,6 +142,7 @@ class MfbOut extends Component {
                 enable: true,
             });
         }
+        this.onInput(this.state.amount);
     };
     //切换银行卡
     changeBankCard = () => {
@@ -143,11 +152,15 @@ class MfbOut extends Component {
         let check = this.state.check;
         check = check.map((item) => false);
         check[index] = true;
-        this.setState({
-            check,
-            optionChoose: type,
-            amount: '',
-        });
+        this.setState(
+            {
+                check,
+                optionChoose: type,
+            },
+            () => {
+                this.onInput(this.state.amount);
+            }
+        );
     }
     getBankInfo(index, comAmount, comText, quickAmount, quickText) {
         const selectData = this.state.selectData;
@@ -186,7 +199,7 @@ class MfbOut extends Component {
             <>
                 <View style={[styles.bankCard, Style.flexBetween]}>
                     {pay_methods ? (
-                        <>
+                        <TouchableOpacity style={Style.flexRow} onPress={() => this.changeBankCard()} activeOpacity={1}>
                             <Image
                                 style={styles.bank_icon}
                                 source={{
@@ -201,13 +214,13 @@ class MfbOut extends Component {
                                     {pay_methods[bankSelect]?.limit_desc}
                                 </Text>
                             </View>
-                            <TouchableOpacity onPress={() => this.changeBankCard()}>
+                            <View>
                                 <Text style={{color: Colors.lightGrayColor}}>
                                     切换
                                     <Icon name={'right'} size={px(12)} />
                                 </Text>
-                            </TouchableOpacity>
-                        </>
+                            </View>
+                        </TouchableOpacity>
                     ) : null}
                 </View>
             </>
@@ -244,6 +257,7 @@ class MfbOut extends Component {
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
+                                onEndEditing={() => this.setState({amount: Number(this.state.amount).toFixed(2)})}
                                 value={amount}
                                 autoFocus={true}
                             />
@@ -272,6 +286,7 @@ class MfbOut extends Component {
                         this.setState({
                             bankSelect: index,
                         });
+                        this.onInput(amount);
                     }}
                 />
             </ScrollView>
@@ -280,14 +295,15 @@ class MfbOut extends Component {
     render_Radio() {
         const {withdraw_options} = this.state.data;
         const {selectData} = this.state;
-
         return (
-            <>
+            <View style={{marginBottom: px(20)}}>
                 {withdraw_options &&
                     !!withdraw_options.length > 0 &&
                     withdraw_options.map((_item, index) => {
                         return (
-                            <View
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                onPress={() => this.radioChange(index, _item.type)}
                                 key={index}
                                 style={[
                                     Style.flexRow,
@@ -309,10 +325,10 @@ class MfbOut extends Component {
                                         {index == 0 ? selectData?.quickText : selectData?.comText}
                                     </Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })}
-            </>
+            </View>
         );
     }
     render() {
@@ -320,8 +336,8 @@ class MfbOut extends Component {
         const {button, withdraw_info} = data;
         return (
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
+                <Focus init={this.init} />
                 {withdraw_info && this.render_buy()}
-
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}
