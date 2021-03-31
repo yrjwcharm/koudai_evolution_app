@@ -3,7 +3,7 @@
  * @Date: 2021-02-23 17:29:21
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 19:06:51
+ * @LastEditTime: 2021-03-31 17:48:46
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -37,7 +37,7 @@ export default function BankList({navigation, route}) {
                         return (
                             <View
                                 style={{
-                                    marginBottom: text(16),
+                                    marginBottom: text(12),
                                     backgroundColor: '#fff',
                                     borderRadius: text(10),
                                     overflow: 'hidden',

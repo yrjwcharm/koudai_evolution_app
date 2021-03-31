@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 18:52:23
  * @Author: yhc
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:11:05
+ * @LastEditTime: 2021-03-31 18:32:17
  * @Description: 数据空的时候提示组件
  */
 import React, {PureComponent} from 'react';
@@ -25,12 +25,13 @@ const styles = StyleSheet.create({
     },
     image: {
         height: px(96),
-        width: px(172),
+        width: px(120),
     },
     text: {
-        fontSize: px(16),
-        marginTop: px(20),
+        fontSize: px(12),
+        marginTop: px(8),
         fontWeight: '500',
+        color: '#545968',
     },
 });
 

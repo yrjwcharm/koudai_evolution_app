@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:04:43
+ * @LastEditTime: 2021-03-31 17:47:17
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -83,7 +83,7 @@ export default function MessageNotice({navigation, route}) {
             <>
                 {list.length > 0 && (
                     <Text style={{textAlign: 'center', marginTop: text(12)}}>
-                        {hasMore ? '正在加载...' : '暂无更多了'}
+                        {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
                 )}
             </>

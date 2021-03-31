@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:15:27
+ * @LastEditTime: 2021-03-31 18:55:40
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -13,13 +13,14 @@ import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {Modal} from '../../../components/Modal';
+import {Modal, BottomModal} from '../../../components/Modal';
 
 export default function RenderChart(props) {
     const {chartData, chart, type, style, width} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
+    const bottomModal = React.useRef(null);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -70,14 +71,6 @@ export default function RenderChart(props) {
             return Colors.red;
         }
     }, []);
-    const showTips = () => {
-        if (chartData?.yield_info.tips) {
-            Modal.show({
-                title: chartData?.yield_info.tips.title,
-                content: chartData?.yield_info.tips.content,
-            });
-        }
-    };
     return (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
@@ -121,8 +114,8 @@ export default function RenderChart(props) {
                         <CircleLegend color={['#E8EAEF', '#545968']} />
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
                         {chartData?.yield_info.tips && (
-                            <TouchableOpacity onPress={showTips}>
-                                <EvilIcons name={'question'} size={15} />
+                            <TouchableOpacity onPress={() => bottomModal.current.show()}>
+                                <EvilIcons name={'question'} size={18} />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -142,6 +135,14 @@ export default function RenderChart(props) {
                 onHide={onHide}
                 style={{width: '100%'}}
             />
+            <BottomModal ref={bottomModal} title={'提示'}>
+                <View style={[{padding: text(16)}, Style.columnAlign]}>
+                    <Text style={{textAlign: 'center', color: '#121D3A'}}>{chartData?.yield_info?.tips?.title}</Text>
+                    <Text style={{lineHeight: text(18), textAlign: 'center', marginTop: text(16), color: '#121D3A'}}>
+                        {chartData?.yield_info?.tips?.content}
+                    </Text>
+                </View>
+            </BottomModal>
         </View>
     );
 }

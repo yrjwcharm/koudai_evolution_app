@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:09:11
+ * @LastEditTime: 2021-03-31 17:40:29
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -257,7 +257,11 @@ class MfbOut extends Component {
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
-                                onEndEditing={() => this.setState({amount: Number(this.state.amount).toFixed(2)})}
+                                onEndEditing={() => {
+                                    if (amount) {
+                                        this.setState({amount: Number(this.state.amount).toFixed(2)});
+                                    }
+                                }}
                                 value={amount}
                                 autoFocus={true}
                             />
@@ -434,7 +438,7 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        marginLeft: px(14),
+        marginLeft: px(27),
         paddingTop: px(5),
     },
 });
