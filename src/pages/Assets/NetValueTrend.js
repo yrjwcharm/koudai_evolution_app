@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:33:28
+ * @LastEditTime: 2021-03-31 17:14:07
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -121,7 +121,7 @@ const NetValueTrend = ({poid}) => {
                         );
                     })}
                 </View>
-                <View style={{height: 240}}>
+                <View style={{height: 220}}>
                     {chartData.chart && (
                         <Chart
                             initScript={baseAreaChart(
@@ -283,7 +283,8 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
+        padding: 0,
         // fontWeight: 'bold',
     },
     legendDesc: {

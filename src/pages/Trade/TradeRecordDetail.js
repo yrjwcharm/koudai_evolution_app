@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-19 17:11:14
+ * @LastEditTime: 2021-03-31 18:06:16
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -271,7 +271,7 @@ const TradeRecordDetail = (props) => {
                                                 ))}
                                             </View>
                                         )}
-                                        {item?.children?.body.map((child, key) => (
+                                        {item?.children?.body?.map((child, key) => (
                                             <View style={styles.fund_item} key={key}>
                                                 <View style={[Style.flexBetween, {marginBottom: px(4)}]}>
                                                     <Text style={styles.fund_name}>{child?.k}</Text>

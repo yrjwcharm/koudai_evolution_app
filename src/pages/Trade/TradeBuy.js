@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 14:07:08
+ * @LastEditTime: 2021-03-31 18:03:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -22,6 +22,7 @@ import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
+import Ratio from '../../components/Radio';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -48,6 +49,8 @@ class TradeBuy extends Component {
             fee_text: '',
             errTip: '', //错误提示
             mfbTip: false,
+            isLargeAmount: false,
+            largeAmount: '',
         };
     }
     getTab = () => {
@@ -61,7 +64,7 @@ class TradeBuy extends Component {
         });
     };
 
-    init = (_type) => {
+    init = (_type, cacheBank) => {
         const {type, poid} = this.state;
         http.get('/trade/buy/info/20210101', {
             type: _type || type,
@@ -71,7 +74,9 @@ class TradeBuy extends Component {
                 this.setState(
                     {
                         data: res.result,
-                        bankSelect: this.state.bankSelect || res.result?.pay_methods[0],
+                        bankSelect: cacheBank
+                            ? this.state.bankSelect || res.result?.pay_methods[0]
+                            : res.result?.pay_methods[0],
                         currentDate: res.result?.period_info?.current_date,
                         nextday: res.result?.period_info?.nextday,
                     },
@@ -86,10 +91,14 @@ class TradeBuy extends Component {
             }
         });
     };
+
     //默认金额校验
     checkData = (amount) => {
+        let single_amount = this.state.isLargeAmount
+            ? this.state.largeAmount.single_amount
+            : this.state.bankSelect.single_amount;
         this.setState({errTip: '', mfbTip: false}, () => {
-            if (amount > this.state.bankSelect.single_amount) {
+            if (amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
                         buyBtnCanClick: false,
@@ -99,14 +108,17 @@ class TradeBuy extends Component {
                 } else {
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+                        errTip: `最大单笔购买金额为${single_amount}元`,
                         mfbTip: false,
                     });
                 }
             } else if (amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({buyBtnCanClick: this.state.errTip == '' && this.state.amount ? true : false});
+                this.setState({
+                    buyBtnCanClick: this.state.errTip == '' && this.state.amount ? true : false,
+                    mfbTip: false,
+                });
             } else {
-                this.setState({buyBtnCanClick: false});
+                this.setState({buyBtnCanClick: false, mfbTip: false});
                 if (amount) {
                     this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
                 } else {
@@ -121,10 +133,10 @@ class TradeBuy extends Component {
      * @return {*}
      */
     submit = (password) => {
-        const {poid, planData, amount, bankSelect, type, currentDate} = this.state;
+        const {poid, planData, amount, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         const {buy_id} = planData;
         let toast = Toast.showLoading();
-
+        let bank = isLargeAmount ? largeAmount : bankSelect || '';
         type == 0
             ? http
                   .post('/trade/buy/do/20210101', {
@@ -132,8 +144,8 @@ class TradeBuy extends Component {
                       buy_id,
                       amount,
                       password,
-                      trade_method: bankSelect?.pay_type,
-                      pay_method: bankSelect?.pay_method || '',
+                      trade_method: bank?.pay_type,
+                      pay_method: bank.pay_method || '',
                   })
                   .then((res) => {
                       Toast.hide(toast);
@@ -199,9 +211,12 @@ class TradeBuy extends Component {
      * @return {*}
      */
     onInput = (amount) => {
+        let single_amount = this.state.isLargeAmount
+            ? this.state.largeAmount.single_amount
+            : this.state.bankSelect.single_amount;
         let _amount = onlyNumber(amount);
         this.setState({amount: _amount, errTip: ''}, () => {
-            if (_amount > this.state.bankSelect.single_amount) {
+            if (_amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
                         buyBtnCanClick: false,
@@ -211,15 +226,15 @@ class TradeBuy extends Component {
                 } else {
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `最大单笔购买金额为${this.state.bankSelect.single_amount}元`,
+                        errTip: `最大单笔购买金额为${single_amount}元`,
                         mfbTip: false,
                     });
                 }
             } else if (_amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false});
+                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false, mfbTip: false});
                 this.plan(_amount);
             } else {
-                this.setState({buyBtnCanClick: false});
+                this.setState({buyBtnCanClick: false, mfbTip: false});
                 if (_amount) {
                     this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
                 } else {
@@ -302,6 +317,7 @@ class TradeBuy extends Component {
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
             wheelFlex: [1, 1],
+            selectedValue: [this.state.currentDate[0], this.state.currentDate[1]],
             onPickerConfirm: (pickedValue) => {
                 this.setState({showMask: false, currentDate: pickedValue});
                 http.get('/trade/fix_invest/next_day/20210101', {
@@ -315,11 +331,24 @@ class TradeBuy extends Component {
                 this.setState({showMask: false});
             },
         });
+
         Picker.show();
     }
+    ratioChange = (checked, index) => {
+        this.setState(
+            {
+                isLargeAmount: index == 1 ? true : false,
+                largeAmount: index == 1 ? this.state.data?.large_pay_method : '',
+            },
+            () => {
+                this.plan(this.state.amount);
+                this.checkData(this.state.amount);
+            }
+        );
+    };
     changeBuyStatus = (obj) => {
         this.setState({type: obj.i}, () => {
-            this.init();
+            this.init(null, 'cacheBank');
         });
     };
     //买入明细
@@ -411,47 +440,57 @@ class TradeBuy extends Component {
         const {pay_methods, large_pay_method} = data;
         return (
             <View style={{marginBottom: px(12)}}>
-                <TouchableOpacity
-                    onPress={this.changeBankCard}
-                    activeOpacity={0.8}
-                    style={[styles.bankCard, Style.flexBetween]}>
-                    {pay_methods?.length > 0 ? (
-                        <>
-                            <Image
-                                style={styles.bank_icon}
-                                source={{
-                                    uri: bankSelect?.bank_icon,
-                                }}
-                            />
-                            <View style={{flex: 1}}>
-                                <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {bankSelect?.bank_name}
-                                    {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
-                                </Text>
-                                <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                    {bankSelect?.limit_desc}
-                                </Text>
-                            </View>
-                            {bankSelect.pay_method == 'wallet' ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        this.jumpPage('MfbIn', {fr: 'trade_buy'});
-                                    }}>
-                                    <Text style={{color: Colors.btnColor}}>
-                                        充值
+                <View style={[Style.flexRow, styles.bankCard]}>
+                    {large_pay_method ? (
+                        <Ratio
+                            style={{marginRight: px(10)}}
+                            checked={!this.state.isLargeAmount}
+                            index={0}
+                            onChange={this.ratioChange}
+                        />
+                    ) : null}
+                    <TouchableOpacity
+                        onPress={this.changeBankCard}
+                        activeOpacity={0.8}
+                        style={[Style.flexBetween, {flex: 1}]}>
+                        {pay_methods?.length > 0 ? (
+                            <>
+                                <Image
+                                    style={styles.bank_icon}
+                                    source={{
+                                        uri: bankSelect?.bank_icon,
+                                    }}
+                                />
+                                <View style={{flex: 1}}>
+                                    <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
+                                        {bankSelect?.bank_name}
+                                        {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
+                                    </Text>
+                                    <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                                        {bankSelect?.limit_desc}
+                                    </Text>
+                                </View>
+                                {bankSelect.pay_method == 'wallet' ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            this.jumpPage('MfbIn', {fr: 'trade_buy'});
+                                        }}>
+                                        <Text style={{color: Colors.btnColor}}>
+                                            充值
+                                            <Icon name={'right'} size={px(12)} />
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <Text style={{color: Colors.lightGrayColor}}>
+                                        切换
                                         <Icon name={'right'} size={px(12)} />
                                     </Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <Text style={{color: Colors.lightGrayColor}}>
-                                    切换
-                                    <Icon name={'right'} size={px(12)} />
-                                </Text>
-                            )}
-                        </>
-                    ) : null}
-                </TouchableOpacity>
+                                )}
+                            </>
+                        ) : null}
+                    </TouchableOpacity>
+                </View>
                 {large_pay_method ? (
                     <View
                         style={[
@@ -459,6 +498,12 @@ class TradeBuy extends Component {
                             Style.flexBetween,
                             {borderTopColor: Colors.borderColor, borderTopWidth: 0.5},
                         ]}>
+                        <Ratio
+                            style={{marginRight: px(10)}}
+                            index={1}
+                            checked={this.state.isLargeAmount}
+                            onChange={this.ratioChange}
+                        />
                         {pay_methods ? (
                             <>
                                 <Image
@@ -577,27 +622,27 @@ class TradeBuy extends Component {
                 {type == 0 && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
-                {type == 0 && (
-                    <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                        点击确认购买即代表您已知悉该基金组合的
-                        <Text
-                            onPress={() => {
-                                this.jumpPage('TradeAgreements', {poid: this.state.poid});
-                            }}
-                            style={{color: Colors.btnColor}}>
-                            基金组合协议
-                        </Text>
-                        和
-                        <Text
-                            style={{color: Colors.btnColor}}
-                            onPress={() => {
-                                this.jumpPage('TradeAgreements', {fund_codes: planData?.codes});
-                            }}>
-                            产品概要
-                        </Text>
-                        等相关内容
+
+                <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
+                    点击确认购买即代表您已知悉该基金组合的
+                    <Text
+                        onPress={() => {
+                            this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
+                        }}
+                        style={{color: Colors.btnColor}}>
+                        基金组合协议
                     </Text>
-                )}
+                    和
+                    <Text
+                        style={{color: Colors.btnColor}}
+                        onPress={() => {
+                            this.jumpPage('TradeAgreements', {fund_codes: planData?.codes, type: this.state.type});
+                        }}>
+                        产品概要
+                    </Text>
+                    等相关内容
+                </Text>
+
                 <BottomDesc />
 
                 <BankCardModal
@@ -608,10 +653,11 @@ class TradeBuy extends Component {
                     }}
                     onDone={(select) => {
                         this.setState({bankSelect: select}, () => {
-                            this.plan(this.state.amount);
-                            this.checkData(this.state.amount);
+                            if (!this.state.isLargeAmount) {
+                                this.plan(this.state.amount);
+                                this.checkData(this.state.amount);
+                            }
                         });
-                        // this.state.amount && this.onInput(this.state.amount);
                     }}
                 />
             </ScrollView>
@@ -623,7 +669,7 @@ class TradeBuy extends Component {
         const {button} = data;
         return (
             <>
-                <Focus init={this.getTab} />
+                <Focus init={this.init} />
                 {data ? (
                     <View
                         style={{
