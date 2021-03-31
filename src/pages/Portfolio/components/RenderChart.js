@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 18:55:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-31 20:17:26
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -127,7 +127,7 @@ export default function RenderChart(props) {
                     [Colors.red, Colors.lightBlackColor, 'transparent'],
                     ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                     true,
-                    '',
+                    2,
                     width
                 )}
                 onChange={onChartChange}
