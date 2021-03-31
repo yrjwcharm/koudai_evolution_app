@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 16:39:56
+ * @LastEditTime: 2021-03-31 17:35:18
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -15,6 +15,7 @@ import {
     PermissionsAndroid,
     Platform,
     DeviceEventEmitter,
+    ScrollView,
 } from 'react-native';
 import {px, deviceWidth, requestExternalStoragePermission} from '../../../utils/appUtil';
 import {Colors, Font} from '../../../common/commonStyle';
@@ -198,57 +199,63 @@ export class uploadID extends Component {
     render() {
         const {frontStatus, backStatus, showTypePop, frontSource, behindSource, desc} = this.state;
         return (
-            <View style={styles.con}>
-                <SelectModal
-                    entityList={typeArr}
-                    callback={(i) => {
-                        if (i == 0) {
-                            this.onClickChoosePicture();
-                        } else {
-                            this.takePic();
-                        }
-                    }}
-                    show={showTypePop}
-                    closeModal={(show) => {
-                        this.setState({
-                            showTypePop: show,
-                        });
-                    }}
-                />
-                <Text style={styles.text}>
-                    根据反洗钱法律法规及证监会要求，需要您上传身份证照片，请如实完善身份信息
-                </Text>
-                {desc ? (
-                    <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>
-                        请上传 **************8293的身份证照片
+            <>
+                <ScrollView style={styles.con}>
+                    <SelectModal
+                        entityList={typeArr}
+                        callback={(i) => {
+                            if (i == 0) {
+                                this.onClickChoosePicture();
+                            } else {
+                                this.takePic();
+                            }
+                        }}
+                        show={showTypePop}
+                        closeModal={(show) => {
+                            this.setState({
+                                showTypePop: show,
+                            });
+                        }}
+                    />
+                    <Text style={styles.text}>
+                        根据反洗钱法律法规及证监会要求，需要您上传身份证照片，请如实完善身份信息
                     </Text>
-                ) : null}
-                <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.showPop(1);
-                        }}
-                        activeOpacity={1}>
-                        <Image
-                            source={frontSource ? {uri: frontSource} : require('../../../assets/img/account/Id1.png')}
-                            style={styles.id_image}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.showPop(2);
-                        }}
-                        activeOpacity={1}>
-                        <Image
-                            source={behindSource ? {uri: behindSource} : require('../../../assets/img/account/Id2.png')}
-                            style={styles.id_image}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.title}>上传要求</Text>
-                <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
+                    {desc ? (
+                        <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>
+                            请上传 **************8293的身份证照片
+                        </Text>
+                    ) : null}
+                    <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.showPop(1);
+                            }}
+                            activeOpacity={1}>
+                            <Image
+                                source={
+                                    frontSource ? {uri: frontSource} : require('../../../assets/img/account/Id1.png')
+                                }
+                                style={styles.id_image}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.showPop(2);
+                            }}
+                            activeOpacity={1}>
+                            <Image
+                                source={
+                                    behindSource ? {uri: behindSource} : require('../../../assets/img/account/Id2.png')
+                                }
+                                style={styles.id_image}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.title}>上传要求</Text>
+                    <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
+                </ScrollView>
                 <FixedButton title={'下一步'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
-            </View>
+            </>
         );
     }
 }
@@ -257,6 +264,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(16),
         backgroundColor: '#fff',
         flex: 1,
+        marginBottom: px(60),
     },
     text: {
         color: Colors.darkGrayColor,
