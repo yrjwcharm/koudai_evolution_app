@@ -142,106 +142,115 @@ export default function DetailAccount({route, navigation}) {
                     </View>
 
                     {/* 全球配置 */}
-                    <View style={styles.card_sty}>
-                        <ListHeader data={data.asset_deploy.header} color={'#0051CC'} />
-                        <View style={{height: 200}}>
-                            <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
+                    {data?.asset_deploy ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.asset_deploy?.header} color={'#0051CC'} />
+                            <View style={{height: 200}}>
+                                <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
+                            </View>
                         </View>
-                    </View>
+                    ) : null}
                     {/* 智能调仓 */}
-                    <View style={styles.card_sty}>
-                        <ListHeader data={data.adjust_info.header} />
-                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                            {data.adjust_info.items.map((_i, _d) => {
-                                return (
-                                    <View
-                                        key={_d}
-                                        style={{
-                                            width: '50%',
-                                            paddingTop: text(16),
-                                            paddingRight: _d == 0 || _d == 2 ? text(20) : 0,
-                                        }}>
-                                        <View style={[Style.flexRow, {marginBottom: text(2)}]}>
-                                            <Image
-                                                source={{uri: _i.icon}}
-                                                style={{height: text(15), width: text(15), marginRight: text(4)}}
-                                                resizeMode="contain"
-                                            />
-                                            <Text style={styles.row_title_sty}>{_i.title}</Text>
+                    {data?.adjust_info ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.adjust_info.header} />
+                            <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                                {data?.adjust_info.items.map((_i, _d) => {
+                                    return (
+                                        <View
+                                            key={_d}
+                                            style={{
+                                                width: '50%',
+                                                paddingTop: text(16),
+                                                paddingRight: _d == 0 || _d == 2 ? text(20) : 0,
+                                            }}>
+                                            <View style={[Style.flexRow, {marginBottom: text(2)}]}>
+                                                <Image
+                                                    source={{uri: _i.icon}}
+                                                    style={{height: text(15), width: text(15), marginRight: text(4)}}
+                                                    resizeMode="contain"
+                                                />
+                                                <Text style={styles.row_title_sty}>{_i.title}</Text>
+                                            </View>
+                                            <Text style={styles.adjust_desc_syl}>{_i.content}</Text>
                                         </View>
-                                        <Text style={styles.adjust_desc_syl}>{_i.content}</Text>
-                                    </View>
-                                );
-                            })}
+                                    );
+                                })}
+                            </View>
                         </View>
-                    </View>
+                    ) : null}
                     {/* 资产增强 */}
-                    <View style={styles.card_sty}>
-                        <ListHeader data={data.asset_enhance.header} />
-                        <FitImage
-                            source={{uri: data.asset_enhance.img}}
-                            resizeMode="contain"
-                            style={{marginTop: text(16)}}
-                        />
-                    </View>
-                    {/* 风险控制 */}
-                    <View style={styles.card_sty}>
-                        <ListHeader data={data.risk_info.header} />
-                        <View style={{height: 320, position: 'relative'}}>
-                            <View style={[Style.flexRow, {marginTop: text(13)}]}>
-                                <View style={{flex: 1, position: 'relative'}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[0]?.title}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[0]?.val}</Text>
-                                    {/* <Image
-                                        source={require('../../../assets/img/detail/zan.png')}
-                                        style={[styles.zan_sty]}
-                                    /> */}
-                                </View>
-                                <View style={{flex: 1}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[1]?.title}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[1]?.val}</Text>
-                                </View>
-                                <View style={{flex: 1}}>
-                                    <Text style={styles.row_title_sty}>{data.risk_info?.sub_tab[2]?.title}</Text>
-                                    <Text style={styles.row_desc_sty}>{data.risk_info?.sub_tab[2]?.val}</Text>
-                                </View>
-                            </View>
-                            {/* <Text style={{borderColor: '#ddd', borderWidth: 0.5}}></Text> */}
-                            <Chart
-                                initScript={histogram(data.risk_info.chart, data.risk_info?.label[2]?.ratio)}
-                                style={{marginTop: text(-20), zIndex: 9}}
+                    {data?.asset_enhance ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.asset_enhance?.header} />
+                            <FitImage
+                                source={{uri: data?.asset_enhance?.img}}
+                                resizeMode="contain"
+                                style={{marginTop: text(16)}}
                             />
+                        </View>
+                    ) : null}
+                    {/* 风险控制 */}
+                    {data?.risk_info ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.risk_info?.header} />
+                            <View style={{height: 320, position: 'relative'}}>
+                                <View style={[Style.flexRow, {marginTop: text(13)}]}>
+                                    <View style={{flex: 1, position: 'relative'}}>
+                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
+                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>
+                                        {/* <Image
+                                      source={require('../../../assets/img/detail/zan.png')}
+                                      style={[styles.zan_sty]}
+                                  /> */}
+                                    </View>
+                                    <View style={{flex: 1}}>
+                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[1]?.title}</Text>
+                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[1]?.val}</Text>
+                                    </View>
+                                    <View style={{flex: 1}}>
+                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[2]?.title}</Text>
+                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
+                                    </View>
+                                </View>
+                                {/* <Text style={{borderColor: '#ddd', borderWidth: 0.5}}></Text> */}
+                                <Chart
+                                    initScript={histogram(data?.risk_info.chart, data?.risk_info?.label[2]?.ratio)}
+                                    style={{marginTop: text(-20), zIndex: 9}}
+                                />
 
-                            <View style={{flexDirection: 'row', marginLeft: text(10), marginTop: text(16)}}>
-                                <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
-                                    <Ionicons name={'square'} color={'#E74949'} size={10} />
-                                    <Text> {data.risk_info?.label[0]?.key}</Text>
-                                </View>
-                                <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
-                                    <Ionicons name={'square'} color={'#545968'} size={10} />
-                                    <Text> {data.risk_info?.label[1]?.key}</Text>
-                                </View>
-                                <View style={{width: text(100), fontSize: text(12), flexShrink: 0}}>
-                                    <Text style={{fontSize: text(12)}}>---{data.risk_info?.label[2]?.key}</Text>
-                                    <Text
-                                        style={{
-                                            fontSize: text(10),
-                                        }}>
-                                        {data.risk_info?.label[2]?.val}
-                                    </Text>
+                                <View style={{flexDirection: 'row', marginLeft: text(10), marginTop: text(16)}}>
+                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                        <Ionicons name={'square'} color={'#E74949'} size={10} />
+                                        <Text> {data.risk_info?.label[0]?.key}</Text>
+                                    </View>
+                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                        <Ionicons name={'square'} color={'#545968'} size={10} />
+                                        <Text> {data?.risk_info?.label[1]?.key}</Text>
+                                    </View>
+                                    <View style={{width: text(100), fontSize: text(12), flexShrink: 0}}>
+                                        <Text style={{fontSize: text(12)}}>---{data?.risk_info?.label[2]?.key}</Text>
+                                        <Text
+                                            style={{
+                                                fontSize: text(10),
+                                            }}>
+                                            {data?.risk_info?.label[2]?.val}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
+                    ) : null}
+
                     <View style={[styles.card_sty, {paddingVertical: 0}]}>
-                        {data.gather_info.map((_info, _idx) => {
+                        {data?.gather_info.map((_info, _idx) => {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={1}
                                     style={[
                                         Style.flexRow,
                                         {
-                                            borderBottomWidth: _idx < data.gather_info.length - 1 ? 0.5 : 0,
+                                            borderBottomWidth: _idx < data?.gather_info.length - 1 ? 0.5 : 0,
                                             borderColor: '#DDDDDD',
                                         },
                                     ]}
