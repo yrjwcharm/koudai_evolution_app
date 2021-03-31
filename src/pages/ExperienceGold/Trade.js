@@ -3,7 +3,7 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 20:36:52
+ * @LastEditTime: 2021-03-31 17:39:07
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
@@ -74,14 +74,16 @@ export default function Trade({navigation, route}) {
                             source={require('../../assets/img/gold.png')}
                             style={{width: text(24), height: text(24)}}
                         />
-                        <Text style={{marginLeft: text(5), color: '#333333'}}>{data?.buy_info?.buy_title}</Text>
+                        <Text style={{marginLeft: text(5), color: Colors.defaultColor}}>
+                            {data?.buy_info?.buy_title}
+                        </Text>
                     </View>
                     <View style={[styles.fund_card_sty, {marginBottom: text(10)}]}>
                         <Text style={styles.title_sty}>{data?.buy_info?.buy_desc}</Text>
                         <View
                             style={[
                                 Style.flexRow,
-                                {paddingBottom: text(15), borderBottomWidth: 0.5, borderColor: '#DDDDDD'},
+                                {paddingBottom: text(15), borderBottomWidth: 0.5, borderColor: Colors.borderColor},
                             ]}>
                             <Text style={{fontSize: text(22)}}>¥</Text>
                             <Text style={styles.num_sty}>{data?.buy_info?.amount}</Text>
@@ -98,7 +100,7 @@ export default function Trade({navigation, route}) {
                         onPress={toggle}>
                         <Text style={{color: '#CDA76E', fontSize: text(12)}}>
                             {data.plan_info.title}
-                            <Text style={{color: '#999999'}}>{data?.plan_info?.desc}</Text>
+                            <Text style={{color: Colors.lightGrayColor}}>{data?.plan_info?.desc}</Text>
                         </Text>
                         {expand ? (
                             <Icon name={'up'} size={text(14)} color={Colors.lightGrayColor} />
@@ -186,19 +188,19 @@ const styles = StyleSheet.create({
         paddingTop: text(16),
     },
     title_sty: {
-        color: '#333',
+        color: Colors.defaultColor,
         fontSize: Font.textH1,
         fontWeight: 'bold',
         marginBottom: text(15),
     },
     num_sty: {
-        color: '#333',
+        color: Colors.defaultColor,
         fontSize: text(30),
         fontFamily: Font.numFontFamily,
         marginLeft: text(10),
     },
     desc_sty: {
-        color: '#999',
+        color: Colors.lightGrayColor,
         fontSize: text(12),
         paddingVertical: text(10),
     },
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
     },
     config_title_desc: {
         fontSize: text(12),
-        color: '#4E556C',
+        color: Colors.descColor,
     },
     line: {
         height: 0.5,

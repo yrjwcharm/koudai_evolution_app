@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 14:19:46
+ * @LastEditTime: 2021-03-31 17:56:56
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -124,7 +124,7 @@ export default function MfbIndex(props) {
                 style={{backgroundColor: '#0052CD'}}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{flex: 1}} bounces={false}>
+                <ScrollView style={{flex: 1}} bounces={false} scrollIndicatorInsets={{right: 1}}>
                     <View style={styles.bg_sty} />
                     <View style={[Style.containerPadding]}>
                         <View style={[styles.card_sty, Style.flexCenter]}>
@@ -183,6 +183,7 @@ export default function MfbIndex(props) {
                             <View style={[Style.flexRow, {marginTop: text(20)}]}>
                                 <Text style={[styles.title_sty, {flex: 1, marginTop: 0}]}>魔方宝</Text>
                                 <TouchableOpacity
+                                    activeOpacity={1}
                                     style={{color: '#0051CC', fontSize: text(11)}}
                                     onPress={() => props.navigation.navigate('MfbIntro')}>
                                     <Text style={{color: '#0051CC', fontSize: text(11)}}>查看更多</Text>

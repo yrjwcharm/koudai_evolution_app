@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 13:58:33
+ * @LastEditTime: 2021-03-31 18:35:04
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -42,7 +42,7 @@ export default function MfbIntro(props) {
                                             <View style={[Style.flexRow, styles.thead_sty]}>
                                                 {_item?.val?.head.map((_t, _y, arr) => {
                                                     const _flex = _y == 0 ? 1 : 0;
-                                                    const _border = _y < arr.length - 1 ? 0.5 : 0;
+                                                    const _border = _y < _item?.val?.head.length - 1 ? 0.5 : 0;
                                                     return (
                                                         <View
                                                             key={_y + '_t'}
@@ -59,20 +59,31 @@ export default function MfbIntro(props) {
                                             </View>
                                             {_item?.val?.body.map((_tbody, _e, arr) => {
                                                 const backgroundColor = _e % 2 == 0 ? '#fff' : '#F7F8FA';
-                                                // 圆角----最后的线条 叠加了
                                                 return (
                                                     <View
                                                         key={_e + '_tbody'}
-                                                        style={[Style.flexRow, {backgroundColor: backgroundColor}]}>
+                                                        style={[
+                                                            Style.flexRow,
+                                                            {
+                                                                backgroundColor: backgroundColor,
+                                                                borderBottomLeftRadius:
+                                                                    _e == arr.length - 1 ? text(8) : 0,
+                                                                borderBottomRightRadius:
+                                                                    _e == arr.length - 1 ? text(8) : 0,
+                                                            },
+                                                        ]}>
                                                         {_tbody.map((_td, _f) => {
                                                             const _flex = _f == 0 ? 1 : 0;
-                                                            const _border = _f < arr.length - 1 ? 0.5 : 0;
+                                                            const _border = _f < _tbody.length - 1 ? 0.5 : 0;
                                                             return (
                                                                 <View
                                                                     key={_f + '_td'}
                                                                     style={[
                                                                         styles.line_sty,
-                                                                        {flex: _flex, borderRightWidth: _border},
+                                                                        {
+                                                                            flex: _flex,
+                                                                            borderRightWidth: _border,
+                                                                        },
                                                                     ]}>
                                                                     <Text style={styles.text_sty}>{_td}</Text>
                                                                 </View>
@@ -103,17 +114,20 @@ const styles = StyleSheet.create({
         width: text(80),
         color: '#555B6C',
         fontSize: Font.textH3,
-        borderRightWidth: 0.5,
         borderColor: '#E2E4EA',
         paddingVertical: text(12),
     },
     thead_sty: {
         backgroundColor: '#F7F8FA',
+        borderTopLeftRadius: text(8),
+        borderTopRightRadius: text(8),
     },
     table_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
         marginTop: text(7),
+        borderRadius: text(8),
+        overflow: 'hidden',
     },
 
     text_sty: {

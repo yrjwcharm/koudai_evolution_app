@@ -26,6 +26,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();

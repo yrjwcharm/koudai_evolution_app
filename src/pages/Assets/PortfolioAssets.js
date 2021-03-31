@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 15:37:57
+ * @LastEditTime: 2021-03-31 18:56:02
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -21,7 +21,7 @@ import Header from '../../components/NavBar';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
 import FitImage from 'react-native-fit-image';
-import {Modal} from '../../components/Modal';
+import {Modal, BottomModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
@@ -40,6 +40,7 @@ export default function PortfolioAssets(props) {
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
+    const bottomModal = React.useRef(null);
     const jump = useJump();
     var _l;
     const changeTab = (period) => {
@@ -214,14 +215,7 @@ export default function PortfolioAssets(props) {
             </View>
         );
     };
-    const showTips = () => {
-        if (chartData?.tips) {
-            Modal.show({
-                title: chart?.tips.title,
-                content: chart?.tips.content,
-            });
-        }
-    };
+
     const renderChart = () => {
         return (
             <>
@@ -270,8 +264,8 @@ export default function PortfolioAssets(props) {
                                     <CircleLegend color={['#E8EAEF', '#545968']} />
                                     <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                                     {chart?.tips && (
-                                        <TouchableOpacity onPress={showTips}>
-                                            <EvilIcons name={'question'} size={15} />
+                                        <TouchableOpacity onPress={() => bottomModal.current.show()}>
+                                            <EvilIcons name={'question'} size={18} />
                                         </TouchableOpacity>
                                     )}
                                 </View>
@@ -523,6 +517,15 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
+                <BottomModal ref={bottomModal} title={'提示'}>
+                    <View style={{padding: text(16)}}>
+                        <Text style={{textAlign: 'center', color: '#121D3A'}}>{chart?.tips?.title}</Text>
+                        <Text
+                            style={{lineHeight: text(18), textAlign: 'center', marginTop: text(16), color: '#121D3A'}}>
+                            {chart?.tips?.content}
+                        </Text>
+                    </View>
+                </BottomModal>
                 <BottomDesc />
             </ScrollView>
         </>

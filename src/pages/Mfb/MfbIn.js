@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 16:41:30
+ * @LastEditTime: 2021-03-31 17:39:05
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -189,8 +189,8 @@ class MfbIn extends Component {
                             style={[
                                 styles.inputStyle,
                                 {
-                                    fontFamily: Font.numFontFamily,
-                                    fontSize: amount.toString().length > 0 ? px(35) : px(26),
+                                    fontFamily: amount.length > 0 ? Font.numFontFamily : null,
+                                    fontSize: amount.length > 0 ? px(35) : px(26),
                                 },
                             ]}
                             placeholder={recharge_info.placeholder}
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        marginLeft: px(14),
+        marginLeft: px(27),
         paddingTop: px(5),
     },
     notice_sty: {

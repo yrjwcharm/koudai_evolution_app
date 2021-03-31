@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 17:09:15
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-31 18:31:39
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -126,8 +126,12 @@ export default function FixedPlan(props) {
                                 {data?.fix_records?.list.map((_l, _d) => {
                                     return (
                                         <View style={[Style.flexBetween, {marginTop: text(8)}]} key={_d + '_l'}>
-                                            <Text style={styles.desc_sty}>{_l.date}</Text>
-                                            <Text style={styles.desc_sty}>{_l.amount}</Text>
+                                            <Text style={[styles.desc_sty, {fontFamily: Font.numFontFamily}]}>
+                                                {_l.date}
+                                            </Text>
+                                            <Text style={[styles.desc_sty, {fontFamily: Font.numFontFamily}]}>
+                                                {_l.amount}
+                                            </Text>
                                             <Text style={styles.desc_sty}>{_l.status}</Text>
                                         </View>
                                     );
@@ -211,7 +215,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
     },
     desc_sty: {
-        color: '#9095A5',
+        color: Colors.lightBlackColor,
         fontSize: text(12),
     },
     border_sty: {
