@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 19:00:22
+ * @LastEditTime: 2021-03-31 19:10:31
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -286,7 +286,11 @@ const Index = (props) => {
                                         source={{
                                             uri: data?.ad_info?.cover,
                                         }}
-                                        style={{height: px(60), borderRadius: 8, marginBottom: px(12)}}
+                                        style={{
+                                            height: px(60),
+                                            borderRadius: 8,
+                                            marginBottom: px(12),
+                                        }}
                                     />
                                 </TouchableOpacity>
                             )}
@@ -421,7 +425,7 @@ const Index = (props) => {
                                 </View>
                             )}
                             {/* 听听魔方用户怎么说 */}
-                            <View>
+                            <View style={{width: deviceWidth}}>
                                 <RenderTitle title={'听听魔方用户怎么说'} />
                                 <ScrollView
                                     showsPagination={false}
@@ -472,7 +476,7 @@ const Index = (props) => {
                                     ))}
                                 </ScrollView>
                             </View>
-                            <View>
+                            <>
                                 <RenderTitle title={'关于理财魔方'} />
                                 {/* 安全保障 */}
                                 {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
@@ -483,10 +487,10 @@ const Index = (props) => {
                                         jump(data?.about_info?.url);
                                     }}>
                                     <ImageBackground
-                                        style={[Style.flexBetween, {height: px(89), paddingHorizontal: px(16)}]}
+                                        style={[Style.flexRow, {height: px(89), paddingHorizontal: px(16)}]}
                                         source={require('../../assets/img/index/aboutOur.png')}>
                                         {data?.about_info?.header.map((text, index) => (
-                                            <View key={index}>
+                                            <View key={index} style={{marginRight: index == 0 ? px(60) : 0}}>
                                                 <View style={[Style.flexRow, {marginBottom: px(2)}]}>
                                                     <Text style={styles.large_num}>{text?.value}</Text>
                                                     <Text style={styles.num_unit}>{text?.unit}</Text>
@@ -496,8 +500,23 @@ const Index = (props) => {
                                                 </Text>
                                             </View>
                                         ))}
-                                        <FontAwesome name={'angle-right'} color={'#fff'} size={18} />
                                     </ImageBackground>
+                                    <BoxShadow
+                                        setting={{
+                                            color: '#e2ecf8',
+                                            width: px(28),
+                                            height: px(28),
+                                            radius: 10,
+                                            border: 10,
+                                            opacity: 0.3,
+                                            x: 0,
+                                            y: 10,
+                                            style: {position: 'absolute', right: px(16), top: px(75), zIndex: 10},
+                                        }}>
+                                        <View style={styles.right}>
+                                            <FontAwesome name={'angle-right'} color={Colors.btnColor} size={18} />
+                                        </View>
+                                    </BoxShadow>
                                     <View
                                         style={[
                                             Style.flexRow,
@@ -526,7 +545,7 @@ const Index = (props) => {
                                         ))}
                                     </View>
                                 </TouchableOpacity>
-                            </View>
+                            </>
 
                             <BottomDesc />
                         </LinearGradient>
@@ -742,5 +761,13 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         height: px(191),
         flexDirection: 'column',
+    },
+    right: {
+        backgroundColor: '#fff',
+        width: px(28),
+        height: px(28),
+        borderRadius: 6,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

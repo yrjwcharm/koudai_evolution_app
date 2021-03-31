@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 18:03:39
+ * @LastEditTime: 2021-03-31 19:28:35
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -42,6 +42,7 @@ class TradeBuy extends Component {
             configExpand: false, //买入明细是否展开
             showMask: false,
             bankSelect: '', //选中的银行卡
+            bankSelectIndex: 0,
             poid: this.props.route?.params?.poid || 1,
             currentDate: '', //定投日期
             nextday: '',
@@ -647,12 +648,12 @@ class TradeBuy extends Component {
 
                 <BankCardModal
                     data={pay_methods || []}
-                    select={0}
+                    select={this.state.bankSelectIndex}
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
-                    onDone={(select) => {
-                        this.setState({bankSelect: select}, () => {
+                    onDone={(select, index) => {
+                        this.setState({bankSelect: select, bankSelectIndex: index}, () => {
                             if (!this.state.isLargeAmount) {
                                 this.plan(this.state.amount);
                                 this.checkData(this.state.amount);

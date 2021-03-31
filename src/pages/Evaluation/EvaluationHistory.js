@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 17:51:32
+ * @LastEditTime: 2021-03-31 18:13:02
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -59,7 +59,11 @@ export class planningHistory extends Component {
                 {/* 重新规划 */}
                 <View style={styles.container}>
                     <Robot />
-                    {title ? <Text style={styles.name}>{title}</Text> : null}
+                    {title ? (
+                        <Animatable.Text animation="fadeInUp" style={styles.name}>
+                            {title}
+                        </Animatable.Text>
+                    ) : null}
                     <Animatable.View animation="fadeInUp">
                         {plan_list && plan_list.length > 0
                             ? plan_list.map((item, index) => {
