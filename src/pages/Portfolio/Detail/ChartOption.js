@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:13:16
+ * @LastEditTime: 2021-03-31 14:51:59
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -172,7 +172,7 @@ export const histogram = (data, min) =>
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - text(30)},
-    height:280
+    height:260
   });
   chart.source(${JSON.stringify(data)})
   chart.legend(false);

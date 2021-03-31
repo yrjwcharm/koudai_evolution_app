@@ -3,10 +3,10 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:15:43
+ * @LastEditTime: 2021-03-31 17:14:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
 import Header from '../../../components/NavBar';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
@@ -26,12 +26,14 @@ import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../../components/BottomDesc';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+const deviceWidth = Dimensions.get('window').width;
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('y3');
     const bottomModal = React.useRef(null);
     const [type, setType] = useState(1);
+    const [chart, setChart] = useState();
     const jump = useJump();
     const init = useCallback(() => {
         Http.get('/polaris/portfolio_detail/20210101', {
@@ -63,6 +65,18 @@ export default function DetailPolaris({route, navigation}) {
             init();
         }, [init])
     );
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     return (
         <>
             {Object.keys(data).length > 0 && (
@@ -70,7 +84,7 @@ export default function DetailPolaris({route, navigation}) {
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     <View style={{padding: text(16), marginTop: text(-70)}}>
-                        <View style={styles.card_sty}>
+                        <View style={[styles.card_sty]}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
                                 {data?.top?.title}
                             </Text>
@@ -89,11 +103,10 @@ export default function DetailPolaris({route, navigation}) {
                                 <Text style={styles.btn_text_sty}>{data?.top?.btn?.text}</Text>
                             </TouchableOpacity>
                         </View>
+
                         <View
                             style={{
-                                height: 300,
                                 backgroundColor: '#fff',
-                                marginTop: text(12),
                                 borderRadius: text(10),
                                 paddingVertical: text(16),
                             }}>
@@ -104,7 +117,7 @@ export default function DetailPolaris({route, navigation}) {
                                 chartData={chartData}
                                 chart={chart}
                                 type={type}
-                                style={{marginTop: text(20)}}
+                                width={deviceWidth - text(40)}
                             />
                             <View
                                 style={{

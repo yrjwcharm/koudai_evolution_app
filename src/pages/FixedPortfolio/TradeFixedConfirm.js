@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 15:37:25
  * @LastEditors: xjh
  * @Description: 定投确认页
- * @LastEditTime: 2021-03-26 15:03:26
+ * @LastEditTime: 2021-03-31 14:47:22
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -74,23 +74,23 @@ export default class TradeFixedConfirm extends Component {
                                             style={{flexDirection: 'row'}}
                                             onLayout={(event) => this.onLayout(_index, event)}
                                             key={_index + '_item'}>
-                                            <View style={styles.list_wrap} key={_index + '_item'}>
-                                                <View style={styles.circle_sty} />
-                                                <Html style={styles.item_sty} html={_item} />
-                                            </View>
-
                                             {_index !== data.items.length - 1 && (
                                                 <Text
                                                     style={[
                                                         styles.line_sty,
                                                         {
-                                                            height: heightArr[_index]
-                                                                ? text(heightArr[_index] - 5)
-                                                                : text(31),
+                                                            height:
+                                                                _index == data?.items?.length - 1
+                                                                    ? 0
+                                                                    : heightArr[_index],
                                                         },
                                                     ]}
                                                 />
                                             )}
+                                            <View style={styles.list_wrap} key={_index + '_item'}>
+                                                <View style={styles.circle_sty} />
+                                                <Html style={styles.item_sty} html={_item} />
+                                            </View>
                                         </View>
                                     );
                                 })}
@@ -124,18 +124,19 @@ const styles = StyleSheet.create({
         marginHorizontal: text(16),
     },
     circle_sty: {
-        width: text(7),
-        height: text(7),
+        width: text(8),
+        height: text(8),
         backgroundColor: '#9AA1B2',
         borderRadius: 50,
         zIndex: 4,
         position: 'relative',
         marginRight: text(5),
+        marginTop: text(6),
     },
     line_sty: {
         backgroundColor: '#E2E4EA',
         position: 'absolute',
-        top: text(25),
+        top: text(18),
         left: text(3.5),
         width: text(1),
         zIndex: -1,
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     },
     list_wrap: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingVertical: 10,
     },
     btn_sty: {

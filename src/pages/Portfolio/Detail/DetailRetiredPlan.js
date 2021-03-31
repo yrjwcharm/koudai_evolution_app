@@ -33,7 +33,7 @@ var _params, _current, allocation_id, _poid;
 
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState();
     const [countFr, setCountFr] = useState(0); //首投金额
     const [countM, setCountM] = useState(0); //定投金额

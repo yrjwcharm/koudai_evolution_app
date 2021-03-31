@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 13:44:42
+ * @LastEditTime: 2021-03-31 16:06:09
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -11,6 +11,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
 import {Button} from '../../components/Button';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Empty from '../../components/EmptyTip';
 
 export default function PlanDetail(props) {

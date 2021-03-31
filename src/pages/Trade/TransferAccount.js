@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 13:47:16
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-31 16:10:47
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -52,7 +52,7 @@ export default function TransferAccount({navigation, route}) {
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView style={{marginBottom: btnHeight}}>
                     <View style={styles.card_sty}>
                         <Text style={styles.title_sty}>{data.trans_info.from}</Text>
                         <View style={[Style.flexRow, {paddingVertical: text(12)}]}>
