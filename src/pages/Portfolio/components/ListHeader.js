@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 17:43:00
+ * @LastEditTime: 2021-03-31 12:14:31
  */
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
@@ -45,12 +45,10 @@ export default function ListHeader(props) {
                 </View>
             </View>
 
-            {data?.text ? (
-                <Text style={{color: '#0051CC'}}>
-                    {data?.text}
-                    <AntDesign name={'right'} color={color} size={12} />
-                </Text>
-            ) : null}
+            <Text style={{color: '#0051CC'}}>
+                {data?.text}
+                <AntDesign name={'right'} color={color} size={12} />
+            </Text>
         </TouchableOpacity>
     );
 }

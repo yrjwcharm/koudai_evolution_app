@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 12:07:32
+ * @LastEditTime: 2021-03-31 12:15:43
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput} from 'react-native';
@@ -31,10 +31,6 @@ export default function DetailPolaris({route, navigation}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const bottomModal = React.useRef(null);
-    const [showMask, setShowMask] = useState(false);
-    const _textTime = useRef(null);
-    const _textPortfolio = useRef(null);
-    const _textBenchmark = useRef(null);
     const [type, setType] = useState(1);
     const jump = useJump();
     const init = useCallback(() => {
@@ -62,9 +58,6 @@ export default function DetailPolaris({route, navigation}) {
         setPeriod(period);
         setType(type);
     };
-    // const jumpTo = (url) => {
-    //     navigation.navigate({name: url.path, params});
-    // };
     useFocusEffect(
         useCallback(() => {
             init();
