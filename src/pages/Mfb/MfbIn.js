@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:08:34
+ * @LastEditTime: 2021-03-31 16:41:30
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -46,8 +46,14 @@ class MfbIn extends Component {
         const {data, bankSelect} = this.state;
         const _amount = amount.replace(/^[0]+[0-9]*$/gi, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
         if (amount > 0) {
-            console.log(amount);
-            if (amount > bankSelect.single_amount) {
+            if (amount > Number(bankSelect.left_amount)) {
+                const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.left_amount + '元';
+                this.setState({
+                    tips,
+                    enable: false,
+                    amount: _amount,
+                });
+            } else if (amount > bankSelect.single_amount) {
                 const tips = '最大单笔转入金额为' + bankSelect.single_amount + '元';
                 this.setState({
                     tips,
@@ -56,13 +62,6 @@ class MfbIn extends Component {
                 });
             } else if (amount < data.recharge_info.start_amount) {
                 const tips = '最低转入金额' + data.recharge_info.start_amount + '元';
-                this.setState({
-                    tips,
-                    enable: false,
-                    amount: _amount,
-                });
-            } else if (amount > Number(bankSelect.left_amount)) {
-                const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.left_amount + '元';
                 this.setState({
                     tips,
                     enable: false,
@@ -82,6 +81,7 @@ class MfbIn extends Component {
                 enable: false,
                 amount: '',
             });
+            return false;
         }
     };
     submit = () => {
@@ -166,7 +166,7 @@ class MfbIn extends Component {
     }
     //购买
     render_buy() {
-        const {amount, data, tips} = this.state;
+        const {amount, data, tips, bankSelect} = this.state;
         const {recharge_info, pay_methods, remit_pay} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}}>
@@ -198,7 +198,11 @@ class MfbIn extends Component {
                             onChangeText={(value) => {
                                 this.onInput(value);
                             }}
-                            onEndEditing={() => this.setState({amount: Number(this.state.amount).toFixed(2)})}
+                            onEndEditing={() => {
+                                if (this.state.amount) {
+                                    this.setState({amount: Number(this.state.amount).toFixed(2)});
+                                }
+                            }}
                             autoFocus={true}
                             value={amount.toString()}
                         />

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 15:54:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-03-31 16:39:41
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -103,7 +103,7 @@ class BankInfo extends Component {
                 name: this.props.route?.params?.name,
                 rcode: this.props.route?.params?.rcode,
                 rname: this.props.route?.params?.rname,
-                poid: this.props.route?.params?.poid,
+                poid: this.props.route?.params?.poid || '',
             },
             '正在提交数据...'
         ).then((res) => {
@@ -122,11 +122,15 @@ class BankInfo extends Component {
                         });
                         setTimeout(() => {
                             Keyboard.dismiss();
-                            this.props.navigation.replace(res.result?.jump_url?.path, {
-                                ...res.result?.jump_url?.params,
-                                fr: this.props.route?.params?.fr || '',
-                                url: this.props.route?.params?.url || '',
-                            });
+                            if (res.result?.jump_url) {
+                                this.props.navigation.replace(res.result?.jump_url?.path, {
+                                    ...res.result?.jump_url?.params,
+                                    fr: this.props.route?.params?.fr || '',
+                                    url: this.props.route?.params?.url || '',
+                                });
+                            } else {
+                                this.props.navigation.goBack();
+                            }
                         });
                     },
                 });

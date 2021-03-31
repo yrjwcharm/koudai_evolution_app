@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 18:16:26
+ * @LastEditTime: 2021-03-31 15:41:14
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -187,8 +187,9 @@ const ArticleDetail = ({navigation, route}) => {
                     javaScriptEnabled
                     onLoadEnd={onLoadEnd}
                     onMessage={onMessage}
-                    originWhitelist={['*']}
+                    // originWhitelist={['*']}
                     ref={webviewRef}
+                    scalesPageToFit={Platform.select({ios: true, android: false})}
                     source={{
                         uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
                     }}
@@ -203,7 +204,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 {color: Colors.lightGrayColor, paddingHorizontal: Space.padding},
                             ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
                         <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
-                            <Image source={require('../../assets/img/article/finish.png')} style={styles.finishImg} />
+                            <Image source={require('../../assets/img/article/finish.gif')} style={styles.finishImg} />
                             <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
                         </View>
                         <View style={[Style.flexRow, {paddingBottom: text(64)}]}>

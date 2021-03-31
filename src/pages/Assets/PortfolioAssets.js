@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 14:08:46
+ * @LastEditTime: 2021-03-31 15:37:57
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -282,7 +282,9 @@ export default function PortfolioAssets(props) {
                                 chart?.chart,
                                 [Colors.red, Colors.lightBlackColor, 'transparent'],
                                 ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                true
+                                true,
+                                '',
+                                deviceWidth - text(40)
                             )}
                             onChange={onChartChange}
                             data={chart?.chart}
@@ -290,38 +292,40 @@ export default function PortfolioAssets(props) {
                             style={{width: '100%'}}
                         />
                     </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            height: 50,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginHorizontal: 20,
-                        }}>
-                        {chart?.sub_tabs?.map((_item, _index, arr) => {
-                            return (
-                                <TouchableOpacity
-                                    style={[
-                                        styles.btn_sty,
-                                        {
-                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
-                                            borderWidth: period == _item.val ? 0 : 0.5,
-                                            marginRight: _index < arr.length - 1 ? text(10) : 0,
-                                        },
-                                    ]}
-                                    key={_index}
-                                    onPress={() => changeTab(_item.val, _item.type)}>
-                                    <Text
-                                        style={{
-                                            color: period == _item.val ? '#0051CC' : '#555B6C',
-                                            fontSize: text(12),
-                                        }}>
-                                        {_item.name}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
+                    {chart?.sub_tabs && (
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                height: 50,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginHorizontal: 20,
+                            }}>
+                            {chart?.sub_tabs?.map((_item, _index, arr) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.btn_sty,
+                                            {
+                                                backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                                borderWidth: period == _item.val ? 0 : 0.5,
+                                                marginRight: _index < arr.length - 1 ? text(10) : 0,
+                                            },
+                                        ]}
+                                        key={_index}
+                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                        <Text
+                                            style={{
+                                                color: period == _item.val ? '#0051CC' : '#555B6C',
+                                                fontSize: text(12),
+                                            }}>
+                                            {_item.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    )}
                 </View>
             </>
         );
@@ -635,6 +639,8 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
         padding: 0,
+        width: text(90),
+        textAlign: 'center',
     },
     legend_desc_sty: {
         fontSize: text(11),
@@ -650,7 +656,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
         paddingHorizontal: text(12),
-        paddingVertical: text(8),
+        paddingVertical: text(6),
         borderRadius: text(20),
         marginRight: text(10),
     },

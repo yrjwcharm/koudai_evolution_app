@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 11:53:01
+ * @LastEditTime: 2021-03-31 17:15:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
@@ -16,7 +16,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {Modal} from '../../../components/Modal';
 
 export default function RenderChart(props) {
-    const {chartData, chart, type, style} = props;
+    const {chartData, chart, type, style, width} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -133,7 +133,9 @@ export default function RenderChart(props) {
                     chart,
                     [Colors.red, Colors.lightBlackColor, 'transparent'],
                     ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                    true
+                    true,
+                    '',
+                    width
                 )}
                 onChange={onChartChange}
                 data={chart}
@@ -155,6 +157,8 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         marginBottom: text(4),
         padding: 0, //处理textInput 在安卓上的兼容问题
+        width: text(90),
+        textAlign: 'center',
     },
     legend_desc_sty: {
         fontSize: text(11),

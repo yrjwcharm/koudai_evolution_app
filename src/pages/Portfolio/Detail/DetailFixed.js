@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 12:07:57
+ * @LastEditTime: 2021-03-31 16:51:01
  */
 
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -24,7 +24,7 @@ import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
 export default function DetailAccount({route}) {
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState();
     const [type, setType] = useState(1);
     const [chart, setChart] = useState();

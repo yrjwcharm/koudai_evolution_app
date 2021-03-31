@@ -31,7 +31,7 @@ import Notice from '../../../components/Notice';
 var _params, _current, allocation_id, _age;
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState();
 
     const [countFr, setCountFr] = useState();

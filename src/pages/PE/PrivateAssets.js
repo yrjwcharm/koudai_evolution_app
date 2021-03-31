@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:05:03
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-03-31 17:17:47
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -147,7 +147,7 @@ export default function PrivateAssets({navigation, route}) {
     const renderContent = (index, contentData) => {
         if (index === 0) {
             return (
-                <View style={{height: 420, backgroundColor: '#fff'}}>
+                <View style={{height: 300, backgroundColor: '#fff'}}>
                     {Object.keys(chart).length > 0 && (
                         <View style={[Style.flexRow]}>
                             <View style={styles.legend_sty}>

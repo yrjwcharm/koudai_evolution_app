@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 14:12:48
+ * @LastEditTime: 2021-03-31 14:19:46
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -13,7 +13,6 @@ import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Header from '../../components/NavBar';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
 import Accordion from 'react-native-collapsible/Accordion';
 import BottomDesc from '../../components/BottomDesc';
