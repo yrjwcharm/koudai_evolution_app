@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:06:07
+ * @LastEditTime: 2021-03-31 14:07:08
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -88,7 +88,7 @@ class TradeBuy extends Component {
     };
     //默认金额校验
     checkData = (amount) => {
-        this.setState({errTip: ''}, () => {
+        this.setState({errTip: '', mfbTip: false}, () => {
             if (amount > this.state.bankSelect.single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
@@ -104,7 +104,7 @@ class TradeBuy extends Component {
                     });
                 }
             } else if (amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false});
+                this.setState({buyBtnCanClick: this.state.errTip == '' && this.state.amount ? true : false});
             } else {
                 this.setState({buyBtnCanClick: false});
                 if (amount) {
