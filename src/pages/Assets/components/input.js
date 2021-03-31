@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:52:46
+ * @LastEditTime: 2021-03-31 16:13:23
  * @Description: 密码管理输入框
  */
 import React from 'react';
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     inputLeftText: {
-        fontSize: Font.textH1,
+        fontSize: Font.textH2,
         lineHeight: text(20),
         color: '#545968',
     },
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     input: {
         // letterSpacing: 1,
         color: Colors.defaultColor,
-        fontSize: Font.textH1,
+        fontSize: Font.textH2,
         flex: 1,
         height: '100%',
         paddingLeft: text(10),
