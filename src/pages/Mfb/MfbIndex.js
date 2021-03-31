@@ -3,7 +3,7 @@
  * @Author: xjh
  * @Date: 2021-01-23 15:41:34
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-30 15:49:13
+ * @LastEditTime: 2021-03-31 14:12:48
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -125,7 +125,7 @@ export default function MfbIndex(props) {
                 style={{backgroundColor: '#0052CD'}}
             />
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{flex: 1}}>
+                <ScrollView style={{flex: 1}} bounces={false}>
                     <View style={styles.bg_sty} />
                     <View style={[Style.containerPadding]}>
                         <View style={[styles.card_sty, Style.flexCenter]}>

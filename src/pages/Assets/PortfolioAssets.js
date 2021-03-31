@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 11:57:38
+ * @LastEditTime: 2021-03-31 14:08:46
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -370,7 +370,7 @@ export default function PortfolioAssets(props) {
                 style={{backgroundColor: '#0052CD'}}
                 fontStyle={{color: '#fff'}}
             />
-            <ScrollView>
+            <ScrollView bounces={false}>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
                 <View style={styles.assets_card_sty}>
                     {Object.keys(data).length > 0 && (
