@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 10:09:32
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 14:56:22
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-04-01 17:17:26
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -23,8 +23,9 @@ export default function ListHeader(props) {
         data: {},
         color: '#4E556C',
         style: {},
+        hide:false
     };
-    const {data, color, style} = props;
+    const {data, color, style,hide} = props;
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -48,7 +49,7 @@ export default function ListHeader(props) {
 
             <Text style={{color: '#0051CC', fontSize: text(12)}}>
                 {data?.text}
-                <AntDesign name={'right'} color={color} size={12} />
+           {  !hide? <AntDesign name={'right'} color={color} size={12} />:null}
             </Text>
         </TouchableOpacity>
     );

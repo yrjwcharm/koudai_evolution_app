@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 16:40:22
+ * @LastEditTime: 2021-04-01 17:46:21
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -41,7 +41,8 @@ export default class TradeRedeem extends Component {
             reasonParams: '',
             redeem_id: '',
             redeemTo: '银行卡',
-            tips:''
+            tips:'',
+            init:1
         };
     }
     componentDidMount() {
@@ -67,20 +68,23 @@ export default class TradeRedeem extends Component {
         Picker.hide();
     }
     getPlanInfo() {
-        const {tableData} = this.state;
+        const {tableData,init} = this.state;
         Http.get('/trade/redeem/plan/20210101', {
             percent: inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
+            init,
         }).then((res) => {
            if(res.code==='000000'){
             tableData.head = res.result.header;
             tableData.body = res.result.body;
-            this.setState({
-                tableData,
-                redeem_id: res.result.redeem_id,
-                tips:res.result.amount_desc
-            });
+            if(init!=1){
+                this.setState({
+                  tableData,
+                  redeem_id: res.result.redeem_id,
+                  tips:res.result.amount_desc
+              });
+            }
            }else{
             Toast.show(res.message)
            }
@@ -110,8 +114,10 @@ export default class TradeRedeem extends Component {
         this.setState({
             inputValue: (percent * 100).toString(),
             btnClick: true,
+            init:0
+        },()=>{
+          this.getPlanInfo();
         });
-        this.getPlanInfo();
     }
     toggleFund() {
         const toggleList = this.state.toggleList;
@@ -148,9 +154,9 @@ export default class TradeRedeem extends Component {
             inputValue = text;
             // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             this.getPlanInfo();
-            this.setState({inputValue: text, btnClick: true,});
+            this.setState({inputValue: text, btnClick: true,init:0});
         } else {
-            this.setState({inputValue: '', btnClick: false,tips:'',});
+            this.setState({inputValue: '', btnClick: false,tips:'',init:1});
         }
     };
     selectAge = () => {
@@ -196,6 +202,7 @@ export default class TradeRedeem extends Component {
                 {!!data && (
                     <ScrollView keyboardShouldPersistTaps="handled" style={{marginBottom: btnHeight}}>
                         <Text style={styles.redeem_desc}>赎回至{redeemTo}</Text>
+                        <View style={{paddingHorizontal:text(16),backgroundColor:'#fff'}}>
                         {data?.pay_methods?.methods.map((_item, index) => {
                             return (
                                 <View
@@ -203,33 +210,34 @@ export default class TradeRedeem extends Component {
                                     style={[
                                         Style.flexRow,
                                         styles.card_item,
-                                        styles.card_select,
                                         {
-                                            borderBottomWidth: index < data.length - 1 ? 0.5 : 0,
-                                            borderColor: Colors.borderColor,
+                                            borderBottomWidth: index ==0 ? 0.5 : 0,
+                                            borderColor:Colors.borderColor,
                                         },
                                     ]}>
-                                    <View style={[Style.flexRow, {flex: 1}]}>
-                                        <FastImage
-                                            style={{width: 24, height: 24}}
-                                            source={{
-                                                uri: _item.bank_icon,
-                                            }}
-                                            resizeMode={FastImage.resizeMode.contain}
+                                      <View style={[Style.flexRow, {flex: 1}]}>
+                                            <FastImage
+                                                style={{width: 24, height: 24}}
+                                                source={{
+                                                    uri: _item.bank_icon,
+                                                }}
+                                                resizeMode={FastImage.resizeMode.contain}
+                                            />
+                                            <Text style={{color: Colors.descColor, paddingLeft: text(10)}}>
+                                                {_item.bank_name}
+                                            </Text>
+                                            <Text style={{color: '#DC4949', paddingLeft: text(10)}}>{_item.desc}</Text>
+                                        </View>
+                                        <Radio
+                                            checked={this.state.check[index]}
+                                            index={index}
+                                            onChange={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
                                         />
-                                        <Text style={{color: Colors.descColor, paddingLeft: text(10)}}>
-                                            {_item.bank_name}
-                                        </Text>
-                                        <Text style={{color: '#DC4949', paddingLeft: text(10)}}>{_item.desc}</Text>
-                                    </View>
-                                    <Radio
-                                        checked={this.state.check[index]}
-                                        index={index}
-                                        onChange={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
-                                    />
                                 </View>
                             );
                         })}
+                        </View>
+                      
                         <View style={styles.card_wrap}>
                             <View style={[Style.flexRow, {justifyContent: 'space-between'}]}>
                                 <Text style={{fontSize: Font.textH1, color: '#1F2432'}}>
@@ -263,7 +271,7 @@ export default class TradeRedeem extends Component {
                             </View>
                            
                            {tips? <View style={{paddingTop:text(12)}}>
-                              <Html html={tips}/>
+                              <Html html={tips} style={{color:'#545968',fontSize:text(12),lineHeight:text(18)}}/>
                             </View>:null
                           }
                         </View>
@@ -329,11 +337,6 @@ const styles = StyleSheet.create({
         fontSize: Font.placeholderFont,
         paddingVertical: text(12),
         paddingLeft: text(15),
-    },
-    card_select: {
-        backgroundColor: '#fff',
-        paddingLeft: text(15),
-        paddingRight: text(10),
     },
     card_item: {
         flex: 1,

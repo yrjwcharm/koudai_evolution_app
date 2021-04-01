@@ -3,7 +3,7 @@
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 17:33:31
+ * @LastEditTime: 2021-04-01 17:36:01
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -37,11 +37,11 @@ export default function Table(props) {
                     <Text style={styles.text_align_sty} />
                     <Text
                         style={{
-                            textAlign: 'right',
-                            paddingRight: text(15),
+                            textAlign: 'center',
                             fontSize: text(12),
                             color: Colors.defaultFontColor,
                             fontWeight: 'bold',
+                            width:text(90)
                         }}>
                         {data?.th[2]}
                     </Text>
@@ -56,19 +56,20 @@ export default function Table(props) {
                                     height: px(40),
                                     borderBottomLeftRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
                                     borderBottomRightRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
+                                  
                                 },
                             ]}
                             key={_index + '_item'}>
-                            <View style={{paddingLeft: text(15)}}>
+                            <View style={{  width:text(90)}}>
                                 <Html
-                                    style={{textAlign: 'right', fontSize: text(12), color: '#545968'}}
+                                    style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
                                     html={_item[0]}
                                 />
                             </View>
-                            <View style={styles.body_sty} />
-                            <View style={{paddingRight: text(15)}}>
+                            <View style={[styles.body_sty,{flex:1}]} />
+                            <View style={{width:text(90)}}>
                                 <Html
-                                    style={{textAlign: 'right', fontSize: text(12), color: '#545968'}}
+                                    style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
                                     html={_item[2]}
                                 />
                             </View>
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     },
     ab_table_sty: {
         position: 'absolute',
-        top: '5.5%',
+        top: '6%',
         left: '35%',
         shadowColor: '#FFE6E4',
         shadowOffset: {h: 10, w: 10},
@@ -130,8 +131,8 @@ const styles = StyleSheet.create({
         width: '42%',
     },
     ab_text_sty: {
-        height: text(41),
-        lineHeight: text(41),
+        height: text(42),
+        lineHeight: text(42),
         textAlign: 'center',
         color: '#E74949',
         fontSize: text(12),
