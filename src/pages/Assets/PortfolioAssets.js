@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 11:21:29
+ * @LastEditTime: 2021-04-01 19:12:39
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -162,14 +162,14 @@ export default function PortfolioAssets(props) {
     const renderBtn = () => {
         return (
             <View style={styles.plan_card_sty}>
-                <View style={[Style.flexRow, {justifyContent: 'center'}]}>
+                <View style={[Style.flexRow, {justifyContent: 'center',}]}>
                     <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                    <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
+                   {card?.title_info?.popup? <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
                         <Image
-                            style={{width: text(20), height: text(20)}}
+                            style={{width: text(20), height: text(20),marginTop:text(3)}}
                             source={require('../../assets/img/tip.png')}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity>:null}
                 </View>
                 {card?.desc ? (
                     <View style={{marginTop: px(13)}}>

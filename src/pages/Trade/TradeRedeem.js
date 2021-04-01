@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 17:46:21
+ * @LastEditTime: 2021-04-01 17:58:42
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -175,6 +175,7 @@ export default class TradeRedeem extends Component {
             selectedValue: [1],
             pickerBg: [255, 255, 255, 1],
             pickerData: option,
+            pickerTextEllipsisLen:20,
             pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 this.state.data.survey.option.forEach((_item, _index) => {
