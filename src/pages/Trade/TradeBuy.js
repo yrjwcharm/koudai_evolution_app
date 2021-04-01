@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 19:28:35
+ * @LastEditTime: 2021-04-01 10:49:35
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -52,6 +52,7 @@ class TradeBuy extends Component {
             mfbTip: false,
             isLargeAmount: false,
             largeAmount: '',
+            fixTip: '',
         };
     }
     getTab = () => {
@@ -117,6 +118,11 @@ class TradeBuy extends Component {
                 this.setState({
                     buyBtnCanClick: this.state.errTip == '' && this.state.amount ? true : false,
                     mfbTip: false,
+                    fixTip: this.state.data?.actual_amount
+                        ? `${amount * this.state.data?.actual_amount.min}元~${
+                              amount * this.state.data?.actual_amount.max
+                          }元`
+                        : '',
                 });
             } else {
                 this.setState({buyBtnCanClick: false, mfbTip: false});
@@ -200,7 +206,7 @@ class TradeBuy extends Component {
             } else {
                 this.setState({
                     buyBtnCanClick: false,
-                    // errTip: data.message,
+                    errTip: data.message,
                 });
             }
         });
@@ -216,7 +222,7 @@ class TradeBuy extends Component {
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
         let _amount = onlyNumber(amount);
-        this.setState({amount: _amount, errTip: ''}, () => {
+        this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
             if (_amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
@@ -232,7 +238,15 @@ class TradeBuy extends Component {
                     });
                 }
             } else if (_amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({buyBtnCanClick: this.state.errTip == '' ? true : false, mfbTip: false});
+                this.setState({
+                    buyBtnCanClick: this.state.errTip == '' ? true : false,
+                    mfbTip: false,
+                    fixTip: this.state.data?.actual_amount
+                        ? `${_amount * this.state.data?.actual_amount.min}元~${
+                              _amount * this.state.data?.actual_amount.max
+                          }元`
+                        : '',
+                });
                 this.plan(_amount);
             } else {
                 this.setState({buyBtnCanClick: false, mfbTip: false});
@@ -613,6 +627,14 @@ class TradeBuy extends Component {
                                         </Text>
                                     ) : null}
                                 </Text>
+                            </View>
+                        ) : null}
+                        {errTip == '' && this.state.fixTip ? (
+                            <View style={[styles.tip, Style.flexBetween, {borderTopWidth: 0, height: px(22)}]}>
+                                <Text style={{fontSize: px(12)}}>
+                                    实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
+                                </Text>
+                                <Text style={{color: Colors.btnColor}}>计算方式</Text>
                             </View>
                         ) : null}
                     </View>
