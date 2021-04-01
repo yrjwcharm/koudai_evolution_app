@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-03-30 14:42:03
- * @LastEditors: xjh
+ * @LastEditTime: 2021-04-01 17:47:12
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -127,13 +127,9 @@ const TradeProcessing = ({navigation, route}) => {
                 {Object.keys(data).length > 0 && data?.header && (
                     <View style={styles.contentStyle}>
                         <Image source={{uri: data.header.img}} style={styles.coverImage} />
-                        <Text style={{fontSize: text(20), fontWeight: 'bold', paddingVertical: text(10)}}>
-                            {data.header.status}
-                        </Text>
-                        {data.header.amount ? (
-                            <Text style={{color: '#4C4C4C', paddingBottom: text(5)}}>{data.header.amount}</Text>
-                        ) : null}
-                        <Text style={{color: '#4C4C4C', paddingBottom: text(5)}}>{data.header.pay_method}</Text>
+                        <Text style={{fontSize: text(16), paddingVertical: text(10)}}>{data.header.status}</Text>
+                        {data.header.amount ? <Text style={styles.head_text}>{data.header.amount}</Text> : null}
+                        <Text style={styles.head_text}>{data.header.pay_method}</Text>
                     </View>
                 )}
 
@@ -301,7 +297,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCD0DB',
         zIndex: 1,
     },
-
+    head_text: {color: '#555B6C', fontSize: text(12), paddingBottom: text(5)},
     caret_sty: {
         position: 'absolute',
         top: text(10),
@@ -311,10 +307,7 @@ const styles = StyleSheet.create({
     contentStyle: {
         flexDirection: 'column',
         alignItems: 'center',
-        paddingVertical: text(10),
-        borderBottomWidth: 1,
-        borderColor: '#DDDDDD',
-        paddingBottom: text(20),
+        paddingVertical: text(30),
         backgroundColor: '#fff',
     },
     coverImage: {

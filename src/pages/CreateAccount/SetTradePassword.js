@@ -2,14 +2,13 @@
  * @Description:设置交易密码
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 11:39:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-01 18:23:52
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
 import {px as text, px} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
 import Http from '../../services';
@@ -128,14 +127,15 @@ const SetTradePassword = ({navigation, route}) => {
         <ScrollView style={[Style.containerPadding]}>
             <FastImage
                 style={styles.pwd_img}
-                source={{
-                    uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/account.png',
-                }}
+                source={require('../../assets/img/account/tradePwd.png')}
                 resizeMode={FastImage.resizeMode.contain}
             />
             <View style={styles.card}>
                 <View style={[Style.flexRow, styles.card_head]}>
-                    <EvilIcons name="lock" size={25} />
+                    <FastImage
+                        source={require('../../assets/img/account/password.png')}
+                        style={{width: px(20), height: px(20), resizeMode: 'contain', marginRight: px(4)}}
+                    />
                     <Text style={styles.title}>{pwdMsg}</Text>
                 </View>
                 <View style={{marginTop: text(25), position: 'relative'}}>
@@ -184,14 +184,14 @@ const styles = StyleSheet.create({
         borderColor: '#DDDDDD',
         borderBottomWidth: 0.5,
         paddingBottom: text(15),
-        alignItems: 'flex-end',
+        // alignItems: 'flex-end',
     },
     title: {
         color: Colors.defaultColor,
         fontSize: Font.textH2,
     },
     box: {
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#f5f6f8',
         width: text(35),
         height: text(46),
         marginLeft: text(10),

@@ -194,7 +194,7 @@ export default function DetailAccount({route, navigation}) {
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
-                                <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(8)}]}>
+                                <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(14)}]}>
                                     <View style={{flex: 1, position: 'relative'}}>
                                         <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>

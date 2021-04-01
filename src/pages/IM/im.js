@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 20:46:06
+ * @LastEditTime: 2021-04-01 17:01:57
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -42,6 +42,7 @@ import {useSelector} from 'react-redux';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import BaseUrl from '../../services/config';
+import * as Animatable from 'react-native-animatable';
 import Toast from '../../components/Toast';
 const url = BaseUrl.WS;
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
@@ -919,6 +920,7 @@ const IM = (props) => {
                     }}
                 />
             </_Modal>
+
             <ChatScreen
                 ref={_ChatScreen}
                 messageList={messages}
@@ -972,8 +974,11 @@ const IM = (props) => {
                     id: `${uid}`,
                     avatar: userInfo.toJS().avatar,
                 }}
-                // sendIcon={<Text>发送</Text>}
-
+                sendIcon={
+                    <Animatable.View animation="fadeInRight" easing="ease-in" duration="200" style={styles.sendIcon}>
+                        <Text style={{color: '#fff'}}>发送</Text>
+                    </Animatable.View>
+                }
                 inputHeightFix={px(5)}
                 panelContainerStyle={{backgroundColor: Colors.bgColor}}
             />
@@ -1048,5 +1053,13 @@ const styles = StyleSheet.create({
         borderRadius: px(4),
         padding: px(8),
         flexDirection: 'row',
+    },
+    sendIcon: {
+        backgroundColor: Colors.btnColor,
+        width: px(52),
+        height: px(32),
+        borderRadius: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });

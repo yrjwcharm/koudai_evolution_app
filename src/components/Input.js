@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:49:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 11:50:44
+ * @LastEditTime: 2021-04-01 18:05:56
  * @Description:带lable的输入框
  */
 /**
@@ -40,7 +40,7 @@ class Input extends Component {
     };
 
     static defaultProps = {
-        placeholderTextColor: '#CCCCCC',
+        placeholderTextColor: '#BDC2CC',
         autoCapitalize: 'none',
         isUpdate: true, //是否可编辑
         label: '文本输入框',
@@ -75,7 +75,7 @@ class Input extends Component {
             <View
                 style={[
                     {
-                        height: text(54),
+                        height: text(56),
                         width: '100%',
                         backgroundColor: '#fff',
                         flexDirection: 'row',
@@ -93,7 +93,7 @@ class Input extends Component {
                             justifyContent: 'center',
                             alignItems: 'center',
                             fontSize: text(14),
-                            color: '#4C4C4C',
+                            color: Colors.lightBlackColor,
                         },
                         labelTextStyle,
                     ]}>

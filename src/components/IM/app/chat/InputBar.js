@@ -10,7 +10,7 @@ import {
     Text,
     Dimensions,
 } from 'react-native';
-
+import * as Animatable from 'react-native-animatable';
 const {width, height} = Dimensions.get('window');
 
 export default class InputBar extends PureComponent {
