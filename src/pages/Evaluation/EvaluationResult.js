@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 16:32:46
+ * @LastEditTime: 2021-04-01 15:04:12
  * @Description:规划结果页
  */
 
@@ -59,8 +59,13 @@ export default class planResult extends Component {
         lableAnimation: true,
         data: '', //展示数据
     };
+    upid = this.props.route?.params?.upid;
+    summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
-        http.get('/questionnaire/chart/20210101').then((chart) => {
+        http.get('/questionnaire/chart/20210101', {
+            upid: this.upid,
+            summary_id: this.summary_id,
+        }).then((chart) => {
             this.setState({chart: chart.result});
             this.animationTimer = setTimeout(() => {
                 this.setState({lableAnimation: false});
@@ -95,7 +100,10 @@ export default class planResult extends Component {
                 }
             }, 500);
         });
-        http.get('/questionnaire/show/20210101', {upid: this.props.route?.params?.upid}).then((res) => {
+        http.get('/questionnaire/show/20210101', {
+            upid: this.upid,
+            summary_id: this.summary_id,
+        }).then((res) => {
             this.setState({data: res.result});
         });
     }

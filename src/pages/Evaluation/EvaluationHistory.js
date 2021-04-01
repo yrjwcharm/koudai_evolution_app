@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 18:13:02
+ * @LastEditTime: 2021-04-01 11:56:24
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -53,6 +53,15 @@ export class planningHistory extends Component {
                     renderLeft={
                         <TouchableOpacity style={styles.title_btn} onPress={this.props.navigation.goBack}>
                             <Icon name="close" size={px(22)} />
+                        </TouchableOpacity>
+                    }
+                    renderRight={
+                        <TouchableOpacity
+                            style={[styles.title_btn, {width: px(60)}]}
+                            onPress={() => {
+                                this.props.navigation.replace('Evaluation');
+                            }}>
+                            <Text>上一步</Text>
                         </TouchableOpacity>
                     }
                 />

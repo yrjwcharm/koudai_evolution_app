@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 19:10:31
+ * @LastEditTime: 2021-04-01 14:31:05
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -302,7 +302,11 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
-                                        jump(data?.custom_info?.button?.url);
+                                        data?.login_status == 0
+                                            ? props.navigation.navigate('Register', {
+                                                  redirect: data?.custom_info?.button?.url,
+                                              })
+                                            : jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: px(14)}}>
                                     <FastImage style={styles.robot} source={require('../../assets/img/robot1.png')} />
@@ -344,7 +348,7 @@ const Index = (props) => {
                                                         已有
                                                         <Text
                                                             style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
-                                                            1234
+                                                            {data?.custom_info?.num}
                                                         </Text>
                                                         人开启
                                                     </Text>

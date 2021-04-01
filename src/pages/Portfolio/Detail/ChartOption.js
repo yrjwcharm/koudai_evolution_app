@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 14:51:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-01 15:47:17
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -114,9 +114,9 @@ export const pieChart = (data, map) => `
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    padding: [16, 'auto' ],
+    padding: [0, 'auto' ],
     width:${deviceWidth - text(50)},
-    height:200
+    height:${text(140)},
   });
   chart.source(${JSON.stringify(data)},{
     ratio: {
@@ -128,6 +128,7 @@ export const pieChart = (data, map) => `
   chart.tooltip(false);
   chart.legend({
     position: 'right',
+    offsetX:-10,
     itemFormatter: function itemFormatter(val) {
       return val + (${JSON.stringify(map)}[val] * 100).toFixed(2)+'%'
     },
@@ -165,21 +166,25 @@ export const pieChart = (data, map) => `
   chart.render();
 })()
 `;
-export const histogram = (data, min) =>
+export const histogram = (data, min, height) =>
     `
 (function(){
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
+    padding:${text(24)},
     width:${deviceWidth - text(30)},
-    height:260
+    height:${height},
   });
   chart.source(${JSON.stringify(data)})
   chart.legend(false);
-  // chart.axis('val',{
-  //   grid:null,
-  //   tickLine:null
-  // })
+  chart.scale('val', {
+    tickCount: 4,
+    range: [ 0, 1 ],
+    formatter: (value) => {
+      return value+'%';
+    }
+  });
   chart.axis('key',false);
   chart.tooltip(false);
   ${JSON.stringify(data)}.forEach((obj)=> {

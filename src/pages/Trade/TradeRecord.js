@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 17:32:53
+ * @LastEditTime: 2021-04-01 12:16:40
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -14,6 +14,7 @@ import EmptyTip from '../../components/EmptyTip';
 import {Colors, Style, Font} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
+import Toast from '../../components/Toast/Toast.js';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
@@ -24,29 +25,36 @@ const TradeRecord = ({route, navigation}) => {
     const [tabActive, setActiveTab] = useState(0);
     const jump = useJump();
     const isMfb = route?.params?.fr == 'mfb';
-    const getData = useCallback(() => {
-        setLoading(true);
-        http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
-            type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
-            page: page,
-            poid: route.params?.poid,
-            prod_code: route.params?.prod_code,
-        })
-            .then((res) => {
-                setLoading(false);
-                if (page == 1) {
-                    setData(res.result.list);
-                } else {
-                    setData((prevData) => {
-                        return prevData.concat(res?.result?.list);
-                    });
-                }
-                setHasMore(res.result.has_more);
+    const getData = useCallback(
+        (_page, toast) => {
+            let Page = _page || page;
+            setLoading(true);
+            http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
+                type: isMfb ? mfb_type[tabActive] : trade_type[tabActive],
+                page: Page,
+                poid: route.params?.poid,
+                prod_code: route.params?.prod_code,
             })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, [page, tabActive, route, isMfb]);
+                .then((res) => {
+                    setLoading(false);
+                    if (toast) {
+                        Toast.show('交易记录已更新', {duration: 500});
+                    }
+                    if (Page == 1) {
+                        setData(res.result.list);
+                    } else {
+                        setData((prevData) => {
+                            return prevData.concat(res?.result?.list);
+                        });
+                    }
+                    setHasMore(res.result.has_more);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
+        [page, tabActive, route, isMfb]
+    );
     useEffect(() => {
         getData();
     }, [getData]);
@@ -56,11 +64,12 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
     const onRefresh = () => {
-        if (page == 1) {
-            getData();
-        } else {
-            setPage(1);
-        }
+        // if (page == 1) {
+        getData(1, 'toast');
+        // } else {
+        //     getData(1);
+        //     // setPage(1);
+        // }
     };
     const changeTab = (obj) => {
         setHasMore(false);

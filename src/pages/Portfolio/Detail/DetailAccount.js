@@ -2,22 +2,20 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, px} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Header from '../../../components/NavBar';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import {histogram, pieChart} from './ChartOption';
-import {baseAreaChart} from '../components/ChartOption';
 import ListHeader from '../components/ListHeader';
 import FitImage from 'react-native-fit-image';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -146,7 +144,7 @@ export default function DetailAccount({route, navigation}) {
                     {data?.asset_deploy ? (
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.asset_deploy?.header} color={'#0051CC'} />
-                            <View style={{height: 200}}>
+                            <View style={{height: text(140)}}>
                                 <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
                             </View>
                         </View>
@@ -195,15 +193,11 @@ export default function DetailAccount({route, navigation}) {
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} />
-                            <View style={{height: 320, position: 'relative'}}>
-                                <View style={[Style.flexRow, {marginTop: text(13)}]}>
+                            <View style={{position: 'relative', paddingBottom: px(16)}}>
+                                <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(8)}]}>
                                     <View style={{flex: 1, position: 'relative'}}>
                                         <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>
-                                        {/* <Image
-                                      source={require('../../../assets/img/detail/zan.png')}
-                                      style={[styles.zan_sty]}
-                                  /> */}
                                     </View>
                                     <View style={{flex: 1}}>
                                         <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[1]?.title}</Text>
@@ -214,13 +208,22 @@ export default function DetailAccount({route, navigation}) {
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
                                     </View>
                                 </View>
-                                {/* <Text style={{borderColor: '#ddd', borderWidth: 0.5}}></Text> */}
-                                <Chart
-                                    initScript={histogram(data?.risk_info.chart, data?.risk_info?.label[2]?.ratio)}
-                                    style={{marginTop: text(-20), zIndex: 9}}
-                                />
+                                <View style={{height: text(160)}}>
+                                    <Chart
+                                        initScript={histogram(
+                                            data?.risk_info.chart,
+                                            data?.risk_info?.label[2]?.ratio,
+                                            text(160)
+                                        )}
+                                        style={{marginTop: text(-6), zIndex: 9}}
+                                    />
+                                </View>
 
-                                <View style={{flexDirection: 'row', marginLeft: text(10), marginTop: text(16)}}>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        marginLeft: text(10),
+                                    }}>
                                     <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                         <Ionicons name={'square'} color={'#E74949'} size={10} />
                                         <Text> {data.risk_info?.label[0]?.key}</Text>
@@ -229,7 +232,13 @@ export default function DetailAccount({route, navigation}) {
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
-                                    <View style={{width: text(100), fontSize: text(12), flexShrink: 0}}>
+                                    <View
+                                        style={{
+                                            width: text(120),
+                                            fontSize: text(12),
+                                            flexShrink: 0,
+                                            marginBottom: px(-16),
+                                        }}>
                                         <Text style={{fontSize: text(12)}}>---{data?.risk_info?.label[2]?.key}</Text>
                                         <Text
                                             style={{
@@ -346,7 +355,7 @@ const styles = StyleSheet.create({
     },
     row_desc_sty: {
         color: '#868DA3',
-        fontSize: text(11),
+        fontSize: text(10),
         textAlign: 'center',
         marginTop: text(3),
         fontFamily: Font.numFontFamily,

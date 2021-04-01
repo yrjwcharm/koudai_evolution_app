@@ -2,16 +2,17 @@
  * @Author: xjh
  * @Date: 2021-01-27 10:09:32
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:14:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-01 14:56:22
  */
 import React from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, px} from '../../../utils/appUtil';
 import PropTypes from 'prop-types';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {useJump} from '../../../components/hooks';
+import FastImage from 'react-native-fast-image';
 export default function ListHeader(props) {
     ListHeader.propTypes = {
         data: PropTypes.object,
@@ -32,7 +33,7 @@ export default function ListHeader(props) {
             onPress={() => jump(data.url)}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 {data.icon ? (
-                    <Image
+                    <FastImage
                         source={{uri: data.icon}}
                         style={{width: text(20), height: text(20), marginRight: text(4)}}
                     />
@@ -45,7 +46,7 @@ export default function ListHeader(props) {
                 </View>
             </View>
 
-            <Text style={{color: '#0051CC'}}>
+            <Text style={{color: '#0051CC', fontSize: text(12)}}>
                 {data?.text}
                 <AntDesign name={'right'} color={color} size={12} />
             </Text>

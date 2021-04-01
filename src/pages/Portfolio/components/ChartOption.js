@@ -1,14 +1,13 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:14:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-01 14:58:02
  * @Description: 基金相关图表配置
  */
 // 交互图例
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
-import {px, px as text} from '../../../utils/appUtil';
 export const baseAreaChart = (
     data,
     colors = [

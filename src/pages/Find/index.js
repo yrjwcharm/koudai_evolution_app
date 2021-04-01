@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 16:48:26
+ * @LastEditTime: 2021-04-01 11:59:34
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -193,7 +193,11 @@ const Index = (props) => {
                             {data?.part2?.plans?.map((item, index) => (
                                 <TouchableOpacity
                                     activeOpacity={0.9}
-                                    style={[styles.major_card, styles.card]}
+                                    style={[
+                                        styles.major_card,
+                                        styles.card,
+                                        {marginRight: index == data?.part2?.plans?.length - 1 ? px(28) : px(12)},
+                                    ]}
                                     key={index}
                                     onPress={() => {
                                         jump(item?.url);
@@ -390,7 +394,6 @@ const styles = StyleSheet.create({
         width: px(202),
         borderRadius: 8,
         padding: Space.cardPadding,
-        marginRight: px(12),
     },
     img_title: {
         color: '#fff',
