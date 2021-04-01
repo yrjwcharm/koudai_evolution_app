@@ -54,7 +54,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const countCalc = (interval, action, type) => {
         const _interval = Number(interval);
         if (type == 'begin') {
-            if (countFr < 2000 || countFr > 1000000) {
+            if (countFr < 2000 || countFr > 10000000) {
                 return;
             }
             if (action == 'increase') {
@@ -63,7 +63,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setCountFr(countFr - _interval);
             }
         } else {
-            if (countM < 2000 || countM > 1000000) {
+            if (countM < 2000 || countM > 10000000) {
                 return;
             }
             if (action == 'increase') {
@@ -82,6 +82,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             goal_amount: data.plan_info.goal_info.amount,
             year: _current,
             type,
+            upid:route.params.upid,
         };
         Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,
@@ -160,12 +161,12 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setShowMask(false);
                 _current = pickedValue[0];
                 setCurrent(pickedValue[0]);
+                changeNotice();
             },
             onPickerCancel: () => {
                 setShowMask(false);
             },
         });
-        changeNotice();
         Picker.show();
     };
     const _createDateData = () => {
