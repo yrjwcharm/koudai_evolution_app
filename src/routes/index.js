@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 18:36:35
+ * @LastEditTime: 2021-04-01 19:33:56
  * @Description:路由表
  */
 import React from 'react';
@@ -144,7 +144,7 @@ const Stack = createStackNavigator();
 export default function AppStack() {
     return (
         <Stack.Navigator
-            initialRouteName="Loading"
+            initialRouteName="EvaluationResult"
             headerMode="float" //兼容部分安卓
             screenOptions={{
                 headerBackImage: () => {

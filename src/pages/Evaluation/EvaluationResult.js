@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 15:04:12
+ * @LastEditTime: 2021-04-01 20:08:29
  * @Description:规划结果页
  */
 
@@ -20,6 +20,20 @@ import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
+import {BoxShadow} from 'react-native-shadow';
+const shadow = {
+    color: '#E3E6EE',
+    border: 8,
+    radius: 8,
+    opacity: 0.2,
+    x: 2,
+    y: 2,
+    width: deviceWidth - px(40),
+    height: px(156),
+    style: {
+        marginHorizontal: px(20),
+    },
+};
 const animation = [
     {
         type: 'top',
@@ -56,15 +70,15 @@ const animation = [
 export default class planResult extends Component {
     state = {
         chart: '', //图表数据
-        lableAnimation: true,
+        lableAnimation: false,
         data: '', //展示数据
     };
     upid = this.props.route?.params?.upid;
     summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
         http.get('/questionnaire/chart/20210101', {
-            upid: this.upid,
-            summary_id: this.summary_id,
+            upid: this.upid || 88,
+            summary_id: this.summary_id || 3982,
         }).then((chart) => {
             this.setState({chart: chart.result});
             this.animationTimer = setTimeout(() => {
@@ -101,8 +115,8 @@ export default class planResult extends Component {
             }, 500);
         });
         http.get('/questionnaire/show/20210101', {
-            upid: this.upid,
-            summary_id: this.summary_id,
+            upid: this.upid || 88,
+            summary_id: this.summary_id || 3982,
         }).then((res) => {
             this.setState({data: res.result});
         });
@@ -133,9 +147,9 @@ export default class planResult extends Component {
                             <TouchableOpacity
                                 style={[styles.title_btn, {width: px(60)}]}
                                 onPress={() => {
-                                    this.jumpNext('Evaluation');
+                                    this.props.navigation.replace(chart?.top_button?.path, chart?.top_button?.params);
                                 }}>
-                                <Text>重新评测</Text>
+                                <Text>重新定制</Text>
                             </TouchableOpacity>
                         ) : null
                     }
@@ -211,17 +225,86 @@ export default class planResult extends Component {
                                     <Text style={styles.desc_text}>近5年累计收益率</Text>
                                 </View>
                             </View>
-                            <View style={{height: 300, paddingHorizontal: px(10), marginVertical: px(16)}}>
-                                {chart && <Chart initScript={chartOptions.baseChart(chart)} />}
+                            <View style={{height: px(220), paddingHorizontal: px(20), marginVertical: px(16)}}>
+                                {chart && <Chart initScript={chartOptions.baseChart(chart, deviceWidth, px(220))} />}
                             </View>
-                            {plan?.length > 0 && (
-                                <View style={styles.card}>
-                                    <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                        <Text style={styles.key}>目标年化收益率</Text>
-                                        <Text style={styles.plan_goal_amount}>10.12%</Text>
-                                    </View>
-                                </View>
-                            )}
+                            {plan && plan?.type == 1 ? (
+                                <BoxShadow setting={{...shadow, height: px(116)}}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={[styles.card, {height: px(116)}]}
+                                        onPress={() => {
+                                            this.jumpNext(plan?.url?.path, plan?.url?.params);
+                                        }}>
+                                        <Text style={[styles.name, {marginBottom: px(10)}]}>{plan.title}</Text>
+                                        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                                            <Text style={styles.key}>目标年化收益率</Text>
+                                            <Text style={styles.plan_goal_amount}>
+                                                {plan.plan_yield_info.val}
+                                                {plan.plan_yield_info.unit}
+                                            </Text>
+                                        </View>
+                                        <View style={[Style.flexRow, {justifyContent: 'space-between'}]}>
+                                            <View style={Style.flexRow}>
+                                                <Text style={styles.key}>投资金额</Text>
+                                                <Text style={styles.regular_text}>{plan.plan_amount_info.val}</Text>
+                                                <Text style={{marginRight: px(8)}}>{plan.plan_amount_info.unit}</Text>
+                                            </View>
+                                            <View style={Style.flexRow}>
+                                                <Text style={styles.key}>建议投资时长</Text>
+                                                <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
+                                                <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </BoxShadow>
+                            ) : plan ? (
+                                <BoxShadow setting={shadow}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={styles.card}
+                                        onPress={() => {
+                                            this.jumpNext(plan?.url?.path, plan?.url?.params);
+                                        }}>
+                                        <Text style={[styles.name, {marginBottom: px(10)}]}>{plan.title}</Text>
+                                        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
+                                            <Text style={styles.key}>目标金额</Text>
+                                            <Text style={styles.plan_goal_amount}>{plan.plan_goal_info.val}</Text>
+                                            <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
+                                                {plan.plan_goal_info.unit}
+                                            </Text>
+                                        </View>
+                                        {plan.plan_type_list ? (
+                                            <View style={[Style.flexRow, {marginBottom: px(12)}]}>
+                                                <Text style={styles.key}>投资方式</Text>
+                                                <View style={[Style.flexRow, {flex: 1}]}>
+                                                    {plan.plan_type_list.map((type, _index) => {
+                                                        return (
+                                                            <View
+                                                                style={[Style.flexRow, {marginRight: px(10)}]}
+                                                                key={_index}>
+                                                                <Text style={[styles.key, {marginRight: px(4)}]}>
+                                                                    {type.text}
+                                                                </Text>
+                                                                <Text style={styles.regular_text}>{type.val}</Text>
+                                                                <Text>{type.unit}</Text>
+                                                            </View>
+                                                        );
+                                                    })}
+                                                </View>
+                                            </View>
+                                        ) : null}
+                                        {plan.plan_duration_info ? (
+                                            <View style={Style.flexRow}>
+                                                <Text style={styles.key}>计划时长</Text>
+                                                <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
+                                                <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
+                                                <Text style={styles.key}>{plan.plan_duration_info.tip}</Text>
+                                            </View>
+                                        ) : null}
+                                    </TouchableOpacity>
+                                </BoxShadow>
+                            ) : null}
                         </Animatable.View>
 
                         {button && (
@@ -256,15 +339,10 @@ const styles = StyleSheet.create({
     },
 
     card: {
-        marginHorizontal: px(20),
         padding: px(16),
-        shadowColor: '#28479E',
         backgroundColor: '#fff',
         borderRadius: px(8),
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 10,
+        width: deviceWidth - px(40),
         marginBottom: px(16),
     },
     plan_goal_amount: {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 17:52:59
+ * @LastEditTime: 2021-04-01 20:16:13
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -84,7 +84,7 @@ class TradeBuy extends Component {
                         nextday: res.result?.period_info?.nextday,
                     },
                     () => {
-                        let amount = this.state.amount || `${res.result.buy_info.initial_amount}`;
+                        let amount = this.state.amount;
                         this.plan(amount);
                         if (amount) {
                             this.checkData(amount);
@@ -196,7 +196,7 @@ class TradeBuy extends Component {
      */
     plan = (amount) => {
         const params = {
-            amount,
+            amount: amount || this.state.data.buy_info.initial_amount,
             pay_method: this.state.bankSelect?.pay_method,
             poid: this.state.poid,
             init: this.state.amount ? 0 : 1,
@@ -222,7 +222,7 @@ class TradeBuy extends Component {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
-        let _amount = onlyNumber(amount);
+        let _amount = onlyNumber(amount || this.state.data.buy_info.initial_amount);
         this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
             if (_amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
@@ -709,7 +709,7 @@ class TradeBuy extends Component {
         const {button} = data;
         return (
             <>
-                <Focus init={this.init} />
+                <Focus init={this.getTab} />
                 {data ? (
                     <View
                         style={{

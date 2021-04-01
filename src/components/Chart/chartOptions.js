@@ -94,22 +94,23 @@ label: function label(text, index, total) {
 }
 });
 `;
-export const baseChart = (data) => `(function(){
+export const baseChart = (data, width, height) => `(function(){
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-   
+    padding:[20,32],
+    width:${width},
+    height:${height},
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
-    tickCount: 5,
-    range: [ 0, 1 ]
+    tickCount: 4,
   });
   chart.scale('value', {
     tickCount: 5,
     range: [ 0, 1 ],
     formatter: function formatter(val) {
-      return (val/100).toFixed(2) + '%';
+      return (val*10)+ '%';
     }
   });
 
@@ -132,7 +133,7 @@ export const baseChart = (data) => `(function(){
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',
-        duration: 2000
+        duration: 1000
       }
     });
   chart.line()
@@ -141,7 +142,7 @@ export const baseChart = (data) => `(function(){
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',
-        duration: 2000
+        duration: 1000
       }
     });
   chart.render();
