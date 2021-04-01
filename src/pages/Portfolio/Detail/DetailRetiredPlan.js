@@ -185,7 +185,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             {Object.keys(data).length > 0 ? (
                 <ScrollView style={{flex: 1}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
-                    <View style={styles.container_sty}>
+                    <View style={[styles.container_sty,]}>
                         <View>
                             <View style={Style.flexRow}>
                                 <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
@@ -335,7 +335,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                             </View>
                         </View>
                         <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                            <ListHeader data={data.asset_strategy.header} />
+                            <ListHeader data={data.asset_strategy.header} hide={true}/>
                             {data.asset_strategy.items.map((_s, _d, arr) => {
                                 return (
                                     <View
@@ -387,7 +387,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 </TouchableOpacity>
                             )}
                         </View>
-                        <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16)}]}>
+                        <View style={[styles.card_sty, {paddingVertical: 0, paddingHorizontal: text(16),marginBottom:0}]}>
                             {data.gather_info.map((_q, _w) => {
                                 return (
                                     <TouchableOpacity
@@ -414,7 +414,6 @@ export default function DetailRetiredPlan({navigation, route}) {
                             paddingHorizontal: text(16),
                             lineHeight: text(18),
                             fontSize: text(11),
-                            marginTop: text(12),
                         }}>
                         {data.tip}
                     </Text>

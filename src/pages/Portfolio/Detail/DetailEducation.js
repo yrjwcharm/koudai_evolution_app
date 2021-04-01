@@ -370,7 +370,7 @@ export default function DetailEducation({navigation, route}) {
                                 </View>
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                                <ListHeader data={data.asset_strategy.header} />
+                                <ListHeader data={data.asset_strategy.header} hide={true}/>
                                 {data.asset_strategy.items.map((_s, _d, arr) => {
                                     return (
                                         <View
