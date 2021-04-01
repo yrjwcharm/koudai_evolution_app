@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 17:52:16
+ * @LastEditTime: 2021-03-31 19:13:03
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX, px} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, formaNum} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -210,14 +210,12 @@ const Profile = ({navigation}) => {
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
                         onKeyPress={onKeyPress}
-                        placeholder={modalProps?.placeholder}
-                        placeholderTextColor={'#CCD0DB'}
-                        style={[
-                            styles.inputStyle,
-                            `${iptVal}`.length > 0 ? {fontFamily: Font.numMedium, fontSize: text(35)} : {},
-                        ]}
+                        // placeholder={modalProps?.placeholder}
+                        // placeholderTextColor={'#CCD0DB'}
+                        style={[styles.inputStyle]}
                         value={iptVal}
                     />
+                    {`${iptVal}`.length === 0 && <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>}
                     {`${iptVal}`.length > 0 && (
                         <TouchableOpacity onPress={() => setIptVal('')}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
@@ -256,7 +254,14 @@ const Profile = ({navigation}) => {
                                                     ) : null}
                                                     {item.val?.text ? (
                                                         <View style={{marginHorizontal: text(12)}}>
-                                                            <HTML html={item.val.text} style={styles.val} />
+                                                            <HTML
+                                                                html={
+                                                                    item.val?.type === 'input'
+                                                                        ? formaNum(`${item.val.text}`, 'nozero')
+                                                                        : item.val.text
+                                                                }
+                                                                style={styles.val}
+                                                            />
                                                         </View>
                                                     ) : null}
                                                     <Icon
@@ -328,6 +333,7 @@ const styles = StyleSheet.create({
         paddingBottom: text(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
+        position: 'relative',
     },
     unit: {
         fontSize: text(26),
@@ -335,10 +341,19 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: text(26),
+        fontSize: text(35),
+        lineHeight: text(42),
         marginLeft: text(14),
-        height: text(42),
         padding: 0,
+        fontFamily: Font.numMedium,
+    },
+    placeholder: {
+        position: 'absolute',
+        left: text(28),
+        top: text(3.5),
+        fontSize: text(26),
+        lineHeight: text(37),
+        color: Colors.placeholderColor,
     },
 });
 
