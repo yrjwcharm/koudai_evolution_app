@@ -122,6 +122,7 @@ export default function DetailEducation({navigation, route}) {
             year: _current,
             type,
             goal_amount: data.plan_info.goal_info.amount,
+            upid:route.params.upid,
         };
         Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,

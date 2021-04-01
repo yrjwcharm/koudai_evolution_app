@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 17:35:18
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-04-01 14:11:34
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -222,7 +222,7 @@ export class uploadID extends Component {
                     </Text>
                     {desc ? (
                         <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>
-                            请上传 **************8293的身份证照片
+                        {desc}
                         </Text>
                     ) : null}
                     <View style={{alignItems: 'center'}}>

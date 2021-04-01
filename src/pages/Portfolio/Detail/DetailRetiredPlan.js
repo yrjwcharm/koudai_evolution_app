@@ -82,6 +82,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             goal_amount: data.plan_info.goal_info.amount,
             year: _current,
             type,
+            upid:route.params.upid,
         };
         Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,
