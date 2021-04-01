@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 10:49:35
+ * @LastEditTime: 2021-04-01 11:39:21
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -10,10 +10,10 @@ import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, 
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import {Colors, Font, Style} from '../../common/commonStyle.js';
-import {px, isIphoneX, onlyNumber} from '../../utils/appUtil.js';
+import {px, isIphoneX, onlyNumber, deviceWidth} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
-import {BankCardModal, Modal} from '../../components/Modal';
+import {BankCardModal, Modal, BottomModal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
 import http from '../../services';
@@ -23,6 +23,7 @@ import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
+import FastImage from 'react-native-fast-image';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -257,6 +258,9 @@ class TradeBuy extends Component {
                 }
             }
         });
+    };
+    showFixModal = () => {
+        this.bottomModal.show();
     };
     /**
      * @description: 购买按钮
@@ -630,11 +634,18 @@ class TradeBuy extends Component {
                             </View>
                         ) : null}
                         {errTip == '' && this.state.fixTip ? (
-                            <View style={[styles.tip, Style.flexBetween, {borderTopWidth: 0, height: px(22)}]}>
+                            <View
+                                style={[
+                                    styles.tip,
+                                    Style.flexBetween,
+                                    {borderTopWidth: 0, height: px(24), marginTop: px(-4), paddingLeft: px(3)},
+                                ]}>
                                 <Text style={{fontSize: px(12)}}>
                                     实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
                                 </Text>
-                                <Text style={{color: Colors.btnColor}}>计算方式</Text>
+                                <Text style={{color: Colors.btnColor}} onPress={this.showFixModal}>
+                                    计算方式
+                                </Text>
                             </View>
                         ) : null}
                     </View>
@@ -667,7 +678,13 @@ class TradeBuy extends Component {
                 </Text>
 
                 <BottomDesc />
-
+                <BottomModal ref={(ref) => (this.bottomModal = ref)} title="低估值定投计算方式">
+                    <FastImage
+                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/03/WechatIMG183.png'}}
+                        resizeMode={FastImage.resizeMode.contain}
+                        style={{width: px(322), height: px(251), marginLeft: (deviceWidth - px(322)) / 2}}
+                    />
+                </BottomModal>
                 <BankCardModal
                     data={pay_methods || []}
                     select={this.state.bankSelectIndex}

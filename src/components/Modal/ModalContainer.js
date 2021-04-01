@@ -139,13 +139,15 @@ export default class MyModal extends Component {
                             )}
                         </View>
                     ) : (
-                        <Animatable.View animation="bounceIn">
+                        <Animatable.View
+                            animation="bounceIn"
+                            style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
                             {/* 图片弹窗 */}
                             <Image
                                 source={{
                                     uri: this.imageUrl,
                                 }}
-                                style={[styles.modalImage]}
+                                style={[styles.modalImage, this.props.imageStyle]}
                             />
                         </Animatable.View>
                     )}
@@ -165,9 +167,10 @@ const styles = StyleSheet.create({
         height: height,
     },
     modalImage: {
-        width: text(300),
-        height: text(400),
-        resizeMode: 'contain',
+        width: text(280),
+        height: text(300),
+        // resizeMode: 'contain',
+        borderRadius: px(8),
     },
     mask: {
         width: width,
