@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 18:09:43
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-04-01 16:51:47
  * @Description:路由表
  */
 import React from 'react';
@@ -283,7 +283,7 @@ export default function AppStack() {
                 name="TradeFixedConfirm"
                 component={TradeFixedConfirm}
                 options={{
-                    title: '定投计划确认',
+                  headerShown: false,
                 }}
             />
             <Stack.Screen

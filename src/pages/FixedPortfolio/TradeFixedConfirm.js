@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 15:37:25
  * @LastEditors: xjh
  * @Description: 定投确认页
- * @LastEditTime: 2021-03-31 14:47:22
+ * @LastEditTime: 2021-04-01 17:02:22
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -12,6 +12,7 @@ import Html from '../../components/RenderHtml';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Button} from '../../components/Button';
 import Http from '../../services';
+import Header from '../../components/NavBar';
 export default class TradeFixedConfirm extends Component {
     constructor(props) {
         super(props);
@@ -42,6 +43,11 @@ export default class TradeFixedConfirm extends Component {
         const {data, heightArr} = this.state;
         return (
             <View style={styles.container}>
+              <Header
+                title={data?.title}
+                leftIcon="chevron-left"
+                leftPress={() => this.props.navigation.navigate({name:'Home'})}
+            />
                 {Object.keys(data).length > 0 && (
                     <View style={{paddingHorizontal: text(16)}}>
                         <View style={styles.top_sty}>

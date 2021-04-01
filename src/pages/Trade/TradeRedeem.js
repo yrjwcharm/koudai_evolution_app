@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 16:33:07
+ * @LastEditTime: 2021-04-01 16:40:22
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -20,6 +20,7 @@ import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
 import Html from '../../components/RenderHtml'
+import Toast from '../../components/Toast/Toast.js'
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 var inputValue = 0;
@@ -80,6 +81,8 @@ export default class TradeRedeem extends Component {
                 redeem_id: res.result.redeem_id,
                 tips:res.result.amount_desc
             });
+           }else{
+            Toast.show(res.message)
            }
         });
     }
