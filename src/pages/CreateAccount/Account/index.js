@@ -2,11 +2,11 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 14:30:22
+ * @LastEditTime: 2021-04-01 18:19:30
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, TouchableOpacity, Keyboard, ScrollView, DeviceEventEmitter} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Keyboard, ScrollView, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -185,9 +185,9 @@ class Index extends Component {
                     />
                     <View style={styles.card}>
                         <View style={styles.card_header}>
-                            <Image
+                            <FastImage
                                 source={require('../../../assets/img/account/personalMes.png')}
-                                style={{width: px(22), resizeMode: 'contain'}}
+                                style={{width: px(22), height: px(32), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>基本信息</Text>
                         </View>
@@ -212,7 +212,7 @@ class Index extends Component {
                                 onPress={() => {
                                     this.jumpPage('UploadID');
                                 }}>
-                                <FontAwesome name={'camera'} size={18} color={'#000'} />
+                                <FontAwesome name={'camera'} size={px(20)} color={'#000'} />
                             </TouchableOpacity>
                         </View>
                         <View style={Style.flexRow}>
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: Colors.borderColor,
         borderBottomWidth: 0.5,
-        paddingVertical: px(6),
+        paddingVertical: px(10),
     },
     card_head_text: {
         fontSize: px(14),

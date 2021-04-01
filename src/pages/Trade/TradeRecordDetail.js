@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 18:06:16
+ * @LastEditTime: 2021-04-01 17:37:38
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     header_text: {
         fontSize: px(12),
         color: Colors.lightBlackColor,
-        lineHeight: px(26),
+        lineHeight: px(22),
     },
     bold_text: {
         fontSize: px(32),

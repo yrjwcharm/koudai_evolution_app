@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 11:39:21
+ * @LastEditTime: 2021-04-01 17:52:59
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -599,7 +599,7 @@ class TradeBuy extends Component {
                                     {fontFamily: `${amount}`.length > 0 ? Font.numMedium : null},
                                 ]}
                                 placeholder={buy_info.hidden_text}
-                                placeholderTextColor={Colors.lightGrayColor}
+                                placeholderTextColor={Colors.placeholderColor}
                                 onChangeText={this.onInput}
                                 value={`${amount}`}
                             />
@@ -716,6 +716,7 @@ class TradeBuy extends Component {
                             flex: 1,
                             paddingBottom: isIphoneX() ? px(85) : px(51),
                             backgroundColor: Colors.bgColor,
+                            paddingTop: 1,
                         }}>
                         {has_tab ? (
                             <ScrollableTabView
@@ -756,7 +757,13 @@ function Focus({init}) {
     return null;
 }
 const styles = StyleSheet.create({
-    title: {fontSize: px(13), paddingVertical: px(12), paddingLeft: px(16)},
+    title: {
+        fontSize: px(13),
+        paddingVertical: px(12),
+        paddingBottom: px(10),
+        color: Colors.lightBlackColor,
+        paddingLeft: px(16),
+    },
     buyCon: {
         backgroundColor: '#fff',
         marginBottom: px(12),
@@ -838,7 +845,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(8),
         borderColor: Colors.yellow,
         borderWidth: 0.5,
-        borderRadius: 8,
+        borderRadius: px(4),
         textAlign: 'center',
     },
     aggrement: {

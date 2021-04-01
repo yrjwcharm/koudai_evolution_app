@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 15:47:17
+ * @LastEditTime: 2021-04-01 16:27:07
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -172,20 +172,32 @@ export const histogram = (data, min, height) =>
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    padding:${text(24)},
-    width:${deviceWidth - text(30)},
+    padding:[${text(20)},${text(36)}],
+    width:${deviceWidth - text(20)},
     height:${height},
   });
   chart.source(${JSON.stringify(data)})
   chart.legend(false);
   chart.scale('val', {
     tickCount: 4,
-    range: [ 0, 1 ],
-    formatter: (value) => {
-      return value+'%';
-    }
   });
   chart.axis('key',false);
+  chart.axis('val',{
+    label:(text, index, total) => {
+      const cfg = {
+        fontSize: 10
+      };
+      // // 第一个点左对齐，最后一个点右对齐，其余居中，只有一个点时左对齐
+      // if (index === 0) {
+      //   cfg.textAlign = 'start';
+      // }
+      // if (index > 0 && index === total - 1) {
+      //   cfg.textAlign = 'end';
+      // }
+      cfg.text = text + '%';  // cfg.text 支持文本格式化处理
+      return cfg;
+    }
+  })
   chart.tooltip(false);
   ${JSON.stringify(data)}.forEach((obj)=> {
     let textAlign;

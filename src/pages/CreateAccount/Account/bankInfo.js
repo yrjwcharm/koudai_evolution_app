@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-31 16:39:41
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-01 18:19:17
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, Image, Keyboard, Platform} from 'react-native';
+import {Text, View, StyleSheet, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px, inputInt} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -274,9 +274,9 @@ class BankInfo extends Component {
                     />
                     <View style={styles.card}>
                         <View style={styles.card_header}>
-                            <Image
+                            <FastImage
                                 source={require('../../../assets/img/account/cardMes.png')}
-                                style={{width: px(22), resizeMode: 'contain'}}
+                                style={{width: px(22), height: px(32), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>银行卡信息</Text>
                         </View>
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: Colors.borderColor,
         borderBottomWidth: 0.5,
-        paddingVertical: px(6),
+        paddingVertical: px(10),
     },
     card_head_text: {
         fontSize: px(14),

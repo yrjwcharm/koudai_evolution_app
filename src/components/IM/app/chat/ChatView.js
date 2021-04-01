@@ -1163,11 +1163,7 @@ ChatWindow.defaultProps = {
         console.log('longPress', type, index, content, message);
     },
     renderMessageTime: (time) => (
-        <View style={{justifyContent: 'center', alignItems: 'center', paddingTop: 10}}>
-            <View style={{backgroundColor: '#e6e6e6', paddingVertical: 4, paddingHorizontal: 8, borderRadius: 16}}>
-                <Text style={{color: '#333', fontSize: 10}}>{getCurrentTime(parseInt(time))}</Text>
-            </View>
-        </View>
+        <Text style={{color: '#9AA1B2', fontSize: 12, textAlign: 'center'}}>{getCurrentTime(parseInt(time))}</Text>
     ),
     placeholder: '请输入...',
     pressInText: '按住 说话',
