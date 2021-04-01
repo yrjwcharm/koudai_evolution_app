@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 18:56:02
+ * @LastEditTime: 2021-04-01 11:21:29
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -13,7 +13,6 @@ import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
@@ -25,7 +24,6 @@ import {Modal, BottomModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 
@@ -37,6 +35,7 @@ export default function PortfolioAssets(props) {
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
     const [period, setPeriod] = useState('m1');
+    const [tip, setTip] = useState({});
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -156,11 +155,22 @@ export default function PortfolioAssets(props) {
             }
         });
     };
-
+    const showTips = (tip) => {
+        setTip({title: tip?.title, content: tip?.content, img: tip.img});
+        bottomModal.current.show();
+    };
     const renderBtn = () => {
         return (
             <View style={styles.plan_card_sty}>
-                <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+                <View style={[Style.flexRow, {justifyContent: 'center'}]}>
+                    <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+                    <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
+                        <Image
+                            style={{width: text(20), height: text(20)}}
+                            source={require('../../assets/img/tip.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
                 {card?.desc ? (
                     <View style={{marginTop: px(13)}}>
                         <Html style={styles.plan_desc_sty} html={card?.desc} />
@@ -264,8 +274,11 @@ export default function PortfolioAssets(props) {
                                     <CircleLegend color={['#E8EAEF', '#545968']} />
                                     <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                                     {chart?.tips && (
-                                        <TouchableOpacity onPress={() => bottomModal.current.show()}>
-                                            <EvilIcons name={'question'} size={18} />
+                                        <TouchableOpacity onPress={() => showTips(chart.tips)}>
+                                            <Image
+                                                style={{width: text(16), height: text(16)}}
+                                                source={require('../../assets/img/tip.png')}
+                                            />
                                         </TouchableOpacity>
                                     )}
                                 </View>
@@ -430,9 +443,18 @@ export default function PortfolioAssets(props) {
                                 <Text style={{fontSize: text(12), color: '#fff'}}>
                                     {data?.progress_bar?.range_text[0]}
                                 </Text>
-                                <Text style={{fontSize: text(12), color: '#fff'}}>
-                                    {data?.progress_bar?.range_text[1]}
-                                </Text>
+                                <View style={Style.flexRowCenter}>
+                                    <Text style={{fontSize: text(12), color: '#fff'}}>
+                                        {data?.progress_bar?.range_text[1]}
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={() => showTips({content: '进度条展示您当前已达到目标收益的百分比'})}>
+                                        <Image
+                                            style={{width: text(20), height: text(20)}}
+                                            source={require('../../assets/img/tip.png')}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </>
                     )}
@@ -519,11 +541,20 @@ export default function PortfolioAssets(props) {
                 </View>
                 <BottomModal ref={bottomModal} title={'提示'}>
                     <View style={{padding: text(16)}}>
-                        <Text style={{textAlign: 'center', color: '#121D3A'}}>{chart?.tips?.title}</Text>
-                        <Text
-                            style={{lineHeight: text(18), textAlign: 'center', marginTop: text(16), color: '#121D3A'}}>
-                            {chart?.tips?.content}
-                        </Text>
+                        {tip?.title ? (
+                            <Text style={{textAlign: 'center', color: '#121D3A', fontSize: text(16)}}>
+                                {tip?.title}
+                            </Text>
+                        ) : null}
+                        <Text style={styles.tip_sty}>{tip?.content}</Text>
+                        {tip?.img && (
+                            <FitImage
+                                source={{
+                                    uri: tip?.img,
+                                }}
+                                resizeMode="contain"
+                            />
+                        )}
                     </View>
                 </BottomModal>
                 <BottomDesc />
@@ -711,5 +742,11 @@ const styles = StyleSheet.create({
         fontSize: text(11),
         marginTop: text(5),
         fontFamily: Font.numFontFamily,
+    },
+    tip_sty: {
+        lineHeight: text(18),
+        textAlign: 'center',
+        marginTop: text(16),
+        color: '#121D3A',
     },
 });

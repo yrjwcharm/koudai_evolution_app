@@ -2,11 +2,11 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-03-31 20:17:26
+ * @LastEditors: xjh
+ * @LastEditTime: 2021-04-01 10:37:29
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import {baseAreaChart} from './ChartOption';
 import {px, px as text} from '../../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -115,7 +115,10 @@ export default function RenderChart(props) {
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
                         {chartData?.yield_info.tips && (
                             <TouchableOpacity onPress={() => bottomModal.current.show()}>
-                                <EvilIcons name={'question'} size={18} />
+                                <Image
+                                    style={{width: text(16), height: text(16)}}
+                                    source={require('../../../assets/img/tip.png')}
+                                />
                             </TouchableOpacity>
                         )}
                     </View>

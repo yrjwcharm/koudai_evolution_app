@@ -94,7 +94,7 @@ export default function DetailEducation({navigation, route}) {
     const countCalc = (interval, action, type) => {
         const _interval = Number(interval);
         if (type == 'begin') {
-            if (countFr < 2000 || countFr > 1000000) {
+            if (countFr < 2000 || countFr > 10000000) {
                 return;
             }
             if (action == 'increase') {
@@ -103,7 +103,7 @@ export default function DetailEducation({navigation, route}) {
                 setCountFr(countFr - _interval);
             }
         } else if (type == 'auto') {
-            if (countM < 2000 || countM > 1000000) {
+            if (countM < 2000 || countM > 10000000) {
                 return;
             }
             if (action == 'increase') {
