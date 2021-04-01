@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 16:11:56
+ * @LastEditTime: 2021-04-01 16:33:07
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -19,6 +19,7 @@ import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
+import Html from '../../components/RenderHtml'
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 var inputValue = 0;
@@ -39,6 +40,7 @@ export default class TradeRedeem extends Component {
             reasonParams: '',
             redeem_id: '',
             redeemTo: '银行卡',
+            tips:''
         };
     }
     componentDidMount() {
@@ -70,12 +72,15 @@ export default class TradeRedeem extends Component {
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
         }).then((res) => {
+           if(res.code==='000000'){
             tableData.head = res.result.header;
             tableData.body = res.result.body;
             this.setState({
                 tableData,
                 redeem_id: res.result.redeem_id,
+                tips:res.result.amount_desc
             });
+           }
         });
     }
     radioChange(index, type, name) {
@@ -139,10 +144,10 @@ export default class TradeRedeem extends Component {
             }
             inputValue = text;
             // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
-            this.setState({inputValue: text, btnClick: true});
             this.getPlanInfo();
+            this.setState({inputValue: text, btnClick: true,});
         } else {
-            this.setState({inputValue: '', btnClick: false});
+            this.setState({inputValue: '', btnClick: false,tips:'',});
         }
     };
     selectAge = () => {
@@ -182,7 +187,7 @@ export default class TradeRedeem extends Component {
         Picker.show();
     };
     render() {
-        const {data, tableData, toggleList, btnClick, redeemTo} = this.state;
+        const {data, tableData, toggleList, btnClick, redeemTo,tips} = this.state;
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
@@ -253,8 +258,14 @@ export default class TradeRedeem extends Component {
                                 />
                                 <Text style={styles.percent_symbol}>%</Text>
                             </View>
-                            <TouchableOpacity
-                                style={[Style.flexRow, {marginTop: text(17)}]}
+                           
+                           {tips? <View style={{paddingTop:text(12)}}>
+                              <Html html={tips}/>
+                            </View>:null
+                          }
+                        </View>
+                        <TouchableOpacity
+                                style={[Style.flexRow,{marginTop:text(12),backgroundColor:'#fff',padding:text(16)}]}
                                 onPress={() => this.toggleFund()}
                                 activeOpacity={1}>
                                 <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
@@ -262,8 +273,8 @@ export default class TradeRedeem extends Component {
                                 </Text>
                                 <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
                             </TouchableOpacity>
-                            {toggleList && Object.keys(tableData).length > 0 && (
-                                <View>
+                            {toggleList && Object.keys(tableData).length > 0 &&tableData?.body.length>0&& (
+                                <View style={{backgroundColor:'#fff',padding:text(16),borderTopWidth:0.5,borderColor:Colors.borderColor}}>
                                     <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
                                         <Text style={styles.head_sty} />
                                         <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
@@ -288,7 +299,6 @@ export default class TradeRedeem extends Component {
                                     </View>
                                 </View>
                             )}
-                        </View>
                         <PasswordModal
                             ref={(ref) => {
                                 this.passwordModal = ref;
