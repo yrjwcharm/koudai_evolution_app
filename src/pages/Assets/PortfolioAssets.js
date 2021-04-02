@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 19:12:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-02 19:07:02
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -25,6 +25,7 @@ import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
 const btnHeight = isIphoneX() ? text(90) : text(66);
+import FastImage from 'react-native-fast-image';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -162,14 +163,16 @@ export default function PortfolioAssets(props) {
     const renderBtn = () => {
         return (
             <View style={styles.plan_card_sty}>
-                <View style={[Style.flexRow, {justifyContent: 'center',}]}>
+                <View style={[Style.flexRow, {justifyContent: 'center'}]}>
                     <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                   {card?.title_info?.popup? <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
-                        <Image
-                            style={{width: text(20), height: text(20),marginTop:text(3)}}
-                            source={require('../../assets/img/tip.png')}
-                        />
-                    </TouchableOpacity>:null}
+                    {card?.title_info?.popup ? (
+                        <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
+                            <Image
+                                style={{width: text(20), height: text(20), marginTop: text(3)}}
+                                source={require('../../assets/img/tip.png')}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                 </View>
                 {card?.desc ? (
                     <View style={{marginTop: px(13)}}>
@@ -290,7 +293,7 @@ export default function PortfolioAssets(props) {
                                 [Colors.red, Colors.lightBlackColor, 'transparent'],
                                 ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                                 true,
-                                '',
+                                2,
                                 deviceWidth - text(40)
                             )}
                             onChange={onChartChange}
@@ -548,10 +551,11 @@ export default function PortfolioAssets(props) {
                         ) : null}
                         <Text style={styles.tip_sty}>{tip?.content}</Text>
                         {tip?.img && (
-                            <FitImage
+                            <FastImage
                                 source={{
                                     uri: tip?.img,
                                 }}
+                                style={{width: '100%', height: text(140)}}
                                 resizeMode="contain"
                             />
                         )}

@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 17:58:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-02 18:57:32
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -19,8 +19,8 @@ import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask';
-import Html from '../../components/RenderHtml'
-import Toast from '../../components/Toast/Toast.js'
+import Html from '../../components/RenderHtml';
+import Toast from '../../components/Toast/Toast.js';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 const deviceWidth = Dimensions.get('window').width;
 var inputValue = 0;
@@ -41,8 +41,8 @@ export default class TradeRedeem extends Component {
             reasonParams: '',
             redeem_id: '',
             redeemTo: '银行卡',
-            tips:'',
-            init:1
+            tips: '',
+            init: 1,
         };
     }
     componentDidMount() {
@@ -68,35 +68,31 @@ export default class TradeRedeem extends Component {
         Picker.hide();
     }
     getPlanInfo() {
-        const {tableData,init} = this.state;
+        const {tableData, init} = this.state;
         Http.get('/trade/redeem/plan/20210101', {
             percent: inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
             init,
         }).then((res) => {
-           if(res.code==='000000'){
-            tableData.head = res.result.header;
-            tableData.body = res.result.body;
-            if(init!=1){
-                this.setState({
-                  tableData,
-                  redeem_id: res.result.redeem_id,
-                  tips:res.result.amount_desc
-              });
+            if (res.code === '000000') {
+                tableData.head = res.result.header;
+                tableData.body = res.result.body;
+                if (init != 1) {
+                    this.setState({
+                        tableData,
+                        redeem_id: res.result.redeem_id,
+                        tips: res.result.amount_desc,
+                    });
+                }
+            } else {
+                Toast.show(res.message);
             }
-           }else{
-            Toast.show(res.message)
-           }
         });
     }
     radioChange(index, type, name) {
         let check = this.state.check;
-        // const lastIndex = check.indexOf(true);
         check = check.map((item) => false);
-        // if (index !== lastIndex) {
-        //     check[index] = true;
-        // }
         check[index] = true;
         this.setState(
             {
@@ -111,13 +107,16 @@ export default class TradeRedeem extends Component {
     }
     pressChange(percent) {
         inputValue = percent * 100;
-        this.setState({
-            inputValue: (percent * 100).toString(),
-            btnClick: true,
-            init:0
-        },()=>{
-          this.getPlanInfo();
-        });
+        this.setState(
+            {
+                inputValue: (percent * 100).toString(),
+                btnClick: true,
+                init: 0,
+            },
+            () => {
+                this.getPlanInfo();
+            }
+        );
     }
     toggleFund() {
         const toggleList = this.state.toggleList;
@@ -154,9 +153,9 @@ export default class TradeRedeem extends Component {
             inputValue = text;
             // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             this.getPlanInfo();
-            this.setState({inputValue: text, btnClick: true,init:0});
+            this.setState({inputValue: text, btnClick: true, init: 0});
         } else {
-            this.setState({inputValue: '', btnClick: false,tips:'',init:1});
+            this.setState({inputValue: '', btnClick: false, tips: '', init: 1});
         }
     };
     selectAge = () => {
@@ -175,7 +174,7 @@ export default class TradeRedeem extends Component {
             selectedValue: [1],
             pickerBg: [255, 255, 255, 1],
             pickerData: option,
-            pickerTextEllipsisLen:20,
+            pickerTextEllipsisLen: 20,
             pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 this.state.data.survey.option.forEach((_item, _index) => {
@@ -197,26 +196,26 @@ export default class TradeRedeem extends Component {
         Picker.show();
     };
     render() {
-        const {data, tableData, toggleList, btnClick, redeemTo,tips} = this.state;
+        const {data, tableData, toggleList, btnClick, redeemTo, tips} = this.state;
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
                     <ScrollView keyboardShouldPersistTaps="handled" style={{marginBottom: btnHeight}}>
                         <Text style={styles.redeem_desc}>赎回至{redeemTo}</Text>
-                        <View style={{paddingHorizontal:text(16),backgroundColor:'#fff'}}>
-                        {data?.pay_methods?.methods.map((_item, index) => {
-                            return (
-                                <View
-                                    key={index}
-                                    style={[
-                                        Style.flexRow,
-                                        styles.card_item,
-                                        {
-                                            borderBottomWidth: index ==0 ? 0.5 : 0,
-                                            borderColor:Colors.borderColor,
-                                        },
-                                    ]}>
-                                      <View style={[Style.flexRow, {flex: 1}]}>
+                        <View style={{paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                            {data?.pay_methods?.methods.map((_item, index) => {
+                                return (
+                                    <View
+                                        key={index}
+                                        style={[
+                                            Style.flexRow,
+                                            styles.card_item,
+                                            {
+                                                borderBottomWidth: index == 0 ? 0.5 : 0,
+                                                borderColor: Colors.borderColor,
+                                            },
+                                        ]}>
+                                        <View style={[Style.flexRow, {flex: 1}]}>
                                             <FastImage
                                                 style={{width: 24, height: 24}}
                                                 source={{
@@ -234,11 +233,11 @@ export default class TradeRedeem extends Component {
                                             index={index}
                                             onChange={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
                                         />
-                                </View>
-                            );
-                        })}
+                                    </View>
+                                );
+                            })}
                         </View>
-                      
+
                         <View style={styles.card_wrap}>
                             <View style={[Style.flexRow, {justifyContent: 'space-between'}]}>
                                 <Text style={{fontSize: Font.textH1, color: '#1F2432'}}>
@@ -270,54 +269,70 @@ export default class TradeRedeem extends Component {
                                 />
                                 <Text style={styles.percent_symbol}>%</Text>
                             </View>
-                           
-                           {tips? <View style={{paddingTop:text(12)}}>
-                              <Html html={tips} style={{color:'#545968',fontSize:text(12),lineHeight:text(18)}}/>
-                            </View>:null
-                          }
+                            {tips ? (
+                                <View style={{paddingTop: text(12)}}>
+                                    <Html
+                                        html={tips}
+                                        style={{color: '#545968', fontSize: text(12), lineHeight: text(18)}}
+                                    />
+                                </View>
+                            ) : null}
                         </View>
                         <TouchableOpacity
-                                style={[Style.flexRow,{marginTop:text(12),backgroundColor:'#fff',padding:text(16)}]}
-                                onPress={() => this.toggleFund()}
-                                activeOpacity={1}>
-                                <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
-                                    {data?.redeem_info?.redeem_text}
-                                </Text>
-                                <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
-                            </TouchableOpacity>
-                            {toggleList && Object.keys(tableData).length > 0 &&tableData?.body.length>0&& (
-                                <View style={{backgroundColor:'#fff',padding:text(16),borderTopWidth:0.5,borderColor:Colors.borderColor}}>
-                                    <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                        <Text style={styles.head_sty} />
-                                        <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
-                                        <Text style={[styles.body_item_sty]}>{tableData?.head?.amount}</Text>
-                                    </View>
-                                    <View>
-                                        {tableData?.body?.map((_item, _index) => {
-                                            return (
-                                                <View
-                                                    key={_index + 'item'}
-                                                    style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                                    <Text style={[styles.body_sty, {textAlign: 'left', flexShrink: 0}]}>
-                                                        {_item.name}
-                                                    </Text>
-                                                    <Text style={[styles.body_item_sty, {textAlign: 'center'}]}>
-                                                        {_item?.amount_total}
-                                                    </Text>
-                                                    <Text style={styles.body_item_sty}>{_item?.amount}</Text>
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
+                            style={[Style.flexRow, {marginTop: text(12), backgroundColor: '#fff', padding: text(16)}]}
+                            onPress={() => this.toggleFund()}
+                            activeOpacity={1}>
+                            <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
+                                {data?.redeem_info?.redeem_text}
+                            </Text>
+                            <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                        </TouchableOpacity>
+                        {toggleList && Object.keys(tableData).length > 0 && tableData?.body.length > 0 && (
+                            <View
+                                style={{
+                                    backgroundColor: '#fff',
+                                    padding: text(16),
+                                    borderTopWidth: 0.5,
+                                    borderColor: Colors.borderColor,
+                                }}>
+                                <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
+                                    <Text style={styles.head_sty} />
+                                    <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
+                                    <Text style={[styles.body_item_sty]}>{tableData?.head?.amount}</Text>
                                 </View>
-                            )}
+                                <View>
+                                    {tableData?.body?.map((_item, _index) => {
+                                        return (
+                                            <View
+                                                key={_index + 'item'}
+                                                style={[Style.flexRow, {paddingVertical: text(5)}]}>
+                                                <Text style={[styles.body_sty, {textAlign: 'left', flexShrink: 0}]}>
+                                                    {_item.name}
+                                                </Text>
+                                                <Text style={[styles.body_item_sty, {textAlign: 'center'}]}>
+                                                    {_item?.amount_total}
+                                                </Text>
+                                                <Text style={styles.body_item_sty}>{_item?.amount}</Text>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </View>
+                        )}
                         <PasswordModal
                             ref={(ref) => {
                                 this.passwordModal = ref;
                             }}
                             onDone={this.submitData}
                         />
-                        {this.state.showMask && <Mask />}
+                        {this.state.showMask && (
+                            <Mask
+                                onClick={() => {
+                                    this.setState({showMask: false});
+                                    Picker.hide();
+                                }}
+                            />
+                        )}
                         <BottomDesc />
                     </ScrollView>
                 )}

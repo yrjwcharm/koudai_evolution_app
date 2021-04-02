@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 14:17:23
+ * @LastEditTime: 2021-04-02 18:59:03
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -741,7 +741,14 @@ class TradeBuy extends Component {
                                 onPress={this.buyClick}
                             />
                         )}
-                        {showMask && <Mask />}
+                        {showMask && (
+                            <Mask
+                                onClick={() => {
+                                    this.setState({showMask: false});
+                                    Picker.hide();
+                                }}
+                            />
+                        )}
                     </View>
                 ) : null}
             </>
