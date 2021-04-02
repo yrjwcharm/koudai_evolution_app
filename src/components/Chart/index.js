@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:45:13
+ * @LastEditTime: 2021-04-02 19:35:31
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -80,7 +80,7 @@ class Chart extends PureComponent {
 const styles = StyleSheet.create({
     webView: {
         flex: 1,
-
+        // height: 300,
         backgroundColor: 'transparent',
     },
 });

@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 18:57:32
+ * @LastEditTime: 2021-04-02 19:18:28
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -86,6 +86,9 @@ export default class TradeRedeem extends Component {
                     });
                 }
             } else {
+                this.setState({
+                    btnClick: false,
+                });
                 Toast.show(res.message);
             }
         });
