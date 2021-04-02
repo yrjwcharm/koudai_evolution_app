@@ -94,25 +94,22 @@ label: function label(text, index, total) {
 }
 });
 `;
+
 export const baseChart = (data, width, height) => `(function(){
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    padding:[20,32],
+    padding:[20,20],
     width:${width},
+    appendPadding:0,
+    
     height:${height},
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
-    tickCount: 4,
+    tickCount: 6,
   });
-  chart.scale('value', {
-    tickCount: 5,
-    range: [ 0, 1 ],
-    formatter: function formatter(val) {
-      return (val*10)+ '%';
-    }
-  });
+
 
   chart.axis('date', {
     label: function label(text, index, total) {
@@ -126,6 +123,10 @@ export const baseChart = (data, width, height) => `(function(){
     }
   });
   chart.legend(false);
+  chart.axis('value',{
+    grid:null,
+    label:null,
+  });
   chart.tooltip(false);
   chart.area()
     .position('date*value')
@@ -139,6 +140,63 @@ export const baseChart = (data, width, height) => `(function(){
   chart.line()
     .position('date*value')
     .color('type', [ '#E74949', '#545968', '#FFC069' ])
+    .shape('smooth').animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 1000
+      }
+    });
+  chart.render();
+})()
+`;
+export const baseComChart = (data, width, height) => `(function(){
+  const chart = new F2.Chart({
+    id: 'chart',
+    pixelRatio: window.devicePixelRatio,
+    padding:[20,40],
+    width:${width},
+    height:${height},
+  });
+  chart.source(${JSON.stringify(data)});
+  chart.scale('date', {
+    tickCount: 5,
+  });
+  chart.scale('value', {
+    tickCount: 5,
+    // range: [ 0, 1 ],
+    formatter: function formatter(val) {
+      return (val*100)+ '%';
+    }
+  });
+
+  chart.axis('date', {
+    label: function label(text, index, total) {
+      const textCfg = {};
+      if (index === 0) {
+        // textCfg.textAlign = 'left';
+      } else if (index === total - 1) {
+        textCfg.textAlign = 'right';
+      }
+      return textCfg;
+    }
+  });
+  chart.legend(false);
+  chart.axis('value',{
+    grid:null,
+  });
+  chart.tooltip(false);
+  chart.area({startOnZero: false})
+    .position('date*value')
+    .color('type', ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'])
+    .shape('smooth').animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 1000
+      }
+    });
+  chart.line()
+    .position('date*value')
+    .color('type', ['#E74949', '#545968', 'transparent'])
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',

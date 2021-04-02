@@ -2,11 +2,11 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 11:56:24
+ * @LastEditTime: 2021-04-02 14:09:09
  * @Description:规划历史
  */
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -16,6 +16,7 @@ import http from '../../services';
 import QuestionBtn from './components/QuestionBtn';
 import Robot from './components/Robot';
 import {BoxShadow} from 'react-native-shadow';
+import {Modal} from '../../components/Modal';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -35,9 +36,27 @@ export class planningHistory extends Component {
         data: '',
     };
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/history_plan/20210101').then((data) => {
             this.setState({data: data.result});
         });
+    }
+    goBackAndroid = () => {
+        this.goBack();
+        return true;
+    };
+    goBack = () => {
+        Modal.show({
+            title: '结束定制',
+            content: '确定要结束本次定制吗？',
+            confirm: true,
+            confirmCallBack: () => {
+                this.props.navigation.goBack();
+            },
+        });
+    };
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
     }
     jumpNext = (url, param) => {
         this.props.navigation.replace(url, param);
@@ -51,7 +70,7 @@ export class planningHistory extends Component {
                         this.header = ref;
                     }}
                     renderLeft={
-                        <TouchableOpacity style={styles.title_btn} onPress={this.props.navigation.goBack}>
+                        <TouchableOpacity style={styles.title_btn} onPress={this.goBack}>
                             <Icon name="close" size={px(22)} />
                         </TouchableOpacity>
                     }

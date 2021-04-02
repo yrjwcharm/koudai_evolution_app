@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 18:19:30
+ * @LastEditTime: 2021-04-02 14:15:06
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -187,7 +187,7 @@ class Index extends Component {
                         <View style={styles.card_header}>
                             <FastImage
                                 source={require('../../../assets/img/account/personalMes.png')}
-                                style={{width: px(22), height: px(32), resizeMode: 'contain'}}
+                                style={{width: px(22), height: px(22), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>基本信息</Text>
                         </View>

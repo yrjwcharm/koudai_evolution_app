@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 20:16:13
+ * @LastEditTime: 2021-04-02 14:17:23
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -658,7 +658,7 @@ class TradeBuy extends Component {
                 {type == 1 && this.render_autoTime()}
 
                 <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                    点击确认购买即代表您已知悉该基金组合的
+                    购买即代表您已知悉该基金组合的
                     <Text
                         onPress={() => {
                             this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
@@ -674,7 +674,7 @@ class TradeBuy extends Component {
                         }}>
                         产品概要
                     </Text>
-                    等相关内容
+                    等内容
                 </Text>
 
                 <BottomDesc />
@@ -705,7 +705,8 @@ class TradeBuy extends Component {
     }
 
     render() {
-        const {showMask, data, type, has_tab, buyBtnCanClick} = this.state;
+        const {showMask, data, type, buyBtnCanClick} = this.state;
+        console.log(this.state.has_tab);
         const {button} = data;
         return (
             <>
@@ -718,7 +719,7 @@ class TradeBuy extends Component {
                             backgroundColor: Colors.bgColor,
                             paddingTop: 1,
                         }}>
-                        {has_tab ? (
+                        {this.state.has_tab ? (
                             <ScrollableTabView
                                 onChangeTab={this.changeBuyStatus}
                                 initialPage={type}

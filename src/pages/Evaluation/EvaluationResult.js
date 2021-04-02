@@ -2,12 +2,12 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 20:08:29
+ * @LastEditTime: 2021-04-02 14:06:47
  * @Description:规划结果页
  */
 
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -21,6 +21,7 @@ import Robot from './components/Robot';
 import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
+import {Modal} from '../../components/Modal';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -29,7 +30,7 @@ const shadow = {
     x: 2,
     y: 2,
     width: deviceWidth - px(40),
-    height: px(156),
+    height: px(199),
     style: {
         marginHorizontal: px(20),
     },
@@ -76,9 +77,10 @@ export default class planResult extends Component {
     upid = this.props.route?.params?.upid;
     summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
         http.get('/questionnaire/chart/20210101', {
-            upid: this.upid || 88,
-            summary_id: this.summary_id || 3982,
+            upid: this.upid || 87,
+            summary_id: this.summary_id || 3981,
         }).then((chart) => {
             this.setState({chart: chart.result});
             this.animationTimer = setTimeout(() => {
@@ -115,13 +117,28 @@ export default class planResult extends Component {
             }, 500);
         });
         http.get('/questionnaire/show/20210101', {
-            upid: this.upid || 88,
-            summary_id: this.summary_id || 3982,
+            upid: this.upid || 87,
+            summary_id: this.summary_id || 3981,
         }).then((res) => {
             this.setState({data: res.result});
         });
     }
+    goBackAndroid = () => {
+        this.goBack();
+        return true;
+    };
+    goBack = () => {
+        Modal.show({
+            title: '结束定制',
+            content: '确定要结束本次定制吗？',
+            confirm: true,
+            confirmCallBack: () => {
+                this.props.navigation.goBack();
+            },
+        });
+    };
     componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
         this.timer && clearTimeout(this.timer);
         this.animationTimer && clearTimeout(this.animationTimer);
     }
@@ -129,8 +146,8 @@ export default class planResult extends Component {
         this.props.navigation.replace(url, params);
     };
     render() {
-        const {labels, chart} = this.state.chart;
-        const {plan, button} = this.state.data;
+        const {labels, chart, tab, type} = this.state.chart;
+        const {plan, button, tip} = this.state.data;
         return (
             <View style={{backgroundColor: '#fff', flex: 1}}>
                 <Header
@@ -138,7 +155,7 @@ export default class planResult extends Component {
                         this.header = ref;
                     }}
                     renderLeft={
-                        <TouchableOpacity style={styles.title_btn} onPress={this.props.navigation.goBack}>
+                        <TouchableOpacity style={styles.title_btn} onPress={this.goBack}>
                             <Icon name="close" size={px(22)} />
                         </TouchableOpacity>
                     }
@@ -199,44 +216,77 @@ export default class planResult extends Component {
                     <View style={styles.container}>
                         <Robot style={{marginLeft: px(8)}} />
                         <Animatable.View animation="fadeInUp">
-                            <View style={[Style.flexBetween, {alignItems: 'flex-end', paddingHorizontal: px(20)}]}>
-                                <View>
-                                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                                        <Text style={[styles.sm_radio, {fontSize: px(36), marginRight: px(9)}]}>
-                                            43.58%
-                                        </Text>
-                                        <View style={[Style.flexRow, {marginBottom: px(5)}]}>
-                                            <Icon name="arrowup" color={Colors.red} />
-                                            <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                            {type == 1 && tab ? (
+                                <View style={[Style.flexBetween, {alignItems: 'flex-end', paddingHorizontal: px(20)}]}>
+                                    <View>
+                                        <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                            <Text
+                                                style={[
+                                                    styles.sm_radio,
+                                                    {fontSize: px(36), color: Colors.red, marginRight: px(9)},
+                                                ]}>
+                                                {tab[0]?.val}
+                                            </Text>
+                                            {/* <View style={[Style.flexRow, {marginBottom: px(5)}]}>
+                                                <Icon name="arrowup" color={Colors.red} />
+                                                <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                            </View> */}
                                         </View>
+                                        <Text style={styles.desc_text}>{tab[0]?.name}</Text>
                                     </View>
-                                    <Text style={styles.desc_text}>近5年累计收益率</Text>
-                                </View>
-                                <View>
-                                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                                        <Text style={[styles.sm_radio, {fontSize: px(24), marginRight: px(9)}]}>
-                                            43.58%
-                                        </Text>
-                                        <View style={[Style.flexRow]}>
-                                            <Icon name="arrowup" color={Colors.red} />
-                                            <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                    <View>
+                                        <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                            <Text style={[styles.sm_radio, {fontSize: px(24), marginRight: px(9)}]}>
+                                                {tab[1]?.val}
+                                            </Text>
+                                            {/* <View style={[Style.flexRow]}>
+                                                <Icon name="arrowup" color={Colors.red} />
+                                                <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                            </View> */}
                                         </View>
+                                        <Text style={styles.desc_text}> {tab[1]?.name}</Text>
                                     </View>
-                                    <Text style={styles.desc_text}>近5年累计收益率</Text>
                                 </View>
-                            </View>
-                            <View style={{height: px(220), paddingHorizontal: px(20), marginVertical: px(16)}}>
-                                {chart && <Chart initScript={chartOptions.baseChart(chart, deviceWidth, px(220))} />}
-                            </View>
+                            ) : tab ? (
+                                <View style={{position: 'absolute', right: px(20), top: px(-90)}}>
+                                    <Text style={{color: Colors.red, fontSize: px(44), fontFamily: Font.numFontFamily}}>
+                                        {tab[0]?.val}
+                                    </Text>
+                                    <Text style={{color: Colors.darkGrayColor, textAlign: 'right'}}>
+                                        {tab[0]?.name}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            {chart &&
+                                (type == 1 ? (
+                                    <View style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
+                                        {/* <Chart
+                                            initScript={chartOptions.baseAreaChart(
+                                                chart,
+                                                [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                                true,
+                                                2,
+                                                deviceWidth
+                                            )}
+                                            style={{width: '100%'}}
+                                        /> */}
+                                        <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
+                                    </View>
+                                ) : (
+                                    <View style={{height: px(180), marginBottom: px(20)}}>
+                                        {/* //养老子女 */}
+                                        <Chart initScript={chartOptions.baseChart(chart, deviceWidth, px(180))} />
+                                    </View>
+                                ))}
                             {plan && plan?.type == 1 ? (
-                                <BoxShadow setting={{...shadow, height: px(116)}}>
+                                <BoxShadow setting={{...shadow, height: px(96)}}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        style={[styles.card, {height: px(116)}]}
+                                        style={[styles.card, {height: px(96)}]}
                                         onPress={() => {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
-                                        <Text style={[styles.name, {marginBottom: px(10)}]}>{plan.title}</Text>
                                         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
                                             <Text style={styles.key}>目标年化收益率</Text>
                                             <Text style={styles.plan_goal_amount}>
@@ -259,21 +309,21 @@ export default class planResult extends Component {
                                     </TouchableOpacity>
                                 </BoxShadow>
                             ) : plan ? (
-                                <BoxShadow setting={shadow}>
+                                <BoxShadow setting={{...shadow, height: tip ? px(199) : px(124)}}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        style={styles.card}
+                                        style={[styles.card, {height: tip ? px(199) : px(124)}]}
                                         onPress={() => {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
-                                        <Text style={[styles.name, {marginBottom: px(10)}]}>{plan.title}</Text>
-                                        <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                            <Text style={styles.key}>目标金额</Text>
-                                            <Text style={styles.plan_goal_amount}>{plan.plan_goal_info.val}</Text>
-                                            <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
-                                                {plan.plan_goal_info.unit}
-                                            </Text>
-                                        </View>
+                                        {plan.plan_duration_info ? (
+                                            <View style={[Style.flexRow, {marginBottom: px(12)}]}>
+                                                <Text style={styles.key}>计划时长</Text>
+                                                <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
+                                                <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
+                                                <Text style={styles.key}>{plan.plan_duration_info.tip}</Text>
+                                            </View>
+                                        ) : null}
                                         {plan.plan_type_list ? (
                                             <View style={[Style.flexRow, {marginBottom: px(12)}]}>
                                                 <Text style={styles.key}>投资方式</Text>
@@ -294,12 +344,29 @@ export default class planResult extends Component {
                                                 </View>
                                             </View>
                                         ) : null}
-                                        {plan.plan_duration_info ? (
-                                            <View style={Style.flexRow}>
-                                                <Text style={styles.key}>计划时长</Text>
-                                                <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
-                                                <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
-                                                <Text style={styles.key}>{plan.plan_duration_info.tip}</Text>
+
+                                        <View style={[Style.flexRow, {marginBottom: px(15)}]}>
+                                            <Text style={styles.key}>目标金额</Text>
+                                            <Text style={styles.plan_goal_amount}>{plan.plan_goal_info.val}</Text>
+                                            <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
+                                                {plan.plan_goal_info.unit}
+                                            </Text>
+                                        </View>
+                                        {tip ? (
+                                            <View
+                                                style={{
+                                                    borderTopWidth: 0.5,
+                                                    borderTopColor: Colors.lineColor,
+                                                }}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(11),
+                                                        lineHeight: px(19),
+                                                        marginTop: px(16),
+                                                        color: Colors.darkGrayColor,
+                                                    }}>
+                                                    {tip}
+                                                </Text>
                                             </View>
                                         ) : null}
                                     </TouchableOpacity>
@@ -342,6 +409,7 @@ const styles = StyleSheet.create({
         padding: px(16),
         backgroundColor: '#fff',
         borderRadius: px(8),
+        height: px(199),
         width: deviceWidth - px(40),
         marginBottom: px(16),
     },

@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 18:19:17
+ * @LastEditTime: 2021-04-02 14:15:39
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -276,7 +276,7 @@ class BankInfo extends Component {
                         <View style={styles.card_header}>
                             <FastImage
                                 source={require('../../../assets/img/account/cardMes.png')}
-                                style={{width: px(22), height: px(32), resizeMode: 'contain'}}
+                                style={{width: px(22), height: px(22), resizeMode: 'contain'}}
                             />
                             <Text style={styles.card_head_text}>银行卡信息</Text>
                         </View>

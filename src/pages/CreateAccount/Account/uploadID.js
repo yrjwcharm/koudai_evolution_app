@@ -221,9 +221,7 @@ export class uploadID extends Component {
                         根据反洗钱法律法规及证监会要求，需要您上传身份证照片，请如实完善身份信息
                     </Text>
                     {desc ? (
-                        <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>
-                        {desc}
-                        </Text>
+                        <Text style={{textAlign: 'center', color: '#E74949', marginBottom: px(10)}}>{desc}</Text>
                     ) : null}
                     <View style={{alignItems: 'center'}}>
                         <TouchableOpacity

@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:35:02
+ * @LastEditTime: 2021-04-01 20:37:32
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -30,7 +30,6 @@ class SetLoginPassword extends Component {
     fr = this.props.route?.params?.fr;
     union_id = this.props.route?.params?.union_id;
     componentDidMount() {
-        Storage.delete('loginStatus');
         this.sendCode();
     }
     register = () => {
