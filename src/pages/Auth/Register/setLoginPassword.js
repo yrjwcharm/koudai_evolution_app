@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 20:37:32
+ * @LastEditTime: 2021-04-02 16:27:22
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -18,6 +18,8 @@ import Storage from '../../../utils/storage';
 import {connect} from 'react-redux';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
 import _ from 'lodash';
+import {CommonActions} from '@react-navigation/native';
+
 class SetLoginPassword extends Component {
     state = {
         code: '',
@@ -96,7 +98,25 @@ class SetLoginPassword extends Component {
                     }).then((data) => {
                         this.props.getUserInfo();
                         this.props.getVerifyGesture();
-                        this.props.navigation.pop(3);
+                        if (this.props.route?.params?.redirect) {
+                            this.props.navigation.dispatch((state) => {
+                                // Remove the home route from the stack
+                                const routes = state.routes.filter((r) => {
+                                    return r.name !== 'Register';
+                                });
+                                return CommonActions.reset({
+                                    ...state,
+                                    routes,
+                                    index: routes.length - 1,
+                                });
+                            });
+                            this.props.navigation.replace(
+                                this.props.route?.params?.redirect.path,
+                                this.props.route?.params?.redirect.params
+                            );
+                        } else {
+                            this.props.navigation.pop(3);
+                        }
                         Storage.save('loginStatus', data.result);
                     });
                 } else {

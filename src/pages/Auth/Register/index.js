@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:33:01
+ * @LastEditTime: 2021-04-02 16:08:42
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -34,7 +34,10 @@ export default class index extends Component {
         }
         http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
             if (res.code === '000000') {
-                this.props.navigation.navigate('SetLoginPassword', {mobile});
+                this.props.navigation.navigate('SetLoginPassword', {
+                    mobile,
+                    redirect: this.props.route?.params?.redirect,
+                });
             } else {
                 Toast.show(res.message);
             }

@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 17:37:38
+ * @LastEditTime: 2021-04-02 17:01:46
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -278,18 +278,31 @@ const TradeRecordDetail = (props) => {
                                                     <Text style={styles.fund_amount}>{child?.v}</Text>
                                                 </View>
                                                 {child?.ds ? (
-                                                    child?.ds?.map((_ds, _key) => (
-                                                        <Text
-                                                            key={_key}
-                                                            style={[styles.light_text, {color: Colors.green}]}>
-                                                            {_ds?.k}
-                                                        </Text>
-                                                    ))
+                                                    child?.ds?.map(
+                                                        (_ds, _key) =>
+                                                            _ds?.k ? (
+                                                                <HTML
+                                                                    html={_ds?.k}
+                                                                    style={{fontSize: px(12), lineHeight: px(17)}}
+                                                                />
+                                                            ) : null
+                                                        // <Text
+                                                        //     key={_key}
+                                                        //     style={[styles.light_text, {color: Colors.green}]}>
+                                                        //     {_ds?.k}
+                                                        // </Text>
+                                                    )
                                                 ) : child?.d ? (
-                                                    <Text style={[styles.light_text, {color: Colors.green}]}>
-                                                        {child?.d}
-                                                    </Text>
-                                                ) : null}
+                                                    child?.d ? (
+                                                        <HTML
+                                                            html={child?.d}
+                                                            style={{fontSize: px(12), lineHeight: px(17)}}
+                                                        />
+                                                    ) : null
+                                                ) : // <Text style={[styles.light_text, {color: Colors.green}]}>
+                                                //     {child?.d}
+                                                // </Text>
+                                                null}
                                             </View>
                                         ))}
                                     </View>

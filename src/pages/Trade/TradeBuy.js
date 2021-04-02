@@ -207,7 +207,7 @@ class TradeBuy extends Component {
             } else {
                 this.setState({
                     buyBtnCanClick: false,
-                    errTip: data.message,
+                    // errTip: data.message,
                 });
             }
         });

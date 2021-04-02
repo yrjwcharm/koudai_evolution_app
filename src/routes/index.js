@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 20:23:09
+ * @LastEditTime: 2021-04-02 16:53:28
  * @Description:路由表
  */
 import React from 'react';
@@ -140,7 +140,17 @@ import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 
 const Stack = createStackNavigator();
-
+const config = {
+    animation: 'spring',
+    config: {
+        stiffness: 1000,
+        damping: 500,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+    },
+};
 export default function AppStack() {
     return (
         <Stack.Navigator
@@ -165,7 +175,7 @@ export default function AppStack() {
                 },
                 headerTitleAllowFontScaling: false,
                 gestureEnabled: true,
-                cardOverlayEnabled: true,
+                // cardOverlayEnabled: true,
                 ...TransitionPresets.SlideFromRightIOS,
                 headerStyle: {
                     backgroundColor: Colors.navBgColor,
@@ -350,7 +360,10 @@ export default function AppStack() {
             <Stack.Screen
                 name="Evaluation"
                 component={Evaluation}
-                options={{headerShown: false, ...TransitionPresets.ModalTransition, gestureEnabled: false}}
+                options={{
+                    headerShown: false,
+                    gestureEnabled: false,
+                }}
             />
             <Stack.Screen
                 name="EvaluationHistory"
