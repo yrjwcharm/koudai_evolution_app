@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 15:01:22
+ * @LastEditTime: 2021-04-02 18:08:09
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -66,6 +66,7 @@ class Question extends Component {
         value: '',
         //输入框提示
         warn: false,
+        warnText: '',
         inputBtnCanClick: true,
         //是否答完题目
         finishTest: false,
@@ -410,14 +411,18 @@ class Question extends Component {
     checkInput = (value, id) => {
         if (value) {
             if (value < 0 || value > 10000000) {
-                this.setState({warn: true, inputBtnCanClick: false});
+                this.setState({warnText: '请输入正确金额', warn: true, inputBtnCanClick: false});
                 return false;
             } else {
                 if (id == 33 && value < 2000) {
                     //投资金额
-                    this.setState({warn: true, inputBtnCanClick: false});
+                    this.setState({
+                        warn: true,
+                        warnText: `起购金额${this.state.questions[this.state.current].min_value}元`,
+                        inputBtnCanClick: false,
+                    });
                 } else {
-                    this.setState({warn: false, inputBtnCanClick: true});
+                    this.setState({warnText: '请输入正确金额', warn: false, inputBtnCanClick: true});
                 }
             }
         } else {
@@ -448,6 +453,7 @@ class Question extends Component {
             inputBtnCanClick,
             finishTest,
             loading_text,
+            warnText,
         } = this.state;
         const current_ques = questions[current];
         let previousTest = current - 1;
@@ -716,7 +722,7 @@ class Question extends Component {
                                                             {value / 10000}万
                                                         </Text>
                                                     ) : null}
-                                                    {warn ? <Text style={styles.warn_text}>请输入正确金额</Text> : null}
+                                                    {warn ? <Text style={styles.warn_text}>{warnText}</Text> : null}
                                                 </>
                                             ) : null}
                                         </>
@@ -806,6 +812,7 @@ const styles = StyleSheet.create({
     name: {
         fontSize: px(16),
         color: Colors.defaultColor,
+        lineHeight: px(22),
         fontWeight: 'bold',
     },
     risk_title: {

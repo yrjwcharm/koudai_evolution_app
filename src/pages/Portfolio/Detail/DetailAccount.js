@@ -124,7 +124,7 @@ export default function DetailAccount({route, navigation}) {
                             <Text style={{fontSize: text(12)}}>{chartData?.yield_info?.remark?.title} </Text>
                             <Text
                                 style={{
-                                    color: '#4BA471',
+                                    color: chartData?.yield_info?.remark?.color || '#4BA471',
                                     fontSize: text(15),
                                     fontWeight: 'bold',
                                     fontFamily: Font.numFontFamily,

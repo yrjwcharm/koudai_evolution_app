@@ -2,27 +2,24 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 16:51:01
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-02 17:47:13
  */
 
-import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text} from '../../../utils/appUtil';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
-import {Chart} from '../../../components/Chart';
 import FitImage from 'react-native-fit-image';
-import {baseAreaChart} from '../components/ChartOption';
 import FixedBtn from '../components/FixedBtn';
-import Header from '../../../components/NavBar';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
-export default function DetailAccount({route}) {
+export default function DetailAccount({route, navigation}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState();
@@ -39,6 +36,9 @@ export default function DetailAccount({route}) {
             upid: route?.params?.upid,
             poid: route?.params?.poid,
         }).then((res) => {
+            navigation.setOptions({
+                title: res.result.title,
+            });
             setData(res.result);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
@@ -61,8 +61,7 @@ export default function DetailAccount({route}) {
     );
 
     return (
-        <View style={{flex: 1}}>
-            {Object.keys(data).length > 0 ? <Header title={data?.title} leftIcon="chevron-left" /> : null}
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
@@ -89,7 +88,12 @@ export default function DetailAccount({route}) {
                             })}
                         </View>
                     </View>
-                    <RenderChart chartData={chartData} chart={chart} type={type} style={{paddingTop: text(20)}} />
+                    <RenderChart
+                        chartData={chartData}
+                        chart={chart}
+                        type={type}
+                        style={{paddingTop: text(20), height: text(290)}}
+                    />
                     <View
                         style={{
                             flexDirection: 'row',

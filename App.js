@@ -3,9 +3,10 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 12:25:17
+ * @LastEditTime: 2021-04-02 17:22:51
  * @Description: app全局入口文件
  */
+import 'react-native-gesture-handler';
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
 import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState} from 'react-native';

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 16:53:28
+ * @LastEditTime: 2021-04-02 17:58:54
  * @Description:路由表
  */
 import React from 'react';
@@ -343,7 +343,7 @@ export default function AppStack() {
             <Stack.Screen name="MfbIn" component={MfbIn} options={{title: '充值魔方宝', gestureEnabled: false}} />
             <Stack.Screen name="MfbOut" component={MfbOut} options={{title: '提现魔方宝'}} />
             <Stack.Screen name="DetailAccount" component={DetailAccount} options={{title: ''}} />
-            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{headerShown: false}} />
+            <Stack.Screen name="DetailFixed" component={DetailFixed} options={{title: ''}} />
             <Stack.Screen name="DetailEducation" component={DetailEducation} options={{title: ''}} />
             <Stack.Screen name="DetailRetiredPlan" component={DetailRetiredPlan} options={{title: ''}} />
             <Stack.Screen name="AssetsEnhance" component={AssetsEnhance} options={{title: '资产增强'}} />
@@ -363,6 +363,7 @@ export default function AppStack() {
                 options={{
                     headerShown: false,
                     gestureEnabled: false,
+                    // ...TransitionPresets.ModalTransition,
                 }}
             />
             <Stack.Screen

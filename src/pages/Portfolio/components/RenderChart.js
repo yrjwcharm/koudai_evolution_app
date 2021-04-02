@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 16:29:44
+ * @LastEditTime: 2021-04-02 17:50:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -73,15 +73,14 @@ export default function RenderChart(props) {
     }, []);
     return (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
-            <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
+            <View style={[Style.flexRow, {justifyContent: 'space-around', paddingLeft: 10}]}>
                 <View style={styles.legend_sty}>
                     <TextInput
                         ref={_textTime}
-                        style={styles.legend_title_sty}
+                        style={[styles.legend_title_sty, {width: text(100)}]}
                         defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
                         editable={false}
                     />
-
                     <Text style={styles.legend_desc_sty}>
                         {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
                     </Text>
