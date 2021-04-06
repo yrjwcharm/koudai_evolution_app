@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 18:31:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 10:43:27
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -48,13 +48,15 @@ export default function FixedPlan(props) {
     const init = useCallback(() => {
         Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
             setData(res.result);
+            props.navigation.setOptions({
+                title: res.result.title,
+            });
         });
-    }, [props.route]);
+    }, [props.route, props.navigation]);
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <View style={{marginBottom: FixedBtn.btnHeight}}>
-                    <Header title={data.title} leftIcon="chevron-left" />
                     <View style={styles.bank_wrap_sty}>
                         <View style={[Style.flexRow, styles.border_sty]}>
                             <Image

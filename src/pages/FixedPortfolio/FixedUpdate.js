@@ -2,24 +2,27 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 16:18:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 11:55:37
  */
-import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text, formaNum} from '../../utils/appUtil';
+import React, {useEffect, useState, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {Colors, Font, Style} from '../../common/commonStyle';
+import {px as text, formaNum} from '../../utils/appUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import Http from '../../services';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks/';
+import {PasswordModal} from '../../components/Password';
 var interval, _cycle, _timing;
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
-    const [num, setNum] = useState(1000);
+    const [num, setNum] = useState();
     const [cycle, setCycle] = useState('');
+    const passwordModal = useRef(null);
+    const [type, setType] = useState();
     const jump = useJump();
     const addNum = () => {
         setNum(num + interval);
@@ -27,18 +30,20 @@ export default function FixedUpdate({navigation, route}) {
     const subtractNum = () => {
         setNum(num - interval);
     };
+
     useEffect(() => {
         Http.get('/trade/update/invest_plan/info/20210101', {
             invest_id: route.params.invest_id,
         }).then((res) => {
             interval = res.result.target_info.invest.incr;
             setData(res.result);
+            setNum(res.result.target_info.invest.amount);
             const _date = res.result.target_info.fix_period.current_date;
             setCycle(_date);
             _cycle = _date.slice(0, 2);
             _timing = _date.slice(2);
         });
-    }, []);
+    }, [route.params.invest_id]);
     const selectTime = () => {
         Picker.init({
             pickerTitleText: '时间选择',
@@ -71,12 +76,11 @@ export default function FixedUpdate({navigation, route}) {
         }
         return list;
     };
-
-    const jumpTo = (type) => {
-        console.log(_cycle, _timing);
+    const submit = (password) => {
         if (type == 'redeem') {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: data.invest_id,
+                password,
             }).then((res) => {
                 Toast.show(res.message);
                 setTimeout(() => {
@@ -89,6 +93,7 @@ export default function FixedUpdate({navigation, route}) {
                 amount: data?.target_info?.target_amount?.value,
                 cycle: _cycle,
                 timing: _timing,
+                password,
             }).then((res) => {
                 Toast.show(res.message);
                 setTimeout(() => {
@@ -97,10 +102,15 @@ export default function FixedUpdate({navigation, route}) {
             });
         }
     };
+    const handleClick = (type) => {
+        setType(type);
+        passwordModal?.current?.show();
+    };
     return (
         <>
             {Object.keys(data).length > 0 && (
                 <View style={{backgroundColor: Colors.bgColor}}>
+                    <PasswordModal ref={passwordModal} onDone={submit} />
                     <View style={styles.wrap_sty}>
                         {data?.target_info?.target_amount?.text && (
                             <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
@@ -152,13 +162,13 @@ export default function FixedUpdate({navigation, route}) {
                                 flex: 1,
                                 marginRight: text(10),
                             }}
-                            onPress={() => jumpTo('redeem')}>
+                            onPress={() => handleClick('redeem')}>
                             <Text style={styles.btn_sty}>{data.button[0].text}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={1}
                             style={{backgroundColor: '#0051CC', borderRadius: text(6), flex: 1}}
-                            onPress={() => jumpTo('update')}>
+                            onPress={() => handleClick('update')}>
                             <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
                         </TouchableOpacity>
                     </View>

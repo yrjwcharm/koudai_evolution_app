@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 19:35:20
+ * @LastEditTime: 2021-04-06 10:44:20
  * @Description:路由表
  */
 import React from 'react';
@@ -409,7 +409,7 @@ export default function AppStack() {
             <Stack.Screen name="FundCompany" component={FundCompany} options={{title: '基金公司'}} />
             <Stack.Screen name="CompanyFunds" component={CompanyFunds} options={{title: '旗下基金'}} />
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
-            <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{headerShown: false}} />
+            <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
             <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />

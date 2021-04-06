@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 18:07:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 11:07:19
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -209,9 +209,7 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            // scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
             userInfo?.toJS()?.is_login && !showGesture && init();
-            // storage.delete('loginStatus');
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });

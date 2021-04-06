@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 16:06:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 11:53:51
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
@@ -13,15 +14,20 @@ import Http from '../../services';
 import {Button} from '../../components/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Empty from '../../components/EmptyTip';
-
+import {useFocusEffect} from '@react-navigation/native';
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
 
-    useEffect(() => {
+    const init = () => {
         Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
             setData(res.result);
         });
-    }, []);
+    };
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
     const jumpPage = (invest_id) => {
         props.navigation.navigate('FixedPlanDetail', {invest_id});
     };

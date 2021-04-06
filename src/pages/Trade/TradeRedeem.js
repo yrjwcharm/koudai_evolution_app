@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 19:18:28
+ * @LastEditTime: 2021-04-06 12:20:23
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -122,6 +122,7 @@ export default class TradeRedeem extends Component {
         );
     }
     toggleFund() {
+        Keyboard.dismiss();
         const toggleList = this.state.toggleList;
         this.setState({
             toggleList: !toggleList,
@@ -299,9 +300,15 @@ export default class TradeRedeem extends Component {
                                     borderColor: Colors.borderColor,
                                 }}>
                                 <View style={[Style.flexRow, {paddingVertical: text(5)}]}>
-                                    <Text style={styles.head_sty} />
-                                    <Text style={[styles.body_item_sty]}>{tableData?.head?.amount_total}</Text>
-                                    <Text style={[styles.body_item_sty]}>{tableData?.head?.amount}</Text>
+                                    <Text style={[styles.head_sty, {textAlign: 'left', flexShrink: 0}]}>
+                                        {tableData?.head?.name}
+                                    </Text>
+                                    <Text style={[styles.body_item_sty, {color: '#9095A5'}]}>
+                                        {tableData?.head?.amount_total}
+                                    </Text>
+                                    <Text style={[styles.body_item_sty, {color: '#9095A5'}]}>
+                                        {tableData?.head?.amount}
+                                    </Text>
                                 </View>
                                 <View>
                                     {tableData?.body?.map((_item, _index) => {
@@ -383,7 +390,6 @@ const styles = StyleSheet.create({
         flex: 1,
         color: '#9095A5',
         fontSize: text(12),
-        textAlign: 'right',
     },
     body_sty: {
         color: '#4E556C',

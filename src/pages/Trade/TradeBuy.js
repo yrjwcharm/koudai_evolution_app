@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 18:59:03
+ * @LastEditTime: 2021-04-06 11:56:54
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -706,7 +706,6 @@ class TradeBuy extends Component {
 
     render() {
         const {showMask, data, type, buyBtnCanClick} = this.state;
-        console.log(this.state.has_tab);
         const {button} = data;
         return (
             <>

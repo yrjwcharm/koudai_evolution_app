@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 19:07:02
+ * @LastEditTime: 2021-04-06 11:12:57
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -24,7 +25,6 @@ import {Modal, BottomModal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
-const btnHeight = isIphoneX() ? text(90) : text(66);
 import FastImage from 'react-native-fast-image';
 const deviceWidth = Dimensions.get('window').width;
 
@@ -79,6 +79,9 @@ export default function PortfolioAssets(props) {
     useFocusEffect(
         useCallback(() => {
             init();
+            storage.get('portfolioAssets').then((res) => {
+                setShowEye(res ? res : 'true');
+            });
             getChartInfo();
         }, [init, getChartInfo])
     );
@@ -123,8 +126,8 @@ export default function PortfolioAssets(props) {
     }, []);
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
-            setShowEye(!show);
-            storage.save('myAssetsEye', show);
+            storage.save('portfolioAssets', show === 'true' ? 'false' : 'true');
+            return show === 'true' ? 'false' : 'true';
         });
     }, []);
 
@@ -396,14 +399,14 @@ export default function PortfolioAssets(props) {
                                     </Text>
                                     <TouchableOpacity onPress={toggleEye}>
                                         <Ionicons
-                                            name={showEye === true ? 'eye-outline' : 'eye-off-outline'}
+                                            name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
                                             size={16}
                                             color={'rgba(255, 255, 255, 0.8)'}
                                         />
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={[styles.profit_num_sty, {fontSize: text(24), lineHeight: text(24)}]}>
-                                    {showEye ? data.amount : '***'}
+                                    {showEye === 'true' ? data.amount : '***'}
                                 </Text>
                             </View>
                             <View>
@@ -414,13 +417,13 @@ export default function PortfolioAssets(props) {
                                     ]}>
                                     <Text style={styles.profit_text_sty}>日收益</Text>
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
-                                        {showEye ? data.profit : '***'}
+                                        {showEye === 'true' ? data.profit : '***'}
                                     </Text>
                                 </View>
                                 <View style={[Style.flexRow, {alignItems: 'baseline'}]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
-                                        {showEye ? data.profit_acc : '***'}
+                                        {showEye === 'true' ? data.profit_acc : '***'}
                                     </Text>
                                 </View>
                             </View>

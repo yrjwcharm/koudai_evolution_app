@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 12:11:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 12:22:46
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -65,7 +65,7 @@ const FindDetail = (props) => {
                             source={require('../../assets/img/find/close.png')}
                         />
                     </TouchableOpacity>
-                    <ScrollView>
+                    <ScrollView scrollIndicatorInsets={{right: 1}}>
                         {/* header */}
                         <MagicMove.View style={[styles.recommend]} id="logo" transition={MagicMove.Transition.morph}>
                             <FastImage

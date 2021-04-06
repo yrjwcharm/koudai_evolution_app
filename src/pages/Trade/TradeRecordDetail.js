@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 17:01:46
+ * @LastEditTime: 2021-04-06 10:31:08
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -52,6 +52,7 @@ const TradeRecordDetail = (props) => {
             });
             setShowMore(expand);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.navigation, txn_id, type, sub_type]);
     useEffect(() => {
         getData();
@@ -75,7 +76,7 @@ const TradeRecordDetail = (props) => {
     const handleCancel = () => {
         Modal.show({
             title: '确认撤单',
-            content: '撤单后需要重新进行购买，撤单金额需要T+1日到账，确认要撤单吗？',
+            content: data?.button?.popup?.content,
             confirm: true,
             confirmCallBack: () => {
                 passwordModal.current.show();
