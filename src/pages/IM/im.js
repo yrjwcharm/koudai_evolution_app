@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 17:01:57
+ * @LastEditTime: 2021-04-06 19:46:04
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -52,6 +52,7 @@ let heartCheckTime = null;
 let WsColseType = 1; //1表示为用户主动正常关闭,0表示异常关闭需要重新连接,2表示重新连接次数超过3次.判断为网络异常.请用户确认网络情况
 let closeSelf = false; //是否是自己主动关闭
 let connect = false; //连接状态
+let mesList = [];
 /**
  * @description:
  * @param {*} targetId: 消息谁发的就是谁的用户ID
@@ -59,6 +60,7 @@ let connect = false; //连接状态
  * @return {*}
  */
 const IM = (props) => {
+    const [messages, setMessages] = useState([]);
     const userInfo = useSelector((store) => store.userInfo);
     const headerHeight = useHeaderHeight();
     const [uid, setUid] = useState('');
@@ -76,7 +78,6 @@ const IM = (props) => {
     let lastShowTimeStamp = useRef(null);
     let connectTime = useState(''); //链接时长
     let unverifiedMsg = useRef([]);
-    const [messages, setMessages] = useState([]);
     const bottomModal = useRef(null);
     const clearIntelList = () => {
         intellectList && setIntellectList([]);
@@ -107,11 +108,11 @@ const IM = (props) => {
     /**
      * 初始化WebSocket
      */
-    const initWebSocket = () => {
+    const initWebSocket = (type) => {
         try {
             // eslint-disable-next-line react-hooks/exhaustive-deps
             WS.current = new WebSocket(url);
-            initWsEvent();
+            initWsEvent(type);
         } catch (e) {
             console.log('WebSocket err:', e);
             //重连
@@ -131,7 +132,7 @@ const IM = (props) => {
     /**
      * 初始化WebSocket相关事件
      */
-    const initWsEvent = () => {
+    const initWsEvent = (type) => {
         //建立WebSocket连接
         WS.current.onopen = function () {
             http.get(`${BaseUrl.IMApi}/im/token`)
@@ -140,11 +141,13 @@ const IM = (props) => {
                     _uid.current = data.result.uid;
                     token.current = data.result.token;
                     WS.current.send(handleMsgParams('LIR', 'loign'));
-                    console.log(handleMsgParams('LIR', 'loign'));
+                    if (type == 'reconnect') {
+                        handelSystemMes({content: '连接成功'});
+                    }
                     connect = true;
                 })
                 .catch(() => {
-                    handelSystemMes('网络异常连接断开,立即重新连接');
+                    handelSystemMes({content: '网络异常连接断开,', button: '立即重新连接'});
                 });
             console.log('WebSocket:', 'connect to server');
         };
@@ -170,11 +173,12 @@ const IM = (props) => {
                             }, _timeout);
                         });
                     } else {
-                        handelSystemMes(_data.data.message);
+                        handelSystemMes({content: _data.data.message});
                     }
                     break;
                 //发送消息回馈
                 case 'SMA': //点击按钮的恢复
+                case 'TMA':
                 case 'TNA':
                 case 'IMA':
                 case 'EMA':
@@ -193,8 +197,6 @@ const IM = (props) => {
                 case 'QMA':
                     if (_data.data?.result) {
                         handleMessage(_data);
-                    } else {
-                        // checkStatus(_data.cmid, 1);
                     }
                     break;
                 //收到历史信息
@@ -213,8 +215,6 @@ const IM = (props) => {
                 case 'BMA':
                     if (_data.data) {
                         handleMessage(_data);
-                    } else {
-                        // checkStatus(_data.cmid, 1);
                     }
 
                     break;
@@ -224,6 +224,11 @@ const IM = (props) => {
                         handleMessage(_data);
                         WS.current.send(handleMsgParams('IAR', 'success', _data.cmid));
                     }
+                    break;
+                //图片回复
+                case 'IAN':
+                case 'IMA':
+                    checkStatus(_data.cmid, 1);
                     break;
                 //接收到文章
                 case 'AMN':
@@ -251,7 +256,7 @@ const IM = (props) => {
         WS.current.onclose = function () {
             console.log('WebSocket:', 'connect close');
             connect = false;
-            handelSystemMes('网络异常连接断开,立即重新连接');
+            handelSystemMes({content: '网络异常连接断开,', button: '立即重新连接'});
             if (WsColseType !== 'timeout') {
                 WsColseType = 0;
             }
@@ -264,19 +269,17 @@ const IM = (props) => {
     };
     //断开重连
     const reconnect = () => {
-        if (timeout?.current) {
-            clearTimeout(timeout?.current);
+        //重新连接WebSocket
+        if (connect) {
+            return;
         }
-        timeout.current = setTimeout(function () {
-            //重新连接WebSocket
-            initWebSocket();
-        }, 15000);
+        initWebSocket('reconnect');
     };
     const heartCheck = () => {
         if (new Date().getTime() - connectTime.current > maxConnectTime) {
             WS.current.close();
             WsColseType = 'timeout';
-            handelSystemMes('由于您长时间未响应，自动断开连接。您可以重新发送信息重新召唤顾问~');
+            handelSystemMes({content: '由于您长时间未响应，自动断开连接。', button: '立即重新连接'});
         }
         if (WsColseType != 'timeout') {
             clearTimeout(heartCheckTime);
@@ -322,7 +325,7 @@ const IM = (props) => {
                 content: _message.data,
                 targetId: `${_message.from}`,
                 renderTime: _message.renderTime,
-                sendStatus: _message.sendStatus || 1,
+                sendStatus: _message.hasOwnProperty('sendStatus') ? _message.sendStatus : 1,
                 chatInfo: {
                     id: _message.to,
                     nickName: _message?.user_info?.nickname || '智能客服',
@@ -347,24 +350,22 @@ const IM = (props) => {
             });
         } else {
             if (new Date().getTime() - lastShowTimeStamp.current > interval) {
-                _mes = [genMessage({...message, renderTime: true})];
+                _mes = _mes.concat([genMessage({...message, renderTime: true})]);
                 lastShowTimeStamp.current = message.time;
             } else {
-                _mes = [genMessage({...message, renderTime: false})];
+                _mes = _mes.concat([genMessage({...message, renderTime: false})]);
             }
         }
         setMessages((pre) => {
-            return pre.concat(_mes);
+            mesList = [...pre, ..._mes];
+            return mesList;
         });
-        return [...messages, ..._mes];
     };
-    console.log(messages);
-
     //点击发送按钮发送消息
     const sendMessage = (type, content, isInverted, cmd = 'TMR', question_id, sendStatus) => {
         clearIntelList();
         let cmid = randomMsgId(cmd);
-        const newMessages = handleMessage({
+        handleMessage({
             cmid: cmid,
             data: content,
             cmd,
@@ -377,10 +378,30 @@ const IM = (props) => {
             },
             time: `${new Date().getTime()}`,
         });
-        wsSend(cmd, content, question_id, cmid, newMessages);
+        wsSend(cmd, content, question_id, cmid);
     };
+    const checkStatus = (cmid, status) => {
+        if (!cmid) {
+            return;
+        }
+        status == 1 &&
+            unverifiedMsg.current.forEach((item, index) => {
+                if (item.cmid == cmid) {
+                    unverifiedMsg.current.splice(index, 1);
+                }
+            });
+        mesList = mesList.map((item) => {
+            if (item.id == cmid && item.sendStatus != 1) {
+                return {...item, sendStatus: status};
+            } else {
+                return item;
+            }
+        });
+        setMessages(mesList);
+    };
+
     //真实发送
-    const wsSend = (cmd, content, question_id, cmid, messagesArg) => {
+    const wsSend = (cmd, content, question_id, cmid) => {
         if (cmd == 'TMR' || cmd == 'IMR') {
             unverifiedMsg.current.push({cmid, content, cmd});
         }
@@ -390,7 +411,7 @@ const IM = (props) => {
 
                 if (cmd == 'TMR' || cmd == 'IMR') {
                     setTimeout(() => {
-                        checkStatus(cmid, -1, messagesArg);
+                        checkStatus(cmid, -1);
                     }, _timeout);
                 }
             } catch (err) {
@@ -402,7 +423,7 @@ const IM = (props) => {
     };
     //转人工客服
     const staff = () => {
-        sendMessage(null, '转投资顾问', null, 'CMR', 1);
+        sendMessage(null, '转投资顾问', null, 'CMR', null, 1);
         // handelSystemMes('正在转到投资顾问，请稍等…');
     };
     //问题解决 未解决
@@ -452,26 +473,7 @@ const IM = (props) => {
         params.data = content;
         return JSON.stringify(params);
     };
-    const checkStatus = (cmid, status, messagesArg) => {
-        if (!cmid) {
-            return;
-        }
-        status == 1 &&
-            unverifiedMsg.current.forEach((item, index) => {
-                if (item.cmid == cmid) {
-                    unverifiedMsg.current.splice(index, 1);
-                }
-            });
-        setMessages(
-            messagesArg.map((item) => {
-                if (item.id == cmid && item.sendStatus != 1) {
-                    return {...item, sendStatus: status};
-                } else {
-                    return item;
-                }
-            })
-        );
-    };
+
     const loadHistory = () => {
         WS.current.send(handleMsgParams('LMR', {page: ++page.current}));
     };
@@ -525,13 +527,13 @@ const IM = (props) => {
                     console.log('User tapped custom button: ', response.customButton);
                 } else {
                     let cmid = randomMsgId('IMR');
-                    let mewMes = handleMessage({
+                    handleMessage({
                         cmd: 'IMR',
                         cmid,
                         data: response.uri,
                         from: uid,
                         to: 'S',
-                        sendStatus: 0,
+                        sendStatus: connect ? 0 : -1,
                         user_info: {
                             avatar: userInfo.toJS().avatar,
                         },
@@ -541,7 +543,7 @@ const IM = (props) => {
                         _ChatScreen?.current?.closeAll();
                     });
                     upload(
-                        'http://mapi.lengxiaochu.mofanglicai.com.cn:10080/20170831/webim/upload/oss',
+                        'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/upload/oss',
                         response,
                         [
                             {name: 'file_key', data: cmid},
@@ -549,11 +551,10 @@ const IM = (props) => {
                             {name: 'token', data: token.current},
                         ],
                         (res) => {
-                            // console.log('object');
-                            if (res.code == 20000) {
-                                wsSend('IMR', res.result.url, null, cmid, mewMes);
+                            if (res.code === 20000) {
+                                wsSend('IMR', res.result.url, null, cmid);
                             } else {
-                                checkStatus(cmid, -1, mewMes);
+                                checkStatus(cmid, -1);
                             }
                         }
                     );
@@ -621,10 +622,10 @@ const IM = (props) => {
                             activeOpacity={0.8}
                             key={index}
                             style={styles.shortCutItem}
-                            onPress={() => {
+                            onPress={_.debounce(() => {
                                 sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id}, 1);
                                 Keyboard.dismiss();
-                            }}>
+                            }, 500)}>
                             <Text style={{fontSize: 12, color: '#545968'}}>{item.question}</Text>
                         </TouchableOpacity>
                     ))}
@@ -643,11 +644,11 @@ const IM = (props) => {
                             {height: px(43), borderTopColor: '#E2E4EA', borderTopWidth: index == 0 ? 0 : 0.5},
                             Style.flexRow,
                         ]}
-                        onPress={() => {
+                        onPress={_.debounce(() => {
                             sendMessage('text', item.question_ori, null, 'QMR', item.question_id, 1);
                             Keyboard.dismiss();
                             clearIntelList();
-                        }}>
+                        }, 500)}>
                         <HTML style={{fontSize: px(14)}} html={item.question} />
                     </TouchableOpacity>
                 ))}
@@ -843,7 +844,6 @@ const IM = (props) => {
             </View>
         );
     };
-    // console.log(messages);
     return (
         <View style={{flex: 1}}>
             <BottomModal
@@ -947,6 +947,20 @@ const IM = (props) => {
                 renderArticle={renderArticle}
                 panelSource={[{text: '相册', icon: require('../../assets/img/photo.png')}]}
                 onMessagePress={pressMessage}
+                renderSystemMessage={({message}) => {
+                    return (
+                        <View style={styles.system_container}>
+                            <View style={[styles.system_button, Style.flexRow]}>
+                                <Text style={styles.system_text}>{message.content.content}</Text>
+                                {message.content?.button ? (
+                                    <Text style={[styles.system_text, {color: Colors.btnColor}]} onPress={reconnect}>
+                                        {message.content.button}
+                                    </Text>
+                                ) : null}
+                            </View>
+                        </View>
+                    );
+                }}
                 textOnChange={_.debounce((text) => {
                     wsSend('DMR', text);
                 }, 500)}
@@ -1061,5 +1075,19 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    system_container: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    system_button: {
+        backgroundColor: '#cccccd',
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 4,
+    },
+    system_text: {
+        fontSize: 12,
+        color: '#fff',
     },
 });

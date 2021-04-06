@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 14:06:47
+ * @LastEditTime: 2021-04-06 14:14:47
  * @Description:规划结果页
  */
 
@@ -377,13 +377,9 @@ export default class planResult extends Component {
                         {button && (
                             <QuestionBtn
                                 style={{marginTop: px(16)}}
-                                onPress={_.debounce(
-                                    () => {
-                                        this.jumpNext(button?.url?.path, button?.url?.params);
-                                    },
-                                    500,
-                                    {leading: true}
-                                )}
+                                onPress={_.debounce(() => {
+                                    this.jumpNext(button?.url?.path, button?.url?.params);
+                                }, 500)}
                             />
                         )}
                     </View>

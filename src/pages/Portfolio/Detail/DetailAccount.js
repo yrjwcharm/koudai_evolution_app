@@ -5,9 +5,9 @@
  * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';

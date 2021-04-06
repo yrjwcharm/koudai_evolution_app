@@ -360,7 +360,7 @@ class BankInfo extends Component {
                 <FixedButton
                     title={'立即开户'}
                     disabled={this.state.btnDisable}
-                    onPress={_.debounce(this.confirm, 500, {leading: true})}
+                    onPress={_.debounce(this.confirm, 500)}
                 />
             </>
         );

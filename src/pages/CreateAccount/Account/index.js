@@ -232,13 +232,9 @@ class Index extends Component {
                 <FixedButton
                     title={'下一步'}
                     disabled={this.state.btnDisable}
-                    onPress={_.debounce(
-                        () => {
-                            this.jumpBank('BankInfo');
-                        },
-                        500,
-                        {leading: true}
-                    )}
+                    onPress={_.debounce(() => {
+                        this.jumpBank('BankInfo');
+                    }, 500)}
                 />
             </View>
         );

@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 11:12:57
+ * @LastEditTime: 2021-04-06 14:06:20
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -248,10 +248,10 @@ export default function PortfolioAssets(props) {
                             height: 260,
                         }}>
                         <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
-                            <View style={styles.legend_sty}>
+                            <View style={[styles.legend_sty]}>
                                 <TextInput
                                     ref={_textTime}
-                                    style={styles.legend_title_sty}
+                                    style={[styles.legend_title_sty, {width: text(100)}]}
                                     defaultValue={chart?.label[0]?.val}
                                     editable={false}
                                 />

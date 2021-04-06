@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 10:44:20
+ * @LastEditTime: 2021-04-06 12:55:58
  * @Description:路由表
  */
 import React from 'react';
@@ -155,7 +155,8 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Loading"
-            headerMode="float" //兼容部分安卓
+            // headerMode="float" //兼容部分安卓
+            // mode="modal"
             screenOptions={{
                 headerBackImage: () => {
                     return (
@@ -388,17 +389,6 @@ export default function AppStack() {
                 component={FindDetail}
                 options={{
                     headerShown: false,
-                    // cardStyle: {backgroundColor: 'transparent'},
-                    // ...TransitionPresets.ModalTransition,
-                    // cardOverlayEnabled: true,
-                    // cardStyleInterpolator: ({current: {progress}}) => ({
-                    //     cardStyle: {
-                    //         opacity: progress.interpolate({
-                    //             inputRange: [0, 0.5, 0.9, 1],
-                    //             outputRange: [0, 0.25, 0.7, 1]
-                    //         }),
-                    //     },
-                    // }),
                 }}
             />
             <Stack.Screen name="TradeRecordDetail" component={TradeRecordDetail} options={{title: '交易订单详情'}} />

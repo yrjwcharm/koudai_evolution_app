@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 19:35:31
+ * @LastEditTime: 2021-04-06 12:58:22
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     webView: {
         flex: 1,
         // height: 300,
-        backgroundColor: 'transparent',
+        // backgroundColor: 'transparent',
     },
 });
 
