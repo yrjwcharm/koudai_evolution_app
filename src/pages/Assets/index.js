@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 11:07:19
+ * @LastEditTime: 2021-04-06 20:21:41
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -36,6 +36,7 @@ import http from '../../services/index.js';
 import {useJump, useShowGesture} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import GesturePassword from './GesturePassword';
+import Toast from '../../components/Toast/Toast.js';
 function HomeScreen({navigation, route}) {
     const userInfo = useSelector((store) => store.userInfo);
     const [scrollY, setScrollY] = useState(0);
@@ -94,6 +95,7 @@ function HomeScreen({navigation, route}) {
             // uid: '1000000001',
         }).then((res) => {
             if (res.code === '000000') {
+                refresh === 'refresh' && Toast.show('我的资产已更新');
                 setHoldingData(res.result);
             }
         });

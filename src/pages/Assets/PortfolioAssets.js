@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 14:06:20
+ * @LastEditTime: 2021-04-06 20:19:59
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -539,7 +539,13 @@ export default function PortfolioAssets(props) {
                                         resizeMode="contain"
                                         style={styles.img_sty}
                                     />
-                                    <Text style={styles.list_text_sty}>{_e.text}</Text>
+                                    <Text
+                                        style={[
+                                            styles.list_text_sty,
+                                            {color: _index == data?.extend_buttons.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                        ]}>
+                                        {_e.text}
+                                    </Text>
                                 </TouchableOpacity>
                             );
                         })}

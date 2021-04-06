@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 14:11:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-06 20:16:08
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -44,15 +44,14 @@ export class uploadID extends Component {
         this.setState({showTypePop: true, clickIndex});
     };
     componentDidMount() {
-        if (this.fr == 'anti_money') {
-            http.get('/mapi/identity/upload_info/20210101', {scene: this.fr}).then((res) => {
-                this.setState({
-                    frontSource: res.result.identity?.front,
-                    behindSource: res.result.identity?.back,
-                    desc: res.result.desc,
-                });
+        http.get('/mapi/identity/upload_info/20210101', {scene: this.fr}).then((res) => {
+            this.setState({
+                frontSource: res.result.identity?.front,
+                behindSource: res.result.identity?.back,
+                desc: res.result.desc,
             });
-        }
+        });
+
         this.subscription = DeviceEventEmitter.addListener(
             'EventType',
             _.debounce((uri) => {
