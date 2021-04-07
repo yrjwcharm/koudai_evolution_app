@@ -2,36 +2,26 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-09 19:05:37
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 14:14:12
  */
 
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import {StyleSheet, ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
-import {Button} from '../../components/Button';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 
 const PrivateApply = (props) => {
     const {fund_code, poid} = props.route.params || {};
     const jump = useJump();
-    const navigation = useNavigation();
     const [data, setData] = useState({});
-    const [finish, setFinish] = useState(false);
     const [heightArr, setHeightArr] = useState([]);
-    const [bankInfo, setBankInfo] = useState('');
-    const [code, setCode] = useState('');
-    const [isSign, setSign] = useState(false);
 
-    const loopRef = useRef(0);
-    const timerRef = useRef(null);
     const init = useCallback(() => {
         http.get('/pe/redeem/20210101', {
             fund_code: fund_code,
@@ -39,7 +29,7 @@ const PrivateApply = (props) => {
         }).then((res) => {
             setData(res.result);
         });
-    }, [loopRef, timerRef, navigation]);
+    }, [fund_code, poid]);
     const onLayout = useCallback(
         (index, e) => {
             const arr = [...heightArr];
@@ -52,9 +42,8 @@ const PrivateApply = (props) => {
         props.navigation.navigate('Home');
     };
     useEffect(() => {
-        init(true);
-        return () => clearTimeout(timerRef.current);
-    }, [init, timerRef]);
+        init();
+    }, [init]);
     return (
         <View style={[styles.container]}>
             <View style={[styles.processContainer]}>
@@ -108,10 +97,9 @@ const PrivateApply = (props) => {
             </View>
             <FixedButton
                 title={'完成'}
-                style={styles.btn_sty}
+                style={{...styles.btn_sty, backgroundColor: '#CEA26B'}}
                 onPress={() => btnClick()}
                 color={'#CEA26B'}
-                style={{backgroundColor: '#CEA26B'}}
             />
         </View>
     );

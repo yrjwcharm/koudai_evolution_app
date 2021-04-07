@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:17:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 14:27:47
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
@@ -147,7 +147,7 @@ export default function PrivateAssets({navigation, route}) {
     const renderContent = (index, contentData) => {
         if (index === 0) {
             return (
-                <View style={{height: 300, backgroundColor: '#fff'}}>
+                <View style={{minHeight: 300, backgroundColor: '#fff', paddingVertical: Space.padding}}>
                     {Object.keys(chart).length > 0 && (
                         <View style={[Style.flexRow]}>
                             <View style={styles.legend_sty}>
@@ -391,7 +391,7 @@ export default function PrivateAssets({navigation, route}) {
                         rightPress={() => jump(data.trade_record_url)}
                         rightTextStyle={styles.right_sty}
                     />
-                    <ScrollView style={{marginBottom: btnHeight}}>
+                    <ScrollView>
                         <View style={styles.assets_card_sty}>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                                 <View>
@@ -424,11 +424,9 @@ export default function PrivateAssets({navigation, route}) {
                         <ScrollableTabView
                             renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                             initialPage={0}
-                            style={{marginBottom: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
                             onChangeTab={(obj) => ChangeTab(obj.i)}
-                            tabBarInactiveTextColor={'#545968'}
-                            style={{marginTop: text(12)}}>
+                            tabBarInactiveTextColor={'#545968'}>
                             {data?.tabs1.map((item, index) => {
                                 return <View tabLabel={item?.title} key={index + 'tab'} />;
                             })}
@@ -437,11 +435,10 @@ export default function PrivateAssets({navigation, route}) {
                         <ScrollableTabView
                             renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                             initialPage={0}
-                            style={{marginBottom: text(16)}}
+                            style={{marginTop: text(16)}}
                             tabBarActiveTextColor={'#D7AF74'}
                             tabBarInactiveTextColor={'#545968'}
-                            onChangeTab={(obj) => changeNetTab(obj.i)}
-                            style={{marginTop: text(12)}}>
+                            onChangeTab={(obj) => changeNetTab(obj.i)}>
                             {data?.tabs2?.map((item, index) => {
                                 return <View tabLabel={item?.title} key={index + 'tab1'} />;
                             })}
@@ -451,7 +448,7 @@ export default function PrivateAssets({navigation, route}) {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={1}
-                                    style={styles.list_sty}
+                                    style={{...styles.list_sty, marginTop: _index === 0 ? Space.marginVertical : 0}}
                                     key={_index + 'card'}
                                     onPress={() => jump(_item.url)}>
                                     <Text style={{flex: 1}}>{_item?.text}</Text>
@@ -474,8 +471,6 @@ export default function PrivateAssets({navigation, route}) {
                                 backgroundColor: '#fff',
                                 paddingHorizontal: text(16),
                                 paddingTop: text(10),
-                                position: 'absolute',
-                                bottom: 0,
                             },
                         ]}>
                         <TouchableOpacity
@@ -551,6 +546,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flexDirection: 'row',
         padding: text(16),
+        marginBottom: Space.marginVertical,
     },
     button_sty: {
         flex: 1,
@@ -577,7 +573,7 @@ const styles = StyleSheet.create({
         color: '#1F2432',
         // fontWeight: 'bold',
         fontSize: text(16),
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         marginBottom: text(4),
     },
     legend_desc_sty: {

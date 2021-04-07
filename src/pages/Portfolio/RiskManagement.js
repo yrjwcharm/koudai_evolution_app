@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-03-30 16:43:50
+ * @LastEditTime: 2021-04-07 10:28:00
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -132,7 +132,7 @@ class RiskManagement extends Component {
                         <View style={Style.flexRow}>
                             {data?.label?.map((item, index, arr) => {
                                 return (
-                                    <View style={[Style.flexRowCenter, {flex: 1}]}>
+                                    <View key={item + index} style={[Style.flexRowCenter, {flex: 1}]}>
                                         {index !== arr.length - 1 ? (
                                             <View
                                                 style={{

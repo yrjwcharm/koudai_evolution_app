@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 16:07:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 15:25:58
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -16,8 +16,8 @@ import {
     RefreshControl,
     Platform,
 } from 'react-native';
-import {px, deviceWidth} from '../../utils/appUtil';
-import {Colors, Style, Font} from '../../common/commonStyle';
+import {px, deviceWidth, formaNum} from '../../utils/appUtil';
+import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -349,7 +349,7 @@ const Index = (props) => {
                                                         已有
                                                         <Text
                                                             style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
-                                                            {data?.custom_info?.num}
+                                                            {formaNum(data?.custom_info?.num, 'nozero')}
                                                         </Text>
                                                         人开启
                                                     </Text>
@@ -422,10 +422,10 @@ const Index = (props) => {
                                     <ArticleCard data={data?.article_info} />
                                 </View>
                             )}
-                            {/* 用户问答 */}
+                            {/* 魔方问答 */}
                             {data?.qa_list && (
                                 <View style={{marginBottom: px(9)}}>
-                                    <RenderTitle title={'用户问答'} />
+                                    <RenderTitle title={'魔方问答'} />
                                     <QuestionCard data={data?.qa_list} />
                                 </View>
                             )}
@@ -491,9 +491,11 @@ const Index = (props) => {
                                     onPress={() => {
                                         jump(data?.about_info?.url);
                                     }}>
-                                    <ImageBackground
-                                        style={[Style.flexRow, {height: px(89), paddingHorizontal: px(16)}]}
-                                        source={require('../../assets/img/index/aboutOur.png')}>
+                                    <View
+                                        style={[
+                                            Style.flexRow,
+                                            {height: px(89), paddingHorizontal: px(16), backgroundColor: '#1A61CD'},
+                                        ]}>
                                         {data?.about_info?.header.map((text, index) => (
                                             <View key={index} style={{marginRight: index == 0 ? px(60) : 0}}>
                                                 <View style={[Style.flexRow, {marginBottom: px(2)}]}>
@@ -505,18 +507,22 @@ const Index = (props) => {
                                                 </Text>
                                             </View>
                                         ))}
-                                    </ImageBackground>
+                                        <FastImage
+                                            source={require('../../assets/img/index/aboutBg.png')}
+                                            style={styles.aboutBg}
+                                        />
+                                    </View>
                                     <BoxShadow
                                         setting={{
-                                            color: '#e2ecf8',
+                                            color: Colors.brandColor,
                                             width: px(28),
                                             height: px(28),
-                                            radius: 10,
-                                            border: 10,
-                                            opacity: 0.3,
+                                            radius: 6,
+                                            border: 6,
+                                            opacity: 0.08,
                                             x: 0,
-                                            y: 10,
-                                            style: {position: 'absolute', right: px(16), top: px(75), zIndex: 10},
+                                            y: 2,
+                                            style: {position: 'absolute', right: px(12), top: px(75), zIndex: 10},
                                         }}>
                                         <View style={styles.right}>
                                             <FontAwesome name={'angle-right'} color={Colors.btnColor} size={18} />
@@ -528,11 +534,12 @@ const Index = (props) => {
                                             {
                                                 flex: 1,
                                                 backgroundColor: '#fff',
-                                                justifyContent: 'space-evenly',
                                             },
                                         ]}>
                                         {data?.about_info?.items?.map((item, index) => (
-                                            <View key={index} style={{alignItems: 'flex-start'}}>
+                                            <View
+                                                key={index}
+                                                style={{alignItems: 'flex-start', flex: 1, paddingLeft: Space.padding}}>
                                                 <FastImage source={{uri: item.icon}} style={styles.icon} />
                                                 <Text
                                                     style={{
@@ -548,6 +555,8 @@ const Index = (props) => {
                                                 </Text>
                                             </View>
                                         ))}
+                                        <View style={styles.leftLine} />
+                                        <View style={styles.rightLine} />
                                     </View>
                                 </TouchableOpacity>
                             </>
@@ -774,5 +783,28 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    aboutBg: {
+        width: px(121),
+        height: px(83),
+        position: 'absolute',
+        top: px(8),
+        right: 0,
+    },
+    leftLine: {
+        position: 'absolute',
+        left: px(114),
+        bottom: px(21),
+        width: Space.borderWidth,
+        height: px(33),
+        backgroundColor: Colors.borderColor,
+    },
+    rightLine: {
+        position: 'absolute',
+        right: px(113),
+        bottom: px(21),
+        width: Space.borderWidth,
+        height: px(33),
+        backgroundColor: Colors.borderColor,
     },
 });

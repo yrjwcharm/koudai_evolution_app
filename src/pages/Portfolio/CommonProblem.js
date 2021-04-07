@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-03-29 14:08:33
+ * @LastEditTime: 2021-04-07 10:32:49
  * @LastEditors: dx
  * @Description: 常见问题
  */
@@ -12,7 +12,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import http from '../../services';
 import {px as text} from '../../utils/appUtil';
-import {Style, Colors} from '../../common/commonStyle';
+import {Style, Colors, Space} from '../../common/commonStyle';
 import HTML from '../../components/RenderHtml';
 
 const CommonProblem = ({navigation, route}) => {
@@ -33,16 +33,21 @@ const CommonProblem = ({navigation, route}) => {
         return (
             <View
                 style={[
-                    styles.header,
                     Style.flexBetween,
+                    styles.header,
                     {borderBottomRightRadius: isActive ? 0 : text(8), borderBottomLeftRadius: isActive ? 0 : text(8)},
                     index === 0 ? {marginTop: text(14)} : {},
                 ]}>
-                <View style={[Style.flexRow, {flex: 1, maxWidth: '90%'}]}>
+                <View style={[Style.flexRow, {flex: 1, maxWidth: '90%', alignItems: 'flex-start'}]}>
                     <Image source={require('../../assets/img/detail/question.png')} style={styles.icon_ques} />
                     <Text style={styles.headerText}>{section.question}</Text>
                 </View>
-                <FontAwesome name={`${isActive ? 'angle-up' : 'angle-down'}`} size={20} color={Colors.descColor} />
+                <FontAwesome
+                    name={`${isActive ? 'angle-up' : 'angle-down'}`}
+                    size={20}
+                    color={Colors.descColor}
+                    style={{marginLeft: Space.marginAlign}}
+                />
             </View>
         );
     };
@@ -84,6 +89,7 @@ const styles = StyleSheet.create({
     },
     header: {
         flexDirection: 'row',
+        alignItems: 'flex-start',
         backgroundColor: '#fff',
         padding: text(14),
         borderRadius: text(8),
@@ -91,6 +97,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: text(15),
+        lineHeight: text(22),
         fontWeight: '500',
         marginLeft: text(6),
     },
@@ -110,6 +117,7 @@ const styles = StyleSheet.create({
     icon_ques: {
         width: text(20),
         height: text(20),
+        marginTop: text(2),
         marginRight: text(4),
     },
 });
