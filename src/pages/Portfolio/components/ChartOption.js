@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 15:23:35
+ * @LastEditTime: 2021-04-07 15:46:57
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -57,7 +57,7 @@ export const baseAreaChart = (
       const textCfg = {};
       if (index === 0) {
         textCfg.textAlign = 'left';
-      } else if (index === total - 1) {
+      } else if (index === total - 1 ) {
         textCfg.textAlign = 'right';
       }
       return textCfg;
@@ -109,10 +109,14 @@ export const baseAreaChart = (
         content: ${JSON.stringify(tag_position?.buy?.name)},
         limitInPlot:true,
         background: {
-          fill: '#E74949'
+          fill: '#E74949',
+          padding: 2,
         },
         pointStyle: {
           fill: '#E74949'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
         }
       });
     };
@@ -122,10 +126,14 @@ export const baseAreaChart = (
         content: ${JSON.stringify(tag_position?.redeem?.name)},
         limitInPlot:true,
         background: {
-          fill: '#4BA471'
+          fill: '#4BA471',
+          padding: 2,
         },
         pointStyle: {
           fill: '#4BA471'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
         }
       });
     };
@@ -135,10 +143,14 @@ export const baseAreaChart = (
         content: ${JSON.stringify(tag_position?.adjust?.name)},
         limitInPlot:true,
         background: {
-          fill: '#0051CC'
+          fill: '#0051CC',
+          padding: 2,
         },
         pointStyle: {
           fill: '#0051CC'
+        },
+        textStyle: {
+          fontSize: 10, // 字体大小
         }
       });
     };
