@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 17:41:14
+ * @LastEditTime: 2021-04-07 13:59:36
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -28,7 +28,8 @@ export const baseAreaChart = (
     areaColors,
     percent = false,
     tofixed = 2,
-    width = deviceWidth - 10
+    width = deviceWidth - 10,
+    tag_position = ''
 ) => `
 (function(){
    chart = new F2.Chart({
@@ -102,6 +103,19 @@ export const baseAreaChart = (
       fill: '#E74949',
     },
   });
+  
+    chart.guide().tag({
+      position: ['2021-03-17', 0],
+      content: '买入',
+      offsetY: 20,
+      offsetX: 20,
+      background: {
+        fill: '#8659AF'
+      },
+      pointStyle: {
+        fill: '#8659AF'
+      }
+    });
   chart.area({startOnZero: false})
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
@@ -112,6 +126,21 @@ export const baseAreaChart = (
     .shape('smooth')
     .style({
       lineWidth: 1.5
+    });
+    chart.point().position('date*value').size('tag', function(val) {
+      return val ? 3 : 0;
+    }).style('tag', {
+      fill: function fill(val) {
+        if (val === 2) {
+          return '#000';
+        } else if (val === 1) {
+          return 'red';
+        }else if (val === 3) {
+            return 'green';
+         }
+      },
+      stroke: '#fff',
+      lineWidth: 1
     });
   chart.render();
 })();

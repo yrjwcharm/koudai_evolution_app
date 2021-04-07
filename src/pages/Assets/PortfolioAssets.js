@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 20:19:59
+ * @LastEditTime: 2021-04-07 12:15:08
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -26,6 +26,7 @@ import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
 import FastImage from 'react-native-fast-image';
+import EmptyTip from '../../components/EmptyTip';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -51,6 +52,9 @@ export default function PortfolioAssets(props) {
             poid: props.route?.params?.poid,
         }).then((res) => {
             setData(res.result);
+            props.navigation.setOptions({
+                title: res.result.title,
+            });
             if (res.result?.progress_bar) {
                 const _left = res.result?.progress_bar?.percent_text;
                 if (_left.split('%')[0] < 10) {
@@ -290,30 +294,31 @@ export default function PortfolioAssets(props) {
                                 </View>
                             </View>
                         </View>
-                        <Chart
-                            initScript={baseAreaChart(
-                                chart?.chart,
-                                [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                true,
-                                2,
-                                deviceWidth - text(40)
-                            )}
-                            onChange={onChartChange}
-                            data={chart?.chart}
-                            onHide={onHide}
-                            style={{width: '100%'}}
-                        />
+                        {chart?.chart.length > 0 ? (
+                            <Chart
+                                initScript={baseAreaChart(
+                                    chart?.chart,
+                                    [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                    true,
+                                    2,
+                                    deviceWidth - text(40),
+                                    chart?.tag_position
+                                )}
+                                onChange={onChartChange}
+                                data={chart?.chart}
+                                onHide={onHide}
+                                style={{width: '100%'}}
+                            />
+                        ) : (
+                            <EmptyTip
+                                style={{paddingTop: px(40)}}
+                                imageStyle={{width: px(150), resizeMode: 'contain'}}
+                            />
+                        )}
                     </View>
-                    {chart?.sub_tabs && (
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                height: 50,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                marginHorizontal: 20,
-                            }}>
+                    {chart?.sub_tabs && chart?.chart.length > 0 && (
+                        <View style={styles.sub_tabs}>
                             {chart?.sub_tabs?.map((_item, _index, arr) => {
                                 return (
                                     <TouchableOpacity
@@ -381,12 +386,6 @@ export default function PortfolioAssets(props) {
     };
     return (
         <>
-            <Header
-                title={data.title}
-                leftIcon="chevron-left"
-                style={{backgroundColor: '#0052CD'}}
-                fontStyle={{color: '#fff'}}
-            />
             <ScrollView bounces={false}>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
                 <View style={styles.assets_card_sty}>
@@ -761,5 +760,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: text(16),
         color: '#121D3A',
+    },
+    sub_tabs: {
+        flexDirection: 'row',
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 20,
     },
 });

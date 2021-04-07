@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 20:25:14
+ * @LastEditTime: 2021-04-07 12:04:24
  * @Description:路由表
  */
 import React from 'react';
@@ -401,7 +401,35 @@ export default function AppStack() {
             <Stack.Screen name="FundAnnouncement" component={FundAnnouncement} options={{title: '基金公告'}} />
             <Stack.Screen name="FixedPlanDetail" component={FixedPlanDetail} options={{title: ''}} />
             <Stack.Screen name="FixedPlanList" component={FixedPlanList} options={{title: '计划详情'}} />
-            <Stack.Screen name="PortfolioAssets" component={PortfolioAssets} options={{headerShown: false}} />
+            <Stack.Screen
+                name="PortfolioAssets"
+                component={PortfolioAssets}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        backgroundColor: '#0052CD',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={30}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
