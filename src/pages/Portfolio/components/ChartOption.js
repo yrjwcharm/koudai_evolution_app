@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 15:46:57
+ * @LastEditTime: 2021-04-07 15:48:07
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -29,15 +29,16 @@ export const baseAreaChart = (
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
+    appendPadding = 10,
     tag_position = {}
 ) => `
 (function(){
-   chart = new F2.Chart({
+  chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    width:${width},
+    width: ${width},
     height:220,
-    appendPadding:10,
+    appendPadding: ${JSON.stringify(appendPadding)},
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
@@ -157,11 +158,23 @@ export const baseAreaChart = (
   chart.area({startOnZero: false})
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
-    .shape('smooth');
+    .shape('smooth')
+    .animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 1000
+      }
+    });
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
     .shape('smooth')
+    .animate({
+      appear: {
+        animation: 'groupWaveIn',
+        duration: 1000
+      }
+    })
     .style({
       lineWidth: 1.5
     });
@@ -367,7 +380,13 @@ export const baseLineChart = (
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
-    .shape('smooth');
+    .shape('smooth')
+    .animate({
+      appear: {
+          animation: 'groupWaveIn',
+          duration: 1000
+      }
+    });
   chart.render();
 })();
 `;

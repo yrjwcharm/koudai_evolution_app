@@ -1,4 +1,4 @@
-const lineUpdate = `
+export const lineUpdate = `
 F2.Animate.registerAnimation('lineUpdate', function(updateShape, animateCfg) {
     var cacheShape = updateShape.get('cacheShape'); // 该动画 shape 的前一个状态
     var cacheAttrs = cacheShape.attrs; // 上一个 shape 属性
@@ -38,7 +38,7 @@ F2.Animate.registerAnimation('lineUpdate', function(updateShape, animateCfg) {
       attrs: {
         points: newPoints
       },
-      duration: 2000,
+      duration: 1000,
       easing: animateCfg.easing
     });
   });

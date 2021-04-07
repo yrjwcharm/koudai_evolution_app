@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 14:55:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 11:24:58
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -10,7 +10,7 @@ import {StyleSheet, Platform, View, Text} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
 import _ from 'lodash';
-// const changeData = (data) => `chart.repaint();chart.changeData(${JSON.stringify(data)});`;
+const changeData = (data) => `chart.repaint();chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
     ios: require('./f2chart.html'),
@@ -30,7 +30,6 @@ class Chart extends PureComponent {
         initScript: '',
         data: [],
         webView: RNWebView,
-        changeData: (data) => `chart.changeData(${JSON.stringify(data)});`,
     };
 
     constructor(props) {
@@ -46,7 +45,11 @@ class Chart extends PureComponent {
     }
 
     update = (data) => {
-        this.chart.current.injectJavaScript(this.props.changeData(data));
+        if (this.props.updateScript) {
+            this.chart.current.injectJavaScript(this.props.updateScript(data));
+        } else {
+            this.chart.current.injectJavaScript(changeData(data));
+        }
     };
 
     onMessage = (event) => {

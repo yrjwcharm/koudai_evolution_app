@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 10:31:08
+ * @LastEditTime: 2021-04-07 16:12:13
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -170,7 +170,9 @@ const TradeRecordDetail = (props) => {
             </View>
             {data?.part2?.length > 0 ? (
                 <View style={{paddingHorizontal: px(14), marginBottom: isIphoneX() ? 34 : px(10)}}>
-                    <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>购买进度明细</Text>
+                    {data?.desc ? (
+                        <Text style={[styles.card_title, {fontWeight: '700', marginBottom: px(16)}]}>{data?.desc}</Text>
+                    ) : null}
                     {data?.part2?.map((item, index) => (
                         <View
                             key={index}

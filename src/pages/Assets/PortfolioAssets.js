@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 15:22:20
+ * @LastEditTime: 2021-04-07 16:15:31
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -303,13 +303,13 @@ export default function PortfolioAssets(props) {
                                     true,
                                     2,
                                     deviceWidth - text(40),
+                                    10,
                                     chart?.tag_position
                                 )}
                                 onChange={onChartChange}
                                 // changeData={(data) => `
                                 // chart.changeData(${JSON.stringify(data)});
                                 // chart.repaint();
-
                                 // if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(chart?.tag_position?.buy)}){
                                 //     chart.guide().tag({
                                 //       position: ${JSON.stringify(chart?.tag_position?.buy?.position)},
@@ -353,7 +353,6 @@ export default function PortfolioAssets(props) {
                                 //       }
                                 //     });
                                 //   };
-
                                 // `}
                                 data={chart?.chart}
                                 onHide={onHide}

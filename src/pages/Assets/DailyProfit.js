@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 18:32:27
+ * @LastEditTime: 2021-04-07 12:41:37
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -180,11 +180,11 @@ const DailyProfit = ({poid}) => {
                             Style.flexBetween,
                             {
                                 width: Math.max(
-                                    text(105),
+                                    text(95),
                                     maxData === 0
                                         ? 0
                                         : (Math.abs(parseFloat(`${item.profit}`?.replace(/,/g, ''))) / maxData) *
-                                              (deviceWidth - 32)
+                                              (deviceWidth - Space.marginAlign * 2)
                                 ),
                                 maxWidth: '100%',
                                 backgroundColor: getColor(`${item.profit}`),

@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 17:17:28
+ * @LastEditTime: 2021-04-07 11:43:09
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import Tab from '../../components/TabBar';
 import {Chart} from '../../components/Chart';
 import Dot from './components/Dot';
 import {baseAreaChart, baseLineChart} from './components/ChartOption';
-import {px as text} from '../../utils/appUtil';
+import {deviceWidth, px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {useJump} from '../../components/hooks';
@@ -112,8 +112,39 @@ const FundDetail = ({navigation, route}) => {
                                         chart1?.chart,
                                         [Colors.red, Colors.lightBlackColor],
                                         ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                                        true
+                                        true,
+                                        2,
+                                        deviceWidth - 10,
+                                        [15, 45, 15, 20]
                                     )}
+                                    updateScript={(sourceData) => `
+                                        chart.clear();
+                                        chart.source(${JSON.stringify(sourceData)});
+                                        chart.area({startOnZero: false})
+                                            .position('date*value')
+                                            .color('type', ${JSON.stringify(['l(90) 0:#E74949 1:#fff', 'transparent'])})
+                                            .shape('smooth')
+                                            .animate({
+                                                appear: {
+                                                    animation: 'groupWaveIn',
+                                                    duration: 1000
+                                                }
+                                            });
+                                        chart.line()
+                                            .position('date*value')
+                                            .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor])})
+                                            .shape('smooth')
+                                            .animate({
+                                                appear: {
+                                                    animation: 'groupWaveIn',
+                                                    duration: 1000
+                                                }
+                                            })
+                                            .style({
+                                                lineWidth: 1.5
+                                            });
+                                        chart.render();
+                                    `}
                                     data={chart1?.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
@@ -121,7 +152,22 @@ const FundDetail = ({navigation, route}) => {
                                 />
                             ) : (
                                 <Chart
-                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 3)}
+                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
+                                    updateScript={(sourceData) => `
+                                        chart.clear();
+                                        chart.source(${JSON.stringify(sourceData)});
+                                        chart.line()
+                                            .position('date*value')
+                                            .color('type', ${JSON.stringify([Colors.red])})
+                                            .shape('smooth')
+                                            .animate({
+                                                appear: {
+                                                    animation: 'groupWaveIn',
+                                                    duration: 1000
+                                                }
+                                            });
+                                        chart.render();
+                                    `}
                                     data={chart2?.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}

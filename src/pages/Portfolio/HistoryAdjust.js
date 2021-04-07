@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:05:42
+ * @LastEditTime: 2021-04-07 10:30:17
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -64,7 +64,7 @@ const HistoryAdjust = ({navigation, route}) => {
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                key={item.code || item.fund_code}
+                                key={item + index}
                                 onPress={() => navigation.navigate('FundDetail', {code: item.code || item.fund_code})}
                                 style={[styles.assets_l2, Style.flexBetween]}>
                                 <View>

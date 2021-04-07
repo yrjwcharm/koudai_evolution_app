@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 14:04:12
+ * @LastEditTime: 2021-04-02 17:33:29
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         // fontWeight: 'bold',
     },
     legendDesc: {
