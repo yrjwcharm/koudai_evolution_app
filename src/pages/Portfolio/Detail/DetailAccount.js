@@ -59,6 +59,7 @@ export default function DetailAccount({route, navigation}) {
                 Http.get('/portfolio/yield_chart/20210101', {
                     allocation_id: res.result.allocation_id,
                     benchmark_id: res.result.benchmark_id,
+                    poid: res.result.poid,
                     period: period,
                     type: type,
                 }).then((resp) => {

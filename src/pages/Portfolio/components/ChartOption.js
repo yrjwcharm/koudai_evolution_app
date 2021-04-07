@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 13:59:36
+ * @LastEditTime: 2021-04-07 15:23:35
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -29,7 +29,7 @@ export const baseAreaChart = (
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
-    tag_position = ''
+    tag_position = {}
 ) => `
 (function(){
    chart = new F2.Chart({
@@ -103,19 +103,45 @@ export const baseAreaChart = (
       fill: '#E74949',
     },
   });
-  
-    chart.guide().tag({
-      position: ['2021-03-17', 0],
-      content: '买入',
-      offsetY: 20,
-      offsetX: 20,
-      background: {
-        fill: '#8659AF'
-      },
-      pointStyle: {
-        fill: '#8659AF'
-      }
-    });
+    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.buy?.position)},
+        content: ${JSON.stringify(tag_position?.buy?.name)},
+        limitInPlot:true,
+        background: {
+          fill: '#E74949'
+        },
+        pointStyle: {
+          fill: '#E74949'
+        }
+      });
+    };
+    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.redeem)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.redeem?.position)},
+        content: ${JSON.stringify(tag_position?.redeem?.name)},
+        limitInPlot:true,
+        background: {
+          fill: '#4BA471'
+        },
+        pointStyle: {
+          fill: '#4BA471'
+        }
+      });
+    };
+    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.adjust)}){
+      chart.guide().tag({
+        position: ${JSON.stringify(tag_position?.adjust?.position)},
+        content: ${JSON.stringify(tag_position?.adjust?.name)},
+        limitInPlot:true,
+        background: {
+          fill: '#0051CC'
+        },
+        pointStyle: {
+          fill: '#0051CC'
+        }
+      });
+    };
   chart.area({startOnZero: false})
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
@@ -132,11 +158,11 @@ export const baseAreaChart = (
     }).style('tag', {
       fill: function fill(val) {
         if (val === 2) {
-          return '#000';
+          return '#4BA471';
         } else if (val === 1) {
-          return 'red';
+          return '#E74949';
         }else if (val === 3) {
-            return 'green';
+            return '#0051CC';
          }
       },
       stroke: '#fff',

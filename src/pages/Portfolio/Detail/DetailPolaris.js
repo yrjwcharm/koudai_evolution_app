@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:14:23
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-07 14:26:43
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -47,6 +47,7 @@ export default function DetailPolaris({route, navigation}) {
                 upid: route.params.upid,
                 period: period,
                 type: type,
+                poid: res.result.poid,
                 allocation_id: res.result.parts_addition_data.line.allocation_id,
                 benchmark_id: res.result.parts_addition_data.line.benchmark_id,
             }).then((res) => {

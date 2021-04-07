@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 12:15:08
+ * @LastEditTime: 2021-04-07 15:22:20
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -36,7 +36,7 @@ export default function PortfolioAssets(props) {
     const [showEye, setShowEye] = useState(true);
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
-    const [period, setPeriod] = useState('m1');
+    const [period, setPeriod] = useState('y1');
     const [tip, setTip] = useState({});
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
@@ -235,7 +235,7 @@ export default function PortfolioAssets(props) {
             </View>
         );
     };
-
+    console.log(chart?.tag_position);
     const renderChart = () => {
         return (
             <>
@@ -306,6 +306,55 @@ export default function PortfolioAssets(props) {
                                     chart?.tag_position
                                 )}
                                 onChange={onChartChange}
+                                // changeData={(data) => `
+                                // chart.changeData(${JSON.stringify(data)});
+                                // chart.repaint();
+
+                                // if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(chart?.tag_position?.buy)}){
+                                //     chart.guide().tag({
+                                //       position: ${JSON.stringify(chart?.tag_position?.buy?.position)},
+                                //       content: ${JSON.stringify(chart?.tag_position?.buy?.name)},
+                                //       limitInPlot:true,
+                                //       background: {
+                                //         fill: '#E74949'
+                                //       },
+                                //       pointStyle: {
+                                //         fill: '#E74949'
+                                //       }
+                                //     });
+                                //   };
+                                //   if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(
+                                //     chart?.tag_position?.redeem
+                                // )}){
+                                //     chart.guide().tag({
+                                //       position: ${JSON.stringify(chart?.tag_position?.redeem?.position)},
+                                //       content: ${JSON.stringify(chart?.tag_position?.redeem?.name)},
+                                //       limitInPlot:true,
+                                //       background: {
+                                //         fill: '#4BA471'
+                                //       },
+                                //       pointStyle: {
+                                //         fill: '#4BA471'
+                                //       }
+                                //     });
+                                //   };
+                                //   if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(
+                                //     chart?.tag_position?.adjust
+                                // )}){
+                                //     chart.guide().tag({
+                                //       position: ${JSON.stringify(chart?.tag_position?.adjust?.position)},
+                                //       content: ${JSON.stringify(chart?.tag_position?.adjust?.name)},
+                                //       limitInPlot:true,
+                                //       background: {
+                                //         fill: '#0051CC'
+                                //       },
+                                //       pointStyle: {
+                                //         fill: '#0051CC'
+                                //       }
+                                //     });
+                                //   };
+
+                                // `}
                                 data={chart?.chart}
                                 onHide={onHide}
                                 style={{width: '100%'}}

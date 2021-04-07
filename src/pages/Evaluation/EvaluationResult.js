@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 14:14:47
+ * @LastEditTime: 2021-04-07 15:33:22
  * @Description:规划结果页
  */
 
@@ -71,7 +71,7 @@ const animation = [
 export default class planResult extends Component {
     state = {
         chart: '', //图表数据
-        lableAnimation: false,
+        lableAnimation: true,
         data: '', //展示数据
     };
     upid = this.props.route?.params?.upid;
@@ -146,7 +146,7 @@ export default class planResult extends Component {
         this.props.navigation.replace(url, params);
     };
     render() {
-        const {labels, chart, tab, type} = this.state.chart;
+        const {labels, chart, tab, top_button, type} = this.state.chart;
         const {plan, button, tip} = this.state.data;
         return (
             <View style={{backgroundColor: '#fff', flex: 1}}>
@@ -164,7 +164,7 @@ export default class planResult extends Component {
                             <TouchableOpacity
                                 style={[styles.title_btn, {width: px(60)}]}
                                 onPress={() => {
-                                    this.props.navigation.replace(chart?.top_button?.path, chart?.top_button?.params);
+                                    this.props.navigation.replace(top_button?.url?.path, top_button?.url?.params);
                                 }}>
                                 <Text>重新定制</Text>
                             </TouchableOpacity>
