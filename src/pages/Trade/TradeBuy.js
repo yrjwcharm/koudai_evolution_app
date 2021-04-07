@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 11:56:54
+ * @LastEditTime: 2021-04-07 10:49:56
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -222,7 +222,8 @@ class TradeBuy extends Component {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
-        let _amount = onlyNumber(amount || this.state.data.buy_info.initial_amount);
+        let _amount = onlyNumber(amount);
+
         this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
             if (_amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
