@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:47:17
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 14:21:19
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -82,7 +82,13 @@ export default function MessageNotice({navigation, route}) {
         return (
             <>
                 {list.length > 0 && (
-                    <Text style={{textAlign: 'center', marginTop: text(12)}}>
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            marginTop: text(12),
+                            fontSize: Font.textH3,
+                            color: Colors.darkGrayColor,
+                        }}>
                         {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
                 )}

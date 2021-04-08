@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 14:23:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 12:33:04
+ * @LastEditTime: 2021-04-08 16:13:22
  * @Description: 基金查询
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -11,6 +11,7 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
+import EmptyTip from '../../components/EmptyTip';
 
 const FundSearching = ({route}) => {
     const [data, setData] = useState({});
@@ -39,7 +40,7 @@ const FundSearching = ({route}) => {
                 <Text style={[styles.desc, {paddingVertical: Space.padding}]}>
                     {'在理财魔方购买的所有基金都可以在基金官网查询哦，您购买的基金查询方式如下'}
                 </Text>
-                {data.list &&
+                {data.list && data.list.length > 0 ? (
                     data.list.map((item, index) => {
                         return (
                             <View style={styles.cardContainer} key={index}>
@@ -58,7 +59,10 @@ const FundSearching = ({route}) => {
                                 </View>
                             </View>
                         );
-                    })}
+                    })
+                ) : (
+                    <EmptyTip style={{paddingVertical: text(40)}} text={'暂无数据'} />
+                )}
             </ScrollView>
         )
     );

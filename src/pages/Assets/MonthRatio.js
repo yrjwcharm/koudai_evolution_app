@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 18:28:27
+ * @LastEditTime: 2021-04-08 16:14:58
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -16,6 +16,7 @@ import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
 import {dodgeColumn} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
+import Dot from '../Portfolio/components/Dot';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -110,10 +111,13 @@ const NetValueTrend = ({poid}) => {
                                         />
                                         <View style={Style.flexRow}>
                                             {index !== 0 && (
-                                                <MaterialCommunityIcons
-                                                    name={'record-circle-outline'}
+                                                <Dot
+                                                    bgColor={
+                                                        index === 1
+                                                            ? 'rgba(231, 73, 73, 0.15)'
+                                                            : 'rgba(84, 89, 104, 0.15)'
+                                                    }
                                                     color={index === 1 ? Colors.red : Colors.descColor}
-                                                    size={12}
                                                 />
                                             )}
                                             <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 20:16:08
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 16:20:54
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -251,7 +251,7 @@ export class uploadID extends Component {
                     <Text style={styles.title}>上传要求</Text>
                     <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
                 </ScrollView>
-                <FixedButton title={'下一步'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
+                <FixedButton title={'确认上传'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
             </>
         );
     }

@@ -60,7 +60,7 @@ const FundAnnouncement = ({navigation, route}) => {
             <>
                 {list.length > 0 && (
                     <View style={[styles.separator, {paddingVertical: Space.padding}]}>
-                        <Text style={[styles.headerText]}>{hasMore ? '正在加载...' : '暂无更多了'}</Text>
+                        <Text style={[styles.headerText]}>{hasMore ? '正在加载...' : '我们是有底线的...'}</Text>
                     </View>
                 )}
             </>

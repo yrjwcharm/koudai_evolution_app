@@ -350,6 +350,7 @@ export default function DetailEducation({navigation, route}) {
                                     chart={chart}
                                     type={type}
                                     style={{marginTop: text(20)}}
+                                    appendPadding={[15, 45, 15, 20]}
                                 />
                                 <View
                                     style={{

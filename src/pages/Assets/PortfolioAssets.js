@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 16:14:58
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 16:46:06
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -16,10 +16,10 @@ import {
     Image,
     TextInput,
     Dimensions,
-    ActivityIndicator,
+    RefreshControl,
 } from 'react-native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text, isIphoneX} from '../../utils/appUtil';
+import {Colors, Font, Style} from '../../common/commonStyle';
+import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -39,6 +39,7 @@ import EmptyTip from '../../components/EmptyTip';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
+    const [refreshing, setRefreshing] = useState(false);
     const [data, setData] = useState({});
     const [card, setCard] = useState({});
     const [chart, setChart] = useState({});
@@ -55,19 +56,20 @@ export default function PortfolioAssets(props) {
     const bottomModal = React.useRef(null);
     const jump = useJump();
 
-    var _l;
-    const changeTab = (period) => {
-        setPeriod(period);
+    const changeTab = (p) => {
+        setPeriod(p);
     };
     const init = useCallback(() => {
         Http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
         }).then((res) => {
             setData(res.result);
+            setRefreshing(false);
             props.navigation.setOptions({
                 title: res.result.title,
             });
             if (res.result?.progress_bar) {
+                let _l = '';
                 const _left = res.result?.progress_bar?.percent_text;
                 if (_left.split('%')[0] < 10) {
                     _l = _left.split('%')[0] - 1 + '%';
@@ -180,8 +182,8 @@ export default function PortfolioAssets(props) {
             }
         });
     };
-    const showTips = (tip) => {
-        setTip({title: tip?.title, content: tip?.content, img: tip.img});
+    const showTips = (tips) => {
+        setTip(tips);
         bottomModal.current.show();
     };
     const renderBtn = () => {
@@ -382,7 +384,11 @@ export default function PortfolioAssets(props) {
                     </View>
                     {data?.asset_deploy?.items.map((_i, _d) => {
                         return (
-                            <View style={[Style.flexBetween, styles.fund_item_sty]} key={_d + '_i'}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => props.navigation.navigate('FundDetail', {code: _i.code})}
+                                style={[Style.flexBetween, styles.fund_item_sty]}
+                                key={_d + '_i'}>
                                 <View>
                                     <Text style={{color: '#333333'}}>{_i.name}</Text>
                                     <Text style={styles.plan_text_sty}>{_i.code}</Text>
@@ -395,7 +401,7 @@ export default function PortfolioAssets(props) {
                                     }}>
                                     {_i.percent}
                                 </Text>
-                            </View>
+                            </TouchableOpacity>
                         );
                     })}
                 </View>
@@ -404,7 +410,7 @@ export default function PortfolioAssets(props) {
     };
     return (
         <>
-            <ScrollView bounces={false}>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init()} />}>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
                 <View style={styles.assets_card_sty}>
                     {Object.keys(data).length > 0 && (

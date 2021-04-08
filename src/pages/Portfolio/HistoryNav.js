@@ -81,7 +81,7 @@ const HistoryNav = ({navigation, route}) => {
             <>
                 {list.length > 0 && (
                     <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
-                        {hasMore ? '正在加载...' : '暂无更多了'}
+                        {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
                 )}
             </>

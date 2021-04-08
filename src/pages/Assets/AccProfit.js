@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 18:09:33
+ * @LastEditTime: 2021-04-08 16:57:36
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -179,6 +179,34 @@ const AccProfit = ({poid}) => {
                                     false,
                                     0
                                 )}
+                                updateScript={(data) => `
+                                    chart.clear();
+                                    chart.source(${JSON.stringify(data)});
+                                    chart.area({startOnZero: false})
+                                        .position('date*value')
+                                        .color(${JSON.stringify([Colors.red])})
+                                        .shape('smooth')
+                                        .animate({
+                                            appear: {
+                                            animation: 'groupWaveIn',
+                                            duration: 500
+                                            }
+                                        });
+                                    chart.line()
+                                        .position('date*value')
+                                        .color(${JSON.stringify([Colors.red])})
+                                        .shape('smooth')
+                                        .animate({
+                                            appear: {
+                                            animation: 'groupWaveIn',
+                                            duration: 500
+                                            }
+                                        })
+                                        .style({
+                                            lineWidth: 1.5,
+                                        });
+                                    chart.render();
+                                `}
                                 data={chartData.chart}
                             />
                         )}

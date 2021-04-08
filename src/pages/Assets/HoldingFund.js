@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 17:02:51
+ * @LastEditTime: 2021-04-08 16:43:17
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -131,7 +131,7 @@ const HoldingFund = ({navigation, route}) => {
                                                 ]}>
                                                 <View style={Style.flexRow}>
                                                     <Text style={[styles.name]}>{fund.name}</Text>
-                                                    <Text
+                                                    {/* <Text
                                                         style={[
                                                             styles.numStyle,
                                                             {
@@ -140,7 +140,7 @@ const HoldingFund = ({navigation, route}) => {
                                                             },
                                                         ]}>
                                                         ({fund.code})
-                                                    </Text>
+                                                    </Text> */}
                                                 </View>
                                                 <Text style={styles.subTitle}>
                                                     {curTab === 0 ? fund.profit_date : fund.acked_date}
@@ -303,8 +303,8 @@ const styles = StyleSheet.create({
         marginRight: text(8),
     },
     name: {
-        fontSize: Font.textH2,
-        lineHeight: text(20),
+        fontSize: text(13),
+        lineHeight: text(18),
         color: Colors.defaultColor,
     },
     numStyle: {

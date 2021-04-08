@@ -173,7 +173,7 @@ const ScoreDetail = ({navigation, route}) => {
             <>
                 {list.length > 0 && (
                     <View style={styles.footer}>
-                        <Text style={styles.footerText}>{hasMore ? '正在加载...' : '暂无更多了'}</Text>
+                        <Text style={styles.footerText}>{hasMore ? '正在加载...' : '我们是有底线的...'}</Text>
                     </View>
                 )}
             </>

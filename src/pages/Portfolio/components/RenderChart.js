@@ -2,13 +2,13 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 11:59:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 16:46:48
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import {baseAreaChart} from './ChartOption';
-import {px, px as text} from '../../../utils/appUtil';
+import {px as text} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
@@ -130,7 +130,7 @@ export default function RenderChart(props) {
                     true,
                     2,
                     width,
-                    [15, 45, 15, 20]
+                    props.appendPadding || 10
                 )}
                 onChange={onChartChange}
                 data={chart}
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numMedium,
         marginBottom: text(4),
         padding: 0, //处理textInput 在安卓上的兼容问题
-        width: text(90),
+        // width: text(90),
         textAlign: 'center',
     },
     legend_desc_sty: {

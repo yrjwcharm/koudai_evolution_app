@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-03-29 15:19:19
+ * @LastEditTime: 2021-04-08 12:07:35
  * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -108,6 +108,7 @@ const BottomDesc = (props) => {
                                     global.LogTool('bottomDesc');
                                     navigation.navigate(item.btn.jump_to, {
                                         link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
+                                        title: '资金安全',
                                     });
                                 }}>
                                 {item.btn.text}

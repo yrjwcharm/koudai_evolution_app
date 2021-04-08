@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-07 18:32:42
+ * @LastEditTime: 2021-04-08 16:29:29
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -75,6 +75,7 @@ export class AssetsConfigDetail extends Component {
     };
     // 输入投资金额回调
     onChange = (val) => {
+        val = val.replace(/\D/g, '');
         val = val * 1 > 10000000 ? '10000000' : val;
         this.setState({amount: val}, () => val >= 2000 && this.init());
     };
@@ -157,7 +158,7 @@ export class AssetsConfigDetail extends Component {
                                 keyboardType="numeric"
                                 value={amount}
                                 placeholder={invest_form.placeholder}
-                                placeholderTextColor={Colors.darkGrayColor}
+                                placeholderTextColor={Colors.placeholderColor}
                                 onChangeText={this.onChange}
                                 style={[styles.input, amount.length === 0 ? {fontSize: text(12)} : {}]}
                             />
@@ -337,6 +338,13 @@ const styles = StyleSheet.create({
     },
     assets_l2_amount: {
         marginRight: text(18),
+    },
+    placeholder: {
+        position: 'absolute',
+        left: 2 * Space.marginAlign,
+        top: text(28),
+        fontSize: Font.textH3,
+        color: Colors.placeholderColor,
     },
 });
 export default AssetsConfigDetail;

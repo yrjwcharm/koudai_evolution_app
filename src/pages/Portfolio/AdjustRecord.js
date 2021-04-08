@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-18 17:56:40
+ * @LastEditTime: 2021-04-08 17:28:45
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -67,7 +67,7 @@ const AdjustRecord = ({navigation, route}) => {
                     <>
                         <View style={{borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor}} />
                         <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
-                            {hasMore ? '正在加载...' : '暂无更多了'}
+                            {hasMore ? '正在加载...' : '我们是有底线的...'}
                         </Text>
                     </>
                 )}

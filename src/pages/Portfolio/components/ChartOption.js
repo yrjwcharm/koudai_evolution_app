@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 16:08:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 16:54:13
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -281,11 +281,23 @@ chart.tooltip({
 chart.area({startOnZero: false})
   .position('date*value')
   .color(${JSON.stringify(areaColors)})
-  .shape('smooth');
+  .shape('smooth')
+  .animate({
+    appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+    }
+  });
 chart.line()
   .position('date*value')
   .color(${JSON.stringify(colors)})
   .shape('smooth')
+  .animate({
+    appear: {
+      animation: 'groupWaveIn',
+      duration: 500
+    }
+  })
   .style({
     lineWidth: 1.5,
   });

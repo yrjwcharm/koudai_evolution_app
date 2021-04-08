@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 18:28:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 16:20:21
  * @Description:路由表
  */
 import React from 'react';
@@ -208,7 +208,7 @@ export default function AppStack() {
                 name="UploadID"
                 component={UploadID}
                 options={{
-                    title: '基金交易安全开户',
+                    title: '证件照片',
                 }}
             />
             <Stack.Screen
