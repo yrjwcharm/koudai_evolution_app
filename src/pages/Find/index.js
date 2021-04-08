@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 11:59:34
+ * @LastEditTime: 2021-04-08 11:19:11
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -43,6 +43,7 @@ const Index = (props) => {
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
+            snapScroll?.current?.scrollTo({x: 0, y: 0, animated: false});
             getData();
         }, [getData])
     );

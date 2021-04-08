@@ -2,18 +2,17 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 11:17:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 11:59:05
  */
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import {baseAreaChart} from './ChartOption';
 import {px, px as text} from '../../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {Colors, Font, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {Modal, BottomModal} from '../../../components/Modal';
+import {BottomModal} from '../../../components/Modal';
 
 export default function RenderChart(props) {
     const {chartData, chart, type, style, width} = props;
@@ -26,7 +25,7 @@ export default function RenderChart(props) {
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
             if (type == 2) {
-                let range = items[0].origin.value;
+                let range = items[0]?.origin?.value;
                 let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
                 _textPortfolio.current.setNativeProps({
                     text: _value,
@@ -112,7 +111,7 @@ export default function RenderChart(props) {
                     <View style={[Style.flexRow, {alignItems: 'center'}]}>
                         <CircleLegend color={['#E8EAEF', '#545968']} />
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
-                        {chartData?.yield_info.tips && (
+                        {chartData?.yield_info?.tips && (
                             <TouchableOpacity onPress={() => bottomModal.current.show()}>
                                 <Image
                                     style={{width: text(16), height: text(16)}}

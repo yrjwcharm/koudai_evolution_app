@@ -124,8 +124,11 @@ export const baseChart = (data, width, height) => `(function(){
   });
   chart.legend(false);
   chart.axis('value',{
-    grid:null,
-    label:null,
+    // grid:null,
+    formatter: function formatter(val) {
+      return (val*100)+ '%';
+    },
+    // label:null,
   });
   chart.tooltip(false);
   chart.area()

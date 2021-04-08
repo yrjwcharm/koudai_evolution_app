@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:26:41
  * @Description:银行持仓(平安)
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:02:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 11:06:27
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -16,7 +16,7 @@ import Header from '../../components/NavBar';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Button} from '../../components/Button';
 import Chart from '../../components/Chart';
-import {baseChart, dynamicChart, area, gradientArea} from '../../components/Chart/chartOptions';
+import {gradientArea} from '../../components/Chart/chartOptions';
 import ChartData from './data.json';
 
 export default function BankAssetsPA(props) {
