@@ -1,23 +1,57 @@
-const env = 'online' //默认
+/*
+ * @Date: 2020-11-06 16:22:50
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 16:47:43
+ * @Description:环境
+ */
+const env = 'test'; //默认
 const SERVER_URL = {
-  online: { // 正式环境
-    SERVER_URL: 'https://polaris-api.licaimofang.com'
-  },
-  pre1: {
-    SERVER_URL: "http://pre1-polaris-api.licaimofang.com"
-  },
-  wg: {
-    SERVER_URL: "http://polaris-api.wanggang.mofanglicai.com.cn:10080",
-  },
-  lff: {
-    SERVER_URL: "http://polaris.lifangfang.mofanglicai.com.cn:10080"
-  },
-  develop: {
-    SERVER_URL: 'http://polaris-api.bae.mofanglicai.com.cn:10080'
-  },
-  ll: {
-    SERVER_URL: "http://polaris-api.ll.mofanglicai.com.cn:10080"
-  },
+    online: {
+        // 正式环境
+        HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    pre2: {
+        HTTP: 'http://kapi-web-kp2.licaimofang.com/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    test: {
+        HTTP: 'http://kapi-web.yitao.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    develop: {
+        HTTP: 'http://kapi-web.bae.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    lxc: {
+        HTTP: 'http://kapi-web.lengxiaochu.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    wg: {
+        HTTP: 'http://kapi-web.wanggang.mofanglicai.com.cn:10080',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+    },
+    ll: {
+        HTTP: 'http://kapi-web.ll.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im-ws-kp2.licaimofang.com/',
+        IMApi: 'http://kapi-im-kp2.licaimofang.com',
+    },
+    hjq: {
+        HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',
+    },
+};
 
-}
-export default SERVER_URL[env]
+export default SERVER_URL[env];

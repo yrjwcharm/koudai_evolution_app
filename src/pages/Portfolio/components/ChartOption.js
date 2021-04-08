@@ -1,8 +1,13 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
+<<<<<<< HEAD
  * @LastEditors: dx
  * @LastEditTime: 2021-04-08 16:54:13
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 17:19:49
+>>>>>>> bug
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -156,7 +161,6 @@ export const baseAreaChart = (
   chart.area({startOnZero: false})
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
-    // .shape('smooth')
     .animate({
       appear: {
         animation: 'groupWaveIn',
@@ -166,7 +170,7 @@ export const baseAreaChart = (
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
-    // .shape('smooth')
+   
     .animate({
       appear: {
         animation: 'groupWaveIn',

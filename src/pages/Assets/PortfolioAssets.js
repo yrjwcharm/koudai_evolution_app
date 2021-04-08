@@ -3,6 +3,7 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
+<<<<<<< HEAD
  * @LastEditors: dx
  * @LastEditTime: 2021-04-08 16:46:06
  */
@@ -18,6 +19,13 @@ import {
     Dimensions,
     RefreshControl,
 } from 'react-native';
+=======
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 16:48:05
+ */
+import React, {useEffect, useState, useCallback, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
+>>>>>>> bug
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
