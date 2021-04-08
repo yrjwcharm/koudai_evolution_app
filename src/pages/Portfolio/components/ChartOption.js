@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 17:42:31
+ * @LastEditTime: 2021-04-08 16:08:09
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -73,12 +73,12 @@ export const baseAreaChart = (
   });
   chart.legend(false);
   chart.tooltip({
-    crosshairsStyle: {
-      stroke: '#E74949',
-      lineWidth: 0.5,
-      lineDash: [2],
-    },
-    crosshairsType: 'xy',
+    // crosshairsStyle: {
+    //   stroke: '#E74949',
+    //   lineWidth: 0.5,
+    //   lineDash: [2],
+    // },
+    crosshairsType: 'y',
     custom: true,
     onChange: function(obj) {
       window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
@@ -87,16 +87,14 @@ export const baseAreaChart = (
       window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
     },
     showCrosshairs: true,
-    showXTip: true,
-    showYTip: true,
-    snap: true,
+    // showXTip: true,
+    // showYTip: true,
+    // snap: true,
     tooltipMarkerStyle: {
-      fill: '#E74949',
-      stroke: '#E74949',
-      radius: 2
+      radius: 1
     },
-    triggerOn: ['touchstart', 'touchmove'],
-    triggerOff: 'touchend',
+    // triggerOn: ['touchstart', 'touchmove'],
+    // triggerOff: 'touchend',
     xTipBackground: {
       fill: '#E74949',
     },
@@ -158,21 +156,21 @@ export const baseAreaChart = (
   chart.area({startOnZero: false})
     .position('date*value')
     .color('type', ${JSON.stringify(areaColors)})
-    .shape('smooth')
+    // .shape('smooth')
     .animate({
       appear: {
         animation: 'groupWaveIn',
-        duration: 1000
+        duration: 500
       }
     });
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
-    .shape('smooth')
+    // .shape('smooth')
     .animate({
       appear: {
         animation: 'groupWaveIn',
-        duration: 1000
+        duration: 500
       }
     })
     .style({

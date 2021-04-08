@@ -4,10 +4,20 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 19:21:47
+ * @LastEditTime: 2021-04-08 16:14:58
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Image,
+    TextInput,
+    Dimensions,
+    ActivityIndicator,
+} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -32,6 +42,7 @@ export default function PortfolioAssets(props) {
     const [data, setData] = useState({});
     const [card, setCard] = useState({});
     const [chart, setChart] = useState({});
+    const [chartData, setChartData] = useState([]);
     const [showEye, setShowEye] = useState(true);
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
@@ -78,7 +89,9 @@ export default function PortfolioAssets(props) {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
+            setChartData([]);
             setChart(res.result);
+            setChartData(res.result.chart);
             setTag(res.result.tag_position);
         });
     };
@@ -240,7 +253,6 @@ export default function PortfolioAssets(props) {
         );
     };
     const renderChart = () => {
-        console.log(chart?.tag_position);
         return (
             <>
                 <Text style={[styles.title_sty, {paddingVertical: text(16)}]}>{chart?.title}</Text>
@@ -255,50 +267,52 @@ export default function PortfolioAssets(props) {
                         style={{
                             height: 260,
                         }}>
-                        <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
-                            <View style={[styles.legend_sty]}>
-                                <TextInput
-                                    ref={_textTime}
-                                    style={[styles.legend_title_sty, {width: text(100)}]}
-                                    defaultValue={chart?.label[0]?.val}
-                                    editable={false}
-                                />
-                                <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
-                            </View>
-                            <View style={styles.legend_sty}>
-                                <TextInput
-                                    style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
-                                    ref={_textPortfolio}
-                                    defaultValue={chart?.label[1]?.val}
-                                    editable={false}
-                                />
-                                <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                    <CircleLegend color={['#FFECEC', '#E74949']} />
-                                    <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
+                        {chart?.label && chart?.label?.length > 0 ? (
+                            <View style={[Style.flexRow, {justifyContent: 'space-evenly'}]}>
+                                <View style={[styles.legend_sty]}>
+                                    <TextInput
+                                        ref={_textTime}
+                                        style={[styles.legend_title_sty, {width: text(100)}]}
+                                        defaultValue={chart?.label[0]?.val}
+                                        editable={false}
+                                    />
+                                    <Text style={styles.legend_desc_sty}>{chart?.label[0]?.name}</Text>
+                                </View>
+                                <View style={styles.legend_sty}>
+                                    <TextInput
+                                        style={[styles.legend_title_sty, {color: getColor(chart?.label[1]?.val)}]}
+                                        ref={_textPortfolio}
+                                        defaultValue={chart?.label[1]?.val}
+                                        editable={false}
+                                    />
+                                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                        <CircleLegend color={['#FFECEC', '#E74949']} />
+                                        <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.legend_sty}>
+                                    <TextInput
+                                        style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
+                                        ref={_textBenchmark}
+                                        defaultValue={chart?.label[2]?.val}
+                                        editable={false}
+                                    />
+                                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                        <CircleLegend color={['#E8EAEF', '#545968']} />
+                                        <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
+                                        {chart?.tips && (
+                                            <TouchableOpacity onPress={() => showTips(chart.tips)}>
+                                                <Image
+                                                    style={{width: text(16), height: text(16)}}
+                                                    source={require('../../assets/img/tip.png')}
+                                                />
+                                            </TouchableOpacity>
+                                        )}
+                                    </View>
                                 </View>
                             </View>
-                            <View style={styles.legend_sty}>
-                                <TextInput
-                                    style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
-                                    ref={_textBenchmark}
-                                    defaultValue={chart?.label[2]?.val}
-                                    editable={false}
-                                />
-                                <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                    <CircleLegend color={['#E8EAEF', '#545968']} />
-                                    <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
-                                    {chart?.tips && (
-                                        <TouchableOpacity onPress={() => showTips(chart.tips)}>
-                                            <Image
-                                                style={{width: text(16), height: text(16)}}
-                                                source={require('../../assets/img/tip.png')}
-                                            />
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                            </View>
-                        </View>
-                        {chart?.chart.length > 0 ? (
+                        ) : null}
+                        {chartData.length > 0 ? (
                             <Chart
                                 initScript={baseAreaChart(
                                     chart?.chart,
@@ -311,23 +325,6 @@ export default function PortfolioAssets(props) {
                                     tag
                                 )}
                                 onChange={onChartChange}
-                                // updateScript={(data) => {
-                                //     return (
-                                //         'chart.clear();' +
-                                //         baseAreaChart(
-                                //             data,
-                                //             [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                //             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                //             true,
-                                //             2,
-                                //             deviceWidth - text(40),
-                                //             10,
-                                //             tag
-                                //         ) +
-                                //         'chart.repaint();'
-                                //     );
-                                // }}
-                                data={chart?.chart}
                                 onHide={onHide}
                                 style={{width: '100%'}}
                             />
@@ -543,6 +540,7 @@ export default function PortfolioAssets(props) {
                         </View>
                     )}
                     {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
+                    {/* {renderChart()} */}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
                         {data?.extend_buttons?.map((_e, _index) => {
