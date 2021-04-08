@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -35,6 +35,16 @@ export default function DetailAccount({route, navigation}) {
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
+        Http.get('/portfolio/yield_chart/20210101', {
+            allocation_id: data.allocation_id,
+            benchmark_id: data.benchmark_id,
+            poid: data.poid,
+            period: p,
+            type: t,
+        }).then((resp) => {
+            setChart(resp.result.yield_info.chart);
+            setChartData(resp.result);
+        });
     };
     const rightPress = useCallback(() => {
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});
@@ -68,7 +78,8 @@ export default function DetailAccount({route, navigation}) {
                 });
             }
         });
-    }, [navigation, rightPress, route.params, period, type]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigation, rightPress, route.params]);
     useFocusEffect(
         useCallback(() => {
             init();

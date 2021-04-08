@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 19:46:04
+ * @LastEditTime: 2021-04-08 20:50:23
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -543,7 +543,7 @@ const IM = (props) => {
                         _ChatScreen?.current?.closeAll();
                     });
                     upload(
-                        'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/upload/oss',
+                        `$${BaseUrl.IMApi}/upload/oss`,
                         response,
                         [
                             {name: 'file_key', data: cmid},

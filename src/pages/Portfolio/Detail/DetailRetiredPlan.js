@@ -267,6 +267,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 chartData={chartData}
                                 period={period}
                                 chart={chart}
+                                tootipScope={false}
                                 type={type}
                                 style={{marginTop: text(20)}}
                             />

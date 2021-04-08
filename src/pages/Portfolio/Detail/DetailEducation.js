@@ -349,6 +349,7 @@ export default function DetailEducation({navigation, route}) {
                                     chartData={chartData}
                                     chart={chart}
                                     type={type}
+                                    tootipScope={false}
                                     style={{marginTop: text(20)}}
                                     appendPadding={[15, 45, 15, 20]}
                                 />

@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 18:05:56
+ * @LastEditTime: 2021-04-08 18:06:34
  */
 
 import React, {useState, useCallback} from 'react';
@@ -29,6 +29,16 @@ export default function DetailAccount({route, navigation}) {
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
+        Http.get('/portfolio/yield_chart/20210101', {
+            allocation_id: data.allocation_id,
+            benchmark_id: data.benchmark_id,
+            poid: data.poid,
+            period: period,
+            type: type,
+        }).then((resp) => {
+            setChart(resp.result.yield_info.chart);
+            setChartData(resp.result);
+        });
     };
 
     const init = useCallback(() => {
@@ -52,7 +62,8 @@ export default function DetailAccount({route, navigation}) {
                 setChartData(res.result);
             });
         });
-    }, [route.params, period]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [route.params]);
 
     useFocusEffect(
         useCallback(() => {

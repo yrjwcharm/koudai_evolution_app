@@ -1,13 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
-<<<<<<< HEAD
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:54:13
-=======
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 17:19:49
->>>>>>> bug
+ * @LastEditTime: 2021-04-08 17:30:30
  * @Description: 基金相关图表配置
  */
 // 交互图例

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:46:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 19:15:15
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -15,18 +15,23 @@ import CircleLegend from '../../../components/CircleLegend';
 import {BottomModal} from '../../../components/Modal';
 
 export default function RenderChart(props) {
-    const {chartData, chart, type, style, width} = props;
+    const {chartData, chart, type, style, width, tootipScope = true} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
+    console.log(tootipScope, type);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
             if (type == 2) {
                 let range = items[0]?.origin?.value;
-                let _value = (range[0] * 100).toFixed(2) + '%' + '~' + (range[0] * 100).toFixed(2) + '%';
+                let scope = '';
+                if (tootipScope) {
+                    scope = '~' + (range[1] * 100).toFixed(2) + '%';
+                }
+                let _value = (range[0] * 100).toFixed(2) + '%' + scope;
                 _textPortfolio.current.setNativeProps({
                     text: _value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],

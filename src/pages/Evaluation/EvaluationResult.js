@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 11:56:38
+ * @LastEditTime: 2021-04-08 20:48:40
  * @Description:规划结果页
  */
 
@@ -71,7 +71,7 @@ const animation = [
 export default class planResult extends Component {
     state = {
         chart: '', //图表数据
-        lableAnimation: true,
+        lableAnimation: false,
         data: '', //展示数据
     };
     upid = this.props.route?.params?.upid;
@@ -146,7 +146,7 @@ export default class planResult extends Component {
         this.props.navigation.replace(url, params);
     };
     render() {
-        const {labels, chart, tab, top_button, type} = this.state.chart;
+        const {labels, chart, tab, top_button, type, name} = this.state.chart;
         const {plan, button, tip} = this.state.data;
         return (
             <View style={{backgroundColor: '#fff', flex: 1}}>
@@ -260,21 +260,19 @@ export default class planResult extends Component {
                             {chart &&
                                 (type == 1 ? (
                                     <View style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
-                                        {/* <Chart
-                                            initScript={chartOptions.baseAreaChart(
-                                                chart,
-                                                [Colors.red, Colors.lightBlackColor, 'transparent'],
-                                                ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                                                true,
-                                                2,
-                                                deviceWidth
-                                            )}
-                                            style={{width: '100%'}}
-                                        /> */}
                                         <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
                                     </View>
                                 ) : (
                                     <View style={{height: px(180), marginBottom: px(20)}}>
+                                        {name ? (
+                                            <LinearGradient
+                                                start={{x: 0, y: 0.25}}
+                                                end={{x: 0, y: 0.8}}
+                                                colors={['#FF7D7D', '#E74949']}
+                                                style={styles.recommend_btn}>
+                                                <Text style={styles.btn_text}>魔方养老计划</Text>
+                                            </LinearGradient>
+                                        ) : null}
                                         {/* //养老子女 */}
                                         <Chart initScript={chartOptions.baseChart(chart, deviceWidth, px(180))} />
                                     </View>
@@ -317,7 +315,7 @@ export default class planResult extends Component {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
                                         {plan.plan_duration_info ? (
-                                            <View style={[Style.flexRow, {marginBottom: px(12)}]}>
+                                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                                                 <Text style={styles.key}>计划时长</Text>
                                                 <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
                                                 <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
@@ -325,7 +323,7 @@ export default class planResult extends Component {
                                             </View>
                                         ) : null}
                                         {plan.plan_type_list ? (
-                                            <View style={[Style.flexRow, {marginBottom: px(12)}]}>
+                                            <View style={[Style.flexRow, {marginBottom: px(16)}]}>
                                                 <Text style={styles.key}>投资方式</Text>
                                                 <View style={[Style.flexRow, {flex: 1}]}>
                                                     {plan.plan_type_list.map((type, _index) => {
@@ -346,7 +344,7 @@ export default class planResult extends Component {
                                         ) : null}
 
                                         <View style={[Style.flexRow, {marginBottom: px(15)}]}>
-                                            <Text style={styles.key}>目标金额</Text>
+                                            <Text style={styles.key}>投资金额</Text>
                                             <Text style={styles.plan_goal_amount}>{plan.plan_goal_info.val}</Text>
                                             <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
                                                 {plan.plan_goal_info.unit}
@@ -444,6 +442,20 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         color: Colors.darkGrayColor,
         marginTop: px(4),
+    },
+    recommend_btn: {
+        height: px(27),
+        justifyContent: 'center',
+        borderRadius: 20,
+        position: 'absolute',
+        width: px(96),
+        zIndex: 10,
+        right: px(40),
+    },
+    btn_text: {
+        color: '#fff',
+        fontSize: px(11),
+        textAlign: 'center',
     },
     sm_radio: {
         fontSize: px(14),

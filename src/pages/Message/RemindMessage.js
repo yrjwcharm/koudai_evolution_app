@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 16:26:23
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-08 18:49:49
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -87,23 +87,23 @@ export default function RemindMessage({navigation}) {
                         <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                     </TouchableOpacity>
                     {/* <TouchableOpacity
-                            style={[styles.im_card_sty, {marginBottom: 0}]}
-                            onPress={() => jumpTo(data.point.jump_url, data.point.params)}>
-                            <Image
-                                source={{
-                                    uri: data.point.icon,
-                                }}
-                                resizeMode="contain"
-                                style={{width: text(40), height: text(40)}}
-                            />
-                            <View style={{marginLeft: text(20), flex: 1}}>
-                                <Text style={styles.title_sty}>{data.point.title}</Text>
-                                <Text style={styles.desc_sty} numberOfLines={1}>
-                                    {data.point.content}
-                                </Text>
-                            </View>
-                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                        </TouchableOpacity> */}
+                        style={[styles.im_card_sty, {marginBottom: 0}]}
+                        onPress={() => jump(data?.point?.jump_url, data?.point?.params)}>
+                        <Image
+                            source={{
+                                uri: data?.point?.icon,
+                            }}
+                            resizeMode="contain"
+                            style={{width: text(40), height: text(40)}}
+                        />
+                        <View style={{marginLeft: text(20), flex: 1}}>
+                            <Text style={styles.title_sty}>{data?.point?.title}</Text>
+                            <Text style={styles.desc_sty} numberOfLines={1}>
+                                {data?.point?.content}
+                            </Text>
+                        </View>
+                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                    </TouchableOpacity> */}
 
                     <View
                         style={{
