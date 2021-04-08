@@ -124,16 +124,13 @@ export const baseChart = (data, width, height) => `(function(){
   });
   chart.legend(false);
   chart.axis('value',{
-    // grid:null,
-    formatter: function formatter(val) {
-      return (val*100)+ '%';
-    },
-    // label:null,
+    grid:null,
+    label:null,
   });
   chart.tooltip(false);
-  chart.area()
+  chart.area({startOnZero: false})
     .position('date*value')
-    .color('type', [ '#E74949', '#545968', '#FFC069' ])
+    .color('type', ${JSON.stringify(['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'])})
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',
