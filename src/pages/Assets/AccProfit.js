@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 18:31:48
+ * @LastEditTime: 2021-04-07 18:09:33
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -217,7 +217,7 @@ const AccProfit = ({poid}) => {
                     </View>
                 </View>
             ) : (
-                <EmptyTip text="暂无数据" />
+                <EmptyTip style={{paddingTop: text(28), paddingBottom: text(40)}} text="暂无数据" />
             )}
 
             {list.length > 0 && (

@@ -6,9 +6,9 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px, px as text, formaNum} from '../../../utils/appUtil';
+import {px as text, formaNum} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -28,32 +28,45 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
-var _params, _current, allocation_id, _age;
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState();
 
-    const [countFr, setCountFr] = useState();
+    const [countFr, setCountFr] = useState(0);
     const [countM, setCountM] = useState(0);
-    const [choose, setChoose] = useState(0);
+    const [goalAmount, setGoalAmount] = useState(0);
     const [showMask, setShowMask] = useState(false);
-    const [popup, setPopup] = useState();
+    const [popup, setPopup] = useState({});
     const bottomModal = React.useRef(null);
     const [age, setAge] = useState('');
     const [type, setType] = useState(1);
-    const [remark, setRemark] = useState();
+    const [remark, setRemark] = useState('');
     const [chart, setChart] = useState([]);
+    const allocationIdRef = useRef('');
+    const poidRef = useRef('');
+    const [subTabs, setSubTabs] = useState([]);
     const jump = useJump();
-    const changeTab = (period, type) => {
-        setPeriod(period);
-        setType(type);
+    const changeTab = (p, t) => {
+        setPeriod(p);
+        setType(t);
+        if (t === 2) {
+            const params = {
+                initial_amount: countFr,
+                per_amount: countM,
+                allocation_id: allocationIdRef.current,
+                year: age,
+                type: t,
+                goal_amount: data.plan_info.goal_info.amount,
+                upid: route.params.upid,
+            };
+            changeNotice(params);
+        }
     };
-    // 选择大学
-    const chooseBtn = (id) => {
-        setChoose(id);
-        changeNotice();
-    };
+    // // 选择大学
+    // const chooseBtn = (id) => {
+    //     setChoose(id);
+    // };
     const selectAge = () => {
         setShowMask(true);
         Picker.init({
@@ -70,9 +83,17 @@ export default function DetailEducation({navigation, route}) {
             pickerCancelBtnColor: [128, 137, 155, 1],
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
-                _current = pickedValue[0];
                 setAge(pickedValue[0]);
-                changeNotice();
+                const params = {
+                    initial_amount: countFr,
+                    per_amount: countM,
+                    allocation_id: allocationIdRef.current,
+                    year: pickedValue[0],
+                    type,
+                    goal_amount: data.plan_info.goal_info.amount,
+                    upid: route.params.upid,
+                };
+                changeNotice(params);
                 setShowMask(false);
             },
             onPickerCancel: () => {
@@ -90,72 +111,80 @@ export default function DetailEducation({navigation, route}) {
         return _dep;
     };
     // 计算金额
-    const countCalc = (interval, action, type) => {
-        const _interval = Number(interval);
-        if (type == 'begin') {
-            if (countFr < 2000 || countFr > 10000000) {
-                return;
+    const countCalc = useCallback(
+        (interval, action, t) => {
+            const _interval = Number(interval);
+            if (t === 'begin') {
+                setCountFr((prev) => {
+                    let next = prev;
+                    if (action === 'increase') {
+                        next = prev + _interval;
+                    } else {
+                        next = prev - _interval;
+                    }
+                    if (next < 2000 || next > 10000000) {
+                        next = prev;
+                    }
+                    const params = {
+                        initial_amount: next,
+                        per_amount: countM,
+                        allocation_id: allocationIdRef.current,
+                        year: age,
+                        type,
+                        goal_amount: data.plan_info.goal_info.amount,
+                        upid: route.params.upid,
+                    };
+                    changeNotice(params);
+                    return next;
+                });
+            } else if (t === 'auto') {
+                setCountM((prev) => {
+                    let next = prev;
+                    if (action === 'increase') {
+                        next = prev + _interval;
+                    } else {
+                        next = prev - _interval;
+                    }
+                    if (next < 2000 || next > 10000000) {
+                        next = prev;
+                    }
+                    const params = {
+                        initial_amount: countFr,
+                        per_amount: next,
+                        allocation_id: allocationIdRef.current,
+                        year: age,
+                        type,
+                        goal_amount: data.plan_info.goal_info.amount,
+                        upid: route.params.upid,
+                    };
+                    changeNotice(params);
+                    return next;
+                });
             }
-            if (action == 'increase') {
-                setCountFr(countFr + _interval);
-            } else {
-                setCountFr(countFr - _interval);
-            }
-        } else if (type == 'auto') {
-            if (countM < 2000 || countM > 10000000) {
-                return;
-            }
-            if (action == 'increase') {
-                setCountM(countM + _interval);
-            } else {
-                setCountM(countM - _interval);
-            }
-        }
-        changeNotice();
-    };
-    const changeNotice = useCallback(() => {
-        _params = {
-            initial_amount: countFr,
-            per_amount: countM,
-            allocation_id: allocation_id,
-            year: _current,
-            type,
-            goal_amount: data.plan_info.goal_info.amount,
-            upid: route.params.upid,
-        };
-        Http.get('/portfolio/future/yield_chart/20210101', {
-            ..._params,
-        }).then((res) => {
+        },
+        [age, changeNotice, countFr, countM, data, route.params, type]
+    );
+    const changeNotice = useCallback((params) => {
+        Http.get('/portfolio/future/yield_chart/20210101', params).then((res) => {
             if (res.code === '000000') {
                 setRemark(res.result.remark);
-                setCountM(res.result.per_amount);
-                if (type == 2) {
+                setGoalAmount(res.result.goal_amount);
+                setSubTabs(res.result.sub_tabs);
+                if (params.type == 2) {
                     setChart(res.result.chart);
                 }
             }
         });
-    }, [countFr, countM]);
+    }, []);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
         }).then((res) => {
-            _current = res.result?.plan_info?.goal_info?.items[2]?.val;
-            allocation_id = res.result.allocation_id;
-            _age = res.result.plan_info.personal_info?.age;
-            if (res.result?.top_button) {
-                navigation.setOptions({
-                    title: res.result.title,
-                    headerRight: () => {
-                        return (
-                            <TouchableOpacity onPress={() => jump(res.result?.top_button?.url)} activeOpacity={1}>
-                                <Text style={styles.right_sty}>{res.result?.top_button?.title}</Text>
-                            </TouchableOpacity>
-                        );
-                    },
-                });
-            }
+            setAge(res.result?.plan_info?.goal_info?.items[2]?.val);
+            allocationIdRef.current = res.result.allocation_id;
+            poidRef.current = res.result.poid;
             setData(res.result);
-            setChoose(res.result.plan_info.school_id);
+            setGoalAmount(res.result?.plan_info?.goal_info?.amount);
             setAge(res.result.plan_info.personal_info?.age);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
@@ -167,22 +196,43 @@ export default function DetailEducation({navigation, route}) {
                 //     setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
                 // }
             });
-
             setRemark(res.result.plan_info?.goal_info?.remark);
-            Http.get('/portfolio/yield_chart/20210101', {
-                upid: route.params.upid,
-                period: period,
-                type: type,
-                poid: res.result.poid,
-            }).then((res) => {
-                setChart(res.result.yield_info.chart);
-                setChartData(res.result);
-            });
         });
-    }, [route.params, period, type]);
+    }, [route.params]);
+    const getChartData = useCallback(() => {
+        Http.get('/portfolio/yield_chart/20210101', {
+            upid: route.params.upid,
+            period: period,
+            type: type,
+            poid: poidRef.current,
+        }).then((resp) => {
+            setChart(resp.result.yield_info.chart);
+            setChartData(resp.result);
+            setSubTabs(resp.result.yield_info?.sub_tabs);
+        });
+    }, [period, route.params, type]);
     useEffect(() => {
         return () => Picker.hide();
     }, []);
+    useEffect(() => {
+        if (data?.top_button) {
+            navigation.setOptions({
+                title: data.title,
+                headerRight: () => {
+                    return (
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url)} activeOpacity={1}>
+                            <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
+                        </TouchableOpacity>
+                    );
+                },
+            });
+        }
+    }, [data, jump, navigation]);
+    useEffect(() => {
+        if (data.poid && type === 1) {
+            getChartData();
+        }
+    }, [data, getChartData, period, type]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -211,7 +261,7 @@ export default function DetailEducation({navigation, route}) {
                                     <AntDesign name={'down'} size={12} color={'#545968'} />
                                 </TouchableOpacity>
                             </View>
-                            <View style={[Style.flexRow, {marginTop: text(7)}]}>
+                            {/* <View style={[Style.flexRow, {marginTop: text(7)}]}>
                                 {data?.plan_info?.schoolList?.map((_s, _i) => {
                                     return (
                                         <TouchableOpacity
@@ -239,15 +289,13 @@ export default function DetailEducation({navigation, route}) {
                                         </TouchableOpacity>
                                     );
                                 })}
-                            </View>
+                            </View> */}
 
                             <View>
                                 <View style={[Style.flexRow, {marginTop: text(24)}]}>
                                     <Text style={{color: '#9AA1B2'}}>{data?.plan_info?.goal_info?.title}</Text>
                                 </View>
-                                <Text style={styles.fund_input_sty}>
-                                    {formaNum(data?.plan_info?.goal_info?.amount)}
-                                </Text>
+                                <Text style={styles.fund_input_sty}>{formaNum(goalAmount)}</Text>
                                 <View style={{position: 'relative', marginTop: text(5)}}>
                                     <FontAwesome
                                         name={'caret-up'}
@@ -309,9 +357,9 @@ export default function DetailEducation({navigation, route}) {
                                         height: 50,
                                         alignItems: 'center',
                                         justifyContent: 'space-between',
-                                        marginHorizontal: 20,
+                                        marginHorizontal: Space.marginAlign,
                                     }}>
-                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                    {subTabs?.map((_item, _index) => {
                                         return (
                                             <TouchableOpacity
                                                 activeOpacity={1}
@@ -451,7 +499,14 @@ export default function DetailEducation({navigation, route}) {
                         </Text>
                         <BottomDesc style={{marginTop: text(80)}} />
                     </ScrollView>
-                    {showMask && <Mask />}
+                    {showMask && (
+                        <Mask
+                            onClick={() => {
+                                setShowMask(false);
+                                Picker.hide();
+                            }}
+                        />
+                    )}
                     {popup?.content && (
                         <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                             <View style={{padding: text(16)}}>
@@ -562,9 +617,10 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(12),
+        paddingHorizontal: text(10),
         paddingVertical: text(5),
         borderRadius: text(15),
+        marginRight: text(4),
     },
     age_text_sty: {
         color: '#6B9AE3',

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:37:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 15:55:14
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -11,7 +11,8 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
 import {px} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Colors} from '../common/commonStyle';
+import Image from 'react-native-fast-image';
+import {Colors, Space} from '../common/commonStyle';
 function Agreements(props) {
     const navigation = useNavigation();
     const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
@@ -23,11 +24,24 @@ function Agreements(props) {
         setChecked(!checked);
         onChange && onChange(!checked);
     };
-    let source = 'checkbox-blank-circle-outline';
-    if (checked) {
-        source = 'checkbox-marked-circle';
-    }
-    let container = <Icon name={source} size={px(18)} color="#0052CD" />;
+    // let source = 'checkbox-blank-circle-outline';
+    // if (checked) {
+    //     source = 'checkbox-marked-circle';
+    // }
+    // let container = <Icon name={source} size={px(18)} color="#0052CD" />;
+    const imgStyle = {width: px(15), height: px(15), marginTop: px(1.5)};
+    const container = checked ? (
+        <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+    ) : (
+        <View
+            style={{
+                ...imgStyle,
+                borderColor: Colors.darkGrayColor,
+                borderWidth: Space.borderWidth,
+                borderRadius: px(15),
+            }}
+        />
+    );
     return (
         <View style={[{flexDirection: 'row'}, style]}>
             {!isHide && (

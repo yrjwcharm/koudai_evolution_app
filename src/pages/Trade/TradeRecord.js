@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 12:16:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 19:06:18
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -129,9 +129,19 @@ const TradeRecord = ({route, navigation}) => {
                             </View>
                             <Text style={styles.date}>{item.time}</Text>
                         </View>
-                        <View style={[Style.flexBetween, {paddingVertical: px(13)}]}>
-                            {item?.items.map((_item, _index) => (
-                                <View key={_index}>
+                        <View style={[Style.flexRow, {paddingVertical: px(13)}]}>
+                            {item?.items.map((_item, _index, arr) => (
+                                <View
+                                    key={_index}
+                                    style={{
+                                        flex: 1,
+                                        alignItems:
+                                            _index === 0
+                                                ? 'flex-start'
+                                                : _index === arr.length - 1
+                                                ? 'flex-end'
+                                                : 'center',
+                                    }}>
                                     <Text style={styles.light_text}>{_item.k}</Text>
                                     <Text
                                         style={[

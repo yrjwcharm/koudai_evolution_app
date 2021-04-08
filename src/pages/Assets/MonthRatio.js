@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-02 17:33:29
+ * @LastEditTime: 2021-04-07 18:28:27
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -15,6 +15,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
 import {dodgeColumn} from '../Portfolio/components/ChartOption';
+import EmptyTip from '../../components/EmptyTip';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -91,45 +92,54 @@ const NetValueTrend = ({poid}) => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             scrollEventThrottle={1000}
             style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
-                <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
-                    {chartData?.label?.map((item, index) => {
-                        return (
-                            <View key={item.val + index} style={styles.legendItem}>
-                                <TextInput
-                                    defaultValue={`${item.val}`}
-                                    editable={false}
-                                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                    style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}
-                                />
-                                <View style={Style.flexRow}>
-                                    {index !== 0 && (
-                                        <MaterialCommunityIcons
-                                            name={'record-circle-outline'}
-                                            color={index === 1 ? Colors.red : Colors.descColor}
-                                            size={12}
+            {chartData.chart ? (
+                <>
+                    <View style={[styles.netValueChart, {marginBottom: insets.bottom}]}>
+                        <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
+                            {chartData?.label?.map((item, index) => {
+                                return (
+                                    <View key={item.val + index} style={styles.legendItem}>
+                                        <TextInput
+                                            defaultValue={`${item.val}`}
+                                            editable={false}
+                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                            style={[
+                                                styles.legendTitle,
+                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                            ]}
                                         />
-                                    )}
-                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                        {item.name}
-                                    </Text>
-                                </View>
-                            </View>
-                        );
-                    })}
-                </View>
-                <View style={{height: 220}}>
-                    {chartData.chart && (
-                        <Chart
-                            initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
-                            data={chartData.chart}
-                            onChange={onChartChange}
-                            onHide={onHide}
-                            style={{width: '100%'}}
-                        />
-                    )}
-                </View>
-            </View>
+                                        <View style={Style.flexRow}>
+                                            {index !== 0 && (
+                                                <MaterialCommunityIcons
+                                                    name={'record-circle-outline'}
+                                                    color={index === 1 ? Colors.red : Colors.descColor}
+                                                    size={12}
+                                                />
+                                            )}
+                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                                {item.name}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <View style={{height: 220}}>
+                            {chartData.chart && (
+                                <Chart
+                                    initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}
+                                    data={chartData.chart}
+                                    onChange={onChartChange}
+                                    onHide={onHide}
+                                    style={{width: '100%'}}
+                                />
+                            )}
+                        </View>
+                    </View>
+                </>
+            ) : (
+                <EmptyTip style={{paddingVertical: text(40)}} text="暂无数据" />
+            )}
         </ScrollView>
     );
 };

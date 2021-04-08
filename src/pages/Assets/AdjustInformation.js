@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 09:55:17
+ * @LastEditTime: 2021-04-07 16:32:53
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -92,9 +92,7 @@ const AdjustInformation = ({navigation, route}) => {
                 <View style={{flex: 1, marginRight: text(12)}}>
                     <View style={[Style.flexRow, styles.titleBox]}>
                         <Text style={[styles.title, {marginRight: text(12)}]}>{item.adjust_name}</Text>
-                        <Text style={[styles.subTitle, {color: item.adjust_code === 1 ? Colors.red : Colors.green}]}>
-                            {item.adjust_status}
-                        </Text>
+                        <Text style={[styles.subTitle, {color: item.color}]}>{item.adjust_status}</Text>
                     </View>
                     <View style={[Style.flexRow, styles.dateBox]}>
                         <View style={[Style.flexRow, {flex: 1}]}>

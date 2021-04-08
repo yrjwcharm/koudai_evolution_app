@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
         color: '#1F2432',
         // fontWeight: 'bold',
         fontSize: text(16),
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         marginBottom: text(4),
         padding: 0, //处理textInput 在安卓上的兼容问题
     },

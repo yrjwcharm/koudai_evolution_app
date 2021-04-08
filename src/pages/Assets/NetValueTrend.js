@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 17:14:07
+ * @LastEditTime: 2021-04-07 18:26:57
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -16,6 +16,7 @@ import {Chart} from '../../components/Chart';
 import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import EmptyTip from '../../components/EmptyTip';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -93,105 +94,124 @@ const NetValueTrend = ({poid}) => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             scrollEventThrottle={1000}
             style={[styles.container, {transform: [{translateY: text(-1.5)}]}]}>
-            <View style={styles.netValueChart}>
-                <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
-                    {chartData?.label?.map((item, index) => {
-                        return (
-                            <View key={item.val + index} style={styles.legendItem}>
-                                <TextInput
-                                    defaultValue={`${item.val}`}
-                                    editable={false}
-                                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                    style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}
-                                />
-                                <View style={Style.flexRow}>
-                                    {index !== 0 && (
-                                        <Dot
-                                            bgColor={
-                                                index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
-                                            }
-                                            color={index === 1 ? Colors.red : Colors.descColor}
+            {chartData.chart ? (
+                <>
+                    <View style={styles.netValueChart}>
+                        <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
+                            {chartData?.label?.map((item, index) => {
+                                return (
+                                    <View key={item.val + index} style={styles.legendItem}>
+                                        <TextInput
+                                            defaultValue={`${item.val}`}
+                                            editable={false}
+                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                            style={[
+                                                styles.legendTitle,
+                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                            ]}
                                         />
+                                        <View style={Style.flexRow}>
+                                            {index !== 0 && (
+                                                <Dot
+                                                    bgColor={
+                                                        index === 1
+                                                            ? 'rgba(231, 73, 73, 0.15)'
+                                                            : 'rgba(84, 89, 104, 0.15)'
+                                                    }
+                                                    color={index === 1 ? Colors.red : Colors.descColor}
+                                                />
+                                            )}
+                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                                {item.name}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <View style={{height: 220}}>
+                            {chartData.chart && (
+                                <Chart
+                                    initScript={baseAreaChart(
+                                        chartData.chart,
+                                        [Colors.red, Colors.lightBlackColor],
+                                        ['l(90) 0:#E74949 1:#fff', 'transparent'],
+                                        true
                                     )}
-                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                        {item.name}
-                                    </Text>
-                                </View>
-                            </View>
-                        );
-                    })}
-                </View>
-                <View style={{height: 220}}>
-                    {chartData.chart && (
-                        <Chart
-                            initScript={baseAreaChart(
-                                chartData.chart,
-                                [Colors.red, Colors.lightBlackColor],
-                                ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                                true
+                                    data={chartData.chart}
+                                    onChange={onChartChange}
+                                    onHide={onHide}
+                                    style={{width: '100%'}}
+                                />
                             )}
-                            data={chartData.chart}
-                            onChange={onChartChange}
-                            onHide={onHide}
-                            style={{width: '100%'}}
-                        />
-                    )}
-                </View>
-                <View style={[Style.flexRow, {justifyContent: 'center', paddingBottom: text(28)}]}>
-                    {chartData?.sub_tabs?.map((item, index) => {
-                        return (
-                            <TouchableOpacity
-                                key={item.val + index}
-                                onPress={() => {
-                                    global.LogTool('click', item.val);
-                                    setPeriod(item.val);
-                                }}
-                                style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
-                                <Text
-                                    style={[
-                                        styles.subTitle,
-                                        {color: period === item.val ? Colors.brandColor : Colors.descColor},
-                                    ]}>
-                                    {item.name}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </View>
-            <View style={styles.buyTableWrap}>
-                <View style={styles.buyTableHead}>
-                    <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[0]}</Text>
-                    </View>
-                    <View style={[styles.buyTableCell]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[1]}</Text>
-                    </View>
-                    <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                        <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[2]}</Text>
-                    </View>
-                </View>
-                {chartData.table?.tr_list?.map((item, index) => {
-                    return (
+                        </View>
                         <View
-                            key={index + 'c'}
                             style={[
-                                styles.buyTableBody,
-                                {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
+                                Style.flexRow,
+                                {justifyContent: 'center', paddingTop: text(8), paddingBottom: text(28)},
                             ]}>
+                            {chartData?.sub_tabs?.map((item, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={item.val + index}
+                                        onPress={() => {
+                                            global.LogTool('click', item.val);
+                                            setPeriod(item.val);
+                                        }}
+                                        style={[
+                                            Style.flexCenter,
+                                            styles.subtab,
+                                            period === item.val ? styles.activeTab : {},
+                                        ]}>
+                                        <Text
+                                            style={[
+                                                styles.subTitle,
+                                                {color: period === item.val ? Colors.brandColor : Colors.descColor},
+                                            ]}>
+                                            {item.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    </View>
+                    <View style={styles.buyTableWrap}>
+                        <View style={styles.buyTableHead}>
                             <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                <Text style={styles.buyTableItem}>{item[0]}</Text>
+                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[0]}</Text>
                             </View>
                             <View style={[styles.buyTableCell]}>
-                                <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>{item[1]}</Text>
+                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[1]}</Text>
                             </View>
                             <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>{item[2]}</Text>
+                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[2]}</Text>
                             </View>
                         </View>
-                    );
-                })}
-            </View>
+                        {chartData.table?.tr_list?.map((item, index) => {
+                            return (
+                                <View
+                                    key={index + 'c'}
+                                    style={[
+                                        styles.buyTableBody,
+                                        {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
+                                    ]}>
+                                    <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                        <Text style={styles.buyTableItem}>{item[0]}</Text>
+                                    </View>
+                                    <View style={[styles.buyTableCell]}>
+                                        <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>{item[1]}</Text>
+                                    </View>
+                                    <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                        <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>{item[2]}</Text>
+                                    </View>
+                                </View>
+                            );
+                        })}
+                    </View>
+                </>
+            ) : (
+                <EmptyTip style={{paddingVertical: text(40)}} text="暂无数据" />
+            )}
             <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>

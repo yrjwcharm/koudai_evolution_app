@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 12:41:37
+ * @LastEditTime: 2021-04-07 17:47:56
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -179,13 +179,12 @@ const DailyProfit = ({poid}) => {
                             styles.colorBar,
                             Style.flexBetween,
                             {
-                                width: Math.max(
-                                    text(95),
-                                    maxData === 0
-                                        ? 0
-                                        : (Math.abs(parseFloat(`${item.profit}`?.replace(/,/g, ''))) / maxData) *
-                                              (deviceWidth - Space.marginAlign * 2)
-                                ),
+                                width: `${(
+                                    (Math.abs(parseFloat(`${item.profit}`?.replace(/,/g, ''))) / maxData) *
+                                        (100 - 30.61) +
+                                    30.61
+                                ).toFixed(2)}%`,
+                                minWidth: '30.61%',
                                 maxWidth: '100%',
                                 backgroundColor: getColor(`${item.profit}`),
                             },

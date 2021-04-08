@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 14:15:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 20:13:55
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -51,7 +51,7 @@ class BankInfo extends Component {
         this.time && clearInterval(this.time);
     }
     checkData = (phone, code, selectBank, bank_no) => {
-        if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 23) {
+        if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 19) {
             this.setState({btnDisable: false});
         } else {
             this.setState({btnDisable: true});

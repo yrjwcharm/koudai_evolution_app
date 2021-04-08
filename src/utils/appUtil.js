@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 15:05:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 19:18:49
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -162,21 +162,19 @@ const tagColor = (type) => {
         };
     }
 };
-// -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
+// -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(灰色) 9:已撤单（灰色）
 const getTradeColor = (type) => {
     var color = '';
     switch (type) {
         case -1:
             color = '#E74949';
             break;
+        case 0:
         case 1:
             color = '#EB7121';
             break;
         case 6:
             color = '#4BA471';
-            break;
-        case 7:
-            color = '#EB7121';
             break;
         default:
             color = '#9095A5';

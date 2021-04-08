@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 11:53:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-07 18:03:14
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -18,15 +18,12 @@ import {useFocusEffect} from '@react-navigation/native';
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
 
-    const init = () => {
-        Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
-            setData(res.result);
-        });
-    };
     useFocusEffect(
         useCallback(() => {
-            init();
-        }, [init])
+            Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
+                setData(res.result);
+            });
+        }, [props.route])
     );
     const jumpPage = (invest_id) => {
         props.navigation.navigate('FixedPlanDetail', {invest_id});

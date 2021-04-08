@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 17:50:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 11:17:56
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -130,7 +130,8 @@ export default function RenderChart(props) {
                     ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                     true,
                     2,
-                    width
+                    width,
+                    [15, 45, 15, 20]
                 )}
                 onChange={onChartChange}
                 data={chart}
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
         color: '#1F2432',
         // fontWeight: 'bold',
         fontSize: text(16),
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         marginBottom: text(4),
         padding: 0, //处理textInput 在安卓上的兼容问题
         width: text(90),

@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 11:43:09
+ * @LastEditTime: 2021-04-07 19:34:25
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -404,10 +404,8 @@ const FundDetail = ({navigation, route}) => {
                 )}
                 {data?.part3?.map((item, index) => {
                     return (
-                        <View
-                            style={[styles.groupContainer, !item?.items ? {marginTop: 0} : {}]}
-                            key={item.group + index}>
-                            {item?.items?.length === 0 && (
+                        <View style={[styles.groupContainer]} key={item.group + index}>
+                            {!item?.items && (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     style={[Style.flexBetween, {padding: Space.padding}]}

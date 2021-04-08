@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-03-30 14:54:31
+ * @LastEditTime: 2021-04-07 18:32:42
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -75,6 +75,7 @@ export class AssetsConfigDetail extends Component {
     };
     // 输入投资金额回调
     onChange = (val) => {
+        val = val * 1 > 10000000 ? '10000000' : val;
         this.setState({amount: val}, () => val >= 2000 && this.init());
     };
     // 手风琴展开回调

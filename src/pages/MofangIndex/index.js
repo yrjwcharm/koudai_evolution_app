@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 15:25:58
+ * @LastEditTime: 2021-04-07 15:29:56
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -469,7 +469,7 @@ const Index = (props) => {
                                                             fontSize: px(12),
                                                             color: Colors.darkGrayColor,
                                                         }}>
-                                                        {comment.from}
+                                                        {comment.time + ' ' + comment.from}
                                                     </Text>
                                                 </View>
                                             </View>
