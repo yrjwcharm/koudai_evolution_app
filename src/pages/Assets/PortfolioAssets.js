@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 16:15:31
+ * @LastEditTime: 2021-04-07 19:21:47
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
@@ -17,7 +17,6 @@ import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomDesc from '../../components/BottomDesc';
 import {Chart} from '../../components/Chart';
-import Header from '../../components/NavBar';
 import Notice from '../../components/Notice';
 import storage from '../../utils/storage';
 import FitImage from 'react-native-fit-image';
@@ -36,13 +35,15 @@ export default function PortfolioAssets(props) {
     const [showEye, setShowEye] = useState(true);
     const [left, setLeft] = useState('0%');
     const [widthD, setWidthD] = useState('0%');
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('m1');
     const [tip, setTip] = useState({});
+    const [tag, setTag] = useState();
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
     const jump = useJump();
+
     var _l;
     const changeTab = (period) => {
         setPeriod(period);
@@ -72,22 +73,25 @@ export default function PortfolioAssets(props) {
             setCard(res.result);
         });
     }, [props.route.params]);
-    const getChartInfo = useCallback(() => {
+    const getChartInfo = () => {
         Http.get('/position/chart/20210101', {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
             setChart(res.result);
+            setTag(res.result.tag_position);
         });
-    }, [period, props]);
+    };
+    useEffect(() => {
+        getChartInfo();
+    }, [period]);
     useFocusEffect(
         useCallback(() => {
             init();
             storage.get('portfolioAssets').then((res) => {
                 setShowEye(res ? res : 'true');
             });
-            getChartInfo();
-        }, [init, getChartInfo])
+        }, [init])
     );
     // 图表滑动legend变化
     const onChartChange = useCallback(
@@ -235,8 +239,8 @@ export default function PortfolioAssets(props) {
             </View>
         );
     };
-    console.log(chart?.tag_position);
     const renderChart = () => {
+        console.log(chart?.tag_position);
         return (
             <>
                 <Text style={[styles.title_sty, {paddingVertical: text(16)}]}>{chart?.title}</Text>
@@ -304,56 +308,25 @@ export default function PortfolioAssets(props) {
                                     2,
                                     deviceWidth - text(40),
                                     10,
-                                    chart?.tag_position
+                                    tag
                                 )}
                                 onChange={onChartChange}
-                                // changeData={(data) => `
-                                // chart.changeData(${JSON.stringify(data)});
-                                // chart.repaint();
-                                // if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(chart?.tag_position?.buy)}){
-                                //     chart.guide().tag({
-                                //       position: ${JSON.stringify(chart?.tag_position?.buy?.position)},
-                                //       content: ${JSON.stringify(chart?.tag_position?.buy?.name)},
-                                //       limitInPlot:true,
-                                //       background: {
-                                //         fill: '#E74949'
-                                //       },
-                                //       pointStyle: {
-                                //         fill: '#E74949'
-                                //       }
-                                //     });
-                                //   };
-                                //   if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(
-                                //     chart?.tag_position?.redeem
-                                // )}){
-                                //     chart.guide().tag({
-                                //       position: ${JSON.stringify(chart?.tag_position?.redeem?.position)},
-                                //       content: ${JSON.stringify(chart?.tag_position?.redeem?.name)},
-                                //       limitInPlot:true,
-                                //       background: {
-                                //         fill: '#4BA471'
-                                //       },
-                                //       pointStyle: {
-                                //         fill: '#4BA471'
-                                //       }
-                                //     });
-                                //   };
-                                //   if(${JSON.stringify(chart?.tag_position)}&&${JSON.stringify(
-                                //     chart?.tag_position?.adjust
-                                // )}){
-                                //     chart.guide().tag({
-                                //       position: ${JSON.stringify(chart?.tag_position?.adjust?.position)},
-                                //       content: ${JSON.stringify(chart?.tag_position?.adjust?.name)},
-                                //       limitInPlot:true,
-                                //       background: {
-                                //         fill: '#0051CC'
-                                //       },
-                                //       pointStyle: {
-                                //         fill: '#0051CC'
-                                //       }
-                                //     });
-                                //   };
-                                // `}
+                                // updateScript={(data) => {
+                                //     return (
+                                //         'chart.clear();' +
+                                //         baseAreaChart(
+                                //             data,
+                                //             [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                //             ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                //             true,
+                                //             2,
+                                //             deviceWidth - text(40),
+                                //             10,
+                                //             tag
+                                //         ) +
+                                //         'chart.repaint();'
+                                //     );
+                                // }}
                                 data={chart?.chart}
                                 onHide={onHide}
                                 style={{width: '100%'}}

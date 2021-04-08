@@ -223,7 +223,8 @@ export default function DetailAccount({route, navigation}) {
                                 <View
                                     style={{
                                         flexDirection: 'row',
-                                        marginLeft: text(10),
+                                        justifyContent: 'space-around',
+                                        paddingHorizontal: px(6),
                                     }}>
                                     <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
                                         <Ionicons name={'square'} color={'#E74949'} size={10} />
@@ -235,9 +236,7 @@ export default function DetailAccount({route, navigation}) {
                                     </View>
                                     <View
                                         style={{
-                                            width: text(120),
                                             fontSize: text(12),
-                                            flexShrink: 0,
                                             marginBottom: px(-16),
                                         }}>
                                         <Text style={{fontSize: text(12)}}>---{data?.risk_info?.label[2]?.key}</Text>

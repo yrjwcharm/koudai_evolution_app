@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 18:08:09
+ * @LastEditTime: 2021-04-08 10:23:10
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -82,7 +82,7 @@ class Question extends Component {
     fr = this.props.route?.params?.fr; //risk来自个人资料
     plan_id = this.props.route?.params?.plan_id;
     init = () => {
-        http.get('/questionnaire/start/20210101', {plan_id: this.plan_id}).then((data) => {
+        http.get('/questionnaire/start/20210101', {plan_id: this.plan_id, fr: this.fr}).then((data) => {
             if (data.code === '000000') {
                 this.setState({summary_id: data.result.summary_id}, () => {
                     this.getNextQuestion();

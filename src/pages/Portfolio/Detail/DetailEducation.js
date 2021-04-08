@@ -48,7 +48,6 @@ export default function DetailEducation({navigation, route}) {
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
-        init();
     };
     // 选择大学
     const chooseBtn = (id) => {
@@ -122,7 +121,7 @@ export default function DetailEducation({navigation, route}) {
             year: _current,
             type,
             goal_amount: data.plan_info.goal_info.amount,
-            upid:route.params.upid,
+            upid: route.params.upid,
         };
         Http.get('/portfolio/future/yield_chart/20210101', {
             ..._params,
@@ -370,7 +369,7 @@ export default function DetailEducation({navigation, route}) {
                                 </View>
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>
-                                <ListHeader data={data.asset_strategy.header} hide={true}/>
+                                <ListHeader data={data.asset_strategy.header} hide={true} />
                                 {data.asset_strategy.items.map((_s, _d, arr) => {
                                     return (
                                         <View

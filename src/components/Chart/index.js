@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 11:24:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-07 18:53:03
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -10,7 +10,7 @@ import {StyleSheet, Platform, View, Text} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
 import _ from 'lodash';
-const changeData = (data) => `chart.repaint();chart.changeData(${JSON.stringify(data)});`;
+const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
     ios: require('./f2chart.html'),
