@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 15:01:04
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 16:27:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
@@ -15,11 +15,13 @@ import Http from '../../services';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 import Html from '../../components/RenderHtml';
+import {useJump} from '../../components/hooks';
 const deviceWidth = Dimensions.get('window').width;
 var params;
 export default function SetTarget({route, navigation}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
+    const jump = useJump();
     // const [target, setTarget] = useState('');
     const onChange = (val) => {
         params = {poid: route.params.poid, target: val / 100};
@@ -43,9 +45,7 @@ export default function SetTarget({route, navigation}) {
             possible: data.target_info.possible,
             poid: route.params.poid,
         }).then((res) => {
-            // Toast.show(res.message);
-            // setTarget(res.result.target_id);
-            navigation.goBack();
+            jump(data?.button?.url);
         });
     };
     return (

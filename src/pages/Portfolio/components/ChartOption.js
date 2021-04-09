@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 10:01:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 14:43:04
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -30,14 +30,15 @@ export const baseAreaChart = (
     tofixed = 2,
     width = deviceWidth - 10,
     appendPadding = 10,
-    tag_position = {}
+    tag_position = {},
+    height = 220
 ) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width: ${width},
-    height:220,
+    height:${height},
     appendPadding: ${JSON.stringify(appendPadding)},
   });
   chart.source(${JSON.stringify(data)});

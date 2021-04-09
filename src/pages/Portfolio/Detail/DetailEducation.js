@@ -8,7 +8,7 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -183,6 +183,10 @@ export default function DetailEducation({navigation, route}) {
             setAge(res.result?.plan_info?.goal_info?.items[2]?.val);
             allocationIdRef.current = res.result.allocation_id;
             poidRef.current = res.result.poid;
+            setPeriod(res.result.period);
+            if (res.result.period.indexOf('f') > -1) {
+                setType(2);
+            }
             setData(res.result);
             setGoalAmount(res.result?.plan_info?.goal_info?.amount);
             setAge(res.result.plan_info.personal_info?.age);
@@ -229,7 +233,7 @@ export default function DetailEducation({navigation, route}) {
         }
     }, [data, jump, navigation]);
     useEffect(() => {
-        if (data.poid && type === 1) {
+        if (data.poid) {
             getChartData();
         }
     }, [data, getChartData, period, type]);
@@ -351,7 +355,7 @@ export default function DetailEducation({navigation, route}) {
                                     type={type}
                                     tootipScope={false}
                                     style={{marginTop: text(20)}}
-                                    appendPadding={[15, 45, 15, 20]}
+                                    width={deviceWidth - text(40)}
                                 />
                                 <View
                                     style={{

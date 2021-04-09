@@ -3,13 +3,13 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 18:06:34
+ * @LastEditTime: 2021-04-09 15:55:51
  */
 
 import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, px, deviceWidth} from '../../../utils/appUtil';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
@@ -99,16 +99,11 @@ export default function DetailAccount({route, navigation}) {
                             })}
                         </View>
                     </View>
-                    <RenderChart
-                        chartData={chartData}
-                        chart={chart}
-                        type={type}
-                        style={{paddingTop: text(20), height: text(260)}}
-                    />
+                    <RenderChart chartData={chartData} chart={chart} type={type} />
                     <View
                         style={{
                             flexDirection: 'row',
-                            height: 50,
+                            height: px(60),
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor: '#fff',
@@ -238,8 +233,8 @@ const styles = StyleSheet.create({
         color: '#1F2432',
     },
     container_sty: {
-        // paddingVertical: text(20),
         backgroundColor: '#fff',
+        paddingBottom: text(20),
     },
     amount_sty: {
         color: '#E74949',

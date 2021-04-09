@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 21:22:46
+ * @LastEditTime: 2021-04-09 12:01:46
  * @Description:规划结果页
  */
 
@@ -259,7 +259,9 @@ export default class planResult extends Component {
                             ) : null}
                             {chart &&
                                 (type == 1 ? (
-                                    <View style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
+                                    <Animatable.View
+                                        animation="fadeInUp"
+                                        style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
                                         {name ? (
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
@@ -270,9 +272,11 @@ export default class planResult extends Component {
                                             </LinearGradient>
                                         ) : null}
                                         <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
-                                    </View>
+                                    </Animatable.View>
                                 ) : (
-                                    <View style={{height: px(180), marginBottom: px(20)}}>
+                                    <Animatable.View
+                                        animation="fadeInUp"
+                                        style={{height: px(180), marginBottom: px(20)}}>
                                         {name ? (
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
@@ -284,7 +288,7 @@ export default class planResult extends Component {
                                         ) : null}
                                         {/* //养老子女 */}
                                         <Chart initScript={chartOptions.baseChart(chart, deviceWidth, px(180))} />
-                                    </View>
+                                    </Animatable.View>
                                 ))}
                             {plan && plan?.type == 1 ? (
                                 <BoxShadow setting={{...shadow, height: px(96)}}>

@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 21:42:45
+ * @LastEditTime: 2021-04-09 16:19:40
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -15,7 +15,7 @@ import CircleLegend from '../../../components/CircleLegend';
 import {BottomModal} from '../../../components/Modal';
 
 export default function RenderChart(props) {
-    const {chartData, chart, type, style, width, tootipScope = true} = props;
+    const {chartData, chart, type, style, width, height, tootipScope = true} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -26,11 +26,14 @@ export default function RenderChart(props) {
             _textTime.current.setNativeProps({text: items[0]?.title});
             if (type == 2) {
                 let range = items[0]?.origin?.value;
-                let scope = '';
-                if (tootipScope) {
-                    scope = '~' + (range[1] * 100).toFixed(2) + '%';
+                let _value = '';
+                if (range && range.length > 0) {
+                    let scope = '';
+                    if (tootipScope) {
+                        scope = '~' + (range[1] * 100).toFixed(2) + '%';
+                    }
+                    _value = (range[0] * 100).toFixed(2) + '%' + scope;
                 }
-                let _value = (range[0] * 100).toFixed(2) + '%' + scope;
                 _textPortfolio.current.setNativeProps({
                     text: _value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
@@ -134,7 +137,9 @@ export default function RenderChart(props) {
                     true,
                     2,
                     width,
-                    props.appendPadding || 10
+                    props.appendPadding || 10,
+                    null,
+                    height
                 )}
                 onChange={onChartChange}
                 data={chart}

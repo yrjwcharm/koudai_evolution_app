@@ -1,21 +1,20 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 18:26:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 15:19:20
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {px as text} from '../../utils/appUtil';
+import {px as text, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
 import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EmptyTip from '../../components/EmptyTip';
 
 const NetValueTrend = ({poid}) => {
@@ -23,6 +22,7 @@ const NetValueTrend = ({poid}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [period, setPeriod] = useState('m1');
     const [chartData, setChart] = useState({});
+    const [chart_data, setChart_data] = useState([]);
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
@@ -31,7 +31,9 @@ const NetValueTrend = ({poid}) => {
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
             if (res.code === '000000') {
                 setRefreshing(false);
+                setChart_data([]);
                 setChart(res.result);
+                setChart_data(res.result.chart);
             }
         });
     }, [period, poid]);
@@ -130,20 +132,23 @@ const NetValueTrend = ({poid}) => {
                             })}
                         </View>
                         <View style={{height: 220}}>
-                            {chartData.chart && (
+                            {chart_data.length > 0 ? (
                                 <Chart
                                     initScript={baseAreaChart(
-                                        chartData.chart,
-                                        [Colors.red, Colors.lightBlackColor],
-                                        ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                                        true
+                                        chart_data,
+                                        [Colors.red, Colors.lightBlackColor, 'transparent'],
+                                        ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                                        true,
+                                        2,
+                                        deviceWidth - text(10),
+                                        10,
+                                        chartData?.tag_position
                                     )}
-                                    data={chartData.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
                                     style={{width: '100%'}}
                                 />
-                            )}
+                            ) : null}
                         </View>
                         <View
                             style={[

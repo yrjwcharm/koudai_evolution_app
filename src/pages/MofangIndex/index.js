@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 15:29:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 12:04:22
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -463,7 +463,9 @@ const Index = (props) => {
                                             <View style={Style.flexRow}>
                                                 <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
                                                 <View style={{flex: 1}}>
-                                                    <Text style={styles.avatar_name}>{comment.name}</Text>
+                                                    <Text numberOfLines={1} style={styles.avatar_name}>
+                                                        {comment.name}
+                                                    </Text>
                                                     <Text
                                                         style={{
                                                             fontSize: px(12),

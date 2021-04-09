@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 20:13:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 12:11:49
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -104,6 +104,7 @@ class BankInfo extends Component {
                 rcode: this.props.route?.params?.rcode,
                 rname: this.props.route?.params?.rname,
                 poid: this.props.route?.params?.poid || '',
+                amount: this.props.route?.params?.amount,
             },
             '正在提交数据...'
         ).then((res) => {
@@ -411,7 +412,9 @@ const mapDispatchToProps = (dispatch) => {
         update: (params) => {
             dispatch(updateUserInfo(params));
         },
-        getUserInfo: getUserInfo,
+        getUserInfo: () => {
+            dispatch(getUserInfo());
+        },
     };
 };
 

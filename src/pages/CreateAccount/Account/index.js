@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 20:24:38
+ * @LastEditTime: 2021-04-09 12:11:29
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -126,6 +126,7 @@ class Index extends Component {
                         id_no,
                         rname,
                         rcode,
+                        amount: this.props.route?.params?.amount,
                         poid: this.props.route?.params?.poid,
                         fr: this.props.route?.params?.fr || '',
                         url: this.props.route?.params?.url || '',

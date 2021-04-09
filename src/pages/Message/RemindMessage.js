@@ -3,12 +3,12 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 18:49:49
+ * @LastEditTime: 2021-04-09 15:53:21
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, px} from '../../utils/appUtil';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useJump} from '../../components/hooks/';
@@ -67,7 +67,7 @@ export default function RemindMessage({navigation}) {
                 <ScrollView style={{flex: 1, padding: text(16)}}>
                     <TouchableOpacity
                         activeOpacity={0.9}
-                        style={styles.im_card_sty}
+                        style={[styles.im_card_sty, {marginBottom: text(16)}]}
                         onPress={() => jump(data?.service?.url)}>
                         <Image
                             source={{
@@ -86,9 +86,9 @@ export default function RemindMessage({navigation}) {
                         </View>
                         <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                     </TouchableOpacity>
-                    {/* <TouchableOpacity
-                        style={[styles.im_card_sty, {marginBottom: 0}]}
-                        onPress={() => jump(data?.point?.jump_url, data?.point?.params)}>
+                    <TouchableOpacity
+                        style={[styles.im_card_sty, {marginBottom: text(16)}]}
+                        onPress={() => jump(data?.point?.url)}>
                         <Image
                             source={{
                                 uri: data?.point?.icon,
@@ -98,18 +98,19 @@ export default function RemindMessage({navigation}) {
                         />
                         <View style={{marginLeft: text(20), flex: 1}}>
                             <Text style={styles.title_sty}>{data?.point?.title}</Text>
-                            <Text style={styles.desc_sty} numberOfLines={1}>
-                                {data?.point?.content}
-                            </Text>
+                            {data?.point?.content ? (
+                                <Text style={styles.desc_sty} numberOfLines={1}>
+                                    {data?.point?.content}
+                                </Text>
+                            ) : null}
                         </View>
                         <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
 
                     <View
                         style={{
                             backgroundColor: '#fff',
                             borderRadius: text(10),
-                            marginTop: text(16),
                             paddingHorizontal: text(16),
                         }}>
                         {data?.message_list?.map((_item, _index) => {

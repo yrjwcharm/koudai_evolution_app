@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 10:44:19
+ * @LastEditTime: 2021-04-09 11:58:39
  * @Description:路由表
  */
 import React from 'react';
@@ -140,17 +140,7 @@ import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 
 const Stack = createStackNavigator();
-const config = {
-    animation: 'spring',
-    config: {
-        stiffness: 1000,
-        damping: 500,
-        mass: 3,
-        overshootClamping: true,
-        restDisplacementThreshold: 0.01,
-        restSpeedThreshold: 0.01,
-    },
-};
+
 export default function AppStack() {
     return (
         <Stack.Navigator

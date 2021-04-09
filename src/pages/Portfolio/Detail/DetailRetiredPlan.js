@@ -8,7 +8,7 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -323,7 +323,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 tootipScope={false}
                                 type={type}
                                 style={{marginTop: text(20)}}
-                                appendPadding={[15, 45, 15, 20]}
+                                width={deviceWidth - text(40)}
                             />
                             <View
                                 style={{
