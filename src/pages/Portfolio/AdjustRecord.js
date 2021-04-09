@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 17:28:45
+ * @LastEditTime: 2021-04-08 20:25:08
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -32,7 +32,7 @@ const AdjustRecord = ({navigation, route}) => {
                 scene: 'history',
             }).then((res) => {
                 setRefreshing(false);
-                setHasMore(res.result.record?.items?.length < 10 ? false : true);
+                setHasMore(res.result.record?.items?.length >= 10);
                 first && navigation.setOptions({title: res.result.title || '调仓记录'});
                 if (status === 'refresh') {
                     setList(res.result.record?.items || []);

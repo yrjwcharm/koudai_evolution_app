@@ -6,9 +6,9 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px, px as text, deviceWidth, formaNum} from '../../../utils/appUtil';
+import {px as text, formaNum} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -28,89 +28,114 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
-var _params, _current, allocation_id, _poid;
 
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
-    const [chartData, setChartData] = useState();
+    const [chartData, setChartData] = useState({});
     const [countFr, setCountFr] = useState(0); //首投金额
     const [countM, setCountM] = useState(0); //定投金额
+    const [goalAmount, setGoalAmount] = useState(0);
     const [showMask, setShowMask] = useState(false);
-    const [current, setCurrent] = useState();
-    const [popup, setPopup] = useState();
+    const [current, setCurrent] = useState('');
+    const [popup, setPopup] = useState({});
     const bottomModal = React.useRef(null);
     const [type, setType] = useState(1);
-    const [remark, setRemark] = useState();
+    const [remark, setRemark] = useState('');
     const [chart, setChart] = useState([]);
+    const allocationIdRef = useRef('');
+    const poidRef = useRef('');
+    const [subTabs, setSubTabs] = useState([]);
     const jump = useJump();
 
-    const changeTab = (period, type) => {
-        setPeriod(period);
-        setType(type);
+    const changeTab = (p, t) => {
+        setPeriod(p);
+        setType(t);
+        if (t === 2) {
+            const params = {
+                initial_amount: countFr,
+                per_amount: countM,
+                allocation_id: allocationIdRef.current,
+                goal_amount: data.plan_info.goal_info.amount,
+                year: current,
+                type: t,
+                upid: route.params.upid,
+            };
+            changeNotice(params);
+        }
     };
     // 计算金额
-    const countCalc = (interval, action, type) => {
+    const countCalc = (interval, action, t) => {
         const _interval = Number(interval);
-        if (type == 'begin') {
-            if (countFr < 2000 || countFr > 10000000) {
-                return;
-            }
-            if (action == 'increase') {
-                setCountFr(countFr + _interval);
-            } else {
-                setCountFr(countFr - _interval);
-            }
+        if (t == 'begin') {
+            setCountFr((prev) => {
+                let next = prev;
+                if (action === 'increase') {
+                    next = prev + _interval;
+                } else {
+                    next = prev - _interval;
+                }
+                if (next < 0 || next > 10000000) {
+                    next = prev;
+                }
+                const params = {
+                    initial_amount: next,
+                    per_amount: countM,
+                    allocation_id: allocationIdRef.current,
+                    year: current,
+                    type,
+                    goal_amount: data.plan_info.goal_info.amount,
+                    upid: route.params.upid,
+                };
+                changeNotice(params);
+                return next;
+            });
         } else {
-            if (countM < 2000 || countM > 10000000) {
-                return;
-            }
-            if (action == 'increase') {
-                setCountM(countM + _interval);
-            } else {
-                setCountM(countM - _interval);
-            }
+            setCountM((prev) => {
+                let next = prev;
+                if (action === 'increase') {
+                    next = prev + _interval;
+                } else {
+                    next = prev - _interval;
+                }
+                if (next < 2000 || next > 10000000) {
+                    next = prev;
+                }
+                const params = {
+                    initial_amount: countFr,
+                    per_amount: next,
+                    allocation_id: allocationIdRef.current,
+                    year: current,
+                    type,
+                    goal_amount: data.plan_info.goal_info.amount,
+                    upid: route.params.upid,
+                };
+                changeNotice(params);
+                return next;
+            });
         }
         changeNotice();
     };
-    const changeNotice = useCallback(() => {
-        _params = {
-            initial_amount: countFr,
-            per_amount: countM,
-            allocation_id: allocation_id,
-            goal_amount: data.plan_info.goal_info.amount,
-            year: _current,
-            type,
-            upid: route.params.upid,
-        };
-        Http.get('/portfolio/future/yield_chart/20210101', {
-            ..._params,
-        }).then((res) => {
-            setRemark(res.result.remark);
-            if (type == 2) {
-                setChart(res.result.chart);
+    const changeNotice = useCallback((params) => {
+        Http.get('/portfolio/future/yield_chart/20210101', params).then((res) => {
+            if (res.code === '000000') {
+                setRemark(res.result.remark);
+                setGoalAmount(res.result.goal_amount);
+                setSubTabs(res.result.sub_tabs);
+                if (params.type == 2) {
+                    setChart(res.result.chart);
+                }
             }
         });
-    }, [countFr, countM, type]);
+    }, []);
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
         }).then((res) => {
-            _current = res.result?.plan_info?.goal_info?.items[2]?.val;
-            allocation_id = res.result.allocation_id;
-            _poid = res.result?.poid;
-            if (res.result?.top_button) {
-                navigation.setOptions({
-                    title: res.result.title,
-                    headerRight: () => {
-                        return (
-                            <TouchableOpacity onPress={() => jump(res.result?.top_button?.url)} activeOpacity={1}>
-                                <Text style={styles.right_sty}>{res.result?.top_button?.title}</Text>
-                            </TouchableOpacity>
-                        );
-                    },
-                });
-            }
+            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
+            allocationIdRef.current = res.result.allocation_id;
+            poidRef.current = res.result?.poid;
+            setGoalAmount(res.result?.plan_info?.goal_info?.amount);
             setData(res.result);
             res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
                 if (item.type == 'begin') {
@@ -129,18 +154,13 @@ export default function DetailRetiredPlan({navigation, route}) {
             upid: route.params.upid,
             period: period,
             type: type,
-            poid: _poid,
+            poid: poidRef.current,
         }).then((res) => {
             setChartData(res.result);
             setChart(res.result?.yield_info?.chart);
+            setSubTabs(res.result.yield_info?.sub_tabs);
         });
     }, [period, type, route]);
-    useFocusEffect(
-        useCallback(() => {
-            init();
-            getChartInfo();
-        }, [init, getChartInfo])
-    );
     // 打开日期选择 视图
     const _showDatePicker = () => {
         setShowMask(true);
@@ -155,12 +175,21 @@ export default function DetailRetiredPlan({navigation, route}) {
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
+            selectedValue: [current],
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
                 setShowMask(false);
-                _current = pickedValue[0];
                 setCurrent(pickedValue[0]);
-                changeNotice();
+                const params = {
+                    initial_amount: countFr,
+                    per_amount: countM,
+                    allocation_id: allocationIdRef.current,
+                    year: pickedValue[0],
+                    type,
+                    goal_amount: data.plan_info.goal_info.amount,
+                    upid: route.params.upid,
+                };
+                changeNotice(params);
             },
             onPickerCancel: () => {
                 setShowMask(false);
@@ -179,6 +208,30 @@ export default function DetailRetiredPlan({navigation, route}) {
         setPopup(tip);
         bottomModal.current.show();
     };
+    useEffect(() => {
+        if (data?.top_button) {
+            navigation.setOptions({
+                title: data.title,
+                headerRight: () => {
+                    return (
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url)} activeOpacity={1}>
+                            <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
+                        </TouchableOpacity>
+                    );
+                },
+            });
+        }
+    }, [data, jump, navigation]);
+    useEffect(() => {
+        if (data.poid && type === 1) {
+            getChartInfo();
+        }
+    }, [data, getChartInfo, period, type]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 ? (
@@ -192,7 +245,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     <Text style={styles.age_text_sty}>{data?.plan_info?.goal_info?.tip}</Text>
                                 </View>
                             </View>
-                            <Text style={styles.fund_input_sty}>{formaNum(data?.plan_info?.goal_info?.amount)}</Text>
+                            <Text style={styles.fund_input_sty}>{formaNum(goalAmount)}</Text>
                             <View style={{position: 'relative', marginTop: text(5)}}>
                                 <FontAwesome
                                     name={'caret-up'}
@@ -270,6 +323,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                 tootipScope={false}
                                 type={type}
                                 style={{marginTop: text(20)}}
+                                appendPadding={[15, 45, 15, 20]}
                             />
                             <View
                                 style={{
@@ -277,9 +331,9 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     height: 50,
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    marginHorizontal: 20,
+                                    marginHorizontal: Space.marginAlign,
                                 }}>
-                                {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                {subTabs?.map((_item, _index) => {
                                     return (
                                         <TouchableOpacity
                                             activeOpacity={1}
@@ -424,7 +478,14 @@ export default function DetailRetiredPlan({navigation, route}) {
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}
-            {showMask && <Mask />}
+            {showMask && (
+                <Mask
+                    onClick={() => {
+                        setShowMask(false);
+                        Picker.hide();
+                    }}
+                />
+            )}
             <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                 <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
             </BottomModal>
@@ -529,9 +590,10 @@ const styles = StyleSheet.create({
     btn_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',
-        paddingHorizontal: text(12),
+        paddingHorizontal: text(10),
         paddingVertical: text(5),
         borderRadius: text(15),
+        marginRight: text(4),
     },
     age_text_sty: {
         color: '#0051CC',

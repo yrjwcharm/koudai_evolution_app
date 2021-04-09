@@ -3,10 +3,11 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 15:46:04
+ * @LastEditTime: 2021-04-09 11:12:52
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, formaNum} from '../../utils/appUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,7 +18,7 @@ import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks/';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
-import {InputModal} from '../../components/Modal';
+import {BankCardModal, InputModal} from '../../components/Modal';
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -33,6 +34,8 @@ export default function FixedUpdate({navigation, route}) {
     const [iptVal, setIptVal] = useState('');
     const inputModal = useRef(null);
     const iptValRef = useRef('');
+    const [payMethod, setPayMethod] = useState({});
+    const bankCardModal = useRef(null);
     const addNum = () => {
         setNum((prev) => {
             return prev + intervalRef.current > 100000 ? 100000 : prev + intervalRef.current;
@@ -50,6 +53,7 @@ export default function FixedUpdate({navigation, route}) {
         }).then((res) => {
             intervalRef.current = res.result.target_info.invest.incr;
             setData(res.result);
+            setPayMethod(res.result.pay_methods[0] || {});
             setNum(parseFloat(res.result.target_info.invest.amount));
             const _date = res.result.target_info.fix_period.current_date;
             setCycle(_date);
@@ -59,13 +63,18 @@ export default function FixedUpdate({navigation, route}) {
     }, [route.params.invest_id]);
     const selectTime = () => {
         Picker.init({
+            pickerTitleColor: [31, 36, 50, 1],
+            pickerBg: [255, 255, 255, 1],
+            pickerToolBarBg: [249, 250, 252, 1],
+            pickerFontColor: [33, 33, 33, 1],
+            pickerRowHeight: 36,
+            pickerConfirmBtnColor: [0, 81, 204, 1],
+            pickerCancelBtnColor: [128, 137, 155, 1],
             pickerTitleText: '时间选择',
             pickerCancelBtnText: '取消',
             pickerConfirmBtnText: '确定',
             selectedValue: [cycleRef.current, timingRef.current],
-            pickerBg: [255, 255, 255, 1],
             pickerData: _createDateData(),
-            pickerFontColor: [33, 33, 33, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 cycleRef.current = pickedValue[0];
                 timingRef.current = pickedValue[1];
@@ -109,6 +118,7 @@ export default function FixedUpdate({navigation, route}) {
                 cycle: cycleRef.current,
                 timing: timingRef.current,
                 password,
+                pay_method: payMethod.pay_method,
             }).then((res) => {
                 Toast.show(res.message);
                 setTimeout(() => {
@@ -221,9 +231,18 @@ export default function FixedUpdate({navigation, route}) {
                             )}
                         </View>
                     </InputModal>
+                    <BankCardModal
+                        data={data?.pay_methods || []}
+                        onDone={(value) => setPayMethod(value)}
+                        select={data?.pay_methods?.findIndex((item) => item.bank_name === payMethod.bank_name)}
+                        ref={bankCardModal}
+                        title={'请选择支付银行卡'}
+                    />
                     <View style={styles.wrap_sty}>
                         {data?.target_info?.target_amount?.text && (
-                            <Text style={{color: '#9AA1B2'}}>{data?.target_info?.target_amount?.text} </Text>
+                            <Text style={{color: '#9AA1B2', marginTop: Space.marginVertical}}>
+                                {data?.target_info?.target_amount?.text}{' '}
+                            </Text>
                         )}
                         {data?.target_info?.target_amount?.value && (
                             <Text style={styles.input_sty}> {formaNum(data?.target_info?.target_amount?.value)}</Text>
@@ -261,20 +280,44 @@ export default function FixedUpdate({navigation, route}) {
                                 <Text style={{color: Colors.defaultFontColor}}>{cycle}</Text>
                                 <AntDesign
                                     name={showMask ? 'up' : 'down'}
-                                    color={'#8D96AF'}
+                                    color={Colors.descColor}
                                     size={12}
                                     style={{marginLeft: text(4)}}
                                 />
                             </View>
                         </TouchableOpacity>
                     </View>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => bankCardModal.current.show()}
+                        style={[Style.flexBetween, styles.bankCard]}>
+                        <View style={Style.flexRow}>
+                            <Image source={{uri: payMethod.bank_icon}} style={styles.bankIcon} />
+                            <View>
+                                <Text style={styles.bankName}>
+                                    {payMethod.bank_name}
+                                    {payMethod.bank_no}
+                                </Text>
+                                <Text style={styles.limitDesc}>{payMethod.limit_desc}</Text>
+                            </View>
+                        </View>
+                        <View style={Style.flexRow}>
+                            <Text style={[styles.limitDesc, {lineHeight: text(17)}]}>切换</Text>
+                            <AntDesign
+                                name={'right'}
+                                color={Colors.lightGrayColor}
+                                size={12}
+                                style={{marginLeft: text(2)}}
+                            />
+                        </View>
+                    </TouchableOpacity>
                     <View
                         style={[
                             Style.flexRow,
                             {justifyContent: 'space-between', marginHorizontal: text(16), marginTop: text(16)},
                         ]}>
                         <TouchableOpacity
-                            activeOpacity={1}
+                            activeOpacity={0.8}
                             style={{
                                 borderColor: '#4E556C',
                                 borderWidth: 0.5,
@@ -286,7 +329,7 @@ export default function FixedUpdate({navigation, route}) {
                             <Text style={styles.btn_sty}>{data.button[0].text}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            activeOpacity={1}
+                            activeOpacity={0.8}
                             style={{backgroundColor: '#0051CC', borderRadius: text(6), flex: 1}}
                             onPress={() => handleClick('update')}>
                             <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
@@ -301,14 +344,14 @@ const styles = StyleSheet.create({
     wrap_sty: {
         marginTop: text(12),
         backgroundColor: '#fff',
-        padding: text(16),
-        paddingBottom: 0,
+        paddingHorizontal: Space.padding,
     },
     input_sty: {
         color: Colors.defaultColor,
         fontSize: text(34),
         fontFamily: Font.numFontFamily,
-        marginVertical: text(12),
+        marginTop: text(8),
+        marginBottom: text(12),
     },
     count_wrap_sty: {
         paddingVertical: text(19),
@@ -353,5 +396,27 @@ const styles = StyleSheet.create({
         fontSize: text(26),
         lineHeight: text(37),
         color: Colors.placeholderColor,
+    },
+    bankCard: {
+        marginTop: text(12),
+        paddingVertical: text(12),
+        paddingHorizontal: Space.padding,
+        backgroundColor: '#fff',
+    },
+    bankIcon: {
+        width: text(28),
+        height: text(28),
+        marginRight: text(8),
+    },
+    bankName: {
+        fontSize: Font.textH2,
+        lineHeight: text(20),
+        color: Colors.defaultColor,
+        marginBottom: text(1),
+    },
+    limitDesc: {
+        fontSize: Font.textH3,
+        lineHeight: text(20),
+        color: Colors.lightGrayColor,
     },
 });

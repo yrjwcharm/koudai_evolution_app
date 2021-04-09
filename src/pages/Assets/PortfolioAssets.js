@@ -3,11 +3,21 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 17:31:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 10:25:06
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Image,
+    TextInput,
+    Dimensions,
+    RefreshControl,
+} from 'react-native';
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -36,6 +46,7 @@ export default function PortfolioAssets(props) {
     const [chartData, setChartData] = useState([]);
     const [showEye, setShowEye] = useState(true);
     const [left, setLeft] = useState('0%');
+    const [onRight, setOnRight] = useState(false);
     const [widthD, setWidthD] = useState('0%');
     const [period, setPeriod] = useState('m1');
     const [tip, setTip] = useState({});
@@ -62,7 +73,10 @@ export default function PortfolioAssets(props) {
                 let _l = '';
                 const _left = res.result?.progress_bar?.percent_text;
                 if (_left.split('%')[0] < 10) {
-                    _l = _left.split('%')[0] - 1 + '%';
+                    _l = _left.split('%')[0] - 1.5 + '%';
+                } else if (_left.split('%')[0] > 90) {
+                    _l = _left.split('%')[0] - 6.8 + '%';
+                    setOnRight(true);
                 } else {
                     _l = _left.split('%')[0] + '%';
                 }
@@ -447,7 +461,12 @@ export default function PortfolioAssets(props) {
                             <View style={styles.process_wrap_sty}>
                                 <View style={[styles.bubbles_sty, {left: left}]}>
                                     <Text style={styles.bubble_text_sty}>{data?.progress_bar?.percent_text}</Text>
-                                    <AntDesign name={'caretdown'} size={14} color={'#FFDC5D'} style={[styles.ab_sty]} />
+                                    <AntDesign
+                                        name={'caretdown'}
+                                        size={14}
+                                        color={'#FFDC5D'}
+                                        style={[styles.ab_sty, onRight ? {right: 0} : {left: 0}]}
+                                    />
                                 </View>
                             </View>
                             <View style={styles.process_outer}>
@@ -641,7 +660,7 @@ const styles = StyleSheet.create({
     ab_sty: {
         top: text(14),
         position: 'absolute',
-        left: '0%',
+        // left: '0%',
     },
     list_card_sty: {
         backgroundColor: '#fff',
