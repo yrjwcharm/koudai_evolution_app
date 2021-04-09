@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-20 17:14:17
+ * @LastEditTime: 2021-04-09 15:28:47
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -81,7 +81,7 @@ const CompanyFunds = ({navigation, route}) => {
         return (
             <>
                 {list.length > 0 && (
-                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
+                    <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
                         {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
                 )}

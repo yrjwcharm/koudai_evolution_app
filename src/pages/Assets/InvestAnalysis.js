@@ -2,7 +2,7 @@
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 11:49:48
+ * @LastEditTime: 2021-04-09 11:22:56
  * @Description: 投资分析
  */
 import React, {useRef} from 'react';
@@ -21,7 +21,7 @@ const InvestAnalysis = ({navigation, route}) => {
         <ScrollableTabView
             style={[styles.container]}
             renderTabBar={() => <Tab />}
-            initialPage={Number(route.params?.tab) || 0}
+            initialPage={Number(route.params?.type) || 0}
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
                 if (index === 0) {

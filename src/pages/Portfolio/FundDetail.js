@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 19:34:25
+ * @LastEditTime: 2021-04-09 15:20:17
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -30,6 +30,7 @@ const FundDetail = ({navigation, route}) => {
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
+    const [showChart, setShowChart] = useState(false);
 
     const init = useCallback(() => {
         http.get('/fund/detail/20210101', {
@@ -47,6 +48,7 @@ const FundDetail = ({navigation, route}) => {
         }).then((res) => {
             setChart1(res.result);
             setSummary(res.result.summary);
+            setShowChart(true);
         });
     }, [route, period]);
     const getChart2 = useCallback(() => {
@@ -57,6 +59,7 @@ const FundDetail = ({navigation, route}) => {
         }).then((res) => {
             setChart2(res.result);
             setSummary(res.result.summary);
+            setShowChart(true);
         });
     }, [route, period]);
     const getChart3 = useCallback(() => {
@@ -67,11 +70,13 @@ const FundDetail = ({navigation, route}) => {
         }).then((res) => {
             setChart3(res.result);
             setSummary(res.result.summary);
+            setShowChart(true);
         });
     }, [route, period]);
     const onChangeTab = useCallback((i) => {
         setCurTab(i);
-        setPeriod('m1');
+        setShowChart(false);
+        // setPeriod('m1');
     }, []);
     const renderChart = useCallback(() => {
         return (
@@ -104,85 +109,46 @@ const FundDetail = ({navigation, route}) => {
                     })}
                 </View>
                 <View style={{height: Platform.select({ios: 220, android: 220})}}>
-                    {data.part1 && !data.part1.fund.is_monetary ? (
+                    {showChart && (
                         <>
-                            {curTab === 0 ? (
-                                <Chart
-                                    initScript={baseAreaChart(
-                                        chart1?.chart,
-                                        [Colors.red, Colors.lightBlackColor],
-                                        ['l(90) 0:#E74949 1:#fff', 'transparent'],
-                                        true,
-                                        2,
-                                        deviceWidth - 10,
-                                        [15, 45, 15, 20]
+                            {data.part1 && !data.part1.fund.is_monetary ? (
+                                <>
+                                    {curTab === 0 ? (
+                                        <Chart
+                                            initScript={baseAreaChart(
+                                                chart1?.chart,
+                                                [Colors.red, Colors.lightBlackColor],
+                                                ['l(90) 0:#E74949 1:#fff', 'transparent'],
+                                                true,
+                                                2,
+                                                deviceWidth - 10,
+                                                [15, 45, 15, 20]
+                                            )}
+                                            data={chart1?.chart}
+                                            onChange={onChartChange}
+                                            onHide={onHide}
+                                            style={{width: '100%'}}
+                                        />
+                                    ) : (
+                                        <Chart
+                                            initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
+                                            data={chart2?.chart}
+                                            onChange={onChartChange}
+                                            onHide={onHide}
+                                            style={{width: '100%'}}
+                                        />
                                     )}
-                                    updateScript={(sourceData) => `
-                                        chart.clear();
-                                        chart.source(${JSON.stringify(sourceData)});
-                                        chart.area({startOnZero: false})
-                                            .position('date*value')
-                                            .color('type', ${JSON.stringify(['l(90) 0:#E74949 1:#fff', 'transparent'])})
-                                            .shape('smooth')
-                                            .animate({
-                                                appear: {
-                                                    animation: 'groupWaveIn',
-                                                    duration: 1000
-                                                }
-                                            });
-                                        chart.line()
-                                            .position('date*value')
-                                            .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor])})
-                                            .shape('smooth')
-                                            .animate({
-                                                appear: {
-                                                    animation: 'groupWaveIn',
-                                                    duration: 1000
-                                                }
-                                            })
-                                            .style({
-                                                lineWidth: 1.5
-                                            });
-                                        chart.render();
-                                    `}
-                                    data={chart1?.chart}
-                                    onChange={onChartChange}
-                                    onHide={onHide}
-                                    style={{width: '100%'}}
-                                />
+                                </>
                             ) : (
                                 <Chart
-                                    initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
-                                    updateScript={(sourceData) => `
-                                        chart.clear();
-                                        chart.source(${JSON.stringify(sourceData)});
-                                        chart.line()
-                                            .position('date*value')
-                                            .color('type', ${JSON.stringify([Colors.red])})
-                                            .shape('smooth')
-                                            .animate({
-                                                appear: {
-                                                    animation: 'groupWaveIn',
-                                                    duration: 1000
-                                                }
-                                            });
-                                        chart.render();
-                                    `}
-                                    data={chart2?.chart}
+                                    initScript={baseLineChart(chart3.chart, [Colors.red, Colors.lightBlackColor], true)}
+                                    data={chart3?.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}
                                     style={{width: '100%'}}
                                 />
                             )}
                         </>
-                    ) : (
-                        <Chart
-                            initScript={baseLineChart(chart3.chart, [Colors.red, Colors.lightBlackColor], true)}
-                            data={chart3?.chart}
-                            onChange={onChartChange}
-                            onHide={onHide}
-                            style={{width: '100%'}}
-                        />
                     )}
                 </View>
                 <View style={[Style.flexRow, {justifyContent: 'center'}]}>
@@ -190,7 +156,10 @@ const FundDetail = ({navigation, route}) => {
                         return (
                             <TouchableOpacity
                                 key={item.val + index}
-                                onPress={() => setPeriod(item.val)}
+                                onPress={() => {
+                                    setShowChart(false);
+                                    setPeriod(item.val);
+                                }}
                                 style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
                                 <Text
                                     style={[
@@ -217,6 +186,7 @@ const FundDetail = ({navigation, route}) => {
         getColor,
         onChartChange,
         onHide,
+        showChart,
     ]);
     const getColor = useCallback((t) => {
         if (!t) {
