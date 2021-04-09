@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-30 17:14:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 17:21:40
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {BoxShadow} from 'react-native-shadow';
 import {Button} from '../../components/Button';
-import Modal from '../../components/Modal/Modal';
+import {BottomModal} from '../../components/Modal/';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import http from '../../services';
@@ -22,6 +22,7 @@ const MyScore = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const [click, setClick] = useState(true);
+    const bottomModal = useRef();
     const shadow = useRef({
         color: '#3B629D',
         border: 8,
@@ -134,16 +135,7 @@ const MyScore = ({navigation, route}) => {
                     <TouchableOpacity
                         onPress={() => {
                             global.LogTool('click', 'showTips');
-                            Modal.show({
-                                title: '魔分兑换申购费规则',
-                                content: data.points_info?.tip,
-                                contentStyle: {
-                                    color: '#595B5F',
-                                    textAlign: 'justify',
-                                    fontSize: Font.textH2,
-                                    lineHeight: text(22),
-                                },
-                            });
+                            bottomModal?.current?.show();
                         }}>
                         <SimpleLineIcons name={'question'} size={16} color={'#fff'} />
                     </TouchableOpacity>
@@ -169,6 +161,26 @@ const MyScore = ({navigation, route}) => {
                 </View>
             </BoxShadow>
             <Text style={[styles.moreTitle, {marginLeft: text(14)}]}>{data.more?.title}</Text>
+            <BottomModal ref={bottomModal} title="魔分兑换申购费规则">
+                <View style={[{padding: text(16)}]}>
+                    <Text style={styles.tipTitle}>兑换比例:</Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                        100魔分=1元人民币
+                    </Text>
+
+                    <Text style={styles.tipTitle}>兑换流程:</Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                        ①在基金购买过程中所产生的申购费，其对应可兑换的金额会自动显示在兑换栏中
+                    </Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                        ②点击“兑换”，即可直接兑换成功
+                    </Text>
+                    <Text style={styles.tipTitle}>返还方式:</Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                        兑换金额直接返还到理财魔方绑定银行卡中，若两张及以上，则返还到主卡中，预计48小时内到账
+                    </Text>
+                </View>
+            </BottomModal>
             {data.more?.list?.map((item, index) => {
                 return (
                     <BoxShadow
@@ -299,6 +311,7 @@ const styles = StyleSheet.create({
         color: '#EA514E',
         fontWeight: '600',
     },
+    tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
 });
 
 export default MyScore;

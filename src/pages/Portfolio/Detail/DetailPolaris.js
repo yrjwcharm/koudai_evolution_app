@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 14:26:43
+ * @LastEditTime: 2021-04-09 17:55:41
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -16,7 +16,6 @@ import {pieChart} from './ChartOption';
 import {baseAreaChart} from '../components/ChartOption';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FixedBtn from '../components/FixedBtn';
 import ListHeader from '../components/ListHeader';
 import Html from '../../../components/RenderHtml';
@@ -165,8 +164,8 @@ export default function DetailPolaris({route, navigation}) {
                                 </Text>
                                 <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
                             </View>
-                            {/* <View style={{height: 340}}>
-                                <Chart initScript={pie(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
+                            {/* <View style={{height: text(340)}}>
+                                <Chart initScript={pieChart(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
                             </View> */}
 
                             <View style={styles.fund_card_sty}>

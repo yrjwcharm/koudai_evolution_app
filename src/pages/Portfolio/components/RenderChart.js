@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 16:19:40
+ * @LastEditTime: 2021-04-09 18:22:18
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -13,7 +13,7 @@ import {Colors, Font, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
 import {BottomModal} from '../../../components/Modal';
-
+import Html from '../../../components/RenderHtml';
 export default function RenderChart(props) {
     const {chartData, chart, type, style, width, height, tootipScope = true} = props;
     const _textTime = useRef(null);
@@ -146,11 +146,15 @@ export default function RenderChart(props) {
                 onHide={onHide}
                 style={{width: '100%'}}
             />
-            <BottomModal ref={bottomModal} title={'提示'}>
-                <View style={[{padding: text(16)}, Style.columnAlign]}>
-                    <Text style={{textAlign: 'center', color: '#121D3A'}}>{chartData?.yield_info?.tips?.title}</Text>
-                    <Text style={{lineHeight: text(18), textAlign: 'center', marginTop: text(16), color: '#121D3A'}}>
-                        {chartData?.yield_info?.tips?.content}
+            <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
+                <View style={[{padding: text(16)}]}>
+                    <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                        {chartData?.yield_info?.tips?.content[0]?.val}
+                    </Text>
+                    <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[1]?.key}:</Text>
+                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                        {chartData?.yield_info?.tips?.content[1]?.val}
                     </Text>
                 </View>
             </BottomModal>
@@ -195,4 +199,5 @@ const styles = StyleSheet.create({
         fontSize: text(11),
         paddingVertical: text(2),
     },
+    tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
 });

@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 15:55:51
+ * @LastEditTime: 2021-04-09 17:42:23
  */
 
 import React, {useState, useCallback} from 'react';
@@ -77,7 +77,7 @@ export default function DetailAccount({route, navigation}) {
                 <ScrollView>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
-                        <Text style={{color: '#4E556C', fontSize: text(13), textAlign: 'center'}}>
+                        <Text style={{color: '#4E556C', fontSize: text(13), paddingTop: text(6), textAlign: 'center'}}>
                             {data?.ratio_info?.title}
                         </Text>
                         <Text

@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 15:37:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 19:16:17
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -55,6 +55,7 @@ export default function PortfolioAssets(props) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
+    const scoreModal = React.useRef();
     const jump = useJump();
 
     const changeTab = (p) => {
@@ -186,9 +187,15 @@ export default function PortfolioAssets(props) {
             }
         });
     };
-    const showTips = (tips) => {
+    const showTips = (tips, type) => {
         setTip(tips);
-        bottomModal.current.show();
+        if (type) {
+            bottomModal.current.show();
+        } else if (tips?.img) {
+            bottomModal.current.show();
+        } else {
+            scoreModal.current.show();
+        }
     };
     const renderBtn = () => {
         return (
@@ -307,7 +314,7 @@ export default function PortfolioAssets(props) {
                                         <CircleLegend color={['#E8EAEF', '#545968']} />
                                         <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                                         {chart?.tips && (
-                                            <TouchableOpacity onPress={() => showTips(chart.tips)}>
+                                            <TouchableOpacity onPress={() => showTips(chart.tips, 'chart')}>
                                                 <Image
                                                     style={{width: text(16), height: text(16)}}
                                                     source={require('../../assets/img/tip.png')}
@@ -486,7 +493,7 @@ export default function PortfolioAssets(props) {
                                         {data?.progress_bar?.range_text[1]}
                                     </Text>
                                     <TouchableOpacity
-                                        onPress={() => showTips({content: '进度条展示您当前已达到目标收益的百分比'})}>
+                                        onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}>
                                         <Image
                                             style={{width: text(20), height: text(20)}}
                                             source={require('../../assets/img/tip.png')}
@@ -555,7 +562,6 @@ export default function PortfolioAssets(props) {
                         </View>
                     )}
                     {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
-                    {/* {renderChart()} */}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
                         {data?.extend_buttons?.map((_e, _index) => {
@@ -584,15 +590,54 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-                <BottomModal ref={bottomModal} title={'提示'}>
+                <BottomModal ref={scoreModal} title={'组合状态评分'} style={{height: text(400)}}>
                     <View style={{padding: text(16)}}>
-                        {tip?.title ? (
-                            <Text style={{textAlign: 'center', color: '#121D3A', fontSize: text(16)}}>
-                                {tip?.title}
+                        <>
+                            <Text style={styles.tipTitle}>什么是组合状态评分:</Text>
+                            <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                组合状态评分代表您的持仓比例与系统给出的最优配置比例的偏离度，偏离度越大，评分越低。
                             </Text>
-                        ) : null}
-                        <Text style={styles.tip_sty}>{tip?.content}</Text>
-                        {tip?.img && (
+                            <Text style={styles.tipTitle}>资产状态的含义:</Text>
+                            <View style={Style.flexRow}>
+                                <View style={{flex: 1, alignItems: 'center', marginRight: text(12)}}>
+                                    <Text
+                                        style={{
+                                            color: Colors.green,
+                                            fontSize: text(24),
+                                            fontWeight: 'bold',
+                                            marginBottom: text(6),
+                                        }}>
+                                        {tip?.show_point == 1 ? ' 评分 ≥ 90' : '健康'}
+                                    </Text>
+                                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                        您的持仓比例与系统的最优配置比例基本一致。您可以选择追加购买，不需要进行调仓。
+                                    </Text>
+                                </View>
+                                <View style={{flex: 1, alignItems: 'center'}}>
+                                    <Text
+                                        style={{
+                                            color: Colors.yellow,
+                                            fontSize: text(24),
+                                            fontWeight: 'bold',
+                                            marginBottom: text(6),
+                                        }}>
+                                        {tip?.show_point == 1 ? ' 评分 < 90' : '需调仓'}
+                                    </Text>
+                                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                        您的持仓比例与系统的最优配置比例基本一致。您可以选择追加购买，不需要进行调仓。
+                                    </Text>
+                                </View>
+                            </View>
+                            <Text style={styles.tipTitle}>什么是系统最优配置:</Text>
+                            <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                                理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化及调整配置比例，自动计算并给出一个当天持有的最佳配置比例。
+                            </Text>
+                        </>
+                    </View>
+                </BottomModal>
+                <BottomModal ref={bottomModal} title={tip?.title}>
+                    <View style={{padding: text(16)}}>
+                        {tip?.img ? (
                             <FastImage
                                 source={{
                                     uri: tip?.img,
@@ -600,6 +645,18 @@ export default function PortfolioAssets(props) {
                                 style={{width: '100%', height: text(140)}}
                                 resizeMode="contain"
                             />
+                        ) : (
+                            chart?.tips?.content?.map((item, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.tipTitle}>{item.key}:</Text>
+                                        <Text
+                                            style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                            {item?.val}
+                                        </Text>
+                                    </View>
+                                );
+                            })
                         )}
                     </View>
                 </BottomModal>
@@ -802,4 +859,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 20,
     },
+    tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
 });
