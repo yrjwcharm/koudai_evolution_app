@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 17:30:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 10:01:16
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -225,7 +225,6 @@ chart = new F2.Chart({
 chart.source(${JSON.stringify(data)});
 chart.scale({
   date: {
-    sortable: false,
     type: 'timeCat',
     tickCount: 3,
     range: [0, 1]
@@ -356,12 +355,12 @@ export const baseLineChart = (
   });
   chart.legend(false);
   chart.tooltip({
-    crosshairsStyle: {
-      stroke: '#E74949',
-      lineWidth: 0.5,
-      lineDash: [2],
-    },
-    crosshairsType: 'xy',
+    // crosshairsStyle: {
+    //   stroke: '#E74949',
+    //   lineWidth: 0.5,
+    //   lineDash: [2],
+    // },
+    crosshairsType: 'y',
     custom: true,
     onChange: function(obj) {
       window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
@@ -370,15 +369,16 @@ export const baseLineChart = (
       window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
     },
     showCrosshairs: true,
-    showXTip: true,
-    showYTip: true,
-    snap: true,
+    // showXTip: true,
+    // showYTip: true,
+    // snap: true,
     tooltipMarkerStyle: {
-      fill: '#E74949',
-      stroke: '#E74949',
+      // fill: '#E74949',
+      // stroke: '#E74949',
+      radius: 1
     },
-    triggerOn: ['touchstart', 'touchmove'],
-    triggerOff: 'touchend',
+    // triggerOn: ['touchstart', 'touchmove'],
+    // triggerOff: 'touchend',
     xTipBackground: {
       fill: '#E74949',
     },
@@ -417,12 +417,16 @@ export const percentStackColumn = (
         '#F18D60',
         '#5E71E8',
         '#EBDD69',
-    ]
+    ],
+    appendPadding = [15, 25, 15, 15]
 ) => `
 (function(){
   chart = new F2.Chart({
+    appendPadding: ${JSON.stringify(appendPadding)},
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
+    height: 240,
+    width: ${deviceWidth}
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
@@ -552,12 +556,14 @@ export const basicPieChart = (
 ) => `
 (function(){
   const map = {};
-  ${JSON.stringify(data)}.forEach(function(obj) {
-    map[obj.name] = obj.percent + '%';
+  ${JSON.stringify(data)}.forEach((item) => {
+    map[item.name] = item.percent.toFixed(2) + '%';
   });
   chart = new F2.Chart({
     id: 'chart',
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio,
+    width:${deviceWidth - 50},
+    height: 300,
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('percent', {

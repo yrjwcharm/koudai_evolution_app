@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 20:21:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-08 20:49:18
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -307,7 +307,7 @@ function HomeScreen({navigation, route}) {
                     <View style={[styles.summaryTitle, Style.flexCenter]}>
                         <Text style={styles.summaryKey}>总资产(元)</Text>
                         <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
-                        <TouchableOpacity onPress={toggleEye}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                             <Ionicons
                                 name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
                                 size={16}
@@ -332,20 +332,20 @@ function HomeScreen({navigation, route}) {
                             </TouchableOpacity>
                         )}
                     </View>
-                    <View>
-                        <Text style={[styles.amount]}>
-                            {showEye === 'true' ? (
-                                <>
+                    <Text style={{textAlign: 'center'}}>
+                        {showEye === 'true' ? (
+                            <>
+                                <Text style={styles.amount}>
                                     {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
-                                    <Text style={{fontSize: text(24)}}>
-                                        {holdingData?.summary?.amount?.split('.')[1] || '00'}
-                                    </Text>
-                                </>
-                            ) : (
-                                '****'
-                            )}
-                        </Text>
-                    </View>
+                                </Text>
+                                <Text style={{...styles.amount, fontSize: text(24)}}>
+                                    {holdingData?.summary?.amount?.split('.')[1] || '00'}
+                                </Text>
+                            </>
+                        ) : (
+                            <Text style={styles.amount}>****</Text>
+                        )}
+                    </Text>
                     {/* 小黄条 */}
                     {notice?.trade ? (
                         <TouchableOpacity
@@ -633,8 +633,6 @@ const styles = StyleSheet.create({
         lineHeight: text(40),
         color: '#fff',
         fontFamily: Font.numFontFamily,
-        // fontWeight: 'bold',
-        textAlign: 'center',
     },
     experienceGold: {
         position: 'absolute',

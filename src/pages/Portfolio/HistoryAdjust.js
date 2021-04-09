@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 10:30:17
+ * @LastEditTime: 2021-04-08 20:00:31
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -135,9 +135,11 @@ const HistoryAdjust = ({navigation, route}) => {
                                     />
                                 ))}
                         </View> */}
-                        <View style={{height: text(288)}}>
-                            <Chart initScript={basicPieChart(chart)} data={chart} />
-                        </View>
+                        {chart.length > 0 && (
+                            <View style={{height: text(288)}}>
+                                <Chart initScript={basicPieChart(chart)} data={chart} />
+                            </View>
+                        )}
                         {data?.intros?.content ? (
                             <View style={{marginTop: text(8)}}>
                                 <Text style={[styles.intro_title]}>{data.intros.title}</Text>

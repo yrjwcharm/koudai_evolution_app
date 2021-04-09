@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-07 10:28:00
+ * @LastEditTime: 2021-04-09 09:55:08
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -13,7 +13,7 @@ import {Chart} from '../../components/Chart';
 // import {area} from '../Chart/chartOptions';
 import Html from '../../components/RenderHtml';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, deviceWidth} from '../../utils/appUtil';
 import http from '../../services';
 import BottomDesc from '../../components/BottomDesc';
 
@@ -21,7 +21,10 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio,
+    height: 240,
+    width: ${deviceWidth},
+    appendPadding: [15, 45, 25, 5]
   });
   
   chart.source(${JSON.stringify(source)}, {
@@ -129,7 +132,7 @@ class RiskManagement extends Component {
                     <View style={[styles.chartContainer]}>
                         <Text style={[styles.chartTitle]}>最大回撤走势图</Text>
                         {data?.chart && <Chart initScript={area(data.chart || [], alias)} data={data.chart || []} />}
-                        <View style={Style.flexRow}>
+                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                             {data?.label?.map((item, index, arr) => {
                                 return (
                                     <View key={item + index} style={[Style.flexRowCenter, {flex: 1}]}>
