@@ -63,10 +63,7 @@ export default function DetailEducation({navigation, route}) {
             changeNotice(params);
         }
     };
-    // // 选择大学
-    // const chooseBtn = (id) => {
-    //     setChoose(id);
-    // };
+
     const selectAge = () => {
         setShowMask(true);
         Picker.init({
@@ -233,7 +230,7 @@ export default function DetailEducation({navigation, route}) {
         }
     }, [data, jump, navigation]);
     useEffect(() => {
-        if (data.poid) {
+        if (data.poid && type == 1) {
             getChartData();
         }
     }, [data, getChartData, period, type]);
