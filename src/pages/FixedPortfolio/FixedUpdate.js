@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 11:12:52
+ * @LastEditTime: 2021-04-09 14:32:59
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -36,14 +36,15 @@ export default function FixedUpdate({navigation, route}) {
     const iptValRef = useRef('');
     const [payMethod, setPayMethod] = useState({});
     const bankCardModal = useRef(null);
+    const initAmount = useRef('');
     const addNum = () => {
         setNum((prev) => {
-            return prev + intervalRef.current > 100000 ? 100000 : prev + intervalRef.current;
+            return prev + intervalRef.current > payMethod.day_limit ? payMethod.day_limit : prev + intervalRef.current;
         });
     };
     const subtractNum = () => {
         setNum((prev) => {
-            return prev - intervalRef.current < 500 ? 500 : prev - intervalRef.current;
+            return prev - intervalRef.current < initAmount.current ? initAmount.current : prev - intervalRef.current;
         });
     };
 
@@ -52,6 +53,7 @@ export default function FixedUpdate({navigation, route}) {
             invest_id: route.params.invest_id,
         }).then((res) => {
             intervalRef.current = res.result.target_info.invest.incr;
+            initAmount.current = res.result.target_info.invest.init_amount;
             setData(res.result);
             setPayMethod(res.result.pay_methods[0] || {});
             setNum(parseFloat(res.result.target_info.invest.amount));
@@ -80,6 +82,7 @@ export default function FixedUpdate({navigation, route}) {
                 timingRef.current = pickedValue[1];
                 const _str = cycleRef.current + timingRef.current;
                 setCycle(_str);
+                setShowMask(false);
             },
             onPickerCancel: () => setShowMask(false),
         });
@@ -114,7 +117,7 @@ export default function FixedUpdate({navigation, route}) {
         } else {
             Http.get('/trade/update/invest_plan/20210101', {
                 invest_id: data?.invest_id,
-                amount: data?.target_info?.target_amount?.value,
+                amount: num,
                 cycle: cycleRef.current,
                 timing: timingRef.current,
                 password,
@@ -172,16 +175,19 @@ export default function FixedUpdate({navigation, route}) {
         setIptVal(`${num}`);
         setModalProps({
             confirmClick,
-            placeholder: '请输入每月投入金额',
-            title: '每月投入金额',
+            placeholder: `请输入${cycleRef.current}投入金额`,
+            title: `${cycleRef.current}投入金额`,
         });
     };
     const confirmClick = () => {
-        console.log(iptValRef.current);
-        if (iptValRef.current < 500) {
-            Toast.show(`每月投入金额最小为${formaNum(500, 'nozero')}`);
-        } else if (iptValRef.current > 100000) {
-            Toast.show(`每月投入金额最大为${formaNum(100000, 'nozero')}`);
+        if (iptValRef.current < initAmount.current) {
+            inputModal.current.hide();
+            setNum(initAmount.current);
+            Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
+        } else if (iptValRef.current > payMethod.day_limit) {
+            inputModal.current.hide();
+            setNum(payMethod.day_limit);
+            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
         } else {
             inputModal.current.hide();
             setNum(parseFloat(iptValRef.current));
@@ -258,7 +264,7 @@ export default function FixedUpdate({navigation, route}) {
                             </View>
                         )}
                         <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                            <Text style={{color: '#545968', flex: 1}}>每月投入金额(元)</Text>
+                            <Text style={{color: '#545968', flex: 1}}>{cycleRef.current}投入金额(元)</Text>
                             <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                 <TouchableOpacity activeOpacity={0.8} onPress={subtractNum}>
                                     <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />

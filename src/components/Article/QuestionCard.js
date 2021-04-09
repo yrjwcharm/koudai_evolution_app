@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 16:26:42
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 14:22:00
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -36,7 +36,9 @@ export default function QuestionCard({data = []}) {
                         </View>
                         <View style={styles.content}>
                             <Text style={[styles.article_content, {fontSize: px(12)}]}>
-                                <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>魔方回答：</Text>
+                                <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>
+                                    {item.author_name}：
+                                </Text>
                                 {item?.content}
                                 <Text style={Style.more}>全文</Text>
                             </Text>

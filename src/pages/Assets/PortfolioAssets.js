@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 11:36:33
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 15:37:15
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
         color: '#1F2432',
         // fontWeight: 'bold',
         fontSize: text(16),
-        fontFamily: Font.numFontFamily,
+        fontFamily: Font.numMedium,
         marginBottom: text(4),
         padding: 0,
         width: text(90),

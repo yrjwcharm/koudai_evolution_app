@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 14:43:04
+ * @LastEditTime: 2021-04-09 16:28:29
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -390,7 +390,6 @@ export const baseLineChart = (
   chart.line()
     .position('date*value')
     .color('type', ${JSON.stringify(colors)})
-    .shape('smooth')
     .animate({
       appear: {
           animation: 'groupWaveIn',
