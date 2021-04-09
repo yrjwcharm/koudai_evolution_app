@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 20:50:23
+ * @LastEditTime: 2021-04-08 21:18:36
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -137,6 +137,7 @@ const IM = (props) => {
         WS.current.onopen = function () {
             http.get(`${BaseUrl.IMApi}/im/token`)
                 .then((data) => {
+                    console.log('object');
                     setUid(data.result.uid);
                     _uid.current = data.result.uid;
                     token.current = data.result.token;
@@ -146,7 +147,8 @@ const IM = (props) => {
                     }
                     connect = true;
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.log(err, 'err');
                     handelSystemMes({content: '网络异常连接断开,', button: '立即重新连接'});
                 });
             console.log('WebSocket:', 'connect to server');
@@ -247,24 +249,16 @@ const IM = (props) => {
         WS.current.onerror = function () {
             console.log('WebSocket:', 'connect to server error');
             connect = false;
-            //重连
             WsColseType = 0;
-            //重连
-            // reconnect();
         };
         //连接关闭
         WS.current.onclose = function () {
             console.log('WebSocket:', 'connect close');
             connect = false;
-            handelSystemMes({content: '网络异常连接断开,', button: '立即重新连接'});
+            handelSystemMes({content: '连接断开,', button: '立即重新连接'});
             if (WsColseType !== 'timeout') {
                 WsColseType = 0;
             }
-            //连接被关闭尝试重连 要区分是主动关闭还是异常关闭
-            if (!closeSelf) {
-                // reconnect();
-            }
-            //重连
         };
     };
     //断开重连

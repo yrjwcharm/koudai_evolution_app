@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 10:49:56
+ * @LastEditTime: 2021-04-09 11:35:33
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -63,10 +63,14 @@ class TradeBuy extends Component {
                 type: data.result.active,
                 has_tab: data.result.has_tab,
             });
-            this.init(data.result.active);
+            if (data.result.active == 1 && data.result.has_tab) {
+                this.init(data.result.active);
+            }
         });
     };
-
+    componentDidMount() {
+        this.getTab();
+    }
     init = (_type, cacheBank) => {
         const {type, poid} = this.state;
         http.get('/trade/buy/info/20210101', {
@@ -101,7 +105,14 @@ class TradeBuy extends Component {
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
         this.setState({errTip: '', mfbTip: false}, () => {
-            if (amount > single_amount) {
+            if (amount > this.state.bankSelect.left_amount) {
+                // 您当日剩余可用额度为
+                this.setState({
+                    buyBtnCanClick: false,
+                    errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
+                    mfbTip: false,
+                });
+            } else if (amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
                         buyBtnCanClick: false,
@@ -140,17 +151,17 @@ class TradeBuy extends Component {
      * @param {*}
      * @return {*}
      */
-    submit = (password) => {
-        const {poid, planData, amount, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
-        const {buy_id} = planData;
+    submit = async (password) => {
+        const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
+        await this.plan(this.state.amount);
         type == 0
             ? http
                   .post('/trade/buy/do/20210101', {
                       poid,
-                      buy_id,
-                      amount,
+                      buy_id: this.state.planData.buy_id,
+                      amount: this.state.amount,
                       password,
                       trade_method: bank?.pay_type,
                       pay_method: bank.pay_method || '',
@@ -172,7 +183,7 @@ class TradeBuy extends Component {
             : http
                   .post('/trade/fix_invest/do/20210101', {
                       poid,
-                      amount,
+                      amount: this.state.amount,
                       password,
                       trade_method: bankSelect?.pay_type,
                       pay_method: bankSelect?.pay_method || '',
@@ -183,7 +194,7 @@ class TradeBuy extends Component {
                   .then((res) => {
                       Toast.hide(toast);
                       if (res.code === '000000') {
-                          this.props.navigation.navigate('TradeFixedConfirm', res.result);
+                          this.props.navigation.replace('TradeFixedConfirm', res.result);
                       } else {
                           Toast.show(res.message);
                       }
@@ -207,7 +218,7 @@ class TradeBuy extends Component {
             } else {
                 this.setState({
                     buyBtnCanClick: false,
-                    // errTip: data.message,
+                    errTip: data.message,
                 });
             }
         });
@@ -225,7 +236,14 @@ class TradeBuy extends Component {
         let _amount = onlyNumber(amount);
 
         this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
-            if (_amount > single_amount) {
+            if (_amount > this.state.bankSelect.left_amount) {
+                // 您当日剩余可用额度为
+                this.setState({
+                    buyBtnCanClick: false,
+                    errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
+                    mfbTip: false,
+                });
+            } else if (_amount > single_amount) {
                 if (this.state.bankSelect.pay_method == 'wallet') {
                     this.setState({
                         buyBtnCanClick: false,
@@ -710,7 +728,7 @@ class TradeBuy extends Component {
         const {button} = data;
         return (
             <>
-                <Focus init={this.getTab} />
+                <Focus init={this.init} />
                 {data ? (
                     <View
                         style={{

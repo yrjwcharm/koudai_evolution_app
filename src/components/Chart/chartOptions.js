@@ -110,7 +110,6 @@ export const baseChart = (data, width, height) => `(function(){
     tickCount: 6,
   });
 
-
   chart.axis('date', {
     label: function label(text, index, total) {
       const textCfg = {};
@@ -160,10 +159,13 @@ export const baseComChart = (data, width, height) => `(function(){
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
     tickCount: 5,
+    formatter: function formatter(val) {
+      let date = val.split('-');
+      return date[0]+'-'+date[1];
+    }
   });
   chart.scale('value', {
     tickCount: 5,
-    // range: [ 0, 1 ],
     formatter: function formatter(val) {
       return (val*100)+ '%';
     }

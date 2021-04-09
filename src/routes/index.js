@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:20:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 10:44:19
  * @Description:路由表
  */
 import React from 'react';
@@ -294,7 +294,7 @@ export default function AppStack() {
                 name="TradeFixedConfirm"
                 component={TradeFixedConfirm}
                 options={{
-                    headerShown: false,
+                    title: '',
                 }}
             />
             <Stack.Screen

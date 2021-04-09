@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 20:48:40
+ * @LastEditTime: 2021-04-08 21:22:46
  * @Description:规划结果页
  */
 
@@ -260,6 +260,15 @@ export default class planResult extends Component {
                             {chart &&
                                 (type == 1 ? (
                                     <View style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
+                                        {name ? (
+                                            <LinearGradient
+                                                start={{x: 0, y: 0.25}}
+                                                end={{x: 0, y: 0.8}}
+                                                colors={['#FF7D7D', '#E74949']}
+                                                style={[styles.recommend_btn, {top: px(20)}]}>
+                                                <Text style={styles.btn_text}>{name}</Text>
+                                            </LinearGradient>
+                                        ) : null}
                                         <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
                                     </View>
                                 ) : (
@@ -270,7 +279,7 @@ export default class planResult extends Component {
                                                 end={{x: 0, y: 0.8}}
                                                 colors={['#FF7D7D', '#E74949']}
                                                 style={styles.recommend_btn}>
-                                                <Text style={styles.btn_text}>魔方养老计划</Text>
+                                                <Text style={styles.btn_text}>{name}</Text>
                                             </LinearGradient>
                                         ) : null}
                                         {/* //养老子女 */}

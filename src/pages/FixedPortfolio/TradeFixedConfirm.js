@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 15:37:25
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @Description: 定投确认页
- * @LastEditTime: 2021-04-01 17:02:22
+ * @LastEditTime: 2021-04-09 10:40:18
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -34,6 +34,7 @@ export default class TradeFixedConfirm extends Component {
             this.setState({
                 data: res.result,
             });
+            this.props.navigation.setOptions({title: res?.result?.title});
         });
     }
     jumpTo = () => {
@@ -43,11 +44,6 @@ export default class TradeFixedConfirm extends Component {
         const {data, heightArr} = this.state;
         return (
             <View style={styles.container}>
-              <Header
-                title={data?.title}
-                leftIcon="chevron-left"
-                leftPress={() => this.props.navigation.navigate({name:'Home'})}
-            />
                 {Object.keys(data).length > 0 && (
                     <View style={{paddingHorizontal: text(16)}}>
                         <View style={styles.top_sty}>

@@ -4,10 +4,20 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 17:31:20
+ * @LastEditTime: 2021-04-08 20:53:17
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Dimensions} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Image,
+    TextInput,
+    Dimensions,
+    RefreshControl,
+} from 'react-native';
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';

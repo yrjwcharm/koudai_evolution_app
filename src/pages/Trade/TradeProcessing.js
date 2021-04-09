@@ -1,13 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-01 17:47:12
+ * @LastEditTime: 2021-04-09 11:07:22
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, ScrollView, View, Text, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, ScrollView, View, Text, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -18,6 +18,7 @@ import Header from '../../components/NavBar';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast';
+import FastImage from 'react-native-fast-image';
 const TradeProcessing = ({navigation, route}) => {
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
@@ -28,6 +29,7 @@ const TradeProcessing = ({navigation, route}) => {
     const [isSign, setSign] = useState(false);
     const jump = useJump();
     const loopRef = useRef(0);
+    const srcollRef = useRef();
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
@@ -36,12 +38,16 @@ const TradeProcessing = ({navigation, route}) => {
                 loop: loopRef.current,
             }).then((res) => {
                 setData(res.result);
+
                 if (res.result.need_verify_code) {
                     verifyCodeModel.current.show();
                     return signSendVerify();
                 }
                 if (res.result.finish || res.result.finish === -2 || loopRef.current++ >= res.result.loop) {
                     setFinish(true);
+                    setTimeout(() => {
+                        srcollRef?.current?.scrollToEnd({animated: true});
+                    }, 200);
                 } else {
                     timerRef.current = setTimeout(() => {
                         loopRef.current++;
@@ -123,10 +129,10 @@ const TradeProcessing = ({navigation, route}) => {
                 }}
                 rightTextStyle={{marginRight: text(6)}}
             />
-            <ScrollView style={[styles.container]}>
+            <ScrollView style={[styles.container]} ref={srcollRef}>
                 {Object.keys(data).length > 0 && data?.header && (
                     <View style={styles.contentStyle}>
-                        <Image source={{uri: data.header.img}} style={styles.coverImage} />
+                        <FastImage source={{uri: data.header.img}} style={styles.coverImage} />
                         <Text style={{fontSize: text(16), paddingVertical: text(10)}}>{data.header.status}</Text>
                         {data.header.amount ? <Text style={styles.head_text}>{data.header.amount}</Text> : null}
                         <Text style={styles.head_text}>{data.header.pay_method}</Text>

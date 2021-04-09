@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 19:15:15
+ * @LastEditTime: 2021-04-08 21:42:45
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -20,7 +20,6 @@ export default function RenderChart(props) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
-    console.log(tootipScope, type);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
