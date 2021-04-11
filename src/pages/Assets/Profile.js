@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 19:13:03
+ * @LastEditTime: 2021-04-11 10:57:45
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -210,6 +210,7 @@ const Profile = ({navigation}) => {
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
                         onKeyPress={onKeyPress}
+                        onSubmitEditing={confirmClick}
                         // placeholder={modalProps?.placeholder}
                         // placeholderTextColor={'#CCD0DB'}
                         style={[styles.inputStyle]}

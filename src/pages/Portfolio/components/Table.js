@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
- * @LastEditors: xjh
- * @LastEditTime: 2021-04-01 17:36:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 14:28:36
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -41,7 +41,7 @@ export default function Table(props) {
                             fontSize: text(12),
                             color: Colors.defaultFontColor,
                             fontWeight: 'bold',
-                            width:text(90)
+                            width: text(90),
                         }}>
                         {data?.th[2]}
                     </Text>
@@ -56,18 +56,17 @@ export default function Table(props) {
                                     height: px(40),
                                     borderBottomLeftRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
                                     borderBottomRightRadius: _index == data?.tr_list.length - 1 ? 6 : 0,
-                                  
                                 },
                             ]}
                             key={_index + '_item'}>
-                            <View style={{  width:text(90)}}>
+                            <View style={{width: text(90)}}>
                                 <Html
                                     style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
                                     html={_item[0]}
                                 />
                             </View>
-                            <View style={[styles.body_sty,{flex:1}]} />
-                            <View style={{width:text(90)}}>
+                            <View style={[styles.body_sty, {flex: 1}]} />
+                            <View style={{width: text(90)}}>
                                 <Html
                                     style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
                                     html={_item[2]}
@@ -104,6 +103,7 @@ export default function Table(props) {
                                 {
                                     backgroundColor: _d % 2 == 0 ? '#fff' : '#FFF7F7',
                                 },
+                                _d === arr.length - 1 ? {height: text(42), lineHeight: text(42)} : {},
                             ]}>
                             {_i[1]}
                         </Text>
@@ -122,17 +122,17 @@ const styles = StyleSheet.create({
     },
     ab_table_sty: {
         position: 'absolute',
-        top: '6%',
+        top: '6.5%',
         left: '35%',
         shadowColor: '#FFE6E4',
         shadowOffset: {h: 10, w: 10},
         shadowRadius: 10,
         shadowOpacity: 1,
-        width: '42%',
+        width: '41%',
     },
     ab_text_sty: {
-        height: text(42),
-        lineHeight: text(42),
+        height: text(40),
+        lineHeight: text(40),
         textAlign: 'center',
         color: '#E74949',
         fontSize: text(12),

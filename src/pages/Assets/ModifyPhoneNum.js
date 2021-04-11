@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 15:56:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:18:27
+ * @LastEditTime: 2021-04-09 18:46:10
  * @Description: 修改预留手机号
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -115,7 +115,6 @@ const ModifyPhoneNum = ({navigation, route}) => {
             <VerifyCodeModal
                 ref={codeModal}
                 desc={`验证码已发送至${handlePhone(phone)}`}
-                isTouchMaskToClose
                 onChangeText={onChangeText}
                 getCode={getCode}
                 phone={phone}

@@ -2,11 +2,12 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 12:01:55
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 14:36:54
  */
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, formaNum} from '../../utils/appUtil';
@@ -49,21 +50,23 @@ export default function FixedUpdate({navigation, route}) {
         });
     };
 
-    useEffect(() => {
-        Http.get('/trade/update/invest_plan/info/20210101', {
-            invest_id: route.params.invest_id,
-        }).then((res) => {
-            intervalRef.current = res.result.target_info.invest.incr;
-            initAmount.current = res.result.target_info.invest.init_amount;
-            setData(res.result);
-            setPayMethod(res.result.pay_methods[0] || {});
-            setNum(parseFloat(res.result.target_info.invest.amount));
-            const _date = res.result.target_info.fix_period.current_date;
-            setCycle(_date);
-            cycleRef.current = _date.slice(0, 2);
-            timingRef.current = _date.slice(2);
-        });
-    }, [route.params.invest_id]);
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/trade/update/invest_plan/info/20210101', {
+                invest_id: route.params.invest_id,
+            }).then((res) => {
+                intervalRef.current = res.result.target_info.invest.incr;
+                initAmount.current = res.result.target_info.invest.init_amount;
+                setData(res.result);
+                setPayMethod(res.result.pay_methods[0] || {});
+                setNum(parseFloat(res.result.target_info.invest.amount));
+                const _date = res.result.target_info.fix_period.current_date;
+                setCycle(_date);
+                cycleRef.current = _date.split(' ')[0];
+                timingRef.current = _date.split(' ')[1];
+            });
+        }, [route.params.invest_id])
+    );
     const selectTime = () => {
         Picker.init({
             pickerTitleColor: [31, 36, 50, 1],
@@ -81,7 +84,7 @@ export default function FixedUpdate({navigation, route}) {
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 cycleRef.current = pickedValue[0];
                 timingRef.current = pickedValue[1];
-                const _str = cycleRef.current + timingRef.current;
+                const _str = cycleRef.current + ' ' + timingRef.current;
                 setCycle(_str);
                 setShowMask(false);
             },
@@ -265,7 +268,10 @@ export default function FixedUpdate({navigation, route}) {
                             </View>
                         )}
                         <View style={[Style.flexBetween, styles.count_wrap_sty]}>
-                            <Text style={{color: '#545968', flex: 1}}>{cycleRef.current}投入金额(元)</Text>
+                            <Text style={{color: '#545968', flex: 1}}>
+                                {cycle.split(' ')[0]}
+                                {data?.target_info?.invest?.text}
+                            </Text>
                             <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                 <TouchableOpacity activeOpacity={0.8} onPress={subtractNum}>
                                     <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />

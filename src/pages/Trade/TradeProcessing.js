@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-09 11:07:22
- * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 11:57:50
+ * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -29,7 +29,7 @@ const TradeProcessing = ({navigation, route}) => {
     const [isSign, setSign] = useState(false);
     const jump = useJump();
     const loopRef = useRef(0);
-    const srcollRef = useRef();
+    const scrollRef = useRef();
     const timerRef = useRef(null);
     const init = useCallback(
         (first) => {
@@ -46,7 +46,7 @@ const TradeProcessing = ({navigation, route}) => {
                 if (res.result.finish || res.result.finish === -2 || loopRef.current++ >= res.result.loop) {
                     setFinish(true);
                     setTimeout(() => {
-                        srcollRef?.current?.scrollToEnd({animated: true});
+                        scrollRef?.current?.scrollToEnd({animated: true});
                     }, 200);
                 } else {
                     timerRef.current = setTimeout(() => {
@@ -129,7 +129,10 @@ const TradeProcessing = ({navigation, route}) => {
                 }}
                 rightTextStyle={{marginRight: text(6)}}
             />
-            <ScrollView style={[styles.container]} ref={srcollRef}>
+            <ScrollView
+                style={[styles.container]}
+                ref={scrollRef}
+                onContentSizeChange={() => scrollRef.current.scrollToEnd({animated: true})}>
                 {Object.keys(data).length > 0 && data?.header && (
                     <View style={styles.contentStyle}>
                         <FastImage source={{uri: data.header.img}} style={styles.coverImage} />
@@ -226,6 +229,7 @@ const TradeProcessing = ({navigation, route}) => {
                     modalCancelCallBack={modalCancelCallBack}
                     onChangeText={onChangeText}
                     isSign={isSign}
+                    getCode={signSendVerify}
                 />
             </ScrollView>
         </View>

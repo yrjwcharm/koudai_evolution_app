@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 11:11:56
+ * @LastEditTime: 2021-04-09 18:55:11
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -52,8 +52,7 @@ const BankCardList = ({navigation}) => {
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
                                     <Text style={styles.cardNum}>
-                                        {item.bank_name}
-                                        {item.bank_no}
+                                        {item.bank_name}({item.bank_no})
                                     </Text>
                                     <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
                                 </View>
@@ -78,8 +77,7 @@ const BankCardList = ({navigation}) => {
                                 <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
                                 <View style={{flex: 1}}>
                                     <Text style={styles.cardNum}>
-                                        {item.bank_name}
-                                        {item.bank_no}
+                                        {item.bank_name}({item.bank_no})
                                     </Text>
                                     <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
                                 </View>

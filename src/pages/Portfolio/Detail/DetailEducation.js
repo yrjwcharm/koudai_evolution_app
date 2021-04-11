@@ -28,6 +28,8 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
+import Toast from '../../../components/Toast';
+
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
@@ -50,18 +52,6 @@ export default function DetailEducation({navigation, route}) {
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
-        if (t === 2) {
-            const params = {
-                initial_amount: countFr,
-                per_amount: countM,
-                allocation_id: allocationIdRef.current,
-                year: age,
-                type: t,
-                goal_amount: data.plan_info.goal_info.amount,
-                upid: route.params.upid,
-            };
-            changeNotice(params);
-        }
     };
 
     const selectAge = () => {
@@ -81,16 +71,6 @@ export default function DetailEducation({navigation, route}) {
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {
                 setAge(pickedValue[0]);
-                const params = {
-                    initial_amount: countFr,
-                    per_amount: countM,
-                    allocation_id: allocationIdRef.current,
-                    year: pickedValue[0],
-                    type,
-                    goal_amount: data.plan_info.goal_info.amount,
-                    upid: route.params.upid,
-                };
-                changeNotice(params);
                 setShowMask(false);
             },
             onPickerCancel: () => {
@@ -109,68 +89,57 @@ export default function DetailEducation({navigation, route}) {
         return _dep;
     };
     // 计算金额
-    const countCalc = useCallback(
-        (interval, action, t) => {
-            const _interval = Number(interval);
-            if (t === 'begin') {
-                setCountFr((prev) => {
-                    let next = prev;
-                    if (action === 'increase') {
-                        next = prev + _interval;
-                    } else {
-                        next = prev - _interval;
+    const countCalc = useCallback((item, action) => {
+        const _interval = Number(item.interval);
+        const t = item.type;
+        if (t === 'begin') {
+            setCountFr((prev) => {
+                let next = prev;
+                if (action === 'increase') {
+                    next = prev + _interval;
+                    if (next < item.min) {
+                        next = item.min;
+                        Toast.show(`组合最低起投金额为${formaNum(item.min, 'nozero')}`);
+                    } else if (next > item.max) {
+                        next = item.max;
+                        Toast.show('金额需小于1亿');
                     }
-                    if (next < 2000 || next > 10000000) {
-                        next = prev;
+                } else {
+                    next = prev - _interval;
+                    if (next < item.min) {
+                        next = 0;
                     }
-                    const params = {
-                        initial_amount: next,
-                        per_amount: countM,
-                        allocation_id: allocationIdRef.current,
-                        year: age,
-                        type,
-                        goal_amount: data.plan_info.goal_info.amount,
-                        upid: route.params.upid,
-                    };
-                    changeNotice(params);
-                    return next;
-                });
-            } else if (t === 'auto') {
-                setCountM((prev) => {
-                    let next = prev;
-                    if (action === 'increase') {
-                        next = prev + _interval;
-                    } else {
-                        next = prev - _interval;
+                }
+                return next;
+            });
+        } else if (t === 'auto') {
+            setCountM((prev) => {
+                let next = prev;
+                if (action === 'increase') {
+                    next = prev + _interval;
+                    if (next < item.min) {
+                        next = item.min;
+                        Toast.show(`组合最低起投金额为${formaNum(item.min, 'nozero')}`);
+                    } else if (next > item.max) {
+                        next = item.max;
+                        Toast.show('金额需小于1亿');
                     }
-                    if (next < 2000 || next > 10000000) {
-                        next = prev;
+                } else {
+                    next = prev - _interval;
+                    if (next < item.min) {
+                        next = 0;
                     }
-                    const params = {
-                        initial_amount: countFr,
-                        per_amount: next,
-                        allocation_id: allocationIdRef.current,
-                        year: age,
-                        type,
-                        goal_amount: data.plan_info.goal_info.amount,
-                        upid: route.params.upid,
-                    };
-                    changeNotice(params);
-                    return next;
-                });
-            }
-        },
-        [age, changeNotice, countFr, countM, data, route.params, type]
-    );
+                }
+                return next;
+            });
+        }
+    }, []);
     const changeNotice = useCallback((params) => {
-        Http.get('/portfolio/future/yield_chart/20210101', params).then((res) => {
+        Http.get('/portfolio/future/yield_amount/20210101', params).then((res) => {
             if (res.code === '000000') {
                 setRemark(res.result.remark);
                 setGoalAmount(res.result.goal_amount);
-                setSubTabs(res.result.sub_tabs);
-                if (params.type == 2) {
-                    setChart(res.result.chart);
-                }
+                setPeriod(res.result.period);
             }
         });
     }, []);
@@ -179,27 +148,25 @@ export default function DetailEducation({navigation, route}) {
             upid: route.params.upid,
             amount: route?.params?.amount,
         }).then((res) => {
-            setAge(res.result?.plan_info?.goal_info?.items[2]?.val);
-            allocationIdRef.current = res.result.allocation_id;
-            poidRef.current = res.result.poid;
-            setPeriod(res.result.period);
-            if (res.result.period.indexOf('f') > -1) {
-                setType(2);
-            }
-            setData(res.result);
-            setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-            setAge(res.result.plan_info.personal_info?.age);
-            res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                if (item.type == 'begin') {
-                    setCountFr(Number(item.val));
-                } else if (item.type == 'auto') {
-                    setCountM(Number(item.val));
+            if (res.code === '000000') {
+                allocationIdRef.current = res.result.allocation_id;
+                poidRef.current = res.result.poid;
+                setPeriod(res.result.period);
+                if (res.result.period.indexOf('f') > -1) {
+                    setType(2);
                 }
-                // else if (item.type == 'duration') {
-                //     setCurrent(res.result?.plan_info?.goal_info?.items[index]?.val);
-                // }
-            });
-            setRemark(res.result.plan_info?.goal_info?.remark);
+                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                setAge(res.result.plan_info.personal_info?.age);
+                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                    if (item.type == 'begin') {
+                        setCountFr(Number(item.val));
+                    } else if (item.type == 'auto') {
+                        setCountM(Number(item.val));
+                    }
+                });
+                setRemark(res.result.plan_info?.goal_info?.remark);
+                setData(res.result);
+            }
         });
     }, [route.params]);
     const getChartData = useCallback(() => {
@@ -208,34 +175,50 @@ export default function DetailEducation({navigation, route}) {
             period: period,
             type: type,
             poid: poidRef.current,
-        }).then((resp) => {
-            setChart(resp.result.yield_info.chart);
-            setChartData(resp.result);
-            setSubTabs(resp.result.yield_info?.sub_tabs);
+        }).then((res) => {
+            if (res.code === '000000') {
+                setChart(res.result.yield_info.chart);
+                setChartData(res.result);
+                setSubTabs(res.result.yield_info?.sub_tabs);
+            }
         });
     }, [period, route.params, type]);
     useEffect(() => {
         return () => Picker.hide();
     }, []);
     useEffect(() => {
-        if (data?.top_button) {
+        if (data?.title) {
             navigation.setOptions({
                 title: data.title,
                 headerRight: () => {
-                    return (
-                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'repalce')} activeOpacity={1}>
+                    return data?.top_button ? (
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'replace')} activeOpacity={1}>
                             <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
                         </TouchableOpacity>
-                    );
+                    ) : null;
                 },
             });
         }
     }, [data, jump, navigation]);
     useEffect(() => {
-        if (data.poid && type == 1) {
+        if (data.poid) {
             getChartData();
         }
-    }, [data, getChartData, period, type]);
+    }, [data, getChartData, type]);
+    useEffect(() => {
+        if (data.poid) {
+            const params = {
+                initial_amount: countFr,
+                per_amount: countM,
+                allocation_id: allocationIdRef.current,
+                year: age,
+                type,
+                goal_amount: data.plan_info.goal_info.amount,
+                upid: route.params.upid,
+            };
+            changeNotice(params);
+        }
+    }, [age, changeNotice, countFr, countM, data, route.params, type]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -311,7 +294,15 @@ export default function DetailEducation({navigation, route}) {
                                         start={{x: 0, y: 0.25}}
                                         end={{x: 0.8, y: 0.8}}
                                         colors={['#E9EAED', '#F5F6F8']}
-                                        style={{borderRadius: text(25), marginBottom: text(7)}}>
+                                        style={[
+                                            Style.flexRow,
+                                            {
+                                                borderRadius: text(25),
+                                                marginBottom: text(7),
+                                                paddingVertical: text(8),
+                                                paddingHorizontal: Space.padding,
+                                            },
+                                        ]}>
                                         <Text style={styles.tip_sty}>{remark}</Text>
                                     </LinearGradient>
 
@@ -324,9 +315,7 @@ export default function DetailEducation({navigation, route}) {
                                                 <View style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                                     <TouchableOpacity
                                                         activeOpacity={1}
-                                                        onPress={() =>
-                                                            countCalc(_item.interval, 'decrease', _item.type)
-                                                        }>
+                                                        onPress={() => countCalc(_item, 'decrease')}>
                                                         <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
                                                     </TouchableOpacity>
                                                     <Text style={styles.count_num_sty}>
@@ -334,9 +323,7 @@ export default function DetailEducation({navigation, route}) {
                                                     </Text>
                                                     <TouchableOpacity
                                                         activeOpacity={1}
-                                                        onPress={() =>
-                                                            countCalc(_item.interval, 'increase', _item.type)
-                                                        }>
+                                                        onPress={() => countCalc(_item, 'increase')}>
                                                         <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
                                                     </TouchableOpacity>
                                                 </View>
@@ -349,53 +336,57 @@ export default function DetailEducation({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <RenderChart
-                                    chartData={chartData}
-                                    chart={chart}
-                                    type={type}
-                                    tootipScope={false}
-                                    style={{marginTop: text(20)}}
-                                    width={deviceWidth - text(40)}
-                                />
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        height: 50,
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginHorizontal: Space.marginAlign,
-                                    }}>
-                                    {subTabs?.map((_item, _index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                style={[
-                                                    styles.btn_sty,
-                                                    {
-                                                        backgroundColor:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#F1F6FF'
-                                                                : '#fff',
-                                                        borderWidth:
-                                                            period == _item.val && type == _item.type ? 0 : 0.5,
-                                                    },
-                                                ]}
-                                                key={_index}
-                                                onPress={() => changeTab(_item.val, _item.type)}>
-                                                <Text
-                                                    style={{
-                                                        color:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#0051CC'
-                                                                : '#555B6C',
-                                                        fontSize: text(12),
-                                                    }}>
-                                                    {_item.name}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                </View>
+                                {chart?.length > 0 && (
+                                    <>
+                                        <RenderChart
+                                            chartData={chartData}
+                                            chart={chart}
+                                            type={type}
+                                            tootipScope={false}
+                                            style={{marginTop: text(20)}}
+                                            width={deviceWidth - text(40)}
+                                        />
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                height: 50,
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                marginHorizontal: Space.marginAlign,
+                                            }}>
+                                            {subTabs?.map((_item, _index) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        style={[
+                                                            styles.btn_sty,
+                                                            {
+                                                                backgroundColor:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#F1F6FF'
+                                                                        : '#fff',
+                                                                borderWidth:
+                                                                    period == _item.val && type == _item.type ? 0 : 0.5,
+                                                            },
+                                                        ]}
+                                                        key={_index}
+                                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                                        <Text
+                                                            style={{
+                                                                color:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#0051CC'
+                                                                        : '#555B6C',
+                                                                fontSize: text(12),
+                                                            }}>
+                                                            {_item.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    </>
+                                )}
 
                                 {/* 表格 */}
                                 <Table data={data.asset_compare.table} />
@@ -564,12 +555,9 @@ const styles = StyleSheet.create({
         marginVertical: text(8),
     },
     tip_sty: {
-        height: text(36),
-        lineHeight: text(36),
-        color: '#545968',
-        fontSize: text(12),
-        marginHorizontal: text(16),
-        flexWrap: 'wrap',
+        lineHeight: text(20),
+        color: Colors.descColor,
+        fontSize: Font.textH3,
     },
     count_wrap_sty: {
         paddingVertical: text(19),

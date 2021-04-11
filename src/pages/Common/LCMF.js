@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 18:07:35
+ * @LastEditTime: 2021-04-11 13:47:44
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -13,10 +13,19 @@ import {px as text} from '../../utils/appUtil';
 import Feather from 'react-native-vector-icons/Feather';
 import {ShareModal} from '../../components/Modal';
 import http from '../../services';
+import {useJump} from '../../components/hooks';
 export default function LCMF({route, navigation}) {
+    const jump = useJump();
     const shareModal = useRef(null);
     const [data, setData] = useState({});
 
+    const onMessage = (event) => {
+        const eventData = JSON.parse(event.nativeEvent.data);
+        // console.log(eventData);
+        if (typeof eventData === 'object') {
+            jump(eventData);
+        }
+    };
     useEffect(() => {
         navigation.setOptions({
             headerBackImage: () => {
@@ -71,6 +80,7 @@ export default function LCMF({route, navigation}) {
             <RNWebView
                 bounces={false}
                 javaScriptEnabled
+                onMessage={onMessage}
                 originWhitelist={['*']}
                 source={{
                     uri: route?.params?.link,

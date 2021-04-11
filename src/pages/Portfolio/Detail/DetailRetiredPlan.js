@@ -28,6 +28,7 @@ import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
+import Toast from '../../../components/Toast';
 
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
@@ -51,80 +52,59 @@ export default function DetailRetiredPlan({navigation, route}) {
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
-        if (t === 2) {
-            const params = {
-                initial_amount: countFr,
-                per_amount: countM,
-                allocation_id: allocationIdRef.current,
-                goal_amount: data.plan_info.goal_info.amount,
-                year: current,
-                type: t,
-                upid: route.params.upid,
-            };
-            changeNotice(params);
-        }
     };
     // 计算金额
-    const countCalc = (interval, action, t) => {
-        const _interval = Number(interval);
-        if (t == 'begin') {
+    const countCalc = (item, action) => {
+        const _interval = Number(item.interval);
+        const t = item.type;
+        if (t === 'begin') {
             setCountFr((prev) => {
                 let next = prev;
                 if (action === 'increase') {
                     next = prev + _interval;
+                    if (next < item.min) {
+                        next = item.min;
+                        Toast.show(`组合最低起投金额为${formaNum(item.min, 'nozero')}`);
+                    } else if (next > item.max) {
+                        next = item.max;
+                        Toast.show('金额需小于1亿');
+                    }
                 } else {
                     next = prev - _interval;
+                    if (next < item.min) {
+                        next = 0;
+                    }
                 }
-                if (next < 0 || next > 10000000) {
-                    next = prev;
-                }
-                const params = {
-                    initial_amount: next,
-                    per_amount: countM,
-                    allocation_id: allocationIdRef.current,
-                    year: current,
-                    type,
-                    goal_amount: data.plan_info.goal_info.amount,
-                    upid: route.params.upid,
-                };
-                changeNotice(params);
                 return next;
             });
-        } else {
+        } else if (t === 'auto') {
             setCountM((prev) => {
                 let next = prev;
                 if (action === 'increase') {
                     next = prev + _interval;
+                    if (next < item.min) {
+                        next = item.min;
+                        Toast.show(`组合最低起投金额为${formaNum(item.min, 'nozero')}`);
+                    } else if (next > item.max) {
+                        next = item.max;
+                        Toast.show('金额需小于1亿');
+                    }
                 } else {
                     next = prev - _interval;
+                    if (next < item.min) {
+                        next = 0;
+                    }
                 }
-                if (next < 2000 || next > 10000000) {
-                    next = prev;
-                }
-                const params = {
-                    initial_amount: countFr,
-                    per_amount: next,
-                    allocation_id: allocationIdRef.current,
-                    year: current,
-                    type,
-                    goal_amount: data.plan_info.goal_info.amount,
-                    upid: route.params.upid,
-                };
-                changeNotice(params);
                 return next;
             });
         }
-        changeNotice();
     };
     const changeNotice = useCallback((params) => {
-        Http.get('/portfolio/future/yield_chart/20210101', params).then((res) => {
+        Http.get('/portfolio/future/yield_amount/20210101', params).then((res) => {
             if (res.code === '000000') {
-                setRemark(res.result.remark);
-                setGoalAmount(res.result.goal_amount);
-                setSubTabs(res.result.sub_tabs);
-                if (params.type == 2) {
-                    setChart(res.result.chart);
-                }
+                setRemark(res.result.yield_info.remark);
+                setGoalAmount(res.result.yield_info.goal_amount);
+                setPeriod(res.result.period);
             }
         });
     }, []);
@@ -133,21 +113,24 @@ export default function DetailRetiredPlan({navigation, route}) {
             upid: route.params.upid,
             amount: route?.params?.amount,
         }).then((res) => {
-            setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
-            allocationIdRef.current = res.result.allocation_id;
-            poidRef.current = res.result?.poid;
-            setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-            setData(res.result);
-            res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                if (item.type == 'begin') {
-                    setCountFr(Number(item.val));
-                } else if (item.type == 'auto') {
-                    setCountM(Number(item.val));
-                } else if (item.type == 'duration') {
-                    setCurrent(item.val);
-                }
-            });
-            setRemark(res.result.plan_info?.goal_info?.remark);
+            if (res.code === '000000') {
+                allocationIdRef.current = res.result.allocation_id;
+                poidRef.current = res.result?.poid;
+                setPeriod(res.result.period);
+                setType(res.result.period.indexOf('f') !== -1 ? 2 : 1);
+                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                    if (item.type == 'begin') {
+                        setCountFr(Number(item.val));
+                    } else if (item.type == 'auto') {
+                        setCountM(Number(item.val));
+                    } else if (item.type == 'duration') {
+                        setCurrent(item.val);
+                    }
+                });
+                setRemark(res.result.plan_info?.goal_info?.remark);
+                setData(res.result);
+            }
         });
     }, [route.params]);
     const getChartInfo = useCallback(() => {
@@ -157,9 +140,11 @@ export default function DetailRetiredPlan({navigation, route}) {
             type: type,
             poid: poidRef.current,
         }).then((res) => {
-            setChartData(res.result);
-            setChart(res.result?.yield_info?.chart);
-            setSubTabs(res.result.yield_info?.sub_tabs);
+            if (res.code === '000000') {
+                setChartData(res.result);
+                setChart(res.result?.yield_info?.chart);
+                setSubTabs(res.result.yield_info?.sub_tabs);
+            }
         });
     }, [period, type, route]);
     // 打开日期选择 视图
@@ -181,16 +166,6 @@ export default function DetailRetiredPlan({navigation, route}) {
             onPickerConfirm: (pickedValue) => {
                 setShowMask(false);
                 setCurrent(pickedValue[0]);
-                const params = {
-                    initial_amount: countFr,
-                    per_amount: countM,
-                    allocation_id: allocationIdRef.current,
-                    year: pickedValue[0],
-                    type,
-                    goal_amount: data.plan_info.goal_info.amount,
-                    upid: route.params.upid,
-                };
-                changeNotice(params);
             },
             onPickerCancel: () => {
                 setShowMask(false);
@@ -210,24 +185,38 @@ export default function DetailRetiredPlan({navigation, route}) {
         bottomModal.current.show();
     };
     useEffect(() => {
-        if (data?.top_button) {
+        if (data?.title) {
             navigation.setOptions({
                 title: data.title,
                 headerRight: () => {
-                    return (
-                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'repalce')} activeOpacity={1}>
+                    return data?.top_button ? (
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'replace')} activeOpacity={1}>
                             <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
                         </TouchableOpacity>
-                    );
+                    ) : null;
                 },
             });
         }
     }, [data, jump, navigation]);
     useEffect(() => {
-        if (data.poid && type === 1) {
+        if (data.poid) {
             getChartInfo();
         }
-    }, [data, getChartInfo, period, type]);
+    }, [data, getChartInfo, type]);
+    useEffect(() => {
+        if (data.poid) {
+            const params = {
+                initial_amount: countFr,
+                per_amount: countM,
+                allocation_id: allocationIdRef.current,
+                year: current,
+                type,
+                goal_amount: data.plan_info.goal_info.amount,
+                upid: route.params.upid,
+            };
+            changeNotice(params);
+        }
+    }, [current, changeNotice, countFr, countM, data, route.params, type]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -258,7 +247,12 @@ export default function DetailRetiredPlan({navigation, route}) {
                                     start={{x: 0, y: 0.25}}
                                     end={{x: 0.8, y: 0.8}}
                                     colors={['#E9EAED', '#F5F6F8']}
-                                    style={{borderRadius: text(25), marginBottom: text(7)}}>
+                                    style={{
+                                        borderRadius: text(25),
+                                        marginBottom: text(7),
+                                        paddingVertical: text(8),
+                                        paddingLeft: Space.padding,
+                                    }}>
                                     <Text style={styles.tip_sty}>{remark}</Text>
                                 </LinearGradient>
                                 {data?.plan_info?.goal_info?.items.map((_item, _index) => {
@@ -271,9 +265,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                         style={[Style.flexRow, {flex: 1, justifyContent: 'flex-end'}]}>
                                                         <TouchableOpacity
                                                             activeOpacity={1}
-                                                            onPress={() =>
-                                                                countCalc(_item.interval, 'decrease', _item.type)
-                                                            }>
+                                                            onPress={() => countCalc(_item, 'decrease')}>
                                                             <Ionicons
                                                                 name={'remove-circle'}
                                                                 size={25}
@@ -288,9 +280,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                         </Text>
                                                         <TouchableOpacity
                                                             activeOpacity={1}
-                                                            onPress={() =>
-                                                                countCalc(_item.interval, 'increase', _item.type)
-                                                            }>
+                                                            onPress={() => countCalc(_item, 'increase')}>
                                                             <Ionicons name={'add-circle'} size={25} color={'#0051CC'} />
                                                         </TouchableOpacity>
                                                     </View>
@@ -317,52 +307,59 @@ export default function DetailRetiredPlan({navigation, route}) {
                     <View style={styles.content_sty}>
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
-                            <RenderChart
-                                chartData={chartData}
-                                period={period}
-                                chart={chart}
-                                tootipScope={false}
-                                type={type}
-                                style={{marginTop: text(20)}}
-                                width={deviceWidth - text(40)}
-                            />
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    height: 50,
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginHorizontal: Space.marginAlign,
-                                }}>
-                                {subTabs?.map((_item, _index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={1}
-                                            style={[
-                                                styles.btn_sty,
-                                                {
-                                                    backgroundColor:
-                                                        period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
-                                                    borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
-                                                },
-                                            ]}
-                                            key={_index + '_sub'}
-                                            onPress={() => changeTab(_item.val, _item.type)}>
-                                            <Text
-                                                style={{
-                                                    color:
-                                                        period == _item.val && type == _item.type
-                                                            ? '#0051CC'
-                                                            : '#555B6C',
+                            {chart?.length > 0 && (
+                                <>
+                                    <RenderChart
+                                        chartData={chartData}
+                                        period={period}
+                                        chart={chart}
+                                        tootipScope={false}
+                                        type={type}
+                                        style={{marginTop: text(20)}}
+                                        width={deviceWidth - text(40)}
+                                    />
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            height: 50,
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            marginHorizontal: Space.marginAlign,
+                                        }}>
+                                        {subTabs?.map((_item, _index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={1}
+                                                    style={[
+                                                        styles.btn_sty,
+                                                        {
+                                                            backgroundColor:
+                                                                period == _item.val && type == _item.type
+                                                                    ? '#F1F6FF'
+                                                                    : '#fff',
+                                                            borderWidth:
+                                                                period == _item.val && type == _item.type ? 0 : 0.5,
+                                                        },
+                                                    ]}
+                                                    key={_index + '_sub'}
+                                                    onPress={() => changeTab(_item.val, _item.type)}>
+                                                    <Text
+                                                        style={{
+                                                            color:
+                                                                period == _item.val && type == _item.type
+                                                                    ? '#0051CC'
+                                                                    : '#555B6C',
 
-                                                    fontSize: text(12),
-                                                }}>
-                                                {_item.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </View>
+                                                            fontSize: text(12),
+                                                        }}>
+                                                        {_item.name}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+                                </>
+                            )}
 
                             {/* 表格 */}
                             <Table data={data.asset_compare.table} />
@@ -532,12 +529,9 @@ const styles = StyleSheet.create({
         marginVertical: text(8),
     },
     tip_sty: {
-        height: text(36),
-        lineHeight: text(36),
-        color: '#545968',
-        fontSize: text(12),
-        marginHorizontal: text(16),
-        flexWrap: 'wrap',
+        lineHeight: text(20),
+        color: Colors.descColor,
+        fontSize: Font.textH3,
     },
     count_wrap_sty: {
         paddingVertical: text(19),

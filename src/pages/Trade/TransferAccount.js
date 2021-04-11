@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 18:26:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 18:26:42
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
@@ -16,8 +16,11 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {PasswordModal} from '../../components/Password';
 import Icon from 'react-native-vector-icons/AntDesign';
+import BottomDesc from '../../components/BottomDesc';
+import {useJump} from '../../components/hooks';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function TransferAccount({navigation, route}) {
+    const jump = useJump();
     const [data, setData] = useState({});
     const [show, setShow] = useState(false);
     const passwordModal = useRef(null);
@@ -32,7 +35,11 @@ export default function TransferAccount({navigation, route}) {
         });
     }, [navigation, route]);
     const passwordInput = () => {
-        passwordModal.current.show();
+        if (data.button.url) {
+            jump(data.button.url);
+        } else {
+            passwordModal.current.show();
+        }
     };
 
     const submit = (password) => {
@@ -173,6 +180,7 @@ export default function TransferAccount({navigation, route}) {
                             );
                         })}
                     </View>
+                    <BottomDesc />
                 </ScrollView>
             )}
             <PasswordModal ref={passwordModal} onDone={submit} />

@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:40:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 16:17:31
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -105,6 +105,11 @@ export default function PortfolioAssets(props) {
     useEffect(() => {
         getChartInfo();
     }, [period]);
+    useEffect(() => {
+        if (chartData.length > 0) {
+            onHide();
+        }
+    }, [chartData]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -129,7 +134,7 @@ export default function PortfolioAssets(props) {
         [getColor]
     );
     // 图表滑动结束
-    const onHide = ({items}) => {
+    const onHide = () => {
         _textTime.current.setNativeProps({text: chart?.label[0].val});
         _textPortfolio.current.setNativeProps({
             text: chart?.label[1].val,

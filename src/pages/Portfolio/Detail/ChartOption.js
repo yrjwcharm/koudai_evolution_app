@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 13:14:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 13:58:23
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -109,7 +109,8 @@ export const histogram = (data, min, height) =>
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    padding:[${text(20)},${text(36)}],
+    appendPadding: [15, 15, 25, 15],
+    padding:[${text(20)},${text(36)},${text(28)}],
     width:${deviceWidth - text(20)},
     height:${height},
   });
@@ -141,17 +142,17 @@ export const histogram = (data, min, height) =>
     let offsetX;
     if (obj.name == '比较基准') {
       textAlign = 'start';
-      offsetX = -3;
+      offsetX = 2;
       offsetY=10
     } else {
       textAlign = 'end';
-      offsetX = 2;
+      offsetX = -2;
       offsetY=10
     }
     
     chart.guide().text({
       position: [ obj.key, obj.val ],
-      content: obj.val.toFixed(1) + '%',
+      content: obj.val.toFixed(2) + '%',
       style: {
         textAlign,
         fill: '#4E556C',
