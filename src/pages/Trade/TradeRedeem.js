@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 12:20:23
+ * @LastEditTime: 2021-04-11 13:55:43
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -163,41 +163,43 @@ export default class TradeRedeem extends Component {
         }
     };
     selectAge = () => {
-        Keyboard.dismiss();
-        const option = [];
-        var _id;
-        this.state.data.survey.option.forEach((_item, _index) => {
-            option.push(_item.v);
-        });
+        setTimeout(() => {
+            const option = [];
+            var _id;
+            this.state.data.survey.option.forEach((_item, _index) => {
+                option.push(_item.v);
+            });
 
-        this.setState({showMask: true});
-        Picker.init({
-            pickerTitleText: '您赎回的原因？',
-            pickerCancelBtnText: '取消',
-            pickerConfirmBtnText: '确定',
-            selectedValue: [1],
-            pickerBg: [255, 255, 255, 1],
-            pickerData: option,
-            pickerTextEllipsisLen: 20,
-            pickerFontColor: [33, 33, 33, 1],
-            onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.state.data.survey.option.forEach((_item, _index) => {
-                    if (_item.v === pickedValue[0]) {
-                        _id = _item.id;
-                    }
-                });
-                this.setState({showMask: false});
-                Http.get('/trade/redeem/survey/20210101', {
-                    id: _id,
-                }).then((res) => {
-                    this.passwordInput();
-                });
-            },
-            onPickerCancel: () => {
-                this.setState({showMask: false});
-            },
-        });
-        Picker.show();
+            this.setState({showMask: true});
+            Picker.init({
+                pickerTitleText: '您赎回的原因？',
+                pickerCancelBtnText: '取消',
+                pickerConfirmBtnText: '确定',
+                selectedValue: [1],
+                pickerBg: [255, 255, 255, 1],
+                pickerData: option,
+                pickerTextEllipsisLen: 20,
+                pickerFontColor: [33, 33, 33, 1],
+                onPickerConfirm: (pickedValue, pickedIndex) => {
+                    this.state.data.survey.option.forEach((_item, _index) => {
+                        if (_item.v === pickedValue[0]) {
+                            _id = _item.id;
+                        }
+                    });
+                    this.setState({showMask: false});
+                    Http.get('/trade/redeem/survey/20210101', {
+                        id: _id,
+                    }).then((res) => {
+                        this.passwordInput();
+                    });
+                },
+                onPickerCancel: () => {
+                    this.setState({showMask: false});
+                },
+            });
+            Picker.show();
+            Keyboard.dismiss();
+        }, 250);
     };
     render() {
         const {data, tableData, toggleList, btnClick, redeemTo, tips} = this.state;

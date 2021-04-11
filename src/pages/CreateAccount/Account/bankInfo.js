@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 12:11:49
+ * @LastEditTime: 2021-04-11 14:00:41
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -252,7 +252,7 @@ class BankInfo extends Component {
         return (
             <>
                 <KeyboardAwareScrollView
-                    extraScrollHeight={px(80)}
+                    extraScrollHeight={px(90)}
                     style={styles.con}
                     // enableResetScrollToCoords={true}
                     // enableOnAndroid={true}
