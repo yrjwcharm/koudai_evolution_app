@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:56:05
+ * @LastEditTime: 2021-04-11 18:32:00
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -30,7 +30,6 @@ export default function RemindMessage({navigation}) {
     );
     const init = useCallback(() => {
         checkNotifications().then(({status, settings}) => {
-            // …
             if (status == 'denied' || status == 'blocked') {
                 setShowNotice(true);
             }
@@ -64,101 +63,126 @@ export default function RemindMessage({navigation}) {
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{flex: 1, padding: text(16)}}>
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        style={[styles.im_card_sty, {marginBottom: text(16)}]}
-                        onPress={() => jump(data?.service?.url)}>
-                        <Image
-                            source={{
-                                uri: data?.service?.icon,
-                            }}
-                            resizeMode="contain"
-                            style={{width: text(40), height: text(40)}}
-                        />
-                        <View style={{marginLeft: text(20), flex: 1}}>
-                            <Text style={styles.title_sty}>{data?.service?.title}</Text>
-                            {data?.service?.content ? (
-                                <Text style={styles.desc_sty} numberOfLines={1}>
-                                    {data?.service?.content}
+                <>
+                    {!hide && showNotice && (
+                        <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
+                            <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
+                                onPress={openLink}>
+                                <Text
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: text(13),
+                                        paddingHorizontal: text(10),
+                                        paddingVertical: text(5),
+                                    }}>
+                                    {data?.notice?.button?.text}
                                 </Text>
-                            ) : null}
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => closeNotice()}>
+                                <AntDesign name={'close'} size={12} color={'#EB7121'} />
+                            </TouchableOpacity>
                         </View>
-                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.im_card_sty, {marginBottom: text(16)}]}
-                        onPress={() => jump(data?.point?.url)}>
-                        <Image
-                            source={{
-                                uri: data?.point?.icon,
-                            }}
-                            resizeMode="contain"
-                            style={{width: text(40), height: text(40)}}
-                        />
-                        <View style={{marginLeft: text(20), flex: 1}}>
-                            <Text style={styles.title_sty}>{data?.point?.title}</Text>
-                            {data?.point?.content ? (
-                                <Text style={styles.desc_sty} numberOfLines={1}>
-                                    {data?.point?.content}
-                                </Text>
-                            ) : null}
-                        </View>
-                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                    </TouchableOpacity>
+                    )}
 
-                    <View
-                        style={{
-                            backgroundColor: '#fff',
-                            borderRadius: text(10),
-                            paddingHorizontal: text(16),
-                        }}>
-                        {data?.message_list?.map((_item, _index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={0.9}
-                                    style={[
-                                        styles.list_card_sty,
-                                        {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},
-                                    ]}
-                                    key={_index + '_item'}
-                                    onPress={() => jump(_item.url)}>
-                                    <View>
-                                        <Image
-                                            source={{
-                                                uri: _item?.icon,
-                                            }}
-                                            resizeMode="contain"
-                                            style={{width: text(40), height: text(40)}}
-                                        />
-                                        {_item?.unread ? (
-                                            <View style={styles.point_sty}>
-                                                <Text
-                                                    style={{
-                                                        color: '#fff',
-                                                        fontSize: text(11),
-                                                        fontFamily: Font.numFontFamily,
-                                                    }}>
-                                                    {_item?.unread > 99 ? '99+' : _item?.unread}
+                    <ScrollView style={{flex: 1, padding: text(16)}}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={[styles.im_card_sty, {marginBottom: text(16)}]}
+                            onPress={() => jump(data?.service?.url)}>
+                            <Image
+                                source={{
+                                    uri: data?.service?.icon,
+                                }}
+                                resizeMode="contain"
+                                style={{width: text(40), height: text(40)}}
+                            />
+                            <View style={{marginLeft: text(20), flex: 1}}>
+                                <Text style={styles.title_sty}>{data?.service?.title}</Text>
+                                {data?.service?.content ? (
+                                    <Text style={styles.desc_sty} numberOfLines={1}>
+                                        {data?.service?.content}
+                                    </Text>
+                                ) : null}
+                            </View>
+                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.im_card_sty, {marginBottom: text(16)}]}
+                            onPress={() => jump(data?.point?.url)}>
+                            <Image
+                                source={{
+                                    uri: data?.point?.icon,
+                                }}
+                                resizeMode="contain"
+                                style={{width: text(40), height: text(40)}}
+                            />
+                            <View style={{marginLeft: text(20), flex: 1}}>
+                                <Text style={styles.title_sty}>{data?.point?.title}</Text>
+                                {data?.point?.content ? (
+                                    <Text style={styles.desc_sty} numberOfLines={1}>
+                                        {data?.point?.content}
+                                    </Text>
+                                ) : null}
+                            </View>
+                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+
+                        <View
+                            style={{
+                                backgroundColor: '#fff',
+                                borderRadius: text(10),
+                                paddingHorizontal: text(16),
+                            }}>
+                            {data?.message_list?.map((_item, _index) => {
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={[
+                                            styles.list_card_sty,
+                                            {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},
+                                        ]}
+                                        key={_index + '_item'}
+                                        onPress={() => jump(_item.url)}>
+                                        <View>
+                                            <Image
+                                                source={{
+                                                    uri: _item?.icon,
+                                                }}
+                                                resizeMode="contain"
+                                                style={{width: text(40), height: text(40)}}
+                                            />
+                                            {_item?.unread ? (
+                                                <View style={styles.point_sty}>
+                                                    <Text
+                                                        style={{
+                                                            color: '#fff',
+                                                            fontSize: text(11),
+                                                            fontFamily: Font.numFontFamily,
+                                                        }}>
+                                                        {_item?.unread > 99 ? '99+' : _item?.unread}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
+                                        </View>
+
+                                        <View style={{marginLeft: text(20), flex: 1}}>
+                                            <Text style={styles.title_sty}>{_item?.title}</Text>
+                                            {_item?.content ? (
+                                                <Text style={styles.desc_sty} numberOfLines={1}>
+                                                    {_item?.content}
                                                 </Text>
-                                            </View>
-                                        ) : null}
-                                    </View>
-
-                                    <View style={{marginLeft: text(20), flex: 1}}>
-                                        <Text style={styles.title_sty}>{_item?.title}</Text>
-                                        {_item?.content ? (
-                                            <Text style={styles.desc_sty} numberOfLines={1}>
-                                                {_item?.content}
-                                            </Text>
-                                        ) : null}
-                                    </View>
-                                    <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
-                </ScrollView>
+                                            ) : null}
+                                        </View>
+                                        <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    </ScrollView>
+                </>
             )}
         </View>
     );

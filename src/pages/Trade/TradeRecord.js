@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 19:06:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 17:58:31
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -205,7 +205,13 @@ const TradeRecord = ({route, navigation}) => {
                     </View>
                 </ScrollableTabView>
             ) : (
-                <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
+                <ScrollableTabView
+                    onChangeTab={changeTab}
+                    renderTabBar={() => <TabBar />}
+                    initialPage={0}
+                    onScroll={(a) => {
+                        // console.log(a);
+                    }}>
                     <View tabLabel="全部" style={styles.container}>
                         {renderContent()}
                     </View>

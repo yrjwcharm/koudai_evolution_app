@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 16:27:22
+ * @LastEditTime: 2021-04-11 17:36:05
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -31,6 +31,8 @@ class SetLoginPassword extends Component {
     };
     fr = this.props.route?.params?.fr;
     union_id = this.props.route?.params?.union_id;
+    nickname = this.props.route?.params?.nickname;
+    avatar = this.props.route?.params?.avatar;
     componentDidMount() {
         this.sendCode();
     }
@@ -60,6 +62,8 @@ class SetLoginPassword extends Component {
                 verify_code: code,
                 password,
                 union_id: this.union_id,
+                avatar: this.avatar,
+                nickname: this.avatar,
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 0,
         marginBottom: 0,
         flex: 1,
+        paddingRight: 0,
     },
     disabled: {
         opacity: 0.6,

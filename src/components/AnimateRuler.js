@@ -2,11 +2,11 @@
  * @Date: 2021-03-01 14:11:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 11:35:21
+ * @LastEditTime: 2021-04-11 17:29:54
  * @Description:
  */
 import React from 'react';
-import {SafeAreaView, View, Text, TextInput, Animated, Dimensions, ViewStyle} from 'react-native';
+import {SafeAreaView, View, Text, TextInput, Animated, Dimensions, ViewStyle, Platform} from 'react-native';
 import {Font, Colors} from '../common/commonStyle';
 import {px, deviceHeight as height, deviceWidth as width} from '../utils/appUtil';
 import lodash from 'lodash';
@@ -196,6 +196,7 @@ class Ruler extends React.PureComponent<Props> {
         // Create a listener
         this.scrollListener = this.state.scrollX.addListener(
             lodash.debounce(({value}) => {
+                console.log('object');
                 if (defaultValue && value == (defaultValue * this.snapSegment) / 2) {
                     return;
                 }
@@ -319,6 +320,7 @@ class Ruler extends React.PureComponent<Props> {
             vertical,
             onChangeValue,
         } = this.props;
+        const _props = Platform.OS == 'android' ? {} : {snapToInterval: this.snapSegment};
         return (
             <SafeAreaView
                 style={[
@@ -340,7 +342,7 @@ class Ruler extends React.PureComponent<Props> {
                     snapToAlignment="center"
                     showsHorizontalScrollIndicator={false}
                     scrollEventThrottle={100}
-                    // snapToInterval={this.snapSegment}
+                    {..._props}
                     onScroll={Animated.event(
                         [
                             {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 12:10:37
+ * @LastEditTime: 2021-04-11 18:12:42
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -41,6 +41,8 @@ class Login extends Component {
                     onHidden: () => {
                         if (this.fr == 'register') {
                             this.props.navigation.pop(2);
+                        } else if (this.fr == 'forgotGesPwd') {
+                            this.props.navigation.replace('GesturePassword', {option: 'firstSet'});
                         } else {
                             this.props.navigation.goBack();
                         }

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 15:09:01
+ * @LastEditTime: 2021-04-11 18:21:18
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -294,7 +294,7 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             )}
                             {/* 安全保障 */}
-                            {data?.login_status == 0 && renderSecurity(data?.menu_list)}
+                            {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 
                             {/* 推荐 */}
                             {data?.custom_info && (
@@ -485,7 +485,7 @@ const Index = (props) => {
                             <>
                                 <RenderTitle title={'关于理财魔方'} />
                                 {/* 安全保障 */}
-                                {data?.login_status == 1 && renderSecurity(data?.menu_list, px(12))}
+                                {data?.buy_status == 1 && renderSecurity(data?.menu_list, px(12))}
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     style={styles.aboutCard}

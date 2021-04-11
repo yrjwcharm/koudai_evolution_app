@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 11:56:17
+ * @LastEditTime: 2021-04-11 16:43:27
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -17,7 +17,9 @@ export const updateUserInfo = (userInfo) => {
 export function getUserInfo() {
     return (dispatch) => {
         http.get('/common/user_info/20210101').then((data) => {
-            dispatch(updateUserInfo(data.result));
+            if (data.code == '000000') {
+                dispatch(updateUserInfo(data.result));
+            }
         });
     };
 }

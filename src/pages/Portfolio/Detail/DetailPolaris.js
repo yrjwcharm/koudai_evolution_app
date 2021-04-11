@@ -3,22 +3,18 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 17:55:41
+ * @LastEditTime: 2021-04-11 17:06:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
-import Header from '../../../components/NavBar';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
-import {Chart} from '../../../components/Chart';
-import {pieChart} from './ChartOption';
-import {baseAreaChart} from '../components/ChartOption';
+
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FixedBtn from '../components/FixedBtn';
-import ListHeader from '../components/ListHeader';
-import Html from '../../../components/RenderHtml';
+
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
@@ -46,7 +42,7 @@ export default function DetailPolaris({route, navigation}) {
                 upid: route.params.upid,
                 period: period,
                 type: type,
-                poid: res.result.poid,
+                poid: route.params.poid,
                 allocation_id: res.result.parts_addition_data.line.allocation_id,
                 benchmark_id: res.result.parts_addition_data.line.benchmark_id,
             }).then((res) => {
@@ -54,11 +50,23 @@ export default function DetailPolaris({route, navigation}) {
                 setChartData(res.result);
             });
         });
-    }, [route.params, period, type]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [route.params]);
 
     const changeTab = (period, type) => {
         setPeriod(period);
         setType(type);
+        Http.get('/portfolio/yield_chart/20210101', {
+            upid: route.params.upid,
+            period: period,
+            type: type,
+            poid: route.params.poid,
+            allocation_id: data.parts_addition_data.line.allocation_id,
+            benchmark_id: data.parts_addition_data.line.benchmark_id,
+        }).then((res) => {
+            setChart(res.result.yield_info.chart);
+            setChartData(res.result);
+        });
     };
     useFocusEffect(
         useCallback(() => {

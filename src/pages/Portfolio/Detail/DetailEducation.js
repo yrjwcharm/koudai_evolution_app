@@ -99,6 +99,7 @@ export default function DetailEducation({navigation, route}) {
         });
         Picker.show();
     };
+
     const _createDateData = () => {
         let _dep = [];
         for (let i = 0; i <= 18; i++) {
@@ -222,7 +223,7 @@ export default function DetailEducation({navigation, route}) {
                 title: data.title,
                 headerRight: () => {
                     return (
-                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'replace')} activeOpacity={1}>
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'repalce')} activeOpacity={1}>
                             <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
                         </TouchableOpacity>
                     );
@@ -244,6 +245,7 @@ export default function DetailEducation({navigation, route}) {
         setPopup(tip);
         bottomModal.current.show();
     };
+
     return (
         <>
             {Object.keys(data).length > 0 ? (
