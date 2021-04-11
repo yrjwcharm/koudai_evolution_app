@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 15:47:06
+ * @LastEditTime: 2021-04-11 20:50:50
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -37,7 +37,8 @@ export default function WebView({route, navigation}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backButtonEnabled]);
     const onNavigationStateChange = (navState) => {
-        setBackButtonEnabled(navState.canGoBack);
+        console.log(navState);
+        setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
 
     const onBackAndroid = (e) => {

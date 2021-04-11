@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:50:12
+ * @LastEditTime: 2021-04-11 20:49:30
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -97,6 +97,7 @@ export default function MessageNotice({navigation, route}) {
         // is_read==0没读
 
         if (read) {
+            jump(url);
             return;
         }
         let _params;
@@ -175,7 +176,7 @@ export default function MessageNotice({navigation, route}) {
                                 <Text
                                     style={[
                                         {flex: 1, fontSize: text(16), fontWeight: 'bold'},
-                                        {color: item.is_read == 1 ? '#9AA1B2' : ''},
+                                        {color: item.is_read == 1 ? '#9AA1B2' : Colors.defaultColor},
                                     ]}>
                                     {item.title}
                                 </Text>
