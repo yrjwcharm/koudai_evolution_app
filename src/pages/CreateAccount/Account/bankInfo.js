@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:00:41
+ * @LastEditTime: 2021-04-11 20:07:29
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -105,6 +105,7 @@ class BankInfo extends Component {
                 rname: this.props.route?.params?.rname,
                 poid: this.props.route?.params?.poid || '',
                 amount: this.props.route?.params?.amount,
+                fr: this.props.route?.params?.fr,
             },
             '正在提交数据...'
         ).then((res) => {

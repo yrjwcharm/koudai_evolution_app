@@ -2,10 +2,10 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:40:36
+ * @LastEditTime: 2021-04-11 20:03:21
  * @Description:环境
  */
-const env = 'test'; //默认
+const env = 'pre2'; //默认
 const SERVER_URL = {
     online: {
         // 正式环境
