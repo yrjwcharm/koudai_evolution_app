@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 17:22:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 19:07:24
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -28,6 +28,7 @@ import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
+import {updateVerifyGesture} from './src/redux/actions/userInfo';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -90,6 +91,7 @@ function App(props) {
     let lastBackPressed = '';
     const onBackAndroid = () => {
         if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
+            store.dispatch(updateVerifyGesture(false));
             BackHandler.exitApp(); //退出整个应用
             return false;
         }
@@ -105,7 +107,7 @@ function App(props) {
         });
     };
     // heartbeat
-    const heartBeat = () => {
+    const heartBeat = React.useCallback(() => {
         JPush.getRegistrationID((result) => {
             if (Platform.OS == 'android') {
                 getAppMetaData('UMENG_CHANNEL')
@@ -123,7 +125,7 @@ function App(props) {
                 postHeartData(result.registerID, 'ios');
             }
         });
-    };
+    }, []);
     global.ErrorUtils.setGlobalHandler((error) => {
         console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
         console.log(error, error.name, error.message);
@@ -134,7 +136,7 @@ function App(props) {
         setInterval(() => {
             heartBeat();
         }, 60 * 5 * 1000);
-    }, []);
+    }, [heartBeat]);
     React.useEffect(() => {
         NetInfo.addEventListener((state) => {
             if (!state.isConnected) {

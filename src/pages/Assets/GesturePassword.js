@@ -9,9 +9,11 @@ import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {updateVerifyGesture} from '../../redux/actions/userInfo';
 import {useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
 export default function GesturePassword({option, route}) {
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const navigation = useNavigation();
     const [data, setData] = useState({
         point1: '#FFFFFF', //从0开始
@@ -33,38 +35,57 @@ export default function GesturePassword({option, route}) {
     const passwordRef = useRef('');
     const refreshRef = useRef(true);
     useEffect(() => {
-        // storage.delete('gesturePwd');
         // 修改手势密码
         if (route?.params?.option == 'modify') {
             navigation.setOptions({title: '修改手势密码'});
             setTitle('请输入旧的手势密码');
         } else if (route?.params?.option == 'firstSet') {
             navigation.setOptions({title: '设置手势密码'});
+        } else if (route?.params?.option == 'close') {
+            navigation.setOptions({title: '验证手势密码'});
+            setTitle('请输入手势密码');
         }
         storage.get('gesturePwd').then((res) => {
-            if (res) {
-                passwordRef.current = res;
-                // setPassword(res);
+            // console.log(res);
+            if (res && res[`${userInfo.uid}`]) {
+                passwordRef.current = res[`${userInfo.uid}`];
+                // 开启手势密码
+                storage.get('openGesturePwd').then((result) => {
+                    // console.log(result);
+                    isOpenRef.current = (result && result[`${userInfo.uid}`]) || false;
+                });
             }
         });
-        // 开启手势密码
-        storage.get('openGesturePwd').then((result) => {
-            // isOpen = result;
-            isOpenRef.current = result;
-        });
-    }, [navigation, route]);
+    }, [navigation, route, userInfo]);
 
     const _onEnd = (pwd) => {
-        console.log(pwd);
-        // Alert.alert('密码', password);
+        // console.log(pwd, passwordRef.current);
         //手势密码登陆
         if (isOpenRef.current && route?.params?.option !== 'modify') {
             if (passwordRef.current == pwd) {
                 setStatus(true);
                 setIsWarning(false);
-                setTimeout(() => {
-                    dispatch(updateVerifyGesture());
-                }, 500);
+                if (route?.params?.option === 'close') {
+                    storage.get('openGesturePwd').then((res) => {
+                        if (res) {
+                            res[`${userInfo.uid}`] = false;
+                            storage.save('openGesturePwd', res);
+                        } else {
+                            storage.save('openGesturePwd', {[`${userInfo.uid}`]: false});
+                        }
+                    });
+                    Toast.show('手势密码已关闭', {
+                        onHidden: () => {
+                            navigation.goBack();
+                        },
+                    });
+                } else {
+                    Toast.show('密码正确，即将进入我的资产页', {
+                        onHidden: () => {
+                            dispatch(updateVerifyGesture(true));
+                        },
+                    });
+                }
             } else {
                 setStatus(false);
                 setIsWarning(true);
@@ -107,13 +128,27 @@ export default function GesturePassword({option, route}) {
             setStatus(true);
             setIsWarning(false);
             //保存手势密码和开启状态
-            storage.save('gesturePwd', pwd);
-            storage.save('openGesturePwd', true);
+            storage.get('gesturePwd').then((res) => {
+                if (res) {
+                    res[`${userInfo.uid}`] = pwd;
+                    storage.save('gesturePwd', res);
+                } else {
+                    storage.save('gesturePwd', {[`${userInfo.uid}`]: pwd});
+                }
+            });
+            storage.get('openGesturePwd').then((res) => {
+                if (res) {
+                    res[`${userInfo.uid}`] = true;
+                    storage.save('openGesturePwd', res);
+                } else {
+                    storage.save('openGesturePwd', {[`${userInfo.uid}`]: true});
+                }
+            });
             setTitle('');
             if (route?.params?.option == 'modify') {
                 Toast.show('修改成功');
             } else {
-                dispatch(updateVerifyGesture());
+                dispatch(updateVerifyGesture(true));
                 Toast.show('设置成功');
             }
             setTimeout(() => {
@@ -228,7 +263,7 @@ export default function GesturePassword({option, route}) {
                 <TouchableOpacity
                     style={[Style.flexRow, styles.forgotPwd]}
                     activeOpacity={0.8}
-                    onPress={() => navigation.navigate('Login')}>
+                    onPress={() => navigation.navigate('Login', {fr: 'forgotGesPwd'})}>
                     <Text style={{marginRight: text(4)}}>{'忘记手势密码'}</Text>
                     <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
                 </TouchableOpacity>

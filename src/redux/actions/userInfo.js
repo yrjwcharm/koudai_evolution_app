@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:43:11
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 20:12:21
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -28,7 +28,7 @@ export function getUserInfo(repeat = 3) {
                 };
                 dispatch(updateUserInfo(userInfo));
                 if (repeat-- > 0) {
-                    dispatch(getUserInfo(repeat))
+                    dispatch(getUserInfo(repeat));
                 }
             }
         });
@@ -40,15 +40,15 @@ export async function isLogin() {
     return res?.access_token.length() > 0;
 }
 
-export const updateVerifyGesture = () => {
+export const updateVerifyGesture = (verifyGesture) => {
     return {
         type: actionTypes.UserInfo,
-        payload: {verifyGesture: true},
+        payload: {verifyGesture},
     };
 };
 
-export function getVerifyGesture() {
+export function getVerifyGesture(verifyGesture) {
     return (dispatch) => {
-        dispatch(updateVerifyGesture());
+        dispatch(updateVerifyGesture(verifyGesture));
     };
 }

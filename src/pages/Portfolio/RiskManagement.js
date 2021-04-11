@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-11 14:00:25
+ * @LastEditTime: 2021-04-11 17:39:03
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -125,10 +125,8 @@ class RiskManagement extends Component {
             }
         });
     };
-    showTips = (tips) => {
-        this.setState({tips}, () => {
-            this.bottomModal.show();
-        });
+    showTips = () => {
+        this.bottomModal.show();
     };
     render() {
         const {data, alias, refreshing, tips} = this.state;
@@ -137,9 +135,13 @@ class RiskManagement extends Component {
                 style={[styles.container]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
                 <BottomModal ref={(ref) => (this.bottomModal = ref)} title={'提示'}>
-                    <View style={[Style.flexCenter, {padding: Space.padding}]}>
-                        <Text style={styles.tip_sty}>{'比较基准'}</Text>
-                        <Text style={styles.tip_sty}>{tips}</Text>
+                    <View style={[{padding: text(16)}]}>
+                        <Text style={styles.tipTitle}>{data?.tips?.content[0]?.key}:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                            {data?.tips?.content[0]?.val}
+                        </Text>
+                        <Text style={styles.tipTitle}>{data?.tips?.content[1]?.key}:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13)}}>{data?.tips?.content[1]?.val}</Text>
                     </View>
                 </BottomModal>
                 <View style={[styles.topPart]}>
@@ -170,9 +172,7 @@ class RiskManagement extends Component {
                                             {item.name}
                                         </Text>
                                         {item?.pop ? (
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                onPress={() => this.showTips(item?.pop)}>
+                                            <TouchableOpacity activeOpacity={0.8} onPress={() => this.showTips()}>
                                                 <Image
                                                     style={{width: text(16), height: text(16)}}
                                                     source={require('../../assets/img/tip.png')}
@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.defaultColor,
     },
+    tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
 });
 
 export default RiskManagement;

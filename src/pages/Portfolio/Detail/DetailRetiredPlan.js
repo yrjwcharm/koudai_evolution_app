@@ -104,7 +104,10 @@ export default function DetailRetiredPlan({navigation, route}) {
             if (res.code === '000000') {
                 setRemark(res.result.yield_info.remark);
                 setGoalAmount(res.result.yield_info.goal_amount);
-                setPeriod(res.result.period);
+                setSubTabs(res.result.sub_tabs);
+                if (params.type === 2) {
+                    setPeriod(res.result.period);
+                }
             }
         });
     }, []);
@@ -143,10 +146,9 @@ export default function DetailRetiredPlan({navigation, route}) {
             if (res.code === '000000') {
                 setChartData(res.result);
                 setChart(res.result?.yield_info?.chart);
-                setSubTabs(res.result.yield_info?.sub_tabs);
             }
         });
-    }, [period, type, route]);
+    }, [period, type, route.params]);
     // 打开日期选择 视图
     const _showDatePicker = () => {
         setShowMask(true);
@@ -307,59 +309,61 @@ export default function DetailRetiredPlan({navigation, route}) {
                     <View style={styles.content_sty}>
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
-                            {chart?.length > 0 && (
-                                <>
-                                    <RenderChart
-                                        chartData={chartData}
-                                        period={period}
-                                        chart={chart}
-                                        tootipScope={false}
-                                        type={type}
-                                        style={{marginTop: text(20)}}
-                                        width={deviceWidth - text(40)}
-                                    />
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            height: 50,
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            marginHorizontal: Space.marginAlign,
-                                        }}>
-                                        {subTabs?.map((_item, _index) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    activeOpacity={1}
-                                                    style={[
-                                                        styles.btn_sty,
-                                                        {
-                                                            backgroundColor:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#F1F6FF'
-                                                                    : '#fff',
-                                                            borderWidth:
-                                                                period == _item.val && type == _item.type ? 0 : 0.5,
-                                                        },
-                                                    ]}
-                                                    key={_index + '_sub'}
-                                                    onPress={() => changeTab(_item.val, _item.type)}>
-                                                    <Text
-                                                        style={{
-                                                            color:
-                                                                period == _item.val && type == _item.type
-                                                                    ? '#0051CC'
-                                                                    : '#555B6C',
+                            <View style={{minHeight: text(300)}}>
+                                {chart?.length > 0 && (
+                                    <>
+                                        <RenderChart
+                                            chartData={chartData}
+                                            period={period}
+                                            chart={chart}
+                                            tootipScope={false}
+                                            type={type}
+                                            style={{marginTop: text(20)}}
+                                            width={deviceWidth - text(40)}
+                                        />
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                height: 50,
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                marginHorizontal: Space.marginAlign,
+                                            }}>
+                                            {subTabs?.map((_item, _index) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        style={[
+                                                            styles.btn_sty,
+                                                            {
+                                                                backgroundColor:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#F1F6FF'
+                                                                        : '#fff',
+                                                                borderWidth:
+                                                                    period == _item.val && type == _item.type ? 0 : 0.5,
+                                                            },
+                                                        ]}
+                                                        key={_index + '_sub'}
+                                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                                        <Text
+                                                            style={{
+                                                                color:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#0051CC'
+                                                                        : '#555B6C',
 
-                                                            fontSize: text(12),
-                                                        }}>
-                                                        {_item.name}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
-                                </>
-                            )}
+                                                                fontSize: text(12),
+                                                            }}>
+                                                            {_item.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    </>
+                                )}
+                            </View>
 
                             {/* 表格 */}
                             <Table data={data.asset_compare.table} />
