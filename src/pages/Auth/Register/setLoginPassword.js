@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 17:36:05
+ * @LastEditTime: 2021-04-11 20:33:59
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -63,7 +63,7 @@ class SetLoginPassword extends Component {
                 password,
                 union_id: this.union_id,
                 avatar: this.avatar,
-                nickname: this.avatar,
+                nickname: this.nickname,
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
