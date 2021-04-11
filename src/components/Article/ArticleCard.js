@@ -2,14 +2,14 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 10:51:15
+ * @LastEditTime: 2021-04-09 20:10:07
  * @Description:首页发现页文章卡片
  */
 
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
-import {px, deviceWidth} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
@@ -25,7 +25,7 @@ export default function ArticleCard({data = ''}) {
             }}>
             <View style={Style.flexRow}>
                 <View style={{flex: 1}}>
-                    <Text numberOfLines={1} style={styles.article_title}>
+                    <Text numberOfLines={2} style={styles.article_title}>
                         {data?.title}
                     </Text>
                     {data?.detail ? (
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     article_title: {
         fontSize: px(14),
         fontWeight: '700',
+        lineHeight: px(20),
         color: Colors.defaultColor,
     },
     article_img: {width: px(84), height: px(63), borderRadius: 4, marginLeft: px(6)},

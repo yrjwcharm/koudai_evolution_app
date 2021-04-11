@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 14:22:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 12:10:17
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -17,7 +17,7 @@ export default function QuestionCard({data = []}) {
     return (
         <>
             {data.map((item, index) => {
-                let height = item?.name?.length > 18 ? px(190) : px(168);
+                // let height = item?.name?.length > 18 ? px(190) : px(168);
                 return (
                     <TouchableOpacity
                         key={index}
@@ -25,7 +25,7 @@ export default function QuestionCard({data = []}) {
                         onPress={() => {
                             jump(item?.url);
                         }}
-                        style={[styles.ques_card, {height}]}>
+                        style={[styles.ques_card]}>
                         <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
                         <Text style={styles.article_content}>{item?.nickname}</Text>
                         <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>

@@ -2,13 +2,13 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:40:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 19:58:51
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
-import {px, isIphoneX} from '../../utils/appUtil.js';
+import {px, isIphoneX, onlyNumber} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
@@ -44,13 +44,15 @@ class MfbOut extends Component {
     init = () => {
         const {selectData, code} = this.state;
         http.get('/wallet/withdraw/info/20210101', {code: code}).then((data) => {
-            selectData['comAmount'] = data.result.pay_methods[0].common_withdraw_amount;
-            selectData['comText'] = data.result.pay_methods[0].common_withdraw_subtext;
-            selectData['quickAmount'] = data.result.pay_methods[0].quick_withdraw_amount;
-            selectData['quickText'] = data.result.pay_methods[0].quick_withdraw_subtext;
+            selectData.comAmount = data.result.pay_methods[0].common_withdraw_amount;
+            selectData.comText = data.result.pay_methods[0].common_withdraw_subtext;
+            selectData.quickAmount = data.result.pay_methods[0].quick_withdraw_amount;
+            selectData.quickText = data.result.pay_methods[0].quick_withdraw_subtext;
             const withdraw_options = data.result.withdraw_options;
             this.state.check.push(withdraw_options[0].default);
-            if (withdraw_options.length > 1) this.state.check.push(withdraw_options[1].default);
+            if (withdraw_options.length > 1) {
+                this.state.check.push(withdraw_options[1].default);
+            }
             this.setState({
                 data: data.result,
                 selectData: selectData,
@@ -60,7 +62,7 @@ class MfbOut extends Component {
         });
     };
     onInput = (amount) => {
-        this.setState({amount});
+        this.setState({amount: onlyNumber(amount)});
         const {data, bankSelect} = this.state;
         const pay_methods = data.pay_methods[bankSelect];
         if (amount > 0) {
@@ -164,10 +166,10 @@ class MfbOut extends Component {
     }
     getBankInfo(index, comAmount, comText, quickAmount, quickText) {
         const selectData = this.state.selectData;
-        selectData['comAmount'] = comAmount;
-        selectData['comText'] = comText;
-        selectData['quickAmount'] = quickAmount;
-        selectData['quickText'] = quickText;
+        selectData.comAmount = comAmount;
+        selectData.comText = comText;
+        selectData.quickAmount = quickAmount;
+        selectData.quickText = quickText;
         this.setState({
             selectData: selectData,
             bankSelect: index,

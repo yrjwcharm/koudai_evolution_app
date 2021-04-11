@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-26 14:48:01
+ * @LastEditTime: 2021-04-11 11:27:49
  * @Description:app引导页
  */
 
@@ -13,6 +13,7 @@ import Swiper from 'react-native-swiper';
 import {deviceWidth, deviceHeight, px} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import Storage from '../../../utils/storage';
+import _ from 'lodash';
 const styles = StyleSheet.create({
     imgage: {
         width: deviceWidth,
@@ -60,10 +61,10 @@ export default function AppGuide({navigation}) {
                         borderRadius: px(30),
                         left: (deviceWidth - px(163)) / 2,
                     }}
-                    onPress={() => {
+                    onPress={_.debounce(() => {
                         Storage.save('AppGuide', true);
                         navigation.replace('Tab');
-                    }}
+                    }, 500)}
                 />
             </View>
         </Swiper>

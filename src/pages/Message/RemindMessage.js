@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 15:53:21
+ * @LastEditTime: 2021-04-11 11:55:33
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -139,7 +139,7 @@ export default function RemindMessage({navigation}) {
                                                         fontSize: text(11),
                                                         fontFamily: Font.numFontFamily,
                                                     }}>
-                                                    {_item?.unread}
+                                                    {_item?.unread > 99 ? '99+' : _item?.unread}
                                                 </Text>
                                             </View>
                                         ) : null}
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        right: text(-12),
+        left: text(28),
         top: text(-5),
         backgroundColor: '#E74949',
         borderRadius: text(25),

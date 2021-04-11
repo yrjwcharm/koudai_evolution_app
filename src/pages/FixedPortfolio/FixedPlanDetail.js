@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 10:43:27
+ * @LastEditTime: 2021-04-11 12:00:56
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -18,6 +18,7 @@ import FixedBtn from '../Portfolio/components/FixedBtn';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
 import EmptyTip from '../../components/EmptyTip';
+import BottomDesc from '../../components/BottomDesc';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
@@ -145,7 +146,7 @@ export default function FixedPlan(props) {
                     </View>
                 </View>
             )}
-
+            <BottomDesc />
             {Object.keys(data).length > 0 && (
                 <FixedButton
                     title={data.button.text}

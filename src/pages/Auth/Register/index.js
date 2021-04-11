@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 16:08:42
+ * @LastEditTime: 2021-04-11 11:45:02
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -39,7 +39,13 @@ export default class index extends Component {
                     redirect: this.props.route?.params?.redirect,
                 });
             } else {
-                Toast.show(res.message);
+                Toast.show(res.message, {
+                    onHidden: () => {
+                        if (res.code === '10001') {
+                            this.jumpPage('Login', {fr: 'register', mobile});
+                        }
+                    },
+                });
             }
         });
     };

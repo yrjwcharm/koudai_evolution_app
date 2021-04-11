@@ -2,14 +2,14 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:33:11
+ * @LastEditTime: 2021-04-11 12:10:37
  * @Description: 登录
  */
 import React, {Component} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {Text, ScrollView, StyleSheet} from 'react-native';
 import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
-import {Style, Colors} from '../../../common/commonStyle';
+import {Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
 import InputView from '../input';
 import http from '../../../services/';
@@ -22,7 +22,7 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mobile: '',
+            mobile: this.props.route?.params?.mobile,
             password: '',
             check: true,
             btnClick: true,

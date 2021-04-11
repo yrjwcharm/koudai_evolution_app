@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 19:16:17
+ * @LastEditTime: 2021-04-09 19:19:28
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -590,12 +590,18 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-                <BottomModal ref={scoreModal} title={'组合状态评分'} style={{height: text(400)}}>
+                <BottomModal
+                    ref={scoreModal}
+                    title={tip?.show_point == 1 ? '组合状态评分' : '资产状态'}
+                    style={{height: text(400)}}>
                     <View style={{padding: text(16)}}>
                         <>
-                            <Text style={styles.tipTitle}>什么是组合状态评分:</Text>
+                            <Text style={styles.tipTitle}>
+                                什么是{tip?.show_point == 1 ? '组合状态评分' : '资产状态'}:
+                            </Text>
                             <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                组合状态评分代表您的持仓比例与系统给出的最优配置比例的偏离度，偏离度越大，评分越低。
+                                组合{tip?.show_point == 1 ? '状态评分' : '资产状态'}
+                                代表您的持仓比例与系统给出的最优配置比例的偏离度，偏离度越大，评分越低。
                             </Text>
                             <Text style={styles.tipTitle}>资产状态的含义:</Text>
                             <View style={Style.flexRow}>

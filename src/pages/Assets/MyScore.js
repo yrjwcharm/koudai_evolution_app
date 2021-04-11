@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 17:21:40
+ * @LastEditTime: 2021-04-11 13:43:09
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import {BoxShadow} from 'react-native-shadow';
 import {Button} from '../../components/Button';
-import {BottomModal} from '../../components/Modal/';
+import {BottomModal, Modal} from '../../components/Modal/';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import http from '../../services';

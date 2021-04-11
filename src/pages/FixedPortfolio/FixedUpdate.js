@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 14:32:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 12:01:55
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -19,6 +19,7 @@ import {useJump} from '../../components/hooks/';
 import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
 import {BankCardModal, InputModal} from '../../components/Modal';
+import BottomDesc from '../../components/BottomDesc';
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -341,6 +342,7 @@ export default function FixedUpdate({navigation, route}) {
                             <Text style={[styles.btn_sty, {color: '#fff'}]}>{data.button[1].text}</Text>
                         </TouchableOpacity>
                     </View>
+                    <BottomDesc />
                 </View>
             )}
         </>

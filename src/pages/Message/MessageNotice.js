@@ -2,23 +2,20 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 14:21:19
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-09 19:56:58
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
-import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FitImage from 'react-native-fit-image';
 import {useJump} from '../../components/hooks';
-import {useFocusEffect} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import _ from 'lodash';
-var _type;
 export default function MessageNotice({navigation, route}) {
     const [list, setList] = useState({});
     const [page, setPage] = useState(1);
@@ -26,15 +23,15 @@ export default function MessageNotice({navigation, route}) {
     const [hasMore, setHasMore] = useState(false);
     const [title, setTitle] = useState('');
     const jump = useJump();
-    useFocusEffect(
-        useCallback(() => {
-            if (page === 1) {
-                init('refresh', true);
-            } else {
-                init('loadmore');
-            }
-        }, [page, init])
-    );
+
+    useEffect(() => {
+        if (page === 1) {
+            init('refresh', true);
+        } else {
+            init('loadmore');
+        }
+    }, [page, init]);
+
     const init = useCallback(
         (status, first) => {
             Http.get('/mapi/message/list/20210101', {
@@ -45,7 +42,6 @@ export default function MessageNotice({navigation, route}) {
                     setRefreshing(false);
                     setHasMore(res.result.has_more);
                     first && setTitle(res.result.title);
-                    _type = res.result.message_type;
                     if (status === 'refresh') {
                         if (!res.result.messages) {
                             setList([]);
@@ -88,6 +84,7 @@ export default function MessageNotice({navigation, route}) {
                             marginTop: text(12),
                             fontSize: Font.textH3,
                             color: Colors.darkGrayColor,
+                            paddingBottom: isIphoneX() ? 34 : px(16),
                         }}>
                         {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
@@ -98,38 +95,38 @@ export default function MessageNotice({navigation, route}) {
     // 已读接口
     const readInterface = (id, type, url, read, index) => {
         // is_read==0没读
-        if (!url) {
-            if (read) {
-                return;
-            }
-            let _params;
-            if (type) {
-                _params = {type: _type};
-            } else {
-                _params = {id};
-            }
-            Http.get('/message/read/20210101', {..._params}).then((res) => {
-                if (res.code === '000000') {
-                    if (type == 'all') {
-                        setList((prev) => {
-                            const _listAll = _.cloneDeep(prev);
-                            _listAll.forEach((item) => {
-                                item.is_read = 1;
-                            });
-                            return _listAll;
-                        });
-                    } else {
-                        setList((prev) => {
-                            const _list = _.cloneDeep(prev);
-                            _list[index].is_read = 1;
-                            return _list;
-                        });
-                    }
-                }
-            });
-        } else {
-            jump(url);
+
+        if (read) {
+            return;
         }
+        let _params;
+        if (type) {
+            _params = {type};
+        } else {
+            _params = {id};
+        }
+        Http.get('/message/read/20210101', _params).then((res) => {
+            if (res.code === '000000') {
+                if (type == 'all') {
+                    setList((prev) => {
+                        const _listAll = _.cloneDeep(prev);
+                        _listAll.forEach((item) => {
+                            item.is_read = 1;
+                        });
+                        return _listAll;
+                    });
+                } else {
+                    setList((prev) => {
+                        const _list = _.cloneDeep(prev);
+                        _list[index].is_read = 1;
+                        return _list;
+                    });
+                    setTimeout(() => {
+                        jump(url);
+                    });
+                }
+            }
+        });
     };
     // 渲染列表项
     const renderItem = ({item, index}) => {
@@ -217,7 +214,7 @@ export default function MessageNotice({navigation, route}) {
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}
-                style={{marginBottom: isIphoneX() ? 34 : Space.marginVertical, backgroundColor: Colors.bgColor}}
+                style={{backgroundColor: Colors.bgColor}}
                 extraData={list}
             />
         </>
