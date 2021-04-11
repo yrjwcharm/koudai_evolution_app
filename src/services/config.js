@@ -15,7 +15,7 @@ const SERVER_URL = {
         H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
     },
     pre2: {
-        HTTP: 'http://kapi-web-kp2.licaimofang.com/',
+        HTTP: 'https://kapi-web-kp2.licaimofang.com/',
         WS: 'ws://kapi-im-kp2.licaimofang.com/',
         IMApi: 'http://kapi-im-kp2.licaimofang.com',
         H5: 'http://evolution-h5-kp2.licaimofang.com',
