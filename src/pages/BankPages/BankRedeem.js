@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:47:04
+ * @LastEditTime: 2021-04-11 15:31:05
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -31,7 +31,9 @@ class BankRedeem extends Component {
 
     UNSAFE_componentWillMount() {
         http.get('/trade/redeem/info/20210101', {
-            prod_code: this.props.route.prod_code,
+            prod_code: this.props.route?.params?.prod_code,
+            poid: this.props.route?.params?.poid,
+            txn_id: this.props.route?.params?.txn_id,
         }).then((data) => {
             this.props.navigation.setOptions({title: data?.result?.title});
             this.setState({
@@ -66,9 +68,14 @@ class BankRedeem extends Component {
         this.passwordModal.show();
     };
     allAmount = () => {
-        this.setState({
-            amount: this.state.data.amount.toString(),
-        });
+        this.setState(
+            {
+                amount: this.state.data.amount.toString(),
+            },
+            () => {
+                this.onInput(this.state.amount);
+            }
+        );
     };
 
     // 提交数据

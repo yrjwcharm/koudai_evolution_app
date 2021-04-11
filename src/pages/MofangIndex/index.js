@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 12:04:22
+ * @LastEditTime: 2021-04-11 15:09:01
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -274,7 +274,6 @@ const Index = (props) => {
                                     </Swiper>
                                 ) : null}
                             </View>
-
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity

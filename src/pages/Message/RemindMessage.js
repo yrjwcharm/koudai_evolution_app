@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 11:55:33
+ * @LastEditTime: 2021-04-11 14:56:05
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -206,7 +206,6 @@ const styles = StyleSheet.create({
         top: text(-5),
         backgroundColor: '#E74949',
         borderRadius: text(25),
-        padding: text(2),
         paddingHorizontal: text(5),
         borderWidth: text(2),
         borderColor: '#fff',

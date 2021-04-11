@@ -215,7 +215,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                 title: data.title,
                 headerRight: () => {
                     return (
-                        <TouchableOpacity onPress={() => jump(data?.top_button?.url)} activeOpacity={1}>
+                        <TouchableOpacity onPress={() => jump(data?.top_button?.url, 'replace')} activeOpacity={1}>
                             <Text style={styles.right_sty}>{data?.top_button?.title}</Text>
                         </TouchableOpacity>
                     );
