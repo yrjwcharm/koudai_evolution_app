@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:57:42
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 16:55:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -45,20 +45,20 @@ export default function DetailPolaris({route, navigation}) {
                 poid: route.params.poid,
                 allocation_id: res.result.parts_addition_data.line.allocation_id,
                 benchmark_id: res.result.parts_addition_data.line.benchmark_id,
-            }).then((res) => {
-                setChart(res.result.yield_info.chart);
-                setChartData(res.result);
+            }).then((resp) => {
+                setChart(resp.result.yield_info.chart);
+                setChartData(resp.result);
             });
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [route.params]);
 
-    const changeTab = (period, type) => {
-        setPeriod(period);
-        setType(type);
+    const changeTab = (p, t) => {
+        setPeriod(p);
+        setType(t);
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
-            period: period,
+            period: p,
             type: type,
             poid: route.params.poid,
             allocation_id: data.parts_addition_data.line.allocation_id,

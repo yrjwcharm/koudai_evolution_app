@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:33:59
+ * @LastEditTime: 2021-04-11 20:34:18
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -73,7 +73,7 @@ class SetLoginPassword extends Component {
                         password,
                     }).then((data) => {
                         this.props.getUserInfo();
-                        this.props.getVerifyGesture();
+                        this.props.getVerifyGesture(true);
                         if (this.fr == 'register') {
                             this.props.navigation.pop(4);
                         } else {
@@ -101,7 +101,7 @@ class SetLoginPassword extends Component {
                         password,
                     }).then((data) => {
                         this.props.getUserInfo();
-                        this.props.getVerifyGesture();
+                        this.props.getVerifyGesture(true);
                         if (this.props.route?.params?.redirect) {
                             this.props.navigation.dispatch((state) => {
                                 // Remove the home route from the stack

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:12:42
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 20:10:35
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -31,18 +31,27 @@ class Login extends Component {
     }
     login = () => {
         const {mobile, password} = this.state;
+        const userInfo = this.props.userInfo?.toJS();
         let toast = Toast.showLoading('正在登录...');
         http.post('/auth/user/login/20210101', {mobile, password}).then((res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.getUserInfo();
-                this.props.getVerifyGesture();
+                this.props.getVerifyGesture(true);
                 Toast.show('登录成功', {
                     onHidden: () => {
                         if (this.fr == 'register') {
                             this.props.navigation.pop(2);
                         } else if (this.fr == 'forgotGesPwd') {
-                            this.props.navigation.replace('GesturePassword', {option: 'firstSet'});
+                            Storage.get('gesturePwd').then((result) => {
+                                if (result) {
+                                    result[`${userInfo.uid}`] = '';
+                                    Storage.save('gesturePwd', result);
+                                } else {
+                                    Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
+                                }
+                                this.props.navigation.replace('GesturePassword', {option: 'firstSet'});
+                            });
                         } else {
                             this.props.navigation.goBack();
                         }
@@ -122,7 +131,7 @@ class Login extends Component {
         );
     }
 }
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => state;
 
 const mapDispatchToProps = {
     getUserInfo,

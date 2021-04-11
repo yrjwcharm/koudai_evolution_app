@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 15:20:17
+ * @LastEditTime: 2021-04-11 17:32:22
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -30,7 +30,7 @@ const FundDetail = ({navigation, route}) => {
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
-    const [showChart, setShowChart] = useState(false);
+    const [showChart, setShowChart] = useState(true);
 
     const init = useCallback(() => {
         http.get('/fund/detail/20210101', {
@@ -74,39 +74,47 @@ const FundDetail = ({navigation, route}) => {
         });
     }, [route, period]);
     const onChangeTab = useCallback((i) => {
-        setCurTab(i);
-        setShowChart(false);
+        setCurTab((prev) => {
+            if (i !== prev) {
+                setShowChart(false);
+            }
+            return i;
+        });
         // setPeriod('m1');
     }, []);
     const renderChart = useCallback(() => {
         return (
             <>
-                <View style={[Style.flexRow]}>
-                    {summary.map((item, index) => {
-                        return (
-                            <View key={item.key + index} style={styles.legendItem}>
-                                <TextInput
-                                    defaultValue={`${item.val}`}
-                                    editable={false}
-                                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                    style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}
-                                />
-                                <View style={Style.flexRow}>
-                                    {index !== 0 && (
-                                        <Dot
-                                            bgColor={
-                                                index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
-                                            }
-                                            color={index === 1 ? Colors.red : Colors.descColor}
-                                        />
-                                    )}
-                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                        {item.key}
-                                    </Text>
+                <View style={[Style.flexRow, {minHeight: text(43)}]}>
+                    {showChart &&
+                        summary.map((item, index) => {
+                            return (
+                                <View key={item.key + index} style={styles.legendItem}>
+                                    <TextInput
+                                        defaultValue={`${item.val}`}
+                                        editable={false}
+                                        ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                        style={[
+                                            styles.legendTitle,
+                                            index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                        ]}
+                                    />
+                                    <View style={Style.flexRow}>
+                                        {index !== 0 && (
+                                            <Dot
+                                                bgColor={
+                                                    index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
+                                                }
+                                                color={index === 1 ? Colors.red : Colors.descColor}
+                                            />
+                                        )}
+                                        <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                            {item.key}
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
-                        );
-                    })}
+                            );
+                        })}
                 </View>
                 <View style={{height: Platform.select({ios: 220, android: 220})}}>
                     {showChart && (
@@ -155,10 +163,15 @@ const FundDetail = ({navigation, route}) => {
                     {data.part2[curTab].subtabs.map((item, index) => {
                         return (
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 key={item.val + index}
                                 onPress={() => {
-                                    setShowChart(false);
-                                    setPeriod(item.val);
+                                    setPeriod((prev) => {
+                                        if (item.val !== prev) {
+                                            setShowChart(false);
+                                        }
+                                        return item.val;
+                                    });
                                 }}
                                 style={[Style.flexCenter, styles.subtab, period === item.val ? styles.activeTab : {}]}>
                                 <Text
@@ -225,45 +238,42 @@ const FundDetail = ({navigation, route}) => {
         [curTab, getColor]
     );
     // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            if (curTab === 0) {
-                if (data.part1 && !data.part1.fund.is_monetary) {
-                    chart1.summary[0] && textTime.current.setNativeProps({text: chart1.summary[0]?.val});
-                    chart1.summary[1] &&
-                        textThisFund.current.setNativeProps({
-                            text: `${chart1.summary[1]?.val}`,
-                            style: [styles.legendTitle, {color: getColor(`${chart1.summary[1]?.val}`)}],
-                        });
-                    chart1.summary[2] &&
-                        textBenchmark.current.setNativeProps({
-                            text: `${chart1.summary[2]?.val}`,
-                            style: [styles.legendTitle, {color: getColor(`${chart1.summary[2]?.val}`)}],
-                        });
-                } else {
-                    chart3.summary[0] && textTime.current.setNativeProps({text: chart3.summary[0]?.val});
-                    chart3.summary[1] &&
-                        textThisFund.current.setNativeProps({
-                            text: `${chart3.summary[1]?.val}`,
-                            style: [styles.legendTitle, {color: getColor(`${chart3.summary[1]?.val}`)}],
-                        });
-                    chart3.summary[2] &&
-                        textBenchmark.current.setNativeProps({
-                            text: `${chart3.summary[2]?.val}`,
-                            style: [styles.legendTitle, {color: getColor(`${chart3.summary[2]?.val}`)}],
-                        });
-                }
-            } else {
-                chart2.summary[0] && textTime.current.setNativeProps({text: chart2.summary[0]?.val});
-                chart2.summary[1] &&
+    const onHide = useCallback(() => {
+        if (curTab === 0) {
+            if (data.part1 && !data.part1.fund.is_monetary) {
+                chart1.summary[0] && textTime.current.setNativeProps({text: chart1.summary[0]?.val});
+                chart1.summary[1] &&
                     textThisFund.current.setNativeProps({
-                        text: `${chart2.summary[1]?.val}`,
-                        style: [styles.legendTitle, {color: getColor(`${chart2.summary[1]?.val}`)}],
+                        text: `${chart1.summary[1]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${chart1.summary[1]?.val}`)}],
+                    });
+                chart1.summary[2] &&
+                    textBenchmark.current.setNativeProps({
+                        text: `${chart1.summary[2]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${chart1.summary[2]?.val}`)}],
+                    });
+            } else {
+                chart3.summary[0] && textTime.current.setNativeProps({text: chart3.summary[0]?.val});
+                chart3.summary[1] &&
+                    textThisFund.current.setNativeProps({
+                        text: `${chart3.summary[1]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${chart3.summary[1]?.val}`)}],
+                    });
+                chart3.summary[2] &&
+                    textBenchmark.current.setNativeProps({
+                        text: `${chart3.summary[2]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${chart3.summary[2]?.val}`)}],
                     });
             }
-        },
-        [data.part1, curTab, chart1.summary, chart2.summary, chart3.summary, getColor]
-    );
+        } else {
+            chart2.summary[0] && textTime.current.setNativeProps({text: chart2.summary[0]?.val});
+            chart2.summary[1] &&
+                textThisFund.current.setNativeProps({
+                    text: `${chart2.summary[1]?.val}`,
+                    style: [styles.legendTitle, {color: getColor(`${chart2.summary[1]?.val}`)}],
+                });
+        }
+    }, [data.part1, curTab, chart1.summary, chart2.summary, chart3.summary, getColor]);
 
     useEffect(() => {
         init();
@@ -315,6 +325,7 @@ const FundDetail = ({navigation, route}) => {
                         </View>
                         <View style={[{paddingLeft: text(4), paddingVertical: text(12)}, Style.flexRow]}>
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 style={[Style.flexBetween, styles.navBox]}
                                 onPress={() => navigation.navigate('HistoryNav', {code: data.part1.fund.code})}>
                                 <View>
@@ -343,6 +354,7 @@ const FundDetail = ({navigation, route}) => {
                             </TouchableOpacity>
                             <View style={styles.divider} />
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 style={[Style.flexBetween, styles.rankBox]}
                                 onPress={() => navigation.navigate('FundRanking', {code: data.part1.fund.code})}>
                                 <View>

@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:38:18
+ * @LastEditTime: 2021-04-11 19:50:18
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -12,8 +12,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import storage from '../../utils/storage';
+import {useSelector} from 'react-redux';
 
 const PasswordManagement = ({navigation}) => {
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const [open, setOpen] = useState(false);
     const [data] = useState([
         [
@@ -61,25 +63,35 @@ const PasswordManagement = ({navigation}) => {
         setOpen((prev) => !prev);
         if (!open) {
             // Toast.show('开启手势密码');
+            // storage.get('gesturePwd').then((res) => {
+            //     if (res) {
+            //         storage.save('openGesturePwd', true);
+            //     } else {
+            //         navigation.navigate('GesturePassword', {option: 'firstSet'});
+            //     }
+            // });
             storage.get('gesturePwd').then((res) => {
                 if (res) {
-                    storage.save('openGesturePwd', true);
+                    res[`${userInfo.uid}`] = '';
+                    storage.save('gesturePwd', res);
                 } else {
-                    navigation.navigate('GesturePassword', {option: 'firstSet'});
+                    storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
                 }
+                navigation.navigate('GesturePassword', {option: 'firstSet'});
             });
         } else {
             // Toast.show('关闭手势密码');
-            storage.save('openGesturePwd', false);
+            // storage.save('openGesturePwd', false);
+            navigation.navigate('GesturePassword', {option: 'close'});
         }
-    }, [navigation, open]);
+    }, [navigation, open, userInfo]);
 
     useFocusEffect(
         useCallback(() => {
             storage.get('openGesturePwd').then((res) => {
-                res !== undefined ? setOpen(res) : setOpen(false);
+                res ? setOpen(res[`${userInfo.uid}`] || false) : setOpen(false);
             });
-        }, [])
+        }, [userInfo])
     );
 
     return (

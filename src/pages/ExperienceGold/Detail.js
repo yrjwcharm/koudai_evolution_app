@@ -2,7 +2,7 @@
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 17:54:13
+ * @LastEditTime: 2021-04-11 16:53:43
  * @Description: 体验金首页
  */
 
@@ -140,15 +140,17 @@ const ExperienceGold = ({navigation}) => {
                             </Text>
                         </View>
                         <View style={[styles.buttonBox, {marginTop: data?.part1?.time_desc ? text(4) : 0}]}>
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                style={[Style.flexCenter, styles.fill]}
-                                onPress={() => {
-                                    global.LogTool('click', 'showTips');
-                                    bottomModal.current.show();
-                                }}>
-                                <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
-                            </TouchableOpacity>
+                            {data?.part1?.give_title ? (
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={[Style.flexCenter, styles.fill]}
+                                    onPress={() => {
+                                        global.LogTool('click', 'showTips');
+                                        bottomModal.current.show();
+                                    }}>
+                                    <Text style={[styles.yieldKey, {color: '#fff'}]}>{data?.part1?.give_title}</Text>
+                                </TouchableOpacity>
+                            ) : null}
                             <Button
                                 onPress={() => {
                                     global.LogTool('click', 'cashout');
