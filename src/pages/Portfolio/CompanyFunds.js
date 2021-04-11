@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 15:28:47
+ * @LastEditTime: 2021-04-09 19:47:10
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -98,7 +98,7 @@ const CompanyFunds = ({navigation, route}) => {
             return (
                 <TouchableOpacity
                     activeOpacity={0.8}
-                    onPress={() => jump(item.url)}
+                    onPress={() => jump(item.url, 'push')}
                     style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
                     <Text numberOfLines={1} style={[styles.itemText]}>
                         {item.name}

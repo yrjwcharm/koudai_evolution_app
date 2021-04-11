@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-06 13:21:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-11 13:49:10
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -201,7 +201,7 @@ const ArticleDetail = ({navigation, route}) => {
                         <Text
                             style={[
                                 styles.finishText,
-                                {color: Colors.lightGrayColor, paddingHorizontal: Space.padding},
+                                {color: Colors.lightGrayColor, padding: Space.padding},
                             ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
                         <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
                             <Image source={require('../../assets/img/article/finish.gif')} style={styles.finishImg} />

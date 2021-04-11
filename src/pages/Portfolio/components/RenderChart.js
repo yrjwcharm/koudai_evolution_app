@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 18:22:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-09 17:01:44
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -49,7 +49,7 @@ export default function RenderChart(props) {
                 style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
             });
         },
-        [getColor, type]
+        [getColor, tootipScope, type]
     );
     // 图表滑动结束
     const onHide = ({items}) => {

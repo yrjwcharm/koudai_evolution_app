@@ -1,14 +1,15 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-09 09:55:08
+ * @LastEditTime: 2021-04-11 14:00:25
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
  */
 import React, {Component} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Chart} from '../../components/Chart';
+import Image from 'react-native-fast-image';
 // import data from '../Chart/data.json';
 // import {area} from '../Chart/chartOptions';
 import Html from '../../components/RenderHtml';
@@ -16,6 +17,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import http from '../../services';
 import BottomDesc from '../../components/BottomDesc';
+import {BottomModal} from '../../components/Modal';
 
 const area = (source, alias = [], percent = true, tofixed = 0) => `
 (function(){
@@ -95,6 +97,7 @@ class RiskManagement extends Component {
             data: {},
             alias: [],
             refreshing: false,
+            tips: '',
         };
         this.lineColor = [Colors.red, Colors.lightBlackColor, Colors.descColor];
     }
@@ -122,12 +125,23 @@ class RiskManagement extends Component {
             }
         });
     };
+    showTips = (tips) => {
+        this.setState({tips}, () => {
+            this.bottomModal.show();
+        });
+    };
     render() {
-        const {data, alias, refreshing} = this.state;
+        const {data, alias, refreshing, tips} = this.state;
         return (
             <ScrollView
                 style={[styles.container]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
+                <BottomModal ref={(ref) => (this.bottomModal = ref)} title={'提示'}>
+                    <View style={[Style.flexCenter, {padding: Space.padding}]}>
+                        <Text style={styles.tip_sty}>{'比较基准'}</Text>
+                        <Text style={styles.tip_sty}>{tips}</Text>
+                    </View>
+                </BottomModal>
                 <View style={[styles.topPart]}>
                     <View style={[styles.chartContainer]}>
                         <Text style={[styles.chartTitle]}>最大回撤走势图</Text>
@@ -155,6 +169,16 @@ class RiskManagement extends Component {
                                             }}>
                                             {item.name}
                                         </Text>
+                                        {item?.pop ? (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => this.showTips(item?.pop)}>
+                                                <Image
+                                                    style={{width: text(16), height: text(16)}}
+                                                    source={require('../../assets/img/tip.png')}
+                                                />
+                                            </TouchableOpacity>
+                                        ) : null}
                                     </View>
                                 );
                             })}
@@ -288,6 +312,11 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(20),
         color: Colors.descColor,
+    },
+    tip_sty: {
+        fontSize: Font.textH2,
+        lineHeight: text(20),
+        color: Colors.defaultColor,
     },
 });
 

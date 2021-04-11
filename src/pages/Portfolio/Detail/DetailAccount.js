@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -207,7 +207,7 @@ export default function DetailAccount({route, navigation}) {
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
-                                <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(14)}]}>
+                                <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
                                     <View style={{flex: 1, position: 'relative'}}>
                                         <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>
@@ -251,11 +251,12 @@ export default function DetailAccount({route, navigation}) {
                                             fontSize: text(12),
                                             marginBottom: px(-16),
                                         }}>
-                                        <Text style={{fontSize: text(12)}}>---{data?.risk_info?.label[2]?.key}</Text>
+                                        <Text style={{fontSize: text(12)}}>--- {data?.risk_info?.label[2]?.key}</Text>
                                         <Text
                                             style={{
                                                 fontSize: text(10),
                                             }}>
+                                            {'       '}
                                             {data?.risk_info?.label[2]?.val}
                                         </Text>
                                     </View>

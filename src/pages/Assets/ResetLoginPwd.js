@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 14:29:13
+ * @LastEditTime: 2021-04-11 11:22:52
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -35,7 +35,7 @@ const ResetLoginPwd = ({navigation}) => {
             },
             {
                 field: newPwd,
-                text: '新密码不能为空',
+                text: '请输入6-20位数字或字母组合的登录密码',
             },
         ];
         if (!formCheck(checkData)) {
@@ -45,7 +45,7 @@ const ResetLoginPwd = ({navigation}) => {
                 Toast.show('旧密码应该不少于6位');
                 return false;
             } else if (newPwd.length < 6) {
-                Toast.show('请输入不少于6位新密码');
+                Toast.show('请输入6-20位数字或字母组合的登录密码');
                 return false;
             } else {
                 btnClick.current = false;

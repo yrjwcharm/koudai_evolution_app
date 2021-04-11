@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 20:49:18
+ * @LastEditTime: 2021-04-09 18:46:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -264,7 +264,7 @@ function HomeScreen({navigation, route}) {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={Style.flexRow}
-                            onPress={() => navigation.navigate('Settings')}>
+                            onPress={() => navigation.navigate('Profile')}>
                             <Image
                                 source={
                                     userInfo?.toJS()?.avatar

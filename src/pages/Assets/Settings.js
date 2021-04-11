@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:37:32
+ * @LastEditTime: 2021-04-11 11:16:20
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -39,7 +39,7 @@ const Settings = ({navigation}) => {
                 setInviteCode('');
                 setModalProps({
                     confirmClick,
-                    placeholder: '请填写邀请码',
+                    placeholder: '请输入邀请码',
                     title: '填写邀请码',
                 });
             } else if (item.type === 'share_mofang') {
@@ -50,10 +50,14 @@ const Settings = ({navigation}) => {
                     content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
                     confirm: true,
                     confirmCallBack: () => {
-                        Storage.delete('loginStatus');
-                        dispatch(getUserInfo());
-                        dispatch(updateUserInfo({name: '', phone: '', id_no: '', selectBank: '', bank_no: ''}));
-                        navigation.replace('Login');
+                        Http.post('/auth/user/logout/20210101').then((res) => {
+                            if (res.code === '000000') {
+                                Storage.delete('loginStatus');
+                                dispatch(getUserInfo());
+                                dispatch(updateUserInfo({name: '', phone: '', id_no: '', selectBank: '', bank_no: ''}));
+                                navigation.replace('Login');
+                            }
+                        });
                     },
                 });
             } else {
@@ -71,18 +75,25 @@ const Settings = ({navigation}) => {
         Http.post('/polaris/bind_invite_code/20210101', {
             invited_code: inviteCodeRef.current,
         }).then((res) => {
-            Toast.show(res.message);
             if (res.code === '000000') {
+                global.LogTool('bind', 'success');
+                dispatch(getUserInfo());
+                Modal.show({
+                    confirm: true,
+                    confirmCallBack: () => navigation.navigate('Index'),
+                    content: `已经成功绑定${res.result.nick_name}，请到魔方页面查看`,
+                    title: '绑定成功',
+                });
                 Http.get('/mapi/config/20210101').then((resp) => {
                     if (resp.code === '000000') {
-                        global.LogTool('bind', 'success');
-                        dispatch(getUserInfo());
                         setData(resp.result);
                     }
                 });
+            } else {
+                Toast.show(res.message);
             }
         });
-    }, [dispatch]);
+    }, [dispatch, navigation]);
 
     useEffect(() => {
         Http.get('/mapi/config/20210101').then((res) => {
@@ -118,13 +129,17 @@ const Settings = ({navigation}) => {
                             contextMenuHidden
                             enablesReturnKeyAutomatically
                             keyboardType={'default'}
-                            maxLength={6}
+                            // maxLength={6}
                             onChangeText={(value) => setInviteCode(value)}
                             onSubmitEditing={confirmClick}
-                            placeholder={modalProps?.placeholder}
+                            // placeholder={modalProps?.placeholder}
+                            // placeholderTextColor={Colors.placeholderColor}
                             style={styles.input}
                             value={inviteCode}
                         />
+                        {`${inviteCode}`.length === 0 && (
+                            <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
+                        )}
                     </View>
                 </View>
             </InputModal>
@@ -210,9 +225,19 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
+        fontSize: text(35),
+        lineHeight: text(42),
+        color: Colors.defaultColor,
+        padding: 0,
+        fontFamily: Font.numMedium,
+    },
+    placeholder: {
+        position: 'absolute',
+        left: 0,
+        top: text(3.5),
         fontSize: text(26),
         lineHeight: text(37),
-        color: Colors.defaultColor,
+        color: Colors.placeholderColor,
     },
 });
 
