@@ -15,7 +15,7 @@ export const updateUserInfo = (userInfo) => {
     };
 };
 
-export function getUserInfo() {
+export function getUserInfo(repeat = 3) {
     return (dispatch) => {
         http.get('/common/user_info/20210101').then(async (data) => {
             if (data?.code === '000000') {
@@ -27,7 +27,9 @@ export function getUserInfo() {
                     is_login: !!result.access_token,
                 };
                 dispatch(updateUserInfo(userInfo));
-                dispatch(getUserInfo());
+                if (repeat-- > 0) {
+                    dispatch(getUserInfo(repeat))
+                }
             }
         });
     };
