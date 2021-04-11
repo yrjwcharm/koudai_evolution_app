@@ -3,17 +3,15 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 16:27:37
+ * @LastEditTime: 2021-04-11 19:21:58
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
-// import Slider from '@react-native-community/slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Slider from 'react-native-slider';
 import Http from '../../services';
 import {Button} from '../../components/Button';
-import Toast from '../../components/Toast';
 import Html from '../../components/RenderHtml';
 import {useJump} from '../../components/hooks';
 const deviceWidth = Dimensions.get('window').width;
@@ -30,14 +28,17 @@ export default function SetTarget({route, navigation}) {
     useEffect(() => {
         params = {poid: route.params.poid};
         init(params);
-    }, [init]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const init = useCallback(() => {
         Http.get('/trade/fix_invest/target_info/20210101', {
             ...params,
+            fr: route.params?.fr,
         }).then((res) => {
             setData(res.result);
             setNum(res.result.target_info.default * 100);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const confirmData = () => {
         Http.get('/trade/set/invest_target/20210101', {

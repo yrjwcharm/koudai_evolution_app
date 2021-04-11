@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:21:18
+ * @LastEditTime: 2021-04-11 19:09:44
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -77,10 +77,6 @@ const Index = (props) => {
                     setRefreshing(false);
                     if (res.result.login_status !== 0 && isFocused) {
                         readInterface();
-                        // clearInterval(_timer);
-                        // _timer = setInterval(() => {
-                        //     readInterface();
-                        // }, 60 * 1000 * 5);
                     }
                 })
                 .catch(() => {

@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:32:00
+ * @LastEditTime: 2021-04-11 19:48:06
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -112,13 +112,28 @@ export default function RemindMessage({navigation}) {
                         <TouchableOpacity
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => jump(data?.point?.url)}>
-                            <Image
-                                source={{
-                                    uri: data?.point?.icon,
-                                }}
-                                resizeMode="contain"
-                                style={{width: text(40), height: text(40)}}
-                            />
+                            <View>
+                                <Image
+                                    source={{
+                                        uri: data?.point?.icon,
+                                    }}
+                                    resizeMode="contain"
+                                    style={{width: text(40), height: text(40)}}
+                                />
+                                {data?.point?.unread ? (
+                                    <View style={styles.point_sty}>
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: text(11),
+                                                fontFamily: Font.numFontFamily,
+                                            }}>
+                                            {data?.point?.unread > 99 ? '99+' : data?.point?.unread}
+                                        </Text>
+                                    </View>
+                                ) : null}
+                            </View>
+
                             <View style={{marginLeft: text(20), flex: 1}}>
                                 <Text style={styles.title_sty}>{data?.point?.title}</Text>
                                 {data?.point?.content ? (
@@ -176,6 +191,7 @@ export default function RemindMessage({navigation}) {
                                                 </Text>
                                             ) : null}
                                         </View>
+
                                         <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                                     </TouchableOpacity>
                                 );
@@ -230,7 +246,7 @@ const styles = StyleSheet.create({
         top: text(-5),
         backgroundColor: '#E74949',
         borderRadius: text(25),
-        paddingHorizontal: text(5),
+        paddingHorizontal: text(4),
         borderWidth: text(2),
         borderColor: '#fff',
     },

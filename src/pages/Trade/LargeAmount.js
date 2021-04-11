@@ -2,8 +2,8 @@
  * @Description:大额转账汇款
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 17:43:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 19:07:26
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -17,7 +17,6 @@ import Toast from '../../components/Toast/';
 import Clipboard from '@react-native-community/clipboard';
 import Notice from '../../components/Notice';
 import {Modal} from '../../components/Modal';
-import {useJump} from '../../components/hooks/';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
@@ -31,7 +30,6 @@ const tips = [
 
 const LargeAmount = (props) => {
     const [data, setData] = useState({});
-    const jump = useJump();
     const init = () => {
         Http.get('/trade/large_transfer/info/20210101').then((res) => {
             setData(res.result);
@@ -78,7 +76,8 @@ const LargeAmount = (props) => {
     useFocusEffect(
         useCallback(() => {
             init();
-        }, [init, props.navigation])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
     return (
         <View style={{backgroundColor: Colors.bgColor}}>

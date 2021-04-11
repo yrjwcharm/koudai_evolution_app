@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 17:06:23
+ * @LastEditTime: 2021-04-11 19:57:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -163,6 +163,9 @@ export default function DetailPolaris({route, navigation}) {
                                     );
                                 })}
                             </View>
+                            {data?.part_line?.line?.desc ? (
+                                <Text style={styles.line_desc}>{data?.part_line?.line?.desc}</Text>
+                            ) : null}
                         </View>
 
                         <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
@@ -263,9 +266,11 @@ export default function DetailPolaris({route, navigation}) {
                             />
                         </View>
                         {/* {showMask && <Mask />} */}
-                        <BottomModal ref={bottomModal} confirmText={'确认'}>
+                        <BottomModal ref={bottomModal} title="收益率">
                             <View style={{padding: text(16)}}>
-                                <Text style={{lineHeight: text(18)}}>{data?.parts_addition_data?.pie?.tip?.desc}</Text>
+                                <Text style={{lineHeight: text(18)}}>
+                                    此列展示组合内成分基金三个月内的收益率，代表了每只成分基金在组合中近三个月的收益率情况
+                                </Text>
                             </View>
                         </BottomModal>
                         <View style={[styles.card_sty, {paddingVertical: 0}]}>
@@ -408,6 +413,7 @@ const styles = StyleSheet.create({
         color: '#9AA1B2',
         lineHeight: text(18),
     },
+    line_desc: {fontSize: text(12), paddingHorizontal: text(16), lineHeight: text(18), color: Colors.darkGrayColor},
     btn_choose_sty: {
         borderWidth: 0.5,
         borderColor: '#E2E4EA',

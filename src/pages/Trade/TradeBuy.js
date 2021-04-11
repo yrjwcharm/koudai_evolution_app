@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 11:35:33
+ * @LastEditTime: 2021-04-11 18:47:16
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -105,7 +105,8 @@ class TradeBuy extends Component {
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
         this.setState({errTip: '', mfbTip: false}, () => {
-            if (amount > this.state.bankSelect.left_amount) {
+            //只有购买做可用余额的限制
+            if (amount > this.state.bankSelect.left_amount && this.state.type == 0) {
                 // 您当日剩余可用额度为
                 this.setState({
                     buyBtnCanClick: false,
@@ -236,7 +237,7 @@ class TradeBuy extends Component {
         let _amount = onlyNumber(amount);
 
         this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
-            if (_amount > this.state.bankSelect.left_amount) {
+            if (_amount > this.state.bankSelect.left_amount && this.state.type == 0) {
                 // 您当日剩余可用额度为
                 this.setState({
                     buyBtnCanClick: false,

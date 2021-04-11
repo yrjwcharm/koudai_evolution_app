@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 19:56:58
+ * @LastEditTime: 2021-04-11 19:50:12
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -149,12 +149,13 @@ export default function MessageNotice({navigation, route}) {
                             <Text style={[styles.content_sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.content}
                             </Text>
-                            <AntDesign name={'right'} size={12} color={'#8F95A7'} />
+                            {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
                         </View>
                     </TouchableOpacity>
                 )}
                 {item.content_type == 1 && (
                     <TouchableOpacity
+                        activeOpacity={0.8}
                         style={[styles.card_sty, {paddingBottom: 0}]}
                         onPress={() => readInterface(item.id, '', item.jump_url, item.is_read, index)}>
                         <View

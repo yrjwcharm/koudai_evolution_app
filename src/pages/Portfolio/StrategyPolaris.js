@@ -2,12 +2,12 @@
  * @Author: xjh
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-29 13:25:13
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 19:38:54
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, px, deviceWidth} from '../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -30,7 +30,7 @@ export default function StrategyPolaris(props) {
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView>
+                <ScrollView scrollIndicatorInsets={{right: 1}}>
                     <View style={{backgroundColor: '#fff'}}>
                         <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
                         <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>
@@ -40,6 +40,7 @@ export default function StrategyPolaris(props) {
                                 }}
                                 style={styles.head_img_sty}
                             />
+                            <Image source={{uri: data.v_icon}} style={styles.v_icon} />
                         </View>
                         <View style={[styles.content_sty, Style.columnAlign]}>
                             <Text style={styles.content_title_sty}>{data.nickname}</Text>
@@ -131,5 +132,13 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         marginTop: text(14),
         marginBottom: text(4),
+    },
+    v_icon: {
+        width: px(24),
+        height: px(24),
+        position: 'absolute',
+        right: deviceWidth / 2 - text(52),
+        bottom: text(-6),
+        zIndex: 100,
     },
 });
