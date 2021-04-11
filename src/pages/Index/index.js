@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 12:07:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-17 21:31:25
+ * @LastEditTime: 2021-04-11 18:38:46
  * @Description: 首页
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -30,7 +30,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Button} from '../../components/Button';
 import {Modal, BottomModal, VerifyCodeModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
-import {Space, Font, Style} from '../../common/commonStyle';
+import {Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
 var _timer;
