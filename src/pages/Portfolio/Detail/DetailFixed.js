@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 17:42:23
+ * @LastEditTime: 2021-04-11 14:17:03
  */
 
 import React, {useState, useCallback} from 'react';
@@ -45,6 +45,7 @@ export default function DetailAccount({route, navigation}) {
         Http.get('/portfolio/fix_invest_detail/20210101', {
             upid: route?.params?.upid,
             poid: route?.params?.poid,
+            amount: route?.params?.amount,
         }).then((res) => {
             navigation.setOptions({
                 title: res.result.title,

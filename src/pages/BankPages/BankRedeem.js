@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-19 10:31:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 14:47:04
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -33,6 +33,7 @@ class BankRedeem extends Component {
         http.get('/trade/redeem/info/20210101', {
             prod_code: this.props.route.prod_code,
         }).then((data) => {
+            this.props.navigation.setOptions({title: data?.result?.title});
             this.setState({
                 data: data.result,
                 items: data.result.redeem_info.items,
@@ -101,14 +102,16 @@ class BankRedeem extends Component {
                     }}
                     onDone={(password) => this.submitData(password)}
                 />
-                <View style={[Style.flexBetween, {paddingHorizontal: px(16), padding: px(12)}]}>
-                    <Text style={Style.descSty}>
-                        {data.header[0][0]} {data.header[0][1]}
-                    </Text>
-                    <Text style={Style.descSty}>
-                        {data.header[1][0]} {data.header[1][1]}
-                    </Text>
-                </View>
+                {data?.header && (
+                    <View style={[Style.flexBetween, {paddingHorizontal: px(16), padding: px(12)}]}>
+                        <Text style={Style.descSty}>
+                            {data?.header[0][0]} {data?.header[0][1]}
+                        </Text>
+                        <Text style={Style.descSty}>
+                            {data.header[1][0]} {data.header[1][1]}
+                        </Text>
+                    </View>
+                )}
                 <View style={styles.buyCon}>
                     <Text style={{fontSize: px(16), marginVertical: px(4)}}>{data.redeem_info.text}</Text>
                     <View style={styles.buyInput}>
@@ -132,7 +135,7 @@ class BankRedeem extends Component {
                     </View>
                 </View>
                 <View style={{backgroundColor: '#fff', paddingHorizontal: px(16)}}>
-                    {items.length > 0 &&
+                    {items?.length > 0 &&
                         items.map((_item, _index) => {
                             return (
                                 <View style={styles.amount_wrap} key={_index + '_item'}>

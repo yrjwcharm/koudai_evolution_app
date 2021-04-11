@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 19:20:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-11 14:31:47
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -82,17 +82,19 @@ export default function BankAssets(props) {
                                         <Text style={styles.bottom_num_sty}>{data.asset.profit_acc.v}</Text>
                                     </View>
                                 </View>
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    disabled={data.button.avail == 0}
-                                    style={{
-                                        backgroundColor: data.button.avail == 0 ? '#DDDDDD' : '#0051CC',
-                                        borderRadius: text(25),
-                                        marginVertical: text(20),
-                                    }}
-                                    onPress={() => jump(data.button.url)}>
-                                    <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
-                                </TouchableOpacity>
+                                {data?.button && (
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        disabled={data?.button?.avail == 0}
+                                        style={{
+                                            backgroundColor: data?.button?.avail == 0 ? '#DDDDDD' : '#0051CC',
+                                            borderRadius: text(25),
+                                            marginVertical: text(20),
+                                        }}
+                                        onPress={() => jump(data?.button?.url)}>
+                                        <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
+                                    </TouchableOpacity>
+                                )}
                                 <TouchableOpacity
                                     activeOpacity={1}
                                     style={[Style.flexRow, styles.account_wrap_sty, {borderBottomWidth: 0}]}
@@ -104,10 +106,10 @@ export default function BankAssets(props) {
                                 </TouchableOpacity>
                             </View>
                             {/* 取出 */}
-                            {data?.shares &&
-                                data.shares.map((_s, _index) => {
+                            {data?.shares?.length > 0 &&
+                                data?.shares?.map((_s, _index) => {
                                     return (
-                                        <View style={styles.card_out_sty}>
+                                        <View style={styles.card_out_sty} key={_index}>
                                             <View style={{flex: 1}}>
                                                 <Text>{_s.title}</Text>
                                                 <View
@@ -115,9 +117,9 @@ export default function BankAssets(props) {
                                                         marginTop: text(10),
                                                         flexDirection: 'row',
                                                     }}>
-                                                    {_s.data.map((_d, _index) => {
+                                                    {_s.data.map((_d, index) => {
                                                         return (
-                                                            <View style={{flex: 1}}>
+                                                            <View key={index} style={{flex: 1}}>
                                                                 <Text
                                                                     style={[styles.top_text_sty, {textAlign: 'left'}]}>
                                                                     {_d.k}
@@ -159,9 +161,9 @@ export default function BankAssets(props) {
                                 <View style={styles.content_sty}>
                                     <Text style={styles.title_sty}>{data.interest.title}</Text>
                                     <Text>{data.interest.desc}</Text>
-                                    {data.interest.images.map((_img, _index) => {
+                                    {data?.interest?.images.map((_img, _index) => {
                                         return (
-                                            <View>
+                                            <View key={_index}>
                                                 <Text style={[styles.title_sty, {marginTop: text(12)}]}>{_img.k}</Text>
                                                 <FitImage
                                                     source={{
@@ -181,7 +183,7 @@ export default function BankAssets(props) {
                             </View>
                             <View
                                 style={{paddingHorizontal: text(16), backgroundColor: '#fff', marginBottom: text(20)}}>
-                                {data.contact.map((_c, _d) => {
+                                {data?.contact?.map((_c, _d) => {
                                     return (
                                         <View
                                             style={[

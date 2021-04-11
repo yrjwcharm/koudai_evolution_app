@@ -53,6 +53,7 @@ export default function DetailAccount({route, navigation}) {
         Http.get('/portfolio/detail/20210101', {
             upid: route?.params?.upid,
             fr: route.params?.fr,
+            amount: route?.params?.amount,
         }).then((res) => {
             if (res.code === '000000') {
                 setData(res.result);

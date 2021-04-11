@@ -131,6 +131,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const init = useCallback(() => {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
+            amount: route?.params?.amount,
         }).then((res) => {
             setCurrent(res.result?.plan_info?.goal_info?.items[2]?.val);
             allocationIdRef.current = res.result.allocation_id;

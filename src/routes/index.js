@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:09:40
+ * @LastEditTime: 2021-04-11 14:46:25
  * @Description:路由表
  */
 import React from 'react';
@@ -345,7 +345,7 @@ export default function AppStack() {
             <Stack.Screen name="InvestAnalysis" component={InvestAnalysis} options={{title: '投资分析'}} />
             <Stack.Screen name="HoldingFund" component={HoldingFund} options={{title: '持有基金'}} />
             <Stack.Screen name="HistoryHoldFunds" component={HistoryHoldFunds} options={{title: '历史持有基金'}} />
-            <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: '赎回银行产品'}} />
+            <Stack.Screen name="BankRedeem" component={BankRedeem} options={{title: ''}} />
             <Stack.Screen name="BankBuy" component={BankBuy} options={{title: '购买银行产品'}} />
             <Stack.Screen name="SetTarget" component={SetTarget} options={{title: '开启我的计划'}} />
             <Stack.Screen
