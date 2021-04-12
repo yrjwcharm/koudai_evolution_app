@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 14:36:54
+ * @LastEditTime: 2021-04-12 17:13:41
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -172,7 +172,7 @@ export default function FixedUpdate({navigation, route}) {
         } else if (key === 'Backspace') {
             setIptVal((prev) => prev.slice(0, prev.length - 1));
         } else {
-            setIptVal((prev) => prev + key.replace(/\D/g, ''));
+            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
         }
     };
     const showInputModal = () => {
