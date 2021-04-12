@@ -63,3 +63,5 @@ buck-out/
 /android/app/debug/
 /android/app/CESHI/
 /android/app/BAIDU/
+/src/service/config.js
+/ios/Podfile.lock
