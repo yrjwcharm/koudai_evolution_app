@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: dx
- * @LastEditTime: 2021-04-11 16:55:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 12:04:36
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -43,8 +43,8 @@ export default function DetailPolaris({route, navigation}) {
                 period: period,
                 type: type,
                 poid: route.params.poid,
-                allocation_id: res.result.parts_addition_data.line.allocation_id,
-                benchmark_id: res.result.parts_addition_data.line.benchmark_id,
+                allocation_id: res.result?.parts_addition_data?.line.allocation_id,
+                benchmark_id: res.result?.parts_addition_data?.line.benchmark_id,
             }).then((resp) => {
                 setChart(resp.result.yield_info.chart);
                 setChartData(resp.result);
@@ -61,8 +61,8 @@ export default function DetailPolaris({route, navigation}) {
             period: p,
             type: type,
             poid: route.params.poid,
-            allocation_id: data.parts_addition_data.line.allocation_id,
-            benchmark_id: data.parts_addition_data.line.benchmark_id,
+            allocation_id: data?.parts_addition_data?.line.allocation_id,
+            benchmark_id: data?.parts_addition_data?.line.benchmark_id,
         }).then((res) => {
             setChart(res.result.yield_info.chart);
             setChartData(res.result);
@@ -111,62 +111,68 @@ export default function DetailPolaris({route, navigation}) {
                                 <Text style={styles.btn_text_sty}>{data?.top?.btn?.text}</Text>
                             </TouchableOpacity>
                         </View>
-
-                        <View
-                            style={{
-                                backgroundColor: '#fff',
-                                borderRadius: text(10),
-                                paddingVertical: text(16),
-                            }}>
-                            <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
-                                {data?.part_line?.title}
-                            </Text>
-                            <RenderChart
-                                chartData={chartData}
-                                chart={chart}
-                                type={type}
-                                width={deviceWidth - text(40)}
-                            />
+                        {chartData?.chart && (
                             <View
                                 style={{
-                                    flexDirection: 'row',
-                                    height: 50,
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    marginHorizontal: 20,
+                                    backgroundColor: '#fff',
+                                    borderRadius: text(10),
+                                    paddingVertical: text(16),
                                 }}>
-                                {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={1}
-                                            style={[
-                                                styles.btn_choose_sty,
-                                                {
-                                                    backgroundColor:
-                                                        period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
-                                                    borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
-                                                },
-                                            ]}
-                                            key={_index}
-                                            onPress={() => changeTab(_item.val, _item.type)}>
-                                            <Text
-                                                style={{
-                                                    color:
-                                                        period == _item.val && type == _item.type
-                                                            ? '#0051CC'
-                                                            : '#555B6C',
-                                                    fontSize: text(12),
-                                                }}>
-                                                {_item.name}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
+                                <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
+                                    {data?.part_line?.title}
+                                </Text>
+
+                                <RenderChart
+                                    chartData={chartData}
+                                    chart={chart}
+                                    type={type}
+                                    width={deviceWidth - text(40)}
+                                />
+
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        height: 50,
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        marginHorizontal: 20,
+                                    }}>
+                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                style={[
+                                                    styles.btn_choose_sty,
+                                                    {
+                                                        backgroundColor:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#F1F6FF'
+                                                                : '#fff',
+                                                        borderWidth:
+                                                            period == _item.val && type == _item.type ? 0 : 0.5,
+                                                    },
+                                                ]}
+                                                key={_index}
+                                                onPress={() => changeTab(_item.val, _item.type)}>
+                                                <Text
+                                                    style={{
+                                                        color:
+                                                            period == _item.val && type == _item.type
+                                                                ? '#0051CC'
+                                                                : '#555B6C',
+                                                        fontSize: text(12),
+                                                    }}>
+                                                    {_item.name}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                                {data?.part_line?.line?.desc ? (
+                                    <Text style={styles.line_desc}>{data?.part_line?.line?.desc}</Text>
+                                ) : null}
                             </View>
-                            {data?.part_line?.line?.desc ? (
-                                <Text style={styles.line_desc}>{data?.part_line?.line?.desc}</Text>
-                            ) : null}
-                        </View>
+                        )}
 
                         <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
                             <View style={{paddingHorizontal: text(16), marginBottom: text(16)}}>
@@ -254,17 +260,20 @@ export default function DetailPolaris({route, navigation}) {
                                 })}
                             </View>
                         </View>
-                        <View style={[styles.card_sty, {paddingHorizontal: 0, paddingBottom: 0, overflow: 'hidden'}]}>
-                            <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>
-                                {data?.part_texts[0]?.title}
-                            </Text>
-                            <FitImage
-                                source={{
-                                    uri: data?.part_texts[0]?.img,
-                                }}
-                                resizeMode="contain"
-                            />
-                        </View>
+                        {data?.part_texts?.length > 0 && (
+                            <View
+                                style={[styles.card_sty, {paddingHorizontal: 0, paddingBottom: 0, overflow: 'hidden'}]}>
+                                <Text style={[styles.card_title_sty, {paddingBottom: text(10)}]}>
+                                    {data?.part_texts[0]?.title}
+                                </Text>
+                                <FitImage
+                                    source={{
+                                        uri: data?.part_texts[0]?.img,
+                                    }}
+                                    resizeMode="contain"
+                                />
+                            </View>
+                        )}
                         {/* {showMask && <Mask />} */}
                         <BottomModal ref={bottomModal} title="收益率">
                             <View style={{padding: text(16)}}>
