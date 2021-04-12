@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:48:06
+ * @LastEditTime: 2021-04-12 11:47:45
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -89,7 +89,7 @@ export default function RemindMessage({navigation}) {
 
                     <ScrollView style={{flex: 1, padding: text(16)}}>
                         <TouchableOpacity
-                            activeOpacity={0.9}
+                            activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => jump(data?.service?.url)}>
                             <Image
@@ -110,6 +110,7 @@ export default function RemindMessage({navigation}) {
                             <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => jump(data?.point?.url)}>
                             <View>
@@ -154,7 +155,7 @@ export default function RemindMessage({navigation}) {
                             {data?.message_list?.map((_item, _index) => {
                                 return (
                                     <TouchableOpacity
-                                        activeOpacity={0.9}
+                                        activeOpacity={0.8}
                                         style={[
                                             styles.list_card_sty,
                                             {borderBottomWidth: _index < data?.message_list?.length - 1 ? 0.5 : 0},

@@ -3,16 +3,16 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:49:30
+ * @LastEditTime: 2021-04-12 11:21:53
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, isIphoneX, px} from '../../utils/appUtil';
+import {px as text, isIphoneX, px, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FitImage from 'react-native-fit-image';
+import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import Empty from '../../components/EmptyTip';
 import _ from 'lodash';
@@ -22,6 +22,7 @@ export default function MessageNotice({navigation, route}) {
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [title, setTitle] = useState('');
+    const [type, setType] = useState();
     const jump = useJump();
 
     useEffect(() => {
@@ -41,6 +42,7 @@ export default function MessageNotice({navigation, route}) {
                 if (res.code === '000000') {
                     setRefreshing(false);
                     setHasMore(res.result.has_more);
+                    setType(res.result.message_type);
                     first && setTitle(res.result.title);
                     if (status === 'refresh') {
                         if (!res.result.messages) {
@@ -93,7 +95,7 @@ export default function MessageNotice({navigation, route}) {
         );
     }, [hasMore, list]);
     // 已读接口
-    const readInterface = (id, type, url, read, index) => {
+    const readInterface = (id, _type, url, read, index) => {
         // is_read==0没读
 
         if (read) {
@@ -101,14 +103,14 @@ export default function MessageNotice({navigation, route}) {
             return;
         }
         let _params;
-        if (type) {
+        if (_type) {
             _params = {type};
         } else {
             _params = {id};
         }
         Http.get('/message/read/20210101', _params).then((res) => {
             if (res.code === '000000') {
-                if (type == 'all') {
+                if (_type == 'all') {
                     setList((prev) => {
                         const _listAll = _.cloneDeep(prev);
                         _listAll.forEach((item) => {
@@ -137,17 +139,26 @@ export default function MessageNotice({navigation, route}) {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={styles.card_sty}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read, index)}>
+                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
                         <View style={Style.flexBetween}>
-                            <Text style={[styles.title_sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
+                            <Text
+                                style={[styles.title_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}
+                                numberOfLines={2}>
                                 {item.title}
                             </Text>
-                            <Text style={[styles.time_Sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
+                            <Text
+                                style={[
+                                    styles.time_Sty,
+                                    item?.is_read == 1 ? {color: '#9AA1B2'} : {},
+                                    {alignSelf: 'flex-start'},
+                                ]}>
                                 {item.post_time}
                             </Text>
                         </View>
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
-                            <Text style={[styles.content_sty, item.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
+                            <Text
+                                numberOfLines={2}
+                                style={[styles.content_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.content}
                             </Text>
                             {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
@@ -157,26 +168,23 @@ export default function MessageNotice({navigation, route}) {
                 {item.content_type == 1 && (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={[styles.card_sty, {paddingBottom: 0}]}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item.is_read, index)}>
+                        style={[styles.card_sty, {padding: 0}]}
+                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
                         <View
                             style={{
                                 borderTopLeftRadius: text(10),
                                 borderTopRightRadius: text(10),
                                 overflow: 'hidden',
                             }}>
-                            <FitImage
-                                source={{uri: item.img_url}}
-                                resizeMode="contain"
-                                style={{borderTopLeftRadius: text(10), borderTopRightRadius: text(10)}}
-                            />
+                            <FastImage source={{uri: item.img_url}} style={styles.cover_img} />
                         </View>
                         <View style={styles.content_wrap_sty}>
                             <View style={styles.content_ac_sty}>
                                 <Text
+                                    numberOfLines={2}
                                     style={[
-                                        {flex: 1, fontSize: text(16), fontWeight: 'bold'},
-                                        {color: item.is_read == 1 ? '#9AA1B2' : Colors.defaultColor},
+                                        {flex: 1, fontSize: text(16), fontWeight: 'bold', lineHeight: text(22)},
+                                        {color: item?.is_read == 1 ? '#9AA1B2' : Colors.defaultColor},
                                     ]}>
                                     {item.title}
                                 </Text>
@@ -185,7 +193,7 @@ export default function MessageNotice({navigation, route}) {
                             <Text
                                 style={{
                                     fontSize: Font.textH3,
-                                    color: item.is_read == 1 ? '#9AA1B2' : '#9AA1B2',
+                                    color: item?.is_read == 1 ? '#9AA1B2' : '#9AA1B2',
                                 }}>
                                 {item.post_time}
                             </Text>
@@ -237,10 +245,13 @@ const styles = StyleSheet.create({
         color: '#000000',
         fontSize: Font.textH1,
         fontFamily: Font.numFontFamily,
+        flex: 1,
+        marginRight: text(12),
     },
     time_Sty: {
         color: '#9AA1B2',
         fontSize: Font.textH3,
+        marginTop: text(4),
     },
     content_sty: {
         color: '#545968',
@@ -254,5 +265,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: text(10),
+    },
+    cover_img: {
+        borderTopLeftRadius: text(10),
+        borderTopRightRadius: text(10),
+        height: text(144),
+        width: deviceWidth - text(32),
     },
 });

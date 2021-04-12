@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:31:47
+ * @LastEditTime: 2021-04-12 11:45:22
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -111,7 +111,7 @@ export default function BankAssets(props) {
                                     return (
                                         <View style={styles.card_out_sty} key={_index}>
                                             <View style={{flex: 1}}>
-                                                <Text>{_s.title}</Text>
+                                                {_s.title ? <Html html={_s.title} /> : null}
                                                 <View
                                                     style={{
                                                         marginTop: text(10),
@@ -158,7 +158,7 @@ export default function BankAssets(props) {
                                 })}
 
                             {data?.interest && (
-                                <View style={styles.content_sty}>
+                                <View style={[styles.content_sty, {marginTop: text(16)}]}>
                                     <Text style={styles.title_sty}>{data.interest.title}</Text>
                                     <Text>{data.interest.desc}</Text>
                                     {data?.interest?.images.map((_img, _index) => {
