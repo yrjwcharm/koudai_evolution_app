@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 10:57:45
+ * @LastEditTime: 2021-04-12 17:17:46
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -161,7 +161,7 @@ const Profile = ({navigation}) => {
         } else if (key === 'Backspace') {
             setIptVal((prev) => prev.slice(0, prev.length - 1));
         } else {
-            setIptVal((prev) => prev + key.replace(/\D/g, ''));
+            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
         }
     };
     const confirmClick = useCallback(

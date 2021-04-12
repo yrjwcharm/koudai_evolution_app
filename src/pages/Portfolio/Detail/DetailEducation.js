@@ -6,7 +6,7 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
@@ -24,7 +24,7 @@ import Table from '../components/Table';
 import {useFocusEffect} from '@react-navigation/native';
 import Picker from 'react-native-picker';
 import Mask from '../../../components/Mask';
-import {BottomModal} from '../../../components/Modal';
+import {BottomModal, InputModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
@@ -48,6 +48,10 @@ export default function DetailEducation({navigation, route}) {
     const allocationIdRef = useRef('');
     const poidRef = useRef('');
     const [subTabs, setSubTabs] = useState([]);
+    const [modalProps, setModalProps] = useState({});
+    const [iptVal, setIptVal] = useState('');
+    const inputModal = useRef(null);
+    const iptValRef = useRef('');
     const jump = useJump();
     const changeTab = (p, t) => {
         setPeriod(p);
@@ -184,6 +188,77 @@ export default function DetailEducation({navigation, route}) {
             }
         });
     }, [period, route.params, type]);
+    const onKeyPress = (e) => {
+        const {key} = e.nativeEvent;
+        // console.log(key);
+        const pos = iptVal.indexOf(key);
+        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
+            return false;
+        }
+        if (key === '.') {
+            setIptVal((prev) => {
+                if (prev === '') {
+                    return prev;
+                } else {
+                    if (pos !== -1) {
+                        return prev;
+                    } else {
+                        return prev + '.';
+                    }
+                }
+            });
+        } else if (key === '0') {
+            setIptVal((prev) => {
+                if (prev === '') {
+                    return prev + '0';
+                } else {
+                    if (prev === '0') {
+                        return prev;
+                    } else {
+                        return prev + '0';
+                    }
+                }
+            });
+        } else if (key === 'Backspace') {
+            setIptVal((prev) => prev.slice(0, prev.length - 1));
+        } else {
+            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
+        }
+    };
+    const showInputModal = (item, val) => {
+        setIptVal(`${val}`);
+        setModalProps({
+            confirmClick: () => confirmClick(item),
+            placeholder: `请输入${item.key}`,
+            title: item.key,
+        });
+    };
+    const confirmClick = (item) => {
+        inputModal.current.hide();
+        if (iptValRef.current < item.min) {
+            if (iptValRef.current > 0) {
+                item.type === 'begin' ? setCountFr(item.min) : setCountM(item.min);
+                Toast.show(`组合最低起投金额为${formaNum(item.min)}`);
+            } else {
+                item.type === 'begin' ? setCountFr(0) : setCountM(0);
+            }
+        } else if (iptValRef.current > item.max) {
+            item.type === 'begin' ? setCountFr(item.max) : setCountM(item.max);
+            Toast.show('金额需小于1亿');
+        } else {
+            item.type === 'begin'
+                ? setCountFr(parseFloat(iptValRef.current))
+                : setCountM(parseFloat(iptValRef.current));
+        }
+    };
+    useEffect(() => {
+        if (Object.keys(modalProps).length > 0) {
+            inputModal.current.show();
+        }
+    }, [modalProps]);
+    useEffect(() => {
+        iptValRef.current = iptVal;
+    }, [iptVal]);
     useEffect(() => {
         return () => Picker.hide();
     }, []);
@@ -234,6 +309,29 @@ export default function DetailEducation({navigation, route}) {
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
+                    <InputModal {...modalProps} ref={inputModal}>
+                        <View style={[Style.flexRow, styles.inputContainer]}>
+                            <Text style={styles.unit}>¥</Text>
+                            <TextInput
+                                autoFocus={true}
+                                clearButtonMode={'never'}
+                                keyboardType={'decimal-pad'}
+                                onKeyPress={onKeyPress}
+                                // placeholder={modalProps?.placeholder}
+                                // placeholderTextColor={'#CCD0DB'}
+                                style={[styles.inputStyle]}
+                                value={iptVal}
+                            />
+                            {`${iptVal}`.length === 0 && (
+                                <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
+                            )}
+                            {`${iptVal}`.length > 0 && (
+                                <TouchableOpacity onPress={() => setIptVal('')}>
+                                    <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </InputModal>
                     <ScrollView style={{marginBottom: FixedBtn.btnHeight}}>
                         {data?.processing_info && <Notice content={data?.processing_info} />}
                         <View style={styles.container_sty}>
@@ -319,9 +417,20 @@ export default function DetailEducation({navigation, route}) {
                                                         onPress={() => countCalc(_item, 'decrease')}>
                                                         <Ionicons name={'remove-circle'} size={25} color={'#0051CC'} />
                                                     </TouchableOpacity>
-                                                    <Text style={styles.count_num_sty}>
-                                                        {_item.type == 'begin' ? formaNum(countFr) : formaNum(countM)}
-                                                    </Text>
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() =>
+                                                            showInputModal(
+                                                                _item,
+                                                                _item.type == 'begin' ? countFr : countM
+                                                            )
+                                                        }>
+                                                        <Text style={styles.count_num_sty}>
+                                                            {_item.type == 'begin'
+                                                                ? formaNum(countFr)
+                                                                : formaNum(countM)}
+                                                        </Text>
+                                                    </TouchableOpacity>
                                                     <TouchableOpacity
                                                         activeOpacity={1}
                                                         onPress={() => countCalc(_item, 'increase')}>
@@ -626,5 +735,33 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(3),
         fontSize: text(11),
         paddingVertical: text(2),
+    },
+    inputContainer: {
+        marginVertical: text(32),
+        marginHorizontal: Space.marginAlign,
+        paddingBottom: text(12),
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        position: 'relative',
+    },
+    unit: {
+        fontSize: text(26),
+        fontFamily: Font.numFontFamily,
+    },
+    inputStyle: {
+        flex: 1,
+        fontSize: text(35),
+        lineHeight: text(42),
+        marginLeft: text(14),
+        padding: 0,
+        fontFamily: Font.numMedium,
+    },
+    placeholder: {
+        position: 'absolute',
+        left: text(30),
+        top: text(3.5),
+        fontSize: text(26),
+        lineHeight: text(37),
+        color: Colors.placeholderColor,
     },
 });

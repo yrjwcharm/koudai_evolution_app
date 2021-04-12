@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 16:29:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 18:17:20
  * @Description:路由表
  */
 import React from 'react';
@@ -162,6 +162,7 @@ export default function AppStack() {
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
                     fontSize: px(18),
+                    maxWidth: px(280),
                 },
                 headerTitleAllowFontScaling: false,
                 gestureEnabled: true,
