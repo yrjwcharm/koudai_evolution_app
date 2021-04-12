@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 18:41:55
+ * @LastEditTime: 2021-04-12 16:10:15
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -129,12 +129,12 @@ const ShareModal = React.forwardRef((props, ref) => {
                 }
             });
         } else if (item.type === 'Like') {
-            hide();
+            // hide();
             setTimeout(() => {
                 likeCallback();
             }, 500);
         } else if (item.type === 'Collect') {
-            hide();
+            // hide();
             setTimeout(() => {
                 collectCallback();
             }, 500);

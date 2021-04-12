@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 13:43:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 15:57:10
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -51,25 +51,35 @@ const MyScore = ({navigation, route}) => {
     const onWithdraw = () => {
         global.LogTool('click', 'withdraw');
         if (click) {
-            http.post('/promotion/point/withdraw/20210101').then((res) => {
-                if (res.code === '000000') {
-                    global.LogTool('withdraw', 'success');
-                    Modal.show({
-                        title: res.result.title,
-                        content: res.result.content,
-                        contentStyle: {
-                            color: '#595B5F',
-                            textAlign: 'justify',
-                            fontSize: Font.textH2,
-                            lineHeight: text(22),
-                        },
-                        confirmCallBack: () => {
-                            setClick(true);
-                            init();
-                        },
-                    });
-                }
-            });
+            if (data?.points_info?.has_card) {
+                http.post('/promotion/point/withdraw/20210101').then((res) => {
+                    if (res.code === '000000') {
+                        global.LogTool('withdraw', 'success');
+                        Modal.show({
+                            title: res.result.title,
+                            content: res.result.content,
+                            contentStyle: {
+                                color: '#595B5F',
+                                textAlign: 'justify',
+                                fontSize: Font.textH2,
+                                lineHeight: text(22),
+                            },
+                            confirmCallBack: () => {
+                                setClick(true);
+                                init();
+                            },
+                        });
+                    }
+                });
+            } else {
+                Modal.show({
+                    title: '请绑定银行卡',
+                    confirm: true,
+                    confirmCallBack: () => navigation.navigate('AddBankCard', {action: 'add'}),
+                    confirmText: '去绑定',
+                    content: '您现在没有银行卡，请绑定新银行卡再进行魔分兑换。',
+                });
+            }
         }
     };
 

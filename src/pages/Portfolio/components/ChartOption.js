@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 16:28:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 14:14:02
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -432,14 +432,11 @@ export const percentStackColumn = (
   chart.scale('date', {
     type: 'timeCat',
     tickCount: 2,
-    sortable: false,
+    // sortable: false,
     range: [0, 1]
   });
   chart.scale('percent', {
     min: 0,
-    formatter: function formatter(val) {
-      return (val * 100).toFixed(0) + '%';
-    },
     tickCount: 3,
   });
   chart.axis('date', {
@@ -451,6 +448,13 @@ export const percentStackColumn = (
         textCfg.textAlign = 'right';
       }
       return textCfg;
+    }
+  });
+  chart.axis('percent', {
+    label: function label(text) {
+      const cfg = {};
+      cfg.text = text / 100 + '%';
+      return cfg;
     }
   });
   chart.legend('type', {

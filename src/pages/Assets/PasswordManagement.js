@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 19:50:18
+ * @LastEditTime: 2021-04-12 12:01:31
  * @Description: 密码管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -30,16 +30,16 @@ const PasswordManagement = ({navigation}) => {
                 // jump_to: 'SetGestureCode',
             },
             {
-                title: '交易密码修改',
-                type: 'link',
-                jump_to: 'TradePwdManagement',
-            },
-            {
                 title: '手势密码修改',
                 type: 'link',
                 jump_to: 'GesturePassword',
                 params: {option: 'modify'},
                 hide: 'true',
+            },
+            {
+                title: '交易密码修改',
+                type: 'link',
+                jump_to: 'TradePwdManagement',
             },
         ],
         [
