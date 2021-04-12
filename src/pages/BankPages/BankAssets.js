@@ -3,9 +3,9 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 11:45:22
+ * @LastEditTime: 2021-04-12 16:51:18
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
@@ -17,8 +17,8 @@ import {BottomModal} from '../../components/Modal';
 import Notice from '../../components/Notice';
 import FitImage from 'react-native-fit-image';
 import Question from '../../components/Question';
-import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function BankAssets(props) {
     const [data, setData] = useState({});
@@ -27,13 +27,16 @@ export default function BankAssets(props) {
     const rightPress = (url) => {
         props.navigation.navigate(url.path, url.params);
     };
-    useEffect(() => {
-        Http.get('/bank/asset/detail/20210101', {
-            ...props.route.params,
-        }).then((res) => {
-            setData(res.result);
-        });
-    }, [props.route]);
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/bank/asset/detail/20210101', {
+                ...props.route.params,
+            }).then((res) => {
+                setData(res.result);
+            });
+        }, [])
+    );
+
     const reasonShow = () => {
         bottomModal.current.show();
     };
@@ -89,7 +92,7 @@ export default function BankAssets(props) {
                                         style={{
                                             backgroundColor: data?.button?.avail == 0 ? '#DDDDDD' : '#0051CC',
                                             borderRadius: text(25),
-                                            marginVertical: text(20),
+                                            marginTop: text(20),
                                         }}
                                         onPress={() => jump(data?.button?.url)}>
                                         <Text style={styles.btn_text_sty}>{data?.button?.text}</Text>
@@ -97,7 +100,11 @@ export default function BankAssets(props) {
                                 )}
                                 <TouchableOpacity
                                     activeOpacity={1}
-                                    style={[Style.flexRow, styles.account_wrap_sty, {borderBottomWidth: 0}]}
+                                    style={[
+                                        Style.flexRow,
+                                        styles.account_wrap_sty,
+                                        {borderBottomWidth: 0, marginTop: text(20)},
+                                    ]}
                                     onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
                                         {data.elec_account.title}({data?.elec_account?.balance})
@@ -139,17 +146,14 @@ export default function BankAssets(props) {
                                             <TouchableOpacity
                                                 activeOpacity={1}
                                                 disabled={_s.button.avail == 0}
-                                                style={{
-                                                    backgroundColor: _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',
-                                                    borderRadius: text(25),
-                                                    marginVertical: text(20),
-                                                }}
+                                                style={[
+                                                    styles.outBtn,
+                                                    {
+                                                        backgroundColor: _s.button.avail == 0 ? '#DDDDDD' : '#0051CC',
+                                                    },
+                                                ]}
                                                 onPress={() => jump(_s.button.url)}>
-                                                <Text
-                                                    style={[
-                                                        styles.btn_text_sty,
-                                                        {paddingHorizontal: text(10), fontSize: text(12)},
-                                                    ]}>
+                                                <Text style={[{fontSize: text(12), color: '#fff'}]}>
                                                     {_s.button.text}
                                                 </Text>
                                             </TouchableOpacity>
@@ -203,7 +207,7 @@ export default function BankAssets(props) {
                             </View>
                         </ScrollView>
                     )}
-                    <BottomModal ref={bottomModal} confirmText={'确认'}>
+                    <BottomModal ref={bottomModal} title="提示">
                         <View style={{padding: text(16)}}>
                             <Html
                                 html={
@@ -282,5 +286,12 @@ const styles = StyleSheet.create({
         margin: text(16),
         marginBottom: 0,
         borderRadius: text(10),
+    },
+    outBtn: {
+        borderRadius: text(25),
+        paddingHorizontal: text(16),
+        justifyContent: 'center',
+        height: text(28),
+        alignSelf: 'center',
     },
 });

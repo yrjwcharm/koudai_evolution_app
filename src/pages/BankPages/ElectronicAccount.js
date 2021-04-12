@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-01-25 19:19:56
  * @Description:电子账户
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:03:02
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 14:31:33
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -17,23 +17,20 @@ import FastImage from 'react-native-fast-image';
 import Clipboard from '@react-native-community/clipboard';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 export default function ElectronicAccount(props) {
     const [data, setData] = useState({});
-    const [num, setNum] = useState('');
     const jump = useJump();
-    useEffect(() => {
-        Http.get('/bank/elec_account/20210101', {
-            ...props.route.params,
-        }).then((res) => {
-            setData(res.result);
-            // setNum(res.result.account.card);
-        });
-        setNum(num.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, '$1    '));
-        // console.log(num.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, '$1    '), '--num');
-    }, []);
-    const accountBtn = (url) => {
-        props.navigation.navigate(url);
-    };
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/bank/elec_account/20210101', {
+                ...props.route.params,
+            }).then((res) => {
+                setData(res.result);
+            });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     const copy = (text) => {
         Clipboard.setString(text);
         Toast.show('复制成功！');
@@ -52,11 +49,11 @@ export default function ElectronicAccount(props) {
                     <View style={styles.fixed_sty}>
                         <View style={[Style.flexRow, styles.fixed_wrap]}>
                             <Text style={styles.fixed_title_sty}>{data?.account?.bank}</Text>
-                            <TouchableOpacity onPress={() => copy(num)} activeOpacity={1}>
+                            <TouchableOpacity onPress={() => copy(data?.account?.card)} activeOpacity={1}>
                                 <Text style={styles.copy_sty}>复制卡号</Text>
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.bank_no_sty}>{num}</Text>
+                        <Text style={styles.bank_no_sty}>{data?.account?.card}</Text>
                     </View>
                     <View style={[Style.flexRow, styles.account_wrap_sty]}>
                         <Text style={[styles.account_sty, {flex: 1}]}>电子账户余额</Text>
@@ -67,28 +64,29 @@ export default function ElectronicAccount(props) {
                             {/* <AntDesign name={'right'} color={'#4E556C'} size={12} /> */}
                         </View>
                     </View>
-                    <View style={styles.card_wrap_sty}>
-                        {data?.items.map((_item, _index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    style={[Style.flexRow]}
-                                    onPress={accountBtn}
-                                    key={_index + '_item'}
-                                    onPress={() => jump(_item.url)}>
-                                    <View
-                                        style={[
-                                            styles.list_wrap_sty,
-                                            Style.flexRow,
-                                            {borderBottomWidth: _index < data.items.length - 1 ? 0.5 : 0},
-                                        ]}>
-                                        <Text style={styles.list_title_sty}>{_item.title}</Text>
-                                        <AntDesign name={'right'} color={'#4E556C'} size={12} />
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View>
+                    {data?.items && (
+                        <View style={styles.card_wrap_sty}>
+                            {data?.items.map((_item, _index) => {
+                                return (
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        style={[Style.flexRow]}
+                                        key={_index + '_item'}
+                                        onPress={() => jump(_item.url)}>
+                                        <View
+                                            style={[
+                                                styles.list_wrap_sty,
+                                                Style.flexRow,
+                                                {borderBottomWidth: _index < data.items.length - 1 ? 0.5 : 0},
+                                            ]}>
+                                            <Text style={styles.list_title_sty}>{_item.title}</Text>
+                                            <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                    )}
                     <View style={{marginTop: text(8)}}>
                         {data?.desc.map((_item, _index) => {
                             return (

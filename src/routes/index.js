@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:46:25
+ * @LastEditTime: 2021-04-12 16:29:57
  * @Description:路由表
  */
 import React from 'react';
@@ -146,7 +146,6 @@ export default function AppStack() {
         <Stack.Navigator
             initialRouteName="Loading"
             headerMode="float" //兼容部分安卓
-            // mode="modal"
             screenOptions={{
                 headerBackImage: () => {
                     return (

@@ -1,14 +1,14 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 11:43:47
- * @LastEditors: xjh
+ * @LastEditors: yhc
  * @Desc:私募预约
- * @LastEditTime: 2021-03-20 16:41:26
+ * @LastEditTime: 2021-04-12 16:35:37
  */
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Style} from '../../common//commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, onlyNumber, inputInt, px} from '../../utils/appUtil';
 import Picker from 'react-native-picker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -34,7 +34,6 @@ export default class PrivateOrder extends Component {
         }).then((res) => {
             this.setState({
                 data: res.result,
-                amount: res.result.quote.start_amount,
             });
         });
     }
@@ -126,7 +125,6 @@ export default class PrivateOrder extends Component {
         });
     };
     submitOrder = () => {
-        console.log(111);
         const {data, amount, currentDate, phone} = this.state;
         Http.post('/pe/do_appointment/20210101', {
             order_id: data.order_id,
@@ -137,14 +135,16 @@ export default class PrivateOrder extends Component {
             if (res.code === '000000') {
                 Modal.show({
                     title: '恭喜您预约成功',
-                    content: `<div>已成功预约:${data.quote.name}</div><div>预约金额:${amount}</div>`,
+                    content: `<div>已成功预约:${data.quote.name}</div><div>预约金额:${amount}万元</div>`,
                     confirmText: '确定',
-                    confirmCallBack: () =>
-                        this.props.navigation.replace(
-                            this.state.data.button.url.path,
-                            this.state.data.button.url.params
-                        ),
+                    confirmCallBack: () => {
+                        setTimeout(() => {
+                            this.props.navigation.goBack();
+                        }, 250);
+                    },
                 });
+            } else {
+                Toast.show(res.message);
             }
         });
     };
@@ -152,49 +152,57 @@ export default class PrivateOrder extends Component {
     render() {
         const {currentDate, data, amount, phone, showMask} = this.state;
         return (
-            <View style={Style.containerPadding}>
-                {Object.keys(data).length > 0 && (
-                    <View style={styles.card_wrap}>
-                        <View style={[Style.flexRow, styles.card_list]}>
-                            <Text style={styles.card_label}>预约产品</Text>
-                            <TextInput placeholder="产品名称" value={data.quote.name} style={{flex: 1}} />
-                        </View>
-                        <View style={[Style.flexRow, styles.card_list]}>
-                            <Text style={styles.card_label}>投资金额</Text>
-                            <TextInput
-                                placeholder="100万起投，10万递增"
-                                keyboardType={'number-pad'}
-                                style={{flex: 1}}
-                                value={amount}
-                                onChangeText={(text) => {
-                                    this.setState({
-                                        amount: text,
-                                    });
-                                }}
-                            />
-                        </View>
-                        <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
-                            <View style={[Style.flexRow, {flex: 1}]}>
-                                <Text style={styles.card_label}>打款时间</Text>
-                                <Text>{currentDate}</Text>
+            <>
+                <ScrollView style={Style.containerPadding}>
+                    {Object.keys(data).length > 0 && (
+                        <View style={styles.card_wrap}>
+                            <View style={[Style.flexRow, styles.card_list]}>
+                                <Text style={styles.card_label}>预约产品</Text>
+                                <TextInput
+                                    placeholder="产品名称"
+                                    value={data.quote.name}
+                                    editable={false}
+                                    style={{flex: 1, fontWeight: '500'}}
+                                />
                             </View>
-                            <AntDesign name={'right'} color={'#B8C1D3'} />
-                        </TouchableOpacity>
-                        <View style={[Style.flexRow, styles.card_list, {borderBottomWidth: 0}]}>
-                            <Text style={styles.card_label}>手机号</Text>
-                            <TextInput
-                                placeholder="请输入预约手机号"
-                                keyboardType={'number-pad'}
-                                style={{flex: 1}}
-                                value={phone}
-                                maxLength={11}
-                                onChangeText={(phone) => {
-                                    this.setState({phone});
-                                }}
-                            />
+                            <View style={[Style.flexRow, styles.card_list]}>
+                                <Text style={styles.card_label}>投资金额</Text>
+                                <TextInput
+                                    placeholder="100万起投，10万递增"
+                                    keyboardType={'number-pad'}
+                                    style={{flex: 1, fontWeight: '500'}}
+                                    value={amount}
+                                    onChangeText={(text) => {
+                                        this.setState({
+                                            amount: onlyNumber(text),
+                                        });
+                                    }}
+                                />
+                                <Text style={[{fontSize: text(12)}]}>万</Text>
+                            </View>
+                            <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
+                                <View style={[Style.flexRow, {flex: 1}]}>
+                                    <Text style={styles.card_label}>打款时间</Text>
+                                    <Text style={{fontWeight: '500'}}>{currentDate}</Text>
+                                </View>
+                                <AntDesign name={'right'} color={'#B8C1D3'} />
+                            </TouchableOpacity>
+                            <View style={[Style.flexRow, styles.card_list, {borderBottomWidth: 0}]}>
+                                <Text style={styles.card_label}>手机号</Text>
+                                <TextInput
+                                    placeholder="请输入预约手机号"
+                                    keyboardType={'number-pad'}
+                                    style={{flex: 1, fontWeight: '500'}}
+                                    value={phone}
+                                    maxLength={11}
+                                    onChangeText={(phone) => {
+                                        this.setState({phone: inputInt(phone)});
+                                    }}
+                                />
+                            </View>
                         </View>
-                    </View>
-                )}
+                    )}
+                </ScrollView>
                 {Object.keys(data).length > 0 && (
                     <FixedButton
                         title={data.button.text}
@@ -204,7 +212,7 @@ export default class PrivateOrder extends Component {
                     />
                 )}
                 {showMask && <Mask />}
-            </View>
+            </>
         );
     }
 }

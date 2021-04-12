@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-07 16:12:13
+ * @LastEditTime: 2021-04-12 16:38:50
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -41,7 +41,10 @@ const TradeRecordDetail = (props) => {
             props.navigation.setOptions({
                 headerRight: () => {
                     return res.result?.button?.text ? (
-                        <TouchableOpacity onPress={handleCancel}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                handleCancel(res.result?.button?.popup?.content);
+                            }}>
                             <Text style={styles.header_right}>{res.result?.button?.text}</Text>
                         </TouchableOpacity>
                     ) : null;
@@ -73,10 +76,10 @@ const TradeRecordDetail = (props) => {
             }
         });
     };
-    const handleCancel = () => {
+    const handleCancel = (text) => {
         Modal.show({
             title: '确认撤单',
-            content: data?.button?.popup?.content,
+            content: text,
             confirm: true,
             confirmCallBack: () => {
                 passwordModal.current.show();

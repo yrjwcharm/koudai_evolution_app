@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-11 18:15:44
+ * @LastEditTime: 2021-04-12 16:27:35
  */
 import React, {Component} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -17,23 +17,23 @@ import {FixedButton} from '../../components/Button';
 import Http from '../../services';
 import TabBar from '../../components/TabBar.js';
 import {Modal} from '../../components/Modal';
+import {useFocusEffect} from '@react-navigation/native';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
+
 export default class PrivateProduct extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: {},
-            fund_code: props.route?.params?.fund_code || '',
+            fund_code: '',
             curIndex: 0,
         };
     }
-    componentDidMount() {
-        this.init();
-    }
+
     init() {
         Http.get('/pe/product_detail/20210101', {
-            fund_code: this.state.fund_code,
+            fund_code: this.props.route?.params?.fund_code || '',
         }).then((res) => {
             this.setState({
                 data: res.result,
@@ -114,6 +114,7 @@ export default class PrivateProduct extends Component {
         const {data, curIndex} = this.state;
         return (
             <>
+                <Focus init={this.init.bind(this)} />
                 {Object.keys(data).length > 0 && (
                     <>
                         <Header
@@ -175,10 +176,6 @@ export default class PrivateProduct extends Component {
                                 <ScrollableTabView
                                     renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
                                     initialPage={0}
-                                    // onChangeTab={(obj) => {
-                                    //     this._handleTabHeight(obj);
-                                    // }}
-
                                     onChangeTab={(obj) => this.ChangeTab(obj.i)}
                                     tabBarActiveTextColor={'#D7AF74'}
                                     tabBarInactiveTextColor={'#545968'}>
@@ -206,6 +203,15 @@ export default class PrivateProduct extends Component {
             </>
         );
     }
+}
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+
+    return null;
 }
 const styles = StyleSheet.create({
     Container: {

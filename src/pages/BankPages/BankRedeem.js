@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 15:31:05
+ * @LastEditTime: 2021-04-12 16:53:41
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -11,8 +11,8 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
-import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
+import {VerifyCodeModal} from '../../components/Modal';
 import Radio from '../../components/Radio';
 import http from '../../services';
 import Toast from '../../components/Toast';
@@ -28,12 +28,16 @@ class BankRedeem extends Component {
             items: [],
         };
     }
-
+    msg_seq = '';
+    order_no = '';
+    txn_id = this.props.route?.params?.txn_id;
+    poid = this.props.route?.params?.poid;
+    prod_code = this.props.route?.params?.prod_code;
     UNSAFE_componentWillMount() {
         http.get('/trade/redeem/info/20210101', {
-            prod_code: this.props.route?.params?.prod_code,
-            poid: this.props.route?.params?.poid,
-            txn_id: this.props.route?.params?.txn_id,
+            prod_code: this.prod_code,
+            poid: this.poid,
+            txn_id: this.txn_id,
         }).then((data) => {
             this.props.navigation.setOptions({title: data?.result?.title});
             this.setState({
@@ -42,30 +46,67 @@ class BankRedeem extends Component {
             });
         });
     }
+
     onInput = (val) => {
-        const {data, amount, tips} = this.state;
-        this.getPlanInfo();
-        if (amount > data.amount) {
-            this.setState({
-                tips: `'最大可支取金额为' + ${data.amount} + '元'`,
-                enable: false,
-            });
-        } else if (data.min_amount && amount < data.amount && data.amount - amount < data.min_amount) {
-            this.setState({
-                amount: data.amount.toString(),
-                tips: `支取后剩余金额小于最低可持有金额${data.min_amount}元, 将进行全部赎回`,
-                enable: false,
-            });
+        const {data} = this.state;
+        if (val) {
+            this.getPlanInfo(val);
+            if (val > data.amount) {
+                this.setState({
+                    tips: `最大可支取金额为${data.amount}元`,
+                    enable: false,
+                    amount: val,
+                });
+            } else if (data.min_amount && val < data.amount && data.amount - val < data.min_amount) {
+                this.setState({
+                    amount: data.amount.toString(),
+                    tips: `支取后剩余金额小于最低可持有金额${data.min_amount}元, 将进行全部赎回`,
+                    enable: false,
+                });
+            } else {
+                this.setState({
+                    tips: '',
+                    amount: val,
+                    enable: true,
+                });
+            }
         } else {
             this.setState({
                 tips: '',
-                amount: val,
-                enable: true,
+                amount: '',
+                enable: false,
             });
         }
     };
+    onChangeText = (code) => {
+        if (code.length == 6) {
+            this.verifyCodeModel.hide();
+            this.submitData('', code);
+        }
+    };
+    signSendVerify = () => {
+        http.post('/trade/bank/send/verify_code/20210101', {
+            bank_code: this.state.data?.bank_code,
+            amount: this.state.amount,
+            from: 'redeem',
+            scene: 2,
+        }).then((res) => {
+            if (res.code === '000000') {
+                this.order_no = res.result.order_no;
+                this.msg_seq = res.result.msg_seq;
+                this.verifyCodeModel.show();
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
     submit = () => {
-        this.passwordModal.show();
+        if (this.state.data?.trade_method == 1) {
+            //验证码
+            this.signSendVerify();
+        } else {
+            this.passwordModal.show();
+        }
     };
     allAmount = () => {
         this.setState(
@@ -79,21 +120,34 @@ class BankRedeem extends Component {
     };
 
     // 提交数据
-    submitData() {
+    submitData(password, code) {
         this.setState({password: this.state.password}, () => {
-            http.post('/wallet/withdraw/do/20210101', {
-                code: '',
+            http.post('/trade/redeem/do/20210101', {
+                verify_code: code,
+                redeem_id: this.redeem_id,
+                poid: this.poid,
                 amount: this.state.amount,
-                password: this.state.password,
+                msg_seq: this.msg_seq,
+                order_no: this.order_no,
+                password,
             }).then((res) => {
-                this.props.navigation.navigate('asset');
+                if (res.code == '000000') {
+                    this.props.navigation.navigate('TradeProcessing', res.result);
+                } else {
+                    Toast.show(res.message);
+                }
             });
         });
     }
-    getPlanInfo() {
+    getPlanInfo(amount) {
         http.get('/trade/redeem/plan/20210101', {
-            prod_code: this.props.route.prod_code,
+            amount,
+            prod_code: this.prod_code,
+            poid: this.poid,
+            txn_id: this.txn_id,
+            bank_code: this.state.data?.bank_code,
         }).then((res) => {
+            this.redeem_id = res.result.redeem_id;
             this.setState({
                 items: res.result.part3.items,
             });
@@ -107,10 +161,18 @@ class BankRedeem extends Component {
                     ref={(ref) => {
                         this.passwordModal = ref;
                     }}
-                    onDone={(password) => this.submitData(password)}
+                    onDone={(password) => this.submitData(password, '')}
+                />
+                <VerifyCodeModal
+                    ref={(ref) => (this.verifyCodeModel = ref)}
+                    desc={`验证码发送至${data?.mobile}`}
+                    // modalCancelCallBack={modalCancelCallBack}
+                    onChangeText={this.onChangeText}
+                    // isSign={isSign}
+                    getCode={this.signSendVerify}
                 />
                 {data?.header && (
-                    <View style={[Style.flexBetween, {paddingHorizontal: px(16), padding: px(12)}]}>
+                    <View style={[Style.flexBetween, {paddingHorizontal: px(16), paddingTop: px(12)}]}>
                         <Text style={Style.descSty}>
                             {data?.header[0][0]} {data?.header[0][1]}
                         </Text>
@@ -134,7 +196,7 @@ class BankRedeem extends Component {
                                 }}
                                 value={amount}
                             />
-                            <Text style={styles.tips_sty}>{tips}</Text>
+                            {tips ? <Text style={styles.tips_sty}>{tips}</Text> : null}
                         </View>
                         <TouchableOpacity onPress={this.allAmount} activeOpacity={1}>
                             <Text style={{color: '#0051CC'}}>{data.redeem_info?.btn}</Text>
@@ -179,7 +241,6 @@ const styles = StyleSheet.create({
     },
     buyCon: {
         backgroundColor: '#fff',
-        // marginBottom: px(12),
         paddingTop: px(15),
         paddingHorizontal: px(15),
         marginTop: px(12),
@@ -187,14 +248,14 @@ const styles = StyleSheet.create({
     buyInput: {
         flexDirection: 'row',
         alignItems: 'baseline',
-        marginTop: px(20),
-        paddingBottom: px(13),
+        marginTop: px(16),
+        paddingBottom: px(8),
     },
     inputStyle: {
         flex: 1,
         fontSize: px(26),
         marginLeft: px(14),
-        // letterSpacing: 2,
+        padding: 0,
     },
 
     line: {
@@ -212,7 +273,6 @@ const styles = StyleSheet.create({
     tips_sty: {
         fontSize: px(12),
         color: '#DC4949',
-        // paddingVertical: px(8),
         marginLeft: px(14),
     },
     amount_wrap: {

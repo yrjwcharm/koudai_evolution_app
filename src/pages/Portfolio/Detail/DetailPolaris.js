@@ -3,18 +3,16 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 12:04:36
+ * @LastEditTime: 2021-04-12 15:04:47
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
-
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FixedBtn from '../components/FixedBtn';
-
 import {BottomModal} from '../../../components/Modal';
 import {useJump} from '../../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
@@ -92,7 +90,7 @@ export default function DetailPolaris({route, navigation}) {
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     <View style={{padding: text(16), marginTop: text(-70)}}>
-                        <View style={[styles.card_sty]}>
+                        <View style={[styles.card_sty, {marginBottom: 0}]}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
                                 {data?.top?.title}
                             </Text>
@@ -107,9 +105,6 @@ export default function DetailPolaris({route, navigation}) {
                             </View>
                             <Text style={styles.num_sty}>{data?.top?.ratio_text}</Text>
                             <Text style={styles.desc_sty}>{data?.top?.desc}</Text>
-                            <TouchableOpacity style={styles.btn_sty} onPress={() => jump(data?.top?.btn?.url)}>
-                                <Text style={styles.btn_text_sty}>{data?.top?.btn?.text}</Text>
-                            </TouchableOpacity>
                         </View>
                         {chartData?.chart && (
                             <View
@@ -211,7 +206,13 @@ export default function DetailPolaris({route, navigation}) {
                                     const width = _index < data?.part_pie?.pie.table?.body.length - 1 ? 0.5 : 0;
                                     const padding = _index < data?.part_pie?.pie.table?.body.length - 1 ? text(13) : 0;
                                     return (
-                                        <View style={{padding: text(13), paddingBottom: 0}} key={_table.id}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                jump({path: 'FundDetail', params: {code: _table.code}});
+                                            }}
+                                            style={{padding: text(13), paddingBottom: 0}}
+                                            key={_table.code}>
                                             <View
                                                 style={[
                                                     Style.flexBetween,
@@ -221,10 +222,13 @@ export default function DetailPolaris({route, navigation}) {
                                                         paddingBottom: padding,
                                                     },
                                                 ]}>
-                                                <View>
+                                                <View style={{width: text(180)}}>
                                                     <Text
-                                                        style={{color: '#333333', width: text(140)}}
-                                                        numberOfLines={1}>
+                                                        numberOfLines={1}
+                                                        style={{
+                                                            color: '#333333',
+                                                            fontSize: text(13),
+                                                        }}>
                                                         {_table.fund_name}
                                                     </Text>
                                                     <Text
@@ -234,13 +238,14 @@ export default function DetailPolaris({route, navigation}) {
                                                             marginTop: text(5),
                                                             fontFamily: Font.numFontFamily,
                                                         }}>
-                                                        {_table.tag}
+                                                        {_table.code}
                                                     </Text>
                                                 </View>
                                                 <Text
                                                     style={{
                                                         color: '#333333',
                                                         fontSize: text(13),
+                                                        width: text(80),
                                                         fontFamily: Font.numFontFamily,
                                                     }}>
                                                     {_table.hold_ratio}
@@ -255,7 +260,7 @@ export default function DetailPolaris({route, navigation}) {
                                                     {_table.ratio_text}
                                                 </Text>
                                             </View>
-                                        </View>
+                                        </TouchableOpacity>
                                     );
                                 })}
                             </View>
