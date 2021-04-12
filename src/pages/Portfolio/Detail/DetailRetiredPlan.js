@@ -102,8 +102,8 @@ export default function DetailRetiredPlan({navigation, route}) {
     const changeNotice = useCallback((params) => {
         Http.get('/portfolio/future/yield_amount/20210101', params).then((res) => {
             if (res.code === '000000') {
-                setRemark(res.result.yield_info.remark);
-                setGoalAmount(res.result.yield_info.goal_amount);
+                setRemark(res.result.remark);
+                setGoalAmount(res.result.goal_amount);
                 setSubTabs(res.result.sub_tabs);
                 if (params.type === 2) {
                     setPeriod(res.result.period);
@@ -131,7 +131,6 @@ export default function DetailRetiredPlan({navigation, route}) {
                         setCurrent(item.val);
                     }
                 });
-                setRemark(res.result.plan_info?.goal_info?.remark);
                 setData(res.result);
             }
         });

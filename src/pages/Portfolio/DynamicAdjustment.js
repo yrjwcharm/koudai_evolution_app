@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 11:32:29
+ * @LastEditTime: 2021-04-12 14:14:25
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -38,14 +38,14 @@ class DynamicAdjustment extends Component {
             poid,
             upid,
         }).then((res) => {
-            // let num = 0;
-            // res.result.chart?.map((item, index) => {
-            //     num += (item.percent * 100).toFixed(0) * 1;
-            //     if (index !== 0 && index % 12 === 0) {
-            //         console.log(num);
-            //         num = 0;
-            //     }
-            // });
+            const obj = {};
+            res.result.chart?.map((item, index) => {
+                obj[item.date] = obj[item.date]
+                    ? (obj[item.date] * 10000 + item.percent * 10000) / 10000
+                    : item.percent;
+                item.percent = item.percent * 10000;
+            });
+            // console.log(obj);
             this.setState({
                 chartData: res.result.chart,
             });

@@ -167,7 +167,6 @@ export default function DetailEducation({navigation, route}) {
                         setCountM(Number(item.val));
                     }
                 });
-                setRemark(res.result.plan_info?.goal_info?.remark);
                 setData(res.result);
             }
         });
