@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 18:41:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 21:11:58
  * @Description: 银行卡选择
  */
 
@@ -66,8 +66,9 @@ const BankCardModal = React.forwardRef((props, ref) => {
         };
     });
     React.useEffect(() => {
+        // console.log(props.select);
         setSelect(props.select);
-    }, [props.select]);
+    }, [props.select, visible]);
     const renderItem = ({item, index}) => {
         return (
             item && (
