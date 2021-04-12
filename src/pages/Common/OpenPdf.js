@@ -2,18 +2,22 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-17 16:49:58
+ * @LastEditTime: 2021-04-12 19:04:05
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
 import {StyleSheet, Dimensions, View, Linking, Alert} from 'react-native';
 import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
+import http from '../../services/index.js';
+import Empty from '../../components/EmptyTip';
 
 export default class OpenPdf extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            canOpen: false,
+        };
     }
     componentDidMount() {
         if (this.props.route.params && this.props.route.params.title) {
@@ -21,13 +25,27 @@ export default class OpenPdf extends Component {
         }
         if (!this.props.route.params.url) {
             Toast.show('空链接');
+        } else {
+            console.log(this.props.route.params.url);
+            fetch(this.props.route.params.url)
+                .then((res) => {
+                    // console.log(res);
+                    if (res.status === 200) {
+                        this.setState({canOpen: true});
+                    }
+                })
+                .catch((error) => {
+                    // console.log(error);
+                    // Toast.show('链接不可用');
+                });
         }
     }
     render() {
+        const {canOpen} = this.state;
         const {url} = this.props.route.params || {};
         return (
             <View style={styles.container}>
-                {url && (
+                {canOpen && url ? (
                     <Pdf
                         source={{uri: url, cache: true}}
                         onLoadComplete={(numberOfPages, filePath) => {
@@ -52,6 +70,8 @@ export default class OpenPdf extends Component {
                         }}
                         style={styles.pdf}
                     />
+                ) : (
+                    <Empty text={'找不到文档'} />
                 )}
             </View>
         );

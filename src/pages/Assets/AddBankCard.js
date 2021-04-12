@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 18:06:37
+ * @LastEditTime: 2021-04-12 18:53:51
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -271,10 +271,19 @@ const AddBankCard = ({navigation, route}) => {
                     {codeText}
                 </Text>
             </InputView>
-            <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
-                <Agreements onChange={(checked) => setCheck(checked)} data={[{title: '《委托支付协议》', id: 15}]} />
-            </View>
-            <Button onPress={submit} style={styles.btn} title={'添加新银行卡'} />
+            {route.params?.action === 'add' && (
+                <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
+                    <Agreements
+                        onChange={(checked) => setCheck(checked)}
+                        data={[{title: '《委托支付协议》', id: 15}]}
+                    />
+                </View>
+            )}
+            <Button
+                onPress={submit}
+                style={styles.btn}
+                title={route.params?.action === 'add' ? '添加新银行卡' : '更换新银行卡'}
+            />
         </ScrollView>
     );
 };

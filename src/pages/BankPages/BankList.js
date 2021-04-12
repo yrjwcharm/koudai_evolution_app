@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-23 17:29:21
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:25:12
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 17:50:27
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';
@@ -33,7 +33,7 @@ export default function BankList({navigation, route}) {
             <Notice content={data.processing} />
             <ScrollView scrollIndicatorInsets={{right: 1}} style={{padding: text(16), paddingBottom: btnHeight}}>
                 {Object.keys(data).length > 0 &&
-                    data.products.map((_pro, _index) => {
+                    data.products?.map((_pro, _index) => {
                         return (
                             <View
                                 style={{
