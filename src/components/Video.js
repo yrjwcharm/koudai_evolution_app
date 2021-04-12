@@ -2,8 +2,8 @@
  * @Description:
  * @Autor: xjh
  * @Date: 2021-01-19 18:00:57
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-22 16:34:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 19:34:32
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
@@ -109,7 +109,7 @@ export default class App extends React.Component {
             isFullScreen: true,
         });
         // 直接设置方向
-        Orientation.lockToLandscape();
+        // Orientation.lockToLandscape();
     }
     _onStartShouldSetResponder(e) {
         console.log(e);
@@ -162,9 +162,9 @@ export default class App extends React.Component {
                     <Text style={{color: '#fff'}}>{this.formatMediaTime(this.state.duration)}</Text>
                 </View>
                 {/* 全屏按钮 */}
-                <TouchableOpacity onPress={this.enterFullScreen} style={{width: text(40), marginLeft: text(5)}}>
+                {/* <TouchableOpacity onPress={this.enterFullScreen} style={{width: text(40), marginLeft: text(5)}}>
                     <Text style={{color: '#fff'}}>全屏</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         );
         let pausedSliderFull = pausedSliderFullComponent;
@@ -195,7 +195,7 @@ export default class App extends React.Component {
                 {/* 播放的按钮：点击之后需要消失 */}
                 {pausedBtn}
                 {/* 暂停按钮，进度条，全屏按钮 */}
-                {/* {pausedSliderFull} */}
+                {pausedSliderFull}
             </View>
         );
     }

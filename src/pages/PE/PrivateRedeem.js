@@ -2,24 +2,21 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-20 18:17:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 18:33:40
  */
-import React, {useCallback, useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, inputInt} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import {Modal} from '../../components/Modal';
-// import {PasswordModal} from '../../components/Password';
 export default function PrivateRedeem({route, navigation}) {
     const [data, setData] = useState({});
     const [amount, setAmount] = useState('');
-    const passwordModal = useRef(null);
     const [enable, setEnable] = useState(true);
     useEffect(() => {
-        console.log(navigation);
         Http.get('/pe/redeem_detail/20210101', {
             fund_code: route.params?.fund_code,
             poid: route.params.poid,
@@ -39,28 +36,30 @@ export default function PrivateRedeem({route, navigation}) {
             share: amount,
         }).then((res) => {
             if (res.code === '000000') {
-                navigation.navigate('Home');
+                navigation.goBack();
             } else {
                 Modal.show({content: res.message});
             }
         });
     };
     const onInput = (amount) => {
-        if (!amount) return;
+        if (!amount) {
+            setAmount('');
+            setEnable(true);
+            return;
+        }
         if (amount >= data.share.share) {
             setAmount(data.share.share.toString());
         } else {
-            setAmount(amount);
+            setAmount(inputInt(amount));
         }
         setEnable(false);
     };
-    //  const submit = () => {
-    //     passwordModal.current.show();
-    //   };
+
     return (
         <>
             {Object.keys(data).length > 0 && (
-                <View style={{flex: 1}}>
+                <ScrollView style={{flex: 1}}>
                     <Text style={[Style.descSty, {padding: text(16)}]}>{data.share.name}</Text>
                     <View style={styles.card_sty}>
                         <Text style={{color: Colors.defaultColor, fontSize: Font.textH1}}>赎回份额</Text>
@@ -71,12 +70,16 @@ export default function PrivateRedeem({route, navigation}) {
                             ]}>
                             <TextInput
                                 style={{height: text(50), fontSize: text(26), flex: 1}}
-                                placeholder="请输入赎回百分比"
+                                placeholder={data.placeholder}
                                 keyboardType={'number-pad'}
                                 onChangeText={onInput}
                                 value={amount}
                             />
-                            <TouchableOpacity onPress={() => setAmount(data.share.share.toString())}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setAmount(data.share.share.toString());
+                                    onInput(data.share.share);
+                                }}>
                                 <Text style={styles.percent_symbol}>全部</Text>
                             </TouchableOpacity>
                         </View>
@@ -109,21 +112,16 @@ export default function PrivateRedeem({route, navigation}) {
                             );
                         })}
                     </View>
-                    {/* <PasswordModal
-                        ref={(ref) => {
-                            this.passwordModal = ref;
-                        }}
-                        onDone={(password) => this.submitData(password)}
-                    />
-                   */}
+
                     <FixedButton
                         disabled={enable}
                         title={data.share.button.text}
                         style={styles.btn_sty}
+                        disabledColor={'#EDDBC5'}
                         onPress={() => submitData()}
                         color={'#CEA26B'}
                     />
-                </View>
+                </ScrollView>
             )}
         </>
     );

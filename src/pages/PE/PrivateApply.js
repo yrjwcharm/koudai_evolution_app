@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 14:14:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 18:27:40
  */
 
 import React, {useState, useEffect, useCallback} from 'react';
@@ -15,7 +15,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-
+import Html from '../../components/RenderHtml';
 const PrivateApply = (props) => {
     const {fund_code, poid} = props.route.params || {};
     const jump = useJump();
@@ -77,7 +77,7 @@ const PrivateApply = (props) => {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.moreInfo]}>
-                                            <Text style={[styles.moreInfoText]}>{item.vals}</Text>
+                                            <Html html={item.vals} style={[styles.moreInfoText]} />
                                         </View>
                                     </View>
                                 </View>

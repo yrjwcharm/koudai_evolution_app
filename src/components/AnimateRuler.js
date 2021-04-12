@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 14:11:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 17:29:54
+ * @LastEditTime: 2021-04-12 20:10:10
  * @Description:
  */
 import React from 'react';
@@ -196,7 +196,6 @@ class Ruler extends React.PureComponent<Props> {
         // Create a listener
         this.scrollListener = this.state.scrollX.addListener(
             lodash.debounce(({value}) => {
-                console.log('object');
                 if (defaultValue && value == (defaultValue * this.snapSegment) / 2) {
                     return;
                 }

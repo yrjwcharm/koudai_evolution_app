@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 15:34:43
+ * @LastEditTime: 2021-04-12 20:24:43
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -124,6 +124,13 @@ class Question extends Component {
                         questionnaire_cate: data.result.questionnaire_cate,
                     },
                     () => {
+                        if (this.fr == 'risk' && this.state.questions[0]?.style == 'age_cursor') {
+                            console.log('aaa');
+                            this.setState({
+                                value: this.state.questions[0].default_value,
+                                inputBtnCanClick: true,
+                            });
+                        }
                         startAnimation && startAnimation(action);
                     }
                 );
@@ -136,6 +143,7 @@ class Question extends Component {
     handleContentView = (ref) => (this.contentView = ref);
     showNextAnimation = (action) => {
         layoutAnimation();
+
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
@@ -300,7 +308,7 @@ class Question extends Component {
         const {questions, current, value, previousCount} = this.state;
         let list = [];
         let handleList = [];
-        let previousTest = current - 1;
+        let previousTest = current - 1 <= 0 ? 0 : current - 1;
         //处理点击tag修改数据
         if (questions[current]?.tag == tag && previousTest >= 0 && questions[current]?.tag_end_status == 0) {
             if (previousCount > 0) {

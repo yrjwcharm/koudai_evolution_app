@@ -2,56 +2,57 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 14:27:47
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 19:13:54
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, TextInput} from 'react-native';
+import {
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    StyleSheet,
+    Dimensions,
+    TextInput,
+    RefreshControl,
+} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
-import Html from '../../components/RenderHtml';
+import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Header from '../../components/NavBar';
 import TabBar from '../../components/TabBar.js';
 import Video from '../../components/Video';
-import FitImage from 'react-native-fit-image';
-import {FixedButton} from '../../components/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Http from '../../services';
-import {Modal, SelectModal} from '../../components/Modal';
-import {PasswordModal} from '../../components/Password';
+import {Modal} from '../../components/Modal';
 import {BottomModal} from '../../components/Modal';
 import storage from '../../utils/storage';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Chart} from '../../components/Chart';
 import {useJump} from '../../components/hooks';
-import RenderChart from '../Portfolio/components/RenderChart';
 const deviceWidth = Dimensions.get('window').width;
-const btnHeight = isIphoneX() ? text(90) : text(66);
 
 export default function PrivateAssets({navigation, route}) {
     const [showEye, setShowEye] = useState('true');
+    const [refreshing, setRefreshing] = useState(false);
+
     const [data, setData] = useState({});
-    const passwordModal = useRef(null);
     const bottomModal = React.useRef(null);
-    const [left, setLeft] = useState('100%');
     const [period, setPeriod] = useState('m1');
     const [qa, setQa] = useState({});
     const [chart, setChart] = useState({});
-    const [labelInfo, setLabelInfo] = useState([]);
     const [curIndex, setCurIndex] = useState(0);
     const [curIndexNet, setCurIndexNet] = useState(0);
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const jump = useJump();
-    const rightPress = () => {
-        navigation.navigate('TradeRecord');
-    };
+
     const changePeriod = (period) => {
         setPeriod(period);
+        getChartInfo(period);
     };
     const ChangeTab = (i) => {
         setCurIndex(i);
@@ -61,20 +62,27 @@ export default function PrivateAssets({navigation, route}) {
     };
     const toggleEye = useCallback(() => {
         setShowEye((show) => {
-            setShowEye(!show);
-            storage.save('myAssetsEye', show);
+            storage.save('peEye', show === 'true' ? 'false' : 'true');
+            return show === 'true' ? 'false' : 'true';
         });
     }, []);
-
-    useEffect(() => {
+    const init = (type) => {
+        type == 'refresh' && setRefreshing(true);
         Http.get('/pe/asset_detail/20210101', {
             fund_code: route.params.fund_code,
             poid: route.params.poid,
         }).then((res) => {
+            setRefreshing(false);
+            storage.get('peEye').then((res) => {
+                setShowEye(res ? res : 'true');
+            });
             setData(res.result);
             getChartInfo();
         });
-    }, [route, period, getChartInfo]);
+    };
+    useEffect(() => {
+        init();
+    }, []);
     const redeemBtn = () => {
         Modal.show({
             confirm: true,
@@ -85,16 +93,18 @@ export default function PrivateAssets({navigation, route}) {
         });
     };
 
-    const getChartInfo = useCallback(() => {
-        Http.get('/pe/chart/20210101', {
-            fund_code: route.params.fund_code,
-            poid: route.params.poid,
-            period: period,
-        }).then((res) => {
-            setChart(res.result);
-            // setLabelInfo(res.result.label);
-        });
-    }, [period, route]);
+    const getChartInfo = useCallback(
+        (_period) => {
+            Http.get('/pe/chart/20210101', {
+                fund_code: route.params.fund_code,
+                poid: route.params.poid,
+                period: _period || period,
+            }).then((res) => {
+                setChart(res.result);
+            });
+        },
+        [period, route]
+    );
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -190,7 +200,6 @@ export default function PrivateAssets({navigation, route}) {
                             </View>
                         </View>
                     )}
-
                     <Chart
                         initScript={baseAreaChart(
                             chart?.chart,
@@ -201,7 +210,7 @@ export default function PrivateAssets({navigation, route}) {
                         onChange={onChartChange}
                         data={chart?.chart}
                         onHide={onHide}
-                        style={{width: '100%'}}
+                        style={{height: isIphoneX() ? px(200) : px(220)}}
                     />
                     <View
                         style={{
@@ -217,13 +226,13 @@ export default function PrivateAssets({navigation, route}) {
                                     activeOpacity={1}
                                     style={[
                                         styles.btn_sty,
-                                        {backgroundColor: period == _item.val ? '#F1F6FF' : '#fff'},
+                                        {backgroundColor: period == _item.val ? '#f5e9da' : '#fff'},
                                     ]}
                                     key={_index + 'sub'}
                                     onPress={() => changePeriod(_item.val, _item.type)}>
                                     <Text
                                         style={{
-                                            color: period == _item.val ? '#0051CC' : '#555B6C',
+                                            color: period == _item.val ? '#B27B2A' : '#555B6C',
                                             fontSize: text(12),
                                         }}>
                                         {_item.name}
@@ -253,6 +262,9 @@ export default function PrivateAssets({navigation, route}) {
                         return (
                             <TouchableOpacity
                                 activeOpacity={1}
+                                onPress={() => {
+                                    jump(_i.url);
+                                }}
                                 style={[
                                     Style.flexRow,
                                     styles.item_list,
@@ -305,7 +317,7 @@ export default function PrivateAssets({navigation, route}) {
                                     {_body.map((_td, _i) => {
                                         return (
                                             <Text
-                                                key={_td + '_i'}
+                                                key={_i}
                                                 style={[
                                                     styles.table_title_sty,
                                                     {
@@ -321,7 +333,7 @@ export default function PrivateAssets({navigation, route}) {
                                                                 ? parseFloat(_td.text?.replace(/,/g, '')) < 0
                                                                     ? Colors.green
                                                                     : Colors.red
-                                                                : '',
+                                                                : Colors.defaultColor,
                                                     },
                                                 ]}>
                                                 {_td.text}
@@ -335,8 +347,8 @@ export default function PrivateAssets({navigation, route}) {
                             activeOpacity={1}
                             style={styles.text_sty}
                             onPress={() => navigation.navigate('AssetNav')}>
-                            <Text>更多净值</Text>
-                            <AntDesign name={'right'} size={12} color={'#9095A5'} />
+                            <Text style={{color: '#545968'}}>更多净值</Text>
+                            <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -391,11 +403,12 @@ export default function PrivateAssets({navigation, route}) {
                         rightPress={() => jump(data.trade_record_url)}
                         rightTextStyle={styles.right_sty}
                     />
-                    <ScrollView>
+                    <ScrollView
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
                         <View style={styles.assets_card_sty}>
                             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                                 <View>
-                                    <View style={[Style.flexRow, {marginBottom: text(15)}]}>
+                                    <View style={[Style.flexRow, {marginBottom: text(12)}]}>
                                         <Text style={styles.profit_text_sty}>总金额(元)</Text>
                                         <TouchableOpacity onPress={toggleEye} activeOpacity={1}>
                                             <Ionicons
@@ -406,17 +419,21 @@ export default function PrivateAssets({navigation, route}) {
                                         </TouchableOpacity>
                                     </View>
                                     <Text style={[styles.profit_num_sty, {fontSize: text(24)}]}>
-                                        {showEye ? data?.total_amount : '***'}
+                                        {showEye === 'true' ? data?.total_amount : '***'}
                                     </Text>
                                 </View>
                                 <View>
                                     <View style={[Style.flexRow, {marginBottom: text(15), alignSelf: 'flex-end'}]}>
-                                        <Text style={styles.profit_text_sty}>日收益</Text>
-                                        <Text style={styles.profit_num_sty}>{showEye ? data?.total_share : '***'}</Text>
+                                        <Text style={styles.profit_text_sty}>总份额(份)</Text>
+                                        <Text style={styles.profit_num_sty}>
+                                            {showEye === 'true' ? data?.total_share : '***'}
+                                        </Text>
                                     </View>
                                     <View style={Style.flexRow}>
-                                        <Text style={styles.profit_text_sty}>累计收益</Text>
-                                        <Text style={styles.profit_num_sty}>{showEye ? data?.profit_acc : '***'}</Text>
+                                        <Text style={styles.profit_text_sty}>累计收益(元)</Text>
+                                        <Text style={styles.profit_num_sty}>
+                                            {showEye === 'true' ? data?.profit_acc : '***'}
+                                        </Text>
                                     </View>
                                 </View>
                             </View>
@@ -532,6 +549,7 @@ const styles = StyleSheet.create({
         width: text(90),
         paddingHorizontal: text(16),
         paddingVertical: text(12),
+        fontSize: text(13),
     },
     text_sty: {
         textAlign: 'center',

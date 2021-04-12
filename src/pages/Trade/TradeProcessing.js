@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-11 11:57:50
- * @LastEditors: dx
+ * @LastEditTime: 2021-04-12 19:50:54
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -190,7 +190,7 @@ const TradeProcessing = ({navigation, route}) => {
                                                 <Text numberOfLines={1} style={[styles.desc]}>
                                                     {item.k}
                                                 </Text>
-                                                <Text style={[styles.date]}>{item.v}</Text>
+                                                {item.v ? <Text style={[styles.date]}>{item.v}</Text> : null}
                                             </View>
                                             {item.d && item.d.length > 0 && (
                                                 <View style={[styles.moreInfo]}>
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        maxWidth: text(160),
+        flex: 1,
     },
     date: {
         fontSize: Font.textSm,

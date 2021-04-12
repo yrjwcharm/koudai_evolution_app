@@ -3,12 +3,12 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-12 16:27:35
+ * @LastEditTime: 2021-04-12 19:25:01
  */
-import React, {Component} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Header from '../../components/NavBar';
@@ -18,34 +18,31 @@ import Http from '../../services';
 import TabBar from '../../components/TabBar.js';
 import {Modal} from '../../components/Modal';
 import {useFocusEffect} from '@react-navigation/native';
+import Video from '../../components/Video';
+
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
-
-export default class PrivateProduct extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: {},
-            fund_code: '',
-            curIndex: 0,
-        };
-    }
-
-    init() {
+export default function PrivateAssets(props) {
+    const [data, setData] = useState({});
+    const [curIndex, setCurIndex] = useState(0);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
+    const init = useCallback(() => {
         Http.get('/pe/product_detail/20210101', {
-            fund_code: this.props.route?.params?.fund_code || '',
+            fund_code: props.route?.params?.fund_code,
         }).then((res) => {
-            this.setState({
-                data: res.result,
-            });
+            setData(res.result);
         });
-    }
+    }, [props.route]);
 
-    renderContent = (index, data) => {
+    const renderContent = (index, data) => {
         if (index === 0) {
             return (
                 <View style={{backgroundColor: '#fff'}}>
-                    <View style={{paddingHorizontal: text(16), flex: 1}} ref="Left">
+                    <View style={{paddingHorizontal: text(16), flex: 1}}>
                         {data?.content && <Html html={data?.content} />}
                     </View>
                 </View>
@@ -53,21 +50,12 @@ export default class PrivateProduct extends Component {
         } else if (index === 1) {
             return (
                 <>
-                    <View style={[Style.flexRow, styles.item_list]} ref="right">
+                    <View style={[Style.flexRow, styles.item_list]}>
                         <Text style={{flex: 1}}>{data?.content?.title}</Text>
                         <Text>{data?.content?.subtitle}</Text>
                     </View>
                     <View style={[Style.flexCenter]}>
-                        {/* <Videoplayer
-                            url={data?.content?.video}
-                            navigation={this.props.navigation} //路由 用于小屏屏播放的返回按钮
-                            ref={(ref) => (this.player = ref)}
-                            poster={
-                                'https://static.licaimofang.com/wp-content/uploads/2020/05/151590048433_.pic_hd.png'
-                            } //视频封面
-                        /> */}
-
-                        {/* <Video url={data?.content?.video} /> */}
+                        <Video url={data?.content?.video} />
                     </View>
                 </>
             );
@@ -92,127 +80,109 @@ export default class PrivateProduct extends Component {
             );
         }
     };
-    submitOrder = () => {
-        const {url, countdown} = this.state.data.button;
+    const submitOrder = () => {
+        const {url, countdown} = data.button;
         if (countdown) {
             Modal.show({
                 content: countdown,
                 confirmCallBack: () => {
-                    this.init();
+                    init();
                 },
             });
         } else {
-            this.props.navigation.navigate(url.path, url.params);
+            props.navigation.navigate(url.path, url.params);
         }
     };
-    ChangeTab = (i) => {
-        this.setState({
-            curIndex: i,
-        });
+    const ChangeTab = (i) => {
+        setCurIndex(i);
     };
-    render() {
-        const {data, curIndex} = this.state;
-        return (
-            <>
-                <Focus init={this.init.bind(this)} />
-                {Object.keys(data).length > 0 && (
-                    <>
-                        <Header
-                            title={data.title}
-                            leftIcon="chevron-left"
-                            style={{backgroundColor: '#D7AF74'}}
-                            fontStyle={{color: '#fff'}}
-                        />
-                        <View style={styles.Container}>
-                            <ScrollView style={{marginBottom: btnHeight}} ref="totop">
-                                <View style={[styles.Wrapper, Style.flexCenter]}>
-                                    <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
-                                        <Text style={styles.card_title}>{data.fund_name}</Text>
-                                        <View style={styles.card_tag}>
-                                            <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>
-                                                {data.fund_stage}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    <Text style={styles.card_desc}>{data.fund_remark}</Text>
-                                    <View style={Style.flexRow}>
-                                        {data?.tags &&
-                                            data?.tags.map((_label, _index) => {
-                                                return (
-                                                    <Text key={_index} style={styles.card_label}>
-                                                        {_label}
-                                                    </Text>
-                                                );
-                                            })}
-                                    </View>
-                                    {data?.progress && (
-                                        <View style={styles.process_outer}>
-                                            <View
-                                                style={[
-                                                    styles.process_inner,
-                                                    {width: data?.progress?.percent * 100 + '%'},
-                                                ]}
-                                            />
-                                        </View>
-                                    )}
-                                    {data.progress && (
-                                        <View style={[Style.flexBetween, {width: deviceWidth - 60}]}>
-                                            <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
-                                                {data?.progress?.left_amount?.name}
-                                                {data?.progress?.left_amount?.val}
-                                            </Text>
-                                            <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
-                                                {data?.progress?.total_amount?.name}
-                                                {data?.progress?.total_amount?.val}
-                                            </Text>
-                                        </View>
-                                    )}
-                                </View>
-                                <View>
-                                    {data?.introduce.map((_img, _i) => {
-                                        return <FitImage key={_i + '_img'} source={{uri: _img}} resizeMode="contain" />;
-                                    })}
-                                </View>
-                                <ScrollableTabView
-                                    renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
-                                    initialPage={0}
-                                    onChangeTab={(obj) => this.ChangeTab(obj.i)}
-                                    tabBarActiveTextColor={'#D7AF74'}
-                                    tabBarInactiveTextColor={'#545968'}>
-                                    {data.tabs.map((item, index) => {
-                                        return (
-                                            <View tabLabel={item.title} key={index + 'tab'}>
-                                                {/* {this.renderContent(index, item)} */}
-                                            </View>
-                                        );
-                                    })}
-                                </ScrollableTabView>
-                                {this.renderContent(curIndex, data.tabs[curIndex])}
-                            </ScrollView>
-                            <FixedButton
-                                disabled={data.button.avail == 0}
-                                title={data.button.text}
-                                style={{backgroundColor: '#CEA26B'}}
-                                onPress={this.submitOrder}
-                                disabledColor={'#ddd'}
-                                color={'#CEA26B'}
-                            />
-                        </View>
-                    </>
-                )}
-            </>
-        );
-    }
-}
-function Focus({init}) {
-    useFocusEffect(
-        React.useCallback(() => {
-            init();
-        }, [init])
-    );
 
-    return null;
+    return (
+        <>
+            {Object.keys(data).length > 0 && (
+                <>
+                    <Header
+                        title={data.title}
+                        leftIcon="chevron-left"
+                        style={{backgroundColor: '#D7AF74'}}
+                        fontStyle={{color: '#fff'}}
+                    />
+                    <View style={styles.Container}>
+                        <ScrollView style={{marginBottom: btnHeight}}>
+                            <View style={[styles.Wrapper, Style.flexCenter]}>
+                                <View style={[Style.flexRow, {paddingTop: text(15), paddingBottom: text(5)}]}>
+                                    <Text style={styles.card_title}>{data.fund_name}</Text>
+                                    <View style={styles.card_tag}>
+                                        <Text style={{color: '#FF7D41', fontSize: Font.textSm}}>{data.fund_stage}</Text>
+                                    </View>
+                                </View>
+                                <Text style={styles.card_desc}>{data.fund_remark}</Text>
+                                <View style={Style.flexRow}>
+                                    {data?.tags &&
+                                        data?.tags.map((_label, _index) => {
+                                            return (
+                                                <Text key={_index} style={styles.card_label}>
+                                                    {_label}
+                                                </Text>
+                                            );
+                                        })}
+                                </View>
+                                {data?.progress && (
+                                    <View style={styles.process_outer}>
+                                        <View
+                                            style={[styles.process_inner, {width: data?.progress?.percent * 100 + '%'}]}
+                                        />
+                                    </View>
+                                )}
+                                {data.progress && (
+                                    <View style={[Style.flexBetween, {width: deviceWidth - px(60)}]}>
+                                        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
+                                            {data?.progress?.left_amount?.name}
+                                            {data?.progress?.left_amount?.val}
+                                        </Text>
+                                        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: text(13)}}>
+                                            {data?.progress?.total_amount?.name}
+                                            {data?.progress?.total_amount?.val}
+                                        </Text>
+                                    </View>
+                                )}
+                            </View>
+                            <View>
+                                {data?.introduce.map((_img, _i) => {
+                                    return <FitImage key={_i + '_img'} source={{uri: _img}} resizeMode="contain" />;
+                                })}
+                            </View>
+                            <ScrollableTabView
+                                renderTabBar={() => <TabBar btnColor={'#D7AF74'} />}
+                                initialPage={0}
+                                onChangeTab={(obj) => ChangeTab(obj.i)}
+                                tabBarActiveTextColor={'#D7AF74'}
+                                tabBarInactiveTextColor={'#545968'}>
+                                {data.tabs.map((item, index) => {
+                                    return (
+                                        <View tabLabel={item.title} key={index + 'tab'}>
+                                            {/* {this.renderContent(index, item)} */}
+                                        </View>
+                                    );
+                                })}
+                            </ScrollableTabView>
+                            {renderContent(curIndex, data.tabs[curIndex])}
+                        </ScrollView>
+                        <FixedButton
+                            disabled={data.button.avail == 0}
+                            title={data.button.text}
+                            style={{backgroundColor: '#CEA26B'}}
+                            onPress={submitOrder}
+                            disabledColor={'#ddd'}
+                            color={'#CEA26B'}
+                        />
+                    </View>
+                </>
+            )}
+        </>
+    );
 }
+
 const styles = StyleSheet.create({
     Container: {
         backgroundColor: '#F7F8FA',
@@ -254,7 +224,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#BA9965',
         width: deviceWidth - 60,
         height: text(2),
-        marginBottom: text(15),
+        marginVertical: text(15),
         borderRadius: text(30),
     },
     process_inner: {

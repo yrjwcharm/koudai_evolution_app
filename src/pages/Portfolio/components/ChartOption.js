@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-12 14:14:02
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-12 17:40:35
  * @Description: 基金相关图表配置
  */
 // 交互图例
