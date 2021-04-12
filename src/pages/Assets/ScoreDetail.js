@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 20:13:52
+ * @LastEditTime: 2021-04-12 16:29:40
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -28,6 +28,7 @@ const ScoreDetail = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [show, setShow] = useState(false);
+    const listRef = useRef(null);
     const shadow = useRef({
         color: '#174384',
         border: 4,
@@ -77,8 +78,9 @@ const ScoreDetail = ({navigation, route}) => {
     // 切换类型
     const onTab = (t) => {
         setShow(false);
-        setPage(1);
         setHasMore(true);
+        listRef.current.scrollToLocation({animated: false, itemIndex: 0, sectionIndex: 0, viewOffset: 0});
+        setPage(1);
         setType(t);
     };
     // 下拉刷新
@@ -281,6 +283,7 @@ const ScoreDetail = ({navigation, route}) => {
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
                 onRefresh={onRefresh}
+                ref={listRef}
                 refreshing={refreshing}
                 renderItem={renderItem}
                 renderSectionHeader={renderHeader}
