@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-24 17:42:06
+ * @LastEditTime: 2021-04-12 10:42:35
  * @Description: 基金公司
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -73,25 +73,32 @@ const FundCompany = ({navigation, route}) => {
                 return renderItem(item, index);
             })}
             {list?.length > 0 && (
-                <BoxShadow setting={shadow.current}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={[styles.totalFunds, Style.flexBetween]}
-                        onPress={() =>
-                            jump({
-                                ...list[list.length - 1]?.url,
-                                params: {
-                                    ...list[list.length - 1]?.url.params,
-                                    title: `旗下基金(${list[list.length - 1]?.val}支)`,
-                                },
-                            })
-                        }>
-                        <Text style={styles.title}>{`${list[list.length - 1].key}（${
-                            list[list.length - 1]?.val
-                        }支）`}</Text>
-                        <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
-                    </TouchableOpacity>
-                </BoxShadow>
+                // <BoxShadow setting={shadow.current}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={[
+                        styles.totalFunds,
+                        Style.flexBetween,
+                        {
+                            marginHorizontal: Space.marginAlign,
+                            marginTop: text(24),
+                        },
+                    ]}
+                    onPress={() =>
+                        jump({
+                            ...list[list.length - 1]?.url,
+                            params: {
+                                ...list[list.length - 1]?.url.params,
+                                title: `旗下基金(${list[list.length - 1]?.val}支)`,
+                            },
+                        })
+                    }>
+                    <Text style={styles.title}>{`${list[list.length - 1].key}（${
+                        list[list.length - 1]?.val
+                    }支）`}</Text>
+                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                </TouchableOpacity>
+                // </BoxShadow>
             )}
         </ScrollView>
     );
@@ -100,7 +107,7 @@ const FundCompany = ({navigation, route}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.bgColor,
     },
     header: {
         height: text(36),

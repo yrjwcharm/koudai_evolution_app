@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-03-30 16:11:25
+ * @LastEditTime: 2021-04-12 10:39:10
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
@@ -85,10 +85,20 @@ const Part1 = () => {
                     html={'基金费率等信息以基金公司最新披露的基金信息为准'}
                 />
             </View>
-            <Text style={[styles.title]}>调仓费率</Text>
+            <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>调仓费率</Text>
             <View style={[styles.feeDescBox, {paddingTop: 0}]}>
                 <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
             </View>
+            {data?.manage ? (
+                <>
+                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
+                        {data?.manage?.title}
+                    </Text>
+                    <View style={[styles.feeDescBox, {paddingTop: 0}]}>
+                        <Html html={data?.manage?.content} style={{...styles.feeDesc, color: Colors.descColor}} />
+                    </View>
+                </>
+            ) : null}
         </View>
     ) : (
         <ActivityIndicator
@@ -652,7 +662,7 @@ const styles = StyleSheet.create({
     feeDescBox: {
         paddingHorizontal: Space.marginAlign,
         paddingTop: text(12),
-        paddingBottom: text(18),
+        paddingBottom: Space.padding,
         backgroundColor: '#fff',
     },
     feeDesc: {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:57:36
+ * @LastEditTime: 2021-04-12 10:22:00
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -33,7 +33,7 @@ const AccProfit = ({poid}) => {
         if (!poid) {
             http.get('/profit/user_portfolios/20210101').then((res) => {
                 if (res.code === '000000') {
-                    setList(res.result.list);
+                    setList(res.result.list || []);
                 }
                 setRefreshing(false);
             });
@@ -265,12 +265,12 @@ const AccProfit = ({poid}) => {
                         ]}
                         key={item + index}
                         onPress={() => {
-                            global.LogTool('click', 'portfolio', item.poid);
-                            jump(item.url);
+                            // global.LogTool('click', 'portfolio', item.poid);
+                            // jump(item.url);
                         }}>
                         <View style={Style.flexRow}>
                             <Text style={[styles.title, {fontWeight: '400', marginRight: text(4)}]}>{item.name}</Text>
-                            <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} />
+                            {/* <FontAwesome color={Colors.darkGrayColor} size={20} name={'angle-right'} /> */}
                             {item.tag ? (
                                 <View style={{borderRadius: text(2), backgroundColor: '#EFF5FF', marginLeft: text(8)}}>
                                     <Text style={styles.tag}>{item.tag}</Text>
