@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 15:34:45
+ * @LastEditTime: 2021-04-16 16:54:23
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -21,7 +21,7 @@ export default function WebView({route, navigation}) {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 // window.ReactNativeWebView.postMessage('${result.access_token}')
-                setToken(result.access_token || 'null');
+                setToken(result?.access_token ? result?.access_token : 'null');
                 // webview.current.injectJavaScript(`window.sessionStorage.setItem('token','${result.access_token}');`);
             });
         };
@@ -45,7 +45,7 @@ export default function WebView({route, navigation}) {
         } else if (navState.url.indexOf('/introduceDetail') > -1) {
             setTitle('保险详情');
         } else {
-            setTitle('');
+            setTitle(route?.params?.title);
         }
         setBackButtonEnabled(
             navState.canGoBack &&
@@ -97,7 +97,6 @@ export default function WebView({route, navigation}) {
                     style={{flex: 1}}
                     source={{
                         uri: route?.params?.link,
-                        // headers: {'Cache-Control': 'no-cache'},
                     }}
                 />
             ) : (

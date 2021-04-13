@@ -120,9 +120,12 @@ export default class MyModal extends Component {
                                 <Text style={styles.title}>{this.title}</Text>
                             ) : null}
                             {/* 内容 */}
-                            <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(20)}]}>
-                                <HTML style={styles.contentText} html={this.props.content} />
-                            </View>
+                            {this.props.content ? (
+                                <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(20)}]}>
+                                    <HTML style={styles.contentText} html={this.props.content} />
+                                </View>
+                            ) : null}
+                            {this.props.children ? this.props.children() : null}
                             {/* 分割线 */}
                             <View style={styles.line} />
                             {/* 底部按钮 */}

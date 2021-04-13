@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:49:37
+ * @LastEditTime: 2021-04-16 13:40:27
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -79,7 +79,12 @@ export default function MessageNotice({navigation, route}) {
 
     // 下拉刷新
     const onRefresh = useCallback(() => {
-        setPage(1);
+        if (page === 1) {
+            init('refresh', true);
+        } else {
+            setPage(1);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     // 上拉加载
     const onEndReached = useCallback(

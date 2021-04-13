@@ -2,7 +2,7 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 20:31:24
+ * @LastEditTime: 2021-04-16 17:07:09
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -15,7 +15,6 @@ export default class ImageMessage extends PureComponent {
     componentDidMount() {
         Image.getSize(this.props.message?.content, (w, h) => {
             this.setState({scale: w / h});
-            console.log(w, h);
         });
     }
     render() {

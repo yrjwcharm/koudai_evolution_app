@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 19:56:06
+ * @LastEditTime: 2021-04-16 18:16:45
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -351,7 +351,11 @@ const IM = (props) => {
             }
         }
         setMessages((pre) => {
-            mesList = [...pre, ..._mes];
+            if (_mes.length > 1) {
+                mesList = [...pre, ..._mes];
+            } else {
+                mesList = [..._mes, ...pre];
+            }
             return mesList;
         });
     };

@@ -22,6 +22,7 @@ import InputBar from './InputBar';
 import PanelContainer from './panelContainer';
 import DelPanel from './del';
 import Clipboard from '@react-native-community/clipboard';
+import Toast from '../../../Toast';
 const {height, width} = Dimensions.get('window');
 const ViewPropTypes = RNViewPropTypes || View.propTypes;
 let ImageComponent = Image;
@@ -173,6 +174,11 @@ class ChatWindow extends PureComponent {
         this._userHasBeenInputed = true;
         if (type === 'text' && messageContent.trim().length !== 0) {
             messageContent = changeEmojiText(this.state.messageContent).join('');
+        } else if (messageContent.trim().length == 0) {
+            if (Platform.OS == 'ios') {
+                Toast.show('不能发送空消息', {keyboardAvoiding: false});
+            }
+            return;
         }
         this.props.sendMessage(type, messageContent, this.state.isInverted);
         this.InputBar.input && this.InputBar.input.clear();
@@ -728,9 +734,9 @@ class ChatWindow extends PureComponent {
             keyboardShow,
         } = this.state;
 
-        const currentList = messageList
-            .slice()
-            .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
+        const currentList = messageList;
+        // .slice()
+        // .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View

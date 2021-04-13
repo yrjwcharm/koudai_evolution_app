@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 10:58:28
+ * @LastEditTime: 2021-04-16 16:55:21
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -15,7 +15,7 @@ import {
     ImageBackground,
     RefreshControl,
     Platform,
-    Modal,
+    BackHandler,
 } from 'react-native';
 import {px, deviceWidth, formaNum} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
@@ -30,8 +30,11 @@ import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
 import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import JPush from 'jpush-react-native';
+import Storage from '../../utils/storage';
+import RNExitApp from 'react-native-exit-app';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -86,17 +89,16 @@ const Index = (props) => {
         },
         [isFocused, readInterface]
     );
+
     useFocusEffect(
         useCallback(() => {
-            // Modal.show({
-            //     confirm: true,
-            //     content: '',
-            //     title: '隐私保护说明',
-            // });
+            showPrivacyPop();
+
             getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
     );
+
     useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -104,7 +106,7 @@ const Index = (props) => {
             JPush.addConnectEventListener((result) => {
                 console.log('connectListener:' + JSON.stringify(result));
             });
-            JPush.setBadge({badge: 10, appbadge: '123'});
+            // JPush.setBadge({badge: 10, appbadge: '123'});
 
             JPush.getRegistrationID((result) => {
                 console.log('registerID:' + JSON.stringify(result));
@@ -136,7 +138,73 @@ const Index = (props) => {
         });
         return unsubscribe;
     }, [isFocused, props.navigation, getData]);
-
+    const showPrivacyPop = () => {
+        Storage.get('privacy').then((res) => {
+            if (res) {
+                return;
+            }
+            setTimeout(() => {
+                Modal.show({
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => {
+                        if (Platform.OS == 'android') {
+                            BackHandler.exitApp(); //退出整个应用
+                        } else {
+                            RNExitApp.exitApp();
+                        }
+                    },
+                    confirmCallBack: () => {
+                        Storage.save('privacy', 'privacy');
+                    },
+                    children: () => {
+                        return (
+                            <View style={{height: px(300)}}>
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    style={{paddingHorizontal: px(20), marginVertical: px(20)}}>
+                                    <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                        欢迎使用理财魔方！为给您提供优质的服务、控制业务风险、保障信息和资金安全，本应用使用过程中，需要联网，需要在必要范围内收集、使用或共享您的个人信息。我们提供理财、保险、支付等服务。请您在使用前仔细阅读
+                                        <Text
+                                            style={{color: Colors.btnColor}}
+                                            onPress={() => {
+                                                jump({
+                                                    path: 'WebView',
+                                                    params: {
+                                                        link: 'https://msite.licaimofang.com/lcmfPolicy',
+                                                        title: '理财魔方隐私权政策',
+                                                    },
+                                                });
+                                                Modal.close();
+                                            }}>
+                                            《隐私政策》
+                                        </Text>
+                                        条款，同意后开始接受我们的服务。
+                                    </Text>
+                                    <Text />
+                                    <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                        本应用使用期间，我们需要申请获取您的系统权限，我们将在首次调用时逐项询问您是否允许使用该权限。您可以在我们询问时开启相关权限，也可以在设备系统“设置”里管理相关权限：
+                                    </Text>
+                                    <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                        1.消息通知权限：向您及时推送交易、调仓、阅读推荐等消息，方便您更及时了解您的理财相关数据。
+                                    </Text>
+                                    <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                        2.读取电话状态权限：正常识别您的本机识别码，以便完成安全风控、进行统计和服务推送。
+                                    </Text>
+                                    <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                        3.读写外部存储权限：向您提供头像设置、客服、评论或分享、图像识别、下载打开文件时，您可以通过开启存储权限使用或保存图片、视频或文件。
+                                    </Text>
+                                </ScrollView>
+                            </View>
+                        );
+                    },
+                    title: '隐私保护说明',
+                    confirmText: '同意',
+                    cancelText: '不同意',
+                });
+            });
+        }, 100);
+    };
     const readInterface = useCallback(() => {
         http.get('/message/unread/20210101').then((res) => {
             setAll(res.result.all);

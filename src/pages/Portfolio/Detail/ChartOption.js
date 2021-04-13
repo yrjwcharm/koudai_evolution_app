@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-04-11 13:58:23
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-16 13:51:12
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -64,6 +64,7 @@ export const pieChart = (data, map) => `
   });
   chart.tooltip(true);
   chart.legend({
+    clickable:false,
     position: 'right',
     offsetX:-10,
     itemFormatter: function itemFormatter(val) {

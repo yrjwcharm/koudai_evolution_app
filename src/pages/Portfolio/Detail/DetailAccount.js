@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -120,7 +120,7 @@ export default function DetailAccount({route, navigation}) {
     ) : (
         <>
             {Object.keys(data).length > 0 ? (
-                <ScrollView style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                <ScrollView nestedScrollEnabled={true} style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
