@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 16:45:29
+ * @LastEditTime: 2021-04-16 19:12:46
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -165,8 +165,14 @@ const ShareModal = React.forwardRef((props, ref) => {
                         message: shareContent.content,
                         subject: shareContent.title,
                     },
-                    () => Toast.show('分享失败'),
-                    () => Toast.show('分享成功')
+                    (error) => {
+                        console.log(error);
+                        Toast.show('分享失败');
+                    },
+                    (success, method) => {
+                        console.log(success, method);
+                        Toast.show('分享成功');
+                    }
                 );
             }
         }
