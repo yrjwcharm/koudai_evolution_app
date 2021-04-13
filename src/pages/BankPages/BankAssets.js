@@ -3,7 +3,7 @@
  * @Date: 2021-01-25 11:20:31
  * @Description:银行持仓
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 16:51:18
+ * @LastEditTime: 2021-04-13 15:01:44
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -107,7 +107,10 @@ export default function BankAssets(props) {
                                     ]}
                                     onPress={() => jump(data?.elec_account?.url)}>
                                     <Text style={styles.account_sty}>
-                                        {data.elec_account.title}({data?.elec_account?.balance})
+                                        {data.elec_account.title}
+                                        {data?.elec_account?.balance ? (
+                                            <Text>({data?.elec_account?.balance})</Text>
+                                        ) : null}
                                     </Text>
                                     <AntDesign name={'right'} color={'#4E556C'} size={12} />
                                 </TouchableOpacity>

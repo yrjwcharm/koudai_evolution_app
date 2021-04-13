@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:47:16
+ * @LastEditTime: 2021-04-13 18:14:01
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -24,6 +24,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
+import _ from 'lodash';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -87,9 +88,9 @@ class TradeBuy extends Component {
                         currentDate: res.result?.period_info?.current_date,
                         nextday: res.result?.period_info?.nextday,
                     },
-                    () => {
+                    async () => {
                         let amount = this.state.amount;
-                        this.plan(amount);
+                        await this.plan(amount);
                         if (amount) {
                             this.checkData(amount);
                         }
@@ -156,12 +157,12 @@ class TradeBuy extends Component {
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
-        await this.plan(this.state.amount);
+        let buy_id = await this.plan(this.state.amount);
         type == 0
             ? http
                   .post('/trade/buy/do/20210101', {
                       poid,
-                      buy_id: this.state.planData.buy_id,
+                      buy_id: buy_id || this.state.planData.buy_id,
                       amount: this.state.amount,
                       password,
                       trade_method: bank?.pay_type,
@@ -207,21 +208,24 @@ class TradeBuy extends Component {
      * @return {*}
      */
     plan = (amount) => {
-        const params = {
-            amount: amount || this.state.data.buy_info.initial_amount,
-            pay_method: this.state.bankSelect?.pay_method,
-            poid: this.state.poid,
-            init: this.state.amount ? 0 : 1,
-        };
-        http.get('/trade/buy/plan/20210101', params).then((data) => {
-            if (data.code === '000000') {
-                this.setState({planData: data.result, fee_text: data.result.fee_text});
-            } else {
-                this.setState({
-                    buyBtnCanClick: false,
-                    errTip: data.message,
-                });
-            }
+        return new Promise((resov) => {
+            const params = {
+                amount: amount || this.state.data.buy_info.initial_amount,
+                pay_method: this.state.bankSelect?.pay_method,
+                poid: this.state.poid,
+                init: this.state.amount ? 0 : 1,
+            };
+            http.get('/trade/buy/plan/20210101', params).then((data) => {
+                if (data.code === '000000') {
+                    this.setState({planData: data.result, fee_text: data.result.fee_text});
+                    resov(data.result.buy_id);
+                } else {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: data.message,
+                    });
+                }
+            });
         });
     };
 
@@ -230,13 +234,14 @@ class TradeBuy extends Component {
      * @param {*} onInput
      * @return {*}
      */
-    onInput = (amount) => {
+    onInput = _.debounce(async (_amount) => {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
-        let _amount = onlyNumber(amount);
-
-        this.setState({amount: _amount, errTip: '', fixTip: ''}, () => {
+        if (!_amount) {
+            await this.plan('');
+        }
+        this.setState({errTip: '', fixTip: ''}, async () => {
             if (_amount > this.state.bankSelect.left_amount && this.state.type == 0) {
                 // 您当日剩余可用额度为
                 this.setState({
@@ -268,7 +273,7 @@ class TradeBuy extends Component {
                           }元`
                         : '',
                 });
-                this.plan(_amount);
+                await this.plan(_amount);
             } else {
                 this.setState({buyBtnCanClick: false, mfbTip: false});
                 if (_amount) {
@@ -278,7 +283,7 @@ class TradeBuy extends Component {
                 }
             }
         });
-    };
+    }, 300);
     showFixModal = () => {
         this.bottomModal.show();
     };
@@ -379,14 +384,17 @@ class TradeBuy extends Component {
                 isLargeAmount: index == 1 ? true : false,
                 largeAmount: index == 1 ? this.state.data?.large_pay_method : '',
             },
-            () => {
-                this.plan(this.state.amount);
+            async () => {
+                await this.plan(this.state.amount);
                 this.checkData(this.state.amount);
             }
         );
     };
     changeBuyStatus = (obj) => {
-        this.setState({type: obj.i}, () => {
+        if (obj.from == 0 && obj.i == 0) {
+            return;
+        }
+        this.setState({type: obj.i, errTip: ''}, () => {
             this.init(null, 'cacheBank');
         });
     };
@@ -620,7 +628,10 @@ class TradeBuy extends Component {
                                 ]}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.placeholderColor}
-                                onChangeText={this.onInput}
+                                onChangeText={(amount) => {
+                                    this.setState({amount: onlyNumber(amount)});
+                                    this.onInput(onlyNumber(amount));
+                                }}
                                 value={`${amount}`}
                             />
                             {`${amount}`.length > 0 && (
@@ -712,9 +723,9 @@ class TradeBuy extends Component {
                         this.bankCard = ref;
                     }}
                     onDone={(select, index) => {
-                        this.setState({bankSelect: select, bankSelectIndex: index}, () => {
+                        this.setState({bankSelect: select, bankSelectIndex: index}, async () => {
                             if (!this.state.isLargeAmount) {
-                                this.plan(this.state.amount);
+                                await this.plan(this.state.amount);
                                 this.checkData(this.state.amount);
                             }
                         });

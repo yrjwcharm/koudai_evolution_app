@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-23 16:45:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-13 17:04:18
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -58,6 +58,7 @@ export default class TradeAdjust extends Component {
         });
     };
     submit = (password) => {
+        let toast = Toast.showLoading();
         const {data} = this.state;
         Http.post('/trade/adjust/do/20210101', {
             adjust_id: data.adjust_id,
@@ -65,6 +66,7 @@ export default class TradeAdjust extends Component {
             password: password,
             poid: this.state.poid,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
             } else {

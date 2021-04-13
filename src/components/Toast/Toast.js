@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 17:57:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 20:13:56
+ * @LastEditTime: 2021-04-13 17:05:36
  * @Description:
  */
 import React, {Component} from 'react';
@@ -33,7 +33,7 @@ class Toast extends Component {
         ));
     };
 
-    static showLoading = (message = '正在加载中...', options) => {
+    static showLoading = (message = '请稍等...', options) => {
         return new RootSiblings(
             (
                 <ToastContainer {...options} loading={true} visible={true}>

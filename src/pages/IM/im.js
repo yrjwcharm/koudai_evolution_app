@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 20:54:22
+ * @LastEditTime: 2021-04-13 16:59:57
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -91,7 +91,7 @@ const IM = (props) => {
             ),
         });
         initWebSocket();
-        Keyboard.addListener('keyboardWillHide', clearIntelList);
+        Keyboard.addListener('keyboardDidHide', clearIntelList);
         return props.navigation.addListener('beforeRemove', closeWs);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -137,13 +137,15 @@ const IM = (props) => {
         WS.current.onopen = function () {
             http.get(`${BaseUrl.IMApi}/im/token`)
                 .then((data) => {
+                    if (type == 'reconnect') {
+                        setMessages([]);
+                        // handelSystemMes({content: '连接成功'});
+                    }
                     setUid(data.result.uid);
                     _uid.current = data.result.uid;
                     token.current = data.result.token;
                     WS.current.send(handleMsgParams('LIR', 'loign'));
-                    if (type == 'reconnect') {
-                        handelSystemMes({content: '连接成功'});
-                    }
+
                     connect = true;
                 })
                 .catch((err) => {
@@ -535,6 +537,7 @@ const IM = (props) => {
                     setTimeout(() => {
                         _ChatScreen?.current?.closeAll();
                     });
+
                     upload(
                         `$${BaseUrl.IMApi}/upload/oss`,
                         response,
@@ -549,6 +552,9 @@ const IM = (props) => {
                             } else {
                                 checkStatus(cmid, -1);
                             }
+                        },
+                        () => {
+                            checkStatus(cmid, -1);
                         }
                     );
                 }
@@ -600,7 +606,7 @@ const IM = (props) => {
         return int < 10 ? '0' + int.toString() : int.toString();
     };
     const renderShortCutList = () => {
-        return shortCutList.length > 0 ? (
+        return shortCutList.length > 0 && intellectList.length == 0 ? (
             <ScrollView horizontal={true} keyboardShouldPersistTaps="handled" showsHorizontalScrollIndicator={false}>
                 <View
                     style={{
@@ -616,6 +622,8 @@ const IM = (props) => {
                             key={index}
                             style={styles.shortCutItem}
                             onPress={_.debounce(() => {
+                                _ChatScreen?.current?.chatList &&
+                                    _ChatScreen?.current?.chatList.scrollToOffset({y: 0, animated: true});
                                 sendMessage('text', item.question, null, 'QMR', {question_id: item.question_id}, 1);
                                 Keyboard.dismiss();
                             }, 500)}>
@@ -628,23 +636,25 @@ const IM = (props) => {
     };
     const renderIntelList = () => {
         return intellectList.length > 0 ? (
-            <View style={styles.intellectList}>
-                {intellectList.map((item, index) => (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        key={index}
-                        style={[
-                            {height: px(43), borderTopColor: '#E2E4EA', borderTopWidth: index == 0 ? 0 : 0.5},
-                            Style.flexRow,
-                        ]}
-                        onPress={_.debounce(() => {
-                            sendMessage('text', item.question_ori, null, 'QMR', item.question_id, 1);
-                            Keyboard.dismiss();
-                            clearIntelList();
-                        }, 500)}>
-                        <HTML style={{fontSize: px(14)}} html={item.question} />
-                    </TouchableOpacity>
-                ))}
+            <View style={{height: px(43) * intellectList.length}}>
+                <View style={[styles.intellectList]}>
+                    {intellectList.map((item, index) => (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={index}
+                            style={[
+                                {height: px(43), borderTopColor: '#E2E4EA', borderTopWidth: index == 0 ? 0 : 0.5},
+                                Style.flexRow,
+                            ]}
+                            onPress={_.debounce(() => {
+                                sendMessage('text', item.question_ori, null, 'QMR', {question_id: item.question_id}, 1);
+                                Keyboard.dismiss();
+                                clearIntelList();
+                            }, 500)}>
+                            <HTML style={{fontSize: px(14)}} html={item.question} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
         ) : null;
     };
@@ -1040,7 +1050,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
         position: 'absolute',
-        bottom: px(61),
+        // bottom: px(61),
         width: deviceWidth,
         zIndex: 100,
     },

@@ -2,7 +2,7 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 20:43:45
+ * @LastEditTime: 2021-04-13 16:44:55
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -64,7 +64,7 @@ export default class ImageMessage extends PureComponent {
                 </TouchableOpacity>
                 <View style={{alignItems: 'center', justifyContent: 'center', marginRight: 10}}>
                     {!isSelf ? null : message.sendStatus === undefined ? null : message.sendStatus === 0 ? (
-                        <ActivityIndicator />
+                        <ActivityIndicator color="#999999" />
                     ) : message.sendStatus < 0 ? (
                         <TouchableOpacity
                             disabled={false}

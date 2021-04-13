@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 13:55:43
+ * @LastEditTime: 2021-04-13 17:04:58
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -133,6 +133,7 @@ export default class TradeRedeem extends Component {
         this.passwordModal.show();
     };
     submitData = (password) => {
+        let toast = Toast.showLoading();
         Http.post('/trade/redeem/do/20210101', {
             redeem_id: this.state.redeem_id,
             password,
@@ -140,6 +141,7 @@ export default class TradeRedeem extends Component {
             trade_method: this.state.trade_method,
             poid: this.props.route.params.poid,
         }).then((res) => {
+            Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
             } else {
