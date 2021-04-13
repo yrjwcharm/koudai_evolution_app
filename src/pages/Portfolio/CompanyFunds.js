@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:10:00
+ * @LastEditTime: 2021-04-13 21:05:50
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -20,6 +20,7 @@ const CompanyFunds = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [header, setHeader] = useState([]);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -28,6 +29,7 @@ const CompanyFunds = ({navigation, route}) => {
                 company_id: route.params?.company_id,
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 first && setHeader(res.result.header);
@@ -90,8 +92,8 @@ const CompanyFunds = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无旗下基金'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无旗下基金'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = useCallback(
         ({item, index}) => {

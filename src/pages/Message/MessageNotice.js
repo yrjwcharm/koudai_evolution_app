@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 11:21:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 21:02:50
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
@@ -24,6 +24,7 @@ export default function MessageNotice({navigation, route}) {
     const [title, setTitle] = useState('');
     const [type, setType] = useState();
     const jump = useJump();
+    const [showEmpty, setShowEmpty] = useState(false);
 
     useEffect(() => {
         if (page === 1) {
@@ -39,6 +40,7 @@ export default function MessageNotice({navigation, route}) {
                 type: route.params.type,
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 if (res.code === '000000') {
                     setRefreshing(false);
                     setHasMore(res.result.has_more);
@@ -216,7 +218,7 @@ export default function MessageNotice({navigation, route}) {
             <FlatList
                 data={list}
                 initialNumToRender={10}
-                ListEmptyComponent={<Empty text={'暂无数据'} />}
+                ListEmptyComponent={showEmpty ? <Empty text={'暂无数据'} /> : null}
                 keyExtractor={(item, index) => item + index}
                 ListFooterComponent={renderFooter}
                 onEndReached={onEndReached}

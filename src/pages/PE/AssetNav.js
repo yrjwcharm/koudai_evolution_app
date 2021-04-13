@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-10 14:58:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 21:03:55
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -19,6 +19,7 @@ const AssetNav = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [header, setHeader] = useState([]);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -27,6 +28,7 @@ const AssetNav = ({navigation, route}) => {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 first && navigation.setOptions({title: res.result.title || '历史净值'});
@@ -90,8 +92,8 @@ const AssetNav = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无净值数据'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无净值数据'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = useCallback(
         ({item, index}) => {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:06:33
+ * @LastEditTime: 2021-04-13 21:36:56
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -26,9 +26,11 @@ const NetValueTrend = ({poid}) => {
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(() => {
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
+            setShowEmpty(true);
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart_data([]);
@@ -214,9 +216,9 @@ const NetValueTrend = ({poid}) => {
                         })}
                     </View>
                 </>
-            ) : (
+            ) : showEmpty ? (
                 <EmptyTip style={{paddingVertical: text(40)}} text={'暂无净值走势数据'} type={'part'} />
-            )}
+            ) : null}
             <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>

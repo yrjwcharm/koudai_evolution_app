@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 15:59:01
+ * @LastEditTime: 2021-04-13 21:26:04
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -29,6 +29,7 @@ const AccProfit = ({poid}) => {
     const [chartData, setChartData] = useState({});
     const [activeSections, setActiveSections] = useState([0]);
     const [onlyAll, setOnlyAll] = useState(false);
+    const [showEmpty, setShowEmpty] = useState(false);
     const init = useCallback(() => {
         if (!poid) {
             http.get('/profit/user_portfolios/20210101').then((res) => {
@@ -46,6 +47,7 @@ const AccProfit = ({poid}) => {
             period,
             poid,
         }).then((res) => {
+            setShowEmpty(true);
             if (res.code === '000000') {
                 if (res.result.subtabs?.length === 1) {
                     setOnlyAll(true);
@@ -244,14 +246,14 @@ const AccProfit = ({poid}) => {
                         })}
                     </View>
                 </View>
-            ) : (
+            ) : showEmpty ? (
                 <EmptyTip
                     img={require('../../assets/img/emptyTip/noProfit.png')}
                     style={{paddingTop: text(28), paddingBottom: text(40)}}
                     text={'暂无累计收益数据'}
                     type={'part'}
                 />
-            )}
+            ) : null}
 
             {list.length > 0 && (
                 <View style={[styles.poHeader, Style.flexBetween]}>

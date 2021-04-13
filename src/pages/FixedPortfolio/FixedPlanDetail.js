@@ -3,7 +3,7 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:09:06
+ * @LastEditTime: 2021-04-13 21:00:45
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
@@ -26,6 +26,7 @@ export default function FixedPlan(props) {
     const [widthD, setWidthD] = useState('40%');
     const [moveRight, setMoveRight] = useState(false);
     const jump = useJump();
+    const [showEmpty, setShowEmpty] = useState(false);
     // 下期进度条 边界处理
     const onLayout = useCallback(
         (e) => {
@@ -48,6 +49,7 @@ export default function FixedPlan(props) {
 
     const init = useCallback(() => {
         Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
+            setShowEmpty(true);
             setData(res.result);
             props.navigation.setOptions({
                 title: res.result.title,
@@ -141,7 +143,7 @@ export default function FixedPlan(props) {
                                 })}
                             </ScrollView>
                         ) : (
-                            <EmptyTip text={'暂无定投记录'} style={{paddingTop: text(20)}} type={'part'} />
+                            showEmpty && <EmptyTip text={'暂无定投记录'} style={{paddingTop: text(20)}} type={'part'} />
                         )}
                     </View>
                 </View>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:30:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-08 18:24:00
+ * @LastEditTime: 2021-04-13 21:22:18
  * @Description: 基金排名
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,6 +16,7 @@ const FundRanking = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [header, setHeader] = useState([]);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (first) => {
@@ -23,6 +24,7 @@ const FundRanking = ({navigation, route}) => {
             http.get('/fund/nav/rank/20210101', {
                 fund_code: (route.params && route.params.code) || '',
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 first && navigation.setOptions({title: res.result.title || '基金排名'});
                 first && setHeader(res.result.header || []);
@@ -57,8 +59,8 @@ const FundRanking = ({navigation, route}) => {
     }, [header]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无基金排名数据'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无基金排名数据'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = useCallback(
         ({item, index}) => {

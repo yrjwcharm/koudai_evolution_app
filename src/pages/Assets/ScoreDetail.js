@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:07:18
+ * @LastEditTime: 2021-04-13 20:41:53
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -45,6 +45,7 @@ const ScoreDetail = ({navigation, route}) => {
             zIndex: 10,
         },
     });
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first = false) => {
@@ -56,6 +57,7 @@ const ScoreDetail = ({navigation, route}) => {
                     }
                 });
             http.get('/promotion/point/records/20210101', {page, type}).then((res) => {
+                setShowEmpty(true);
                 if (res.code === '000000') {
                     first && setTabs(res.result.tabs);
                     status === 'refresh' && setShow(false);
@@ -290,7 +292,7 @@ const ScoreDetail = ({navigation, route}) => {
                 stickySectionHeadersEnabled={false}
                 style={{flex: 1, marginBottom: insets.bottom}}
             />
-            {list?.length === 0 && (
+            {showEmpty && list?.length === 0 && (
                 <View style={[Style.flexCenter, styles.emptyBox]}>
                     <Empty text={'暂无魔分明细'} type={'part'} />
                 </View>
@@ -428,7 +430,7 @@ const styles = StyleSheet.create({
     },
     emptyBox: {
         position: 'absolute',
-        top: text(220),
+        top: text(80),
         bottom: 0,
         left: 0,
         right: 0,

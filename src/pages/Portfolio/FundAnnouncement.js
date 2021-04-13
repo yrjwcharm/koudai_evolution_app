@@ -2,7 +2,7 @@
  * @Date: 2021-02-01 10:18:42
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 13:53:39
+ * @LastEditTime: 2021-04-13 21:19:56
  * @Description: 基金公告
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -18,6 +18,7 @@ const FundAnnouncement = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -26,6 +27,7 @@ const FundAnnouncement = ({navigation, route}) => {
                 fund_code: (route.params && route.params.code) || '',
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 first && navigation.setOptions({title: res.result.title || '基金公告'});
@@ -68,8 +70,8 @@ const FundAnnouncement = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无基金公告'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无基金公告'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = useCallback(
         ({item, index, separators}) => {

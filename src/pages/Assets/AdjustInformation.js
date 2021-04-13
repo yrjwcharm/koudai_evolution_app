@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 16:32:53
+ * @LastEditTime: 2021-04-13 21:27:42
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -20,6 +20,7 @@ const AdjustInformation = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -28,6 +29,7 @@ const AdjustInformation = ({navigation, route}) => {
                 poid: route.params?.poid || '',
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 if (res.result?.items?.length < 20) {
                     setHasMore(false);
@@ -74,8 +76,8 @@ const AdjustInformation = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无调仓信息'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无调仓信息'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (

@@ -2,12 +2,13 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
-import {Font, Space, Style} from '../../../common/commonStyle';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import Image from 'react-native-fast-image';
+import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
@@ -156,10 +157,30 @@ export default function DetailAccount({route, navigation}) {
                     {/* 全球配置 */}
                     {data?.asset_deploy ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.asset_deploy?.header} color={'#0051CC'} />
+                            <ListHeader data={data?.asset_deploy?.header} color={Colors.brandColor} />
                             <View style={{height: text(140)}}>
                                 <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
                             </View>
+                        </View>
+                    ) : null}
+                    {/* 组合策略 */}
+                    {data?.asset_strategy ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.asset_strategy?.header} hide={true} />
+                            {data?.asset_strategy?.items.map((item, index) => {
+                                return (
+                                    <View key={item.title + index} style={{marginTop: Space.marginVertical}}>
+                                        <View style={[Style.flexRow, {marginBottom: text(2)}]}>
+                                            <Image
+                                                source={{uri: item.icon}}
+                                                style={{width: text(18), height: text(18), marginRight: text(4)}}
+                                            />
+                                            <Text style={styles.row_title_sty}>{item.title}</Text>
+                                        </View>
+                                        <Text style={styles.adjust_desc_syl}>{item.content}</Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     ) : null}
                     {/* 智能调仓 */}
