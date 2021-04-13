@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:30:26
+ * @LastEditTime: 2021-04-16 16:36:46
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -44,6 +44,7 @@ const BankCardList = ({navigation}) => {
                 {data.xy?.cards?.map((item, index) => {
                     return (
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
                             onPress={() => {
@@ -69,6 +70,7 @@ const BankCardList = ({navigation}) => {
                 {data.ym?.cards?.map((item, index) => {
                     return (
                         <TouchableOpacity
+                            activeOpacity={0.8}
                             key={item.pay_method}
                             style={[Style.flexRow, styles.cardBox]}
                             onPress={() => {

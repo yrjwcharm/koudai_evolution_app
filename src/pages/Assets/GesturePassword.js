@@ -80,11 +80,12 @@ export default function GesturePassword({option, route}) {
                         },
                     });
                 } else {
-                    Toast.show('密码正确，即将进入我的资产页', {
-                        onHidden: () => {
-                            dispatch(updateVerifyGesture(true));
-                        },
-                    });
+                    // Toast.show('密码正确，即将进入我的资产页', {
+                    //     onHidden: () => {
+                    //         dispatch(updateVerifyGesture(true));
+                    //     },
+                    // });
+                    dispatch(updateVerifyGesture(true));
                 }
             } else {
                 setStatus(false);

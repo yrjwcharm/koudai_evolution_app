@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 11:03:33
+ * @LastEditTime: 2021-04-16 18:40:45
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -96,29 +96,29 @@ function HomeScreen({navigation, route}) {
             // uid: '1000000001',
         }).then((res) => {
             if (res.code === '000000') {
-                refresh === 'refresh' && Toast.show('我的资产已更新');
                 setHoldingData(res.result);
             }
         });
         http.get('/asset/common/20210101', {
             // uid: '1000000001',
-        })
+        }).then((res) => {
+            if (res.code === '000000') {
+                StatusBar.setBarStyle('light-content');
+                setUserBasicInfo(res.result);
+            }
+            // setLoading(false);
+            setRefreshing(false);
+        });
+        http.get('/asset/notice/20210101')
             .then((res) => {
-                if (res.code === '000000') {
-                    StatusBar.setBarStyle('light-content');
-                    setUserBasicInfo(res.result);
-                }
                 setLoading(false);
-                setRefreshing(false);
+                if (res.code === '000000') {
+                    setNotice(res.result);
+                }
             })
             .catch(() => {
                 setLoading(false);
             });
-        http.get('/asset/notice/20210101').then((res) => {
-            if (res.code === '000000') {
-                setNotice(res.result);
-            }
-        });
     }, []);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {

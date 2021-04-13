@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 16:10:15
+ * @LastEditTime: 2021-04-16 16:45:29
  * @Description: 分享弹窗
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -10,7 +10,7 @@ import {ActionSheetIOS, Platform, View, Text, Modal, TouchableOpacity, StyleShee
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {constants} from './util';
-import {isIphoneX, px} from '../../utils/appUtil';
+import {isIphoneX, px, deviceHeight, deviceWidth} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../Button';
@@ -31,6 +31,8 @@ const ShareModal = React.forwardRef((props, ref) => {
         collectCallback = () => {},
     } = props;
     const [visible, setVisible] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastText, setToastText] = useState('');
     const [list, setList] = useState([
         {
             img: require('../../assets/img/share/wechat.png'),
@@ -73,6 +75,15 @@ const ShareModal = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(!visible);
+    };
+
+    const toastShow = (t, duration = 2000) => {
+        setToastText(t);
+        setShowToast(true);
+        setTimeout(() => {
+            setShowToast(false);
+            setToastText('');
+        }, duration);
     };
 
     const share = (item) => {
@@ -165,6 +176,7 @@ const ShareModal = React.forwardRef((props, ref) => {
         return {
             show: show,
             hide: hide,
+            toastShow: toastShow,
         };
     });
 
@@ -227,6 +239,13 @@ const ShareModal = React.forwardRef((props, ref) => {
                     />
                 </TouchableOpacity>
             </TouchableOpacity>
+            <Modal animationType={'fade'} onRequestClose={() => setShowToast(false)} transparent visible={showToast}>
+                <View style={[Style.flexCenter, styles.toastContainer]}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.textStyle}>{toastText}</Text>
+                    </View>
+                </View>
+            </Modal>
         </Modal>
     );
 });
@@ -278,6 +297,23 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
         marginTop: px(4),
         paddingBottom: isIphoneX() ? 34 : 0,
+    },
+    toastContainer: {
+        flex: 1,
+        height: deviceHeight,
+        width: deviceWidth,
+    },
+    textContainer: {
+        padding: 10,
+        backgroundColor: '#1E1F20',
+        opacity: 0.8,
+        borderRadius: 5,
+    },
+    textStyle: {
+        fontSize: Font.textH1,
+        lineHeight: px(24),
+        color: '#fff',
+        textAlign: 'center',
     },
 });
 

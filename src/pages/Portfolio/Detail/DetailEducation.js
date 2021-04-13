@@ -6,9 +6,10 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -33,6 +34,7 @@ import _ from 'lodash';
 
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState({});
 
@@ -156,29 +158,52 @@ export default function DetailEducation({navigation, route}) {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
             amount: route?.params?.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                allocationIdRef.current = res.result.allocation_id;
-                poidRef.current = res.result.poid;
-                setPeriod(res.result.period);
-                if (res.result.period.indexOf('f') > -1) {
-                    setType(2);
-                }
-                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-                setAge(res.result.plan_info.personal_info?.age);
-                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                    if (item.type == 'begin') {
-                        setCountFr(Number(item.val));
-                    } else if (item.type == 'auto') {
-                        setCountM(Number(item.val));
+        })
+            .then((res) => {
+                setLoading(false);
+                if (res.code === '000000') {
+                    allocationIdRef.current = res.result.allocation_id;
+                    poidRef.current = res.result.poid;
+                    setPeriod(res.result.period);
+                    if (res.result.period.indexOf('f') > -1) {
+                        setType(2);
                     }
-                });
-                setTableData(res.result.asset_compare?.table);
-                setData(res.result);
-            }
-        });
+                    setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                    setAge(res.result.plan_info.personal_info?.age);
+                    res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                        if (item.type == 'begin') {
+                            setCountFr(Number(item.val));
+                        } else if (item.type == 'auto') {
+                            setCountM(Number(item.val));
+                        }
+                    });
+                    setTableData(res.result.asset_compare?.table);
+                    setData(res.result);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     const getChartData = useCallback(() => {
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
             period: period,
@@ -197,43 +222,6 @@ export default function DetailEducation({navigation, route}) {
             }
         });
     }, [period, route.params, type]);
-    const onKeyPress = (e) => {
-        const {key} = e.nativeEvent;
-        // console.log(key);
-        const pos = iptVal.indexOf(key);
-        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-            return false;
-        }
-        if (key === '.') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev;
-                } else {
-                    if (pos !== -1) {
-                        return prev;
-                    } else {
-                        return prev + '.';
-                    }
-                }
-            });
-        } else if (key === '0') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev + '0';
-                } else {
-                    if (prev === '0') {
-                        return prev;
-                    } else {
-                        return prev + '0';
-                    }
-                }
-            });
-        } else if (key === 'Backspace') {
-            setIptVal((prev) => prev.slice(0, prev.length - 1));
-        } else {
-            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-        }
-    };
     const showInputModal = (item, val) => {
         setIptVal(`${val}`);
         setModalProps({
@@ -314,7 +302,9 @@ export default function DetailEducation({navigation, route}) {
         bottomModal.current.show();
     };
 
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
@@ -325,7 +315,8 @@ export default function DetailEducation({navigation, route}) {
                                 autoFocus={true}
                                 clearButtonMode={'never'}
                                 keyboardType={'decimal-pad'}
-                                onKeyPress={onKeyPress}
+                                onChangeText={(value) => setIptVal(onlyNumber(value))}
+                                // onKeyPress={onKeyPress}
                                 // placeholder={modalProps?.placeholder}
                                 // placeholderTextColor={'#CCD0DB'}
                                 style={[styles.inputStyle]}
@@ -335,7 +326,7 @@ export default function DetailEducation({navigation, route}) {
                                 <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
                             )}
                             {`${iptVal}`.length > 0 && (
-                                <TouchableOpacity onPress={() => setIptVal('')}>
+                                <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                                     <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
                                 </TouchableOpacity>
                             )}
@@ -456,7 +447,7 @@ export default function DetailEducation({navigation, route}) {
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
                                 <View style={{minHeight: text(300)}}>
-                                    {chart?.length > 0 && (
+                                    {true && (
                                         <>
                                             <RenderChart
                                                 chartData={chartData}
@@ -761,6 +752,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: text(35),
         lineHeight: text(42),
+        height: text(42),
         marginLeft: text(14),
         padding: 0,
         fontFamily: Font.numMedium,

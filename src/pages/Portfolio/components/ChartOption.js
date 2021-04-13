@@ -1,13 +1,14 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 10:24:11
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 18:24:49
  * @Description: 基金相关图表配置
  */
 // 交互图例
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
+import {px as text} from '../../../utils/appUtil';
 export const baseAreaChart = (
     data,
     colors = [
@@ -31,7 +32,8 @@ export const baseAreaChart = (
     width = deviceWidth - 10,
     appendPadding = 10,
     tag_position = {},
-    height = 220
+    height = 220,
+    max = null
 ) => `
 (function(){
   chart = new F2.Chart({
@@ -49,7 +51,8 @@ export const baseAreaChart = (
   });
   chart.scale('value', {
     tickCount: 5,
-    range: [ 0, 1 ],
+    // range: [ 0, 1 ],
+    max: ${JSON.stringify(max)},
     formatter: (value) => {
       return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
     }
@@ -426,7 +429,7 @@ export const percentStackColumn = (
     appendPadding: ${JSON.stringify(appendPadding)},
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    height: 240,
+    height: ${text(220)},
     width: ${deviceWidth}
   });
   chart.source(${JSON.stringify(data)});
@@ -505,6 +508,7 @@ export const dodgeColumn = (
 chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
+  height: ${text(220)},
 });
 chart.source(${JSON.stringify(data)}, {
   value: {
@@ -568,7 +572,7 @@ export const basicPieChart = (
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - 50},
-    height: 300,
+    height: ${text(280)},
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('percent', {

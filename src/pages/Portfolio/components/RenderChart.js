@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 13:38:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 17:29:05
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -129,23 +129,26 @@ export default function RenderChart(props) {
                     </View>
                 </View>
             </View>
-            <Chart
-                initScript={baseAreaChart(
-                    chart,
-                    [Colors.red, Colors.lightBlackColor, 'transparent'],
-                    ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                    true,
-                    2,
-                    width,
-                    props.appendPadding || 10,
-                    null,
-                    height
-                )}
-                onChange={onChartChange}
-                data={chart}
-                onHide={onHide}
-                style={{width: '100%'}}
-            />
+            {chart?.length > 0 && (
+                <Chart
+                    initScript={baseAreaChart(
+                        chart,
+                        [Colors.red, Colors.lightBlackColor, 'transparent'],
+                        ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                        true,
+                        2,
+                        width,
+                        props.appendPadding || 10,
+                        null,
+                        height,
+                        chartData?.yield_info?.max_ratio
+                    )}
+                    onChange={onChartChange}
+                    data={chart}
+                    onHide={onHide}
+                    style={{width: '100%'}}
+                />
+            )}
             <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
                 <View style={[{padding: text(16)}]}>
                     <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>

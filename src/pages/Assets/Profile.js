@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 11:00:45
+ * @LastEditTime: 2021-04-16 16:18:22
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX, formaNum} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, formaNum, onlyNumber} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -127,43 +127,43 @@ const Profile = ({navigation}) => {
         Picker.hide();
         setShowMask(false);
     }, []);
-    const onKeyPress = (e) => {
-        const {key} = e.nativeEvent;
-        // console.log(key);
-        const pos = iptVal.indexOf(key);
-        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-            return false;
-        }
-        if (key === '.') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev;
-                } else {
-                    if (pos !== -1) {
-                        return prev;
-                    } else {
-                        return prev + '.';
-                    }
-                }
-            });
-        } else if (key === '0') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev + '0';
-                } else {
-                    if (prev === '0') {
-                        return prev;
-                    } else {
-                        return prev + '0';
-                    }
-                }
-            });
-        } else if (key === 'Backspace') {
-            setIptVal((prev) => prev.slice(0, prev.length - 1));
-        } else {
-            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-        }
-    };
+    // const onKeyPress = (e) => {
+    //     const {key} = e.nativeEvent;
+    //     // console.log(key);
+    //     const pos = iptVal.indexOf(key);
+    //     if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
+    //         return false;
+    //     }
+    //     if (key === '.') {
+    //         setIptVal((prev) => {
+    //             if (prev === '') {
+    //                 return prev;
+    //             } else {
+    //                 if (pos !== -1) {
+    //                     return prev;
+    //                 } else {
+    //                     return prev + '.';
+    //                 }
+    //             }
+    //         });
+    //     } else if (key === '0') {
+    //         setIptVal((prev) => {
+    //             if (prev === '') {
+    //                 return prev + '0';
+    //             } else {
+    //                 if (prev === '0') {
+    //                     return prev;
+    //                 } else {
+    //                     return prev + '0';
+    //                 }
+    //             }
+    //         });
+    //     } else if (key === 'Backspace') {
+    //         setIptVal((prev) => prev.slice(0, prev.length - 1));
+    //     } else {
+    //         setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
+    //     }
+    // };
     const confirmClick = useCallback(
         (item) => {
             // console.log(iptValRef.current);
@@ -209,7 +209,8 @@ const Profile = ({navigation}) => {
                         autoFocus={true}
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
-                        onKeyPress={onKeyPress}
+                        // onKeyPress={onKeyPress}
+                        onChangeText={(value) => setIptVal(onlyNumber(value))}
                         onSubmitEditing={confirmClick}
                         // placeholder={modalProps?.placeholder}
                         // placeholderTextColor={'#CCD0DB'}
@@ -218,7 +219,7 @@ const Profile = ({navigation}) => {
                     />
                     {`${iptVal}`.length === 0 && <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>}
                     {`${iptVal}`.length > 0 && (
-                        <TouchableOpacity onPress={() => setIptVal('')}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
                         </TouchableOpacity>
                     )}
@@ -344,6 +345,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: text(35),
         lineHeight: text(42),
+        height: text(42),
         marginLeft: text(14),
         padding: 0,
         fontFamily: Font.numMedium,

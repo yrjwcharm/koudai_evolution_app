@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 14:33:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 18:10:28
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -13,12 +13,12 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
-    Image,
     TextInput,
     Dimensions,
     RefreshControl,
 } from 'react-native';
-import {Colors, Font, Style} from '../../common/commonStyle';
+import Image from 'react-native-fast-image';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
@@ -57,6 +57,8 @@ export default function PortfolioAssets(props) {
     const bottomModal = React.useRef(null);
     const scoreModal = React.useRef();
     const jump = useJump();
+    const [loading, setLoading] = useState(true);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const changeTab = (p) => {
         setPeriod(p);
@@ -87,29 +89,53 @@ export default function PortfolioAssets(props) {
         });
         Http.get('/position/console/20210101', {
             poid: props.route?.params?.poid,
-        }).then((res) => {
-            setCard(res.result);
-        });
+        })
+            .then((res) => {
+                setCard(res.result);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [props.route.params]);
     const getChartInfo = () => {
+        setChartData([]);
         Http.get('/position/chart/20210101', {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
-            setChartData([]);
             setChart(res.result);
             setChartData(res.result.chart);
             setTag(res.result.tag_position);
+            setShowEmpty(res.result.chart?.length === 0);
         });
+    };
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: Space.padding,
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
     };
     useEffect(() => {
         getChartInfo();
     }, [period]);
     useEffect(() => {
-        if (chartData && chartData.length > 0) {
+        if (!loading && chartData && chartData.length > 0) {
             onHide();
         }
-    }, [chartData]);
+    }, [chartData, loading]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -340,18 +366,22 @@ export default function PortfolioAssets(props) {
                                     2,
                                     deviceWidth - text(40),
                                     10,
-                                    tag
+                                    tag,
+                                    220,
+                                    chart.max_ratio
                                 )}
                                 onChange={onChartChange}
                                 onHide={onHide}
                                 style={{width: '100%'}}
                             />
                         ) : (
-                            <EmptyTip
-                                style={{paddingTop: px(40)}}
-                                imageStyle={{width: px(150), resizeMode: 'contain'}}
-                                type={'part'}
-                            />
+                            showEmpty && (
+                                <EmptyTip
+                                    style={{paddingTop: px(40)}}
+                                    imageStyle={{width: px(150), resizeMode: 'contain'}}
+                                    type={'part'}
+                                />
+                            )
                         )}
                     </View>
                     {chart?.sub_tabs && chart?.chart.length > 0 && (
@@ -425,9 +455,13 @@ export default function PortfolioAssets(props) {
             </>
         );
     };
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init()} />}>
+            <ScrollView
+                scrollIndicatorInsets={{right: 1}}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init()} />}>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
                 <View style={styles.assets_card_sty}>
                     {Object.keys(data).length > 0 && (

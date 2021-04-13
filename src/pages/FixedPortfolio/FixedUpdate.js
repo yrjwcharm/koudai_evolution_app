@@ -2,15 +2,15 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 21:29:08
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 16:21:27
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, formaNum} from '../../utils/appUtil';
+import {px as text, formaNum, onlyNumber} from '../../utils/appUtil';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
@@ -142,43 +142,6 @@ export default function FixedUpdate({navigation, route}) {
         setType(t);
         passwordModal?.current?.show();
     };
-    const onKeyPress = (e) => {
-        const {key} = e.nativeEvent;
-        // console.log(key);
-        const pos = iptVal.indexOf(key);
-        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-            return false;
-        }
-        if (key === '.') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev;
-                } else {
-                    if (pos !== -1) {
-                        return prev;
-                    } else {
-                        return prev + '.';
-                    }
-                }
-            });
-        } else if (key === '0') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev + '0';
-                } else {
-                    if (prev === '0') {
-                        return prev;
-                    } else {
-                        return prev + '0';
-                    }
-                }
-            });
-        } else if (key === 'Backspace') {
-            setIptVal((prev) => prev.slice(0, prev.length - 1));
-        } else {
-            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-        }
-    };
     const showInputModal = () => {
         setIptVal(`${num}`);
         setModalProps({
@@ -229,7 +192,8 @@ export default function FixedUpdate({navigation, route}) {
                                 autoFocus={true}
                                 clearButtonMode={'never'}
                                 keyboardType={'decimal-pad'}
-                                onKeyPress={onKeyPress}
+                                onChangeText={(value) => setIptVal(onlyNumber(value))}
+                                // onKeyPress={onKeyPress}
                                 // placeholder={modalProps?.placeholder}
                                 // placeholderTextColor={'#CCD0DB'}
                                 style={[styles.inputStyle]}
@@ -239,7 +203,7 @@ export default function FixedUpdate({navigation, route}) {
                                 <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
                             )}
                             {`${iptVal}`.length > 0 && (
-                                <TouchableOpacity onPress={() => setIptVal('')}>
+                                <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                                     <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
                                 </TouchableOpacity>
                             )}
@@ -403,6 +367,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: text(35),
         lineHeight: text(42),
+        height: text(42),
         marginLeft: text(14),
         padding: 0,
         fontFamily: Font.numMedium,

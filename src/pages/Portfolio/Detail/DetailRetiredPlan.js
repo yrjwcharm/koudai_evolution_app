@@ -6,9 +6,10 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -33,6 +34,7 @@ import _ from 'lodash';
 
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState({});
     const [countFr, setCountFr] = useState(0); //首投金额
@@ -121,28 +123,51 @@ export default function DetailRetiredPlan({navigation, route}) {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
             amount: route?.params?.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                allocationIdRef.current = res.result.allocation_id;
-                poidRef.current = res.result?.poid;
-                setPeriod(res.result.period);
-                setType(res.result.period.indexOf('f') !== -1 ? 2 : 1);
-                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                    if (item.type == 'begin') {
-                        setCountFr(Number(item.val));
-                    } else if (item.type == 'auto') {
-                        setCountM(Number(item.val));
-                    } else if (item.type == 'duration') {
-                        setCurrent(item.val);
-                    }
-                });
-                setTableData(res.result.asset_compare?.table);
-                setData(res.result);
-            }
-        });
+        })
+            .then((res) => {
+                setLoading(false);
+                if (res.code === '000000') {
+                    allocationIdRef.current = res.result.allocation_id;
+                    poidRef.current = res.result?.poid;
+                    setPeriod(res.result.period);
+                    setType(res.result.period.indexOf('f') !== -1 ? 2 : 1);
+                    setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                    res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                        if (item.type == 'begin') {
+                            setCountFr(Number(item.val));
+                        } else if (item.type == 'auto') {
+                            setCountM(Number(item.val));
+                        } else if (item.type == 'duration') {
+                            setCurrent(item.val);
+                        }
+                    });
+                    setTableData(res.result.asset_compare?.table);
+                    setData(res.result);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     const getChartInfo = useCallback(() => {
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
             period: period,
@@ -197,43 +222,6 @@ export default function DetailRetiredPlan({navigation, route}) {
     const showTips = (tip) => {
         setPopup(tip);
         bottomModal.current.show();
-    };
-    const onKeyPress = (e) => {
-        const {key} = e.nativeEvent;
-        // console.log(key);
-        const pos = iptVal.indexOf(key);
-        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-            return false;
-        }
-        if (key === '.') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev;
-                } else {
-                    if (pos !== -1) {
-                        return prev;
-                    } else {
-                        return prev + '.';
-                    }
-                }
-            });
-        } else if (key === '0') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev + '0';
-                } else {
-                    if (prev === '0') {
-                        return prev;
-                    } else {
-                        return prev + '0';
-                    }
-                }
-            });
-        } else if (key === 'Backspace') {
-            setIptVal((prev) => prev.slice(0, prev.length - 1));
-        } else {
-            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-        }
     };
     const showInputModal = (item, val) => {
         setIptVal(`${val}`);
@@ -307,7 +295,9 @@ export default function DetailRetiredPlan({navigation, route}) {
             init();
         }, [init])
     );
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <InputModal {...modalProps} ref={inputModal}>
                 <View style={[Style.flexRow, styles.inputContainer]}>
@@ -316,7 +306,8 @@ export default function DetailRetiredPlan({navigation, route}) {
                         autoFocus={true}
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
-                        onKeyPress={onKeyPress}
+                        onChangeText={(value) => setIptVal(onlyNumber(value))}
+                        // onKeyPress={onKeyPress}
                         // placeholder={modalProps?.placeholder}
                         // placeholderTextColor={'#CCD0DB'}
                         style={[styles.inputStyle]}
@@ -324,7 +315,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                     />
                     {`${iptVal}`.length === 0 && <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>}
                     {`${iptVal}`.length > 0 && (
-                        <TouchableOpacity onPress={() => setIptVal('')}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
                         </TouchableOpacity>
                     )}
@@ -357,7 +348,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         borderRadius: text(25),
                                         marginBottom: text(7),
                                         paddingVertical: text(8),
-                                        paddingLeft: Space.padding,
+                                        paddingHorizontal: Space.padding,
                                     }}>
                                     <Text style={styles.tip_sty}>{remark}</Text>
                                 </LinearGradient>
@@ -422,7 +413,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
                             <View style={{minHeight: text(300)}}>
-                                {chart?.length > 0 && (
+                                {true && (
                                     <>
                                         <RenderChart
                                             chartData={chartData}
@@ -728,6 +719,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: text(35),
         lineHeight: text(42),
+        height: text(42),
         marginLeft: text(14),
         padding: 0,
         fontFamily: Font.numMedium,

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-08 16:29:29
+ * @LastEditTime: 2021-04-16 18:40:05
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -154,14 +154,25 @@ export class AssetsConfigDetail extends Component {
                                     })}
                                 </View>
                             </View>
-                            <Input
-                                keyboardType="numeric"
-                                value={amount}
-                                placeholder={invest_form.placeholder}
-                                placeholderTextColor={Colors.placeholderColor}
-                                onChangeText={this.onChange}
-                                style={[styles.input, amount.length === 0 ? {fontSize: text(12)} : {}]}
-                            />
+                            <View style={{position: 'relative'}}>
+                                <Input
+                                    keyboardType="numeric"
+                                    value={amount}
+                                    // placeholder={invest_form.placeholder}
+                                    // placeholderTextColor={Colors.placeholderColor}
+                                    onChangeText={this.onChange}
+                                    ref={(ref) => (this.inputRef = ref)}
+                                    style={[styles.input]}
+                                />
+                                {`${amount}`.length === 0 && (
+                                    <TouchableOpacity
+                                        style={{position: 'absolute', left: text(18), top: text(28)}}
+                                        activeOpacity={1}
+                                        onPress={() => this.inputRef.focus()}>
+                                        <Text style={styles.placeholder}>{invest_form.placeholder}</Text>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
                             <View style={[styles.percent_bar, Style.flexRow]}>
                                 {deploy_detail.map((item, index) => (
                                     <View
@@ -340,10 +351,8 @@ const styles = StyleSheet.create({
         marginRight: text(18),
     },
     placeholder: {
-        position: 'absolute',
-        left: 2 * Space.marginAlign,
-        top: text(28),
-        fontSize: Font.textH3,
+        fontSize: text(13),
+        lineHeight: text(18),
         color: Colors.placeholderColor,
     },
 });

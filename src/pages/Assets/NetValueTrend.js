@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:36:56
+ * @LastEditTime: 2021-04-16 17:50:26
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -29,11 +29,11 @@ const NetValueTrend = ({poid}) => {
     const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(() => {
+        setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
             setShowEmpty(true);
             if (res.code === '000000') {
                 setRefreshing(false);
-                setChart_data([]);
                 setChart(res.result);
                 setChart_data(res.result.chart);
             }
@@ -144,7 +144,9 @@ const NetValueTrend = ({poid}) => {
                                         2,
                                         deviceWidth - text(10),
                                         10,
-                                        chartData?.tag_position
+                                        chartData?.tag_position,
+                                        220,
+                                        chartData.max_ratio
                                     )}
                                     onChange={onChartChange}
                                     onHide={onHide}

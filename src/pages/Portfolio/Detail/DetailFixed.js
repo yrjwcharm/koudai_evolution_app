@@ -2,12 +2,13 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 11:38:08
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 17:35:09
  */
 
 import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px, deviceWidth} from '../../../utils/appUtil';
 import Http from '../../../services';
@@ -19,6 +20,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+
 export default function DetailAccount({route, navigation}) {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
@@ -26,15 +28,17 @@ export default function DetailAccount({route, navigation}) {
     const [type, setType] = useState(1);
     const [chart, setChart] = useState();
     const jump = useJump();
-    const changeTab = (period, type) => {
-        setPeriod(period);
-        setType(type);
+    const [loading, setLoading] = useState(true);
+    const changeTab = (p, t) => {
+        setPeriod(p);
+        setType(t);
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             allocation_id: data.allocation_id,
             benchmark_id: data.benchmark_id,
             poid: data.poid,
-            period: period,
-            type: type,
+            period: p,
+            type: t,
         }).then((resp) => {
             setChart(resp.result.yield_info.chart);
             setChartData(resp.result);
@@ -46,26 +50,48 @@ export default function DetailAccount({route, navigation}) {
             upid: route?.params?.upid,
             poid: route?.params?.poid,
             amount: route?.params?.amount,
-        }).then((res) => {
-            navigation.setOptions({
-                title: res.result.title,
+        })
+            .then((res) => {
+                setLoading(false);
+                navigation.setOptions({
+                    title: res.result.title,
+                });
+                setData(res.result);
+                setPeriod(res.result.period);
+                Http.get('/portfolio/yield_chart/20210101', {
+                    upid: route.params.upid,
+                    period: res.result.period,
+                    type: type,
+                    allocation_id: res.result.allocation_id,
+                    benchmark_id: res.result.benchmark_id,
+                    poid: route?.params?.poid,
+                }).then((resp) => {
+                    setChart(resp.result.yield_info.chart);
+                    setChartData(resp.result);
+                });
+            })
+            .catch(() => {
+                setLoading(false);
             });
-            setData(res.result);
-            setPeriod(res.result.period);
-            Http.get('/portfolio/yield_chart/20210101', {
-                upid: route.params.upid,
-                period: res.result.period,
-                type: type,
-                allocation_id: res.result.allocation_id,
-                benchmark_id: res.result.benchmark_id,
-                poid: route?.params?.poid,
-            }).then((res) => {
-                setChart(res.result.yield_info.chart);
-                setChartData(res.result);
-            });
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
 
     useFocusEffect(
         useCallback(() => {
@@ -73,7 +99,9 @@ export default function DetailAccount({route, navigation}) {
         }, [init])
     );
 
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView>
@@ -166,12 +194,14 @@ export default function DetailAccount({route, navigation}) {
                                 {data.asset_deploy.items.map((_a, _index) => {
                                     const borderBottom = _index < data.asset_deploy.items.length - 1 ? 0.5 : 0;
                                     return (
-                                        <View
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
                                             style={[
                                                 Style.flexBetween,
                                                 styles.content_warp_sty,
                                                 {borderBottomWidth: borderBottom},
                                             ]}
+                                            onPress={() => navigation.navigate('FundDetail', {code: _a.code})}
                                             key={_index + '_a'}>
                                             <View>
                                                 <Text style={styles.content_title_sty}>{_a.name}</Text>
@@ -183,7 +213,7 @@ export default function DetailAccount({route, navigation}) {
                                             <Text style={[styles.content_title_sty, {fontFamily: Font.numFontFamily}]}>
                                                 {_a.percent}
                                             </Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     );
                                 })}
                             </View>
@@ -271,13 +301,13 @@ const styles = StyleSheet.create({
         borderRadius: text(15),
         marginRight: text(10),
     },
-    card_sty: {
-        backgroundColor: '#fff',
-        borderRadius: text(10),
-        padding: Space.padding,
-        marginHorizontal: Space.padding,
-        marginTop: text(12),
-    },
+    // card_sty: {
+    //     backgroundColor: '#fff',
+    //     borderRadius: text(10),
+    //     padding: Space.padding,
+    //     marginHorizontal: Space.padding,
+    //     marginTop: text(12),
+    // },
     label_sty: {
         backgroundColor: '#F0F6FD',
         paddingHorizontal: text(6),
