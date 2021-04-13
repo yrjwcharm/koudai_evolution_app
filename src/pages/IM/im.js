@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 16:59:57
+ * @LastEditTime: 2021-04-13 21:59:22
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -315,7 +315,7 @@ const IM = (props) => {
 
         const genMessage = (_message) => {
             return {
-                id: _message.cmid,
+                id: _message.id || _message.cmid,
                 type: getType(_message.cmd),
                 content: _message.data,
                 targetId: `${_message.from}`,

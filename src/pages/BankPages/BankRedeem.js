@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:银行提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 16:53:41
+ * @LastEditTime: 2021-04-13 21:52:13
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -16,6 +16,7 @@ import {VerifyCodeModal} from '../../components/Modal';
 import Radio from '../../components/Radio';
 import http from '../../services';
 import Toast from '../../components/Toast';
+import Agreements from '../../components/Agreements';
 class BankRedeem extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +27,7 @@ class BankRedeem extends Component {
             tips: '',
             enable: false,
             items: [],
+            check: true,
         };
     }
     msg_seq = '';
@@ -101,6 +103,10 @@ class BankRedeem extends Component {
         });
     };
     submit = () => {
+        if (this.state.data?.bank_code == 'ZBB' && !this.state.check) {
+            Toast.show('请勾选协议');
+            return;
+        }
         if (this.state.data?.trade_method == 1) {
             //验证码
             this.signSendVerify();
@@ -215,6 +221,22 @@ class BankRedeem extends Component {
                         })}
                 </View>
                 <Text style={[Style.descSty, {padding: px(14)}]}>{data.feeText}</Text>
+                {this.state.data?.bank_code == 'ZBB' ? (
+                    <View style={{marginHorizontal: px(16)}}>
+                        <Agreements
+                            onChange={(check) => {
+                                this.setState({check});
+                            }}
+                            check={true}
+                            data={[
+                                {
+                                    title: '《定期存款收益权转让合同》',
+                                    id: 24,
+                                },
+                            ]}
+                        />
+                    </View>
+                ) : null}
             </ScrollView>
         );
     }
