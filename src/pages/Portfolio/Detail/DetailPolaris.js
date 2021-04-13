@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 11:39:25
+ * @LastEditTime: 2021-04-13 22:12:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -36,10 +36,10 @@ export default function DetailPolaris({route, navigation}) {
                 title: res.result.title,
             });
             setData(res.result);
-            setPeriod(res.result.period);
+            setPeriod(res.result?.parts_addition_data?.line.period);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
-                period: res.result.period,
+                period: res.result?.parts_addition_data?.line.period,
                 type: type,
                 poid: route.params.poid,
                 allocation_id: res.result?.parts_addition_data?.line.allocation_id,
@@ -91,7 +91,7 @@ export default function DetailPolaris({route, navigation}) {
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     <View style={{padding: text(16), marginTop: text(-70)}}>
-                        <View style={[styles.card_sty, {marginBottom: 0}]}>
+                        <View style={[styles.card_sty]}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
                                 {data?.top?.title}
                             </Text>
@@ -107,19 +107,20 @@ export default function DetailPolaris({route, navigation}) {
                             <Text style={styles.num_sty}>{data?.top?.ratio_text}</Text>
                             <Text style={styles.desc_sty}>{data?.top?.desc}</Text>
                         </View>
-                        {chartData?.chart && (
+                        {chart && (
                             <View
                                 style={{
                                     backgroundColor: '#fff',
                                     borderRadius: text(10),
                                     paddingVertical: text(16),
+                                    marginBottom: text(16),
                                 }}>
                                 <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
                                     {data?.part_line?.title}
                                 </Text>
 
                                 <RenderChart
-                                    chartData={chartData}
+                                    chartData={chart?.chartData}
                                     chart={chart}
                                     type={type}
                                     width={deviceWidth - text(40)}
@@ -170,12 +171,14 @@ export default function DetailPolaris({route, navigation}) {
                             </View>
                         )}
 
-                        <View style={[styles.card_sty, {marginTop: text(16), paddingHorizontal: 0}]}>
+                        <View style={[styles.card_sty, {paddingHorizontal: 0}]}>
                             <View style={{paddingHorizontal: text(16), marginBottom: text(16)}}>
                                 <Text style={[styles.card_title_sty, {paddingHorizontal: 0, paddingBottom: text(10)}]}>
                                     {data?.part_pie?.title}
                                 </Text>
-                                <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
+                                {data?.part_pie?.desc ? (
+                                    <Text style={{color: '#4E556C', fontSize: text(13)}}>{data?.part_pie?.desc}</Text>
+                                ) : null}
                             </View>
                             {/* <View style={{height: text(340)}}>
                                 <Chart initScript={pieChart(data?.part_pie?.pie?.items, data?.part_pie?.pie?.chart)} />
