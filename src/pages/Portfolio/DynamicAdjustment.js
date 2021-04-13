@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:11:18
+ * @LastEditTime: 2021-04-13 21:07:11
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -23,6 +23,7 @@ class DynamicAdjustment extends Component {
             data: {},
             chartData: [],
             refreshing: false,
+            showEmpty: false,
         };
     }
     init = () => {
@@ -31,7 +32,7 @@ class DynamicAdjustment extends Component {
             poid,
             upid,
         }).then((res) => {
-            this.setState({data: res.result, refreshing: false});
+            this.setState({data: res.result, refreshing: false, showEmpty: true});
             this.props.navigation.setOptions({title: res.result.title});
         });
         http.get('/portfolio/adjust_chart/20210101', {
@@ -55,7 +56,7 @@ class DynamicAdjustment extends Component {
         this.init();
     }
     render() {
-        const {data, chartData, refreshing} = this.state;
+        const {data, chartData, refreshing, showEmpty} = this.state;
         const {navigation, route} = this.props;
         return (
             <ScrollView
@@ -133,9 +134,9 @@ class DynamicAdjustment extends Component {
                             )}
                         </View>
                     </>
-                ) : (
+                ) : showEmpty ? (
                     <Empty text={'暂无调仓信息'} />
-                )}
+                ) : null}
             </ScrollView>
         );
     }

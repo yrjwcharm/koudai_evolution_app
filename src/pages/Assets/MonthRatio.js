@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:05:58
+ * @LastEditTime: 2021-04-13 21:35:49
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -24,9 +24,11 @@ const NetValueTrend = ({poid}) => {
     const textTime = useRef(null);
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(() => {
         http.get('/profit/month_ratio/20210101', {poid}).then((res) => {
+            setShowEmpty(true);
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart(res.result);
@@ -140,9 +142,9 @@ const NetValueTrend = ({poid}) => {
                         </View>
                     </View>
                 </>
-            ) : (
-                <EmptyTip style={{paddingVertical: text(40)}} text="暂无数据" />
-            )}
+            ) : showEmpty ? (
+                <EmptyTip style={{paddingVertical: text(40)}} text={'暂无数据'} />
+            ) : null}
         </ScrollView>
     );
 };

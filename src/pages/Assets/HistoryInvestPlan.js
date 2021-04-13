@@ -2,7 +2,7 @@
  * @Date: 2021-03-08 15:03:20
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:54:23
+ * @LastEditTime: 2021-04-13 21:32:30
  * @Description: 历史投资计划
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -19,6 +19,7 @@ const HistoryInvestPlan = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -26,6 +27,7 @@ const HistoryInvestPlan = ({navigation, route}) => {
                 poid: route.params?.poid || 'X04F000002',
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 first && navigation.setOptions({title: res.result.title || '历史投资计划'});
@@ -78,8 +80,8 @@ const HistoryInvestPlan = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无历史投资计划'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无历史投资计划'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (

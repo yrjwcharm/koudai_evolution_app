@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:05:40
+ * @LastEditTime: 2021-04-13 21:34:55
  * @Description: 邀请好友记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -18,6 +18,7 @@ const InviteRecord = ({navigation, route}) => {
     const [hasMore, setHasMore] = useState(false);
     const [header, setHeader] = useState([]);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -25,6 +26,7 @@ const InviteRecord = ({navigation, route}) => {
             http.get('/promotion/invitees/20210101', {
                 page,
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 if (res.code === '000000') {
                     setHasMore(res.result.has_more || false);
@@ -90,8 +92,8 @@ const InviteRecord = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无邀请好友记录'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无邀请好友记录'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = useCallback(({item, index}) => {
         return (

@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 14:23:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:02:15
+ * @LastEditTime: 2021-04-13 21:31:05
  * @Description: 基金查询
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -15,6 +15,7 @@ import EmptyTip from '../../components/EmptyTip';
 
 const FundSearching = ({route}) => {
     const [data, setData] = useState({});
+    const [showEmpty, setShowEmpty] = useState(false);
     // 打开查询网址
     const openSite = useCallback((site) => {
         global.LogTool('click', 'openSite', site);
@@ -31,6 +32,7 @@ const FundSearching = ({route}) => {
         http.get('/portfolio/funds/searching/20210101', {
             ...route.params,
         }).then((res) => {
+            setShowEmpty(true);
             setData(res.result);
         });
     }, [route]);
@@ -62,9 +64,9 @@ const FundSearching = ({route}) => {
                             );
                         })}
                     </>
-                ) : (
+                ) : showEmpty ? (
                     <EmptyTip style={{paddingVertical: text(40)}} text={'暂无数据'} />
-                )}
+                ) : null}
             </ScrollView>
         )
     );

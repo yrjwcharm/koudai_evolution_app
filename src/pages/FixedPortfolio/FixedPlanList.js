@@ -4,7 +4,7 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 18:03:14
+ * @LastEditTime: 2021-04-13 21:01:46
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
@@ -17,10 +17,12 @@ import Empty from '../../components/EmptyTip';
 import {useFocusEffect} from '@react-navigation/native';
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
+    const [showEmpty, setShowEmpty] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
             Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
+                setShowEmpty(true);
                 setData(res.result);
             });
         }, [props.route])
@@ -91,9 +93,9 @@ export default function PlanDetail(props) {
                         </TouchableOpacity>
                     );
                 })
-            ) : (
+            ) : showEmpty ? (
                 <Empty text={'暂无数据'} />
-            )}
+            ) : null}
         </ScrollView>
     );
 }

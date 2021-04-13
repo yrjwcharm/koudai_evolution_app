@@ -2,7 +2,7 @@
  * @Date: 2021-03-04 15:24:59
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 20:25:08
+ * @LastEditTime: 2021-04-13 21:04:35
  * @Description: 调仓记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,6 +21,7 @@ const AdjustRecord = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [list, setList] = useState([]);
+    const [showEmpty, setShowEmpty] = useState(false);
 
     const init = useCallback(
         (status, first) => {
@@ -31,6 +32,7 @@ const AdjustRecord = ({navigation, route}) => {
                 page,
                 scene: 'history',
             }).then((res) => {
+                setShowEmpty(true);
                 setRefreshing(false);
                 setHasMore(res.result.record?.items?.length >= 10);
                 first && navigation.setOptions({title: res.result.title || '调仓记录'});
@@ -76,8 +78,8 @@ const AdjustRecord = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无调仓记录'} />;
-    }, []);
+        return showEmpty ? <Empty text={'暂无调仓记录'} /> : null;
+    }, [showEmpty]);
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (

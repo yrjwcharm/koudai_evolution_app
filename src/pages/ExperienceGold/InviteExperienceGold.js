@@ -2,7 +2,7 @@
  * @Date: 2021-03-11 10:03:53
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-29 16:03:23
+ * @LastEditTime: 2021-04-13 19:29:35
  * @Description: 邀请好友得体验金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -47,11 +47,11 @@ const InviteExperienceGold = ({navigation}) => {
                     </Text> */}
                     <View style={[Style.flexRow, styles.profitBox]}>
                         <View style={[Style.flexCenter, {flex: 1}]}>
-                            <Text style={styles.profitText}>{data?.profit_info?.profit || '0.00'}</Text>
+                            <Text style={styles.profitText}>{data?.profit_info?.profit_acc || '0.00'}</Text>
                             <Text style={[styles.stepText, {color: Colors.defaultColor}]}>{'累计收益(元)'}</Text>
                         </View>
                         <View style={[Style.flexCenter, {flex: 1}]}>
-                            <Text style={styles.profitText}>{data?.profit_info?.profit_acc || '0.00'}</Text>
+                            <Text style={styles.profitText}>{data?.profit_info?.profit || '0.00'}</Text>
                             <Text style={[styles.stepText, {color: Colors.defaultColor}]}>{'可提现收益(元)'}</Text>
                         </View>
                     </View>

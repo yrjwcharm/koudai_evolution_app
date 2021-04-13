@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 19:04:05
+ * @LastEditTime: 2021-04-13 20:59:07
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
@@ -17,6 +17,7 @@ export default class OpenPdf extends Component {
         super(props);
         this.state = {
             canOpen: false,
+            showEmpty: false,
         };
     }
     componentDidMount() {
@@ -31,17 +32,18 @@ export default class OpenPdf extends Component {
                 .then((res) => {
                     // console.log(res);
                     if (res.status === 200) {
-                        this.setState({canOpen: true});
+                        this.setState({canOpen: true, showEmpty: true});
                     }
                 })
                 .catch((error) => {
                     // console.log(error);
                     // Toast.show('链接不可用');
+                    this.setState({showEmpty: true});
                 });
         }
     }
     render() {
-        const {canOpen} = this.state;
+        const {canOpen, showEmpty} = this.state;
         const {url} = this.props.route.params || {};
         return (
             <View style={styles.container}>
@@ -71,7 +73,7 @@ export default class OpenPdf extends Component {
                         style={styles.pdf}
                     />
                 ) : (
-                    <Empty text={'找不到文档'} />
+                    showEmpty && <Empty text={'找不到文档'} />
                 )}
             </View>
         );

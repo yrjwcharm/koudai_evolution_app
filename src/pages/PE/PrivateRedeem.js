@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 18:33:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 20:33:15
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -23,7 +23,7 @@ export default function PrivateRedeem({route, navigation}) {
         }).then((res) => {
             setData(res.result);
         });
-    }, []);
+    }, [route.params]);
 
     const submitData = () => {
         if (!amount) {

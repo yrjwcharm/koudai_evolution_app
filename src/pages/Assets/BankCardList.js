@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 15:57:08
+ * @LastEditTime: 2021-04-13 21:30:26
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -21,11 +21,13 @@ import {useJump} from '../../components/hooks';
 const BankCardList = ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
+    const [showEmpty, setShowEmpty] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
             http.get('/passport/bank_card/manage/20210101').then((res) => {
                 // console.log(res);
+                setShowEmpty(true);
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '绑定银行卡'});
                     setData(res.result);
@@ -86,9 +88,10 @@ const BankCardList = ({navigation}) => {
                         </TouchableOpacity>
                     );
                 })}
-                {Object.keys(data).length === 0 ||
-                (!data?.xy?.cards && !data?.ym?.cards) ||
-                (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? (
+                {showEmpty &&
+                (Object.keys(data).length === 0 ||
+                    (!data?.xy?.cards && !data?.ym?.cards) ||
+                    (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0)) ? (
                     <>
                         <Empty
                             img={require('../../assets/img/emptyTip/noCard.png')}

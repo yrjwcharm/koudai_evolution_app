@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:00:09
+ * @LastEditTime: 2021-04-13 21:25:16
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -24,6 +24,7 @@ const DailyProfit = ({poid}) => {
     const [list, setList] = useState([]);
     const [activeSections, setActiveSections] = useState([0]);
     const [maxData, setMaxData] = useState(0);
+    const [showEmpty, setShowEmpty] = useState(false);
     const init = useCallback(
         (status, first) => {
             // status === 'refresh' && setRefreshing(true);
@@ -33,6 +34,7 @@ const DailyProfit = ({poid}) => {
                 page,
                 poid,
             }).then((res) => {
+                setShowEmpty(true);
                 setHasMore(res.result.has_more);
                 setRefreshing(false);
                 if (status === 'loadmore') {
@@ -152,16 +154,16 @@ const DailyProfit = ({poid}) => {
                     <Text style={[styles.headerText, {paddingVertical: Space.padding}]}>
                         {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
-                ) : (
+                ) : showEmpty ? (
                     <Empty
                         img={require('../../assets/img/emptyTip/noProfit.png')}
                         text={'暂无日收益数据'}
                         type={'part'}
                     />
-                )}
+                ) : null}
             </>
         );
-    }, [hasMore, list]);
+    }, [hasMore, list, showEmpty]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
         return <Empty img={require('../../assets/img/emptyTip/noProfit.png')} text={'暂无日收益数据'} type={'part'} />;
