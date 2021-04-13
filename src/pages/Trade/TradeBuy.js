@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 18:14:01
+ * @LastEditTime: 2021-04-13 20:59:10
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -90,9 +90,11 @@ class TradeBuy extends Component {
                     },
                     async () => {
                         let amount = this.state.amount;
-                        await this.plan(amount);
+                        if (this.state.type == 0) {
+                            await this.plan(amount);
+                        }
                         if (amount) {
-                            this.checkData(amount);
+                            this.onInput(amount);
                         }
                     }
                 );
@@ -100,54 +102,6 @@ class TradeBuy extends Component {
         });
     };
 
-    //默认金额校验
-    checkData = (amount) => {
-        let single_amount = this.state.isLargeAmount
-            ? this.state.largeAmount.single_amount
-            : this.state.bankSelect.single_amount;
-        this.setState({errTip: '', mfbTip: false}, () => {
-            //只有购买做可用余额的限制
-            if (amount > this.state.bankSelect.left_amount && this.state.type == 0) {
-                // 您当日剩余可用额度为
-                this.setState({
-                    buyBtnCanClick: false,
-                    errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
-                    mfbTip: false,
-                });
-            } else if (amount > single_amount) {
-                if (this.state.bankSelect.pay_method == 'wallet') {
-                    this.setState({
-                        buyBtnCanClick: false,
-                        errTip: '魔方宝余额不足,建议',
-                        mfbTip: true,
-                    });
-                } else {
-                    this.setState({
-                        buyBtnCanClick: false,
-                        errTip: `最大单笔购买金额为${single_amount}元`,
-                        mfbTip: false,
-                    });
-                }
-            } else if (amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({
-                    buyBtnCanClick: this.state.errTip == '' && this.state.amount ? true : false,
-                    mfbTip: false,
-                    fixTip: this.state.data?.actual_amount
-                        ? `${amount * this.state.data?.actual_amount.min}元~${
-                              amount * this.state.data?.actual_amount.max
-                          }元`
-                        : '',
-                });
-            } else {
-                this.setState({buyBtnCanClick: false, mfbTip: false});
-                if (amount) {
-                    this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
-                } else {
-                    this.setState({errTip: ''});
-                }
-            }
-        });
-    };
     /**
      * @description: 购买提交
      * @param {*}
@@ -157,7 +111,10 @@ class TradeBuy extends Component {
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
-        let buy_id = await this.plan(this.state.amount);
+        let buy_id;
+        if (type == 1) {
+            buy_id = await this.plan(this.state.amount);
+        }
         type == 0
             ? http
                   .post('/trade/buy/do/20210101', {
@@ -238,48 +195,72 @@ class TradeBuy extends Component {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
-        if (!_amount) {
+        if (!_amount && this.state.type == 0) {
             await this.plan('');
         }
         this.setState({errTip: '', fixTip: ''}, async () => {
-            if (_amount > this.state.bankSelect.left_amount && this.state.type == 0) {
-                // 您当日剩余可用额度为
-                this.setState({
-                    buyBtnCanClick: false,
-                    errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
-                    mfbTip: false,
-                });
-            } else if (_amount > single_amount) {
-                if (this.state.bankSelect.pay_method == 'wallet') {
+            if (this.state.type == 0) {
+                if (_amount > this.state.bankSelect.left_amount && this.state.bankSelect.pay_method !== 'wallet') {
+                    // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: '魔方宝余额不足,建议',
-                        mfbTip: true,
-                    });
-                } else {
-                    this.setState({
-                        buyBtnCanClick: false,
-                        errTip: `最大单笔购买金额为${single_amount}元`,
+                        errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
                         mfbTip: false,
                     });
-                }
-            } else if (_amount >= this.state.data.buy_info.initial_amount) {
-                this.setState({
-                    buyBtnCanClick: this.state.errTip == '' ? true : false,
-                    mfbTip: false,
-                    fixTip: this.state.data?.actual_amount
-                        ? `${_amount * this.state.data?.actual_amount.min}元~${
-                              _amount * this.state.data?.actual_amount.max
-                          }元`
-                        : '',
-                });
-                await this.plan(_amount);
-            } else {
-                this.setState({buyBtnCanClick: false, mfbTip: false});
-                if (_amount) {
-                    this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                } else if (_amount > single_amount) {
+                    if (this.state.bankSelect.pay_method == 'wallet') {
+                        this.setState({
+                            buyBtnCanClick: false,
+                            errTip: '魔方宝余额不足,建议',
+                            mfbTip: true,
+                        });
+                    } else {
+                        this.setState({
+                            buyBtnCanClick: false,
+                            errTip: `最大单笔购买金额为${single_amount}元`,
+                            mfbTip: false,
+                        });
+                    }
+                } else if (_amount >= this.state.data.buy_info.initial_amount) {
+                    this.setState({
+                        buyBtnCanClick: this.state.errTip == '' ? true : false,
+                        mfbTip: false,
+                        fixTip: this.state.data?.actual_amount
+                            ? `${_amount * this.state.data?.actual_amount.min}元~${
+                                  _amount * this.state.data?.actual_amount.max
+                              }元`
+                            : '',
+                    });
+                    await this.plan(_amount);
                 } else {
-                    this.setState({errTip: ''});
+                    this.setState({buyBtnCanClick: false, mfbTip: false});
+                    if (_amount) {
+                        this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                    } else {
+                        this.setState({errTip: ''});
+                    }
+                }
+            } else {
+                //定投
+                if (_amount > this.state.bankSelect.day_limit && this.state.bankSelect.pay_method !== 'wallet') {
+                    this.setState({
+                        buyBtnCanClick: false,
+                        errTip: `最大单日购买金额为${this.state.bankSelect.day_limit}元`,
+                        mfbTip: false,
+                    });
+                } else if (_amount < this.state.data.buy_info.initial_amount) {
+                    this.setState({buyBtnCanClick: false, mfbTip: false});
+                    if (_amount) {
+                        this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                    } else {
+                        this.setState({errTip: ''});
+                    }
+                } else {
+                    this.setState({
+                        buyBtnCanClick: true,
+                        errTip: '',
+                        mfbTip: false,
+                    });
                 }
             }
         });
@@ -386,7 +367,7 @@ class TradeBuy extends Component {
             },
             async () => {
                 await this.plan(this.state.amount);
-                this.checkData(this.state.amount);
+                this.onInput(this.state.amount);
             }
         );
     };
@@ -641,7 +622,7 @@ class TradeBuy extends Component {
                             )}
                         </View>
 
-                        {planData.fee_text && errTip == '' ? (
+                        {planData.fee_text && errTip == '' && this.state.type == 0 ? (
                             <View style={styles.tip}>
                                 <HTML
                                     style={{fontSize: px(12), color: Colors.lightGrayColor}}
@@ -725,8 +706,10 @@ class TradeBuy extends Component {
                     onDone={(select, index) => {
                         this.setState({bankSelect: select, bankSelectIndex: index}, async () => {
                             if (!this.state.isLargeAmount) {
-                                await this.plan(this.state.amount);
-                                this.checkData(this.state.amount);
+                                if (this.state.type == 0) {
+                                    await this.plan(this.state.amount);
+                                }
+                                this.onInput(this.state.amount);
                             }
                         });
                     }}

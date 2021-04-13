@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-13 11:21:57
- * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 19:11:18
+ * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -187,9 +187,7 @@ const TradeProcessing = ({navigation, route}) => {
                                         />
                                         <View style={[styles.content]}>
                                             <View style={[styles.processTitle, Style.flexBetween]}>
-                                                <Text numberOfLines={1} style={[styles.desc]}>
-                                                    {item.k}
-                                                </Text>
+                                                <Text style={[styles.desc]}>{item.k}</Text>
                                                 {item.v ? <Text style={[styles.date]}>{item.v}</Text> : null}
                                             </View>
                                             {item.d && item.d.length > 0 && (

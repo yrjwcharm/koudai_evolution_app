@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:31:45
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 17:50:34
+ * @LastEditTime: 2021-04-13 19:29:24
  * @Description:答题按钮
  */
 import React from 'react';
@@ -16,7 +16,7 @@ export default function QuestionBtn(props) {
         <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
             <Animatable.View animation="fadeInRight" style={[styles.question_con]}>
                 <TouchableOpacity
-                    activeOpacity={0.8}
+                    activeOpacity={1}
                     onPress={onPress}
                     style={[styles.ques_btn, Style.flexCenter, style]}>
                     <Text style={[styles.btn_text, textStyle]}>{button?.text || '查看详情'}</Text>
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
     btn_text: {
         fontSize: px(13),
         color: Colors.btnColor,
+        backgroundColor: 'transparent',
     },
 });

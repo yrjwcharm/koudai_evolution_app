@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 20:39:35
+ * @LastEditTime: 2021-04-13 19:32:25
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -180,9 +180,9 @@ class Question extends Component {
                     opacity: 0,
                 });
                 this.contentView?.fadeInUp(500).then(() => {
-                    this.quesBtnView?.setNativeProps({
-                        opacity: 1,
-                    });
+                    // this.quesBtnView?.setNativeProps({
+                    //     opacity: 1,
+                    // });
                     this.quesBtnView?.fadeInRight(500);
                 });
                 if (questions[this.state.current]?.style == 'age_cursor') {
@@ -744,7 +744,7 @@ class Question extends Component {
                                     <Animatable.View
                                         ref={this.handleViewRef}
                                         animation="fadeInRight"
-                                        style={[styles.question_con, {opacity: 1}]}>
+                                        style={[styles.question_con]}>
                                         {current_ques?.options.map((option, index) => {
                                             return (
                                                 <QuestionBtn

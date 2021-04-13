@@ -65,17 +65,18 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        NetInfo.fetch().then((state) => {
-            if (state.isConnected) {
-                Toast.show('服务器开小差了...');
-            } else {
-                if (err && err.stack.indexOf('timeout') > -1) {
-                    Toast.show('您的网络环境不稳定...');
-                } else {
-                    Toast.show('网络请求失败,请检查您的网络');
-                }
-            }
-        });
+        Toast.show('网络异常，请稍后再试~');
+        // NetInfo.fetch().then((state) => {
+        //     if (state.isConnected) {
+        //         Toast.show('服务器开小差了...');
+        //     } else {
+        //         if (err && err.stack.indexOf('timeout') > -1) {
+        //             Toast.show('您的网络环境不稳定...');
+        //         } else {
+        //             Toast.show('网络请求失败,请检查您的网络');
+        //         }
+        //     }
+        // });
         Promise.reject(err);
     }
 );

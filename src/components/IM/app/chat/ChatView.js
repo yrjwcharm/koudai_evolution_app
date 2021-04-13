@@ -95,6 +95,7 @@ class ChatWindow extends PureComponent {
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', (e) => {
             const {panelShow, emojiShow} = this.state;
             this.setState({keyboardHeight: e.endCoordinates.height, xHeight: 0, keyboardShow: true});
+            this._onFocus();
             Animated.timing(this.visibleHeight, {
                 duration: e.duration,
                 toValue: 1,
@@ -134,6 +135,7 @@ class ChatWindow extends PureComponent {
     _didShow() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
             this.setState({keyboardShow: true});
+            this._onFocus();
             // if (panelShow) {
             //   return this.closePanel(true)
             // }
@@ -265,6 +267,7 @@ class ChatWindow extends PureComponent {
     }
 
     _onFocus = () => {
+        this.chatList.scrollToOffset({y: 0, animated: true});
         if (Platform.OS === 'android') {
             this.closeAll(() => {
                 this.InputBar.input && this.InputBar.input.focus();
