@@ -23,7 +23,6 @@ import java.util.List;
 import cn.jiguang.plugins.push.JPushModule; //jpush
 import com.theweflex.react.WeChatPackage; //微信
 import com.microsoft.codepush.react.CodePush; //热更新
-
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =

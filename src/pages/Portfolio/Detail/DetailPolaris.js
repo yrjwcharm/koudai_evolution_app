@@ -119,7 +119,7 @@ export default function DetailPolaris({route, navigation}) {
                     {data?.top?.header?.img ? (
                         <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
                     ) : null}
-                    <View style={{padding: text(16), marginTop: text(-70)}}>
+                    <View style={{padding: text(16), marginTop: data?.top?.header?.img ? text(-70) : 0}}>
                         <View style={[styles.card_sty]}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>
                                 {data?.top?.title}
