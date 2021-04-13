@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 17:17:46
+ * @LastEditTime: 2021-04-13 11:00:45
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -168,7 +168,7 @@ const Profile = ({navigation}) => {
         (item) => {
             // console.log(iptValRef.current);
             if (!iptValRef.current) {
-                Toast.show(`${item.key}不能为空`, {position: text(180), showMask: false});
+                inputModal.current.toastShow(`${item.key}不能为空`);
                 return false;
             }
             inputModal.current.hide();

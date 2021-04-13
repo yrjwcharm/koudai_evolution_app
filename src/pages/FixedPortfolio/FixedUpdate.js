@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 17:13:41
+ * @LastEditTime: 2021-04-13 11:01:06
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -187,11 +187,11 @@ export default function FixedUpdate({navigation, route}) {
         if (iptValRef.current < initAmount.current) {
             inputModal.current.hide();
             setNum(initAmount.current);
-            Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
+            inputModal.current.toastShow(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
         } else if (iptValRef.current > payMethod.day_limit) {
             inputModal.current.hide();
             setNum(payMethod.day_limit);
-            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
+            inputModal.current.toastShow(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
         } else {
             inputModal.current.hide();
             setNum(parseFloat(iptValRef.current));

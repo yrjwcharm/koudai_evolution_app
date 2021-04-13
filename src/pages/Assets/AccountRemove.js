@@ -2,7 +2,7 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:35:06
+ * @LastEditTime: 2021-04-13 11:20:02
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -68,7 +68,7 @@ const AccountRemove = ({navigation, route}) => {
                 http.post('/passport/account/destroy/20210101', {
                     verify_code: value,
                 }).then((res) => {
-                    Toast.show(res.message, {position: text(120), showMask: false});
+                    codeModal.current.toastShow(res.message);
                     if (res.code === '000000') {
                         global.LogTool('accountRemove', 'success');
                         codeModal.current.hide();
@@ -92,7 +92,7 @@ const AccountRemove = ({navigation, route}) => {
     }, [navigation]);
 
     return (
-        <ScrollView style={styles.container}>
+        <>
             <VerifyCodeModal
                 ref={codeModal}
                 desc={`验证码已发送至${handlePhone(data?.mobile)}`}
@@ -100,33 +100,35 @@ const AccountRemove = ({navigation, route}) => {
                 getCode={getCode}
                 phone={data?.mobile}
             />
-            <View style={Style.flexCenter}>
-                <Image source={require('../../assets/personal/warn.png')} style={styles.warn} />
-            </View>
-            <View
-                style={[
-                    Style.flexCenter,
-                    {borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor, marginBottom: text(20)},
-                ]}>
-                <Text style={styles.bigTitle}>{'账号注销'}</Text>
-                <Text style={[styles.desc, styles.tips]}>{'当您决定注销账号时，请阅读以下内容'}</Text>
-            </View>
-            {data?.body?.map((item, index, arr) => {
-                return (
-                    <View key={item + index} style={{marginBottom: index !== arr.length - 1 ? text(20) : 0}}>
-                        <Text style={[styles.title, {marginVertical: text(8)}]}>{item.title}</Text>
-                        <HTML html={item.content} style={styles.desc} />
-                    </View>
-                );
-            })}
-            {Object.keys(data).length > 0 && (
-                <Button
-                    title={'申请注销'}
-                    style={{...styles.btn, marginBottom: isIphoneX() ? 54 : 20}}
-                    onPress={onPress}
-                />
-            )}
-        </ScrollView>
+            <ScrollView style={styles.container}>
+                <View style={Style.flexCenter}>
+                    <Image source={require('../../assets/personal/warn.png')} style={styles.warn} />
+                </View>
+                <View
+                    style={[
+                        Style.flexCenter,
+                        {borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor, marginBottom: text(20)},
+                    ]}>
+                    <Text style={styles.bigTitle}>{'账号注销'}</Text>
+                    <Text style={[styles.desc, styles.tips]}>{'当您决定注销账号时，请阅读以下内容'}</Text>
+                </View>
+                {data?.body?.map((item, index, arr) => {
+                    return (
+                        <View key={item + index} style={{marginBottom: index !== arr.length - 1 ? text(20) : 0}}>
+                            <Text style={[styles.title, {marginVertical: text(8)}]}>{item.title}</Text>
+                            <HTML html={item.content} style={styles.desc} />
+                        </View>
+                    );
+                })}
+                {Object.keys(data).length > 0 && (
+                    <Button
+                        title={'申请注销'}
+                        style={{...styles.btn, marginBottom: isIphoneX() ? 54 : 20}}
+                        onPress={onPress}
+                    />
+                )}
+            </ScrollView>
+        </>
     );
 };
 

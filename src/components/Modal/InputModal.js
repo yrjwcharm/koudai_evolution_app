@@ -1,18 +1,18 @@
 /*
  * @Date: 2021-03-09 17:09:23
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:45:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 11:04:36
  * @Description: 带输入框的弹窗
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
-import {Animated, Keyboard, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Animated, Keyboard, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Picker from 'react-native-picker';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Mask from '../Mask';
-import {px as text} from '../../utils/appUtil';
+import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {constants} from './util';
 
@@ -31,6 +31,8 @@ const InputModal = forwardRef((props, ref) => {
         title,
     } = props;
     const [visible, setVisible] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastText, setToastText] = useState('');
     const keyboardHeight = useRef(new Animated.Value(0)).current;
 
     const show = () => {
@@ -38,6 +40,14 @@ const InputModal = forwardRef((props, ref) => {
     };
     const hide = () => {
         setVisible(false);
+    };
+    const toastShow = (t, duration = 2000) => {
+        setToastText(t);
+        setShowToast(true);
+        setTimeout(() => {
+            setShowToast(false);
+            setToastText('');
+        }, duration);
     };
     const onDone = useCallback(() => {
         // setVisible(false);
@@ -69,6 +79,7 @@ const InputModal = forwardRef((props, ref) => {
         return {
             show: show,
             hide: hide,
+            toastShow: toastShow,
         };
     });
 
@@ -114,6 +125,13 @@ const InputModal = forwardRef((props, ref) => {
                     </TouchableOpacity>
                 </Animated.View>
             </TouchableOpacity>
+            <Modal animationType={'fade'} onRequestClose={() => setShowToast(false)} transparent visible={showToast}>
+                <View style={[Style.flexCenter, styles.toastContainer]}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.textStyle}>{toastText}</Text>
+                    </View>
+                </View>
+            </Modal>
         </Modal>
     );
 });
@@ -149,6 +167,23 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         color: Colors.defaultColor,
         fontWeight: '500',
+    },
+    toastContainer: {
+        flex: 1,
+        height: deviceHeight,
+        width: deviceWidth,
+    },
+    textContainer: {
+        padding: 10,
+        backgroundColor: '#1E1F20',
+        opacity: 0.8,
+        borderRadius: 5,
+    },
+    textStyle: {
+        fontSize: Font.textH1,
+        lineHeight: text(24),
+        color: '#fff',
+        textAlign: 'center',
     },
 });
 

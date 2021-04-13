@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 15:56:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 18:46:10
+ * @LastEditTime: 2021-04-13 11:10:07
  * @Description: 修改预留手机号
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -98,7 +98,8 @@ const ModifyPhoneNum = ({navigation, route}) => {
                     pay_method: params.pay_method,
                     verify_code: value,
                 }).then((res) => {
-                    Toast.show(res.message, {position: text(120), showMask: false});
+                    // Toast.show(res.message, {position: text(120), showMask: false});
+                    codeModal.current.toastShow(res.message);
                     if (res.code === '000000') {
                         global.LogTool('modifySuccess');
                         codeModal.current.hide();
@@ -111,7 +112,7 @@ const ModifyPhoneNum = ({navigation, route}) => {
     );
 
     return (
-        <ScrollView style={styles.container}>
+        <>
             <VerifyCodeModal
                 ref={codeModal}
                 desc={`验证码已发送至${handlePhone(phone)}`}
@@ -119,33 +120,35 @@ const ModifyPhoneNum = ({navigation, route}) => {
                 getCode={getCode}
                 phone={phone}
             />
-            <PasswordModal
-                ref={passwordModal}
-                onDone={onDone}
-                onClose={() => {
-                    btnClick.current = true;
-                }}
-            />
-            <View style={[Style.flexRowCenter, {paddingVertical: text(32), paddingBottom: Space.padding}]}>
-                <Image source={{uri: params.bank_icon}} style={styles.icon} />
-                <Text style={styles.cardNum}>{params.bank_name}</Text>
-            </View>
-            <InputView
-                clearButtonMode={'while-editing'}
-                keyboardType={'phone-pad'}
-                maxLength={11}
-                onChangeText={(value) => setPhone(value.replace(/\D/g, ''))}
-                placeholder={'请输入您的银行预留手机号'}
-                style={styles.inputView}
-                textContentType={'telephoneNumber'}
-                title={'手机号'}
-                value={phone}
-            />
-            <Text style={[styles.tips, {paddingTop: text(12), paddingBottom: text(24), paddingLeft: text(32)}]}>
-                {'请务必确认已在发卡行完成预留手机号修改'}
-            </Text>
-            <Button title={'修改'} style={{marginHorizontal: text(22)}} onPress={submit} />
-        </ScrollView>
+            <ScrollView style={styles.container}>
+                <PasswordModal
+                    ref={passwordModal}
+                    onDone={onDone}
+                    onClose={() => {
+                        btnClick.current = true;
+                    }}
+                />
+                <View style={[Style.flexRowCenter, {paddingVertical: text(32), paddingBottom: Space.padding}]}>
+                    <Image source={{uri: params.bank_icon}} style={styles.icon} />
+                    <Text style={styles.cardNum}>{params.bank_name}</Text>
+                </View>
+                <InputView
+                    clearButtonMode={'while-editing'}
+                    keyboardType={'phone-pad'}
+                    maxLength={11}
+                    onChangeText={(value) => setPhone(value.replace(/\D/g, ''))}
+                    placeholder={'请输入您的银行预留手机号'}
+                    style={styles.inputView}
+                    textContentType={'telephoneNumber'}
+                    title={'手机号'}
+                    value={phone}
+                />
+                <Text style={[styles.tips, {paddingTop: text(12), paddingBottom: text(24), paddingLeft: text(32)}]}>
+                    {'请务必确认已在发卡行完成预留手机号修改'}
+                </Text>
+                <Button title={'修改'} style={{marginHorizontal: text(22)}} onPress={submit} />
+            </ScrollView>
+        </>
     );
 };
 
