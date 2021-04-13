@@ -213,6 +213,39 @@ const onlyNumber = (value) => {
         return '';
     }
 };
+//防抖(立即执行)
+
+const debounce = (fn, delay = 500, isImmediate = true) => {
+    let timer = null;
+    let flag = true;
+    if (isImmediate === true) {
+        return function () {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            if (flag === true) {
+                fn.apply(this, arguments);
+                flag = false;
+            }
+            timer = setTimeout(() => {
+                flag = true;
+                timer = null;
+            }, delay);
+        };
+    } else {
+        return function () {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            timer = setTimeout(() => {
+                fn.apply(this, arguments);
+                timer = null;
+            }, delay);
+        };
+    }
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -238,4 +271,5 @@ export {
     parseAmount,
     inputInt,
     onlyNumber,
+    debounce,
 };

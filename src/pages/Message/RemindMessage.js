@@ -92,13 +92,27 @@ export default function RemindMessage({navigation}) {
                             activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => jump(data?.service?.url)}>
-                            <Image
-                                source={{
-                                    uri: data?.service?.icon,
-                                }}
-                                resizeMode="contain"
-                                style={{width: text(40), height: text(40)}}
-                            />
+                            <View>
+                                <Image
+                                    source={{
+                                        uri: data?.service?.icon,
+                                    }}
+                                    resizeMode="contain"
+                                    style={{width: text(40), height: text(40)}}
+                                />
+                                {data?.point?.unread ? (
+                                    <View style={styles.point_sty}>
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: text(11),
+                                                fontFamily: Font.numFontFamily,
+                                            }}>
+                                            {data?.point?.unread > 99 ? '99+' : data?.point?.unread}
+                                        </Text>
+                                    </View>
+                                ) : null}
+                            </View>
                             <View style={{marginLeft: text(20), flex: 1}}>
                                 <Text style={styles.title_sty}>{data?.service?.title}</Text>
                                 {data?.service?.content ? (
