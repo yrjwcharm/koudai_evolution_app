@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 12:01:46
+ * @LastEditTime: 2021-04-13 14:35:04
  * @Description:规划结果页
  */
 
@@ -71,7 +71,7 @@ const animation = [
 export default class planResult extends Component {
     state = {
         chart: '', //图表数据
-        lableAnimation: false,
+        lableAnimation: true,
         data: '', //展示数据
     };
     upid = this.props.route?.params?.upid;

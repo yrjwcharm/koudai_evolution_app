@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 11:59:08
+ * @LastEditTime: 2021-04-13 14:29:12
  * @Description:app引导页
  */
 
@@ -27,7 +27,6 @@ const image2 = require('../../../assets/img/appGuide/largeslider2.jpg');
 const image3 = require('../../../assets/img/appGuide/largeslider3.jpg');
 const image4 = require('../../../assets/img/appGuide/largeslider4.jpg');
 export default function AppGuide({navigation}) {
-    console.log(deviceWidth);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
