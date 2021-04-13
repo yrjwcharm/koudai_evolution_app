@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 15:19:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 16:06:33
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -215,7 +215,7 @@ const NetValueTrend = ({poid}) => {
                     </View>
                 </>
             ) : (
-                <EmptyTip style={{paddingVertical: text(40)}} text="暂无数据" />
+                <EmptyTip style={{paddingVertical: text(40)}} text={'暂无净值走势数据'} type={'part'} />
             )}
             <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>

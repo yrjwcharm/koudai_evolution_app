@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 16:17:31
+ * @LastEditTime: 2021-04-13 16:07:00
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -350,6 +350,7 @@ export default function PortfolioAssets(props) {
                             <EmptyTip
                                 style={{paddingTop: px(40)}}
                                 imageStyle={{width: px(150), resizeMode: 'contain'}}
+                                type={'part'}
                             />
                         )}
                     </View>

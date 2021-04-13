@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 13:49:10
+ * @LastEditTime: 2021-04-13 15:54:59
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -18,7 +18,12 @@ import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
 import BaseUrl from '../../services/config';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 const ArticleDetail = ({navigation, route}) => {
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(netInfo.isConnected);
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
@@ -111,6 +116,10 @@ const ArticleDetail = ({navigation, route}) => {
             article_progress: progress,
         });
     }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -124,7 +133,7 @@ const ArticleDetail = ({navigation, route}) => {
                 );
             },
             headerRight: () => {
-                return (
+                return hasNet ? (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
@@ -134,10 +143,10 @@ const ArticleDetail = ({navigation, route}) => {
                         style={[Style.flexCenter, styles.topRightBtn]}>
                         <Image source={require('../../assets/img/article/more.png')} style={styles.moreImg} />
                     </TouchableOpacity>
-                );
+                ) : null;
             },
         });
-    }, [navigation]);
+    }, [navigation, hasNet]);
     useEffect(() => {
         if (scrollY > 80) {
             navigation.setOptions({title: '文章内容'});
@@ -161,8 +170,13 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
-        init();
-    }, [init]);
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+    useEffect(() => {
+        if (hasNet) {
+            init();
+        }
+    }, [init, hasNet]);
     useEffect(() => {
         const listener = navigation.addListener('beforeRemove', back);
         return () => listener();
@@ -170,93 +184,108 @@ const ArticleDetail = ({navigation, route}) => {
 
     return (
         <View style={[styles.container]}>
-            <ScrollView style={{flex: 1}} onScroll={onScroll} scrollEventThrottle={16}>
-                <ShareModal
-                    likeCallback={onFavor}
-                    collectCallback={onCollect}
-                    ref={shareModal}
-                    more={more}
-                    shareContent={{
-                        favor_status: data?.favor_status,
-                        collect_status: data?.collect_status,
-                        ...data?.share_info,
-                    }}
-                    title={data?.title}
-                />
-                <RNWebView
-                    javaScriptEnabled
-                    onLoadEnd={onLoadEnd}
-                    onMessage={onMessage}
-                    // originWhitelist={['*']}
-                    ref={webviewRef}
-                    scalesPageToFit={Platform.select({ios: true, android: false})}
-                    source={{
-                        uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
-                    }}
-                    startInLoadingState
-                    style={{height: webviewHeight}}
-                />
-                {finishLoad && (
-                    <>
-                        <Text
-                            style={[
-                                styles.finishText,
-                                {color: Colors.lightGrayColor, padding: Space.padding},
-                            ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
-                        <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
-                            <Image source={require('../../assets/img/article/finish.gif')} style={styles.finishImg} />
-                            <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
-                        </View>
-                        <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={onFavor}
-                                style={[Style.flexCenter, {flex: 1}]}>
+            {hasNet ? (
+                <ScrollView style={{flex: 1}} onScroll={onScroll} scrollEventThrottle={16}>
+                    <ShareModal
+                        likeCallback={onFavor}
+                        collectCallback={onCollect}
+                        ref={shareModal}
+                        more={more}
+                        shareContent={{
+                            favor_status: data?.favor_status,
+                            collect_status: data?.collect_status,
+                            ...data?.share_info,
+                        }}
+                        title={data?.title}
+                    />
+                    <RNWebView
+                        javaScriptEnabled
+                        onLoadEnd={onLoadEnd}
+                        onMessage={onMessage}
+                        // originWhitelist={['*']}
+                        ref={webviewRef}
+                        scalesPageToFit={Platform.select({ios: true, android: false})}
+                        source={{
+                            uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
+                        }}
+                        startInLoadingState
+                        style={{height: webviewHeight}}
+                    />
+                    {finishLoad && Object.keys(data).length > 0 && (
+                        <>
+                            <Text
+                                style={[
+                                    styles.finishText,
+                                    {color: Colors.lightGrayColor, padding: Space.padding},
+                                ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
+                            <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
                                 <Image
-                                    source={
-                                        data?.favor_status
-                                            ? require('../../assets/img/article/bigZanActive.png')
-                                            : require('../../assets/img/article/bigZan.png')
-                                    }
-                                    style={styles.actionIcon}
+                                    source={require('../../assets/img/article/finish.gif')}
+                                    style={styles.finishImg}
                                 />
-                                <Text style={styles.finishText}>{`点赞${
-                                    data?.favor_num >= 0 ? data?.favor_num : 0
-                                }`}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={onCollect}
-                                style={[Style.flexCenter, {flex: 1}]}>
-                                <Image
-                                    source={
-                                        data?.collect_status
-                                            ? require('../../assets/img/article/collectActive.png')
-                                            : require('../../assets/img/article/collect.png')
-                                    }
-                                    style={styles.actionIcon}
-                                />
-                                <Text style={styles.finishText}>{`收藏${
-                                    data?.collect_num >= 0 ? data?.collect_num : 0
-                                }`}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    setMore(false);
-                                    shareModal.current.show();
-                                }}
-                                style={[Style.flexCenter, {flex: 1}]}>
-                                <Image
-                                    source={require('../../assets/img/article/share.png')}
-                                    style={styles.actionIcon}
-                                />
-                                <Text style={styles.finishText}>{'分享'}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                )}
-            </ScrollView>
+                                <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
+                            </View>
+                            <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={onFavor}
+                                    style={[Style.flexCenter, {flex: 1}]}>
+                                    <Image
+                                        source={
+                                            data?.favor_status
+                                                ? require('../../assets/img/article/bigZanActive.png')
+                                                : require('../../assets/img/article/bigZan.png')
+                                        }
+                                        style={styles.actionIcon}
+                                    />
+                                    <Text style={styles.finishText}>{`点赞${
+                                        data?.favor_num >= 0 ? data?.favor_num : 0
+                                    }`}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={onCollect}
+                                    style={[Style.flexCenter, {flex: 1}]}>
+                                    <Image
+                                        source={
+                                            data?.collect_status
+                                                ? require('../../assets/img/article/collectActive.png')
+                                                : require('../../assets/img/article/collect.png')
+                                        }
+                                        style={styles.actionIcon}
+                                    />
+                                    <Text style={styles.finishText}>{`收藏${
+                                        data?.collect_num >= 0 ? data?.collect_num : 0
+                                    }`}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        setMore(false);
+                                        shareModal.current.show();
+                                    }}
+                                    style={[Style.flexCenter, {flex: 1}]}>
+                                    <Image
+                                        source={require('../../assets/img/article/share.png')}
+                                        style={styles.actionIcon}
+                                    />
+                                    <Text style={styles.finishText}>{'分享'}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    )}
+                </ScrollView>
+            ) : (
+                <>
+                    <Empty
+                        img={require('../../assets/img/emptyTip/noNetwork.png')}
+                        text={'哎呀！网络出问题了'}
+                        desc={'网络不给力，请检查您的网络设置'}
+                        style={{paddingVertical: text(60)}}
+                    />
+                    <Button title={'刷新一下'} style={{marginHorizontal: text(20)}} onPress={refreshNetWork} />
+                </>
+            )}
         </View>
     );
 };

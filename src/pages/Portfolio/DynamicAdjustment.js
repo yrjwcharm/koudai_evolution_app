@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 14:14:25
+ * @LastEditTime: 2021-04-13 16:11:18
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -64,11 +64,13 @@ class DynamicAdjustment extends Component {
                 {data?.record?.items?.length > 0 ? (
                     <>
                         <View style={[styles.topPart]}>
-                            <Chart
-                                initScript={percentStackColumn(chartData)}
-                                data={chartData}
-                                style={{width: '100%'}}
-                            />
+                            {chartData?.length > 0 && (
+                                <Chart
+                                    initScript={percentStackColumn(chartData)}
+                                    data={chartData}
+                                    style={{width: '100%'}}
+                                />
+                            )}
                         </View>
                         <View style={[styles.adjustListContainer]}>
                             <Text style={[styles.adjustTitle]}>{data.record?.title}</Text>

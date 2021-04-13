@@ -2,7 +2,7 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 18:55:11
+ * @LastEditTime: 2021-04-13 15:57:08
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -90,7 +90,11 @@ const BankCardList = ({navigation}) => {
                 (!data?.xy?.cards && !data?.ym?.cards) ||
                 (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? (
                     <>
-                        <Empty img={require('../../assets/img/emptyTip/noCard.png')} text={'暂无银行卡'} />
+                        <Empty
+                            img={require('../../assets/img/emptyTip/noCard.png')}
+                            text={'暂无银行卡'}
+                            desc={'您目前还未绑定任何银行卡'}
+                        />
                         <Button
                             title={data?.button?.text}
                             style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}

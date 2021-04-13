@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-12 17:06:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 16:15:59
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -12,7 +12,12 @@ import {px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Praise from '../../components/Praise';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 const MessageBoard = (props) => {
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(netInfo.isConnected);
     const [comment, setComment] = useState(null);
     const getData = useCallback(() => {
         http.get('/comment/detail/20210101', {
@@ -21,38 +26,62 @@ const MessageBoard = (props) => {
             setComment(res.result);
         });
     }, [props]);
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+
     useEffect(() => {
-        getData();
-    }, [getData]);
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+    useEffect(() => {
+        if (hasNet) {
+            getData();
+        }
+    }, [getData, hasNet]);
     return (
         <View style={styles.container}>
-            <View style={Style.flexRow}>
-                <FastImage source={{uri: comment?.avatar}} style={styles.avatar} />
-                <View style={{flex: 1}}>
-                    <Text style={styles.avatar_name}>{comment?.name}</Text>
-                    <Text
-                        style={{
-                            fontSize: px(12),
-                            color: Colors.darkGrayColor,
-                        }}>
-                        {comment?.from}
+            {hasNet ? (
+                <>
+                    <View style={Style.flexRow}>
+                        <FastImage source={{uri: comment?.avatar}} style={styles.avatar} />
+                        <View style={{flex: 1}}>
+                            <Text style={styles.avatar_name}>{comment?.name}</Text>
+                            <Text
+                                style={{
+                                    fontSize: px(12),
+                                    color: Colors.darkGrayColor,
+                                }}>
+                                {comment?.from}
+                            </Text>
+                        </View>
+                    </View>
+                    <Text style={styles.about_text} numberOfLines={4}>
+                        {comment?.content}
                     </Text>
-                </View>
-            </View>
-            <Text style={styles.about_text} numberOfLines={4}>
-                {comment?.content}
-            </Text>
-            <View style={{alignItems: 'flex-end', margin: px(20)}}>
-                {comment && (
-                    <Praise
-                        comment={{
-                            favor_status: comment?.favor_status,
-                            favor_num: comment?.favor_num,
-                            id: comment.id,
-                        }}
+                    <View style={{alignItems: 'flex-end', margin: px(20)}}>
+                        {comment && (
+                            <Praise
+                                comment={{
+                                    favor_status: comment?.favor_status,
+                                    favor_num: comment?.favor_num,
+                                    id: comment.id,
+                                }}
+                            />
+                        )}
+                    </View>
+                </>
+            ) : (
+                <>
+                    <Empty
+                        img={require('../../assets/img/emptyTip/noNetwork.png')}
+                        text={'哎呀！网络出问题了'}
+                        desc={'网络不给力，请检查您的网络设置'}
+                        style={{paddingVertical: px(60)}}
                     />
-                )}
-            </View>
+                    <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
+                </>
+            )}
         </View>
     );
 };

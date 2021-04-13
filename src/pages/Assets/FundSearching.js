@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 14:23:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:13:22
+ * @LastEditTime: 2021-04-13 16:02:15
  * @Description: 基金查询
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -37,29 +37,31 @@ const FundSearching = ({route}) => {
     return (
         Object.keys(data).length > 0 && (
             <ScrollView scrollIndicatorInsets={{right: 1}} style={styles.container}>
-                <Text style={[styles.desc, {paddingVertical: Space.padding}]}>
-                    {'在理财魔方购买的所有基金都可以在基金官网查询哦，您购买的基金查询方式如下'}
-                </Text>
                 {data.list && data.list.length > 0 ? (
-                    data.list.map((item, index) => {
-                        return (
-                            <View style={styles.cardContainer} key={index}>
-                                <View style={styles.cardTitle}>
-                                    <Text style={styles.title}>{item.name}</Text>
+                    <>
+                        <Text style={[styles.desc, {paddingVertical: Space.padding}]}>
+                            {'在理财魔方购买的所有基金都可以在基金官网查询哦，您购买的基金查询方式如下'}
+                        </Text>
+                        {data.list.map((item, index) => {
+                            return (
+                                <View style={styles.cardContainer} key={index}>
+                                    <View style={styles.cardTitle}>
+                                        <Text style={styles.title}>{item.name}</Text>
+                                    </View>
+                                    <View style={[Style.flexRow, styles.contentItem]}>
+                                        <Text style={styles.contentKey}>{'查询网址'}</Text>
+                                        <Text style={[styles.desc, styles.site]} onPress={() => openSite(item.site)}>
+                                            {item.site}
+                                        </Text>
+                                    </View>
+                                    <View style={[Style.flexRow, styles.contentItem]}>
+                                        <Text style={styles.contentKey}>{'查询流程'}</Text>
+                                        <Text style={styles.procedure}>{item.process}</Text>
+                                    </View>
                                 </View>
-                                <View style={[Style.flexRow, styles.contentItem]}>
-                                    <Text style={styles.contentKey}>{'查询网址'}</Text>
-                                    <Text style={[styles.desc, styles.site]} onPress={() => openSite(item.site)}>
-                                        {item.site}
-                                    </Text>
-                                </View>
-                                <View style={[Style.flexRow, styles.contentItem]}>
-                                    <Text style={styles.contentKey}>{'查询流程'}</Text>
-                                    <Text style={styles.procedure}>{item.process}</Text>
-                                </View>
-                            </View>
-                        );
-                    })
+                            );
+                        })}
+                    </>
                 ) : (
                     <EmptyTip style={{paddingVertical: text(40)}} text={'暂无数据'} />
                 )}
