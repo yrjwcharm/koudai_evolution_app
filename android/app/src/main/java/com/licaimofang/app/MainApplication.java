@@ -23,6 +23,7 @@ import java.util.List;
 import cn.jiguang.plugins.push.JPushModule; //jpush
 import com.theweflex.react.WeChatPackage; //微信
 import com.microsoft.codepush.react.CodePush; //热更新
+// import com.github.wumke.RNExitApp.RNExitAppPackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -39,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
            packages.add(new WeChatPackage());
+          //  packages.add(new RNExitAppPackage());
           return packages;
         }
         @Override
