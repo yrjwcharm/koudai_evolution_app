@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 11:01:06
+ * @LastEditTime: 2021-04-13 17:50:05
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -208,7 +208,7 @@ export default function FixedUpdate({navigation, route}) {
     return (
         <>
             {Object.keys(data).length > 0 && (
-                <View style={{backgroundColor: Colors.bgColor}}>
+                <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {showMask && (
                         <Mask
                             onClick={() => {

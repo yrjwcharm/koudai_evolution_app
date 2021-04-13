@@ -3,11 +3,11 @@
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 17:39:07
+ * @LastEditTime: 2021-04-13 17:48:00
  */
 import React, {useEffect, useState, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import {px as text} from '../../utils/appUtil.js';
+import {StyleSheet, Text, TouchableOpacity, View, Image, ScrollView} from 'react-native';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Button} from '../../components/Button';
@@ -16,6 +16,7 @@ import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {PasswordModal} from '../../components/Password';
 import {useJump} from '../../components/hooks/';
+import BottomDesc from '../../components/BottomDesc';
 
 export default function Trade({navigation, route}) {
     const passwordModal = useRef(null);
@@ -56,16 +57,16 @@ export default function Trade({navigation, route}) {
         });
     };
     return (
-        <View>
+        <View style={[styles.container]}>
+            <Header title={data.title} leftIcon="chevron-left" />
             {Object.keys(data).length > 0 && (
-                <>
-                    <Header title={data.title} leftIcon="chevron-left" />
+                <ScrollView style={{flex: 1}}>
                     <TouchableOpacity
                         activeOpacity={1}
                         style={[Style.flexRow, styles.yellow_wrap_sty]}
                         onPress={() => {
                             global.LogTool('click', 'processing_url');
-                            jump(data?.tip_info?.processing_url);
+                            jump(data?.tip_info?.processing_url, 'push');
                         }}>
                         <Html style={styles.yellow_sty} html={data?.tip_info?.processing} />
                     </TouchableOpacity>
@@ -98,28 +99,49 @@ export default function Trade({navigation, route}) {
                             {paddingBottom: text(16), flexDirection: 'row', justifyContent: 'space-between'},
                         ]}
                         onPress={toggle}>
-                        <Text style={{color: '#CDA76E', fontSize: text(12)}}>
-                            {data.plan_info.title}
-                            <Text style={{color: Colors.lightGrayColor}}>{data?.plan_info?.desc}</Text>
+                        <Text style={{color: Colors.defaultColor, fontSize: Font.textH2, lineHeight: text(20)}}>
+                            {'买入明细'}
                         </Text>
                         {expand ? (
-                            <Icon name={'up'} size={text(14)} color={Colors.lightGrayColor} />
+                            <Icon
+                                name={'up'}
+                                size={text(14)}
+                                color={Colors.lightGrayColor}
+                                style={{marginTop: text(2.5)}}
+                            />
                         ) : (
-                            <Icon name={'down'} size={text(14)} color={Colors.lightGrayColor} />
+                            <Icon
+                                name={'down'}
+                                size={text(14)}
+                                color={Colors.lightGrayColor}
+                                style={{marginTop: text(2.5)}}
+                            />
                         )}
                     </TouchableOpacity>
                     {expand &&
                         Object.keys(list).length > 0 &&
-                        list?.body?.map((_item, _index) => {
+                        list?.body?.map((_item, _index, array) => {
                             return (
                                 <View key={_index + '_item'}>
-                                    <View style={styles.line} />
-                                    <View style={styles.config_desc}>
+                                    {_index === 0 && <View style={styles.line} />}
+                                    <View
+                                        style={[
+                                            styles.config_desc,
+                                            {
+                                                paddingBottom: _index === array.length - 1 ? Space.marginVertical : 0,
+                                            },
+                                        ]}>
                                         <View>
                                             <View style={[Style.flexBetween, {marginBottom: text(14)}]}>
                                                 <View style={[Style.flexRow, {width: text(162)}]}>
-                                                    <View style={[styles.circle, {backgroundColor: '#ff0'}]} />
-                                                    <Text style={styles.config_title}>22222</Text>
+                                                    <View style={[styles.circle, {backgroundColor: _item.color}]} />
+                                                    <Text style={styles.config_title}>
+                                                        {_item.title + ' '}(
+                                                        <Text style={{fontFamily: Font.numRegular}}>
+                                                            {(_item.percent * 100).toFixed(2) + '%'}
+                                                        </Text>
+                                                        )
+                                                    </Text>
                                                 </View>
                                                 <>
                                                     <Text style={[styles.config_title, {width: text(60)}]}>
@@ -128,18 +150,31 @@ export default function Trade({navigation, route}) {
                                                     <Text style={styles.config_title}>{list?.header?.amount}</Text>
                                                 </>
                                             </View>
-                                            {_item?.funds.map((_b, _i) => {
+                                            {_item?.funds.map((_b, _i, arr) => {
                                                 return (
                                                     <View
-                                                        style={[Style.flexBetween, {marginBottom: text(14)}]}
+                                                        style={[
+                                                            Style.flexBetween,
+                                                            {marginBottom: _i !== arr.length - 1 ? text(14) : 0},
+                                                        ]}
                                                         key={_i + '_b'}>
                                                         <Text style={[styles.config_title_desc, {width: text(162)}]}>
                                                             {_b.name}
                                                         </Text>
-                                                        <Text style={[styles.config_title_desc, {width: text(60)}]}>
-                                                            {_b.percent}
+                                                        <Text
+                                                            style={[
+                                                                styles.config_title_desc,
+                                                                {width: text(60), fontFamily: Font.numRegular},
+                                                            ]}>
+                                                            {(_b.percent * 100).toFixed(2) + '%'}
                                                         </Text>
-                                                        <Text style={styles.config_title_desc}>{_b.amount}</Text>
+                                                        <Text
+                                                            style={[
+                                                                styles.config_title_desc,
+                                                                {fontFamily: Font.numRegular},
+                                                            ]}>
+                                                            {_b.amount}
+                                                        </Text>
                                                     </View>
                                                 );
                                             })}
@@ -148,20 +183,56 @@ export default function Trade({navigation, route}) {
                                 </View>
                             );
                         })}
+                    <Text style={[styles.agreement, {paddingHorizontal: text(16), marginTop: text(20)}]}>
+                        购买即代表您已知悉该基金组合的
+                        <Text
+                            onPress={() => {
+                                navigation.navigate('TradeAgreements', {poid: route.params?.poid, type: 0});
+                            }}
+                            style={{color: Colors.btnColor}}>
+                            基金组合协议
+                        </Text>
+                        和
+                        <Text
+                            style={{color: Colors.btnColor}}
+                            onPress={() => {
+                                navigation.navigate('TradeAgreements', {
+                                    fund_codes: list?.codes,
+                                    type: 0,
+                                });
+                            }}>
+                            产品概要
+                        </Text>
+                        等内容
+                    </Text>
+                    <BottomDesc />
+                </ScrollView>
+            )}
+            {data?.button && (
+                <View style={{backgroundColor: '#fff'}}>
                     <Button
                         activeOpacity={1}
                         title={data?.button?.text}
                         color={'#D4AC6F'}
                         onPress={passwordInput}
-                        style={{marginHorizontal: text(16), backgroundColor: '#D4AC6F', marginTop: text(20)}}
+                        style={{
+                            marginHorizontal: text(16),
+                            marginVertical: text(8),
+                            backgroundColor: '#D4AC6F',
+                            marginBottom: isIphoneX() ? 34 + text(8) : text(8),
+                        }}
                     />
-                </>
+                </View>
             )}
             <PasswordModal ref={passwordModal} onDone={submitData} />
         </View>
     );
 }
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Colors.bgColor,
+    },
     yellow_wrap_sty: {
         backgroundColor: '#FEF6E9',
         paddingHorizontal: Space.padding,
@@ -201,7 +272,7 @@ const styles = StyleSheet.create({
     },
     desc_sty: {
         color: Colors.lightGrayColor,
-        fontSize: text(12),
+        fontSize: Font.textH3,
         paddingVertical: text(10),
     },
     config_desc: {
@@ -210,11 +281,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     config_title: {
-        fontSize: text(12),
+        fontSize: Font.textH3,
+        lineHeight: text(17),
         color: Colors.darkGrayColor,
     },
     config_title_desc: {
-        fontSize: text(12),
+        fontSize: Font.textH3,
+        lineHeight: text(17),
         color: Colors.descColor,
     },
     line: {
@@ -223,10 +296,15 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.lineColor,
     },
     circle: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
+        width: text(8),
+        height: text(8),
+        borderRadius: text(8),
         backgroundColor: 'red',
-        marginRight: text(6),
+        marginRight: text(8),
+    },
+    agreement: {
+        color: Colors.darkGrayColor,
+        fontSize: Font.textH3,
+        lineHeight: text(17),
     },
 });
