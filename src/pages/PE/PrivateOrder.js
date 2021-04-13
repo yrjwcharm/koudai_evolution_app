@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: yhc
  * @Desc:私募预约
- * @LastEditTime: 2021-04-12 16:35:37
+ * @LastEditTime: 2021-04-13 21:38:11
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -126,6 +126,14 @@ export default class PrivateOrder extends Component {
     };
     submitOrder = () => {
         const {data, amount, currentDate, phone} = this.state;
+        if (!amount) {
+            Toast.show('请输入正确的购买金额');
+            return;
+        }
+        if (!phone) {
+            Toast.show('请输入您的登录手机号');
+            return;
+        }
         Http.post('/pe/do_appointment/20210101', {
             order_id: data.order_id,
             amount: amount,
@@ -158,19 +166,14 @@ export default class PrivateOrder extends Component {
                         <View style={styles.card_wrap}>
                             <View style={[Style.flexRow, styles.card_list]}>
                                 <Text style={styles.card_label}>预约产品</Text>
-                                <TextInput
-                                    placeholder="产品名称"
-                                    value={data.quote.name}
-                                    editable={false}
-                                    style={{flex: 1, fontWeight: '500'}}
-                                />
+                                <Text style={{flex: 1, fontWeight: 'bold'}}>{data.quote.name}</Text>
                             </View>
                             <View style={[Style.flexRow, styles.card_list]}>
                                 <Text style={styles.card_label}>投资金额</Text>
                                 <TextInput
                                     placeholder="100万起投，10万递增"
                                     keyboardType={'number-pad'}
-                                    style={{flex: 1, fontWeight: '500'}}
+                                    style={{flex: 1, fontWeight: 'bold'}}
                                     value={amount}
                                     onChangeText={(text) => {
                                         this.setState({
@@ -183,7 +186,7 @@ export default class PrivateOrder extends Component {
                             <TouchableOpacity style={[Style.flexRow, styles.card_list]} onPress={this._showDatePicker}>
                                 <View style={[Style.flexRow, {flex: 1}]}>
                                     <Text style={styles.card_label}>打款时间</Text>
-                                    <Text style={{fontWeight: '500'}}>{currentDate}</Text>
+                                    <Text style={{fontWeight: 'bold'}}>{currentDate}</Text>
                                 </View>
                                 <AntDesign name={'right'} color={'#B8C1D3'} />
                             </TouchableOpacity>
@@ -192,7 +195,7 @@ export default class PrivateOrder extends Component {
                                 <TextInput
                                     placeholder="请输入预约手机号"
                                     keyboardType={'number-pad'}
-                                    style={{flex: 1, fontWeight: '500'}}
+                                    style={{flex: 1, fontWeight: 'bold'}}
                                     value={phone}
                                     maxLength={11}
                                     onChangeText={(phone) => {
