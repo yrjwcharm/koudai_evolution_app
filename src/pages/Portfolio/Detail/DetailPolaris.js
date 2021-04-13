@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 15:04:47
+ * @LastEditTime: 2021-04-13 11:39:25
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -36,9 +36,10 @@ export default function DetailPolaris({route, navigation}) {
                 title: res.result.title,
             });
             setData(res.result);
+            setPeriod(res.result.period);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
-                period: period,
+                period: res.result.period,
                 type: type,
                 poid: route.params.poid,
                 allocation_id: res.result?.parts_addition_data?.line.allocation_id,

@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 11:27:49
+ * @LastEditTime: 2021-04-13 11:59:08
  * @Description:app引导页
  */
 
@@ -22,36 +22,25 @@ const styles = StyleSheet.create({
     },
 });
 
+const image1 = require('../../../assets/img/appGuide/largeslider1.jpg');
+const image2 = require('../../../assets/img/appGuide/largeslider2.jpg');
+const image3 = require('../../../assets/img/appGuide/largeslider3.jpg');
+const image4 = require('../../../assets/img/appGuide/largeslider4.jpg');
 export default function AppGuide({navigation}) {
+    console.log(deviceWidth);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage
-                    source={require('../../../assets/img/appGuide/slider1.png')}
-                    style={styles.imgage}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
+                <FastImage source={image1} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
             </View>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage
-                    source={require('../../../assets/img/appGuide/slider2.png')}
-                    style={styles.imgage}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
+                <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
             </View>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage
-                    source={require('../../../assets/img/appGuide/slider3.png')}
-                    style={styles.imgage}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
+                <FastImage source={image3} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
             </View>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage
-                    source={require('../../../assets/img/appGuide/slider4.png')}
-                    style={styles.imgage}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
+                <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
                 <Button
                     title={'开启理财魔方'}
                     style={{
@@ -61,10 +50,14 @@ export default function AppGuide({navigation}) {
                         borderRadius: px(30),
                         left: (deviceWidth - px(163)) / 2,
                     }}
-                    onPress={_.debounce(() => {
-                        Storage.save('AppGuide', true);
-                        navigation.replace('Tab');
-                    }, 500)}
+                    onPress={_.debounce(
+                        () => {
+                            Storage.save('AppGuide', true);
+                            navigation.replace('Tab');
+                        },
+                        500,
+                        {leading: true, trailing: false}
+                    )}
                 />
             </View>
         </Swiper>

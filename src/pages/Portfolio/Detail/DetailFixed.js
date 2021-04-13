@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 14:17:03
+ * @LastEditTime: 2021-04-13 11:38:08
  */
 
 import React, {useState, useCallback} from 'react';
@@ -51,9 +51,10 @@ export default function DetailAccount({route, navigation}) {
                 title: res.result.title,
             });
             setData(res.result);
+            setPeriod(res.result.period);
             Http.get('/portfolio/yield_chart/20210101', {
                 upid: route.params.upid,
-                period: period,
+                period: res.result.period,
                 type: type,
                 allocation_id: res.result.allocation_id,
                 benchmark_id: res.result.benchmark_id,
@@ -116,9 +117,8 @@ export default function DetailAccount({route, navigation}) {
                                     style={[
                                         styles.btn_sty,
                                         {
-                                            backgroundColor:
-                                                period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
-                                            borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
+                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                            borderWidth: period == _item.val ? 0 : 0.5,
                                             marginRight: _index < arr.length - 1 ? text(10) : 0,
                                         },
                                     ]}
@@ -126,7 +126,7 @@ export default function DetailAccount({route, navigation}) {
                                     onPress={() => changeTab(_item.val, _item.type)}>
                                     <Text
                                         style={{
-                                            color: period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
+                                            color: period == _item.val ? '#0051CC' : '#555B6C',
                                             fontSize: text(12),
                                         }}>
                                         {_item.name}

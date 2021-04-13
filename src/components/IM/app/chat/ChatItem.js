@@ -5,6 +5,7 @@ import ImageMessage from './ImageMessage';
 import VideoMessage from './VideoMessage';
 import VoiceMessage from './VoiceMessage';
 import {EMOJIS_DATA} from '../source/emojis';
+import Html from '../../../RenderHtml';
 const {width} = Dimensions.get('window');
 
 const PATTERNS = {
@@ -63,11 +64,16 @@ export default class ChatItem extends PureComponent {
         // 若匹配不到，则直接返回一个全文本
         if (emojiIndex === -1) {
             views.push(
-                <Text
+                <Html
+                    html={textContent}
                     style={isSelf ? rightMessageTextStyle : leftMessageTextStyle}
-                    key={'emptyTextView' + Math.random() * 100}>
-                    {textContent}
-                </Text>
+                    key={'emptyTextView' + Math.random() * 100}
+                />
+                // <Text
+                //     style={isSelf ? rightMessageTextStyle : leftMessageTextStyle}
+                //     key={'emptyTextView' + Math.random() * 100}>
+                //     {textContent}
+                // </Text>
             );
         } else {
             if (emojiIndex !== -1) {

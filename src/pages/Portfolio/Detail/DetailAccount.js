@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -29,7 +29,7 @@ export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y3');
+    const [period, setPeriod] = useState();
     const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
     const changeTab = (p, t) => {
@@ -67,11 +67,12 @@ export default function DetailAccount({route, navigation}) {
                         );
                     },
                 });
+                setPeriod(res.result.period);
                 Http.get('/portfolio/yield_chart/20210101', {
                     allocation_id: res.result.allocation_id,
                     benchmark_id: res.result.benchmark_id,
                     poid: res.result.poid,
-                    period: period,
+                    period: res.result.period,
                     type: type,
                 }).then((resp) => {
                     setChart(resp.result.yield_info.chart);
@@ -113,16 +114,15 @@ export default function DetailAccount({route, navigation}) {
                                     style={[
                                         styles.btn_sty,
                                         {
-                                            backgroundColor:
-                                                period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
-                                            borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
+                                            backgroundColor: period == _item.val ? '#F1F6FF' : '#fff',
+                                            borderWidth: period == _item.val ? 0 : 0.5,
                                         },
                                     ]}
                                     key={_index}
                                     onPress={() => changeTab(_item.val, _item.type)}>
                                     <Text
                                         style={{
-                                            color: period == _item.val && type == _item.type ? '#0051CC' : '#555B6C',
+                                            color: period == _item.val ? '#0051CC' : '#555B6C',
                                             fontSize: text(12),
                                         }}>
                                         {_item.name}
