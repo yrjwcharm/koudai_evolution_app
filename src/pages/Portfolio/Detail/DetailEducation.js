@@ -238,13 +238,13 @@ export default function DetailEducation({navigation, route}) {
         if (iptValRef.current < item.min) {
             if (iptValRef.current > 0) {
                 item.type === 'begin' ? setCountFr(item.min) : setCountM(item.min);
-                Toast.show(`组合最低起投金额为${formaNum(item.min)}`);
+                inputModal.current.toastShow(`组合最低起投金额为${formaNum(item.min)}`);
             } else {
                 item.type === 'begin' ? setCountFr(0) : setCountM(0);
             }
         } else if (iptValRef.current > item.max) {
             item.type === 'begin' ? setCountFr(item.max) : setCountM(item.max);
-            Toast.show('金额需小于1亿');
+            inputModal.current.toastShow('金额需小于1亿');
         } else {
             item.type === 'begin'
                 ? setCountFr(parseFloat(iptValRef.current))

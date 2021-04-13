@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-12 19:50:54
- * @LastEditors: yhc
+ * @LastEditTime: 2021-04-13 11:21:57
+ * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -24,7 +24,7 @@ const TradeProcessing = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
     const [heightArr, setHeightArr] = useState([]);
-    const verifyCodeModel = React.useRef(null);
+    const verifyCodeModal = React.useRef(null);
     const [bankInfo, setBankInfo] = useState('');
     const [isSign, setSign] = useState(false);
     const jump = useJump();
@@ -40,7 +40,7 @@ const TradeProcessing = ({navigation, route}) => {
                 setData(res.result);
 
                 if (res.result.need_verify_code) {
-                    verifyCodeModel.current.show();
+                    verifyCodeModal.current.show();
                     return signSendVerify();
                 }
                 if (res.result.finish || res.result.finish === -2 || loopRef.current++ >= res.result.loop) {
@@ -101,10 +101,10 @@ const TradeProcessing = ({navigation, route}) => {
                     if (res.code === '000000') {
                         setSign(false);
                         setTimeout(() => {
-                            verifyCodeModel.current.hide();
+                            verifyCodeModal.current.hide();
                         }, 300);
                     } else {
-                        Toast.show(res.message);
+                        verifyCodeModal.current.toastShow(res.message);
                     }
                 });
             }
@@ -222,16 +222,15 @@ const TradeProcessing = ({navigation, route}) => {
                         }}
                     />
                 )}
-
-                <VerifyCodeModal
-                    ref={verifyCodeModel}
-                    desc={bankInfo.content ? bankInfo.content : ''}
-                    modalCancelCallBack={modalCancelCallBack}
-                    onChangeText={onChangeText}
-                    isSign={isSign}
-                    getCode={signSendVerify}
-                />
             </ScrollView>
+            <VerifyCodeModal
+                ref={verifyCodeModal}
+                desc={bankInfo.content ? bankInfo.content : ''}
+                modalCancelCallBack={modalCancelCallBack}
+                onChangeText={onChangeText}
+                isSign={isSign}
+                getCode={signSendVerify}
+            />
         </View>
     );
 };

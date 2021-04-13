@@ -2,18 +2,18 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: dx
- * @LastEditTime: 2021-03-13 15:43:42
+ * @LastEditTime: 2021-04-13 11:07:30
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, Modal} from 'react-native';
 import {constants} from './util';
-import {px as text} from '../../utils/appUtil';
+import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
 import {Font, Style} from '../../common/commonStyle';
 import RBSheet from 'react-native-raw-bottom-sheet';
-const VerifyCodeModel = React.forwardRef((props, ref) => {
+const VerifyCodeModal = React.forwardRef((props, ref) => {
     const refRBSheet = useRef();
     const {
         title = '请输入手机验证码',
@@ -31,6 +31,8 @@ const VerifyCodeModel = React.forwardRef((props, ref) => {
     const [code, setCode] = useState('');
     const btnClick = useRef(true);
     const inputRef = useRef(null);
+    const [showToast, setShowToast] = useState(false);
+    const [toastText, setToastText] = useState('');
 
     const sendCode = useCallback(() => {
         if (btnClick.current) {
@@ -62,6 +64,14 @@ const VerifyCodeModel = React.forwardRef((props, ref) => {
     const show = () => {
         refRBSheet.current.open();
     };
+    const toastShow = (t, duration = 2000) => {
+        setToastText(t);
+        setShowToast(true);
+        setTimeout(() => {
+            setShowToast(false);
+            setToastText('');
+        }, duration);
+    };
     const onClose = () => {
         timerRef.current !== null && clearInterval(timerRef.current);
         timerRef.current = null;
@@ -87,6 +97,7 @@ const VerifyCodeModel = React.forwardRef((props, ref) => {
         return {
             hide: hide,
             show: show,
+            toastShow: toastShow,
         };
     });
 
@@ -146,6 +157,13 @@ const VerifyCodeModel = React.forwardRef((props, ref) => {
                     </View>
                 </View>
             </View>
+            <Modal animationType={'fade'} onRequestClose={() => setShowToast(false)} transparent visible={showToast}>
+                <View style={[Style.flexCenter, styles.toastContainer]}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.textStyle}>{toastText}</Text>
+                    </View>
+                </View>
+            </Modal>
         </RBSheet>
     );
 });
@@ -200,6 +218,23 @@ const styles = StyleSheet.create({
         color: '#333333',
         fontWeight: '500',
     },
+    toastContainer: {
+        flex: 1,
+        height: deviceHeight,
+        width: deviceWidth,
+    },
+    textContainer: {
+        padding: 10,
+        backgroundColor: '#1E1F20',
+        opacity: 0.8,
+        borderRadius: 5,
+    },
+    textStyle: {
+        fontSize: Font.textH1,
+        lineHeight: text(24),
+        color: '#fff',
+        textAlign: 'center',
+    },
 });
 
-export default VerifyCodeModel;
+export default VerifyCodeModal;
