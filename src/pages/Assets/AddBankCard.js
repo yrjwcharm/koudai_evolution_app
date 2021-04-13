@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 21:28:31
+ * @LastEditTime: 2021-04-13 11:35:11
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -45,7 +45,7 @@ const AddBankCard = ({navigation, route}) => {
                     getBank.current = false;
                     http.get('/passport/match/bank_card_info/20210101', {
                         bank_no: value.replace(/ /g, ''),
-                        bc_code: route.params?.bank_code,
+                        bc_code: route.params?.bank_code || '',
                     }).then((res) => {
                         if (res.code === '000000') {
                             // console.log(res);
@@ -97,7 +97,7 @@ const AddBankCard = ({navigation, route}) => {
             btnClick.current = false;
             http.post('/passport/bank_card/bind_prepare/20210101', {
                 bank_code: bankCode.current,
-                bc_code: route.params?.bank_code,
+                bc_code: route.params?.bank_code || '',
                 bank_no: cardNum,
                 mobile: phone,
             }).then((res) => {
@@ -190,7 +190,7 @@ const AddBankCard = ({navigation, route}) => {
                 '/passport/bank_card/bind/20210101',
                 {
                     bank_code: bankCode.current,
-                    bc_code: route.params?.bank_code,
+                    bc_code: route.params?.bank_code || '',
                     bank_no: cardNum.replace(/ /g, ''),
                     mobile: phone,
                     code,
@@ -221,7 +221,7 @@ const AddBankCard = ({navigation, route}) => {
     useEffect(() => {
         http.get('/passport/bank_list/20210101', {
             channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
-            bc_code: route.params?.bank_code,
+            bc_code: route.params?.bank_code || '',
         }).then((res) => {
             if (res.code === '000000') {
                 setBankList(res.result);
