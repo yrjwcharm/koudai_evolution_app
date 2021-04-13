@@ -203,7 +203,7 @@ export default function DetailPolaris({route, navigation}) {
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
-                                {data?.part_pie?.pie.table?.body.map((_table, _index) => {
+                                {data?.part_pie?.pie.table?.body?.map((_table, _index) => {
                                     const width = _index < data?.part_pie?.pie.table?.body.length - 1 ? 0.5 : 0;
                                     const padding = _index < data?.part_pie?.pie.table?.body.length - 1 ? text(13) : 0;
                                     return (
