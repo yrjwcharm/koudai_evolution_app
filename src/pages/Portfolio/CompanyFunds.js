@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-09 19:47:10
+ * @LastEditTime: 2021-04-13 16:10:00
  * @Description: 旗下基金
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -90,7 +90,7 @@ const CompanyFunds = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无旗下基金数据'} />;
+        return <Empty text={'暂无旗下基金'} />;
     }, []);
     // 渲染列表项
     const renderItem = useCallback(

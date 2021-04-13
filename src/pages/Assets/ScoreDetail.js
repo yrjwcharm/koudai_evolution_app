@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 09:59:31
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 16:29:40
+ * @LastEditTime: 2021-04-13 16:07:18
  * @Description: 魔分明细
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -292,7 +292,7 @@ const ScoreDetail = ({navigation, route}) => {
             />
             {list?.length === 0 && (
                 <View style={[Style.flexCenter, styles.emptyBox]}>
-                    <Empty text={'暂无魔分明细'} />
+                    <Empty text={'暂无魔分明细'} type={'part'} />
                 </View>
             )}
         </View>

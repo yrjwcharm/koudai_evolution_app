@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-09 09:55:38
+ * @LastEditTime: 2021-04-13 16:05:40
  * @Description: 邀请好友记录
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -90,7 +90,7 @@ const InviteRecord = ({navigation, route}) => {
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无邀请好友记录数据'} />;
+        return <Empty text={'暂无邀请好友记录'} />;
     }, []);
     // 渲染列表项
     const renderItem = useCallback(({item, index}) => {

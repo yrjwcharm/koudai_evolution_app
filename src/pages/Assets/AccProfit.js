@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 10:22:00
+ * @LastEditTime: 2021-04-13 15:59:01
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -245,7 +245,12 @@ const AccProfit = ({poid}) => {
                     </View>
                 </View>
             ) : (
-                <EmptyTip style={{paddingTop: text(28), paddingBottom: text(40)}} text="暂无数据" />
+                <EmptyTip
+                    img={require('../../assets/img/emptyTip/noProfit.png')}
+                    style={{paddingTop: text(28), paddingBottom: text(40)}}
+                    text={'暂无累计收益数据'}
+                    type={'part'}
+                />
             )}
 
             {list.length > 0 && (

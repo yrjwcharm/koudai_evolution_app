@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 17:47:56
+ * @LastEditTime: 2021-04-13 16:00:09
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -153,14 +153,18 @@ const DailyProfit = ({poid}) => {
                         {hasMore ? '正在加载...' : '我们是有底线的...'}
                     </Text>
                 ) : (
-                    <Empty text={'暂无日收益数据'} />
+                    <Empty
+                        img={require('../../assets/img/emptyTip/noProfit.png')}
+                        text={'暂无日收益数据'}
+                        type={'part'}
+                    />
                 )}
             </>
         );
     }, [hasMore, list]);
     // 渲染空数据状态
     const renderEmpty = useCallback(() => {
-        return <Empty text={'暂无日收益数据'} />;
+        return <Empty img={require('../../assets/img/emptyTip/noProfit.png')} text={'暂无日收益数据'} type={'part'} />;
     }, []);
     // 渲染列表项
     const renderItem = useCallback(
