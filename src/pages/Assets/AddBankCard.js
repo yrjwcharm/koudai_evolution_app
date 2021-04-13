@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-12 18:53:51
+ * @LastEditTime: 2021-04-12 21:28:31
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,7 +16,7 @@ import InputView from './components/input';
 import Agreements from '../../components/Agreements';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
-import {BankCardModal} from '../../components/Modal';
+import {BankCardModal, Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
 
 const AddBankCard = ({navigation, route}) => {
@@ -35,31 +35,37 @@ const AddBankCard = ({navigation, route}) => {
     const bankModal = useRef(null);
     const [check, setCheck] = useState(true);
     const getBank = useRef(true);
+    const msgSeq = useRef('');
+    const orderNo = useRef('');
 
-    const onInputCardNum = useCallback((value) => {
-        if (value && value.length >= 12) {
-            if (getBank.current) {
-                getBank.current = false;
-                http.get('/passport/match/bank_card_info/20210101', {
-                    bank_no: value.replace(/ /g, ''),
-                }).then((res) => {
-                    if (res.code === '000000') {
-                        // console.log(res);
-                        setBankName(res.result.bank_name);
-                        bankCode.current = res.result.bank_code;
-                    }
-                });
+    const onInputCardNum = useCallback(
+        (value) => {
+            if (value && value.length >= 12) {
+                if (getBank.current) {
+                    getBank.current = false;
+                    http.get('/passport/match/bank_card_info/20210101', {
+                        bank_no: value.replace(/ /g, ''),
+                        bc_code: route.params?.bank_code,
+                    }).then((res) => {
+                        if (res.code === '000000') {
+                            // console.log(res);
+                            setBankName(res.result.bank_name);
+                            bankCode.current = res.result.bank_code;
+                        }
+                    });
+                }
+            } else {
+                getBank.current = true;
             }
-        } else {
-            getBank.current = true;
-        }
-        setCardNum(
-            value
-                .replace(/\s/g, '')
-                .replace(/\D/g, '')
-                .replace(/(\d{4})(?=\d)/g, '$1 ')
-        );
-    }, []);
+            setCardNum(
+                value
+                    .replace(/\s/g, '')
+                    .replace(/\D/g, '')
+                    .replace(/(\d{4})(?=\d)/g, '$1 ')
+            );
+        },
+        [route.params]
+    );
     const getCode = useCallback(() => {
         global.LogTool('click', 'getCode');
         if (!btnClick.current) {
@@ -91,10 +97,13 @@ const AddBankCard = ({navigation, route}) => {
             btnClick.current = false;
             http.post('/passport/bank_card/bind_prepare/20210101', {
                 bank_code: bankCode.current,
+                bc_code: route.params?.bank_code,
                 bank_no: cardNum,
                 mobile: phone,
             }).then((res) => {
                 if (res.code === '000000') {
+                    msgSeq.current = res.result?.msg_seq || '';
+                    orderNo.current = res.result?.order_no || '';
                     Toast.show(res.message);
                     timer();
                 } else {
@@ -103,10 +112,22 @@ const AddBankCard = ({navigation, route}) => {
                 }
             });
         }
-    }, [bankCode, cardNum, phone, timer]);
+    }, [bankCode, cardNum, phone, route.params, timer]);
     const onSelectBank = (value) => {
-        bankCode.current = value.bank_code;
-        setBankName(value.bank_name);
+        if (value.alert_msg) {
+            Modal.show({
+                cancelCallBack: () => bankModal.current.show(),
+                confirm: true,
+                confirmCallBack: () => {
+                    bankCode.current = value.bank_code;
+                    setBankName(value.bank_name);
+                },
+                content: value.alert_msg,
+            });
+        } else {
+            bankCode.current = value.bank_code;
+            setBankName(value.bank_name);
+        }
     };
     const timer = useCallback(() => {
         setSecond(60);
@@ -169,9 +190,13 @@ const AddBankCard = ({navigation, route}) => {
                 '/passport/bank_card/bind/20210101',
                 {
                     bank_code: bankCode.current,
+                    bc_code: route.params?.bank_code,
                     bank_no: cardNum.replace(/ /g, ''),
                     mobile: phone,
                     code,
+                    bank_name: bankName,
+                    msg_seq: msgSeq.current,
+                    order_no: orderNo.current,
                 },
                 '正在提交数据...'
             ).then((res) => {
@@ -191,17 +216,18 @@ const AddBankCard = ({navigation, route}) => {
                 }
             });
         }
-    }, [bankName, cardNum, check, code, phone, navigation]);
+    }, [bankName, cardNum, check, code, phone, navigation, route.params]);
 
     useEffect(() => {
         http.get('/passport/bank_list/20210101', {
             channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
+            bc_code: route.params?.bank_code,
         }).then((res) => {
             if (res.code === '000000') {
                 setBankList(res.result);
             }
         });
-    }, [userInfo]);
+    }, [route.params, userInfo]);
     useEffect(() => {
         if (route.params?.action === 'add') {
             navigation.setOptions({title: '添加新银行卡'});
