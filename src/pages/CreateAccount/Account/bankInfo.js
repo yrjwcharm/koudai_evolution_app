@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:07:29
+ * @LastEditTime: 2021-04-12 21:00:50
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';

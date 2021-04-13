@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 20:24:43
+ * @LastEditTime: 2021-04-12 20:39:35
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -125,7 +125,6 @@ class Question extends Component {
                     },
                     () => {
                         if (this.fr == 'risk' && this.state.questions[0]?.style == 'age_cursor') {
-                            console.log('aaa');
                             this.setState({
                                 value: this.state.questions[0].default_value,
                                 inputBtnCanClick: true,
@@ -725,7 +724,7 @@ class Question extends Component {
                                                             }}
                                                         />
                                                     </View>
-                                                    {!warn && value.length > 4 ? (
+                                                    {!warn && value >= 10000 ? (
                                                         <Text style={{fontSize: px(16), color: Colors.lightGrayColor}}>
                                                             {value / 10000}万
                                                         </Text>

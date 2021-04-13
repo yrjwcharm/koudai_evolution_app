@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 21:18:36
+ * @LastEditTime: 2021-04-12 20:54:22
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -137,7 +137,6 @@ const IM = (props) => {
         WS.current.onopen = function () {
             http.get(`${BaseUrl.IMApi}/im/token`)
                 .then((data) => {
-                    console.log('object');
                     setUid(data.result.uid);
                     _uid.current = data.result.uid;
                     token.current = data.result.token;
