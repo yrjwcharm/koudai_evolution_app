@@ -2,7 +2,7 @@
  * @Date: 2021-03-06 12:00:27
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 16:50:33
+ * @LastEditTime: 2021-04-13 17:50:46
  * @Description: 基金组合协议和产品概要
  */
 import React, {useEffect, useState} from 'react';
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     partBox: {
-        marginTop: Space.marginVertical,
+        marginVertical: Space.marginVertical,
         marginHorizontal: Space.marginAlign,
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,

@@ -1,16 +1,17 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:50:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-13 19:14:42
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Platform, BackHandler} from 'react-native';
+import {View, Platform, BackHandler, Linking} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
 import {Colors} from '../../common/commonStyle';
+import Toast from '../../components/Toast';
 export default function WebView({route, navigation}) {
     const webview = useRef(null);
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
@@ -57,7 +58,23 @@ export default function WebView({route, navigation}) {
             <RNWebView
                 ref={webview}
                 onMessage={(event) => {
-                    alert('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+                    const data = event.nativeEvent.data;
+                    console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+                    if (data) {
+                        const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
+                        if (url) {
+                            Linking.canOpenURL(url)
+                                .then((supported) => {
+                                    if (!supported) {
+                                        return Toast.show(
+                                            `您的设备不支持该功能，请手动拨打 ${data.split('phone=')[1]}`
+                                        );
+                                    }
+                                    return Linking.openURL(url);
+                                })
+                                .catch((err) => Toast.show(err));
+                        }
+                    }
                 }}
                 originWhitelist={['*']}
                 javaScriptEnabled={true}
