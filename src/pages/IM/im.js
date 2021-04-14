@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 16:34:19
+ * @LastEditTime: 2021-04-14 17:37:42
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -240,8 +240,7 @@ const IM = (props) => {
                         WS.current.send(handleMsgParams('AAR', 'success', _data.cmid));
                     }
                     break;
-                case 'AMN':
-                    break;
+
                 default:
                     break;
             }
@@ -759,23 +758,25 @@ const IM = (props) => {
         return (
             <View style={{flexDirection: 'row'}}>
                 <View style={[styles.triangle, styles.left_triangle]} />
-                <View style={styles.article_con}>
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={styles.article_con}
+                    onPress={() => {
+                        props.navigation.navigate('ArticleDetail', {id: article.id});
+                    }}>
                     <FastImage
-                        source={{uri: article.img}}
+                        source={{uri: article.cover}}
                         style={{width: px(60), height: px(60), borderRadius: px(4)}}
                     />
-                    <View
-                        style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', marginLeft: px(8)}}>
+                    <View style={{flex: 1, flexDirection: 'column', marginLeft: px(8)}}>
                         <Text style={{lineHeight: px(20)}} numberOfLines={2}>
-                            {article.desc}
+                            {article?.title}
                         </Text>
-                        <Text
-                            numberOfLines={1}
-                            style={{fontSize: px(11), color: Colors.lightGrayColor, lineHeight: px(16)}}>
+                        <Text numberOfLines={1} style={styles.article_desc}>
                             {article.desc}
                         </Text>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     };
@@ -1096,5 +1097,11 @@ const styles = StyleSheet.create({
     system_text: {
         fontSize: 12,
         color: '#fff',
+    },
+    article_desc: {
+        fontSize: px(11),
+        color: Colors.lightGrayColor,
+        lineHeight: px(16),
+        marginTop: px(4),
     },
 });
