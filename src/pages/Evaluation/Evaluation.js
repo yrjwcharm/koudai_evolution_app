@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 19:32:25
+ * @LastEditTime: 2021-04-14 15:32:03
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -93,10 +93,22 @@ class Question extends Component {
         });
     };
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
+        this.props.navigation.addListener('beforeRemove', (e) => {
+            if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
+                e.preventDefault();
+                // Prompt the user before leaving the screen
+                Modal.show({
+                    title: '结束定制',
+                    content: '确定要结束本次定制吗？',
+                    confirm: true,
+                    confirmCallBack: () => {
+                        this.props.navigation.dispatch(e.data.action);
+                    },
+                });
+            }
+        });
     }
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
         this.clearValueTimer && clearTimeout(this.clearValueTimer);
     }
     showTip = ({content, title}) => {
@@ -142,7 +154,6 @@ class Question extends Component {
     handleContentView = (ref) => (this.contentView = ref);
     showNextAnimation = (action) => {
         layoutAnimation();
-
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
@@ -392,19 +403,9 @@ class Question extends Component {
             }
         );
     };
-    goBackAndroid = () => {
-        this.goBack();
-        return true;
-    };
+
     goBack = () => {
-        Modal.show({
-            title: '结束定制',
-            content: '确定要结束本次定制吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.goBack();
-            },
-        });
+        this.props.navigation.goBack();
     };
     tagClick = (count) => {
         this.setState({

@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 13:54:04
+ * @LastEditTime: 2021-04-14 15:00:00
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -636,7 +636,7 @@ const IM = (props) => {
     };
     const renderIntelList = () => {
         return intellectList.length > 0 ? (
-            <View style={{position: 'relative'}}>
+            <View style={{height: intellectList.length * px(43)}}>
                 <View style={[styles.intellectList]}>
                     {intellectList.map((item, index) => (
                         <TouchableOpacity

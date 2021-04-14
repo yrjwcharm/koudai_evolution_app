@@ -557,6 +557,7 @@ class ChatWindow extends PureComponent {
     };
 
     closeAll = (callback) => {
+        console.log('closeAll');
         if (this.state.panelShow) {
             this.setState({xHeight: this.props.iphoneXBottomPadding});
             return this.closePanel(true, callback);
@@ -765,7 +766,6 @@ class ChatWindow extends PureComponent {
                             data={currentList}
                             ListFooterComponent={this.props.renderLoadEarlier}
                             extraData={this.props.extraData}
-                            keyboardDismissMode="on-drag"
                             automaticallyAdjustContentInsets={false}
                             onScroll={(e) => {
                                 this.props.onScroll(e);
