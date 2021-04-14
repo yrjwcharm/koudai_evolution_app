@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-19 12:19:22
- * @LastEditors: xjh
+ * @LastEditors: dx
  * @Desc:私募合格投资者认证
- * @LastEditTime: 2021-03-09 17:07:55
+ * @LastEditTime: 2021-04-14 16:37:44
  */
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
@@ -11,14 +11,32 @@ import {Colors, Space, Font, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import CheckBox from '../../components/CheckBox';
-import {Button, FixedButton} from '../../components/Button';
+import {FixedButton} from '../../components/Button';
 import Http from '../../services';
 import Toast from '../../components/Toast';
 import {Modal} from '../../components/Modal';
+import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 
 const deviceWidth = Dimensions.get('window').width;
 
-export default class PrivateCert extends Component {
+const withMyHook = (Page) => {
+    return function WrappedPage(props) {
+        const jump = useJump();
+        return <Page {...props} jump={jump} />;
+    };
+};
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+
+    return null;
+}
+
+class PrivateCert extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,20 +54,21 @@ export default class PrivateCert extends Component {
     clickBtn = () => {
         const {data, check, fund_code} = this.state;
         if (check[0] && check[1]) {
-            if (!data.tip) {
+            if (data.tip) {
                 Modal.show({
                     title: data.tip.title,
                     content: data.tip.content,
                     confirm: true,
-                    confirmText: '确定',
-                    confirmCallBack: this.props.navigation.replace(data.tip.button[0].url),
+                    cancelText: data.tip.button[1]?.text,
+                    confirmText: data.tip.button[0]?.text,
+                    confirmCallBack: () => this.props.jump(data.tip.button[0]?.url),
                 });
             } else {
                 Http.post('/pe/confirm/20210101', {
                     fund_code: fund_code,
                 }).then((res) => {
                     if (res.code === '000000') {
-                        this.props.navigation.replace(this.state.data.button.path, this.state.data.button.params);
+                        this.props.jump(data.button.url, 'replace');
                     }
                 });
             }
@@ -57,7 +76,7 @@ export default class PrivateCert extends Component {
             Toast.show('请勾选协议');
         }
     };
-    componentDidMount() {
+    init = () => {
         Http.get('/pe/validate/20210101', {
             fund_code: this.state.fund_code,
         }).then((res) => {
@@ -65,11 +84,12 @@ export default class PrivateCert extends Component {
                 data: res.result,
             });
         });
-    }
+    };
     render() {
         const {check, data} = this.state;
         return (
             <View style={styles.container}>
+                <Focus init={this.init} />
                 {Object.keys(data).length > 0 && (
                     <View>
                         <View style={[styles.card_wrap]}>
@@ -178,3 +198,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#CEA26B',
     },
 });
+
+export default withMyHook(PrivateCert);

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 19:07:24
+ * @LastEditTime: 2021-04-14 20:47:18
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -29,6 +29,9 @@ import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture} from './src/redux/actions/userInfo';
+import {Modal} from './src/components/Modal';
+import Image from 'react-native-fast-image';
+import {px as text} from './src/utils/appUtil';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -59,6 +62,7 @@ function App(props) {
     // const scheme = useColorScheme();
     const navigationRef = useRef();
     const routeNameRef = useRef();
+    const modalObj = useRef({});
     //如果有更新的提示
     const syncImmediate = () => {
         CodePush.sync({
@@ -172,7 +176,78 @@ function App(props) {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    React.useEffect(() => {
+        http.get('/common/layer/20210101').then((res) => {
+            if (res.code === '000000') {
+                // console.log(res);
+                modalObj.current = res.result;
+            }
+        });
+    }, []);
 
+    const jump = (navigation, url, type = 'navigate') => {
+        if (url) {
+            if (url.type === 2) {
+                Linking.canOpenURL(url.path)
+                    .then((supported) => {
+                        if (!supported) {
+                            return Toast.show('您的设备不支持打开网址');
+                        }
+                        return Linking.openURL(url.path);
+                    })
+                    .catch((err) => Toast.show(err));
+            } else if (url.type === 3) {
+                navigation[type]('OpenPdf', {url: url.path});
+            } else if (url.type == 5) {
+                WeChat.isWXAppInstalled().then((isInstalled) => {
+                    if (isInstalled) {
+                        WeChat.launchMiniProgram({
+                            userName: 'gh_476ff6861b86',
+                            miniProgramType: 0,
+                            path: url.path,
+                        });
+                    } else {
+                        Toast.show('请安装微信');
+                    }
+                });
+            } else {
+                navigation[type](url.path, url.params || {});
+            }
+        }
+    };
+    const showModal = (modal) => {
+        if (modal.type === 'image') {
+            Modal.show({
+                type: 'image',
+                imageUrl: modal.image,
+                isTouchMaskToClose: false,
+                confirmCallBack: () => {
+                    // console.log(navigationRef.current);
+                    jump(navigationRef.current, modal.url);
+                },
+            });
+        } else if (modal.type === 'alert_image') {
+            Modal.show({
+                confirm: modal.cancel ? true : false,
+                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url),
+                confirmText: modal.confirm.text,
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel.url),
+                cancelText: modal.cancel.text,
+                content: modal.content,
+                customTitleView: <Image source={{uri: modal.image}} style={{width: text(280), height: text(154)}} />,
+            });
+        } else if (modal.type === 'confirm') {
+            Modal.show({
+                confirm: modal.cancel ? true : false,
+                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url),
+                confirmText: modal.confirm.text,
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel.url),
+                cancelText: modal.cancel.text,
+                content: modal.content,
+            });
+        }
+        modalObj.current = {};
+    };
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
@@ -235,6 +310,17 @@ function App(props) {
                                     ts = new Date().getTime();
                                     const previousRouteName = routeNameRef.current;
                                     const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                    if (Object.keys(modalObj.current).length > 0) {
+                                        if (modalObj.current.page) {
+                                            if (modalObj.current.page === currentRouteName) {
+                                                showModal(modalObj.current);
+                                            }
+                                        } else {
+                                            if (currentRouteName === 'Index') {
+                                                showModal(modalObj.current);
+                                            }
+                                        }
+                                    }
                                     global.previousRouteName = previousRouteName;
                                     global.currentRouteName = currentRouteName;
                                     if (previousRouteName !== currentRouteName) {
