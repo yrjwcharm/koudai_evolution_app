@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:48:13
+ * @LastEditTime: 2021-04-14 20:49:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -164,7 +164,7 @@ export default function MessageNotice({navigation, route}) {
                         <View style={Style.flexBetween}>
                             <Text
                                 style={[styles.title_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}
-                                numberOfLines={3}>
+                                numberOfLines={2}>
                                 {item.title}
                             </Text>
                             <Text
@@ -178,7 +178,7 @@ export default function MessageNotice({navigation, route}) {
                         </View>
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
                             <Text
-                                numberOfLines={2}
+                                numberOfLines={3}
                                 style={[styles.content_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.content}
                             </Text>
