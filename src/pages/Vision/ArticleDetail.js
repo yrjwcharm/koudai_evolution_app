@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 15:54:59
+ * @LastEditTime: 2021-04-14 14:18:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -23,7 +23,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const ArticleDetail = ({navigation, route}) => {
     const netInfo = useNetInfo();
-    const [hasNet, setHasNet] = useState(netInfo.isConnected);
+    const [hasNet, setHasNet] = useState(true);
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
@@ -58,10 +58,14 @@ const ArticleDetail = ({navigation, route}) => {
     };
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
-        if (eventData) {
-            setFinishLoad(true);
+        if (eventData.indexOf('article_id') !== -1) {
+            navigation.push('ArticleDetail', {article_id: eventData.split('article_id=')[1]});
+        } else {
+            if (eventData) {
+                setFinishLoad(true);
+            }
+            setHeight(eventData * 1 || deviceHeight);
         }
-        setHeight(eventData * 1 || deviceHeight);
     };
     const onFavor = useCallback(() => {
         if (!btnClick.current) {

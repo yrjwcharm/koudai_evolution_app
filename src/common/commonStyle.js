@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 17:58:33
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-14 10:07:58
  * @Description:主题及公共样式表
  */
 
@@ -27,7 +27,7 @@ export const Colors = {
     // 默认placeholder颜色
     placeholderColor: '#BDC2CC',
     // borderColor
-    borderColor: '#E2E4EA',
+    borderColor: '#E9EAEF',
     // 链接颜色
     linkColor: '#0051CC',
     // 输入框背景色

@@ -3,7 +3,7 @@
  * @Date: 2021-01-30 16:45:41
  * @Description:详情页表格
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 14:28:36
+ * @LastEditTime: 2021-04-14 10:59:04
  */
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -60,17 +60,15 @@ export default function Table(props) {
                             ]}
                             key={_index + '_item'}>
                             <View style={{width: text(90)}}>
-                                <Html
-                                    style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
-                                    html={_item[0]}
-                                />
+                                <Text style={{textAlign: 'center', fontSize: Font.textH3, color: Colors.descColor}}>
+                                    {_item[0]}
+                                </Text>
                             </View>
                             <View style={[styles.body_sty, {flex: 1}]} />
                             <View style={{width: text(90)}}>
-                                <Html
-                                    style={{textAlign: 'center', fontSize: text(12), color: '#545968'}}
-                                    html={_item[2]}
-                                />
+                                <Text style={{textAlign: 'center', fontSize: Font.textH3, color: Colors.descColor}}>
+                                    {_item[2]}
+                                </Text>
                             </View>
                         </View>
                     );
@@ -134,7 +132,7 @@ const styles = StyleSheet.create({
         height: text(40),
         lineHeight: text(40),
         textAlign: 'center',
-        color: '#E74949',
+        color: Colors.red,
         fontSize: text(12),
     },
     text_align_sty: {
