@@ -48,7 +48,7 @@ axios.interceptors.request.use(async (config) => {
         utid,
         chn: global.channel,
         ver: DeviceInfo.getVersion(),
-        request_id: (new Date().getTime()).toString() + parseInt(Math.random() * 1e6 ),
+        request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
     };
     return config;
 });

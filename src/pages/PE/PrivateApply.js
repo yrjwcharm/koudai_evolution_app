@@ -2,12 +2,12 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:34:30
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 18:27:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-14 15:32:08
  */
 
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Platform} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -56,7 +56,11 @@ const PrivateApply = (props) => {
                                         name={item.status === 1 ? 'check-circle' : 'checkbox-blank-circle'}
                                         size={20}
                                         color={
-                                            item.status === 1 ? Colors.green : item.status === 2 ? '#4BA471' : '#CCD0DB'
+                                            item.status === 1
+                                                ? Colors.green
+                                                : item.status === 2
+                                                ? Colors.green
+                                                : '#CCD0DB'
                                         }
                                     />
                                 </View>
@@ -77,7 +81,9 @@ const PrivateApply = (props) => {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[styles.moreInfo]}>
-                                            <Html html={item.vals} style={[styles.moreInfoText]} />
+                                            {item.vals?.map((val, i) => {
+                                                return <Html key={val + i} html={val} style={styles.moreInfoText} />;
+                                            })}
                                         </View>
                                     </View>
                                 </View>
@@ -86,7 +92,7 @@ const PrivateApply = (props) => {
                                         style={[
                                             styles.line,
                                             {
-                                                height: heightArr[index] ? text(heightArr[index] - 4) : text(52),
+                                                height: heightArr[index] ? text(heightArr[index] - 2) : text(52),
                                             },
                                         ]}
                                     />
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
         marginBottom: text(12),
     },
     icon: {
-        width: text(16),
+        // width: text(16),
         height: text(16),
         marginTop: text(16),
         marginRight: text(8),
@@ -137,7 +143,8 @@ const styles = StyleSheet.create({
     },
     contentBox: {
         paddingLeft: text(6),
-        width: text(310.5),
+        // width: text(310.5),
+        flex: 1,
     },
     content: {
         backgroundColor: '#fff',
@@ -171,7 +178,7 @@ const styles = StyleSheet.create({
     line: {
         position: 'absolute',
         top: text(28),
-        left: text(8),
+        left: Platform.select({ios: text(8), android: text(9)}),
         width: text(1),
         backgroundColor: '#CCD0DB',
         zIndex: 1,

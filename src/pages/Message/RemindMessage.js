@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 11:47:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-14 15:09:12
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -171,11 +171,12 @@ export default function RemindMessage({navigation}) {
                                                 style={{width: text(40), height: text(40)}}
                                             />
                                             {_item?.unread ? (
-                                                <View style={styles.point_sty}>
+                                                <View style={[Style.flexCenter, styles.point_sty]}>
                                                     <Text
                                                         style={{
                                                             color: '#fff',
-                                                            fontSize: text(11),
+                                                            fontSize: 11,
+                                                            lineHeight: 12,
                                                             fontFamily: Font.numFontFamily,
                                                         }}>
                                                         {_item?.unread > 99 ? '99+' : _item?.unread}
@@ -245,10 +246,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: text(28),
         top: text(-5),
-        backgroundColor: '#E74949',
-        borderRadius: text(25),
-        paddingHorizontal: text(4),
-        borderWidth: text(2),
+        backgroundColor: Colors.red,
+        borderRadius: text(50),
+        paddingVertical: 3,
+        paddingHorizontal: 6,
+        borderWidth: 2,
         borderColor: '#fff',
+        // width: text(20),
+        // height: text(20),
     },
 });

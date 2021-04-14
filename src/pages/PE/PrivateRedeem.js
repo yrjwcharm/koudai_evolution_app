@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 20:33:15
+ * @LastEditTime: 2021-04-14 14:41:08
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -42,16 +42,16 @@ export default function PrivateRedeem({route, navigation}) {
             }
         });
     };
-    const onInput = (amount) => {
-        if (!amount) {
+    const onInput = (_amount) => {
+        if (!_amount) {
             setAmount('');
             setEnable(true);
             return;
         }
-        if (amount >= data.share.share) {
+        if (_amount >= data.share.share) {
             setAmount(data.share.share.toString());
         } else {
-            setAmount(inputInt(amount));
+            setAmount(inputInt(_amount));
         }
         setEnable(false);
     };

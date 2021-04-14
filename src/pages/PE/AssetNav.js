@@ -3,7 +3,7 @@
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:03:55
+ * @LastEditTime: 2021-04-14 14:42:29
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
@@ -23,7 +23,7 @@ const AssetNav = ({navigation, route}) => {
 
     const init = useCallback(
         (status, first) => {
-            status === 'refresh' && setRefreshing(true);
+            // status === 'refresh' && setRefreshing(true);
             http.get('/pe/asset_nav/20210101?fund_code=SGX499&page=1', {
                 fund_code: (route.params && route.params.code) || '',
                 page,

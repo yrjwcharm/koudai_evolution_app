@@ -3,13 +3,12 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:02:50
+ * @LastEditTime: 2021-04-14 15:28:05
  */
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX, px, deviceWidth} from '../../utils/appUtil';
-import Header from '../../components/NavBar';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
@@ -17,7 +16,7 @@ import {useJump} from '../../components/hooks';
 import Empty from '../../components/EmptyTip';
 import _ from 'lodash';
 export default function MessageNotice({navigation, route}) {
-    const [list, setList] = useState({});
+    const [list, setList] = useState([]);
     const [page, setPage] = useState(1);
     const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(false);
@@ -33,6 +32,23 @@ export default function MessageNotice({navigation, route}) {
             init('loadmore');
         }
     }, [page, init]);
+    useEffect(() => {
+        if (title) {
+            navigation.setOptions({
+                title,
+                headerRight: () => {
+                    return list?.length > 0 ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[Style.flexCenter, styles.topRightBtn]}
+                            onPress={() => readInterface('', 'all')}>
+                            <Text style={styles.right_sty}>{'全部已读'}</Text>
+                        </TouchableOpacity>
+                    ) : null;
+                },
+            });
+        }
+    }, [list, navigation, readInterface, title]);
 
     const init = useCallback(
         (status, first) => {
@@ -97,42 +113,45 @@ export default function MessageNotice({navigation, route}) {
         );
     }, [hasMore, list]);
     // 已读接口
-    const readInterface = (id, _type, url, read, index) => {
-        // is_read==0没读
+    const readInterface = useCallback(
+        (id, _type, url, read, index) => {
+            // is_read==0没读
 
-        if (read) {
-            jump(url);
-            return;
-        }
-        let _params;
-        if (_type) {
-            _params = {type};
-        } else {
-            _params = {id};
-        }
-        Http.get('/message/read/20210101', _params).then((res) => {
-            if (res.code === '000000') {
-                if (_type == 'all') {
-                    setList((prev) => {
-                        const _listAll = _.cloneDeep(prev);
-                        _listAll.forEach((item) => {
-                            item.is_read = 1;
-                        });
-                        return _listAll;
-                    });
-                } else {
-                    setList((prev) => {
-                        const _list = _.cloneDeep(prev);
-                        _list[index].is_read = 1;
-                        return _list;
-                    });
-                    setTimeout(() => {
-                        jump(url);
-                    });
-                }
+            if (read) {
+                jump(url);
+                return;
             }
-        });
-    };
+            let _params;
+            if (_type) {
+                _params = {type};
+            } else {
+                _params = {id};
+            }
+            Http.get('/message/read/20210101', _params).then((res) => {
+                if (res.code === '000000') {
+                    if (_type == 'all') {
+                        setList((prev) => {
+                            const _listAll = _.cloneDeep(prev);
+                            _listAll.forEach((item) => {
+                                item.is_read = 1;
+                            });
+                            return _listAll;
+                        });
+                    } else {
+                        setList((prev) => {
+                            const _list = _.cloneDeep(prev);
+                            _list[index].is_read = 1;
+                            return _list;
+                        });
+                        setTimeout(() => {
+                            jump(url);
+                        });
+                    }
+                }
+            });
+        },
+        [jump, type]
+    );
     // 渲染列表项
     const renderItem = ({item, index}) => {
         return (
@@ -208,13 +227,6 @@ export default function MessageNotice({navigation, route}) {
 
     return (
         <>
-            <Header
-                title={title}
-                leftIcon="chevron-left"
-                rightText={Object.keys(list).length > 0 ? '全部已读' : ''}
-                rightPress={() => readInterface('', 'all')}
-                rightTextStyle={styles.right_sty}
-            />
             <FlatList
                 data={list}
                 initialNumToRender={10}
@@ -236,6 +248,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    topRightBtn: {
+        flex: 1,
+        width: text(64),
+        marginRight: text(14),
+    },
+    right_sty: {
+        fontSize: Font.textH2,
+        lineHeight: text(20),
+        color: Colors.defaultColor,
+    },
     card_sty: {
         backgroundColor: '#fff',
         padding: text(16),
@@ -244,7 +266,7 @@ const styles = StyleSheet.create({
         marginHorizontal: text(16),
     },
     title_sty: {
-        color: '#000000',
+        color: Colors.defaultColor,
         fontSize: Font.textH1,
         fontFamily: Font.numFontFamily,
         flex: 1,
