@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 15:00:00
+ * @LastEditTime: 2021-04-14 16:34:19
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -253,11 +253,11 @@ const IM = (props) => {
             WsColseType = 0;
         };
         //连接关闭
-        WS.current.onclose = function () {
+        WS.current.onclose = function (e) {
             console.log('WebSocket:', 'connect close');
             connect = false;
-            handelSystemMes({content: '连接断开,', button: '立即重新连接'});
             if (WsColseType !== 'timeout') {
+                handelSystemMes({content: '连接断开,', button: '立即重新连接'});
                 WsColseType = 0;
             }
         };

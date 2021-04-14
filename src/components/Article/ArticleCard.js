@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 20:10:07
+ * @LastEditTime: 2021-04-14 16:50:41
  * @Description:首页发现页文章卡片
  */
 
@@ -44,7 +44,7 @@ export default function ArticleCard({data = ''}) {
                     }}
                 />
             </View>
-            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                 <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
                 <Praise comment={data} type={'article'} />
@@ -58,15 +58,20 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderRadius: 8,
         padding: Space.cardPadding,
-        paddingBottom: px(12),
     },
     article_title: {
         fontSize: px(14),
-        fontWeight: '700',
+        fontWeight: 'bold',
         lineHeight: px(20),
         color: Colors.defaultColor,
     },
-    article_img: {width: px(84), height: px(63), borderRadius: 4, marginLeft: px(6)},
+    article_img: {
+        width: px(84),
+        height: px(63),
+        borderRadius: 4,
+        marginLeft: px(10),
+        alignSelf: 'flex-start',
+    },
     light_text: {
         color: Colors.lightGrayColor,
         fontSize: px(12),
@@ -75,7 +80,7 @@ const styles = StyleSheet.create({
         fontSize: px(12),
         color: Colors.lightBlackColor,
         lineHeight: px(20),
-        marginTop: px(12),
+        marginTop: px(8),
     },
     content: {
         fontSize: px(12),

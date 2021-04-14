@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 13:39:49
+ * @LastEditTime: 2021-04-14 16:39:57
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -233,7 +233,7 @@ class MfbOut extends Component {
         const {amount, data, bankSelect, tips} = this.state;
         const {withdraw_info, title, pay_methods} = data;
         return (
-            <ScrollView style={{color: Colors.bgColor}}>
+            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
@@ -277,6 +277,7 @@ class MfbOut extends Component {
                 </View>
 
                 {this.render_Radio()}
+                <BottomDesc />
                 <BankCardModal
                     data={pay_methods || []}
                     ref={(ref) => {
@@ -345,7 +346,6 @@ class MfbOut extends Component {
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
                 <Focus init={this.init} />
                 {withdraw_info && this.render_buy()}
-                <BottomDesc />
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}

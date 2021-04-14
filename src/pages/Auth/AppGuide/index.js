@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 14:29:12
+ * @LastEditTime: 2021-04-14 15:34:56
  * @Description:app引导页
  */
 
@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
     },
 });
 
-const image1 = require('../../../assets/img/appGuide/largeslider1.jpg');
-const image2 = require('../../../assets/img/appGuide/largeslider2.jpg');
-const image3 = require('../../../assets/img/appGuide/largeslider3.jpg');
-const image4 = require('../../../assets/img/appGuide/largeslider4.jpg');
+const image1 = require('../../../assets/img/appGuide/largeslider1.png');
+const image2 = require('../../../assets/img/appGuide/largeslider2.png');
+const image3 = require('../../../assets/img/appGuide/largeslider3.png');
+const image4 = require('../../../assets/img/appGuide/largeslider4.png');
 export default function AppGuide({navigation}) {
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>

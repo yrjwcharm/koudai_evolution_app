@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-12 19:25:01
+ * @LastEditTime: 2021-04-14 15:49:22
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
@@ -19,12 +19,13 @@ import TabBar from '../../components/TabBar.js';
 import {Modal} from '../../components/Modal';
 import {useFocusEffect} from '@react-navigation/native';
 import Video from '../../components/Video';
-
+import {useJump} from '../../components/hooks';
 const deviceWidth = Dimensions.get('window').width;
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function PrivateAssets(props) {
     const [data, setData] = useState({});
     const [curIndex, setCurIndex] = useState(0);
+    const jump = useJump();
     useFocusEffect(
         useCallback(() => {
             init();
@@ -65,6 +66,11 @@ export default function PrivateAssets(props) {
                     {data?.content.map((_i, _d) => {
                         return (
                             <TouchableOpacity
+                                activeOpacity={0.9}
+                                key={_d}
+                                onPress={() => {
+                                    jump(_i.url);
+                                }}
                                 style={[
                                     Style.flexRow,
                                     styles.item_list,

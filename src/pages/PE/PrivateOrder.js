@@ -3,7 +3,7 @@
  * @Date: 2021-01-20 11:43:47
  * @LastEditors: yhc
  * @Desc:私募预约
- * @LastEditTime: 2021-04-13 21:38:11
+ * @LastEditTime: 2021-04-14 16:01:36
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -173,6 +173,7 @@ export default class PrivateOrder extends Component {
                                 <TextInput
                                     placeholder="100万起投，10万递增"
                                     keyboardType={'number-pad'}
+                                    placeholderTextColor={Colors.placeholderColor}
                                     style={{flex: 1, fontWeight: 'bold'}}
                                     value={amount}
                                     onChangeText={(text) => {
@@ -197,6 +198,7 @@ export default class PrivateOrder extends Component {
                                     keyboardType={'number-pad'}
                                     style={{flex: 1, fontWeight: 'bold'}}
                                     value={phone}
+                                    placeholderTextColor={Colors.placeholderColor}
                                     maxLength={11}
                                     onChangeText={(phone) => {
                                         this.setState({phone: inputInt(phone)});

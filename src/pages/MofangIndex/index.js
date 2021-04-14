@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:09:44
+ * @LastEditTime: 2021-04-14 16:45:29
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -373,7 +373,7 @@ const Index = (props) => {
                                     }}
                                     activeOpacity={0.8}
                                     style={{marginBottom: px(20)}}>
-                                    <View style={[styles.V_card, Style.flexRow, styles.common_card]}>
+                                    <View style={[styles.V_card, Style.flexRow]}>
                                         <FastImage
                                             style={{
                                                 width: px(40),
@@ -624,6 +624,8 @@ const styles = StyleSheet.create({
     V_card: {
         paddingHorizontal: px(16),
         height: px(75),
+        backgroundColor: '#fff',
+        borderRadius: px(6),
     },
     v_text: {
         color: Colors.lightBlackColor,
