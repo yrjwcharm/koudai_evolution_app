@@ -2,7 +2,7 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 16:57:54
+ * @LastEditTime: 2021-04-14 20:44:58
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
@@ -12,7 +12,6 @@ import Storage from '../utils/storage';
 
 const upload = async (url, file, otherParams, succ, failed) => {
     let result = await Storage.get('loginStatus');
-
     const PATH = Platform.OS === 'android' ? file.uri : file.uri.replace('file:///', '');
     try {
         RNFetchBlob.fetch(

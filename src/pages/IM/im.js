@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 17:37:42
+ * @LastEditTime: 2021-04-14 20:37:46
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -538,7 +538,7 @@ const IM = (props) => {
                     });
 
                     upload(
-                        `$${BaseUrl.IMApi}/upload/oss`,
+                        `${BaseUrl.IMApi}/upload/oss`,
                         response,
                         [
                             {name: 'file_key', data: cmid},

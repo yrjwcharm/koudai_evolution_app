@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 15:28:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-14 20:48:13
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -164,7 +164,7 @@ export default function MessageNotice({navigation, route}) {
                         <View style={Style.flexBetween}>
                             <Text
                                 style={[styles.title_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}
-                                numberOfLines={2}>
+                                numberOfLines={3}>
                                 {item.title}
                             </Text>
                             <Text

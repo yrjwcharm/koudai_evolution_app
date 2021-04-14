@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 19:14:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-14 20:22:03
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -14,16 +14,13 @@ import {Colors} from '../../common/commonStyle';
 import Toast from '../../components/Toast';
 export default function WebView({route, navigation}) {
     const webview = useRef(null);
+    const [title, setTitle] = useState('');
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
     useEffect(() => {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
-                setTimeout(() => {
-                    // window.ReactNativeWebView.postMessage('${result.access_token}')
-                    webview.current.injectJavaScript(
-                        `window.sessionStorage.setItem('token','${result.access_token}');`
-                    );
-                }, 100);
+                // window.ReactNativeWebView.postMessage('${result.access_token}')
+                webview.current.injectJavaScript(`window.sessionStorage.setItem('token','${result.access_token}');`);
             });
         };
         getToken();
@@ -38,7 +35,16 @@ export default function WebView({route, navigation}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backButtonEnabled]);
     const onNavigationStateChange = (navState) => {
-        console.log(navState);
+        console.log(navState.url);
+        if (navState.url.indexOf('/myInsurance') > -1) {
+            setTitle('我的保险');
+        } else if (navState.url.indexOf('/expertOpinion') > -1) {
+            setTitle('家庭保险方案建议');
+        } else if (navState.url.indexOf('/introduceDetail') > -1) {
+            setTitle('保险详情');
+        } else {
+            setTitle('');
+        }
         setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
 
@@ -54,7 +60,7 @@ export default function WebView({route, navigation}) {
     };
     return (
         <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
-            <NavBar leftIcon="chevron-left" leftPress={onBackAndroid} />
+            <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
             <RNWebView
                 ref={webview}
                 onMessage={(event) => {
