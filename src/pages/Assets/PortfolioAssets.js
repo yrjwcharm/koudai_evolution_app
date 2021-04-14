@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:07:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-14 14:33:51
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -106,7 +106,7 @@ export default function PortfolioAssets(props) {
         getChartInfo();
     }, [period]);
     useEffect(() => {
-        if (chartData.length > 0) {
+        if (chartData && chartData.length > 0) {
             onHide();
         }
     }, [chartData]);

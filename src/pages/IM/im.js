@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 21:59:22
+ * @LastEditTime: 2021-04-14 13:54:04
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -636,7 +636,7 @@ const IM = (props) => {
     };
     const renderIntelList = () => {
         return intellectList.length > 0 ? (
-            <View style={{height: px(43) * intellectList.length}}>
+            <View style={{position: 'relative'}}>
                 <View style={[styles.intellectList]}>
                     {intellectList.map((item, index) => (
                         <TouchableOpacity
@@ -965,7 +965,11 @@ const IM = (props) => {
                     );
                 }}
                 textOnChange={_.debounce((text) => {
-                    wsSend('DMR', text);
+                    if (text) {
+                        wsSend('DMR', text);
+                    } else {
+                        clearIntelList();
+                    }
                 }, 500)}
                 textMessageContanierStyle={{
                     paddingVertical: px(12),

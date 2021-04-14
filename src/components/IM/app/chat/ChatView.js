@@ -765,6 +765,7 @@ class ChatWindow extends PureComponent {
                             data={currentList}
                             ListFooterComponent={this.props.renderLoadEarlier}
                             extraData={this.props.extraData}
+                            keyboardDismissMode="on-drag"
                             automaticallyAdjustContentInsets={false}
                             onScroll={(e) => {
                                 this.props.onScroll(e);

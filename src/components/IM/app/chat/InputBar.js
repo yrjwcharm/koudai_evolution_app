@@ -224,6 +224,7 @@ export default class InputBar extends PureComponent {
                                 disabled={!enabled}
                                 activeOpacity={1}
                                 onPress={() => {
+                                    console.log('TextInput');
                                     onFocus();
                                 }}>
                                 <TextInput

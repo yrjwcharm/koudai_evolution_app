@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 19:58:51
+ * @LastEditTime: 2021-04-14 13:39:49
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -17,6 +17,7 @@ import Radio from '../../components/Radio';
 import http from '../../services';
 import Toast from '../../components/Toast';
 import {useFocusEffect} from '@react-navigation/native';
+import BottomDesc from '../../components/BottomDesc.js';
 function Focus({init}) {
     useFocusEffect(
         React.useCallback(() => {
@@ -344,6 +345,7 @@ class MfbOut extends Component {
             <View style={{flex: 1, paddingBottom: isIphoneX() ? px(85) : px(51)}}>
                 <Focus init={this.init} />
                 {withdraw_info && this.render_buy()}
+                <BottomDesc />
                 {button && (
                     <FixedButton title={button?.text} disabled={button?.avail == 0 || !enable} onPress={this.submit} />
                 )}

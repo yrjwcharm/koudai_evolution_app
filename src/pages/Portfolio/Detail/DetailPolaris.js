@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 22:12:27
+ * @LastEditTime: 2021-04-14 13:37:45
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -107,69 +107,65 @@ export default function DetailPolaris({route, navigation}) {
                             <Text style={styles.num_sty}>{data?.top?.ratio_text}</Text>
                             <Text style={styles.desc_sty}>{data?.top?.desc}</Text>
                         </View>
-                        {chart && (
+
+                        <View
+                            style={{
+                                backgroundColor: '#fff',
+                                borderRadius: text(10),
+                                paddingVertical: text(16),
+                                marginBottom: text(16),
+                            }}>
+                            <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
+                                {data?.part_line?.title}
+                            </Text>
+
+                            <RenderChart
+                                chartData={chartData}
+                                chart={chart}
+                                type={type}
+                                width={deviceWidth - text(40)}
+                            />
+
                             <View
                                 style={{
-                                    backgroundColor: '#fff',
-                                    borderRadius: text(10),
-                                    paddingVertical: text(16),
-                                    marginBottom: text(16),
+                                    flexDirection: 'row',
+                                    height: 50,
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    marginHorizontal: 20,
                                 }}>
-                                <Text style={[styles.card_title_sty, {paddingBottom: text(16)}]}>
-                                    {data?.part_line?.title}
-                                </Text>
-
-                                <RenderChart
-                                    chartData={chart?.chartData}
-                                    chart={chart}
-                                    type={type}
-                                    width={deviceWidth - text(40)}
-                                />
-
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        height: 50,
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        marginHorizontal: 20,
-                                    }}>
-                                    {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={1}
-                                                style={[
-                                                    styles.btn_choose_sty,
-                                                    {
-                                                        backgroundColor:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#F1F6FF'
-                                                                : '#fff',
-                                                        borderWidth:
-                                                            period == _item.val && type == _item.type ? 0 : 0.5,
-                                                    },
-                                                ]}
-                                                key={_index}
-                                                onPress={() => changeTab(_item.val, _item.type)}>
-                                                <Text
-                                                    style={{
-                                                        color:
-                                                            period == _item.val && type == _item.type
-                                                                ? '#0051CC'
-                                                                : '#555B6C',
-                                                        fontSize: text(12),
-                                                    }}>
-                                                    {_item.name}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                </View>
-                                {data?.part_line?.line?.desc ? (
-                                    <Text style={styles.line_desc}>{data?.part_line?.line?.desc}</Text>
-                                ) : null}
+                                {chartData?.yield_info?.sub_tabs?.map((_item, _index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={1}
+                                            style={[
+                                                styles.btn_choose_sty,
+                                                {
+                                                    backgroundColor:
+                                                        period == _item.val && type == _item.type ? '#F1F6FF' : '#fff',
+                                                    borderWidth: period == _item.val && type == _item.type ? 0 : 0.5,
+                                                },
+                                            ]}
+                                            key={_index}
+                                            onPress={() => changeTab(_item.val, _item.type)}>
+                                            <Text
+                                                style={{
+                                                    color:
+                                                        period == _item.val && type == _item.type
+                                                            ? '#0051CC'
+                                                            : '#555B6C',
+                                                    fontSize: text(12),
+                                                }}>
+                                                {_item.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
                             </View>
-                        )}
+                            {data?.part_line?.line?.desc ? (
+                                <Text style={styles.line_desc}>{data?.part_line?.line?.desc}</Text>
+                            ) : null}
+                        </View>
 
                         <View style={[styles.card_sty, {paddingHorizontal: 0}]}>
                             <View style={{paddingHorizontal: text(16), marginBottom: text(16)}}>
