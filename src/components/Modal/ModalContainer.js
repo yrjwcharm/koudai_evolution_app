@@ -143,12 +143,25 @@ export default class MyModal extends Component {
                             animation="bounceIn"
                             style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
                             {/* 图片弹窗 */}
-                            <Image
-                                source={{
-                                    uri: this.imageUrl,
-                                }}
-                                style={[styles.modalImage, this.props.imageStyle]}
-                            />
+                            <View style={{position: 'relative', paddingTop: text(31)}}>
+                                <TouchableOpacity activeOpacity={0.8} onPress={this.confirm.bind(this)}>
+                                    <Image
+                                        source={{
+                                            uri: this.imageUrl,
+                                        }}
+                                        style={[styles.modalImage, this.props.imageStyle]}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{position: 'absolute', top: 0, right: text(10)}}
+                                    activeOpacity={0.8}
+                                    onPress={() => this.setModalVisiable(false)}>
+                                    <Image
+                                        source={require('../../assets/img/closeCircle.png')}
+                                        style={styles.closeCircle}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </Animatable.View>
                     )}
                 </View>
@@ -217,4 +230,8 @@ const styles = StyleSheet.create({
     },
     contentText: {fontSize: text(14), color: Colors.lightBlackColor, lineHeight: text(20)},
     borderRight: {backgroundColor: '#DCDEE3', width: 0.5, height: text(40)},
+    closeCircle: {
+        width: text(20),
+        height: text(31),
+    },
 });
