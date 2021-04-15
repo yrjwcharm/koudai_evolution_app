@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:37:46
+ * @LastEditTime: 2021-04-15 10:26:42
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -467,7 +467,6 @@ const IM = (props) => {
         params.data = content;
         return JSON.stringify(params);
     };
-
     const loadHistory = () => {
         WS.current.send(handleMsgParams('LMR', {page: ++page.current}));
     };

@@ -54,6 +54,9 @@ export default class ChatItem extends PureComponent {
 
     _matchContentString = (textContent, views, isSelf) => {
         // 匹配得到index并放入数组中
+        if (!textContent) {
+            return;
+        }
         const {leftMessageTextStyle, rightMessageTextStyle} = this.props;
         if (textContent.length === 0) {
             return;
