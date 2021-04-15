@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 14:35:04
+ * @LastEditTime: 2021-04-15 14:12:49
  * @Description:规划结果页
  */
 
@@ -216,47 +216,64 @@ export default class planResult extends Component {
                     <View style={styles.container}>
                         <Robot style={{marginLeft: px(8)}} />
                         <Animatable.View animation="fadeInUp">
-                            {type == 1 && tab ? (
-                                <View style={[Style.flexBetween, {alignItems: 'flex-end', paddingHorizontal: px(20)}]}>
-                                    <View>
-                                        <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                            {tab && tab?.length > 0 && (
+                                <View>
+                                    {type == 1 ? (
+                                        <View
+                                            style={[
+                                                Style.flexBetween,
+                                                {alignItems: 'flex-end', paddingHorizontal: px(20)},
+                                            ]}>
+                                            <View>
+                                                <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                                    <Text
+                                                        style={[
+                                                            styles.sm_radio,
+                                                            {fontSize: px(36), color: Colors.red, marginRight: px(9)},
+                                                        ]}>
+                                                        {tab[0]?.val}
+                                                    </Text>
+                                                    {/* <View style={[Style.flexRow, {marginBottom: px(5)}]}>
+                                                        <Icon name="arrowup" color={Colors.red} />
+                                                        <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                                    </View> */}
+                                                </View>
+                                                <Text style={styles.desc_text}>{tab[0]?.name}</Text>
+                                            </View>
+                                            <View>
+                                                <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                                    <Text
+                                                        style={[
+                                                            styles.sm_radio,
+                                                            {fontSize: px(24), marginRight: px(9)},
+                                                        ]}>
+                                                        {tab[1]?.val}
+                                                    </Text>
+                                                    {/* <View style={[Style.flexRow]}>
+                                                        <Icon name="arrowup" color={Colors.red} />
+                                                        <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
+                                                    </View> */}
+                                                </View>
+                                                <Text style={styles.desc_text}> {tab[1]?.name}</Text>
+                                            </View>
+                                        </View>
+                                    ) : type == 2 ? (
+                                        <View style={{position: 'absolute', right: px(20), top: px(-90)}}>
                                             <Text
-                                                style={[
-                                                    styles.sm_radio,
-                                                    {fontSize: px(36), color: Colors.red, marginRight: px(9)},
-                                                ]}>
+                                                style={{
+                                                    color: Colors.red,
+                                                    fontSize: px(44),
+                                                    fontFamily: Font.numFontFamily,
+                                                }}>
                                                 {tab[0]?.val}
                                             </Text>
-                                            {/* <View style={[Style.flexRow, {marginBottom: px(5)}]}>
-                                                <Icon name="arrowup" color={Colors.red} />
-                                                <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
-                                            </View> */}
-                                        </View>
-                                        <Text style={styles.desc_text}>{tab[0]?.name}</Text>
-                                    </View>
-                                    <View>
-                                        <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                                            <Text style={[styles.sm_radio, {fontSize: px(24), marginRight: px(9)}]}>
-                                                {tab[1]?.val}
+                                            <Text style={{color: Colors.darkGrayColor, textAlign: 'right'}}>
+                                                {tab[0]?.name}
                                             </Text>
-                                            {/* <View style={[Style.flexRow]}>
-                                                <Icon name="arrowup" color={Colors.red} />
-                                                <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
-                                            </View> */}
                                         </View>
-                                        <Text style={styles.desc_text}> {tab[1]?.name}</Text>
-                                    </View>
+                                    ) : null}
                                 </View>
-                            ) : tab ? (
-                                <View style={{position: 'absolute', right: px(20), top: px(-90)}}>
-                                    <Text style={{color: Colors.red, fontSize: px(44), fontFamily: Font.numFontFamily}}>
-                                        {tab[0]?.val}
-                                    </Text>
-                                    <Text style={{color: Colors.darkGrayColor, textAlign: 'right'}}>
-                                        {tab[0]?.name}
-                                    </Text>
-                                </View>
-                            ) : null}
+                            )}
                             {chart &&
                                 (type == 1 ? (
                                     <Animatable.View

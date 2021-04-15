@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 11:39:12
+ * @LastEditTime: 2021-04-15 14:33:13
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -94,7 +94,7 @@ class TradeBuy extends Component {
                             await this.plan(amount);
                         }
                         if (amount) {
-                            this.onInput(amount);
+                            this.onInput(amount, 'init');
                         }
                     }
                 );
@@ -191,11 +191,11 @@ class TradeBuy extends Component {
      * @param {*} onInput
      * @return {*}
      */
-    onInput = _.debounce(async (_amount) => {
+    onInput = _.debounce(async (_amount, init) => {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
-        if (!_amount && this.state.type == 0) {
+        if (!_amount && this.state.type == 0 && !init) {
             await this.plan('');
         }
         this.setState({errTip: '', fixTip: ''}, async () => {
