@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-15 18:50:12
+ * @LastEditTime: 2021-04-15 20:42:49
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -61,7 +61,8 @@ function App(props) {
     // const scheme = useColorScheme();
     const navigationRef = useRef();
     const routeNameRef = useRef();
-    const modalObj = useRef({});
+    const [modalObj, setModalObj] = React.useState({});
+    const [useInfo, setUserInfo] = React.useState({});
     //如果有更新的提示
     const syncImmediate = () => {
         CodePush.sync({
@@ -176,14 +177,29 @@ function App(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
-        http.get('/common/layer/20210101').then((res) => {
-            if (res.code === '000000') {
-                // console.log(res);
-                modalObj.current = res.result;
-            }
+        getModalData();
+    }, []);
+    React.useEffect(() => {
+        store.subscribe(() => {
+            // console.log(store.getState().userInfo.toJS());
+            const next = store.getState().userInfo.toJS();
+            setUserInfo((prev) => {
+                if (!prev.is_login && next.is_login) {
+                    getModalData();
+                }
+                return next;
+            });
         });
     }, []);
 
+    const getModalData = () => {
+        http.get('/common/layer/20210101').then((res) => {
+            if (res.code === '000000') {
+                // console.log(res);
+                setModalObj(res.result);
+            }
+        });
+    };
     const jump = (navigation, url, type = 'navigate') => {
         if (url) {
             if (url.type === 2) {
@@ -246,7 +262,7 @@ function App(props) {
                 content: modal.content,
             });
         }
-        modalObj.current = {};
+        setModalObj({});
     };
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
@@ -309,14 +325,14 @@ function App(props) {
                                 ts = new Date().getTime();
                                 const previousRouteName = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                if (Object.keys(modalObj.current).length > 0) {
-                                    if (modalObj.current.page) {
-                                        if (modalObj.current.page === currentRouteName) {
-                                            showModal(modalObj.current);
+                                if (Object.keys(modalObj).length > 0) {
+                                    if (modalObj.page) {
+                                        if (modalObj.page === currentRouteName) {
+                                            showModal(modalObj);
                                         }
                                     } else {
                                         if (currentRouteName === 'Index') {
-                                            showModal(modalObj.current);
+                                            showModal(modalObj);
                                         }
                                     }
                                 }

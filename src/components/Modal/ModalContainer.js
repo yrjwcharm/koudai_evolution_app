@@ -47,7 +47,7 @@ export default class MyModal extends Component {
         }
     }
     componentDidMount() {
-        console.log(this.props);
+        // console.log(this.props);
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
