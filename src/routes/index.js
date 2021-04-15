@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:22:41
+ * @LastEditTime: 2021-04-15 16:10:34
  * @Description:路由表
  */
 import React from 'react';
@@ -278,7 +278,7 @@ export default function AppStack() {
                 name="LineChart"
                 component={LineChart}
                 options={{
-                    ...TransitionPresets.ModalTransition,
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
                 }}
             />
             <Stack.Screen
@@ -354,7 +354,7 @@ export default function AppStack() {
                 component={Evaluation}
                 options={{
                     headerShown: false,
-                    // ...TransitionPresets.ModalTransition,
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
                 }}
             />
             <Stack.Screen
@@ -362,13 +362,13 @@ export default function AppStack() {
                 component={EvaluationHistory}
                 options={{
                     headerShown: false,
-                    ...TransitionPresets.ModalTransition,
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
                 }}
             />
             <Stack.Screen
                 name="EvaluationResult"
                 component={EvaluationResult}
-                options={{headerShown: false, ...TransitionPresets.ModalTransition}}
+                options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />

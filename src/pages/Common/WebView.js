@@ -2,11 +2,11 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:22:03
+ * @LastEditTime: 2021-04-15 15:34:45
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Platform, BackHandler, Linking} from 'react-native';
+import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
@@ -15,12 +15,14 @@ import Toast from '../../components/Toast';
 export default function WebView({route, navigation}) {
     const webview = useRef(null);
     const [title, setTitle] = useState('');
+    const [token, setToken] = useState('');
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
     useEffect(() => {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 // window.ReactNativeWebView.postMessage('${result.access_token}')
-                webview.current.injectJavaScript(`window.sessionStorage.setItem('token','${result.access_token}');`);
+                setToken(result.access_token || 'null');
+                // webview.current.injectJavaScript(`window.sessionStorage.setItem('token','${result.access_token}');`);
             });
         };
         getToken();
@@ -45,7 +47,11 @@ export default function WebView({route, navigation}) {
         } else {
             setTitle('');
         }
-        setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
+        setBackButtonEnabled(
+            navState.canGoBack &&
+                navState.url.indexOf('/insuranceProgress') <= -1 &&
+                navState.url.indexOf('https://prophetlogin.licaimofang.com/login') <= -1
+        );
     };
 
     const onBackAndroid = (e) => {
@@ -59,39 +65,44 @@ export default function WebView({route, navigation}) {
         }
     };
     return (
-        <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
+        <View style={{flex: 1}}>
             <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
-            <RNWebView
-                ref={webview}
-                onMessage={(event) => {
-                    const data = event.nativeEvent.data;
-                    console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-                    if (data) {
-                        const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
-                        if (url) {
-                            Linking.canOpenURL(url)
-                                .then((supported) => {
-                                    if (!supported) {
-                                        return Toast.show(
-                                            `您的设备不支持该功能，请手动拨打 ${data.split('phone=')[1]}`
-                                        );
-                                    }
-                                    return Linking.openURL(url);
-                                })
-                                .catch((err) => Toast.show(err));
+            {token ? (
+                <RNWebView
+                    ref={webview}
+                    onMessage={(event) => {
+                        const data = event.nativeEvent.data;
+                        console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+                        if (data) {
+                            const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
+                            if (url) {
+                                Linking.canOpenURL(url)
+                                    .then((supported) => {
+                                        if (!supported) {
+                                            return Toast.show(
+                                                `您的设备不支持该功能，请手动拨打 ${data.split('phone=')[1]}`
+                                            );
+                                        }
+                                        return Linking.openURL(url);
+                                    })
+                                    .catch((err) => Toast.show(err));
+                            }
                         }
-                    }
-                }}
-                originWhitelist={['*']}
-                javaScriptEnabled={true}
-                onNavigationStateChange={onNavigationStateChange}
-                startInLoadingState={true}
-                style={{flex: 1, backgroundColor: Colors.brandColor}}
-                source={{
-                    uri: route?.params?.link,
-                    // headers: {'Cache-Control': 'no-cache'},
-                }}
-            />
+                    }}
+                    originWhitelist={['*']}
+                    javaScriptEnabled={true}
+                    injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
+                    onNavigationStateChange={onNavigationStateChange}
+                    startInLoadingState={true}
+                    style={{flex: 1}}
+                    source={{
+                        uri: route?.params?.link,
+                        // headers: {'Cache-Control': 'no-cache'},
+                    }}
+                />
+            ) : (
+                <ActivityIndicator color="#999999" />
+            )}
         </View>
     );
 }

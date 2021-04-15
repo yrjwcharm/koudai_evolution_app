@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 14:12:49
+ * @LastEditTime: 2021-04-15 15:43:34
  * @Description:规划结果页
  */
 
@@ -77,7 +77,23 @@ export default class planResult extends Component {
     upid = this.props.route?.params?.upid;
     summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
+        this.props.navigation.addListener('beforeRemove', (e) => {
+            if (this.fr == 'risk') {
+                return;
+            }
+            if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
+                e.preventDefault();
+                // Prompt the user before leaving the screen
+                Modal.show({
+                    title: '结束定制',
+                    content: '确定要结束本次定制吗？',
+                    confirm: true,
+                    confirmCallBack: () => {
+                        this.props.navigation.dispatch(e.data.action);
+                    },
+                });
+            }
+        });
         http.get('/questionnaire/chart/20210101', {
             upid: this.upid || 87,
             summary_id: this.summary_id || 3981,
@@ -123,22 +139,11 @@ export default class planResult extends Component {
             this.setState({data: res.result});
         });
     }
-    goBackAndroid = () => {
-        this.goBack();
-        return true;
-    };
+
     goBack = () => {
-        Modal.show({
-            title: '结束定制',
-            content: '确定要结束本次定制吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.goBack();
-            },
-        });
+        this.props.navigation.goBack();
     };
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
         this.timer && clearTimeout(this.timer);
         this.animationTimer && clearTimeout(this.animationTimer);
     }
@@ -258,7 +263,7 @@ export default class planResult extends Component {
                                             </View>
                                         </View>
                                     ) : type == 2 ? (
-                                        <View style={{position: 'absolute', right: px(20), top: px(-90)}}>
+                                        <View style={{position: 'absolute', right: px(20), top: px(-90), zIndex: 10}}>
                                             <Text
                                                 style={{
                                                     color: Colors.red,
@@ -478,7 +483,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
         position: 'absolute',
-        width: px(96),
+        paddingHorizontal: px(12),
         zIndex: 10,
         right: px(40),
     },

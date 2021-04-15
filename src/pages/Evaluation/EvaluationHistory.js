@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 10:40:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-02 14:09:09
+ * @LastEditTime: 2021-04-15 15:19:44
  * @Description:规划历史
  */
 import React, {Component} from 'react';
@@ -36,28 +36,31 @@ export class planningHistory extends Component {
         data: '',
     };
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.goBackAndroid);
+        this.props.navigation.addListener('beforeRemove', (e) => {
+            if (this.fr == 'risk') {
+                return;
+            }
+            if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
+                e.preventDefault();
+                // Prompt the user before leaving the screen
+                Modal.show({
+                    title: '结束定制',
+                    content: '确定要结束本次定制吗？',
+                    confirm: true,
+                    confirmCallBack: () => {
+                        this.props.navigation.dispatch(e.data.action);
+                    },
+                });
+            }
+        });
         http.get('/questionnaire/history_plan/20210101').then((data) => {
             this.setState({data: data.result});
         });
     }
-    goBackAndroid = () => {
-        this.goBack();
-        return true;
-    };
     goBack = () => {
-        Modal.show({
-            title: '结束定制',
-            content: '确定要结束本次定制吗？',
-            confirm: true,
-            confirmCallBack: () => {
-                this.props.navigation.goBack();
-            },
-        });
+        this.props.navigation.goBack();
     };
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBackAndroid);
-    }
+
     jumpNext = (url, param) => {
         this.props.navigation.replace(url, param);
     };

@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 11:19:11
+ * @LastEditTime: 2021-04-15 16:20:13
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -11,7 +11,6 @@ import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
-import * as MagicMove from 'react-native-magic-move';
 import BottomDesc from '../../components/BottomDesc';
 import LoginMask from '../../components/LoginMask';
 import http from '../../services';
@@ -21,17 +20,6 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {BoxShadow} from 'react-native-shadow';
-const shadow = {
-    color: '#FF7328',
-    border: 6,
-    radius: 20,
-    opacity: 0.2,
-    x: 0,
-    y: 2,
-    width: px(88),
-    height: px(32),
-};
 const Index = (props) => {
     const isFocused = useIsFocused();
     const userInfo = useSelector((store) => store.userInfo);
@@ -102,7 +90,7 @@ const Index = (props) => {
                             <Text style={styles.header_title}>推荐</Text>
                         </View>
                         {/* 今日推荐 */}
-                        <MagicMove.View id="logo" transition={MagicMove.Transition.morph}>
+                        <>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 onPress={() => {
@@ -165,7 +153,7 @@ const Index = (props) => {
                                     <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
                                 </View>
                             </TouchableOpacity>
-                        </MagicMove.View>
+                        </>
                     </LinearGradient>
 
                     {/* 专业理财 */}
