@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 20:47:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-15 17:43:32
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -18,7 +18,6 @@ import configStore from './src/redux';
 import CodePush from 'react-native-code-push';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootSiblingParent} from 'react-native-root-siblings';
-import * as MagicMove from 'react-native-magic-move';
 import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 import './src/utils/LogTool';
@@ -295,46 +294,44 @@ function App(props) {
                         translucent={true} //指定状态栏是否透明。设置为true时，应用会在状态栏之下绘制（即所谓“沉浸式”——被状态栏遮住一部分）。常和带有半透明背景色的状态栏搭配使用。
                         barStyle={'dark-content'} // enum('default', 'light-content', 'dark-content')
                     />
-                    <MagicMove.Provider>
-                        <PersistGate loading={null} persistor={persistor}>
-                            <NavigationContainer
-                                // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
-                                ref={navigationRef}
-                                onReady={() => {
-                                    // console.log(object)
-                                    global.refName = navigationRef.current.getCurrentRoute().name;
-                                    return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
-                                }}
-                                onStateChange={() => {
-                                    var staytime = new Date().getTime() - ts;
-                                    ts = new Date().getTime();
-                                    const previousRouteName = routeNameRef.current;
-                                    const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                    if (Object.keys(modalObj.current).length > 0) {
-                                        if (modalObj.current.page) {
-                                            if (modalObj.current.page === currentRouteName) {
-                                                showModal(modalObj.current);
-                                            }
-                                        } else {
-                                            if (currentRouteName === 'Index') {
-                                                showModal(modalObj.current);
-                                            }
+                    <PersistGate loading={null} persistor={persistor}>
+                        <NavigationContainer
+                            // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+                            ref={navigationRef}
+                            onReady={() => {
+                                // console.log(object)
+                                global.refName = navigationRef.current.getCurrentRoute().name;
+                                return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
+                            }}
+                            onStateChange={() => {
+                                var staytime = new Date().getTime() - ts;
+                                ts = new Date().getTime();
+                                const previousRouteName = routeNameRef.current;
+                                const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                if (Object.keys(modalObj.current).length > 0) {
+                                    if (modalObj.current.page) {
+                                        if (modalObj.current.page === currentRouteName) {
+                                            showModal(modalObj.current);
+                                        }
+                                    } else {
+                                        if (currentRouteName === 'Index') {
+                                            showModal(modalObj.current);
                                         }
                                     }
-                                    global.previousRouteName = previousRouteName;
-                                    global.currentRouteName = currentRouteName;
-                                    if (previousRouteName !== currentRouteName) {
-                                        LogTool('jump', null, null, currentRouteName, previousRouteName, null, null);
-                                        LogTool('staytime', null, null, previousRouteName, null, staytime);
-                                    }
-                                    // Save the current route name for later comparison
-                                    routeNameRef.current = currentRouteName;
-                                }}
-                                linking={linking}>
-                                <AppStack />
-                            </NavigationContainer>
-                        </PersistGate>
-                    </MagicMove.Provider>
+                                }
+                                global.previousRouteName = previousRouteName;
+                                global.currentRouteName = currentRouteName;
+                                if (previousRouteName !== currentRouteName) {
+                                    LogTool('jump', null, null, currentRouteName, previousRouteName, null, null);
+                                    LogTool('staytime', null, null, previousRouteName, null, staytime);
+                                }
+                                // Save the current route name for later comparison
+                                routeNameRef.current = currentRouteName;
+                            }}
+                            linking={linking}>
+                            <AppStack />
+                        </NavigationContainer>
+                    </PersistGate>
                 </Provider>
             </RootSiblingParent>
         </SafeAreaProvider>

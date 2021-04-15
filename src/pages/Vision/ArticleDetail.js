@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 16:39:33
+ * @LastEditTime: 2021-04-15 17:12:43
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,6 @@ import {px as text, deviceHeight} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
-import storage from '../../utils/storage';
 import {ShareModal} from '../../components/Modal';
 import BaseUrl from '../../services/config';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -49,13 +48,7 @@ const ArticleDetail = ({navigation, route}) => {
             }
         });
     }, [route]);
-    const onLoadEnd = () => {
-        storage.get('loginStatus').then((res) => {
-            if (res) {
-                webviewRef.current.postMessage(JSON.stringify(res));
-            }
-        });
-    };
+
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
         if (eventData.indexOf('article_id') !== -1) {
@@ -127,6 +120,7 @@ const ArticleDetail = ({navigation, route}) => {
 
     useEffect(() => {
         navigation.setOptions({
+            headerShown: true,
             headerBackImage: () => {
                 return (
                     <Icon
@@ -208,7 +202,6 @@ const ArticleDetail = ({navigation, route}) => {
                     />
                     <RNWebView
                         javaScriptEnabled
-                        onLoadEnd={onLoadEnd}
                         onMessage={onMessage}
                         // originWhitelist={['*']}
                         ref={webviewRef}

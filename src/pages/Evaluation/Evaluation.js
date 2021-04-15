@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 15:55:11
+ * @LastEditTime: 2021-04-15 17:31:56
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -486,7 +486,7 @@ class Question extends Component {
             }
         }
         return (
-            <>
+            <View style={{backgroundColor: '#fff', flex: 1}}>
                 <Header
                     ref={(ref) => {
                         this.header = ref;
@@ -790,7 +790,7 @@ class Question extends Component {
                         }}
                     />
                 )}
-            </>
+            </View>
         );
     }
 }
