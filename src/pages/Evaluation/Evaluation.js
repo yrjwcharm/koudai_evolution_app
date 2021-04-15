@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 15:32:03
+ * @LastEditTime: 2021-04-15 13:48:25
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -20,7 +20,6 @@ import {
     Image,
     Keyboard,
     Vibration,
-    BackHandler,
 } from 'react-native';
 import Header from '../../components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -94,6 +93,9 @@ class Question extends Component {
     };
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
+            if (this.fr == 'risk') {
+                return;
+            }
             if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
                 e.preventDefault();
                 // Prompt the user before leaving the screen
@@ -214,44 +216,46 @@ class Question extends Component {
 
     jumpNext = (option) => {
         Keyboard.dismiss();
-        if (this.canNextClick || !this.state.inputBtnCanClick) {
-            return;
-        }
-        this.canNextClick = true;
-        if (Platform.OS == 'android') {
-            Vibration.vibrate(10);
-        }
-        const {translateY, offsetY, opacity} = this.state;
-        this.reportResult(option);
-        if (option.action == 'url') {
-            this.props.jump(option.url, 'replace');
-            return;
-        }
-        Animated.sequence([
-            Animated.parallel([
-                Animated.timing(translateY, {
-                    toValue: offsetY,
-                    duration: 300,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(opacity, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: false,
-                }),
-            ]),
-        ]).start(() => {
-            if (option.action.includes('next_questionnaire')) {
-                this.getNextQuestion(
-                    option.next_questionnaire_cate,
-                    option.action,
-                    option.history,
-                    this.showNextAnimation
-                );
-            } else {
-                this.showNextAnimation(option.action);
+        setTimeout(() => {
+            if (this.canNextClick || !this.state.inputBtnCanClick) {
+                return;
             }
-        });
+            this.canNextClick = true;
+            if (Platform.OS == 'android') {
+                Vibration.vibrate(10);
+            }
+            const {translateY, offsetY, opacity} = this.state;
+            this.reportResult(option);
+            if (option.action == 'url') {
+                this.props.jump(option.url, 'replace');
+                return;
+            }
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(translateY, {
+                        toValue: offsetY,
+                        duration: 300,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(opacity, {
+                        toValue: 0,
+                        duration: 300,
+                        useNativeDriver: false,
+                    }),
+                ]),
+            ]).start(() => {
+                if (option.action.includes('next_questionnaire')) {
+                    this.getNextQuestion(
+                        option.next_questionnaire_cate,
+                        option.action,
+                        option.history,
+                        this.showNextAnimation
+                    );
+                } else {
+                    this.showNextAnimation(option.action);
+                }
+            });
+        }, 250);
     };
 
     previous = (count = 1) => {
@@ -582,7 +586,7 @@ class Question extends Component {
                                                         />
                                                         <View
                                                             style={{
-                                                                height: px(220),
+                                                                height: px(182),
                                                                 flexDirection: 'column',
                                                                 justifyContent: 'space-between',
                                                             }}>
@@ -891,7 +895,7 @@ const styles = StyleSheet.create({
         borderRadius: 4,
     },
     line: {
-        height: px(175),
+        height: px(180),
         width: px(48),
         // resizeMode: 'stretch',
         marginRight: px(10),

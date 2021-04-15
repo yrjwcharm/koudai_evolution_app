@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 16:40:14
+ * @LastEditTime: 2021-04-15 13:10:49
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -186,13 +186,7 @@ class MfbIn extends Component {
                                 this.textInput = ref;
                             }}
                             keyboardType="number-pad"
-                            style={[
-                                styles.inputStyle,
-                                {
-                                    fontFamily: amount.length > 0 ? Font.numFontFamily : null,
-                                    fontSize: amount.length > 0 ? px(35) : px(26),
-                                },
-                            ]}
+                            style={[styles.inputStyle]}
                             placeholder={recharge_info.placeholder}
                             placeholderTextColor={Colors.placeholderColor}
                             onChangeText={(value) => {
@@ -309,9 +303,9 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: px(35),
+        fontSize: px(30),
         marginLeft: px(14),
-        // letterSpacing: 2,
+        fontFamily: Font.numMedium,
     },
     bankCard: {
         backgroundColor: '#fff',

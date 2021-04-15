@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 10:26:42
+ * @LastEditTime: 2021-04-15 12:10:47
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -361,7 +361,7 @@ const IM = (props) => {
         let cmid = randomMsgId(cmd);
         handleMessage({
             cmid: cmid,
-            data: content,
+            data: cmd == 'CMR' ? '转投资顾问' : content,
             cmd,
             from: uid,
             to: 'S',
@@ -416,8 +416,8 @@ const IM = (props) => {
         }
     };
     //转人工客服
-    const staff = () => {
-        sendMessage(null, '转投资顾问', null, 'CMR', null, 1);
+    const staff = (content) => {
+        sendMessage(null, content, null, 'CMR', null, 1);
         // handelSystemMes('正在转到投资顾问，请稍等…');
     };
     //问题解决 未解决
@@ -737,7 +737,11 @@ const IM = (props) => {
                                         {message?.buttons && message?.buttons[0].status == 2 ? (
                                             <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
                                                 还未解决？转
-                                                <Text onPress={staff} style={{color: Colors.btnColor}}>
+                                                <Text
+                                                    onPress={() => {
+                                                        staff();
+                                                    }}
+                                                    style={{color: Colors.btnColor}}>
                                                     投资顾问
                                                 </Text>
                                             </Text>
@@ -828,7 +832,11 @@ const IM = (props) => {
                                 }}>
                                 <Text style={[styles.sm_text, {textAlign: 'left'}]}>
                                     以上问题都没有，请转
-                                    <Text onPress={staff} style={{color: Colors.btnColor}}>
+                                    <Text
+                                        onPress={() => {
+                                            staff(message?.content);
+                                        }}
+                                        style={{color: Colors.btnColor}}>
                                         投资顾问
                                     </Text>
                                 </Text>

@@ -3,12 +3,12 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 17:04:58
+ * @LastEditTime: 2021-04-15 11:29:40
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, onlyNumber} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -151,7 +151,8 @@ export default class TradeRedeem extends Component {
             }
         });
     };
-    onChange = (text) => {
+    onChange = (_text) => {
+        let text = onlyNumber(_text);
         if (text) {
             if (text > 100) {
                 text = '100';

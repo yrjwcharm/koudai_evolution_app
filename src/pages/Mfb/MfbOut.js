@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 16:39:57
+ * @LastEditTime: 2021-04-15 13:10:32
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -248,13 +248,7 @@ class MfbOut extends Component {
                         <View style={{flex: 1}}>
                             <TextInput
                                 keyboardType="numeric"
-                                style={[
-                                    styles.inputStyle,
-                                    {
-                                        fontFamily: amount.length > 0 ? Font.numFontFamily : null,
-                                        fontSize: amount.toString().length > 0 ? px(35) : px(26),
-                                    },
-                                ]}
+                                style={[styles.inputStyle]}
                                 placeholder={withdraw_info?.placeholder}
                                 placeholderTextColor={'#CCD0DB'}
                                 onChangeText={(value) => {
@@ -377,9 +371,9 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 1,
-        fontSize: px(26),
+        fontSize: px(30),
         marginLeft: px(14),
-        // letterSpacing: 2,
+        fontFamily: Font.numMedium,
     },
     bankCard: {
         backgroundColor: '#fff',

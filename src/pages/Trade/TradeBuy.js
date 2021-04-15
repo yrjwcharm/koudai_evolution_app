@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 20:59:10
+ * @LastEditTime: 2021-04-15 11:39:12
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -112,7 +112,7 @@ class TradeBuy extends Component {
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
         let buy_id;
-        if (type == 1) {
+        if (type == 0) {
             buy_id = await this.plan(this.state.amount);
         }
         type == 0
@@ -588,7 +588,7 @@ class TradeBuy extends Component {
         const {data, type, planData, errTip, amount, mfbTip} = this.state;
         const {buy_info, sub_title, pay_methods} = data;
         return (
-            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="never">
+            <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
                     ref={(ref) => {
                         this.passwordModal = ref;
