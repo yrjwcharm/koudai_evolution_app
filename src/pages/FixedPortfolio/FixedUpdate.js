@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 17:50:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-15 21:29:08
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -114,9 +114,11 @@ export default function FixedUpdate({navigation, route}) {
                 password,
             }).then((res) => {
                 Toast.show(res.message);
-                setTimeout(() => {
-                    jump(data.button[0].url);
-                }, 1000);
+                if (res.code == '000000') {
+                    setTimeout(() => {
+                        jump(data.button[0].url);
+                    }, 1000);
+                }
             });
         } else {
             Http.get('/trade/update/invest_plan/20210101', {
@@ -128,9 +130,11 @@ export default function FixedUpdate({navigation, route}) {
                 pay_method: payMethod.pay_method,
             }).then((res) => {
                 Toast.show(res.message);
-                setTimeout(() => {
-                    jump(data.button[1].url);
-                }, 1000);
+                if (res.code == '000000') {
+                    setTimeout(() => {
+                        jump(data.button[1].url);
+                    }, 1000);
+                }
             });
         }
     };
