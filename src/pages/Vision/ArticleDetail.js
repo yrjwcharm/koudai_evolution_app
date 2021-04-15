@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 14:18:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-15 16:39:33
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -189,7 +189,11 @@ const ArticleDetail = ({navigation, route}) => {
     return (
         <View style={[styles.container]}>
             {hasNet ? (
-                <ScrollView style={{flex: 1}} onScroll={onScroll} scrollEventThrottle={16}>
+                <ScrollView
+                    style={{flex: 1}}
+                    onScroll={onScroll}
+                    scrollIndicatorInsets={{right: 1}}
+                    scrollEventThrottle={16}>
                     <ShareModal
                         likeCallback={onFavor}
                         collectCallback={onCollect}

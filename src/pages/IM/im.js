@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 12:10:47
+ * @LastEditTime: 2021-04-15 16:49:02
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -739,7 +739,7 @@ const IM = (props) => {
                                                 还未解决？转
                                                 <Text
                                                     onPress={() => {
-                                                        staff();
+                                                        staff(message?.content);
                                                     }}
                                                     style={{color: Colors.btnColor}}>
                                                     投资顾问
@@ -907,7 +907,11 @@ const IM = (props) => {
                                 {modalContent?.buttons && modalContent?.buttons[0].status == 2 ? (
                                     <Text style={styles.sm_text}>
                                         以上问题都没有，请转
-                                        <Text onPress={staff} style={{color: Colors.btnColor}}>
+                                        <Text
+                                            onPress={() => {
+                                                staff(modalContent?.content);
+                                            }}
+                                            style={{color: Colors.btnColor}}>
                                             投资顾问
                                         </Text>
                                     </Text>
