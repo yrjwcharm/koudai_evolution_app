@@ -2,13 +2,22 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 16:44:55
+ * @LastEditTime: 2021-04-15 20:31:24
  * @Description:
  */
 import React, {PureComponent} from 'react';
-import {View, TouchableOpacity, StyleSheet, ActivityIndicator, Text} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, ActivityIndicator, Text, Image} from 'react-native';
 import {px} from '../../../../utils/appUtil';
 export default class ImageMessage extends PureComponent {
+    state = {
+        scale: '',
+    };
+    componentDidMount() {
+        Image.getSize(this.props.message?.content, (w, h) => {
+            this.setState({scale: w / h});
+            console.log(w, h);
+        });
+    }
     render() {
         const {
             message,
@@ -43,16 +52,19 @@ export default class ImageMessage extends PureComponent {
                         );
                     }}>
                     <View style={{borderRadius: 5}}>
-                        {message?.content && (
+                        {message?.content && this.state.scale ? (
                             <ImageComponent
                                 source={{uri: message?.content}}
                                 resizeMode={ImageComponent.resizeMode.contain}
                                 style={{
-                                    width: px(100),
+                                    width: this.state.scale * px(120),
                                     height: px(120),
+                                    maxWidth: px(238),
                                     borderRadius: 5,
                                 }}
                             />
+                        ) : (
+                            <View style={{height: px(120)}} />
                         )}
 
                         {showIsRead && chatType !== 'group' && isSelf && (

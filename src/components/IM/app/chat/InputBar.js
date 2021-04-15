@@ -10,7 +10,6 @@ import {
     Text,
     Dimensions,
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 const {width, height} = Dimensions.get('window');
 
 export default class InputBar extends PureComponent {
@@ -76,7 +75,7 @@ export default class InputBar extends PureComponent {
             <ImageComponent source={require('../source/image/send.png')} style={{width: 30, height: 30}} />
         );
         if (usePlus) {
-            if (messageContent.trim().length) {
+            if (messageContent.trim().length && Platform.OS !== 'ios') {
                 return sendAbleIcon;
             } else {
                 return (
@@ -224,15 +223,22 @@ export default class InputBar extends PureComponent {
                                 disabled={!enabled}
                                 activeOpacity={1}
                                 onPress={() => {
-                                    console.log('TextInput');
                                     onFocus();
                                 }}>
                                 <TextInput
                                     ref={(e) => (this.input = e)}
-                                    multiline
+                                    multiline={Platform.OS == 'android' ? true : false}
+                                    enablesReturnKeyAutomatically={true}
                                     blurOnSubmit={false}
+                                    onSubmitEditing={() => {
+                                        if (Platform.OS == 'android') {
+                                            return;
+                                        }
+                                        onSubmitEditing('text', messageContent);
+                                    }}
                                     editable={!enabled}
                                     placeholder={placeholder}
+                                    returnKeyType={Platform.OS == 'android' ? '' : 'send'}
                                     placeholderTextColor="#5f5d70"
                                     onContentSizeChange={onContentSizeChange}
                                     underlineColorAndroid="transparent"
@@ -243,7 +249,6 @@ export default class InputBar extends PureComponent {
                                         {
                                             height: Math.max(35 + inputHeightFix, inputChangeSize),
                                             paddingHorizontal: 16,
-                                            paddingTop: Platform.OS === 'ios' ? 8 : 0,
                                         },
                                         inputStyle,
                                     ]}
@@ -260,7 +265,7 @@ export default class InputBar extends PureComponent {
                         <TouchableOpacity
                             style={{marginLeft: 8}}
                             onPress={() => {
-                                if (messageContent.trim().length > 0) {
+                                if (messageContent.trim().length > 0 && Platform.OS !== 'ios') {
                                     onSubmitEditing('text', messageContent);
                                 } else {
                                     if (usePlus) {
@@ -291,8 +296,6 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         height: 26,
         width: '100%',
-        padding: 0,
-        paddingHorizontal: 20,
     },
     container: {
         marginHorizontal: 8,

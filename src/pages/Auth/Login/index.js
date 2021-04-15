@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 11:11:43
+ * @LastEditTime: 2021-04-15 20:42:40
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -79,7 +79,11 @@ class Login extends Component {
     render() {
         const {mobile, password, btnClick} = this.state;
         return (
-            <ScrollView scrollEnabled={false} style={styles.login_content} keyboardShouldPersistTaps="handled">
+            <ScrollView
+                scrollEnabled={false}
+                style={styles.login_content}
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled">
                 <Text style={styles.title}>手机号登录</Text>
 
                 <InputView

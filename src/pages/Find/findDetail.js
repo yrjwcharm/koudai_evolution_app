@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 16:16:53
+ * @LastEditTime: 2021-04-15 17:52:57
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -66,13 +66,19 @@ const FindDetail = (props) => {
                 <ScrollView scrollIndicatorInsets={{right: 1}}>
                     {/* header */}
                     <View style={[styles.recommend]}>
-                        <Animatable.Image
-                            animation="fadeIn"
+                        <View
                             style={{
                                 height: px(350),
-                            }}
-                            source={{uri: data?.plan_info?.background}}
-                        />
+                                backgroundColor: '#fff',
+                            }}>
+                            <Animatable.Image
+                                animation="fadeIn"
+                                style={{
+                                    height: px(350),
+                                }}
+                                source={{uri: data?.plan_info?.background}}
+                            />
+                        </View>
                         <View style={[styles.header, {top: insets.top + px(4)}]}>
                             <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
                             <Text style={styles.img_title}>{data?.plan_info?.slogan[1]}</Text>

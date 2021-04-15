@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 16:49:02
+ * @LastEditTime: 2021-04-15 19:56:06
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -1023,7 +1023,6 @@ const styles = StyleSheet.create({
     inputStyle: {
         backgroundColor: '#fff',
         borderRadius: px(4),
-        paddingTop: Platform.OS == 'ios' ? px(10) : 0,
     },
     shortCutItem: {
         borderRadius: 16,
