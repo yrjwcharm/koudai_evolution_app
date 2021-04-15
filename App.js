@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 17:43:32
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-15 18:50:12
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -30,7 +30,7 @@ import JPush from 'jpush-react-native';
 import {updateVerifyGesture} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 import Image from 'react-native-fast-image';
-import {px as text} from './src/utils/appUtil';
+import {px as text, deviceWidth} from './src/utils/appUtil';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -219,6 +219,7 @@ function App(props) {
             Modal.show({
                 type: 'image',
                 imageUrl: modal.image,
+                imgWidth: modal.deviceWidth ? deviceWidth : 0,
                 isTouchMaskToClose: false,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);

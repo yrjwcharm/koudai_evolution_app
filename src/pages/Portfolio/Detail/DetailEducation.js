@@ -29,6 +29,7 @@ import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import Notice from '../../../components/Notice';
 import Toast from '../../../components/Toast';
+import _ from 'lodash';
 
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
@@ -52,6 +53,7 @@ export default function DetailEducation({navigation, route}) {
     const [iptVal, setIptVal] = useState('');
     const inputModal = useRef(null);
     const iptValRef = useRef('');
+    const [tableData, setTableData] = useState({});
     const jump = useJump();
     const changeTab = (p, t) => {
         setPeriod(p);
@@ -171,6 +173,7 @@ export default function DetailEducation({navigation, route}) {
                         setCountM(Number(item.val));
                     }
                 });
+                setTableData(res.result.asset_compare?.table);
                 setData(res.result);
             }
         });
@@ -185,6 +188,12 @@ export default function DetailEducation({navigation, route}) {
             if (res.code === '000000') {
                 setChart(res.result.yield_info.chart);
                 setChartData(res.result);
+                setTableData((prev) => {
+                    const next = _.cloneDeep(prev);
+                    next.tr_list[0][1] = res.result.yield_info.label[1].val;
+                    next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                    return next;
+                });
             }
         });
     }, [period, route.params, type]);
@@ -503,7 +512,7 @@ export default function DetailEducation({navigation, route}) {
                                 </View>
 
                                 {/* 表格 */}
-                                <Table data={data.asset_compare.table} />
+                                <Table data={tableData} />
                                 {data?.asset_compare?.tip_info?.title && (
                                     <TouchableOpacity
                                         activeOpacity={1}
