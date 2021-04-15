@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Image} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Image, Platform} from 'react-native';
 import React, {Component} from 'react';
 import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
@@ -33,6 +33,8 @@ export default class MyModal extends Component {
         this.imageUrl = props.imageUrl;
         this.state = {
             isVisible: this.props.isVisible || false,
+            imgHeight: 0,
+            imgWidth: props.imgWidth || text(280),
         };
     }
 
@@ -45,6 +47,7 @@ export default class MyModal extends Component {
         }
     }
     componentDidMount() {
+        // console.log(this.props);
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
@@ -61,6 +64,29 @@ export default class MyModal extends Component {
             this.props.confirmCallBack && this.props.confirmCallBack();
         }, 500);
     }
+    //设置图片宽高--android、ios有兼容
+    //android
+    setSize = (imgItem) => {
+        let showH;
+        if (Platform.OS != 'ios') {
+            Image.getSize(imgItem, (w, h) => {
+                //多张则循环判断处理
+                showH = Math.floor(h / (w / this.state.imgWidth));
+                this.setState({imgHeight: showH});
+            });
+        }
+    };
+    //ios
+    setSizeIos = (imgItem) => {
+        let showH;
+        if (Platform.OS == 'ios') {
+            Image.getSize(imgItem, (w, h) => {
+                //同安卓
+                showH = Math.floor(h / (w / this.state.imgWidth));
+                this.setState({imgHeight: showH});
+            });
+        }
+    };
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             isVisible: nextProps.isVisible,
@@ -149,7 +175,13 @@ export default class MyModal extends Component {
                                         source={{
                                             uri: this.imageUrl,
                                         }}
-                                        style={[styles.modalImage, this.props.imageStyle]}
+                                        style={[
+                                            styles.modalImage,
+                                            {width: this.state.imgWidth, height: this.state.imgHeight},
+                                            this.props.imageStyle,
+                                        ]}
+                                        onLayout={() => this.setSizeIos(this.imageUrl)}
+                                        onLoadStart={() => this.setSize(this.imageUrl)}
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity
@@ -180,8 +212,8 @@ const styles = StyleSheet.create({
         height: height,
     },
     modalImage: {
-        width: text(280),
-        height: text(300),
+        // width: text(280),
+        // height: text(300),
         // resizeMode: 'contain',
         borderRadius: px(8),
     },

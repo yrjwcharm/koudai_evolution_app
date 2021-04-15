@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:42:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-15 20:55:13
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -347,7 +347,7 @@ function HomeScreen({navigation, route}) {
                         )}
                     </Text>
                     {/* 小黄条 */}
-                    {notice?.trade ? (
+                    {notice?.trade && notice.trade.desc ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             style={[styles.tradeNotice, Style.flexCenter]}
