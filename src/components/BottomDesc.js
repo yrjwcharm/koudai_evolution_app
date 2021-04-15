@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-04-08 12:07:35
- * @LastEditors: dx
+ * @LastEditTime: 2021-04-15 22:27:48
+ * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -14,7 +14,7 @@ import {Colors, Font, Space, Style} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
-
+import BaseUrl from '../services/config';
 const BottomDesc = (props) => {
     const userInfo = useSelector((store) => store.userInfo);
     const {style} = props;
@@ -107,7 +107,7 @@ const BottomDesc = (props) => {
                                 onPress={() => {
                                     global.LogTool('bottomDesc');
                                     navigation.navigate(item.btn.jump_to, {
-                                        link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn/fundSafe',
+                                        link: `${BaseUrl.H5}/fundSafe`,
                                         title: '资金安全',
                                     });
                                 }}>
