@@ -62,8 +62,12 @@ export default function DetailEducation({navigation, route}) {
         if (!tabClick.current) {
             return false;
         }
-        tabClick.current = false;
-        setPeriod(p);
+        setPeriod((prev) => {
+            if (prev !== p) {
+                tabClick.current = false;
+            }
+            return p;
+        });
         setType(t);
     };
 

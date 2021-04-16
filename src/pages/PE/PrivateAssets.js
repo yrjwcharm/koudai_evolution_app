@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:12:13
+ * @LastEditTime: 2021-04-16 23:50:19
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
@@ -60,9 +60,13 @@ export default function PrivateAssets({navigation, route}) {
         if (!tabClick.current) {
             return false;
         }
-        tabClick.current = false;
-        setPeriod(p);
-        getChartInfo(p);
+        setPeriod((prev) => {
+            if (prev !== p) {
+                tabClick.current = false;
+                getChartInfo(p);
+            }
+            return p;
+        });
     };
     const ChangeTab = (i) => {
         setCurIndex(i);
