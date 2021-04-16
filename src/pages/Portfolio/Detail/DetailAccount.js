@@ -25,14 +25,17 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 
 export default function DetailAccount({route, navigation}) {
+    const insets = useSafeAreaInsets();
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState();
     const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
+    const [loading, setLoading] = useState(true);
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
@@ -55,44 +58,69 @@ export default function DetailAccount({route, navigation}) {
             upid: route?.params?.upid,
             fr: route.params?.fr,
             amount: route?.params?.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-                navigation.setOptions({
-                    title: res.result.title,
-                    headerRight: () => {
-                        return (
-                            <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                                <Text style={styles.right_sty}>{'产品说明书'}</Text>
-                            </TouchableOpacity>
-                        );
-                    },
-                });
-                setPeriod(res.result.period);
-                Http.get('/portfolio/yield_chart/20210101', {
-                    allocation_id: res.result.allocation_id,
-                    benchmark_id: res.result.benchmark_id,
-                    poid: res.result.poid,
-                    period: res.result.period,
-                    type: type,
-                }).then((resp) => {
-                    setChart(resp.result.yield_info.chart);
-                    setChartData(resp.result);
-                });
-            }
-        });
+        })
+            .then((res) => {
+                setLoading(false);
+                if (res.code === '000000') {
+                    setData(res.result);
+                    navigation.setOptions({
+                        title: res.result.title,
+                        headerRight: () => {
+                            return (
+                                <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                                    <Text style={styles.right_sty}>{'产品说明书'}</Text>
+                                </TouchableOpacity>
+                            );
+                        },
+                    });
+                    setPeriod(res.result.period);
+                    Http.get('/portfolio/yield_chart/20210101', {
+                        allocation_id: res.result.allocation_id,
+                        benchmark_id: res.result.benchmark_id,
+                        poid: res.result.poid,
+                        period: res.result.period,
+                        type: type,
+                    }).then((resp) => {
+                        setChart(resp.result.yield_info.chart);
+                        setChartData(resp.result);
+                    });
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigation, rightPress, route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: insets.top + text(8),
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     useFocusEffect(
         useCallback(() => {
             init();
         }, [init])
     );
 
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             {Object.keys(data).length > 0 ? (
-                <ScrollView style={{flex: 1}}>
+                <ScrollView style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
                     <View style={[styles.container_sty]}>
                         <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>

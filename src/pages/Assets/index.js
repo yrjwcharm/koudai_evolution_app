@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-15 20:55:13
+ * @LastEditTime: 2021-04-16 11:03:33
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -52,6 +52,7 @@ function HomeScreen({navigation, route}) {
     const isFocused = useIsFocused();
     const scrollRef = useRef(null);
     const showGesture = useShowGesture();
+    const [loading, setLoading] = useState(true);
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -101,13 +102,18 @@ function HomeScreen({navigation, route}) {
         });
         http.get('/asset/common/20210101', {
             // uid: '1000000001',
-        }).then((res) => {
-            if (res.code === '000000') {
-                StatusBar.setBarStyle('light-content');
-                setUserBasicInfo(res.result);
-            }
-            setRefreshing(false);
-        });
+        })
+            .then((res) => {
+                if (res.code === '000000') {
+                    StatusBar.setBarStyle('light-content');
+                    setUserBasicInfo(res.result);
+                }
+                setLoading(false);
+                setRefreshing(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
         http.get('/asset/notice/20210101').then((res) => {
             if (res.code === '000000') {
                 setNotice(res.result);
@@ -208,10 +214,28 @@ function HomeScreen({navigation, route}) {
     const needAdjust = useCallback((item) => {
         return item.portfolios.every((po) => po.adjust_status > 0);
     }, []);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: insets.top + text(8),
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
 
     useFocusEffect(
         useCallback(() => {
-            userInfo?.toJS()?.is_login && !showGesture && init();
+            userInfo?.toJS()?.is_login && !showGesture ? init() : setLoading(false);
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
@@ -231,7 +255,9 @@ function HomeScreen({navigation, route}) {
         return () => listener();
     }, [isFocused, navigation, init, userInfo, showGesture]);
 
-    return !showGesture ? (
+    return loading ? (
+        renderLoading()
+    ) : !showGesture ? (
         <View style={styles.container}>
             {/* 登录注册蒙层 */}
             {!userInfo.toJS().is_login && isFocused && <LoginMask />}
@@ -397,13 +423,13 @@ function HomeScreen({navigation, route}) {
                 </View>
                 {/* 中控 */}
                 {/* <View style={[styles.centerCtrl, {marginBottom: text(12)}]}>
-                    <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
-                    <Text style={styles.centerCtrlContent}>
-                        {
-                            '您当前的配置和主线有些偏离，建议您尽可跟随调仓可以让您的收益最大化。您也可以追加购买调整比例 '
-                        }
-                    </Text>
-                </View> */}
+                <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
+                <Text style={styles.centerCtrlContent}>
+                    {
+                        '您当前的配置和主线有些偏离，建议您尽可跟随调仓可以让您的收益最大化。您也可以追加购买调整比例 '
+                    }
+                </Text>
+            </View> */}
                 {/* 持仓组合 */}
                 {holdingData?.accounts?.map((item, index, arr) => {
                     return item.portfolios ? (
@@ -792,6 +818,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.marginAlign,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+    },
+    loading: {
+        marginHorizontal: Space.marginAlign,
+        width: text(343),
+        height: text(727),
     },
 });
 export default HomeScreen;
