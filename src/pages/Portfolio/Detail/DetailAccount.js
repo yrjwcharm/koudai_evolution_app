@@ -25,10 +25,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
-import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 
 export default function DetailAccount({route, navigation}) {
-    const insets = useSafeAreaInsets();
     const jump = useJump();
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
@@ -95,7 +93,6 @@ export default function DetailAccount({route, navigation}) {
         return (
             <View
                 style={{
-                    paddingTop: insets.top + text(8),
                     flex: 1,
                     backgroundColor: '#fff',
                 }}>

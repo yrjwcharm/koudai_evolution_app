@@ -2,13 +2,14 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 13:37:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 12:35:55
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
+import Image from 'react-native-fast-image';
 import {Font, Style, Colors} from '../../../common/commonStyle';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -23,6 +24,7 @@ const deviceWidth = Dimensions.get('window').width;
 export default function DetailPolaris({route, navigation}) {
     const [chartData, setChartData] = useState();
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('y3');
     const bottomModal = React.useRef(null);
     const [type, setType] = useState(1);
@@ -31,26 +33,48 @@ export default function DetailPolaris({route, navigation}) {
     const init = useCallback(() => {
         Http.get('/polaris/portfolio_detail/20210101', {
             poid: route.params.poid,
-        }).then((res) => {
-            navigation.setOptions({
-                title: res.result.title,
+        })
+            .then((res) => {
+                setLoading(false);
+                navigation.setOptions({
+                    title: res.result.title,
+                });
+                setData(res.result);
+                setPeriod(res.result?.parts_addition_data?.line.period);
+                Http.get('/portfolio/yield_chart/20210101', {
+                    upid: route.params.upid,
+                    period: res.result?.parts_addition_data?.line.period,
+                    type: type,
+                    poid: route.params.poid,
+                    allocation_id: res.result?.parts_addition_data?.line.allocation_id,
+                    benchmark_id: res.result?.parts_addition_data?.line.benchmark_id,
+                }).then((resp) => {
+                    setChart(resp.result.yield_info.chart);
+                    setChartData(resp.result);
+                });
+            })
+            .catch(() => {
+                setLoading(false);
             });
-            setData(res.result);
-            setPeriod(res.result?.parts_addition_data?.line.period);
-            Http.get('/portfolio/yield_chart/20210101', {
-                upid: route.params.upid,
-                period: res.result?.parts_addition_data?.line.period,
-                type: type,
-                poid: route.params.poid,
-                allocation_id: res.result?.parts_addition_data?.line.allocation_id,
-                benchmark_id: res.result?.parts_addition_data?.line.benchmark_id,
-            }).then((resp) => {
-                setChart(resp.result.yield_info.chart);
-                setChartData(resp.result);
-            });
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
 
     const changeTab = (p, t) => {
         setPeriod(p);
@@ -84,12 +108,16 @@ export default function DetailPolaris({route, navigation}) {
             return Colors.red;
         }
     }, []);
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{marginBottom: FixedBtn.btnHeight, backgroundColor: Colors.bgColor, flex: 1}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
-                    <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
+                    {data?.top?.header?.img ? (
+                        <FitImage source={{uri: data?.top?.header?.img}} resizeMode="contain" />
+                    ) : null}
                     <View style={{padding: text(16), marginTop: text(-70)}}>
                         <View style={[styles.card_sty]}>
                             <Text style={{fontSize: text(16), textAlign: 'center', fontWeight: 'bold'}}>

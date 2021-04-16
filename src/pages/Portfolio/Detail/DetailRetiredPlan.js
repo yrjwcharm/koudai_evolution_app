@@ -6,7 +6,8 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
@@ -33,6 +34,7 @@ import _ from 'lodash';
 
 export default function DetailRetiredPlan({navigation, route}) {
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState({});
     const [countFr, setCountFr] = useState(0); //首投金额
@@ -121,27 +123,49 @@ export default function DetailRetiredPlan({navigation, route}) {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
             amount: route?.params?.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                allocationIdRef.current = res.result.allocation_id;
-                poidRef.current = res.result?.poid;
-                setPeriod(res.result.period);
-                setType(res.result.period.indexOf('f') !== -1 ? 2 : 1);
-                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                    if (item.type == 'begin') {
-                        setCountFr(Number(item.val));
-                    } else if (item.type == 'auto') {
-                        setCountM(Number(item.val));
-                    } else if (item.type == 'duration') {
-                        setCurrent(item.val);
-                    }
-                });
-                setTableData(res.result.asset_compare?.table);
-                setData(res.result);
-            }
-        });
+        })
+            .then((res) => {
+                setLoading(false);
+                if (res.code === '000000') {
+                    allocationIdRef.current = res.result.allocation_id;
+                    poidRef.current = res.result?.poid;
+                    setPeriod(res.result.period);
+                    setType(res.result.period.indexOf('f') !== -1 ? 2 : 1);
+                    setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                    res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                        if (item.type == 'begin') {
+                            setCountFr(Number(item.val));
+                        } else if (item.type == 'auto') {
+                            setCountM(Number(item.val));
+                        } else if (item.type == 'duration') {
+                            setCurrent(item.val);
+                        }
+                    });
+                    setTableData(res.result.asset_compare?.table);
+                    setData(res.result);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     const getChartInfo = useCallback(() => {
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
@@ -307,7 +331,9 @@ export default function DetailRetiredPlan({navigation, route}) {
             init();
         }, [init])
     );
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <InputModal {...modalProps} ref={inputModal}>
                 <View style={[Style.flexRow, styles.inputContainer]}>
@@ -357,7 +383,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                                         borderRadius: text(25),
                                         marginBottom: text(7),
                                         paddingVertical: text(8),
-                                        paddingLeft: Space.padding,
+                                        paddingHorizontal: Space.padding,
                                     }}>
                                     <Text style={styles.tip_sty}>{remark}</Text>
                                 </LinearGradient>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-04-14 17:43:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:35:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 11:11:11
  * @Description:保险
  */
 import React, {useEffect, useState} from 'react';
@@ -24,7 +24,7 @@ const DetailInsurance = ({navigation}) => {
                 setScale(h / w);
             });
         });
-    }, []);
+    }, [navigation]);
     return (
         <>
             <ScrollView style={{marginBottom: isIphoneX() ? 80 : px(48)}}>

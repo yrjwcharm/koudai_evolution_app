@@ -6,7 +6,8 @@
 //  * @LastEditTime: 2021-01-27 18:37:22
 //  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
@@ -33,6 +34,7 @@ import _ from 'lodash';
 
 export default function DetailEducation({navigation, route}) {
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState({});
 
@@ -156,28 +158,50 @@ export default function DetailEducation({navigation, route}) {
         Http.get('/portfolio/purpose_invest_detail/20210101', {
             upid: route.params.upid,
             amount: route?.params?.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                allocationIdRef.current = res.result.allocation_id;
-                poidRef.current = res.result.poid;
-                setPeriod(res.result.period);
-                if (res.result.period.indexOf('f') > -1) {
-                    setType(2);
-                }
-                setGoalAmount(res.result?.plan_info?.goal_info?.amount);
-                setAge(res.result.plan_info.personal_info?.age);
-                res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
-                    if (item.type == 'begin') {
-                        setCountFr(Number(item.val));
-                    } else if (item.type == 'auto') {
-                        setCountM(Number(item.val));
+        })
+            .then((res) => {
+                setLoading(false);
+                if (res.code === '000000') {
+                    allocationIdRef.current = res.result.allocation_id;
+                    poidRef.current = res.result.poid;
+                    setPeriod(res.result.period);
+                    if (res.result.period.indexOf('f') > -1) {
+                        setType(2);
                     }
-                });
-                setTableData(res.result.asset_compare?.table);
-                setData(res.result);
-            }
-        });
+                    setGoalAmount(res.result?.plan_info?.goal_info?.amount);
+                    setAge(res.result.plan_info.personal_info?.age);
+                    res.result?.plan_info?.goal_info?.items.forEach((item, index) => {
+                        if (item.type == 'begin') {
+                            setCountFr(Number(item.val));
+                        } else if (item.type == 'auto') {
+                            setCountM(Number(item.val));
+                        }
+                    });
+                    setTableData(res.result.asset_compare?.table);
+                    setData(res.result);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [route.params]);
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../../assets/img/detail/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     const getChartData = useCallback(() => {
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
@@ -314,7 +338,9 @@ export default function DetailEducation({navigation, route}) {
         bottomModal.current.show();
     };
 
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             {Object.keys(data).length > 0 ? (
                 <View style={{flex: 1}}>
