@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-16 18:37:55
+ * @LastEditTime: 2021-04-16 18:40:05
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -166,7 +166,7 @@ export class AssetsConfigDetail extends Component {
                                 />
                                 {`${amount}`.length === 0 && (
                                     <TouchableOpacity
-                                        style={{position: 'absolute', left: text(20), top: text(28)}}
+                                        style={{position: 'absolute', left: text(18), top: text(28)}}
                                         activeOpacity={1}
                                         onPress={() => this.inputRef.focus()}>
                                         <Text style={styles.placeholder}>{invest_form.placeholder}</Text>

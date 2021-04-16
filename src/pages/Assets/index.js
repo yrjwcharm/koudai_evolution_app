@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 15:31:22
+ * @LastEditTime: 2021-04-16 18:40:45
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -96,7 +96,6 @@ function HomeScreen({navigation, route}) {
             // uid: '1000000001',
         }).then((res) => {
             if (res.code === '000000') {
-                refresh === 'refresh' && Toast.show('我的资产已更新');
                 setHoldingData(res.result);
             }
         });
