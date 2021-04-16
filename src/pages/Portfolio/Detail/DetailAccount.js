@@ -88,8 +88,8 @@ export default function DetailAccount({route, navigation}) {
                         period: res.result.period,
                         type: type,
                     }).then((resp) => {
-                        setChart(resp.result.yield_info.chart);
                         setChartData(resp.result);
+                        setChart(resp.result.yield_info.chart);
                     });
                 }
             })

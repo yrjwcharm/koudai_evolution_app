@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:14:18
+ * @LastEditTime: 2021-04-16 23:33:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -111,8 +111,8 @@ export default function PortfolioAssets(props) {
         }).then((res) => {
             tabClick.current = true;
             setChart(res.result);
-            setChartData(res.result.chart);
             setTag(res.result.tag_position);
+            setChartData(res.result.chart);
             setShowEmpty(res.result.chart?.length === 0);
         });
     };
