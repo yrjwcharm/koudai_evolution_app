@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 19:13:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 15:54:26
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
@@ -16,6 +16,8 @@ import {
     TextInput,
     RefreshControl,
 } from 'react-native';
+import Image from 'react-native-fast-image';
+import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -35,10 +37,12 @@ import {useJump} from '../../components/hooks';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PrivateAssets({navigation, route}) {
+    const insets = useSafeAreaInsets();
     const [showEye, setShowEye] = useState('true');
     const [refreshing, setRefreshing] = useState(false);
 
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const bottomModal = React.useRef(null);
     const [period, setPeriod] = useState('m1');
     const [qa, setQa] = useState({});
@@ -50,9 +54,9 @@ export default function PrivateAssets({navigation, route}) {
     const _textBenchmark = useRef(null);
     const jump = useJump();
 
-    const changePeriod = (period) => {
-        setPeriod(period);
-        getChartInfo(period);
+    const changePeriod = (p) => {
+        setPeriod(p);
+        getChartInfo(p);
     };
     const ChangeTab = (i) => {
         setCurIndex(i);
@@ -66,23 +70,49 @@ export default function PrivateAssets({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     }, []);
-    const init = (type) => {
-        type == 'refresh' && setRefreshing(true);
-        Http.get('/pe/asset_detail/20210101', {
-            fund_code: route.params.fund_code,
-            poid: route.params.poid,
-        }).then((res) => {
-            setRefreshing(false);
-            storage.get('peEye').then((res) => {
-                setShowEye(res ? res : 'true');
-            });
-            setData(res.result);
-            getChartInfo();
-        });
+    const init = useCallback(
+        (type) => {
+            type == 'refresh' && setRefreshing(true);
+            Http.get('/pe/asset_detail/20210101', {
+                fund_code: route.params.fund_code,
+                poid: route.params.poid,
+            })
+                .then((res) => {
+                    setLoading(false);
+                    setRefreshing(false);
+                    storage.get('peEye').then((result) => {
+                        setShowEye(result ? result : 'true');
+                    });
+                    setData(res.result);
+                    getChartInfo();
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+        },
+        [getChartInfo, route.params]
+    );
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: insets.top + Space.padding,
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
     };
     useEffect(() => {
         init();
-    }, []);
+    }, [init]);
     const redeemBtn = () => {
         Modal.show({
             confirm: true,
@@ -390,7 +420,9 @@ export default function PrivateAssets({navigation, route}) {
             );
         }
     };
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <View style={{flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <>

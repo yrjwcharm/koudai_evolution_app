@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 14:33:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 15:40:51
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -13,12 +13,12 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
-    Image,
     TextInput,
     Dimensions,
     RefreshControl,
 } from 'react-native';
-import {Colors, Font, Style} from '../../common/commonStyle';
+import Image from 'react-native-fast-image';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
@@ -57,6 +57,7 @@ export default function PortfolioAssets(props) {
     const bottomModal = React.useRef(null);
     const scoreModal = React.useRef();
     const jump = useJump();
+    const [loading, setLoading] = useState(true);
 
     const changeTab = (p) => {
         setPeriod(p);
@@ -87,9 +88,14 @@ export default function PortfolioAssets(props) {
         });
         Http.get('/position/console/20210101', {
             poid: props.route?.params?.poid,
-        }).then((res) => {
-            setCard(res.result);
-        });
+        })
+            .then((res) => {
+                setCard(res.result);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [props.route.params]);
     const getChartInfo = () => {
         Http.get('/position/chart/20210101', {
@@ -102,14 +108,32 @@ export default function PortfolioAssets(props) {
             setTag(res.result.tag_position);
         });
     };
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: Space.padding,
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <Image
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={Image.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     useEffect(() => {
         getChartInfo();
     }, [period]);
     useEffect(() => {
-        if (chartData && chartData.length > 0) {
+        if (!loading && chartData && chartData.length > 0) {
             onHide();
         }
-    }, [chartData]);
+    }, [chartData, loading]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -425,7 +449,9 @@ export default function PortfolioAssets(props) {
             </>
         );
     };
-    return (
+    return loading ? (
+        renderLoading()
+    ) : (
         <>
             <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init()} />}>
                 {data?.processing_info && <Notice content={data?.processing_info} />}

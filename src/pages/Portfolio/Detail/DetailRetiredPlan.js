@@ -9,7 +9,7 @@ import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum, deviceWidth} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -222,43 +222,6 @@ export default function DetailRetiredPlan({navigation, route}) {
         setPopup(tip);
         bottomModal.current.show();
     };
-    const onKeyPress = (e) => {
-        const {key} = e.nativeEvent;
-        // console.log(key);
-        const pos = iptVal.indexOf(key);
-        if (iptVal.split('.')[1] && iptVal.split('.')[1].length === 2 && key !== 'Backspace') {
-            return false;
-        }
-        if (key === '.') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev;
-                } else {
-                    if (pos !== -1) {
-                        return prev;
-                    } else {
-                        return prev + '.';
-                    }
-                }
-            });
-        } else if (key === '0') {
-            setIptVal((prev) => {
-                if (prev === '') {
-                    return prev + '0';
-                } else {
-                    if (prev === '0') {
-                        return prev;
-                    } else {
-                        return prev + '0';
-                    }
-                }
-            });
-        } else if (key === 'Backspace') {
-            setIptVal((prev) => prev.slice(0, prev.length - 1));
-        } else {
-            setIptVal((prev) => (prev === '0' ? prev : prev + key.replace(/\D/g, '')));
-        }
-    };
     const showInputModal = (item, val) => {
         setIptVal(`${val}`);
         setModalProps({
@@ -342,7 +305,8 @@ export default function DetailRetiredPlan({navigation, route}) {
                         autoFocus={true}
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
-                        onKeyPress={onKeyPress}
+                        onChangeText={(value) => setIptVal(onlyNumber(value))}
+                        // onKeyPress={onKeyPress}
                         // placeholder={modalProps?.placeholder}
                         // placeholderTextColor={'#CCD0DB'}
                         style={[styles.inputStyle]}
@@ -350,7 +314,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                     />
                     {`${iptVal}`.length === 0 && <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>}
                     {`${iptVal}`.length > 0 && (
-                        <TouchableOpacity onPress={() => setIptVal('')}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => setIptVal('')}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={text(16)} />
                         </TouchableOpacity>
                     )}
@@ -754,6 +718,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: text(35),
         lineHeight: text(42),
+        height: text(42),
         marginLeft: text(14),
         padding: 0,
         fontFamily: Font.numMedium,

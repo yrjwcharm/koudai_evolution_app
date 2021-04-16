@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 17:12:43
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 14:36:22
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -154,17 +154,19 @@ const ArticleDetail = ({navigation, route}) => {
     }, [navigation, scrollY]);
     useEffect(() => {
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad) {
-            setFinishRead((prev) => {
-                if (!prev) {
-                    postProgress({
-                        article_id: route.params?.article_id,
-                        latency: Date.now() - timeRef.current,
-                        done_status: 1,
-                        article_progress: 100,
-                    });
-                }
-                return true;
-            });
+            setTimeout(() => {
+                setFinishRead((prev) => {
+                    if (!prev) {
+                        postProgress({
+                            article_id: route.params?.article_id,
+                            latency: Date.now() - timeRef.current,
+                            done_status: 1,
+                            article_progress: 100,
+                        });
+                    }
+                    return true;
+                });
+            }, 1000);
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
@@ -219,13 +221,17 @@ const ArticleDetail = ({navigation, route}) => {
                                     styles.finishText,
                                     {color: Colors.lightGrayColor, padding: Space.padding},
                                 ]}>{`本文编辑于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
-                            <View style={[Style.flexCenter, styles.finishBox, {opacity: finishRead ? 1 : 0}]}>
-                                <Image
-                                    source={require('../../assets/img/article/finish.gif')}
-                                    style={styles.finishImg}
-                                />
-                                <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
-                            </View>
+                            {finishRead ? (
+                                <View style={[Style.flexCenter, styles.finishBox]}>
+                                    <Image
+                                        source={require('../../assets/img/article/finish.gif')}
+                                        style={styles.finishImg}
+                                    />
+                                    <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
+                                </View>
+                            ) : (
+                                <View style={{height: text(161)}} />
+                            )}
                             <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
