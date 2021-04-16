@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 16:18:22
+ * @LastEditTime: 2021-04-16 20:48:55
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -94,6 +94,7 @@ const Profile = ({navigation}) => {
                     pickerRowHeight: 36,
                     pickerConfirmBtnColor: [0, 81, 204, 1],
                     pickerCancelBtnColor: [128, 137, 155, 1],
+                    pickerTextEllipsisLen: 100,
                     selectedValue: [item.val?.text],
                     wheelFlex: [1, 1],
                     onPickerCancel: () => setShowMask(false),

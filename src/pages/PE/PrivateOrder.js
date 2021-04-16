@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 11:43:47
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @Desc:私募预约
- * @LastEditTime: 2021-04-14 16:01:36
+ * @LastEditTime: 2021-04-16 20:49:37
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -105,6 +105,7 @@ export default class PrivateOrder extends Component {
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
+            pickerTextEllipsisLen: 100,
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 let _str = pickedValue[0] + pickedValue[1] + pickedValue[2];

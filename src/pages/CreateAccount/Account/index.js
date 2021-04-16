@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-09 12:11:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-16 20:49:25
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -159,6 +159,7 @@ class Index extends Component {
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
+            pickerTextEllipsisLen: 100,
             wheelFlex: [1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 this.setState({rname: pickedValue[0], showMask: false, rcode: this.state.careerList[pickedIndex]});

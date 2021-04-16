@@ -200,6 +200,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             pickerRowHeight: 36,
             pickerConfirmBtnColor: [0, 82, 205, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
+            pickerTextEllipsisLen: 100,
             selectedValue: [current],
             wheelFlex: [1, 1],
             onPickerConfirm: (pickedValue) => {

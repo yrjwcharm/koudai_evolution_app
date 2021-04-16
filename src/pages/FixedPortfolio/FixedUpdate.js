@@ -80,6 +80,7 @@ export default function FixedUpdate({navigation, route}) {
             pickerCancelBtnText: '取消',
             pickerConfirmBtnText: '确定',
             selectedValue: [cycleRef.current, timingRef.current],
+            pickerTextEllipsisLen: 100,
             pickerData: _createDateData(),
             onPickerConfirm: (pickedValue, pickedIndex) => {
                 cycleRef.current = pickedValue[0];

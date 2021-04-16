@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:50:00
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:51:45
+ * @LastEditTime: 2021-04-16 20:49:12
  * @Description: 投诉建议
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -47,6 +47,7 @@ const ComplaintsAdvices = ({navigation}) => {
             pickerConfirmBtnColor: [0, 81, 204, 1],
             pickerCancelBtnColor: [128, 137, 155, 1],
             selectedValue: [sort.value],
+            pickerTextEllipsisLen: 100,
             wheelFlex: [1, 1],
             onPickerCancel: () => setShowMask(false),
             onPickerConfirm: (pickedValue, pickedIndex) => {
