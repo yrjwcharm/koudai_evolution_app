@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-16 18:16:40
+ * @LastEditTime: 2021-04-16 18:37:55
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -161,10 +161,16 @@ export class AssetsConfigDetail extends Component {
                                     // placeholder={invest_form.placeholder}
                                     // placeholderTextColor={Colors.placeholderColor}
                                     onChangeText={this.onChange}
+                                    ref={(ref) => (this.inputRef = ref)}
                                     style={[styles.input]}
                                 />
                                 {`${amount}`.length === 0 && (
-                                    <Text style={styles.placeholder}>{invest_form.placeholder}</Text>
+                                    <TouchableOpacity
+                                        style={{position: 'absolute', left: text(20), top: text(28)}}
+                                        activeOpacity={1}
+                                        onPress={() => this.inputRef.focus()}>
+                                        <Text style={styles.placeholder}>{invest_form.placeholder}</Text>
+                                    </TouchableOpacity>
                                 )}
                             </View>
                             <View style={[styles.percent_bar, Style.flexRow]}>
@@ -345,9 +351,6 @@ const styles = StyleSheet.create({
         marginRight: text(18),
     },
     placeholder: {
-        position: 'absolute',
-        left: text(20),
-        top: text(28),
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.placeholderColor,
