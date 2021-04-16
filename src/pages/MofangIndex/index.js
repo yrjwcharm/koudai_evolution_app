@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 15:39:15
+ * @LastEditTime: 2021-04-16 10:58:28
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -15,6 +15,7 @@ import {
     ImageBackground,
     RefreshControl,
     Platform,
+    Modal,
 } from 'react-native';
 import {px, deviceWidth, formaNum} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
@@ -87,6 +88,11 @@ const Index = (props) => {
     );
     useFocusEffect(
         useCallback(() => {
+            // Modal.show({
+            //     confirm: true,
+            //     content: '',
+            //     title: '隐私保护说明',
+            // });
             getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -549,7 +555,7 @@ const Index = (props) => {
                                                     {item.name}
                                                 </Text>
                                                 <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
-                                                    {item.name}
+                                                    {item.desc}
                                                 </Text>
                                             </View>
                                         ))}

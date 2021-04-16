@@ -221,13 +221,12 @@ export const smChart = (data) => `(function(){
   chart.tooltip(false);
   chart.area()
     .position('date*value')
-    .color('l(90) 0:#DC4949 1:#ffffff').shape('smooth')
-   
-    ;
+    .color('l(90) 0:#DC4949 1:#ffffff').shape('smooth');
   chart.line()
     .position('date*value')
-    .color( '#DC4949').shape('smooth')
-    ;
+    .color( '#DC4949').shape('smooth').style({
+      lineWidth: 1
+    });
   chart.render();
 })()
 `;

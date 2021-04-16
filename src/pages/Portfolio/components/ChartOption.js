@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 17:40:35
+ * @LastEditTime: 2021-04-16 10:24:11
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -165,6 +165,7 @@ export const baseAreaChart = (
     });
   chart.line()
     .position('date*value')
+    .shape('smooth')
     .color('type', ${JSON.stringify(colors)})
    
     .animate({
@@ -174,7 +175,7 @@ export const baseAreaChart = (
       }
     })
     .style({
-      lineWidth: 1.5
+      lineWidth: 1
     });
     chart.point().position('date*value').size('tag', function(val) {
       return val ? 3 : 0;
