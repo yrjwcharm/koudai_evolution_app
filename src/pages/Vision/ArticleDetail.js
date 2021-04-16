@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 14:36:22
+ * @LastEditTime: 2021-04-16 16:48:18
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -70,11 +70,10 @@ const ArticleDetail = ({navigation, route}) => {
             resource_cate: 'article',
             action_type: data?.favor_status ? 0 : 1,
         }).then((res) => {
-            Toast.show(res.message, {
-                onHidden: () => {
-                    btnClick.current = true;
-                },
-            });
+            shareModal.current.toastShow(res.message);
+            setTimeout(() => {
+                btnClick.current = true;
+            }, 2000);
             if (res.code === '000000') {
                 init();
             }
@@ -90,11 +89,10 @@ const ArticleDetail = ({navigation, route}) => {
             resource_cate: 'article',
             action_type: data?.collect_status ? 0 : 1,
         }).then((res) => {
-            Toast.show(res.message, {
-                onHidden: () => {
-                    btnClick.current = true;
-                },
-            });
+            shareModal.current.toastShow(res.message);
+            setTimeout(() => {
+                btnClick.current = true;
+            }, 2000);
             if (res.code === '000000') {
                 init();
             }

@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 12:35:55
+ * @LastEditTime: 2021-04-16 17:45:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -79,6 +79,7 @@ export default function DetailPolaris({route, navigation}) {
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
             period: p,

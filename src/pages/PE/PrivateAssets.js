@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 15:54:26
+ * @LastEditTime: 2021-04-16 18:03:13
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
@@ -47,6 +47,7 @@ export default function PrivateAssets({navigation, route}) {
     const [period, setPeriod] = useState('m1');
     const [qa, setQa] = useState({});
     const [chart, setChart] = useState({});
+    const [chartData, setChartData] = useState([]);
     const [curIndex, setCurIndex] = useState(0);
     const [curIndexNet, setCurIndexNet] = useState(0);
     const _textTime = useRef(null);
@@ -125,12 +126,14 @@ export default function PrivateAssets({navigation, route}) {
 
     const getChartInfo = useCallback(
         (_period) => {
+            setChartData([]);
             Http.get('/pe/chart/20210101', {
                 fund_code: route.params.fund_code,
                 poid: route.params.poid,
                 period: _period || period,
             }).then((res) => {
                 setChart(res.result);
+                setChartData(res.result.chart);
             });
         },
         [period, route]
@@ -230,18 +233,28 @@ export default function PrivateAssets({navigation, route}) {
                             </View>
                         </View>
                     )}
-                    <Chart
-                        initScript={baseAreaChart(
-                            chart?.chart,
-                            ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor, 'transparent'],
-                            ['l(90) 0:#E74949 1:#fff', 'transparent', 'green'],
-                            true
+                    <View style={{height: 220}}>
+                        {chartData?.length > 0 && (
+                            <Chart
+                                initScript={baseAreaChart(
+                                    chartData,
+                                    ['l(90) 0:#E74949 1:#fff', Colors.lightBlackColor, 'transparent'],
+                                    ['l(90) 0:#E74949 1:#fff', 'transparent', 'green'],
+                                    true,
+                                    2,
+                                    deviceWidth - 10,
+                                    10,
+                                    {},
+                                    220,
+                                    chart.max_ratio
+                                )}
+                                onChange={onChartChange}
+                                data={chart?.chart}
+                                onHide={onHide}
+                                style={{height: isIphoneX() ? px(200) : px(220)}}
+                            />
                         )}
-                        onChange={onChartChange}
-                        data={chart?.chart}
-                        onHide={onHide}
-                        style={{height: isIphoneX() ? px(200) : px(220)}}
-                    />
+                    </View>
                     <View
                         style={{
                             flexDirection: 'row',

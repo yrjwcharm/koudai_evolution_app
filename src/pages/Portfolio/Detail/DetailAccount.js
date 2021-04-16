@@ -37,6 +37,7 @@ export default function DetailAccount({route, navigation}) {
     const changeTab = (p, t) => {
         setPeriod(p);
         setType(t);
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             allocation_id: data.allocation_id,
             benchmark_id: data.benchmark_id,

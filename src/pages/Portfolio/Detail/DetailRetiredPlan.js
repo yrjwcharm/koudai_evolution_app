@@ -167,6 +167,7 @@ export default function DetailRetiredPlan({navigation, route}) {
         );
     };
     const getChartInfo = useCallback(() => {
+        setChart([]);
         Http.get('/portfolio/yield_chart/20210101', {
             upid: route.params.upid,
             period: period,
@@ -412,7 +413,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                         <View style={styles.card_sty}>
                             <Text style={styles.title_sty}>{chartData?.title}</Text>
                             <View style={{minHeight: text(300)}}>
-                                {chart?.length > 0 && (
+                                {true && (
                                     <>
                                         <RenderChart
                                             chartData={chartData}
