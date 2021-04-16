@@ -733,10 +733,11 @@ class ChatWindow extends PureComponent {
             keyboardHeight,
             keyboardShow,
         } = this.state;
-
         const currentList = messageList;
+        // const currentList = this.state.isInverted ? messageList : messageList.reverse();
         // .slice()
         // .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
+        console.log(this.state.isInverted);
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View
@@ -767,7 +768,7 @@ class ChatWindow extends PureComponent {
                         <FlatList
                             {...this.props.flatListProps}
                             ref={(e) => (this.chatList = e)}
-                            inverted={this.state.isInverted}
+                            inverted={true}
                             data={currentList}
                             ListFooterComponent={this.props.renderLoadEarlier}
                             extraData={this.props.extraData}

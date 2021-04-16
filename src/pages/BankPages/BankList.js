@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-23 17:29:21
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-04-12 17:50:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-16 22:49:16
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, Linking} from 'react-native';

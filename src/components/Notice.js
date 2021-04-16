@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-25 17:21:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-16 22:49:08
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Animated, LayoutAnimation} from 'react-native';
@@ -16,7 +16,7 @@ export default function Notice(props) {
     const jump = useJump();
     return (
         <>
-            {props.content ? (
+            {props.content?.content ? (
                 <TouchableOpacity
                     activeOpacity={0.9}
                     style={[Style.flexRow, styles.yellow_wrap_sty]}

@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-15 20:42:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-16 23:19:40
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -139,8 +139,9 @@ function App(props) {
         heartBeat();
         setInterval(() => {
             heartBeat();
-        }, 60 * 5 * 1000);
-    }, [heartBeat]);
+        }, 3000000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     React.useEffect(() => {
         NetInfo.addEventListener((state) => {
             if (!state.isConnected) {
