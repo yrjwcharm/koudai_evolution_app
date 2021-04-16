@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 18:03:13
+ * @LastEditTime: 2021-04-16 23:12:13
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
@@ -54,8 +54,13 @@ export default function PrivateAssets({navigation, route}) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const jump = useJump();
+    const tabClick = useRef(true);
 
     const changePeriod = (p) => {
+        if (!tabClick.current) {
+            return false;
+        }
+        tabClick.current = false;
         setPeriod(p);
         getChartInfo(p);
     };
@@ -132,6 +137,7 @@ export default function PrivateAssets({navigation, route}) {
                 poid: route.params.poid,
                 period: _period || period,
             }).then((res) => {
+                tabClick.current = true;
                 setChart(res.result);
                 setChartData(res.result.chart);
             });

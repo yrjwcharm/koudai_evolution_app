@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 17:45:18
+ * @LastEditTime: 2021-04-16 23:03:43
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -30,6 +30,7 @@ export default function DetailPolaris({route, navigation}) {
     const [type, setType] = useState(1);
     const [chart, setChart] = useState();
     const jump = useJump();
+    const tabClick = useRef(true);
     const init = useCallback(() => {
         Http.get('/polaris/portfolio_detail/20210101', {
             poid: route.params.poid,
@@ -77,20 +78,27 @@ export default function DetailPolaris({route, navigation}) {
     };
 
     const changeTab = (p, t) => {
+        if (!tabClick.current) {
+            return false;
+        }
         setPeriod(p);
         setType(t);
-        setChart([]);
-        Http.get('/portfolio/yield_chart/20210101', {
-            upid: route.params.upid,
-            period: p,
-            type: type,
-            poid: route.params.poid,
-            allocation_id: data?.parts_addition_data?.line.allocation_id,
-            benchmark_id: data?.parts_addition_data?.line.benchmark_id,
-        }).then((res) => {
-            setChart(res.result.yield_info.chart);
-            setChartData(res.result);
-        });
+        if (p !== period) {
+            tabClick.current = false;
+            setChart([]);
+            Http.get('/portfolio/yield_chart/20210101', {
+                upid: route.params.upid,
+                period: p,
+                type: type,
+                poid: route.params.poid,
+                allocation_id: data?.parts_addition_data?.line.allocation_id,
+                benchmark_id: data?.parts_addition_data?.line.benchmark_id,
+            }).then((res) => {
+                tabClick.current = true;
+                setChartData(res.result);
+                setChart(res.result.yield_info.chart);
+            });
+        }
     };
     useFocusEffect(
         useCallback(() => {

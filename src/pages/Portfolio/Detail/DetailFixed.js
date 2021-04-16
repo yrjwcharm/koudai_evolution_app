@@ -3,10 +3,10 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 17:35:09
+ * @LastEditTime: 2021-04-16 23:03:12
  */
 
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -29,20 +29,28 @@ export default function DetailAccount({route, navigation}) {
     const [chart, setChart] = useState();
     const jump = useJump();
     const [loading, setLoading] = useState(true);
+    const tabClick = useRef(true);
     const changeTab = (p, t) => {
+        if (!tabClick.current) {
+            return false;
+        }
         setPeriod(p);
         setType(t);
-        setChart([]);
-        Http.get('/portfolio/yield_chart/20210101', {
-            allocation_id: data.allocation_id,
-            benchmark_id: data.benchmark_id,
-            poid: data.poid,
-            period: p,
-            type: t,
-        }).then((resp) => {
-            setChart(resp.result.yield_info.chart);
-            setChartData(resp.result);
-        });
+        if (p !== period) {
+            tabClick.current = false;
+            setChart([]);
+            Http.get('/portfolio/yield_chart/20210101', {
+                allocation_id: data.allocation_id,
+                benchmark_id: data.benchmark_id,
+                poid: data.poid,
+                period: p,
+                type: t,
+            }).then((resp) => {
+                tabClick.current = true;
+                setChartData(resp.result);
+                setChart(resp.result.yield_info.chart);
+            });
+        }
     };
 
     const init = useCallback(() => {

@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
@@ -34,20 +34,28 @@ export default function DetailAccount({route, navigation}) {
     const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
+    const tabClick = useRef(true);
     const changeTab = (p, t) => {
+        if (!tabClick.current) {
+            return false;
+        }
         setPeriod(p);
         setType(t);
-        setChart([]);
-        Http.get('/portfolio/yield_chart/20210101', {
-            allocation_id: data.allocation_id,
-            benchmark_id: data.benchmark_id,
-            poid: data.poid,
-            period: p,
-            type: t,
-        }).then((resp) => {
-            setChart(resp.result.yield_info.chart);
-            setChartData(resp.result);
-        });
+        if (p !== period) {
+            tabClick.current = false;
+            setChart([]);
+            Http.get('/portfolio/yield_chart/20210101', {
+                allocation_id: data.allocation_id,
+                benchmark_id: data.benchmark_id,
+                poid: data.poid,
+                period: p,
+                type: t,
+            }).then((resp) => {
+                tabClick.current = true;
+                setChartData(resp.result);
+                setChart(resp.result.yield_info.chart);
+            });
+        }
     };
     const rightPress = useCallback(() => {
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});

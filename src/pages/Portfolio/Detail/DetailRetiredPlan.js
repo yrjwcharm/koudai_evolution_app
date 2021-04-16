@@ -56,8 +56,13 @@ export default function DetailRetiredPlan({navigation, route}) {
     const iptValRef = useRef('');
     const [tableData, setTableData] = useState({});
     const jump = useJump();
+    const tabClick = useRef(true);
 
     const changeTab = (p, t) => {
+        if (!tabClick.current) {
+            return false;
+        }
+        tabClick.current = false;
         setPeriod(p);
         setType(t);
     };
@@ -174,6 +179,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             type: type,
             poid: poidRef.current,
         }).then((res) => {
+            tabClick.current = true;
             if (res.code === '000000') {
                 setChartData(res.result);
                 setChart(res.result?.yield_info?.chart);

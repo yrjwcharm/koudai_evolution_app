@@ -57,7 +57,12 @@ export default function DetailEducation({navigation, route}) {
     const iptValRef = useRef('');
     const [tableData, setTableData] = useState({});
     const jump = useJump();
+    const tabClick = useRef(true);
     const changeTab = (p, t) => {
+        if (!tabClick.current) {
+            return false;
+        }
+        tabClick.current = false;
         setPeriod(p);
         setType(t);
     };
@@ -211,9 +216,10 @@ export default function DetailEducation({navigation, route}) {
             type: type,
             poid: poidRef.current,
         }).then((res) => {
+            tabClick.current = true;
             if (res.code === '000000') {
-                setChart(res.result.yield_info.chart);
                 setChartData(res.result);
+                setChart(res.result.yield_info.chart);
                 setTableData((prev) => {
                     const next = _.cloneDeep(prev);
                     next.tr_list[0][1] = res.result.yield_info.label[1].val;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 17:50:26
+ * @LastEditTime: 2021-04-16 23:14:45
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -27,11 +27,13 @@ const NetValueTrend = ({poid}) => {
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
     const [showEmpty, setShowEmpty] = useState(false);
+    const tabClick = useRef(true);
 
     const init = useCallback(() => {
         setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
             setShowEmpty(true);
+            tabClick.current = true;
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart(res.result);
@@ -162,8 +164,13 @@ const NetValueTrend = ({poid}) => {
                             {chartData?.sub_tabs?.map((item, index) => {
                                 return (
                                     <TouchableOpacity
+                                        activeOpacity={0.8}
                                         key={item.val + index}
                                         onPress={() => {
+                                            if (!tabClick.current) {
+                                                return false;
+                                            }
+                                            tabClick.current = false;
                                             global.LogTool('click', item.val);
                                             setPeriod(item.val);
                                         }}
