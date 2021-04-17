@@ -81,6 +81,7 @@ export default function DetailAccount({route, navigation}) {
                         },
                     });
                     setPeriod(res.result.period);
+                    setChart([]);
                     Http.get('/portfolio/yield_chart/20210101', {
                         allocation_id: res.result.allocation_id,
                         benchmark_id: res.result.benchmark_id,

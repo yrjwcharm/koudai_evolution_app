@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:03:43
+ * @LastEditTime: 2021-04-17 10:39:46
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
@@ -41,6 +41,7 @@ export default function DetailPolaris({route, navigation}) {
                     title: res.result.title,
                 });
                 setData(res.result);
+                setChart([]);
                 setPeriod(res.result?.parts_addition_data?.line.period);
                 Http.get('/portfolio/yield_chart/20210101', {
                     upid: route.params.upid,
@@ -50,8 +51,8 @@ export default function DetailPolaris({route, navigation}) {
                     allocation_id: res.result?.parts_addition_data?.line.allocation_id,
                     benchmark_id: res.result?.parts_addition_data?.line.benchmark_id,
                 }).then((resp) => {
-                    setChart(resp.result.yield_info.chart);
                     setChartData(resp.result);
+                    setChart(resp.result.yield_info.chart);
                 });
             })
             .catch(() => {

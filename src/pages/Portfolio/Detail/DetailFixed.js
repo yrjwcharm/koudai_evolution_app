@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:03:12
+ * @LastEditTime: 2021-04-17 10:39:00
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -65,6 +65,7 @@ export default function DetailAccount({route, navigation}) {
                     title: res.result.title,
                 });
                 setData(res.result);
+                setChart([]);
                 setPeriod(res.result.period);
                 Http.get('/portfolio/yield_chart/20210101', {
                     upid: route.params.upid,
@@ -74,8 +75,8 @@ export default function DetailAccount({route, navigation}) {
                     benchmark_id: res.result.benchmark_id,
                     poid: route?.params?.poid,
                 }).then((resp) => {
-                    setChart(resp.result.yield_info.chart);
                     setChartData(resp.result);
+                    setChart(resp.result.yield_info.chart);
                 });
             })
             .catch(() => {
