@@ -17,6 +17,7 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 //         // Toast.showInfo('网络已断开,请检查您的网络');
 //     }
 // });
+let showError = true;
 axios.defaults.transformRequest = [
     function (data) {
         let ret = '';
@@ -65,7 +66,7 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        Toast.show('网络异常，请稍后再试~');
+        showError && Toast.show('网络异常，请稍后再试~');
         // NetInfo.fetch().then((state) => {
         //     if (state.isConnected) {
         //         Toast.show('服务器开小差了...');
@@ -82,6 +83,9 @@ axios.interceptors.response.use(
 );
 export default class http {
     static async get(url, params, config, showLoading = true) {
+        if (url.indexOf('tj.licaimofang.com/v.gif') > -1) {
+            showError = false;
+        }
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');

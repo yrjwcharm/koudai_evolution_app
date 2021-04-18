@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-13 19:11:18
+ * @LastEditTime: 2021-04-18 14:43:52
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -237,7 +237,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        // paddingHorizontal: Space.marginAlign,
     },
     title: {
         fontSize: Font.textH2,
