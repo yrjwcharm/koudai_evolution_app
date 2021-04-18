@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 14:24:46
+ * @LastEditTime: 2021-04-18 19:06:12
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -16,6 +16,7 @@ import {
     RefreshControl,
     Platform,
     BackHandler,
+    Image,
 } from 'react-native';
 import {px, deviceWidth, formaNum} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
@@ -160,9 +161,7 @@ const Index = (props) => {
                     children: () => {
                         return (
                             <View style={{height: px(300)}}>
-                                <ScrollView
-                                    showsVerticalScrollIndicator={false}
-                                    style={{paddingHorizontal: px(20), marginVertical: px(20)}}>
+                                <ScrollView style={{paddingHorizontal: px(20), marginVertical: px(20)}}>
                                     <Text style={{fontSize: px(12), lineHeight: px(18)}}>
                                         欢迎使用理财魔方！为给您提供优质的服务、控制业务风险、保障信息和资金安全，本应用使用过程中，需要联网，需要在必要范围内收集、使用或共享您的个人信息。我们提供理财、保险、支付等服务。请您在使用前仔细阅读
                                         <Text
@@ -404,7 +403,7 @@ const Index = (props) => {
                                                     <View style={Style.flexRow}>
                                                         {data?.custom_info?.user_avatar_list.map((avar, index) => {
                                                             return (
-                                                                <FastImage
+                                                                <Image
                                                                     key={index}
                                                                     source={{uri: avar}}
                                                                     style={[

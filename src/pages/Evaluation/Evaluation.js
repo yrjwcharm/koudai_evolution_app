@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 17:31:56
+ * @LastEditTime: 2021-04-18 19:52:20
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -193,9 +193,6 @@ class Question extends Component {
                     opacity: 0,
                 });
                 this.contentView?.fadeInUp(500).then(() => {
-                    // this.quesBtnView?.setNativeProps({
-                    //     opacity: 1,
-                    // });
                     this.quesBtnView?.fadeInRight(500);
                 });
                 if (questions[this.state.current]?.style == 'age_cursor') {
@@ -260,62 +257,64 @@ class Question extends Component {
 
     previous = (count = 1) => {
         Keyboard.dismiss();
-        if (this.canNextClick) {
-            return;
-        }
-        if (Platform.OS == 'android') {
-            Vibration.vibrate(10);
-        }
-        if (this.state.previousCount) {
-            this.setState({previousCount: 0});
-        }
-        this.canNextClick = true;
-        const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
-        let _current = this.state.current - count;
-        //点击上一题按钮变为可点击
-        if (!inputBtnCanClick) {
-            this.setState({inputBtnCanClick: true});
-        }
-        this.setState({current: _current}, () => {
-            this.setState({value: questions[this.state.current]?.value || ''});
-        });
-
-        layoutAnimation();
-        Animated.timing(opacity, {
-            toValue: 0,
-            duration: 0,
-            useNativeDriver: false,
-        }).start();
         setTimeout(() => {
-            Animated.parallel([
-                Animated.sequence([
-                    Animated.timing(translateY, {
-                        toValue: offsetY,
-                        duration: 0,
-                        useNativeDriver: false,
-                    }),
-                    Animated.timing(translateY, {
-                        toValue: 0,
-                        duration: 600,
-                        useNativeDriver: false,
-                    }),
-                ]),
-                Animated.sequence([
-                    Animated.timing(opacity, {
-                        toValue: 0,
-                        duration: 0,
-                        useNativeDriver: false,
-                    }),
-                    Animated.timing(opacity, {
-                        toValue: 1,
-                        duration: 600,
-                        useNativeDriver: false,
-                    }),
-                ]),
-            ]).start(() => {
-                this.canNextClick = false;
+            if (this.canNextClick) {
+                return;
+            }
+            if (Platform.OS == 'android') {
+                Vibration.vibrate(10);
+            }
+            if (this.state.previousCount) {
+                this.setState({previousCount: 0});
+            }
+            this.canNextClick = true;
+            const {translateY, offsetY, opacity, questions, inputBtnCanClick} = this.state;
+            let _current = this.state.current - count;
+            //点击上一题按钮变为可点击
+            if (!inputBtnCanClick) {
+                this.setState({inputBtnCanClick: true});
+            }
+            this.setState({current: _current}, () => {
+                this.setState({value: questions[this.state.current]?.value || ''});
             });
-        }, 500);
+
+            layoutAnimation();
+            Animated.timing(opacity, {
+                toValue: 0,
+                duration: 0,
+                useNativeDriver: false,
+            }).start();
+            setTimeout(() => {
+                Animated.parallel([
+                    Animated.sequence([
+                        Animated.timing(translateY, {
+                            toValue: offsetY,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(translateY, {
+                            toValue: 0,
+                            duration: 600,
+                            useNativeDriver: false,
+                        }),
+                    ]),
+                    Animated.sequence([
+                        Animated.timing(opacity, {
+                            toValue: 0,
+                            duration: 0,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(opacity, {
+                            toValue: 1,
+                            duration: 600,
+                            useNativeDriver: false,
+                        }),
+                    ]),
+                ]).start(() => {
+                    this.canNextClick = false;
+                });
+            }, 500);
+        }, 250);
     };
     //答案汇总方法
     handelTag = (option, tag, keyName) => {

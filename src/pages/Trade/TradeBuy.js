@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 21:17:09
+ * @LastEditTime: 2021-04-18 17:05:28
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -421,17 +421,30 @@ class TradeBuy extends Component {
                                 body.map((item, index) => {
                                     return (
                                         <View key={index}>
-                                            <View style={[Style.flexBetween, {marginBottom: px(14)}]}>
-                                                <View style={[Style.flexRow, {width: px(162)}]}>
+                                            <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                <View style={[Style.flexRow, {width: px(200)}]}>
                                                     <View style={[styles.circle, {backgroundColor: item.color}]} />
                                                     <Text style={styles.config_title}>{item.title}</Text>
                                                 </View>
                                                 {index == 0 && (
                                                     <>
-                                                        <Text style={[styles.config_title, {width: px(60)}]}>
+                                                        <Text
+                                                            style={[
+                                                                styles.config_title,
+                                                                {
+                                                                    width: px(60),
+                                                                    textAlign: 'center',
+                                                                },
+                                                            ]}>
                                                             {header.percent}
                                                         </Text>
-                                                        <Text style={styles.config_title}>{header.amount}</Text>
+                                                        <Text
+                                                            style={[
+                                                                styles.config_title,
+                                                                {flex: 1, textAlign: 'right'},
+                                                            ]}>
+                                                            {header.amount}
+                                                        </Text>
                                                     </>
                                                 )}
                                             </View>
@@ -440,14 +453,37 @@ class TradeBuy extends Component {
                                                     return (
                                                         <View
                                                             key={fund.name}
-                                                            style={[Style.flexBetween, {marginBottom: px(14)}]}>
-                                                            <Text style={[styles.config_title_desc, {width: px(162)}]}>
-                                                                {fund.name}
-                                                            </Text>
-                                                            <Text style={[styles.config_title_desc, {width: px(60)}]}>
+                                                            style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                            <View style={[{width: px(200)}]}>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.config_title_desc,
+                                                                        {fontSize: px(12)},
+                                                                    ]}>
+                                                                    {fund.name}
+                                                                </Text>
+                                                            </View>
+
+                                                            <Text
+                                                                style={[
+                                                                    styles.config_title_desc,
+                                                                    {
+                                                                        width: px(60),
+                                                                        fontFamily: Font.numMedium,
+                                                                        textAlign: 'center',
+                                                                    },
+                                                                ]}>
                                                                 {Number(fund.percent * 100).toFixed(2)}%
                                                             </Text>
-                                                            <Text style={styles.config_title_desc}>
+                                                            <Text
+                                                                style={[
+                                                                    styles.config_title_desc,
+                                                                    {
+                                                                        fontFamily: Font.numMedium,
+                                                                        flex: 1,
+                                                                        textAlign: 'right',
+                                                                    },
+                                                                ]}>
                                                                 {fund.amount == '--'
                                                                     ? '--'
                                                                     : Number(fund.amount).toFixed(2)}
@@ -838,9 +874,10 @@ const styles = StyleSheet.create({
     config_title: {
         fontSize: px(12),
         color: Colors.darkGrayColor,
+        textAlign: 'center',
     },
     config_title_desc: {
-        fontSize: px(12),
+        fontSize: px(13),
         color: '#4E556C',
     },
     line: {

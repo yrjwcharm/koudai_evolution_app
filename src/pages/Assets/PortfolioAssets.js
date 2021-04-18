@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:48:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 17:21:05
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -17,7 +17,6 @@ import {
     Dimensions,
     RefreshControl,
 } from 'react-native';
-import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -128,12 +127,12 @@ export default function PortfolioAssets(props) {
                     flex: 1,
                     backgroundColor: '#fff',
                 }}>
-                <Image
+                <FastImage
                     style={{
                         flex: 1,
                     }}
                     source={require('../../assets/personal/loading.png')}
-                    resizeMode={Image.resizeMode.contain}
+                    resizeMode={FastImage.resizeMode.contain}
                 />
             </View>
         );
@@ -245,7 +244,7 @@ export default function PortfolioAssets(props) {
                     <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
                     {card?.title_info?.popup ? (
                         <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
-                            <Image
+                            <FastImage
                                 style={{width: text(20), height: text(20), marginTop: text(3)}}
                                 source={require('../../assets/img/tip.png')}
                             />
@@ -356,7 +355,7 @@ export default function PortfolioAssets(props) {
                                         <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                                         {chart?.tips && (
                                             <TouchableOpacity onPress={() => showTips(chart.tips, 'chart')}>
-                                                <Image
+                                                <FastImage
                                                     style={{width: text(16), height: text(16)}}
                                                     source={require('../../assets/img/tip.png')}
                                                 />
@@ -545,7 +544,7 @@ export default function PortfolioAssets(props) {
                                     </Text>
                                     <TouchableOpacity
                                         onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}>
-                                        <Image
+                                        <FastImage
                                             style={{width: text(20), height: text(20)}}
                                             source={require('../../assets/img/tip.png')}
                                         />
@@ -563,7 +562,7 @@ export default function PortfolioAssets(props) {
                                 style={{alignItems: 'center'}}
                                 key={_index + '_item0'}
                                 onPress={() => jump(_item.url)}>
-                                <Image
+                                <FastImage
                                     source={{
                                         uri: _item.icon,
                                     }}
@@ -622,7 +621,7 @@ export default function PortfolioAssets(props) {
                                     style={{alignItems: 'center'}}
                                     key={_index + '_e'}
                                     onPress={() => jump(_e.url)}>
-                                    <Image
+                                    <FastImage
                                         source={{
                                             uri: _e.icon,
                                         }}
