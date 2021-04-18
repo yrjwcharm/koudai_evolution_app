@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 16:55:21
+ * @LastEditTime: 2021-04-18 14:24:46
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -138,7 +138,7 @@ const Index = (props) => {
         });
         return unsubscribe;
     }, [isFocused, props.navigation, getData]);
-    const showPrivacyPop = () => {
+    const showPrivacyPop = async () => {
         Storage.get('privacy').then((res) => {
             if (res) {
                 return;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 16:20:13
+ * @LastEditTime: 2021-04-18 14:31:53
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -193,7 +193,7 @@ const Index = (props) => {
                                     }}>
                                     <Text style={styles.card_title}>{item.name}</Text>
                                     {item?.labels && (
-                                        <Text style={[styles.card_title_dexc, {marginTop: px(8)}]}>
+                                        <Text style={[styles.card_title_dexc, {marginTop: px(4)}]}>
                                             {item?.labels.map((_item, _index) =>
                                                 _index == 0 ? (
                                                     <Text key={_index}>{_item}</Text>
@@ -342,12 +342,14 @@ const styles = StyleSheet.create({
     },
     card_title: {
         fontSize: px(15),
+        lineHeight: px(21),
         fontWeight: '700',
         color: Colors.defaultColor,
         marginRight: px(10),
     },
     card_title_dexc: {
         fontSize: px(13),
+        lineHeight: px(18),
         color: Colors.darkGrayColor,
     },
     radio: {

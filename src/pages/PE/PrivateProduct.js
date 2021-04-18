@@ -3,10 +3,10 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-14 15:49:22
+ * @LastEditTime: 2021-04-18 12:44:12
  */
 import React, {useState, useCallback} from 'react';
-import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common//commonStyle';
 import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
@@ -153,9 +153,13 @@ export default function PrivateAssets(props) {
                                     </View>
                                 )}
                             </View>
-                            <View>
+                            {/* <Image
+                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/09/SLV_02.jpg'}}
+                                style={{width: deviceWidth, height: 920}}
+                            /> */}
+                            <View style={{marginTop: -0.5}}>
                                 {data?.introduce.map((_img, _i) => {
-                                    return <FitImage key={_i + '_img'} source={{uri: _img}} resizeMode="contain" />;
+                                    return <FitImage key={_i + '_img'} source={{uri: _img}} />;
                                 })}
                             </View>
                             <ScrollableTabView

@@ -1,14 +1,14 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 11:07:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 13:21:26
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, Modal} from 'react-native';
 import {constants} from './util';
-import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil';
+import {px as text, deviceHeight, deviceWidth, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
 import {Font, Style} from '../../common/commonStyle';
@@ -86,10 +86,9 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
     const onOpen = () => {
         if (timerRef.current === null) {
             startTimer();
-            const isFocused = inputRef.current.isFocused();
-            if (!isFocused) {
+            setTimeout(() => {
                 inputRef.current.focus();
-            }
+            }, 100);
         }
     };
 
@@ -111,6 +110,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
             ref={refRBSheet}
             closeOnDragDown={false}
             closeOnPressMask={isTouchMaskToClose}
+            height={px(200)}
             customStyles={{
                 wrapper: {
                     backgroundColor: 'rgba(30, 31, 32, 0.8)',
@@ -136,7 +136,6 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                     <Text style={({fontSize: Font.textH2}, styles.desc_text)}>{desc}</Text>
                     <View style={[Style.flexRowCenter, styles.wrap_input]}>
                         <TextInput
-                            autoFocus
                             ref={inputRef}
                             style={styles.verify_input}
                             maxLength={6}

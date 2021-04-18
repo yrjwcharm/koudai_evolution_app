@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 20:50:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 12:49:00
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -22,7 +22,6 @@ import Mask from '../../components/Mask';
 import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
 const btnHeight = isIphoneX() ? text(90) : text(66);
-const deviceWidth = Dimensions.get('window').width;
 var inputValue = 0;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -214,7 +213,9 @@ export default class TradeRedeem extends Component {
                         <View style={{paddingHorizontal: text(16), backgroundColor: '#fff'}}>
                             {data?.pay_methods?.methods.map((_item, index) => {
                                 return (
-                                    <View
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
                                         key={index}
                                         style={[
                                             Style.flexRow,
@@ -237,12 +238,8 @@ export default class TradeRedeem extends Component {
                                             </Text>
                                             <Text style={{color: '#DC4949', paddingLeft: text(10)}}>{_item.desc}</Text>
                                         </View>
-                                        <Radio
-                                            checked={this.state.check[index]}
-                                            index={index}
-                                            onChange={() => this.radioChange(index, _item.pay_type, _item.bank_name)}
-                                        />
-                                    </View>
+                                        <Radio checked={this.state.check[index]} index={index} />
+                                    </TouchableOpacity>
                                 );
                             })}
                         </View>

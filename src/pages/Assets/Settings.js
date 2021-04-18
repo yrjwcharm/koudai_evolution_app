@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:18:52
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 12:54:44
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -129,11 +129,8 @@ const Settings = ({navigation}) => {
                             contextMenuHidden
                             enablesReturnKeyAutomatically
                             keyboardType={'default'}
-                            // maxLength={6}
                             onChangeText={(value) => setInviteCode(value.replace(/\W/g, ''))}
                             onSubmitEditing={confirmClick}
-                            // placeholder={modalProps?.placeholder}
-                            // placeholderTextColor={Colors.placeholderColor}
                             style={styles.input}
                             value={inviteCode}
                         />

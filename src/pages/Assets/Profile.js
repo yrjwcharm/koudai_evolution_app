@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 20:48:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 13:04:08
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -30,6 +30,7 @@ const Profile = ({navigation}) => {
     const [data, setData] = useState([]);
     const [showMask, setShowMask] = useState(false);
     const inputModal = useRef(null);
+    const inputRef = useRef(null);
     const [modalProps, setModalProps] = useState({});
     const [iptVal, setIptVal] = useState('');
     const iptValRef = useRef('');
@@ -119,6 +120,9 @@ const Profile = ({navigation}) => {
                     placeholder: `请输入${item.key}金额`,
                     title: item.key,
                 });
+                setTimeout(() => {
+                    inputRef?.current?.focus();
+                }, 100);
             }
         },
         [init, confirmClick, jump, dispatch]
@@ -207,14 +211,10 @@ const Profile = ({navigation}) => {
                 <View style={[Style.flexRow, styles.inputContainer]}>
                     <Text style={styles.unit}>¥</Text>
                     <TextInput
-                        autoFocus={true}
+                        ref={inputRef}
                         clearButtonMode={'never'}
                         keyboardType={'decimal-pad'}
-                        // onKeyPress={onKeyPress}
                         onChangeText={(value) => setIptVal(onlyNumber(value))}
-                        onSubmitEditing={confirmClick}
-                        // placeholder={modalProps?.placeholder}
-                        // placeholderTextColor={'#CCD0DB'}
                         style={[styles.inputStyle]}
                         value={iptVal}
                     />

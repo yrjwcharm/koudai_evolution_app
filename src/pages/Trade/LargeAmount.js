@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:07:26
+ * @LastEditTime: 2021-04-18 12:28:26
  */
 import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
@@ -101,6 +101,7 @@ const LargeAmount = (props) => {
                                 source={{
                                     uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/largeAmount.png',
                                 }}
+                                resizeMode="contain"
                                 style={styles.image_sty}
                             />
                         </View>
@@ -225,7 +226,7 @@ const LargeAmount = (props) => {
 
 const styles = StyleSheet.create({
     image_sty: {
-        width: text(239),
+        width: text(242),
         height: text(36),
     },
     process_list: {

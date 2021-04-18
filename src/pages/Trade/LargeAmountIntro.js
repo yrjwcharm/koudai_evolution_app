@@ -2,8 +2,8 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 14:52:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-18 12:16:24
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View} from 'react-native';
@@ -20,16 +20,16 @@ const LargeAmountIntro = () => {
         Linking.canOpenURL(url)
             .then((supported) => {
                 if (!supported) {
-                    return Toast.show(`您的设备不支持该功能，请手动拨打400-080-8208`);
+                    return Toast.show('您的设备不支持该功能，请手动拨打400-080-8208');
                 }
                 return Linking.openURL(url);
             })
             .catch((err) => Alert(err));
     };
     const img_list = [
-        'https://static.licaimofang.com/wp-content/uploads/2020/12/remit_intro1.png',
-        'https://static.licaimofang.com/wp-content/uploads/2020/12/remit_intro2.png',
-        'https://static.licaimofang.com/wp-content/uploads/2020/12/remit_intro3.png',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/1651618564855_.pic_hd.png',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/1661618564857_.pic_hd.png',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/1671618564860_.pic_hd.png',
     ];
     return (
         <View style={{backgroundColor: Colors.bgColor}}>
