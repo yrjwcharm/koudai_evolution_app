@@ -2,12 +2,13 @@
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-14 17:10:17
+ * @LastEditTime: 2021-04-19 20:38:56
  * @Description: 银行卡选择
  */
 
 import React, {useCallback} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet, Image, TouchableHighlight, FlatList} from 'react-native';
+import {View, Text, Modal, TouchableOpacity, StyleSheet, TouchableHighlight, FlatList} from 'react-native';
+import Image from 'react-native-fast-image';
 import {constants} from './util';
 import {isIphoneX, px as text, px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -97,6 +98,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
         if (type !== 'hidden') {
             return (
                 <TouchableOpacity
+                    activeOpacity={0.8}
                     style={[
                         styles.bankCard,
                         {
