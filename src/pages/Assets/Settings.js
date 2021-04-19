@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 12:54:44
+ * @LastEditTime: 2021-04-19 15:45:29
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -54,7 +54,16 @@ const Settings = ({navigation}) => {
                             if (res.code === '000000') {
                                 Storage.delete('loginStatus');
                                 dispatch(getUserInfo());
-                                dispatch(updateUserInfo({name: '', phone: '', id_no: '', selectBank: '', bank_no: ''}));
+                                dispatch(
+                                    updateUserInfo({
+                                        name: '',
+                                        phone: '',
+                                        id_no: '',
+                                        selectBank: '',
+                                        bank_no: '',
+                                        second: 60,
+                                    })
+                                );
                                 navigation.replace('Login');
                             }
                         });

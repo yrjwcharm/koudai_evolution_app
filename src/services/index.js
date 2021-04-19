@@ -66,7 +66,8 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        showError && Toast.show('网络异常，请稍后再试~');
+        Toast.show('网络异常，请稍后再试~');
+        // showError && Toast.show('网络异常，请稍后再试~');
         // NetInfo.fetch().then((state) => {
         //     if (state.isConnected) {
         //         Toast.show('服务器开小差了...');

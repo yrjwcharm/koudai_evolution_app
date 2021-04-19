@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 21:00:50
+ * @LastEditTime: 2021-04-19 15:48:17
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -33,7 +33,7 @@ class BankInfo extends Component {
             bank_no: props.userInfo?.bank_no || '', //银行卡号
             btnClick: true, //开户按钮是否能点击
             verifyText: '获取验证码',
-            second: 60,
+            second: props.userInfo?.second || 60,
             checked: true, //协议
             code_btn_click: true, //验证码按钮
             bankList: [],
@@ -43,6 +43,15 @@ class BankInfo extends Component {
     }
 
     componentDidMount() {
+        this.props.navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            const {phone, selectBank, bank_no, second} = this.state;
+            this.props.update({phone, bank_no, selectBank, second});
+            this.props.navigation.dispatch(e.data.action);
+        });
+        if (this.state.second < 60) {
+            this.timer();
+        }
         http.get('/passport/bank_list/20210101').then((data) => {
             this.setState({bankList: data.result});
         });

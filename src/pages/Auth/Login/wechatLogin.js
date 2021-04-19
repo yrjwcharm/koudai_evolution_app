@@ -2,13 +2,12 @@
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:02:18
+ * @LastEditTime: 2021-04-19 14:52:48
  * @Description:微信登录
  */
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import InputView from '../input';
-import {px as text, handlePhone, inputInt} from '../../../utils/appUtil';
+import {px as text, inputInt} from '../../../utils/appUtil';
 import {Style, Colors} from '../../../common/commonStyle';
 import {View, Text, ScrollView, StyleSheet, Image} from 'react-native';
 import Agreements from '../../../components/Agreements';
@@ -28,6 +27,7 @@ export default class WechatLogin extends Component {
     getCode = () => {
         if (!this.state.check) {
             Toast.show('请勾选并同意理财魔方相关协议');
+            return;
         }
         http.post('/auth/user/mobile_can_bind/20210101', {
             mobile: this.state.mobile,

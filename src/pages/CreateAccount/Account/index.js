@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 20:49:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-19 15:40:50
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -42,6 +42,11 @@ class Index extends Component {
     }
 
     componentDidMount() {
+        this.props.navigation.addListener('beforeRemove', (e) => {
+            e.preventDefault();
+            this.props.update({name: this.state.name, id_no: this.state.id_no});
+            this.props.navigation.dispatch(e.data.action);
+        });
         this.subscription = DeviceEventEmitter.addListener('upload', (params) => {
             if (params && Object.keys(params).length == 2 && params.name && params.id_no) {
                 this.setState({name: params.name, id_no: params.id_no});
@@ -120,7 +125,6 @@ class Index extends Component {
                         },
                     });
                 } else {
-                    this.props.update({name, id_no});
                     this.props.navigation.navigate(nav, {
                         name,
                         id_no,
