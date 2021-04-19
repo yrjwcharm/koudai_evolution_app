@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-16 18:40:05
+ * @LastEditTime: 2021-04-19 19:52:10
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -351,8 +351,8 @@ const styles = StyleSheet.create({
         marginRight: text(18),
     },
     placeholder: {
-        fontSize: text(13),
-        lineHeight: text(18),
+        fontSize: Font.textH3,
+        lineHeight: text(17),
         color: Colors.placeholderColor,
     },
 });
