@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 16:21:27
+ * @LastEditTime: 2021-04-19 18:49:10
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
@@ -35,6 +35,7 @@ export default function FixedUpdate({navigation, route}) {
     const [modalProps, setModalProps] = useState({});
     const [iptVal, setIptVal] = useState('');
     const inputModal = useRef(null);
+    const inputRef = useRef(null);
     const iptValRef = useRef('');
     const [payMethod, setPayMethod] = useState({});
     const bankCardModal = useRef(null);
@@ -150,16 +151,19 @@ export default function FixedUpdate({navigation, route}) {
             placeholder: `请输入${cycleRef.current}投入金额`,
             title: `${cycleRef.current}投入金额`,
         });
+        setTimeout(() => {
+            inputRef?.current?.focus();
+        }, 200);
     };
     const confirmClick = () => {
         if (iptValRef.current < initAmount.current) {
             inputModal.current.hide();
             setNum(initAmount.current);
-            inputModal.current.toastShow(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
+            Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
         } else if (iptValRef.current > payMethod.day_limit) {
             inputModal.current.hide();
             setNum(payMethod.day_limit);
-            inputModal.current.toastShow(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
+            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
         } else {
             inputModal.current.hide();
             setNum(parseFloat(iptValRef.current));
@@ -190,13 +194,10 @@ export default function FixedUpdate({navigation, route}) {
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
                             <TextInput
-                                autoFocus={true}
                                 clearButtonMode={'never'}
                                 keyboardType={'decimal-pad'}
                                 onChangeText={(value) => setIptVal(onlyNumber(value))}
-                                // onKeyPress={onKeyPress}
-                                // placeholder={modalProps?.placeholder}
-                                // placeholderTextColor={'#CCD0DB'}
+                                ref={inputRef}
                                 style={[styles.inputStyle]}
                                 value={iptVal}
                             />

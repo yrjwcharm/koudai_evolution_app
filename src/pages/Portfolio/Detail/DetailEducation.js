@@ -54,6 +54,7 @@ export default function DetailEducation({navigation, route}) {
     const [modalProps, setModalProps] = useState({});
     const [iptVal, setIptVal] = useState('');
     const inputModal = useRef(null);
+    const inputRef = useRef(null);
     const iptValRef = useRef('');
     const [tableData, setTableData] = useState({});
     const jump = useJump();
@@ -240,19 +241,22 @@ export default function DetailEducation({navigation, route}) {
             placeholder: `请输入${item.key}`,
             title: item.key,
         });
+        setTimeout(() => {
+            inputRef?.current?.focus();
+        }, 200);
     };
     const confirmClick = (item) => {
         inputModal.current.hide();
         if (iptValRef.current < item.min) {
             if (iptValRef.current > 0) {
                 item.type === 'begin' ? setCountFr(item.min) : setCountM(item.min);
-                inputModal.current.toastShow(`组合最低起投金额为${formaNum(item.min)}`);
+                Toast.show(`组合最低起投金额为${formaNum(item.min)}`);
             } else {
                 item.type === 'begin' ? setCountFr(0) : setCountM(0);
             }
         } else if (iptValRef.current > item.max) {
             item.type === 'begin' ? setCountFr(item.max) : setCountM(item.max);
-            inputModal.current.toastShow('金额需小于1亿');
+            Toast.show('金额需小于1亿');
         } else {
             item.type === 'begin'
                 ? setCountFr(parseFloat(iptValRef.current))
@@ -323,13 +327,10 @@ export default function DetailEducation({navigation, route}) {
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
                             <TextInput
-                                autoFocus={true}
                                 clearButtonMode={'never'}
                                 keyboardType={'decimal-pad'}
                                 onChangeText={(value) => setIptVal(onlyNumber(value))}
-                                // onKeyPress={onKeyPress}
-                                // placeholder={modalProps?.placeholder}
-                                // placeholderTextColor={'#CCD0DB'}
+                                ref={inputRef}
                                 style={[styles.inputStyle]}
                                 value={iptVal}
                             />

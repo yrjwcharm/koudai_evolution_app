@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 17:09:23
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 11:04:36
+ * @LastEditTime: 2021-04-19 14:31:16
  * @Description: 带输入框的弹窗
  */
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
@@ -41,12 +41,13 @@ const InputModal = forwardRef((props, ref) => {
     const hide = () => {
         setVisible(false);
     };
-    const toastShow = (t, duration = 2000) => {
+    const toastShow = (t, duration = 2000, {onHidden}) => {
         setToastText(t);
         setShowToast(true);
         setTimeout(() => {
             setShowToast(false);
             setToastText('');
+            onHidden && onHidden();
         }, duration);
     };
     const onDone = useCallback(() => {

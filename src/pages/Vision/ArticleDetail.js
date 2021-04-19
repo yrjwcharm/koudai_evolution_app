@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 16:48:18
+ * @LastEditTime: 2021-04-19 14:48:54
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -60,44 +60,58 @@ const ArticleDetail = ({navigation, route}) => {
             setHeight(eventData * 1 || deviceHeight);
         }
     };
-    const onFavor = useCallback(() => {
-        if (!btnClick.current) {
-            return false;
-        }
-        btnClick.current = false;
-        http.post('/community/favor/20210101', {
-            resource_id: data?.id,
-            resource_cate: 'article',
-            action_type: data?.favor_status ? 0 : 1,
-        }).then((res) => {
-            shareModal.current.toastShow(res.message);
-            setTimeout(() => {
-                btnClick.current = true;
-            }, 2000);
-            if (res.code === '000000') {
-                init();
+    const onFavor = useCallback(
+        (type) => {
+            if (!btnClick.current) {
+                return false;
             }
-        });
-    }, [data, init]);
-    const onCollect = useCallback(() => {
-        if (!btnClick.current) {
-            return false;
-        }
-        btnClick.current = false;
-        http.post('/community/collect/20210101', {
-            resource_id: data?.id,
-            resource_cate: 'article',
-            action_type: data?.collect_status ? 0 : 1,
-        }).then((res) => {
-            shareModal.current.toastShow(res.message);
-            setTimeout(() => {
-                btnClick.current = true;
-            }, 2000);
-            if (res.code === '000000') {
-                init();
+            btnClick.current = false;
+            http.post('/community/favor/20210101', {
+                resource_id: data?.id,
+                resource_cate: 'article',
+                action_type: data?.favor_status ? 0 : 1,
+            }).then((res) => {
+                if (type === 'normal') {
+                    Toast.show(res.message);
+                } else {
+                    shareModal.current.toastShow(res.message);
+                }
+                setTimeout(() => {
+                    btnClick.current = true;
+                }, 2000);
+                if (res.code === '000000') {
+                    init();
+                }
+            });
+        },
+        [data, init]
+    );
+    const onCollect = useCallback(
+        (type) => {
+            if (!btnClick.current) {
+                return false;
             }
-        });
-    }, [data, init]);
+            btnClick.current = false;
+            http.post('/community/collect/20210101', {
+                resource_id: data?.id,
+                resource_cate: 'article',
+                action_type: data?.collect_status ? 0 : 1,
+            }).then((res) => {
+                if (type === 'normal') {
+                    Toast.show(res.message);
+                } else {
+                    shareModal.current.toastShow(res.message);
+                }
+                setTimeout(() => {
+                    btnClick.current = true;
+                }, 2000);
+                if (res.code === '000000') {
+                    init();
+                }
+            });
+        },
+        [data, init]
+    );
     const postProgress = useCallback((params) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
@@ -164,7 +178,7 @@ const ArticleDetail = ({navigation, route}) => {
                     }
                     return true;
                 });
-            }, 1000);
+            }, 100);
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
@@ -233,7 +247,7 @@ const ArticleDetail = ({navigation, route}) => {
                             <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={onFavor}
+                                    onPress={() => onFavor('normal')}
                                     style={[Style.flexCenter, {flex: 1}]}>
                                     <Image
                                         source={
@@ -249,7 +263,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={onCollect}
+                                    onPress={() => onCollect('normal')}
                                     style={[Style.flexCenter, {flex: 1}]}>
                                     <Image
                                         source={

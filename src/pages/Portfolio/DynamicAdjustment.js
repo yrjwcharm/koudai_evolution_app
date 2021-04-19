@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:07:11
+ * @LastEditTime: 2021-04-19 16:07:44
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     },
     topPart: {
         backgroundColor: '#fff',
-        height: text(240),
+        minHeight: text(240),
         paddingBottom: text(12),
     },
     adjustListContainer: {

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 13:04:08
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-19 18:48:24
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -122,7 +122,7 @@ const Profile = ({navigation}) => {
                 });
                 setTimeout(() => {
                     inputRef?.current?.focus();
-                }, 100);
+                }, 200);
             }
         },
         [init, confirmClick, jump, dispatch]
@@ -173,7 +173,14 @@ const Profile = ({navigation}) => {
         (item) => {
             // console.log(iptValRef.current);
             if (!iptValRef.current) {
-                inputModal.current.toastShow(`${item.key}不能为空`);
+                inputRef?.current?.blur();
+                inputModal.current.toastShow(`${item.key}不能为空`, 2000, {
+                    onHidden: () => {
+                        setTimeout(() => {
+                            inputRef?.current?.focus();
+                        }, 100);
+                    },
+                });
                 return false;
             }
             inputModal.current.hide();

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-11 17:39:03
+ * @LastEditTime: 2021-04-19 13:59:25
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -24,7 +24,7 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
   chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    height: 240,
+    height: ${text(220)},
     width: ${deviceWidth},
     appendPadding: [15, 45, 25, 5]
   });
@@ -43,7 +43,7 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
     }
   });
   chart.tooltip({
-    showCrosshairs: true,
+    showCrosshairs: false,
     custom: true, // 自定义 tooltip 内容框
     showTooltipMarker: false,
   });
@@ -84,7 +84,7 @@ chart.legend(false);
     });
   chart.area()
     .position('date*value')
-    .color('type', ${JSON.stringify(['l(90) 0:#fff 1:#E74949', 'transparent', 'transparent'])})
+    .color('type', ${JSON.stringify([Colors.red, Colors.lightBlackColor, 'transparent'])})
     .shape('smooth');
   chart.render();
 })();

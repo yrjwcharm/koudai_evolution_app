@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 15:45:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-19 18:48:31
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -25,6 +25,7 @@ const Settings = ({navigation}) => {
     const [shareContent, setShareContent] = useState({});
     const shareModal = useRef(null);
     const inputModal = useRef(null);
+    const inputRef = useRef(null);
     const [modalProps, setModalProps] = useState({});
     const [inviteCode, setInviteCode] = useState('');
     const inviteCodeRef = useRef('');
@@ -42,6 +43,9 @@ const Settings = ({navigation}) => {
                     placeholder: '请输入邀请码',
                     title: '填写邀请码',
                 });
+                setTimeout(() => {
+                    inputRef?.current?.focus();
+                }, 200);
             } else if (item.type === 'share_mofang') {
                 shareModal.current.show();
             } else if (item.type === 'logout') {
@@ -77,7 +81,14 @@ const Settings = ({navigation}) => {
     );
     const confirmClick = useCallback(() => {
         if (!inviteCodeRef.current) {
-            inputModal.current.toastShow('邀请码不能为空');
+            inputRef?.current?.blur();
+            inputModal.current.toastShow('邀请码不能为空', 2000, {
+                onHidden: () => {
+                    setTimeout(() => {
+                        inputRef?.current?.focus();
+                    }, 100);
+                },
+            });
             return false;
         }
         inputModal.current.hide();
@@ -133,13 +144,13 @@ const Settings = ({navigation}) => {
                             autoCapitalize={'none'}
                             autoCompleteType={'off'}
                             autoCorrect={false}
-                            autoFocus={true}
                             clearButtonMode={'while-editing'}
                             contextMenuHidden
                             enablesReturnKeyAutomatically
                             keyboardType={'default'}
                             onChangeText={(value) => setInviteCode(value.replace(/\W/g, ''))}
                             onSubmitEditing={confirmClick}
+                            ref={inputRef}
                             style={styles.input}
                             value={inviteCode}
                         />

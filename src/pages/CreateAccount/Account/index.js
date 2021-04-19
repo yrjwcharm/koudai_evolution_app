@@ -1,15 +1,15 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 15:40:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-19 18:48:55
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Keyboard, ScrollView, DeviceEventEmitter} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px} from '../../../utils/appUtil';
-import {Style, Colors} from '../../../common/commonStyle';
+import {Style, Colors, Space} from '../../../common/commonStyle';
 import Input from '../../../components/Input';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {FixedButton} from '../../../components/Button';
@@ -34,6 +34,7 @@ class Index extends Component {
             showMask: false,
             careerList: [],
             btnDisable: true,
+            idErrorMsg: '',
         };
     }
     componentWillUnmount() {
@@ -72,6 +73,9 @@ class Index extends Component {
         this.props.navigation.navigate(nav);
     };
     checkData = (name, id_no) => {
+        this.setState({
+            idErrorMsg: id_no.length > 14 && id_no.length < 18 ? '身份证号位数不够' : '',
+        });
         if (id_no.length >= 18 && name.length >= 2) {
             this.setState({
                 btnDisable: false,
@@ -86,7 +90,7 @@ class Index extends Component {
         const {name} = this.state;
         let _no = id_no;
         this.setState({
-            id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no,
+            id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no.replace(/\W/g, ''),
         });
         this.checkData(name, _no);
     };
@@ -179,7 +183,7 @@ class Index extends Component {
         this.setState({showMask: false});
     };
     render() {
-        const {showMask, name, id_no, rname} = this.state;
+        const {showMask, name, id_no, rname, idErrorMsg} = this.state;
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
@@ -289,6 +293,6 @@ const styles = StyleSheet.create({
     },
     border: {
         borderColor: Colors.borderColor,
-        borderBottomWidth: 0.5,
+        borderBottomWidth: Space.borderWidth,
     },
 });

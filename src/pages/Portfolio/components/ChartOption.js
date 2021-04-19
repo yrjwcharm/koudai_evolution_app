@@ -2,11 +2,11 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 18:24:49
+ * @LastEditTime: 2021-04-19 16:14:18
  * @Description: 基金相关图表配置
  */
 // 交互图例
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
 import {px as text} from '../../../utils/appUtil';
 export const baseAreaChart = (
@@ -429,7 +429,7 @@ export const percentStackColumn = (
     appendPadding: ${JSON.stringify(appendPadding)},
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    height: ${text(220)},
+    height: ${Platform.select({ios: text(230), android: text(234)})},
     width: ${deviceWidth}
   });
   chart.source(${JSON.stringify(data)});
