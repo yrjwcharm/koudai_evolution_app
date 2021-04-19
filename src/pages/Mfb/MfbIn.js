@@ -3,12 +3,12 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 13:10:49
+ * @LastEditTime: 2021-04-19 19:24:29
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
-import {px, isIphoneX} from '../../utils/appUtil.js';
+import {px, isIphoneX, onlyNumber} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
 import {BankCardModal, Modal} from '../../components/Modal';
@@ -44,7 +44,7 @@ class MfbIn extends Component {
 
     onInput = (amount) => {
         const {data, bankSelect} = this.state;
-        const _amount = amount.replace(/^[0]+[0-9]*$/gi, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+        const _amount = onlyNumber(amount);
         if (amount > 0) {
             if (amount > Number(bankSelect.left_amount)) {
                 const tips = '由于银行卡单日限额，今日最多可转入金额为' + bankSelect.left_amount + '元';
@@ -185,7 +185,7 @@ class MfbIn extends Component {
                             ref={(ref) => {
                                 this.textInput = ref;
                             }}
-                            keyboardType="number-pad"
+                            keyboardType="numeric"
                             style={[styles.inputStyle]}
                             placeholder={recharge_info.placeholder}
                             placeholderTextColor={Colors.placeholderColor}
