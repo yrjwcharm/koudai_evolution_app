@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 12:32:41
+ * @LastEditTime: 2021-04-19 18:00:54
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -88,10 +88,10 @@ class TradeBuy extends Component {
                         currentDate: res.result?.period_info?.current_date,
                         nextday: res.result?.period_info?.nextday,
                     },
-                    async () => {
+                    () => {
                         let amount = this.state.amount;
                         if (this.state.type == 0) {
-                            await this.plan(amount);
+                            this.plan(amount);
                         }
                         if (amount) {
                             this.onInput(amount, 'init');
@@ -165,7 +165,7 @@ class TradeBuy extends Component {
      * @return {*}
      */
     plan = _.debounce((amount) => {
-        return new Promise((resov) => {
+        return new Promise((resove, reject) => {
             const params = {
                 amount: amount || this.state.data.buy_info.initial_amount,
                 pay_method: this.state.bankSelect?.pay_method,
@@ -175,12 +175,13 @@ class TradeBuy extends Component {
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
                     this.setState({planData: data.result, fee_text: data.result.fee_text});
-                    resov(data.result.buy_id);
+                    resove(data.result.buy_id);
                 } else {
                     this.setState({
                         buyBtnCanClick: false,
                         errTip: data.message,
                     });
+                    reject();
                 }
             });
         });
@@ -635,7 +636,14 @@ class TradeBuy extends Component {
                 <Text style={styles.title}>{sub_title}</Text>
                 {buy_info ? (
                     <View style={styles.buyCon}>
-                        <Text style={{fontSize: px(16), marginVertical: px(4)}}>{buy_info.title}</Text>
+                        <Text style={{fontSize: px(16), marginVertical: px(4)}}>
+                            {buy_info.title}{' '}
+                            {buy_info?.sub_title ? (
+                                <Text style={{fontSize: px(14), color: Colors.darkGrayColor}}>
+                                    {buy_info.sub_title}
+                                </Text>
+                            ) : null}
+                        </Text>
                         <View style={styles.buyInput}>
                             <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                             <TextInput

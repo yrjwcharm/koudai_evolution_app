@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 12:49:00
+ * @LastEditTime: 2021-04-19 17:59:39
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -67,29 +67,34 @@ export default class TradeRedeem extends Component {
         Picker.hide();
     }
     getPlanInfo() {
-        const {tableData, init} = this.state;
-        Http.get('/trade/redeem/plan/20210101', {
-            percent: inputValue / 100,
-            trade_method: this.state.trade_method,
-            poid: this.props.route.params.poid,
-            init,
-        }).then((res) => {
-            if (res.code === '000000') {
-                tableData.head = res.result.header;
-                tableData.body = res.result.body;
-                if (init != 1) {
+        return new Promise((resolve, reject) => {
+            const {tableData, init} = this.state;
+            Http.get('/trade/redeem/plan/20210101', {
+                percent: inputValue / 100,
+                trade_method: this.state.trade_method,
+                poid: this.props.route.params.poid,
+                init,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    tableData.head = res.result.header;
+                    tableData.body = res.result.body;
+
+                    if (init != 1) {
+                        this.setState({
+                            tableData,
+                            redeem_id: res.result.redeem_id,
+                            tips: res.result.amount_desc,
+                        });
+                    }
+                    resolve(res.result.redeem_id);
+                } else {
                     this.setState({
-                        tableData,
-                        redeem_id: res.result.redeem_id,
-                        tips: res.result.amount_desc,
+                        btnClick: false,
                     });
+                    reject();
+                    Toast.show(res.message);
                 }
-            } else {
-                this.setState({
-                    btnClick: false,
-                });
-                Toast.show(res.message);
-            }
+            });
         });
     }
     radioChange(index, type, name) {
@@ -131,10 +136,11 @@ export default class TradeRedeem extends Component {
     passwordInput = () => {
         this.passwordModal.show();
     };
-    submitData = (password) => {
+    submitData = async (password) => {
         let toast = Toast.showLoading();
+        let redeem_id = await this.getPlanInfo();
         Http.post('/trade/redeem/do/20210101', {
-            redeem_id: this.state.redeem_id,
+            redeem_id: redeem_id || this.state.redeem_id,
             password,
             percent: inputValue / 100,
             trade_method: this.state.trade_method,

@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 20:34:18
+ * @LastEditTime: 2021-04-19 16:06:52
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -138,6 +138,7 @@ class SetLoginPassword extends Component {
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
+                    this.setState({code_btn_click: false});
                     this.timer();
                 } else {
                     Toast.show(res.message);
@@ -156,7 +157,6 @@ class SetLoginPassword extends Component {
             this.setState({
                 second: --second,
                 verifyText: second + '秒重发',
-                code_btn_click: false,
             });
             if (second <= 0) {
                 clearInterval(this.time);

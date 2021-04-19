@@ -536,7 +536,7 @@ const Index = (props) => {
                                                             fontSize: px(12),
                                                             color: Colors.darkGrayColor,
                                                         }}>
-                                                        {comment.time + ' ' + comment.from}
+                                                        {comment.time + comment.from}
                                                     </Text>
                                                 </View>
                                             </View>

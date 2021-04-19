@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-04-14 17:43:17
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 11:11:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-19 17:40:53
  * @Description:保险
  */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, ScrollView, Image} from 'react-native';
+import {StyleSheet, ScrollView, Image, ActivityIndicator} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {deviceWidth, px, isIphoneX} from '../../../utils/appUtil';
 import {FixedButton} from '../../../components/Button';
@@ -28,12 +28,14 @@ const DetailInsurance = ({navigation}) => {
     return (
         <>
             <ScrollView style={{marginBottom: isIphoneX() ? 80 : px(48)}}>
-                {scale && (
+                {scale ? (
                     <FastImage
                         style={{width: deviceWidth, height: deviceWidth * scale}}
                         resizeMode="contain"
                         source={{uri: data?.image}}
                     />
+                ) : (
+                    <ActivityIndicator color="#999" style={{marginTop: px(100)}} />
                 )}
             </ScrollView>
             {data?.button && (

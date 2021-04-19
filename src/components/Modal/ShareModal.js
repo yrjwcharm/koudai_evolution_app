@@ -1,17 +1,16 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 19:12:46
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-19 17:36:52
  * @Description: 分享弹窗
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ActionSheetIOS, Platform, View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import Image from 'react-native-fast-image';
 import PropTypes from 'prop-types';
 import {constants} from './util';
 import {isIphoneX, px, deviceHeight, deviceWidth} from '../../utils/appUtil';
-import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../Button';
 import Mask from '../Mask';
@@ -156,8 +155,6 @@ const ShareModal = React.forwardRef((props, ref) => {
                 Toast.show('复制成功');
             }, 500);
         } else if (item.type === 'MoreOptions') {
-            // console.log('dx');
-            hide();
             if (Object.keys(shareContent).length > 0) {
                 ActionSheetIOS.showShareActionSheetWithOptions(
                     {
@@ -166,12 +163,10 @@ const ShareModal = React.forwardRef((props, ref) => {
                         subject: shareContent.title,
                     },
                     (error) => {
-                        console.log(error);
-                        Toast.show('分享失败');
+                        hide();
                     },
                     (success, method) => {
-                        console.log(success, method);
-                        Toast.show('分享成功');
+                        hide();
                     }
                 );
             }

@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 19:52:20
+ * @LastEditTime: 2021-04-19 16:43:18
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -93,15 +93,12 @@ class Question extends Component {
     };
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
-            if (this.fr == 'risk') {
-                return;
-            }
             if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
                 e.preventDefault();
                 // Prompt the user before leaving the screen
                 Modal.show({
-                    title: '结束定制',
-                    content: '确定要结束本次定制吗？',
+                    title: this.fr == 'risk' ? '结束测评' : '结束定制',
+                    content: this.fr == 'risk' ? '确定要结束本次风险测评吗？' : '确定要结束本次定制吗？',
                     confirm: true,
                     confirmCallBack: () => {
                         this.props.navigation.dispatch(e.data.action);
