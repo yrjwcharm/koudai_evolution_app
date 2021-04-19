@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 18:04:29
+ * @LastEditTime: 2021-04-19 19:47:28
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -200,6 +200,7 @@ class TradeBuy extends Component {
             await this.plan('');
         }
         this.setState({errTip: '', fixTip: ''}, async () => {
+            console.log('object');
             if (this.state.type == 0) {
                 if (_amount > this.state.bankSelect.left_amount && this.state.bankSelect.pay_method !== 'wallet') {
                     // 您当日剩余可用额度为
