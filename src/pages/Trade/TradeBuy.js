@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 17:05:28
+ * @LastEditTime: 2021-04-19 12:32:41
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -164,7 +164,7 @@ class TradeBuy extends Component {
      * @param {*} plan
      * @return {*}
      */
-    plan = (amount) => {
+    plan = _.debounce((amount) => {
         return new Promise((resov) => {
             const params = {
                 amount: amount || this.state.data.buy_info.initial_amount,
@@ -184,14 +184,14 @@ class TradeBuy extends Component {
                 }
             });
         });
-    };
+    }, 300);
 
     /**
      * @description: 金额输入
      * @param {*} onInput
      * @return {*}
      */
-    onInput = _.debounce(async (_amount, init) => {
+    onInput = async (_amount, init) => {
         let single_amount = this.state.isLargeAmount
             ? this.state.largeAmount.single_amount
             : this.state.bankSelect.single_amount;
@@ -264,7 +264,7 @@ class TradeBuy extends Component {
                 }
             }
         });
-    }, 300);
+    };
     showFixModal = () => {
         this.bottomModal.show();
     };

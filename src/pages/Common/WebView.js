@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 16:54:23
+ * @LastEditTime: 2021-04-19 12:03:42
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -67,7 +67,7 @@ export default function WebView({route, navigation}) {
     return (
         <View style={{flex: 1}}>
             <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
-            {token ? (
+            {token && route?.params?.link ? (
                 <RNWebView
                     ref={webview}
                     onMessage={(event) => {
@@ -90,6 +90,14 @@ export default function WebView({route, navigation}) {
                         }
                     }}
                     originWhitelist={['*']}
+                    onHttpError={(syntheticEvent) => {
+                        const {nativeEvent} = syntheticEvent;
+                        console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                    }}
+                    onError={(syntheticEvent) => {
+                        const {nativeEvent} = syntheticEvent;
+                        console.warn('WebView error: ', nativeEvent);
+                    }}
                     javaScriptEnabled={true}
                     injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onNavigationStateChange={onNavigationStateChange}

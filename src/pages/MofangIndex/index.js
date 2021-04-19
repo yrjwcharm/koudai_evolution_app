@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 19:06:12
+ * @LastEditTime: 2021-04-19 12:21:39
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -168,11 +168,7 @@ const Index = (props) => {
                                             style={{color: Colors.btnColor}}
                                             onPress={() => {
                                                 jump({
-                                                    path: 'WebView',
-                                                    params: {
-                                                        link: 'https://msite.licaimofang.com/lcmfPolicy',
-                                                        title: '理财魔方隐私权政策',
-                                                    },
+                                                    path: 'LcmfPolicy',
                                                 });
                                                 Modal.close();
                                             }}>

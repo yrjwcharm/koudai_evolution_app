@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 19:52:38
+ * @LastEditTime: 2021-04-19 12:20:05
  * @Description:路由表
  */
 import React from 'react';
@@ -138,7 +138,8 @@ import MyScore from '../pages/Assets/MyScore'; // 我的魔分
 import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
 import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
-import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance';
+import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance'; //保险落地页
+import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
 
 const Stack = createStackNavigator();
 
@@ -481,6 +482,7 @@ export default function AppStack() {
             <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
             <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
             <Stack.Screen name="DetailInsurance" component={DetailInsurance} options={{title: '魔方保障计划'}} />
+            <Stack.Screen name="LcmfPolicy" component={LcmfPolicy} options={{title: '理财魔方隐私政策'}} />
         </Stack.Navigator>
     );
 }
