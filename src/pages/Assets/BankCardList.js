@@ -2,16 +2,15 @@
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 16:36:46
+ * @LastEditTime: 2021-04-19 19:27:38
  * @Description: 银行卡管理
  */
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil.js';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Button} from '../../components/Button';
@@ -36,7 +35,7 @@ const BankCardList = ({navigation}) => {
         }, [navigation])
     );
     return (
-        <SafeAreaView edges={['bottom']} style={styles.container}>
+        <View style={styles.container}>
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.xy?.cards?.length > 0 && (
                     <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{data.xy.text}</Text>
@@ -123,7 +122,7 @@ const BankCardList = ({navigation}) => {
                     }}
                 />
             )}
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -157,6 +156,7 @@ const styles = StyleSheet.create({
     },
     btn: {
         marginHorizontal: text(20),
+        marginBottom: isIphoneX() ? 34 + Space.marginVertical : Space.marginVertical,
     },
 });
 

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 19:24:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-19 19:28:57
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -166,7 +166,7 @@ class MfbIn extends Component {
     }
     //购买
     render_buy() {
-        const {amount, data, tips} = this.state;
+        const {amount, data, tips, bankSelect} = this.state;
         const {recharge_info, pay_methods, remit_pay} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
@@ -248,6 +248,7 @@ class MfbIn extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
+                    select={pay_methods?.findIndex((item) => item.pay_method === bankSelect?.pay_method)}
                     onDone={(select) => {
                         this.setState({bankSelect: select});
                         this.onInput(amount);
