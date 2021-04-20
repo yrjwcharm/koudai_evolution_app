@@ -3,7 +3,7 @@
  * @Date: 2021-01-19 12:19:22
  * @LastEditors: dx
  * @Desc:私募合格投资者认证
- * @LastEditTime: 2021-04-14 16:37:44
+ * @LastEditTime: 2021-04-20 19:42:39
  */
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
@@ -190,11 +190,11 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
     btn_Style: {
-        marginVertical: text(26),
-        position: 'absolute',
-        bottom: 0,
-        width: deviceWidth - text(32),
-        margin: Space.marginAlign,
+        // marginVertical: text(26),
+        // position: 'absolute',
+        // bottom: 0,
+        // width: deviceWidth - text(32),
+        // margin: Space.marginAlign,
         backgroundColor: '#CEA26B',
     },
 });
