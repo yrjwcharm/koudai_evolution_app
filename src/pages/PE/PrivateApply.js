@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-04-14 18:12:39
+ * @LastEditTime: 2021-04-20 21:56:19
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         // width: text(16),
-        height: text(16),
+        // height: text(16),
         marginTop: text(16),
         marginRight: text(8),
         position: 'relative',

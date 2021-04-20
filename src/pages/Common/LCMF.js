@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 16:34:57
+ * @LastEditTime: 2021-04-20 22:14:51
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -31,12 +31,12 @@ export default function LCMF({route, navigation}) {
         const eventData = JSON.parse(event.nativeEvent.data);
         // console.log(eventData);
         if (typeof eventData === 'object') {
-            console.log(route.params?.scene, userInfo.is_login);
-            // if (route.params?.scene === 'know_lcmf' && !userInfo.is_login) {
-            //     navigation.navigate('Register');
-            // } else {
-            //     jump(eventData);
-            // }
+            // console.log(route.params?.scene, userInfo.is_login);
+            if (route.params?.scene === 'know_lcmf' && !userInfo.is_login) {
+                navigation.navigate('Register');
+            } else {
+                jump(eventData);
+            }
         }
     };
     // 刷新一下
