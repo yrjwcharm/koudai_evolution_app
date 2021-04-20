@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 16:14:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 11:32:53
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -33,7 +33,8 @@ export const baseAreaChart = (
     appendPadding = 10,
     tag_position = {},
     height = 220,
-    max = null
+    max = null,
+    showArea = true
 ) => `
 (function(){
   chart = new F2.Chart({
@@ -157,15 +158,17 @@ export const baseAreaChart = (
         }
       });
     };
-  chart.area({startOnZero: false})
-    .position('date*value')
-    .color('type', ${JSON.stringify(areaColors)})
-    .animate({
-      appear: {
-        animation: 'groupWaveIn',
-        duration: 500
-      }
-    });
+    if(${JSON.stringify(showArea)}){
+      chart.area({startOnZero: false})
+        .position('date*value')
+        .color('type', ${JSON.stringify(areaColors)})
+        .animate({
+          appear: {
+            animation: 'groupWaveIn',
+            duration: 500
+          }
+        });
+    }
   chart.line()
     .position('date*value')
     .shape('smooth')

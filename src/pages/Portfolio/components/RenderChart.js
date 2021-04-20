@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 17:29:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 12:13:36
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -13,9 +13,8 @@ import {Colors, Font, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
 import {BottomModal} from '../../../components/Modal';
-import Html from '../../../components/RenderHtml';
 export default function RenderChart(props) {
-    const {chartData, chart, type, style, width, height, tootipScope = true} = props;
+    const {chartData = {}, chart = [], type, style, width, height, tootipScope = true, showFutureArea = true} = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -24,7 +23,7 @@ export default function RenderChart(props) {
     const onChartChange = useCallback(
         ({items}) => {
             _textTime.current.setNativeProps({text: items[0]?.title});
-            if (type == 2) {
+            if (type == 2 && showFutureArea) {
                 let range = items[0]?.origin?.value;
                 let _value = '';
                 if (range && range.length > 0) {
@@ -49,6 +48,7 @@ export default function RenderChart(props) {
                 style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
             });
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [getColor, tootipScope, type]
     );
     // 图表滑动结束
@@ -77,7 +77,7 @@ export default function RenderChart(props) {
             return Colors.red;
         }
     }, []);
-    return (
+    return chartData ? (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around', paddingLeft: 10}]}>
                 <View style={styles.legend_sty}>
@@ -141,7 +141,8 @@ export default function RenderChart(props) {
                         props.appendPadding || 10,
                         null,
                         height,
-                        chartData?.yield_info?.max_ratio
+                        chartData?.yield_info?.max_ratio,
+                        type == 2 && !showFutureArea ? false : true
                     )}
                     onChange={onChartChange}
                     data={chart}
@@ -162,7 +163,7 @@ export default function RenderChart(props) {
                 </View>
             </BottomModal>
         </View>
-    );
+    ) : null;
 }
 const styles = StyleSheet.create({
     legend_sty: {

@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -134,6 +134,7 @@ export default function DetailAccount({route, navigation}) {
                         <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                     </View>
                     <RenderChart chartData={chartData} chart={chart} type={type} />
+
                     <View
                         style={{
                             flexDirection: 'row',

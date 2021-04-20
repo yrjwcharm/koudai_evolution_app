@@ -465,7 +465,7 @@ export default function DetailEducation({navigation, route}) {
                                                 chartData={chartData}
                                                 chart={chart}
                                                 type={type}
-                                                tootipScope={false}
+                                                showFutureArea={false}
                                                 style={{marginTop: text(20)}}
                                                 width={deviceWidth - text(40)}
                                             />

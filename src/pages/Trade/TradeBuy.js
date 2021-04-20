@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 19:47:28
+ * @LastEditTime: 2021-04-19 20:39:40
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -227,11 +227,6 @@ class TradeBuy extends Component {
                     this.setState({
                         buyBtnCanClick: this.state.errTip == '' ? true : false,
                         mfbTip: false,
-                        fixTip: this.state.data?.actual_amount
-                            ? `${_amount * this.state.data?.actual_amount.min}元~${
-                                  _amount * this.state.data?.actual_amount.max
-                              }元`
-                            : '',
                     });
                     await this.plan(_amount);
                 } else {
@@ -261,6 +256,11 @@ class TradeBuy extends Component {
                     this.setState({
                         buyBtnCanClick: true,
                         errTip: '',
+                        fixTip: this.state.data?.actual_amount
+                            ? `${_amount * this.state.data?.actual_amount.min}元~${
+                                  _amount * this.state.data?.actual_amount.max
+                              }元`
+                            : '',
                         mfbTip: false,
                     });
                 }
@@ -331,6 +331,7 @@ class TradeBuy extends Component {
     }
     // 打开日期选择 视图
     _showDatePicker() {
+        Keyboard.dismiss();
         this.setState({showMask: true});
         Picker.init({
             pickerTitleText: '定投周期',

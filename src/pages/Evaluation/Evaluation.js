@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 16:43:18
+ * @LastEditTime: 2021-04-20 11:18:22
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -93,7 +93,7 @@ class Question extends Component {
     };
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
-            if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
+            if (e.data.action.type == 'GO_BACK') {
                 e.preventDefault();
                 // Prompt the user before leaving the screen
                 Modal.show({
@@ -164,7 +164,7 @@ class Question extends Component {
         } else if (action == 'submit' && this.fr == 'risk') {
             this.setState({finishTest: true});
             setTimeout(() => {
-                this.props.navigation.goBack();
+                this.props.navigation.pop(1);
             }, 2000);
         } else {
             this.setState({

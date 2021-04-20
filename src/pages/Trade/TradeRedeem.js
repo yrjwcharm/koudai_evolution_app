@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 17:59:39
+ * @LastEditTime: 2021-04-20 11:27:48
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -244,7 +244,13 @@ export default class TradeRedeem extends Component {
                                             </Text>
                                             <Text style={{color: '#DC4949', paddingLeft: text(10)}}>{_item.desc}</Text>
                                         </View>
-                                        <Radio checked={this.state.check[index]} index={index} />
+                                        <Radio
+                                            checked={this.state.check[index]}
+                                            onChange={() => {
+                                                this.radioChange(index, _item.pay_type, _item.bank_name);
+                                            }}
+                                            index={index}
+                                        />
                                     </TouchableOpacity>
                                 );
                             })}
@@ -276,6 +282,7 @@ export default class TradeRedeem extends Component {
                                 <TextInput
                                     style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
                                     placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
+                                    placeholderTextColor={Colors.placeholderColor}
                                     value={this.state.inputValue}
                                     onChangeText={(text) => this.onChange(text)}
                                 />
