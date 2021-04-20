@@ -35,6 +35,7 @@ export default class MyModal extends Component {
             isVisible: this.props.isVisible || false,
             imgHeight: 0,
             imgWidth: props.imgWidth || text(280),
+            showImgClose: false,
         };
     }
 
@@ -172,7 +173,8 @@ export default class MyModal extends Component {
                             animation="bounceIn"
                             style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
                             {/* 图片弹窗 */}
-                            <View style={{position: 'relative', paddingTop: text(31)}}>
+                            <View
+                                style={[Style.flexCenter, {position: 'relative', paddingTop: text(31), width: width}]}>
                                 <TouchableOpacity activeOpacity={0.8} onPress={this.confirm.bind(this)}>
                                     <Image
                                         source={{
@@ -184,18 +186,21 @@ export default class MyModal extends Component {
                                             this.props.imageStyle,
                                         ]}
                                         onLayout={() => this.setSizeIos(this.imageUrl)}
+                                        onLoadEnd={() => this.setState({showImgClose: true})}
                                         onLoadStart={() => this.setSize(this.imageUrl)}
                                     />
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={{position: 'absolute', top: 0, right: text(10)}}
-                                    activeOpacity={0.8}
-                                    onPress={() => this.setModalVisiable(false)}>
-                                    <Image
-                                        source={require('../../assets/img/closeCircle.png')}
-                                        style={styles.closeCircle}
-                                    />
-                                </TouchableOpacity>
+                                {this.state.showImgClose && (
+                                    <TouchableOpacity
+                                        style={{position: 'absolute', top: 0, right: text(71)}}
+                                        activeOpacity={0.8}
+                                        onPress={() => this.setModalVisiable(false)}>
+                                        <Image
+                                            source={require('../../assets/img/closeCircle.png')}
+                                            style={styles.closeCircle}
+                                        />
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         </Animatable.View>
                     )}

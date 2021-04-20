@@ -59,6 +59,7 @@ export default function DetailEducation({navigation, route}) {
     const [tableData, setTableData] = useState({});
     const jump = useJump();
     const tabClick = useRef(true);
+    const [btns, setBtns] = useState([]);
     const changeTab = (p, t) => {
         if (!tabClick.current) {
             return false;
@@ -189,6 +190,7 @@ export default function DetailEducation({navigation, route}) {
                         }
                     });
                     setTableData(res.result.asset_compare?.table);
+                    setBtns(res.result.btns || []);
                     setData(res.result);
                 }
             })
@@ -307,6 +309,23 @@ export default function DetailEducation({navigation, route}) {
             changeNotice(params);
         }
     }, [age, changeNotice, countFr, countM, data, route.params, type]);
+    useEffect(() => {
+        setBtns((prev) => {
+            if (prev[1] && prev[1]?.url?.params?.amount) {
+                const next = _.cloneDeep(prev);
+                if (parseFloat(countFr) !== 0) {
+                    next[1].url.params.amount = parseFloat(countFr);
+                } else if (parseFloat(countM) !== 0) {
+                    next[1].url.params.amount = parseFloat(countM);
+                } else {
+                    next[1].url.params.amount = '';
+                }
+                return next;
+            } else {
+                return prev;
+            }
+        });
+    }, [countFr, countM]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -637,7 +656,7 @@ export default function DetailEducation({navigation, route}) {
                             </View>
                         </BottomModal>
                     )}
-                    <FixedBtn btns={data?.btns} style={{position: 'absolute', bottom: 0}} />
+                    <FixedBtn btns={btns} style={{position: 'absolute', bottom: 0}} />
                 </View>
             ) : null}
         </>

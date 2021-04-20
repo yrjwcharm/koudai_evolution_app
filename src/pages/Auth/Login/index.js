@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 11:11:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-20 15:53:21
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -43,6 +43,14 @@ class Login extends Component {
                         if (this.fr == 'register') {
                             this.props.navigation.pop(2);
                         } else if (this.fr == 'forgotGesPwd') {
+                            Storage.get('openGesturePwd').then((result) => {
+                                if (res) {
+                                    res[`${userInfo.uid}`] = false;
+                                    Storage.save('openGesturePwd', res);
+                                } else {
+                                    Storage.save('openGesturePwd', {[`${userInfo.uid}`]: false});
+                                }
+                            });
                             Storage.get('gesturePwd').then((result) => {
                                 if (result) {
                                     result[`${userInfo.uid}`] = '';
@@ -50,8 +58,8 @@ class Login extends Component {
                                 } else {
                                     Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
                                 }
-                                this.props.navigation.replace('GesturePassword', {option: 'firstSet'});
                             });
+                            this.props.navigation.replace('GesturePassword', {option: 'firstSet', pass: true});
                         } else {
                             this.props.navigation.goBack();
                         }

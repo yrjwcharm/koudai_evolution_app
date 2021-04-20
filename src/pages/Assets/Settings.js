@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-19 18:48:31
+ * @LastEditTime: 2021-04-20 13:59:57
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -121,7 +121,7 @@ const Settings = ({navigation}) => {
                 setData(res.result);
             }
         });
-        Http.get('/share/common/info/20210101', {scene: 'about_lcmf'}).then((res) => {
+        Http.get('/share/common/info/20210101', {scene: 'share_lcmf'}).then((res) => {
             if (res.code === '000000') {
                 setShareContent(res.result);
             }
