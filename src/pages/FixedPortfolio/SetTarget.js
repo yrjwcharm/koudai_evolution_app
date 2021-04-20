@@ -3,7 +3,7 @@
  * @Date: 2021-02-01 11:07:50
  * @Description:开启我的计划
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:21:58
+ * @LastEditTime: 2021-04-20 16:20:05
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
@@ -14,6 +14,7 @@ import Http from '../../services';
 import {Button} from '../../components/Button';
 import Html from '../../components/RenderHtml';
 import {useJump} from '../../components/hooks';
+import Toast from '../../components/Toast';
 const deviceWidth = Dimensions.get('window').width;
 var params;
 export default function SetTarget({route, navigation}) {
@@ -35,6 +36,7 @@ export default function SetTarget({route, navigation}) {
             ...params,
             fr: route.params?.fr,
         }).then((res) => {
+            navigation.setOptions({title: res.result.title});
             setData(res.result);
             setNum(res.result.target_info.default * 100);
         });
@@ -46,7 +48,14 @@ export default function SetTarget({route, navigation}) {
             possible: data.target_info.possible,
             poid: route.params.poid,
         }).then((res) => {
-            jump(data?.button?.url);
+            if (res.code === '000000') {
+                Toast.show(route?.params?.fr == 'asset' ? '目标修改成功' : '目标设置成功');
+                setTimeout(() => {
+                    jump(data?.button?.url, route?.params?.fr == 'asset' ? 'navigate' : 'replace');
+                }, 1000);
+            } else {
+                Toast.show(res.message);
+            }
         });
     };
     return (

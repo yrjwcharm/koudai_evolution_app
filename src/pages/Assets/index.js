@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 18:40:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 14:40:45
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -36,11 +36,11 @@ import http from '../../services/index.js';
 import {useJump, useShowGesture} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import GesturePassword from './GesturePassword';
-import Toast from '../../components/Toast/Toast.js';
 function HomeScreen({navigation, route}) {
     const userInfo = useSelector((store) => store.userInfo);
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
+    const [newMes, setNewmessage] = useState(0);
     const [hideMsg, setHideMsg] = useState(false);
     const [showEye, setShowEye] = useState('true');
     const [holdingData, setHoldingData] = useState({});
@@ -99,6 +99,7 @@ function HomeScreen({navigation, route}) {
                 setHoldingData(res.result);
             }
         });
+        readInterface();
         http.get('/asset/common/20210101', {
             // uid: '1000000001',
         }).then((res) => {
@@ -119,6 +120,11 @@ function HomeScreen({navigation, route}) {
             .catch(() => {
                 setLoading(false);
             });
+    }, []);
+    const readInterface = useCallback(() => {
+        http.get('/message/unread/20210101').then((res) => {
+            setNewmessage(res.result.all);
+        });
     }, []);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
@@ -287,36 +293,48 @@ function HomeScreen({navigation, route}) {
                 <View style={[styles.assetsContainer]}>
                     {/* 用户头像 会员中心 */}
                     <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={Style.flexRow}
-                            onPress={() => navigation.navigate('Profile')}>
-                            <Image
-                                source={
-                                    userInfo?.toJS()?.avatar
-                                        ? {uri: userInfo.toJS().avatar}
-                                        : require('../../assets/personal/usercenter.png')
-                                }
-                                style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
-                            />
-                            <Text style={styles.username}>
-                                {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
-                            </Text>
-                        </TouchableOpacity>
-                        {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
+                        <View style={[Style.flexRow, {flex: 1}]}>
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
-                                <LinearGradient
-                                    colors={['#FFF6E8', '#FFE1B8']}
-                                    start={{x: 0, y: 0}}
-                                    end={{x: 1, y: 0}}
-                                    style={[styles.memberCenter, Style.flexRow]}>
-                                    <Text style={styles.memberText}>{userBasicInfo?.member_info?.title}</Text>
-                                    <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
-                                </LinearGradient>
+                                style={Style.flexRow}
+                                onPress={() => navigation.navigate('Profile')}>
+                                <Image
+                                    source={
+                                        userInfo?.toJS()?.avatar
+                                            ? {uri: userInfo.toJS().avatar}
+                                            : require('../../assets/personal/usercenter.png')
+                                    }
+                                    style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
+                                />
+                                <Text style={styles.username}>
+                                    {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
+                                </Text>
                             </TouchableOpacity>
-                        )}
+                            {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
+                                    <LinearGradient
+                                        colors={['#FFF6E8', '#FFE1B8']}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 1, y: 0}}
+                                        style={[styles.memberCenter, Style.flexRow]}>
+                                        <Text style={styles.memberText}>{userBasicInfo?.member_info?.title}</Text>
+                                        <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => {
+                                jump({path: 'RemindMessage'});
+                            }}>
+                            {newMes ? <View style={styles.new_message} /> : null}
+                            <Image
+                                style={{width: text(32), height: text(32)}}
+                                source={require('../../assets/img/index/whiteMes.png')}
+                            />
+                        </TouchableOpacity>
                     </View>
                     <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                     <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
@@ -823,6 +841,16 @@ const styles = StyleSheet.create({
         marginHorizontal: Space.marginAlign,
         width: text(343),
         height: text(727),
+    },
+    new_message: {
+        width: text(6),
+        height: text(6),
+        borderRadius: text(4),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        right: text(3),
+        top: text(5),
+        zIndex: 10,
     },
 });
 export default HomeScreen;

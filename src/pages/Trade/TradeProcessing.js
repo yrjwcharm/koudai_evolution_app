@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-18 14:43:52
+ * @LastEditTime: 2021-04-20 15:56:57
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -19,6 +19,7 @@ import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
+import Html from '../../components/RenderHtml';
 const TradeProcessing = ({navigation, route}) => {
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
@@ -136,7 +137,9 @@ const TradeProcessing = ({navigation, route}) => {
                 {Object.keys(data).length > 0 && data?.header && (
                     <View style={styles.contentStyle}>
                         <FastImage source={{uri: data.header.img}} style={styles.coverImage} />
-                        <Text style={{fontSize: text(16), paddingVertical: text(10)}}>{data.header.status}</Text>
+                        <View style={{marginVertical: text(16)}}>
+                            <Html style={{fontSize: text(16)}} html={data.header.status} />
+                        </View>
                         {data.header.amount ? <Text style={styles.head_text}>{data.header.amount}</Text> : null}
                         <Text style={styles.head_text}>{data.header.pay_method}</Text>
                     </View>
@@ -193,11 +196,7 @@ const TradeProcessing = ({navigation, route}) => {
                                             {item.d && item.d.length > 0 && (
                                                 <View style={[styles.moreInfo]}>
                                                     {item.d.map((val, i) => {
-                                                        return (
-                                                            <Text key={val} style={[styles.moreInfoText]}>
-                                                                {val}
-                                                            </Text>
-                                                        );
+                                                        return <Html key={i} html={val} style={styles.moreInfoText} />;
                                                     })}
                                                 </View>
                                             )}
@@ -293,7 +292,7 @@ const styles = StyleSheet.create({
     moreInfoText: {
         fontSize: Font.textH3,
         lineHeight: text(22),
-        color: Colors.descColor,
+        color: Colors.lightBlackColor,
     },
     line: {
         position: 'absolute',

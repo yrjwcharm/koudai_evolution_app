@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 11:27:48
+ * @LastEditTime: 2021-04-20 15:33:05
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -158,16 +158,17 @@ export default class TradeRedeem extends Component {
     };
     onChange = (_text) => {
         let text = onlyNumber(_text);
-        if (text) {
+        this.setState({inputValue: text});
+        if (text && text != 0) {
             if (text > 100) {
                 text = '100';
             }
             inputValue = text;
-            // text = text.replace(/[^\d.]/g, '').replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
-            this.getPlanInfo();
-            this.setState({inputValue: text, btnClick: true, init: 0});
+            this.setState({btnClick: true, init: 0}, () => {
+                this.getPlanInfo();
+            });
         } else {
-            this.setState({inputValue: '', btnClick: false, tips: '', init: 1});
+            this.setState({btnClick: false, tips: '', init: 1});
         }
     };
     selectAge = () => {

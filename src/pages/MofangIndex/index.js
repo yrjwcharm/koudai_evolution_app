@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 12:21:39
+ * @LastEditTime: 2021-04-20 16:07:38
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -94,7 +94,6 @@ const Index = (props) => {
     useFocusEffect(
         useCallback(() => {
             showPrivacyPop();
-
             getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [])
@@ -540,7 +539,7 @@ const Index = (props) => {
                                                     </Text>
                                                 </View>
                                             </View>
-                                            <Text style={styles.about_text} numberOfLines={4}>
+                                            <Text style={styles.about_text} numberOfLines={3}>
                                                 {comment.content}
                                             </Text>
                                             <Praise comment={comment} style={styles.zan} />

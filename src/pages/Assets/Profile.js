@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 18:48:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 14:27:52
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX, formaNum, onlyNumber} from '../../utils/appUtil.js';
+import {px as text, isIphoneX, formaNum, onlyNumber, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import HTML from '../../components/RenderHtml';
@@ -236,14 +236,7 @@ const Profile = ({navigation}) => {
             <ScrollView style={{paddingHorizontal: Space.padding}}>
                 {data.map((part, index, arr) => {
                     return (
-                        <View
-                            key={`part${index}`}
-                            style={[
-                                styles.partBox,
-                                index === arr.length - 1
-                                    ? {marginBottom: isIphoneX() ? 34 + Space.marginVertical : Space.marginVertical}
-                                    : {},
-                            ]}>
+                        <View key={`part${index}`} style={[styles.partBox]}>
                             {part.map((item, i) => {
                                 return (
                                     <View key={item.key} style={[i === 0 ? {} : styles.borderTop]}>
@@ -297,6 +290,11 @@ const Profile = ({navigation}) => {
                         </View>
                     );
                 })}
+                {data.length > 0 ? (
+                    <Text style={[styles.bottom_text, {marginBottom: isIphoneX() ? 44 : text(20)}]}>
+                        理财魔方将会根据您的实际情况定制您的基金组合，请您保持这些数据的准确性，以免影响您的基金组合的准确性
+                    </Text>
+                ) : null}
             </ScrollView>
         </View>
     );
@@ -308,10 +306,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     partBox: {
-        marginTop: Space.marginVertical,
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+        marginTop: Space.marginVertical,
     },
     borderTop: {
         borderTopWidth: Space.borderWidth,
@@ -365,6 +363,13 @@ const styles = StyleSheet.create({
         fontSize: text(26),
         lineHeight: text(37),
         color: Colors.placeholderColor,
+    },
+    bottom_text: {
+        color: Colors.darkGrayColor,
+        fontSize: text(11),
+        lineHeight: text(18),
+        marginTop: text(16),
+        paddingHorizontal: text(20),
     },
 });
 

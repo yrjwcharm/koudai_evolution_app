@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 14:49:22
+ * @LastEditTime: 2021-04-20 14:18:09
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
 import {px as text, px} from '../../utils/appUtil';
 import {Space, Style, Colors, Font} from '../../common/commonStyle';
 import Toast from '../../components/Toast';
@@ -122,9 +122,6 @@ const SetTradePassword = ({navigation, route}) => {
                 }
             }
         }
-        return () => {
-            Keyboard.dismiss();
-        };
     }, [jump, navigation, password, pwdFisrt, route, dispatch]);
 
     return (

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 13:10:32
+ * @LastEditTime: 2021-04-20 14:03:24
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -211,7 +211,7 @@ class MfbOut extends Component {
                             />
                             <View style={{flex: 1}}>
                                 <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                    {pay_methods[bankSelect]?.bank_name}
+                                    {pay_methods[bankSelect]?.bank_name}({pay_methods[bankSelect]?.bank_no})
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                     {pay_methods[bankSelect]?.limit_desc}

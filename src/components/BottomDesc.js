@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-04-15 22:27:48
+ * @LastEditTime: 2021-04-20 14:24:13
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
