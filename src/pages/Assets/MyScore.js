@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-12 15:57:10
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 18:19:02
  * @Description: 我的魔分
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -115,113 +115,102 @@ const MyScore = ({navigation, route}) => {
                     <Text style={styles.detail}>{data.top_button?.text || '魔分明细'}</Text>
                 </TouchableOpacity>
             ),
-            headerStyle: {
-                backgroundColor: Colors.brandColor,
-                shadowOffset: {
-                    height: 0,
-                },
-                elevation: 0,
-            },
-            headerTitleStyle: {
-                color: '#fff',
-                fontSize: text(18),
-            },
         });
-    }, [data, navigation]);
+    }, []);
 
     return (
-        <ScrollView
-            style={styles.container}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={init} />}>
-            {data?.notice ? (
-                <View style={[Style.flexRow, styles.noticeBox]}>
-                    <Text style={styles.noticeText}>{data?.notice}</Text>
+        <View style={styles.container}>
+            <ScrollView style={{flex: 1}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={init} />}>
+                {data?.notice ? (
+                    <View style={[Style.flexRow, styles.noticeBox]}>
+                        <Text style={styles.noticeText}>{data?.notice}</Text>
+                    </View>
+                ) : null}
+                <View style={{width: '100%', height: text(167), backgroundColor: Colors.brandColor}} />
+                <View style={styles.scoreNumContainer}>
+                    <View style={styles.scoreNum}>
+                        <Text style={styles.scoreNumText}>{data.points_info?.point || '****'}</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                global.LogTool('click', 'showTips');
+                                bottomModal?.current?.show();
+                            }}>
+                            <SimpleLineIcons name={'question'} size={16} color={'#fff'} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.tipText}>{data.points_info?.desc || '****'}</Text>
                 </View>
-            ) : null}
-            <View style={{width: '100%', height: text(167), backgroundColor: Colors.brandColor}} />
-            <View style={styles.scoreNumContainer}>
-                <View style={styles.scoreNum}>
-                    <Text style={styles.scoreNumText}>{data.points_info?.point || '****'}</Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            global.LogTool('click', 'showTips');
-                            bottomModal?.current?.show();
-                        }}>
-                        <SimpleLineIcons name={'question'} size={16} color={'#fff'} />
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.tipText}>{data.points_info?.desc || '****'}</Text>
-            </View>
-            <BoxShadow setting={shadow.current}>
-                <View style={[Style.flexBetween, styles.exchangeContainer]}>
-                    <View style={Style.flexRow}>
-                        <Text style={styles.availableScore}>
-                            ￥<Text style={styles.num}>{data.points_info?.amount}</Text>
+                <BoxShadow setting={shadow.current}>
+                    <View style={[Style.flexBetween, styles.exchangeContainer]}>
+                        <View style={Style.flexRow}>
+                            <Text style={styles.availableScore}>
+                                ￥<Text style={styles.num}>{data.points_info?.amount}</Text>
+                            </Text>
+                            <Text style={[styles.smTips, {marginLeft: text(6), transform: [{translateY: text(4)}]}]}>
+                                {'可提现'}
+                            </Text>
+                        </View>
+                        <Button
+                            disabled={!data.points_info?.can_withdraw}
+                            onPress={onWithdraw}
+                            title={'兑换'}
+                            style={styles.btn}
+                        />
+                    </View>
+                </BoxShadow>
+                <Text style={[styles.moreTitle, {marginLeft: text(14)}]}>{data.more?.title}</Text>
+                <BottomModal ref={bottomModal} title="魔分兑换申购费规则">
+                    <View style={[{padding: text(16)}]}>
+                        <Text style={styles.tipTitle}>兑换比例:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                            100魔分=1元人民币
                         </Text>
-                        <Text style={[styles.smTips, {marginLeft: text(6), transform: [{translateY: text(4)}]}]}>
-                            {'可提现'}
+
+                        <Text style={styles.tipTitle}>兑换流程:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                            ①在基金购买过程中所产生的申购费，其对应可兑换的金额会自动显示在兑换栏中
+                        </Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                            ②点击“兑换”，即可直接兑换成功
+                        </Text>
+                        <Text style={styles.tipTitle}>返还方式:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                            兑换金额直接返还到理财魔方绑定银行卡中，若两张及以上，则返还到主卡中，预计48小时内到账
                         </Text>
                     </View>
-                    <Button
-                        disabled={!data.points_info?.can_withdraw}
-                        onPress={onWithdraw}
-                        title={'兑换'}
-                        style={styles.btn}
-                    />
-                </View>
-            </BoxShadow>
-            <Text style={[styles.moreTitle, {marginLeft: text(14)}]}>{data.more?.title}</Text>
-            <BottomModal ref={bottomModal} title="魔分兑换申购费规则">
-                <View style={[{padding: text(16)}]}>
-                    <Text style={styles.tipTitle}>兑换比例:</Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                        100魔分=1元人民币
-                    </Text>
-
-                    <Text style={styles.tipTitle}>兑换流程:</Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                        ①在基金购买过程中所产生的申购费，其对应可兑换的金额会自动显示在兑换栏中
-                    </Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                        ②点击“兑换”，即可直接兑换成功
-                    </Text>
-                    <Text style={styles.tipTitle}>返还方式:</Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                        兑换金额直接返还到理财魔方绑定银行卡中，若两张及以上，则返还到主卡中，预计48小时内到账
-                    </Text>
-                </View>
-            </BottomModal>
-            {data.more?.list?.map((item, index) => {
-                return (
-                    <BoxShadow
-                        key={index}
-                        setting={{
-                            ...shadow.current,
-                            styles: {marginVertical: text(12), marginHorizontal: Space.marginAlign},
-                        }}>
-                        <View style={[Style.flexBetween, styles.exchangeContainer]}>
-                            <View>
-                                <Text style={[styles.largeTitle, {marginBottom: text(10)}]}>{item.title}</Text>
-                                <Text style={[styles.getScore, {lineHeight: text(21)}]}>
-                                    <Text>{item.desc.key}</Text>
-                                    <Text style={{fontSize: text(15), fontFamily: Font.numFontFamily}}>
-                                        {item.desc.val}
+                </BottomModal>
+                {data.more?.list?.map((item, index) => {
+                    return (
+                        <BoxShadow
+                            key={index}
+                            setting={{
+                                ...shadow.current,
+                                styles: {marginVertical: text(12), marginHorizontal: Space.marginAlign},
+                            }}>
+                            <View style={[Style.flexBetween, styles.exchangeContainer]}>
+                                <View>
+                                    <Text style={[styles.largeTitle, {marginBottom: text(10)}]}>{item.title}</Text>
+                                    <Text style={[styles.getScore, {lineHeight: text(21)}]}>
+                                        <Text>{item.desc.key}</Text>
+                                        <Text style={{fontSize: text(15), fontFamily: Font.numFontFamily}}>
+                                            {item.desc.val}
+                                        </Text>
                                     </Text>
-                                </Text>
+                                </View>
+                                <Button
+                                    onPress={() => {
+                                        global.LogTool('click', 'mission');
+                                        navigation.navigate(item.button.jump_to, item.button.params || {});
+                                    }}
+                                    title={item.button.title}
+                                    style={styles.btn}
+                                />
                             </View>
-                            <Button
-                                onPress={() => {
-                                    global.LogTool('click', 'mission');
-                                    navigation.navigate(item.button.jump_to, item.button.params || {});
-                                }}
-                                title={item.button.title}
-                                style={styles.btn}
-                            />
-                        </View>
-                    </BoxShadow>
-                );
-            })}
-        </ScrollView>
+                        </BoxShadow>
+                    );
+                })}
+            </ScrollView>
+        </View>
     );
 };
 
@@ -240,6 +229,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        borderWidth: 0.5,
+        borderColor: Colors.brandColor,
     },
     noticeBox: {
         paddingHorizontal: Space.padding,

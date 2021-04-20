@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 15:43:34
+ * @LastEditTime: 2021-04-20 17:21:16
  * @Description:规划结果页
  */
 
@@ -321,7 +321,7 @@ export default class planResult extends Component {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
                                         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                            <Text style={styles.key}>目标年化收益率</Text>
+                                            <Text style={styles.key}> {plan.plan_yield_info.title}</Text>
                                             <Text style={styles.plan_goal_amount}>
                                                 {plan.plan_yield_info.val}
                                                 {plan.plan_yield_info.unit}
@@ -329,12 +329,12 @@ export default class planResult extends Component {
                                         </View>
                                         <View style={[Style.flexRow, {justifyContent: 'space-between'}]}>
                                             <View style={Style.flexRow}>
-                                                <Text style={styles.key}>投资金额</Text>
+                                                <Text style={styles.key}>{plan.plan_amount_info.title}</Text>
                                                 <Text style={styles.regular_text}>{plan.plan_amount_info.val}</Text>
                                                 <Text style={{marginRight: px(8)}}>{plan.plan_amount_info.unit}</Text>
                                             </View>
                                             <View style={Style.flexRow}>
-                                                <Text style={styles.key}>建议投资时长</Text>
+                                                <Text style={styles.key}>{plan.plan_duration_info.title}</Text>
                                                 <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
                                                 <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
                                             </View>
@@ -351,17 +351,17 @@ export default class planResult extends Component {
                                         }}>
                                         {plan.plan_duration_info ? (
                                             <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                                <Text style={styles.key}>计划时长</Text>
+                                                <Text style={styles.key}>{plan.plan_duration_info.title}</Text>
                                                 <Text style={styles.regular_text}>{plan.plan_duration_info.val}</Text>
                                                 <Text style={{marginRight: px(8)}}>{plan.plan_duration_info.unit}</Text>
                                                 <Text style={styles.key}>{plan.plan_duration_info.tip}</Text>
                                             </View>
                                         ) : null}
-                                        {plan.plan_type_list ? (
+                                        {plan.plan_type_info ? (
                                             <View style={[Style.flexRow, {marginBottom: px(16)}]}>
-                                                <Text style={styles.key}>投资方式</Text>
+                                                <Text style={styles.key}>{plan.plan_type_info?.title}</Text>
                                                 <View style={[Style.flexRow, {flex: 1}]}>
-                                                    {plan.plan_type_list.map((type, _index) => {
+                                                    {plan.plan_type_info?.val.map((type, _index) => {
                                                         return (
                                                             <View
                                                                 style={[Style.flexRow, {marginRight: px(10)}]}
@@ -379,7 +379,7 @@ export default class planResult extends Component {
                                         ) : null}
 
                                         <View style={[Style.flexRow, {marginBottom: px(15)}]}>
-                                            <Text style={styles.key}>投资金额</Text>
+                                            <Text style={styles.key}>{plan.plan_goal_info.title}</Text>
                                             <Text style={styles.plan_goal_amount}>{plan.plan_goal_info.val}</Text>
                                             <Text style={{fontSize: px(12), marginTop: px(2), color: Colors.red}}>
                                                 {plan.plan_goal_info.unit}

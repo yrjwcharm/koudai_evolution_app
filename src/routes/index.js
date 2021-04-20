@@ -2,11 +2,11 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 19:37:24
+ * @LastEditTime: 2021-04-20 18:20:13
  * @Description:路由表
  */
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, Text} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
@@ -147,13 +147,13 @@ export default function AppStack() {
     return (
         <Stack.Navigator
             initialRouteName="Loading"
-            headerMode="screen" //兼容部分安卓
+            headerMode="screen"
             screenOptions={{
                 headerBackImage: () => {
                     return (
                         <Feather
                             name="chevron-left"
-                            size={30}
+                            size={px(26)}
                             style={{marginLeft: Platform.select({ios: 10, android: 0})}}
                         />
                     );
@@ -414,7 +414,7 @@ export default function AppStack() {
                             <Feather
                                 name="chevron-left"
                                 color="#fff"
-                                size={30}
+                                size={px(26)}
                                 style={{marginLeft: Platform.select({ios: 10, android: 0})}}
                             />
                         );
@@ -447,7 +447,36 @@ export default function AppStack() {
             <Stack.Screen name="BankCard" component={BankCard} options={{title: '银行卡'}} />
             <Stack.Screen name="AddBankCard" component={AddBankCard} options={{title: '添加新银行卡'}} />
             <Stack.Screen name="ModifyPhoneNum" component={ModifyPhoneNum} options={{title: '修改预留手机号'}} />
-            <Stack.Screen name="ExperienceGoldDetail" component={ExperienceGoldDetail} options={{headerShown: false}} />
+            <Stack.Screen
+                name="ExperienceGoldDetail"
+                component={ExperienceGoldDetail}
+                options={{
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                size={px(26)}
+                                color="#fff"
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                    headerStyle: {
+                        backgroundColor: '#D4AC6F',
+                        color: '#fff',
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    title: '',
+                }}
+            />
             <Stack.Screen
                 name="ExperienceGoldResult"
                 component={ExperienceGoldResult}
@@ -477,7 +506,24 @@ export default function AppStack() {
             {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
             <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '', headerShown: false}} />
             <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
-            <Stack.Screen name="MyScore" component={MyScore} options={{title: '我的魔分'}} />
+            <Stack.Screen
+                name="MyScore"
+                component={MyScore}
+                options={{
+                    title: '我的魔分',
+                    headerStyle: {
+                        backgroundColor: Colors.brandColor,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                }}
+            />
             <Stack.Screen name="ScoreDetail" component={ScoreDetail} options={{title: '魔分明细'}} />
             <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
             <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />

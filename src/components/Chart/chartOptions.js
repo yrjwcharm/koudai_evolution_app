@@ -139,6 +139,9 @@ export const baseChart = (data, width, height) => `(function(){
   chart.line()
     .position('date*value')
     .color('type', [ '#E74949', '#545968', '#FFC069' ])
+    .style({
+      lineWidth: 1
+    })
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',
@@ -199,6 +202,9 @@ export const baseComChart = (data, width, height) => `(function(){
   chart.line()
     .position('date*value')
     .color('type', ['#E74949', '#545968', 'transparent'])
+    .style({
+      lineWidth: 1
+    })
     .shape('smooth').animate({
       appear: {
         animation: 'groupWaveIn',

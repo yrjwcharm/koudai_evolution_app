@@ -160,7 +160,6 @@ export default class MyModal extends Component {
                                         style={{
                                             color: Colors.btnColor,
                                             fontSize: text(16),
-                                            fontWeight: 'bold',
                                         }}>
                                         {this.confirmText}
                                     </Text>
@@ -249,7 +248,7 @@ const styles = StyleSheet.create({
     },
     confirmBtn: {
         width: '100%',
-        height: text(48),
+        height: text(40),
     },
     centerBtn: {
         flex: 1,

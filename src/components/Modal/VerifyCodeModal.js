@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 13:21:26
+ * @LastEditTime: 2021-04-20 19:42:23
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -18,7 +18,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
     const {
         title = '请输入手机验证码',
         desc = '验证码已发送至',
-        isSign = false,
+        isSign = true,
         isTouchMaskToClose = false,
         onChangeText = (value) => console.log(value),
         modalCancelCallBack = () => {},
@@ -59,7 +59,11 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         }, 1000);
     }, []);
     const hide = () => {
+        console.log(isSign);
         refRBSheet.current.close();
+        if (!isSign) {
+            modalCancelCallBack();
+        }
     };
     const show = () => {
         refRBSheet.current.open();
@@ -79,9 +83,6 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         setNum(0);
         setDefaultColor('#EF8743');
         btnClick.current = true;
-        setTimeout(() => {
-            modalCancelCallBack();
-        }, 500);
     };
     const onOpen = () => {
         if (timerRef.current === null) {
@@ -110,7 +111,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
             ref={refRBSheet}
             closeOnDragDown={false}
             closeOnPressMask={isTouchMaskToClose}
-            height={px(200)}
+            height={px(240)}
             customStyles={{
                 wrapper: {
                     backgroundColor: 'rgba(30, 31, 32, 0.8)',

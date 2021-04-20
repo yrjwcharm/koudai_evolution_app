@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-20 15:56:57
+ * @LastEditTime: 2021-04-20 20:06:39
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -40,7 +40,7 @@ const TradeProcessing = ({navigation, route}) => {
             }).then((res) => {
                 setData(res.result);
 
-                if (res.result.need_verify_code) {
+                if (res.result.need_verify_code && !isSign) {
                     verifyCodeModal.current.show();
                     return signSendVerify();
                 }
@@ -59,7 +59,7 @@ const TradeProcessing = ({navigation, route}) => {
                 }
             });
         },
-        [loopRef, timerRef, signSendVerify, txn_id]
+        [loopRef, timerRef, signSendVerify, txn_id, isSign]
     );
     const onLayout = useCallback(
         (index, e) => {
@@ -74,7 +74,6 @@ const TradeProcessing = ({navigation, route}) => {
             txn_id: txn_id,
         }).then((res) => {
             if (res.code === '000000') {
-                setSign(true);
                 setBankInfo(res.result);
             } else {
                 Toast.show(res.message);
@@ -82,16 +81,22 @@ const TradeProcessing = ({navigation, route}) => {
         });
     }, [txn_id]);
     const modalCancelCallBack = useCallback(() => {
-        if (isSign && bankInfo) {
+        if (bankInfo) {
             let content = bankInfo.back_info.content;
             setTimeout(() => {
-                Modal.show({content: content, confirm: true, confirmCallBack: confirmCallBack});
+                Modal.show({
+                    content: content,
+                    confirm: true,
+                    confirmText: '立即签约',
+                    confirmCallBack: () => {
+                        verifyCodeModal.current.show();
+                    },
+                });
             }, 500);
         }
-    }, [bankInfo, isSign, confirmCallBack]);
-    const confirmCallBack = useCallback(() => {
-        navigation.navigate('Home');
-    }, [navigation]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bankInfo, isSign]);
+
     const onChangeText = useCallback(
         (value) => {
             if (value.length === 6) {
@@ -100,8 +105,10 @@ const TradeProcessing = ({navigation, route}) => {
                     code: value,
                 }).then((res) => {
                     if (res.code === '000000') {
-                        setSign(false);
+                        setSign(true);
+                        loopRef.current++;
                         setTimeout(() => {
+                            init();
                             verifyCodeModal.current.hide();
                         }, 300);
                     } else {
@@ -110,6 +117,7 @@ const TradeProcessing = ({navigation, route}) => {
                 });
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [bankInfo.txn_id]
     );
     useEffect(() => {

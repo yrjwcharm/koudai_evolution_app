@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 17:21:05
+ * @LastEditTime: 2021-04-20 17:05:31
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -354,7 +354,9 @@ export default function PortfolioAssets(props) {
                                         <CircleLegend color={['#E8EAEF', '#545968']} />
                                         <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
                                         {chart?.tips && (
-                                            <TouchableOpacity onPress={() => showTips(chart.tips, 'chart')}>
+                                            <TouchableOpacity
+                                                style={{position: 'absolute', right: text(-16)}}
+                                                onPress={() => showTips(chart.tips, 'chart')}>
                                                 <FastImage
                                                     style={{width: text(16), height: text(16)}}
                                                     source={require('../../assets/img/tip.png')}

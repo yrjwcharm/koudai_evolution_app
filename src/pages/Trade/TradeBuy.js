@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 20:39:40
+ * @LastEditTime: 2021-04-20 18:58:04
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -72,7 +72,8 @@ class TradeBuy extends Component {
     componentDidMount() {
         this.getTab();
     }
-    init = (_type, cacheBank) => {
+    init = (_type) => {
+        this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
         http.get('/trade/buy/info/20210101', {
             type: _type || type,
@@ -82,9 +83,7 @@ class TradeBuy extends Component {
                 this.setState(
                     {
                         data: res.result,
-                        bankSelect: cacheBank
-                            ? this.state.bankSelect || res.result?.pay_methods[0]
-                            : res.result?.pay_methods[0],
+                        bankSelect: res.result?.pay_methods[0],
                         currentDate: res.result?.period_info?.current_date,
                         nextday: res.result?.period_info?.nextday,
                     },
@@ -193,24 +192,22 @@ class TradeBuy extends Component {
      * @return {*}
      */
     onInput = async (_amount, init) => {
-        let single_amount = this.state.isLargeAmount
-            ? this.state.largeAmount.single_amount
-            : this.state.bankSelect.single_amount;
+        let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
+
         if (!_amount && this.state.type == 0 && !init) {
             await this.plan('');
         }
         this.setState({errTip: '', fixTip: ''}, async () => {
-            console.log('object');
             if (this.state.type == 0) {
-                if (_amount > this.state.bankSelect.left_amount && this.state.bankSelect.pay_method !== 'wallet') {
+                if (_amount > selectCard.left_amount && selectCard.pay_method !== 'wallet') {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `您当日剩余可用额度为${this.state.bankSelect.left_amount}`,
+                        errTip: `您当日剩余可用额度为${selectCard.left_amount}`,
                         mfbTip: false,
                     });
-                } else if (_amount > single_amount) {
-                    if (this.state.bankSelect.pay_method == 'wallet') {
+                } else if (_amount > selectCard.single_amount) {
+                    if (selectCard.pay_method == 'wallet') {
                         this.setState({
                             buyBtnCanClick: false,
                             errTip: '魔方宝余额不足,建议',
@@ -219,7 +216,7 @@ class TradeBuy extends Component {
                     } else {
                         this.setState({
                             buyBtnCanClick: false,
-                            errTip: `最大单笔购买金额为${single_amount}元`,
+                            errTip: `最大单笔购买金额为${selectCard.single_amount}元`,
                             mfbTip: false,
                         });
                     }
@@ -370,7 +367,7 @@ class TradeBuy extends Component {
                 largeAmount: index == 1 ? this.state.data?.large_pay_method : '',
             },
             async () => {
-                await this.plan(this.state.amount);
+                // await this.plan(this.state.amount);
                 this.onInput(this.state.amount);
             }
         );
@@ -753,9 +750,6 @@ class TradeBuy extends Component {
                     onDone={(select, index) => {
                         this.setState({bankSelect: select, bankSelectIndex: index}, async () => {
                             if (!this.state.isLargeAmount) {
-                                if (this.state.type == 0) {
-                                    await this.plan(this.state.amount);
-                                }
                                 this.onInput(this.state.amount);
                             }
                         });

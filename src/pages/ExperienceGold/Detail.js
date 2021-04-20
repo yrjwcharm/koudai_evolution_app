@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-11 16:53:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 18:21:44
  * @Description: 体验金首页
  */
 
@@ -32,9 +32,20 @@ const ExperienceGold = ({navigation}) => {
             if (res.code === '000000') {
                 setRefreshing(false);
                 setData(res.result);
+                navigation.setOptions({
+                    headerRight: () => {
+                        return (
+                            <Text onPress={rightPress} style={{color: '#fff', marginRight: 16}}>
+                                规则说明
+                            </Text>
+                        );
+                    },
+                    title: res.result.title,
+                });
                 StatusBar.setBarStyle('light-content');
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const getColor = useCallback((t) => {
         if (!t) {
@@ -64,16 +75,6 @@ const ExperienceGold = ({navigation}) => {
     };
     return (
         <>
-            <Header
-                title={data?.title || '理财魔方体验金'}
-                leftIcon="chevron-left"
-                rightText={'规则说明'}
-                rightPress={() => rightPress()}
-                rightTextStyle={{fontSize: text(16)}}
-                style={{backgroundColor: '#D4AC6F'}}
-                fontStyle={{color: '#fff'}}
-            />
-
             <ScrollView style={{flex: 1}} refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
                 <LinearGradient
                     style={styles.bg}

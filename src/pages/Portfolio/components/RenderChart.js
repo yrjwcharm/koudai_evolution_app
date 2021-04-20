@@ -3,12 +3,12 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 12:13:36
+ * @LastEditTime: 2021-04-20 17:27:13
  */
 import React, {useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import {baseAreaChart} from './ChartOption';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, px} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
 import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
@@ -115,11 +115,17 @@ export default function RenderChart(props) {
                         defaultValue={chartData?.yield_info?.label[2]?.val}
                         editable={false}
                     />
-                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                    <View
+                        style={[
+                            Style.flexRow,
+                            {alignItems: 'center', marginRight: chartData?.yield_info?.tips ? px(16) : 0},
+                        ]}>
                         <CircleLegend color={['#E8EAEF', '#545968']} />
                         <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
                         {chartData?.yield_info?.tips && (
-                            <TouchableOpacity onPress={() => bottomModal.current.show()}>
+                            <TouchableOpacity
+                                style={{position: 'absolute', right: text(-16)}}
+                                onPress={() => bottomModal.current.show()}>
                                 <Image
                                     style={{width: text(16), height: text(16)}}
                                     source={require('../../../assets/img/tip.png')}
@@ -172,12 +178,10 @@ const styles = StyleSheet.create({
     },
     legend_title_sty: {
         color: '#1F2432',
-        // fontWeight: 'bold',
         fontSize: text(16),
         fontFamily: Font.numMedium,
         marginBottom: text(4),
         padding: 0, //处理textInput 在安卓上的兼容问题
-        // width: text(90),
         textAlign: 'center',
     },
     legend_desc_sty: {
