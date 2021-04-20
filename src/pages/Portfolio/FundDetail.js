@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 17:32:22
+ * @LastEditTime: 2021-04-20 11:01:27
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -422,7 +422,7 @@ const FundDetail = ({navigation, route}) => {
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
                                                     style={[{paddingVertical: text(20)}, Style.flexBetween]}
-                                                    onPress={() => jump(v.url)}>
+                                                    onPress={() => jump(v.url, 'push')}>
                                                     <Text style={styles.title}>{v.key}</Text>
                                                     <View style={Style.flexRow}>
                                                         <Text numberOfLines={1} style={styles.groupVal}>
