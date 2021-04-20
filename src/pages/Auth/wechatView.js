@@ -1,25 +1,27 @@
 /*
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:37:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-20 15:53:33
  * @Description: 微信登录
  */
 import React from 'react';
 import {Style, Colors} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
 import Storage from '../../utils/storage';
-import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserInfo, updateVerifyGesture} from '../../redux/actions/userInfo';
 import http from '../../services';
 import FastImage from 'react-native-fast-image';
 function Wechat(props) {
     const navigation = useNavigation();
+    const route = useRoute();
     const dispatch = useDispatch();
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const weChatLogin = () => {
         WeChat.isWXAppInstalled().then((isInstalled) => {
             if (isInstalled) {
@@ -32,10 +34,38 @@ function Wechat(props) {
                                 if (res.code == '000000') {
                                     if (res.result.bind_mobile) {
                                         dispatch(getUserInfo());
+                                        dispatch(updateVerifyGesture(true));
                                         Storage.save('loginStatus', res.result);
                                         Toast.show('登录成功', {
                                             onHidden: () => {
-                                                navigation.goBack();
+                                                if (route.params?.fr == 'register') {
+                                                    navigation.pop(2);
+                                                } else if (route.params?.fr == 'forgotGesPwd') {
+                                                    Storage.get('openGesturePwd').then((result) => {
+                                                        if (res) {
+                                                            res[`${userInfo.uid}`] = false;
+                                                            Storage.save('openGesturePwd', res);
+                                                        } else {
+                                                            Storage.save('openGesturePwd', {
+                                                                [`${userInfo.uid}`]: false,
+                                                            });
+                                                        }
+                                                    });
+                                                    Storage.get('gesturePwd').then((result) => {
+                                                        if (result) {
+                                                            result[`${userInfo.uid}`] = '';
+                                                            Storage.save('gesturePwd', result);
+                                                        } else {
+                                                            Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
+                                                        }
+                                                    });
+                                                    navigation.replace('GesturePassword', {
+                                                        option: 'firstSet',
+                                                        pass: true,
+                                                    });
+                                                } else {
+                                                    navigation.goBack();
+                                                }
                                             },
                                         });
                                     } else {

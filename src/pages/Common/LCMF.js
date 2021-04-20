@@ -2,19 +2,27 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 13:47:44
+ * @LastEditTime: 2021-04-20 16:34:57
  * @Description:webview
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
+import Image from 'react-native-fast-image';
 import {WebView as RNWebView} from 'react-native-webview';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Feather from 'react-native-vector-icons/Feather';
 import {ShareModal} from '../../components/Modal';
 import http from '../../services';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {useSelector} from 'react-redux';
 export default function LCMF({route, navigation}) {
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(true);
     const jump = useJump();
     const shareModal = useRef(null);
     const [data, setData] = useState({});
@@ -23,9 +31,18 @@ export default function LCMF({route, navigation}) {
         const eventData = JSON.parse(event.nativeEvent.data);
         // console.log(eventData);
         if (typeof eventData === 'object') {
-            jump(eventData);
+            console.log(route.params?.scene, userInfo.is_login);
+            // if (route.params?.scene === 'know_lcmf' && !userInfo.is_login) {
+            //     navigation.navigate('Register');
+            // } else {
+            //     jump(eventData);
+            // }
         }
     };
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
     useEffect(() => {
         navigation.setOptions({
             headerBackImage: () => {
@@ -55,7 +72,7 @@ export default function LCMF({route, navigation}) {
                         activeOpacity={0.8}
                         style={[styles.topRightBtn, Style.flexCenter]}
                         onPress={() => shareModal.current.show()}>
-                        <Text style={styles.btnText}>分享</Text>
+                        <Image source={require('../../assets/img/article/white_more.png')} style={styles.moreImg} />
                     </TouchableOpacity>
                 </>
             ),
@@ -67,28 +84,47 @@ export default function LCMF({route, navigation}) {
         };
     }, [navigation, route]);
     useEffect(() => {
-        http.get('/share/common/info/20210101', {scene: route.params?.scene || 'fund_safe'}).then((res) => {
-            if (res.code === '000000') {
-                StatusBar.setBarStyle('light-content');
-                setData(res.result);
-            }
-        });
-    }, [route]);
+        if (hasNet) {
+            http.get('/share/common/info/20210101', {scene: route.params?.scene || 'fund_safe'}).then((res) => {
+                if (res.code === '000000') {
+                    StatusBar.setBarStyle('light-content');
+                    setData(res.result);
+                }
+            });
+        }
+    }, [hasNet, route]);
+    useEffect(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
 
     return (
         <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
-            <RNWebView
-                bounces={false}
-                javaScriptEnabled
-                onMessage={onMessage}
-                originWhitelist={['*']}
-                source={{
-                    uri: route?.params?.link,
-                }}
-                startInLoadingState={true}
-                style={{flex: 1}}
-            />
-            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
+            {hasNet ? (
+                <>
+                    <RNWebView
+                        bounces={false}
+                        javaScriptEnabled
+                        onMessage={onMessage}
+                        originWhitelist={['*']}
+                        source={{
+                            uri: route?.params?.link,
+                        }}
+                        startInLoadingState={true}
+                        style={{flex: 1}}
+                    />
+                    <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
+                </>
+            ) : (
+                <>
+                    <Empty
+                        img={require('../../assets/img/emptyTip/noNetwork.png')}
+                        text={'哎呀！网络出问题了'}
+                        desc={'网络不给力，请检查您的网络设置'}
+                        style={{paddingVertical: text(60)}}
+                    />
+                    <Button title={'刷新一下'} style={{marginHorizontal: text(20)}} onPress={refreshNetWork} />
+                </>
+            )}
         </View>
     );
 }
@@ -97,11 +133,10 @@ const styles = StyleSheet.create({
     topRightBtn: {
         flex: 1,
         width: text(36),
-        marginRight: text(8),
+        marginRight: Platform.select({ios: text(10), android: text(6)}),
     },
-    btnText: {
-        fontSize: Font.textH3,
-        lineHeight: text(17),
-        color: '#fff',
+    moreImg: {
+        width: text(28),
+        height: text(28),
     },
 });

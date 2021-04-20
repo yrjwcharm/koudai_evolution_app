@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-04-07 10:32:49
+ * @LastEditTime: 2021-04-20 15:58:54
  * @LastEditors: dx
  * @Description: 常见问题
  */
@@ -52,7 +52,7 @@ const CommonProblem = ({navigation, route}) => {
         );
     };
     const renderContent = (section) => {
-        const minHeight = text((Math.ceil(section.answer.length / 24) + 1) * 20);
+        const minHeight = text((Math.ceil(section.answer.length / 24) + 1) * 20 + 1);
         return (
             <View style={[styles.content, {minHeight}]}>
                 {/* <HTML style={styles.content_text} html={section.a} /> */}
@@ -63,7 +63,7 @@ const CommonProblem = ({navigation, route}) => {
     return (
         <>
             {Object.keys(data || {}).length > 0 && (
-                <ScrollView style={styles.container}>
+                <ScrollView scrollIndicatorInsets={{right: 1}} style={styles.container}>
                     <Accordion
                         sections={data.rows}
                         expandMultiple

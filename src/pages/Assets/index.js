@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 14:40:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-20 16:47:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -89,38 +89,41 @@ function HomeScreen({navigation, route}) {
     //   // Prevent default action
     //   e.preventDefault()
     // }
-    const init = useCallback((refresh) => {
-        refresh === 'refresh' && setRefreshing(true);
-        refresh === 'refresh' && setHideMsg(false);
-        http.get('/asset/holding/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
-            if (res.code === '000000') {
-                setHoldingData(res.result);
-            }
-        });
-        readInterface();
-        http.get('/asset/common/20210101', {
-            // uid: '1000000001',
-        }).then((res) => {
-            if (res.code === '000000') {
-                StatusBar.setBarStyle('light-content');
-                setUserBasicInfo(res.result);
-            }
-            // setLoading(false);
-            setRefreshing(false);
-        });
-        http.get('/asset/notice/20210101')
-            .then((res) => {
-                setLoading(false);
+    const init = useCallback(
+        (refresh) => {
+            refresh === 'refresh' && setRefreshing(true);
+            refresh === 'refresh' && setHideMsg(false);
+            http.get('/asset/holding/20210101', {
+                // uid: '1000000001',
+            }).then((res) => {
                 if (res.code === '000000') {
-                    setNotice(res.result);
+                    setHoldingData(res.result);
                 }
-            })
-            .catch(() => {
-                setLoading(false);
             });
-    }, []);
+            readInterface();
+            http.get('/asset/common/20210101', {
+                // uid: '1000000001',
+            }).then((res) => {
+                if (res.code === '000000') {
+                    StatusBar.setBarStyle('light-content');
+                    setUserBasicInfo(res.result);
+                }
+                // setLoading(false);
+                setRefreshing(false);
+            });
+            http.get('/asset/notice/20210101')
+                .then((res) => {
+                    setLoading(false);
+                    if (res.code === '000000') {
+                        setNotice(res.result);
+                    }
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+        },
+        [readInterface]
+    );
     const readInterface = useCallback(() => {
         http.get('/message/unread/20210101').then((res) => {
             setNewmessage(res.result.all);

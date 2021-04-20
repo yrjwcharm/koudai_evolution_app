@@ -58,6 +58,7 @@ export default function DetailRetiredPlan({navigation, route}) {
     const [tableData, setTableData] = useState({});
     const jump = useJump();
     const tabClick = useRef(true);
+    const [btns, setBtns] = useState([]);
 
     const changeTab = (p, t) => {
         if (!tabClick.current) {
@@ -152,6 +153,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                         }
                     });
                     setTableData(res.result.asset_compare?.table);
+                    setBtns(res.result.btns || []);
                     setData(res.result);
                 }
             })
@@ -305,6 +307,23 @@ export default function DetailRetiredPlan({navigation, route}) {
             changeNotice(params);
         }
     }, [current, changeNotice, countFr, countM, data, route.params, type]);
+    useEffect(() => {
+        setBtns((prev) => {
+            if (prev[1] && prev[1]?.url?.params?.amount) {
+                const next = _.cloneDeep(prev);
+                if (parseFloat(countFr) !== 0) {
+                    next[1].url.params.amount = parseFloat(countFr);
+                } else if (parseFloat(countM) !== 0) {
+                    next[1].url.params.amount = parseFloat(countM);
+                } else {
+                    next[1].url.params.amount = '';
+                }
+                return next;
+            } else {
+                return prev;
+            }
+        });
+    }, [countFr, countM]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -607,7 +626,7 @@ export default function DetailRetiredPlan({navigation, route}) {
             <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                 <View style={{padding: text(16)}}>{popup?.content ? <Html html={popup.content} /> : null}</View>
             </BottomModal>
-            {data?.btns && <FixedBtn btns={data?.btns} />}
+            {btns && <FixedBtn btns={btns} />}
         </View>
     );
 }

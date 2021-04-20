@@ -29,7 +29,9 @@ export default function GesturePassword({option, route}) {
     // const [password, setPassword] = useState('');
     const [status, setStatus] = useState(false);
     const [isWarning, setIsWarning] = useState(false); //设置警告
-    const [title, setTitle] = useState(option === 'verify' ? '请输入手势密码' : '请绘制解锁图案');
+    const [title, setTitle] = useState(
+        option === 'verify' ? '请输入手势密码' : route?.params?.pass ? '请绘制新的解锁图案' : '请绘制解锁图案'
+    );
     const dispatch = useDispatch();
     const isOpenRef = useRef(false);
     const passwordRef = useRef('');
@@ -44,6 +46,9 @@ export default function GesturePassword({option, route}) {
         } else if (route?.params?.option == 'close') {
             navigation.setOptions({title: '验证手势密码'});
             setTitle('请输入手势密码');
+        }
+        if (route?.params?.pass) {
+            navigation.setOptions({headerShown: false});
         }
         storage.get('gesturePwd').then((res) => {
             // console.log(res);
@@ -266,6 +271,15 @@ export default function GesturePassword({option, route}) {
                     activeOpacity={0.8}
                     onPress={() => navigation.navigate('Login', {fr: 'forgotGesPwd'})}>
                     <Text style={{marginRight: text(4)}}>{'忘记手势密码'}</Text>
+                    <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
+                </TouchableOpacity>
+            )}
+            {route?.params?.pass && (
+                <TouchableOpacity
+                    style={[Style.flexRow, styles.forgotPwd]}
+                    activeOpacity={0.8}
+                    onPress={() => navigation.goBack()}>
+                    <Text style={{marginRight: text(4)}}>{'跳过'}</Text>
                     <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
                 </TouchableOpacity>
             )}
