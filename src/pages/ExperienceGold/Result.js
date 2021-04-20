@@ -2,14 +2,14 @@
  * @Author: xjh
  * @Date: 2021-02-25 15:17:26
  * @Description:体验金结果页
- * @LastEditors: dx
- * @LastEditTime: 2021-03-31 17:48:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 21:53:46
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
 
 import {Colors, Space, Font, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, deviceWidth} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -17,7 +17,20 @@ import {Button} from '../../components/Button';
 import Http from '../../services';
 import {useJump} from '../../components/hooks';
 import {ShareModal} from '../../components/Modal';
-
+import {BoxShadow} from 'react-native-shadow';
+const shadow = {
+    color: '#E3E6EE',
+    border: 8,
+    radius: 1,
+    opacity: 0.2,
+    x: 0,
+    y: 2,
+    width: deviceWidth - text(32),
+    height: text(110),
+    style: {
+        marginBottom: text(16),
+    },
+};
 export default function Result({navigation}) {
     const jump = useJump();
     const [data, setData] = useState({});
@@ -111,40 +124,42 @@ export default function Result({navigation}) {
             {data.is_success == false &&
                 data?.recommend?.cards?.map((_item, _index) => {
                     return (
-                        <TouchableOpacity
-                            onPress={() => {
-                                global.LogTool('click', 'account', _item.plan_id);
-                                jump(_item.url);
-                            }}
-                            style={styles.card_sty}
-                            key={_index + '_item1'}>
-                            <View>
-                                <View style={Style.flexRow}>
-                                    <Text
-                                        style={{
-                                            textAlign: 'left',
-                                            color: Colors.defaultColor,
-                                            fontSize: text(15),
-                                            fontWeight: 'bold',
-                                        }}>
-                                        {_item.name}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: Colors.lightBlackColor,
-                                            fontSize: text(13),
-                                            marginLeft: text(6),
-                                        }}>
-                                        {_item.desc}
+                        <BoxShadow key={_index} setting={shadow}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    global.LogTool('click', 'account', _item.plan_id);
+                                    jump(_item.url);
+                                }}
+                                style={styles.card_sty}
+                                key={_index + '_item1'}>
+                                <View>
+                                    <View style={Style.flexRow}>
+                                        <Text
+                                            style={{
+                                                textAlign: 'left',
+                                                color: Colors.defaultColor,
+                                                fontSize: text(15),
+                                                fontWeight: 'bold',
+                                            }}>
+                                            {_item.name}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                color: Colors.lightBlackColor,
+                                                fontSize: text(13),
+                                                marginLeft: text(6),
+                                            }}>
+                                            {_item.desc}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.ratio_sty}>{_item.ratio} </Text>
+                                    <Text style={{color: Colors.darkGrayColor, fontSize: text(12)}}>
+                                        {_item.ratio_desc}
                                     </Text>
                                 </View>
-                                <Text style={styles.ratio_sty}>{_item.ratio} </Text>
-                                <Text style={{color: Colors.darkGrayColor, fontSize: text(12)}}>
-                                    {_item.ratio_desc}
-                                </Text>
-                            </View>
-                            <AntDesign name={'right'} size={12} color={Colors.darkGrayColor} />
-                        </TouchableOpacity>
+                                <AntDesign name={'right'} size={12} color={Colors.darkGrayColor} />
+                            </TouchableOpacity>
+                        </BoxShadow>
                     );
                 })}
         </ScrollView>
@@ -179,8 +194,8 @@ const styles = StyleSheet.create({
     card_sty: {
         backgroundColor: '#fff',
         borderRadius: text(10),
-        ...Space.boxShadow('#E0E2E7', 0, text(2), 1, text(12)),
         padding: text(16),
+        height: text(110),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

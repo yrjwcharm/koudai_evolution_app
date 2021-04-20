@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 12:03:42
+ * @LastEditTime: 2021-04-20 20:48:07
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -47,11 +47,7 @@ export default function WebView({route, navigation}) {
         } else {
             setTitle(route?.params?.title);
         }
-        setBackButtonEnabled(
-            navState.canGoBack &&
-                navState.url.indexOf('/insuranceProgress') <= -1 &&
-                navState.url.indexOf('https://prophetlogin.licaimofang.com/login') <= -1
-        );
+        setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
 
     const onBackAndroid = (e) => {

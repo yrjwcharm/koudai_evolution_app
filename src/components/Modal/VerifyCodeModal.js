@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 19:42:23
+ * @LastEditTime: 2021-04-20 22:03:15
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -59,7 +59,6 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         }, 1000);
     }, []);
     const hide = () => {
-        console.log(isSign);
         refRBSheet.current.close();
         if (!isSign) {
             modalCancelCallBack();

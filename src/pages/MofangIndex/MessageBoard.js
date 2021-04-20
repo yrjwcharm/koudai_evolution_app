@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:15:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 20:39:04
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -17,7 +17,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const MessageBoard = (props) => {
     const netInfo = useNetInfo();
-    const [hasNet, setHasNet] = useState(netInfo.isConnected);
+    const [hasNet, setHasNet] = useState(true);
     const [comment, setComment] = useState(null);
     const getData = useCallback(() => {
         http.get('/comment/detail/20210101', {
@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flex: 1,
         padding: px(20),
+        borderColor: '#fff',
+        borderWidth: 0.5,
     },
     avatar_name: {
         fontSize: px(13),

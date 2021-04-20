@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 10:07:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 21:46:28
  * @Description:主题及公共样式表
  */
 
@@ -79,7 +79,7 @@ export const Space = {
         shadowOffset: {width: x, height: y},
         shadowOpacity: opacity,
         shadowRadius: radius,
-        elevation: 10,
+        elevation: 20,
     }),
 };
 

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 14:41:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 21:21:08
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -57,7 +57,7 @@ export default function PrivateRedeem({route, navigation}) {
     };
 
     return (
-        <>
+        <View style={{flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{flex: 1}}>
                     <Text style={[Style.descSty, {padding: text(16)}]}>{data.share.name}</Text>
@@ -71,6 +71,7 @@ export default function PrivateRedeem({route, navigation}) {
                             <TextInput
                                 style={{height: text(50), fontSize: text(26), flex: 1}}
                                 placeholder={data.placeholder}
+                                placeholderTextColor={Colors.placeholderColor}
                                 keyboardType={'number-pad'}
                                 onChangeText={onInput}
                                 value={amount}
@@ -112,18 +113,17 @@ export default function PrivateRedeem({route, navigation}) {
                             );
                         })}
                     </View>
-
-                    <FixedButton
-                        disabled={enable}
-                        title={data.share.button.text}
-                        style={styles.btn_sty}
-                        disabledColor={'#EDDBC5'}
-                        onPress={() => submitData()}
-                        color={'#CEA26B'}
-                    />
                 </ScrollView>
             )}
-        </>
+            <FixedButton
+                disabled={enable}
+                title={data.share.button.text}
+                style={styles.btn_sty}
+                disabledColor={'#EDDBC5'}
+                onPress={() => submitData()}
+                color={'#CEA26B'}
+            />
+        </View>
     );
 }
 const styles = StyleSheet.create({

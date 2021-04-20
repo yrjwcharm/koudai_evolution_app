@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-20 20:06:39
+ * @LastEditTime: 2021-04-20 22:08:02
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -88,6 +88,9 @@ const TradeProcessing = ({navigation, route}) => {
                     content: content,
                     confirm: true,
                     confirmText: '立即签约',
+                    cancelCallBack: () => {
+                        navigation.navigate('Home');
+                    },
                     confirmCallBack: () => {
                         verifyCodeModal.current.show();
                     },

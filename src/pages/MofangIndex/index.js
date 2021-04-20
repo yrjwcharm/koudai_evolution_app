@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 16:07:38
+ * @LastEditTime: 2021-04-20 20:53:39
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -494,9 +494,10 @@ const Index = (props) => {
                                 </View>
                             )}
                             {/* 听听魔方用户怎么说 */}
-                            <View style={{width: deviceWidth}}>
+                            <View>
                                 <RenderTitle title={'听听魔方用户怎么说'} />
                                 <ScrollView
+                                    style={{paddingLeft: px(16), width: deviceWidth, marginLeft: px(-16)}}
                                     showsPagination={false}
                                     horizontal={true}
                                     height={px(188)}
@@ -516,10 +517,17 @@ const Index = (props) => {
                                         lastx = nextx;
                                     }}
                                     showsHorizontalScrollIndicator={false}>
-                                    {data?.comment_list?.map((comment) => (
+                                    {data?.comment_list?.map((comment, index) => (
                                         <TouchableOpacity
                                             key={comment.id}
-                                            style={[styles.about_our, styles.common_card]}
+                                            style={[
+                                                styles.about_our,
+                                                styles.common_card,
+                                                {
+                                                    marginRight:
+                                                        index == data?.comment_list?.length - 1 ? px(28) : px(12),
+                                                },
+                                            ]}
                                             activeOpacity={0.8}
                                             onPress={() => {
                                                 jump({path: 'MessageBoard', params: {id: comment.id}});

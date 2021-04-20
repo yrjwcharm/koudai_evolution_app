@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-24 17:51:57
+ * @LastEditTime: 2021-04-20 21:14:37
  * @Description:找回登录密码
  */
 /*
@@ -57,7 +57,7 @@ export default class index extends Component {
                 <View style={{marginBottom: text(30), marginTop: text(20)}}>
                     <Text style={styles.title}>找回登录密码</Text>
                 </View>
-                <Text style={{color: '#666666', marginBottom: 16}}>请输入注册手机号以接受验证码</Text>
+                <Text style={{color: '#666666', marginBottom: 16}}>请输入注册手机号以接收验证码</Text>
                 <InputView
                     title="手机号"
                     onChangeText={this.onChangeMobile}
