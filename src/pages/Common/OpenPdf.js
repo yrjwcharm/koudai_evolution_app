@@ -2,15 +2,16 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 20:59:07
+ * @LastEditTime: 2021-04-20 11:17:19
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
-import {StyleSheet, Dimensions, View, Linking, Alert} from 'react-native';
+import {StyleSheet, Dimensions, View, Linking, Alert, ActivityIndicator} from 'react-native';
 import Pdf from 'react-native-pdf';
 import Toast from '../../components/Toast';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
+import {Colors, Style} from '../../common/commonStyle';
 
 export default class OpenPdf extends Component {
     constructor(props) {
@@ -20,26 +21,30 @@ export default class OpenPdf extends Component {
             showEmpty: false,
         };
     }
-    componentDidMount() {
-        if (this.props.route.params && this.props.route.params.title) {
-            this.props.navigation.setOptions({title: this.props.route.params.title});
-        }
+    UNSAFE_componentWillMount() {
         if (!this.props.route.params.url) {
             Toast.show('空链接');
+            this.setState({showEmpty: true});
         } else {
-            console.log(this.props.route.params.url);
             fetch(this.props.route.params.url)
                 .then((res) => {
-                    // console.log(res);
+                    console.log(res);
                     if (res.status === 200) {
-                        this.setState({canOpen: true, showEmpty: true});
+                        this.setState({canOpen: true});
+                    } else {
+                        this.setState({showEmpty: true});
                     }
                 })
                 .catch((error) => {
-                    // console.log(error);
+                    console.log(error);
                     // Toast.show('链接不可用');
                     this.setState({showEmpty: true});
                 });
+        }
+    }
+    componentDidMount() {
+        if (this.props.route.params && this.props.route.params.title) {
+            this.props.navigation.setOptions({title: this.props.route.params.title});
         }
     }
     render() {
@@ -51,7 +56,7 @@ export default class OpenPdf extends Component {
                     <Pdf
                         source={{uri: url, cache: true}}
                         onLoadComplete={(numberOfPages, filePath) => {
-                            console.log(numberOfPages, filePath);
+                            // console.log(numberOfPages, filePath);
                         }}
                         onPageChanged={(page) => {
                             // console.log(`current page: ${page}`);
@@ -72,8 +77,12 @@ export default class OpenPdf extends Component {
                         }}
                         style={styles.pdf}
                     />
+                ) : showEmpty ? (
+                    <Empty text={'找不到文档'} />
                 ) : (
-                    showEmpty && <Empty text={'找不到文档'} />
+                    <View style={[Style.flexCenter, {flex: 1, width: Dimensions.get('window').width}]}>
+                        <ActivityIndicator color={Colors.brandColor} />
+                    </View>
                 )}
             </View>
         );
