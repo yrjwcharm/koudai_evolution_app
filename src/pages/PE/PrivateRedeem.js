@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:08:07
  * @Description:私募赎回申请
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 21:21:08
+ * @LastEditTime: 2021-04-21 10:38:17
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -115,14 +115,16 @@ export default function PrivateRedeem({route, navigation}) {
                     </View>
                 </ScrollView>
             )}
-            <FixedButton
-                disabled={enable}
-                title={data.share.button.text}
-                style={styles.btn_sty}
-                disabledColor={'#EDDBC5'}
-                onPress={() => submitData()}
-                color={'#CEA26B'}
-            />
+            {data?.share?.button && (
+                <FixedButton
+                    disabled={enable}
+                    title={data.share.button.text}
+                    style={styles.btn_sty}
+                    disabledColor={'#EDDBC5'}
+                    onPress={() => submitData()}
+                    color={'#CEA26B'}
+                />
+            )}
         </View>
     );
 }

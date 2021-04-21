@@ -66,8 +66,8 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        Toast.show('网络异常，请稍后再试~');
-        // showError && Toast.show('网络异常，请稍后再试~');
+        // Toast.show('网络异常，请稍后再试~');
+        showError && Toast.show('网络异常，请稍后再试~');
         // NetInfo.fetch().then((state) => {
         //     if (state.isConnected) {
         //         Toast.show('服务器开小差了...');
@@ -86,6 +86,8 @@ export default class http {
     static async get(url, params, config, showLoading = true) {
         if (url.indexOf('tj.licaimofang.com/v.gif') > -1) {
             showError = false;
+        } else {
+            showError = true;
         }
         try {
             if (showLoading) {
@@ -103,11 +105,13 @@ export default class http {
             }
             return res;
         } catch (error) {
+            console.log('error', error);
             return error;
         }
         // }
     }
     static async post(url, params, showLoading = '') {
+        showError = true;
         if (!url.indexOf('http') > -1) {
             axios.defaults.baseURL = baseConfig.HTTP; // 改变 axios 实例的 baseURL
         }

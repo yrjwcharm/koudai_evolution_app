@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-20 16:47:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-20 22:37:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -286,6 +286,7 @@ function HomeScreen({navigation, route}) {
             <ScrollView
                 onScroll={onScroll}
                 ref={scrollRef}
+                showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
                 refreshControl={
                     <RefreshControl
