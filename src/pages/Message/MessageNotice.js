@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 15:30:36
+ * @LastEditTime: 2021-04-21 18:07:37
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -59,7 +59,6 @@ export default function MessageNotice({navigation, route}) {
                 setShowEmpty(true);
                 if (res.code === '000000') {
                     setRefreshing(false);
-                    console.log(res.result.has_more);
                     setHasMore(res.result.has_more);
                     setType(res.result.message_type);
                     first && setTitle(res.result.title);

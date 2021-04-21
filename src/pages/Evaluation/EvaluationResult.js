@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 16:13:43
+ * @LastEditTime: 2021-04-21 17:48:37
  * @Description:规划结果页
  */
 
@@ -227,7 +227,13 @@ export default class planResult extends Component {
                                         <View
                                             style={[
                                                 Style.flexBetween,
-                                                {alignItems: 'flex-end', paddingHorizontal: px(20)},
+
+                                                {
+                                                    position: 'relative',
+                                                    zIndex: 10,
+                                                    alignItems: 'flex-end',
+                                                    paddingHorizontal: px(20),
+                                                },
                                             ]}>
                                             <View>
                                                 <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
