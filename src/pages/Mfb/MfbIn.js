@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 19:28:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-21 14:20:45
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -146,7 +146,7 @@ class MfbIn extends Component {
                                         marginBottom: px(4),
                                         fontWeight: 'bold',
                                     }}>
-                                    {bankSelect?.bank_name}
+                                    {bankSelect?.bank_name} ({bankSelect?.bank_no})
                                 </Text>
                                 <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                     {bankSelect?.limit_desc}

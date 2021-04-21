@@ -652,7 +652,7 @@ export default function DetailEducation({navigation, route}) {
                     {popup?.content && (
                         <BottomModal ref={bottomModal} confirmText={'确认'} title={popup?.title}>
                             <View style={{padding: text(16)}}>
-                                <Html html={popup?.content} />
+                                <Html style={{lineHeight: text(20)}} html={popup?.content} />
                             </View>
                         </BottomModal>
                     )}

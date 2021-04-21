@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 17:21:16
+ * @LastEditTime: 2021-04-21 16:13:43
  * @Description:规划结果页
  */
 
@@ -264,12 +264,7 @@ export default class planResult extends Component {
                                         </View>
                                     ) : type == 2 ? (
                                         <View style={{position: 'absolute', right: px(20), top: px(-90), zIndex: 10}}>
-                                            <Text
-                                                style={{
-                                                    color: Colors.red,
-                                                    fontSize: px(44),
-                                                    fontFamily: Font.numFontFamily,
-                                                }}>
+                                            <Text numberOfLines={1} style={styles.amount}>
                                                 {tab[0]?.val}
                                             </Text>
                                             <Text style={{color: Colors.darkGrayColor, textAlign: 'right'}}>
@@ -494,6 +489,13 @@ const styles = StyleSheet.create({
     },
     sm_radio: {
         fontSize: px(14),
+        fontFamily: Font.numFontFamily,
+    },
+    amount: {
+        width: deviceWidth - px(110),
+        color: Colors.red,
+        textAlign: 'right',
+        fontSize: px(44),
         fontFamily: Font.numFontFamily,
     },
 });

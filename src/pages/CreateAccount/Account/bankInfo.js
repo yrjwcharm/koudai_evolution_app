@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 15:48:17
+ * @LastEditTime: 2021-04-21 17:29:50
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -39,6 +39,8 @@ class BankInfo extends Component {
             bankList: [],
             selectBank: props.userInfo?.selectBank || '',
             btnDisable: true,
+            bankErrMes: '',
+            phoneError: '',
         };
     }
 
@@ -60,6 +62,9 @@ class BankInfo extends Component {
         this.time && clearInterval(this.time);
     }
     checkData = (phone, code, selectBank, bank_no) => {
+        var phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+        this.setState({bankErrMes: bank_no && bank_no.replace(/ /g, '').length >= 16 ? '' : '请输入正确的银行卡号'});
+        this.setState({phoneError: phoneReg.test(phone) ? '' : '请输入正确的手机号'});
         if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 19) {
             this.setState({btnDisable: false});
         } else {
@@ -258,7 +263,7 @@ class BankInfo extends Component {
         );
     };
     render() {
-        const {verifyText, bank_no, bankList, selectBank, phone, code} = this.state;
+        const {verifyText, bank_no, bankList, selectBank, phone, code, phoneError, bankErrMes} = this.state;
         return (
             <>
                 <KeyboardAwareScrollView
@@ -296,6 +301,7 @@ class BankInfo extends Component {
                             placeholder="请输入您的银行卡号"
                             keyboardType={'number-pad'}
                             maxLength={23}
+                            errorMsg={bankErrMes}
                             value={bank_no}
                             onChangeText={this.onChangeBankNo}
                         />
@@ -317,6 +323,7 @@ class BankInfo extends Component {
                             placeholder="请输入您的银行预留手机号"
                             keyboardType={'number-pad'}
                             maxLength={11}
+                            errorMsg={phoneError}
                             value={phone}
                             onChangeText={(_phone) => {
                                 this.setState({phone: inputInt(_phone)}, () => {

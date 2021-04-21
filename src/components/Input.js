@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:49:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-01 18:05:56
+ * @LastEditTime: 2021-04-21 16:43:39
  * @Description:带lable的输入框
  */
 /**
@@ -25,6 +25,14 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         letterSpacing: text(1),
     },
+    errorMsg: {
+        paddingLeft: px(70),
+        color: Colors.red,
+        fontSize: px(12),
+        marginTop: px(-8),
+        fontWeight: '600',
+        marginBottom: px(6),
+    },
 });
 
 class Input extends Component {
@@ -37,6 +45,7 @@ class Input extends Component {
         autoCapitalize: PropTypes.oneOf(['characters', 'words', 'sentences', 'none']),
         label: PropTypes.string,
         placeholder: PropTypes.string,
+        errorMsg: PropTypes.string,
     };
 
     static defaultProps = {
@@ -46,6 +55,7 @@ class Input extends Component {
         label: '文本输入框',
         placeholder: '请输入',
         keyboardType: 'default',
+        errorMsg: '',
         onClick: () => {
             //不可编辑时点击事件
         },
@@ -70,79 +80,82 @@ class Input extends Component {
             suffix,
             keyboardType,
             value,
+            errorMsg,
         } = this.props;
         return (
             <View
                 style={[
                     {
-                        height: text(56),
                         width: '100%',
                         backgroundColor: '#fff',
-                        flexDirection: 'row',
-                        borderColor: Colors.borderColor,
+                        borderColor: errorMsg ? Colors.red : Colors.borderColor,
                         borderBottomWidth: 0.5,
                     },
-                    styles.center,
                     this.props.inputStyle,
                 ]}>
-                <Text
-                    style={[
-                        {
-                            width: text(68),
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: text(14),
-                            color: Colors.lightBlackColor,
-                        },
-                        labelTextStyle,
-                    ]}>
-                    {label}
-                    {required ? <Text style={{fontSize: 16, fontWeight: 'bold', color: '#F00'}}>*</Text> : null}
-                </Text>
-                {isUpdate ? (
-                    <View style={[{flexDirection: 'row', flex: 1, padding: 0}, styles.center]}>
-                        <TextInput
-                            {...this.props}
-                            onBlur={this._onBlur}
-                            onFocus={this._onFocus}
-                            style={[
-                                styles.input,
-                                textInputStyle,
-                                {fontFamily: value && value.length > 0 ? Font.numMedium : null},
-                            ]}
-                            placeholderTextColor={placeholderTextColor}
-                            autoCorrect={false}
-                            autoCapitalize={autoCapitalize}
-                            underlineColorAndroid="transparent"
-                            keyboardType={keyboardType}
-                        />
-                        <Text style={{marginRight: 10}}>{suffix && suffix.length > 3 ? '' : suffix}</Text>
-                    </View>
-                ) : (
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.props.onClick && this.props.onClick();
-                        }}
+                <View style={[styles.center, {flexDirection: 'row', height: text(56), width: '100%'}]}>
+                    <Text
                         style={[
                             {
+                                width: text(68),
                                 flexDirection: 'row',
-                                flex: 1,
-                                height: '100%',
-                                paddingLeft: Platform.OS == 'android' ? px(5) : 0,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                fontSize: text(14),
+                                color: Colors.lightBlackColor,
                             },
-                            styles.center,
+                            labelTextStyle,
                         ]}>
-                        <Text style={[{flex: 1, fontSize: text(14)}, textInputStyle]}>
-                            <Text style={{fontFamily: Font.numMedium}}>{value}</Text>
-                            {value ? null : (
-                                <Text style={[{flex: 1, color: placeholderTextColor}]}>{this.props.placeholder}</Text>
-                            )}
-                        </Text>
+                        {label}
+                        {required ? <Text style={{fontSize: 16, fontWeight: 'bold', color: '#F00'}}>*</Text> : null}
+                    </Text>
+                    {isUpdate ? (
+                        <View style={[{flexDirection: 'row', flex: 1, padding: 0}, styles.center]}>
+                            <TextInput
+                                {...this.props}
+                                onBlur={this._onBlur}
+                                onFocus={this._onFocus}
+                                style={[
+                                    styles.input,
+                                    textInputStyle,
+                                    {fontFamily: value && value.length > 0 ? Font.numMedium : null},
+                                ]}
+                                placeholderTextColor={placeholderTextColor}
+                                autoCorrect={false}
+                                autoCapitalize={autoCapitalize}
+                                underlineColorAndroid="transparent"
+                                keyboardType={keyboardType}
+                            />
+                            <Text style={{marginRight: 10}}>{suffix && suffix.length > 3 ? '' : suffix}</Text>
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.props.onClick && this.props.onClick();
+                            }}
+                            style={[
+                                {
+                                    flexDirection: 'row',
+                                    flex: 1,
+                                    height: '100%',
+                                    paddingLeft: Platform.OS == 'android' ? px(5) : 0,
+                                },
+                                styles.center,
+                            ]}>
+                            <Text style={[{flex: 1, fontSize: text(14)}, textInputStyle]}>
+                                <Text style={{fontFamily: Font.numMedium}}>{value}</Text>
+                                {value ? null : (
+                                    <Text style={[{flex: 1, color: placeholderTextColor}]}>
+                                        {this.props.placeholder}
+                                    </Text>
+                                )}
+                            </Text>
 
-                        <Text style={{marginRight: 10}}>{suffix && suffix.length > 3 ? '' : suffix}</Text>
-                    </TouchableOpacity>
-                )}
+                            <Text style={{marginRight: 10}}>{suffix && suffix.length > 3 ? '' : suffix}</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+                {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
             </View>
         );
     }

@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-04-20 16:43:24
- * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 15:02:28
+ * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -79,7 +79,11 @@ const BottomDesc = (props) => {
         <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
             {data.image && (
                 <View style={styles.item}>
-                    <FastImage source={{uri: data.image}} style={[styles.img]} />
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        source={{uri: data.image}}
+                        style={[styles.img]}
+                    />
                 </View>
             )}
             {data?.desc?.map((item, index, arr) => {
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
         marginVertical: text(40),
     },
     img: {
-        width: text(343),
+        width: deviceWidth - text(40),
         height: text(34),
         marginBottom: text(12),
     },

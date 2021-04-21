@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 18:48:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-21 17:04:27
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -74,7 +74,7 @@ class Index extends Component {
     };
     checkData = (name, id_no) => {
         this.setState({
-            idErrorMsg: id_no.length > 14 && id_no.length < 18 ? '身份证号位数不够' : '',
+            idErrorMsg: id_no.length > 14 && id_no.length < 18 ? '身份证号位数不正确' : '',
         });
         if (id_no.length >= 18 && name.length >= 2) {
             this.setState({
@@ -215,6 +215,7 @@ class Index extends Component {
                                 onChangeText={this.onChangeIdNo}
                                 value={id_no}
                                 maxLength={18}
+                                errorMsg={idErrorMsg}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 returnKeyType={'next'}
                             />

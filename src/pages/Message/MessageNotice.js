@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 13:40:27
+ * @LastEditTime: 2021-04-21 15:30:36
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -59,6 +59,7 @@ export default function MessageNotice({navigation, route}) {
                 setShowEmpty(true);
                 if (res.code === '000000') {
                     setRefreshing(false);
+                    console.log(res.result.has_more);
                     setHasMore(res.result.has_more);
                     setType(res.result.message_type);
                     first && setTitle(res.result.title);
@@ -69,7 +70,7 @@ export default function MessageNotice({navigation, route}) {
                             setList(res.result.messages);
                         }
                     } else if (status === 'loadmore') {
-                        setList((prevList) => [...prevList, ...res.result.messages]);
+                        setList((prevList) => prevList.concat(res.result.messages));
                     }
                 }
             });
@@ -161,7 +162,7 @@ export default function MessageNotice({navigation, route}) {
     const renderItem = ({item, index}) => {
         return (
             <View>
-                {item.content_type == 0 && (
+                {item?.content_type == 0 && (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={styles.card_sty}
@@ -191,7 +192,7 @@ export default function MessageNotice({navigation, route}) {
                         </View>
                     </TouchableOpacity>
                 )}
-                {item.content_type == 1 && (
+                {item?.content_type == 1 && (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.card_sty, {padding: 0}]}

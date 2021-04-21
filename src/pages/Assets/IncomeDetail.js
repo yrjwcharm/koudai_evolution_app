@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-26 11:42:16
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:57:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-21 15:08:30
  * @Description: 组合收益明细
  */
 import React, {useEffect, useRef} from 'react';
@@ -25,7 +25,7 @@ const IncomeDetail = ({navigation, route}) => {
         <ScrollableTabView
             style={[styles.container]}
             renderTabBar={() => <Tab />}
-            initialPage={0}
+            initialPage={route?.params?.page || 0}
             onChangeTab={(cur) => global.LogTool('changeTab', tabsRef.current[cur.i])}>
             {tabsRef.current.map((tab, index) => {
                 if (index === 0) {

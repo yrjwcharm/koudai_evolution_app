@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 20:09:09
+ * @LastEditTime: 2021-04-21 15:16:10
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -504,7 +504,14 @@ export default function PortfolioAssets(props) {
                                 </Text>
                             </View>
                             <View>
-                                <View
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        props.navigation.navigate('IncomeDetail', {
+                                            page: 0,
+                                            poid: props.route?.params?.poid,
+                                        });
+                                    }}
                                     style={[
                                         Style.flexRow,
                                         {marginBottom: text(15), alignSelf: 'flex-end', alignItems: 'baseline'},
@@ -513,13 +520,21 @@ export default function PortfolioAssets(props) {
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
                                         {showEye === 'true' ? data.profit : '***'}
                                     </Text>
-                                </View>
-                                <View style={[Style.flexRow, {alignItems: 'baseline'}]}>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    onPress={() => {
+                                        props.navigation.navigate('IncomeDetail', {
+                                            page: 1,
+                                            poid: props.route?.params?.poid,
+                                        });
+                                    }}
+                                    style={[Style.flexRow, {alignItems: 'baseline'}]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>
                                     <Text style={[styles.profit_num_sty, {paddingTop: text(10)}]}>
                                         {showEye === 'true' ? data.profit_acc : '***'}
                                     </Text>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     )}
@@ -565,25 +580,6 @@ export default function PortfolioAssets(props) {
                     )}
                 </View>
 
-                <View style={styles.list_card_sty}>
-                    {data?.core_buttons?.map((_item, _index) => {
-                        return (
-                            <TouchableOpacity
-                                style={{alignItems: 'center'}}
-                                key={_index + '_item0'}
-                                onPress={() => jump(_item.url)}>
-                                <FastImage
-                                    source={{
-                                        uri: _item.icon,
-                                    }}
-                                    resizeMode="contain"
-                                    style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                />
-                                <Text style={styles.list_text_sty}>{_item.text}</Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
                 {/* 广告位 */}
                 {data?.ad_info && (
                     <TouchableOpacity onPress={() => jump(data?.ad_info?.url)}>
@@ -623,12 +619,56 @@ export default function PortfolioAssets(props) {
                     )}
                     {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
-                    <View style={[styles.list_card_sty, {margin: 0, marginTop: text(16)}]}>
+                    {/* <View style={styles.list_card_sty}>
+                        {data?.core_buttons?.map((_item, _index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={{alignItems: 'center'}}
+                                    key={_index + '_item0'}
+                                    onPress={() => jump(_item.url)}>
+                                    <FastImage
+                                        source={{
+                                            uri: _item.icon,
+                                        }}
+                                        resizeMode="contain"
+                                        style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                    />
+                                    <Text style={styles.list_text_sty}>{_item.text}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View> */}
+                    <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
+                        {data?.core_buttons?.map((_item, _index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={{
+                                        alignItems: 'center',
+                                        width: (deviceWidth - px(33)) / 4,
+                                        marginBottom: px(26),
+                                    }}
+                                    key={_index + '_item0'}
+                                    onPress={() => jump(_item.url)}>
+                                    <FastImage
+                                        source={{
+                                            uri: _item.icon,
+                                        }}
+                                        resizeMode="contain"
+                                        style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                    />
+                                    <Text style={styles.list_text_sty}>{_item.text}</Text>
+                                </TouchableOpacity>
+                            );
+                        })}
                         {data?.extend_buttons?.map((_e, _index) => {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={1}
-                                    style={{alignItems: 'center'}}
+                                    style={{
+                                        alignItems: 'center',
+                                        width: (deviceWidth - px(32)) / 4,
+                                        marginBottom: px(20),
+                                    }}
                                     key={_index + '_e'}
                                     onPress={() => jump(_e.url)}>
                                     <FastImage
@@ -788,10 +828,9 @@ const styles = StyleSheet.create({
     list_card_sty: {
         backgroundColor: '#fff',
         borderRadius: text(10),
-        margin: text(16),
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingVertical: text(16),
+        flexWrap: 'wrap',
+        paddingTop: text(20),
         marginTop: text(-25),
     },
     list_text_sty: {
@@ -802,6 +841,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: text(16),
         borderRadius: text(10),
+        marginTop: px(-20),
     },
     padding_sty: {
         padding: text(16),

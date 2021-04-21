@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 20:53:39
+ * @LastEditTime: 2021-04-21 16:22:54
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -338,7 +338,6 @@ const Index = (props) => {
                                     </Swiper>
                                 ) : null}
                             </View>
-
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -634,7 +633,6 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             </>
-
                             <BottomDesc />
                         </LinearGradient>
                     </ScrollView>
