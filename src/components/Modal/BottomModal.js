@@ -33,11 +33,11 @@ const BottomModal = React.forwardRef((props, ref) => {
     };
 
     const hide = () => {
-        setVisible(!visible);
+        setVisible(false);
     };
 
     const confirmClick = () => {
-        setVisible(!visible);
+        setVisible(false);
         onDone && onDone();
     };
     React.useImperativeHandle(ref, () => {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 15:53:33
+ * @LastEditTime: 2021-04-21 16:47:26
  * @Description: 微信登录
  */
 import React from 'react';
@@ -38,9 +38,7 @@ function Wechat(props) {
                                         Storage.save('loginStatus', res.result);
                                         Toast.show('登录成功', {
                                             onHidden: () => {
-                                                if (route.params?.fr == 'register') {
-                                                    navigation.pop(2);
-                                                } else if (route.params?.fr == 'forgotGesPwd') {
+                                                if (route.params?.go == 'forgotGesPwd') {
                                                     Storage.get('openGesturePwd').then((result) => {
                                                         if (res) {
                                                             res[`${userInfo.uid}`] = false;
@@ -62,7 +60,13 @@ function Wechat(props) {
                                                     navigation.replace('GesturePassword', {
                                                         option: 'firstSet',
                                                         pass: true,
+                                                        fr: route.params?.fr || '',
                                                     });
+                                                } else if (
+                                                    route.params?.fr == 'register' ||
+                                                    route.params?.fr == 'login'
+                                                ) {
+                                                    navigation.pop(2);
                                                 } else {
                                                     navigation.goBack();
                                                 }
@@ -74,7 +78,7 @@ function Wechat(props) {
                                             avatar: res.result.avatar,
                                             nickname: res.result.nickname,
                                             muid: res.result.muid,
-                                            fr: props.fr,
+                                            fr: route.params?.fr || '',
                                         });
                                     }
                                 }

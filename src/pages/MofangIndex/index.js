@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 20:53:39
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 15:13:03
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -36,6 +36,7 @@ import {useJump} from '../../components/hooks';
 import JPush from 'jpush-react-native';
 import Storage from '../../utils/storage';
 import RNExitApp from 'react-native-exit-app';
+import _ from 'lodash';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -611,8 +612,16 @@ const Index = (props) => {
                                             },
                                         ]}>
                                         {data?.about_info?.items?.map((item, index) => (
-                                            <View
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
                                                 key={index}
+                                                onPress={(e) => {
+                                                    e.stopPropagation();
+                                                    const url = _.cloneDeep(data?.about_info?.url);
+                                                    url.params.link += `/${index}`;
+                                                    // console.log(url);
+                                                    jump(url);
+                                                }}
                                                 style={{alignItems: 'flex-start', flex: 1, paddingLeft: Space.padding}}>
                                                 <FastImage source={{uri: item.icon}} style={styles.icon} />
                                                 <Text
@@ -627,7 +636,7 @@ const Index = (props) => {
                                                 <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>
                                                     {item.desc}
                                                 </Text>
-                                            </View>
+                                            </TouchableOpacity>
                                         ))}
                                         <View style={styles.leftLine} />
                                         <View style={styles.rightLine} />
