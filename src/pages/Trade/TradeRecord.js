@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 16:11:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-21 19:50:24
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -15,6 +15,7 @@ import {Colors, Style, Font} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast/Toast.js';
+import {useFocusEffect} from '@react-navigation/native';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
@@ -26,7 +27,9 @@ const TradeRecord = ({route, navigation}) => {
     const jump = useJump();
     const isMfb = route?.params?.fr == 'mfb';
     const getData = useCallback(
-        (_page, toast) => {
+        (_page, toast, scene) => {
+            console.log(page);
+
             let Page = _page || page;
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
@@ -36,18 +39,18 @@ const TradeRecord = ({route, navigation}) => {
                 prod_code: route.params?.prod_code,
             })
                 .then((res) => {
+                    setHasMore(res.result.has_more);
                     setLoading(false);
                     if (toast) {
                         Toast.show('交易记录已更新', {duration: 500});
                     }
-                    if (Page == 1) {
+                    if (Page == 1 || scene) {
                         setData(res.result.list);
                     } else {
                         setData((prevData) => {
                             return prevData.concat(res?.result?.list);
                         });
                     }
-                    setHasMore(res.result.has_more);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -55,6 +58,11 @@ const TradeRecord = ({route, navigation}) => {
         },
         [page, tabActive, route, isMfb]
     );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         getData(page);
+    //     }, [getData, page])
+    // );
     useEffect(() => {
         getData();
     }, [getData]);
@@ -64,12 +72,7 @@ const TradeRecord = ({route, navigation}) => {
         }
     };
     const onRefresh = () => {
-        // if (page == 1) {
         getData(1, 'toast');
-        // } else {
-        //     getData(1);
-        //     // setPage(1);
-        // }
     };
     const changeTab = (obj) => {
         setHasMore(false);
