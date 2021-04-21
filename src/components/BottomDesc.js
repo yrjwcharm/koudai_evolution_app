@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-04-21 15:02:28
+ * @LastEditTime: 2021-04-21 17:30:52
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -22,8 +22,8 @@ const BottomDesc = (props) => {
     const [data, setData] = useState({
         image:
             type === 'xuanyuan'
-                ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC.png'
-                : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC.png',
+                ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC1.png'
+                : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC1.png',
         desc: [
             {
                 title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,
@@ -52,8 +52,8 @@ const BottomDesc = (props) => {
         setData({
             image:
                 type === 'xuanyuan'
-                    ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC.png'
-                    : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC.png',
+                    ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC1.png'
+                    : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC1.png',
             desc: [
                 {
                     title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,

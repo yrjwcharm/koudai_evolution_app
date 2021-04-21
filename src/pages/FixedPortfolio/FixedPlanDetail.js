@@ -3,10 +3,10 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:00:45
+ * @LastEditTime: 2021-04-21 16:57:27
  */
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text, StyleSheet, Dimensions, Image, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, Image, ScrollView, ActivityIndicator} from 'react-native';
 import Slider from '../Portfolio/components/Slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
@@ -27,6 +27,7 @@ export default function FixedPlan(props) {
     const [moveRight, setMoveRight] = useState(false);
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
+    const [loading, setLoading] = useState(true);
     // 下期进度条 边界处理
     const onLayout = useCallback(
         (e) => {
@@ -48,15 +49,24 @@ export default function FixedPlan(props) {
     );
 
     const init = useCallback(() => {
-        Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id}).then((res) => {
-            setShowEmpty(true);
-            setData(res.result);
-            props.navigation.setOptions({
-                title: res.result.title,
+        Http.get('/trade/invest_plan/detail/20210101', {invest_id: props.route?.params?.invest_id})
+            .then((res) => {
+                setShowEmpty(true);
+                setData(res.result);
+                setLoading(false);
+                props.navigation.setOptions({
+                    title: res.result.title,
+                });
+            })
+            .catch(() => {
+                setLoading(false);
             });
-        });
     }, [props.route, props.navigation]);
-    return (
+    return loading ? (
+        <View style={[Style.flexCenter, {flex: 1}]}>
+            <ActivityIndicator color={Colors.brandColor} />
+        </View>
+    ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <View style={{marginBottom: FixedBtn.btnHeight}}>

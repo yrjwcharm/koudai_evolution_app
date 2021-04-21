@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 15:53:21
+ * @LastEditTime: 2021-04-21 16:43:18
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -27,7 +27,6 @@ class Login extends Component {
             check: true,
             btnClick: true,
         };
-        this.fr = this.props.route?.params?.fr;
     }
     login = () => {
         const {mobile, password} = this.state;
@@ -40,9 +39,7 @@ class Login extends Component {
                 this.props.getVerifyGesture(true);
                 Toast.show('登录成功', {
                     onHidden: () => {
-                        if (this.fr == 'register') {
-                            this.props.navigation.pop(2);
-                        } else if (this.fr == 'forgotGesPwd') {
+                        if (this.props.route.params?.go == 'forgotGesPwd') {
                             Storage.get('openGesturePwd').then((result) => {
                                 if (res) {
                                     res[`${userInfo.uid}`] = false;
@@ -59,7 +56,16 @@ class Login extends Component {
                                     Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
                                 }
                             });
-                            this.props.navigation.replace('GesturePassword', {option: 'firstSet', pass: true});
+                            this.props.navigation.replace('GesturePassword', {
+                                option: 'firstSet',
+                                pass: true,
+                                fr: this.props.route.params?.fr || '',
+                            });
+                        } else if (
+                            this.props.route?.params?.fr == 'register' ||
+                            this.props.route?.params?.fr == 'login'
+                        ) {
+                            this.props.navigation.pop(2);
                         } else {
                             this.props.navigation.goBack();
                         }
@@ -132,13 +138,24 @@ class Login extends Component {
 
                 <Text
                     onPress={() => {
-                        this.props.navigation.navigate('Register');
+                        if (this.props.route?.params?.fr) {
+                            this.props.navigation.navigate('Register', {go: this.props.route.params?.go || ''});
+                        } else {
+                            this.props.navigation.navigate('Register', {
+                                fr: 'login',
+                                go: this.props.route.params?.go || '',
+                            });
+                        }
                     }}
                     style={[styles.text, {color: Colors.btnColor, alignSelf: 'center', height: px(30)}]}>
                     立即注册
                 </Text>
 
-                <WechatView weChatLogin={this.weChatLogin} fr={this.fr || 'login'} style={{marginTop: px(16)}} />
+                <WechatView
+                    weChatLogin={this.weChatLogin}
+                    fr={this.props.route?.params?.fr || ''}
+                    style={{marginTop: px(16)}}
+                />
             </ScrollView>
         );
     }

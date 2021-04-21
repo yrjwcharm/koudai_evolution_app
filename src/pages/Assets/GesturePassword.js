@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import OkGesturePassword from '../../components/gesturePassword/OkGesturePassword';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -12,9 +12,10 @@ import {useDispatch} from 'react-redux';
 import {useSelector} from 'react-redux';
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
-export default function GesturePassword({option, route}) {
+export default function GesturePassword({option}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const navigation = useNavigation();
+    const route = useRoute();
     const [data, setData] = useState({
         point1: '#FFFFFF', //从0开始
         point2: '#FFFFFF',
@@ -269,7 +270,7 @@ export default function GesturePassword({option, route}) {
                 <TouchableOpacity
                     style={[Style.flexRow, styles.forgotPwd]}
                     activeOpacity={0.8}
-                    onPress={() => navigation.navigate('Login', {fr: 'forgotGesPwd'})}>
+                    onPress={() => navigation.navigate('Login', {go: 'forgotGesPwd'})}>
                     <Text style={{marginRight: text(4)}}>{'忘记手势密码'}</Text>
                     <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
                 </TouchableOpacity>
@@ -278,7 +279,7 @@ export default function GesturePassword({option, route}) {
                 <TouchableOpacity
                     style={[Style.flexRow, styles.forgotPwd]}
                     activeOpacity={0.8}
-                    onPress={() => navigation.goBack()}>
+                    onPress={() => (route.params?.fr ? navigation.pop(2) : navigation.goBack())}>
                     <Text style={{marginRight: text(4)}}>{'跳过'}</Text>
                     <Icon name={'angle-right'} size={20} color={Colors.defaultColor} />
                 </TouchableOpacity>

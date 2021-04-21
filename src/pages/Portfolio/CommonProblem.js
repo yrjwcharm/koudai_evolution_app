@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-04-20 15:58:54
+ * @LastEditTime: 2021-04-21 12:44:25
  * @LastEditors: dx
  * @Description: 常见问题
  */
@@ -52,7 +52,7 @@ const CommonProblem = ({navigation, route}) => {
         );
     };
     const renderContent = (section) => {
-        const minHeight = text((Math.ceil(section.answer.length / 24) + 1) * 20 + 1);
+        const minHeight = text((Math.ceil(section.answer.length / 23) + 1) * 20);
         return (
             <View style={[styles.content, {minHeight}]}>
                 {/* <HTML style={styles.content_text} html={section.a} /> */}
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        paddingHorizontal: text(12),
+        paddingHorizontal: Space.padding,
     },
     header: {
         flexDirection: 'row',
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     },
     content: {
         backgroundColor: '#fff',
-        paddingHorizontal: text(20),
-        paddingBottom: text(16),
+        paddingHorizontal: Space.padding,
+        paddingBottom: Space.padding,
         borderBottomLeftRadius: text(8),
         borderBottomRightRadius: text(8),
     },

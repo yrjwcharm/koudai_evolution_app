@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 17:36:52
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 10:33:15
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -73,7 +73,7 @@ const ShareModal = React.forwardRef((props, ref) => {
     };
 
     const hide = () => {
-        setVisible(!visible);
+        setVisible(false);
     };
 
     const toastShow = (t, duration = 2000) => {

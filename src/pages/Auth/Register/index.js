@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 11:45:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 16:00:58
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -37,12 +37,13 @@ export default class index extends Component {
                 this.props.navigation.navigate('SetLoginPassword', {
                     mobile,
                     redirect: this.props.route?.params?.redirect,
+                    fr: this.props.route?.params?.fr || '',
                 });
             } else {
                 Toast.show(res.message, {
                     onHidden: () => {
                         if (res.code === '10001') {
-                            this.jumpPage('Login', {fr: 'register', mobile});
+                            this.jumpPage('Login', {fr: this.props.route?.params?.fr || '', mobile});
                         }
                     },
                 });
@@ -105,13 +106,17 @@ export default class index extends Component {
                     <Text style={styles.text}>已有账号</Text>
                     <Text
                         onPress={() => {
-                            this.jumpPage('Login', {fr: 'register'});
+                            if (this.props.route?.params?.fr) {
+                                this.jumpPage('Login');
+                            } else {
+                                this.jumpPage('Login', {fr: 'register'});
+                            }
                         }}
                         style={[styles.text, {color: Colors.btnColor, marginLeft: 2}]}>
                         去登录
                     </Text>
                 </View>
-                <WechatView fr="register" />
+                <WechatView fr={this.props.route?.params?.fr || ''} />
             </ScrollView>
         );
     }

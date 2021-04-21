@@ -3,10 +3,10 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-19 18:49:10
+ * @LastEditTime: 2021-04-21 17:04:08
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -40,6 +40,7 @@ export default function FixedUpdate({navigation, route}) {
     const [payMethod, setPayMethod] = useState({});
     const bankCardModal = useRef(null);
     const initAmount = useRef('');
+    const [loading, setLoading] = useState(true);
     const addNum = () => {
         setNum((prev) => {
             return prev + intervalRef.current > payMethod.day_limit ? payMethod.day_limit : prev + intervalRef.current;
@@ -55,17 +56,22 @@ export default function FixedUpdate({navigation, route}) {
         useCallback(() => {
             Http.get('/trade/update/invest_plan/info/20210101', {
                 invest_id: route.params.invest_id,
-            }).then((res) => {
-                intervalRef.current = res.result.target_info.invest.incr;
-                initAmount.current = res.result.target_info.invest.init_amount;
-                setData(res.result);
-                setPayMethod(res.result.pay_methods[0] || {});
-                setNum(parseFloat(res.result.target_info.invest.amount));
-                const _date = res.result.target_info.fix_period.current_date;
-                setCycle(_date);
-                cycleRef.current = _date.split(' ')[0];
-                timingRef.current = _date.split(' ')[1];
-            });
+            })
+                .then((res) => {
+                    intervalRef.current = res.result.target_info.invest.incr;
+                    initAmount.current = res.result.target_info.invest.init_amount;
+                    setData(res.result);
+                    setPayMethod(res.result.pay_methods[0] || {});
+                    setNum(parseFloat(res.result.target_info.invest.amount));
+                    const _date = res.result.target_info.fix_period.current_date;
+                    setCycle(_date);
+                    cycleRef.current = _date.split(' ')[0];
+                    timingRef.current = _date.split(' ')[1];
+                    setLoading(false);
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
         }, [route.params.invest_id])
     );
     const selectTime = () => {
@@ -175,9 +181,19 @@ export default function FixedUpdate({navigation, route}) {
         }
     }, [modalProps]);
     useEffect(() => {
+        if (num > payMethod.day_limit) {
+            setNum(payMethod.day_limit);
+            Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
+        }
+    }, [num, payMethod]);
+    useEffect(() => {
         iptValRef.current = iptVal;
     }, [iptVal]);
-    return (
+    return loading ? (
+        <View style={[Style.flexCenter, {flex: 1}]}>
+            <ActivityIndicator color={Colors.brandColor} />
+        </View>
+    ) : (
         <>
             {Object.keys(data).length > 0 && (
                 <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
