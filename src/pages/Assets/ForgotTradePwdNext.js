@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-26 11:51:53
+ * @LastEditTime: 2021-04-21 19:31:57
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -14,8 +14,11 @@ import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const ForgotTradePwdNext = ({navigation, route}) => {
+    const dispatch = useDispatch();
     const [msg] = useState(route.params?.msg);
     const [second, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('60秒后可重发');
@@ -97,6 +100,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
                 subBtnClick.current = true;
                 if (res.code === '000000') {
                     global.LogTool('submit', 'success');
+                    dispatch(getUserInfo());
                     Toast.show(res.message);
                     navigation.pop(2);
                 } else {
@@ -104,7 +108,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
                 }
             });
         }
-    }, [code, newPwd, confirmPwd, navigation]);
+    }, [code, dispatch, newPwd, confirmPwd, navigation]);
 
     useEffect(() => {
         timer();

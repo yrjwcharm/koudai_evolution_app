@@ -1,7 +1,8 @@
 import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Image, Platform} from 'react-native';
 import React, {Component} from 'react';
+import Octicons from 'react-native-vector-icons/Octicons';
 import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
-import {Colors, Style} from '../../common/commonStyle';
+import {Colors, Font, Style} from '../../common/commonStyle';
 import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
 /**
@@ -188,6 +189,23 @@ export default class MyModal extends Component {
                                         onLoadEnd={() => this.setState({showImgClose: true})}
                                         onLoadStart={() => this.setSize(this.imageUrl)}
                                     />
+                                    {this.props.content ? (
+                                        <View style={styles.diyContent}>
+                                            <Text style={styles.imgTitle}>{this.props.content.title}</Text>
+                                            <Text style={styles.imgText}>{this.props.content.text}</Text>
+                                            <View style={[Style.flexCenter]}>
+                                                <Octicons
+                                                    name={'triangle-up'}
+                                                    size={20}
+                                                    style={{marginVertical: text(-5)}}
+                                                    color={'#FFE9C7'}
+                                                />
+                                                <View style={[Style.flexCenter, styles.imgTipBox]}>
+                                                    <Text style={styles.imgTip}>{this.props.content.tip}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    ) : null}
                                 </TouchableOpacity>
                                 {this.state.showImgClose && (
                                     <TouchableOpacity
@@ -272,5 +290,37 @@ const styles = StyleSheet.create({
     closeCircle: {
         width: text(20),
         height: text(31),
+    },
+    diyContent: {
+        position: 'absolute',
+        width: width,
+        paddingTop: text(29),
+        alignItems: 'center',
+    },
+    imgTitle: {
+        fontSize: text(20),
+        lineHeight: text(28),
+        color: Colors.defaultColor,
+        fontWeight: '600',
+        marginBottom: text(14),
+    },
+    imgText: {
+        fontSize: Font.textH2,
+        lineHeight: text(22),
+        color: Colors.lightBlackColor,
+        textAlign: 'center',
+        maxWidth: text(215),
+        marginBottom: text(14),
+    },
+    imgTipBox: {
+        width: text(222),
+        height: text(32),
+        borderRadius: text(16),
+        backgroundColor: '#FFE9C7',
+    },
+    imgTip: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: '#A17328',
     },
 });

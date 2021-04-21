@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 18:20:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 19:36:06
  * @Description:路由表
  */
 import React from 'react';
@@ -463,7 +463,6 @@ export default function AppStack() {
                     },
                     headerStyle: {
                         backgroundColor: '#D4AC6F',
-                        color: '#fff',
                         shadowOpacity: 0,
                         shadowOffset: {
                             height: 0,

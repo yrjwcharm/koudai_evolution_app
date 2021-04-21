@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 10:42:33
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 20:09:05
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -56,11 +56,11 @@ function HomeScreen({navigation, route}) {
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
-        if (y > 50) {
-            StatusBar.setBarStyle('dark-content');
-        } else {
-            StatusBar.setBarStyle('light-content');
-        }
+        // if (y > 50) {
+        //     StatusBar.setBarStyle('dark-content');
+        // } else {
+        //     StatusBar.setBarStyle('light-content');
+        // }
         setScrollY(y);
     }, []);
     // 隐藏系统消息
@@ -105,30 +105,34 @@ function HomeScreen({navigation, route}) {
                 // uid: '1000000001',
             }).then((res) => {
                 if (res.code === '000000') {
-                    StatusBar.setBarStyle('light-content');
+                    // StatusBar.setBarStyle('light-content');
                     setUserBasicInfo(res.result);
                 }
-                // setLoading(false);
+                !userInfo.toJS()?.is_login && setLoading(false);
                 setRefreshing(false);
             });
-            http.get('/asset/notice/20210101')
-                .then((res) => {
-                    setLoading(false);
-                    if (res.code === '000000') {
-                        setNotice(res.result);
-                    }
-                })
-                .catch(() => {
-                    setLoading(false);
-                });
+            if (userInfo.toJS()?.is_login) {
+                http.get('/asset/notice/20210101')
+                    .then((res) => {
+                        setLoading(false);
+                        if (res.code === '000000') {
+                            setNotice(res.result);
+                        }
+                    })
+                    .catch(() => {
+                        setLoading(false);
+                    });
+            }
         },
-        [readInterface]
+        [readInterface, userInfo]
     );
     const readInterface = useCallback(() => {
-        http.get('/message/unread/20210101').then((res) => {
-            setNewmessage(res.result.all);
-        });
-    }, []);
+        if (userInfo.toJS()?.is_login) {
+            http.get('/message/unread/20210101').then((res) => {
+                setNewmessage(res.result.all);
+            });
+        }
+    }, [userInfo]);
     // 渲染账户|组合标题
     const renderTitle = useCallback((item, portfolios) => {
         return item.has_bought !== undefined && !item.has_bought ? (
@@ -244,21 +248,33 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            userInfo?.toJS()?.is_login && !showGesture ? init() : setLoading(false);
+            !showGesture ? init() : setLoading(false);
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
-            StatusBar.setBarStyle('light-content');
+        }, [init, showGesture])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            if (scrollY > 50) {
+                StatusBar.setBarStyle('dark-content');
+            } else {
+                StatusBar.setBarStyle('light-content');
+            }
+        }, [scrollY])
+    );
+    useFocusEffect(
+        useCallback(() => {
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [init, userInfo, showGesture])
+        }, [])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
             if (isFocused && userInfo?.toJS()?.is_login) {
                 scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
-                userInfo?.toJS()?.is_login && !showGesture && init('refresh');
+                !showGesture && init('refresh');
             }
         });
         return () => listener();

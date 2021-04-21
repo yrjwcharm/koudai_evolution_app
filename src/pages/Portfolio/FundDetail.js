@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 11:01:27
+ * @LastEditTime: 2021-04-21 17:56:49
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -85,7 +85,7 @@ const FundDetail = ({navigation, route}) => {
     const renderChart = useCallback(() => {
         return (
             <>
-                <View style={[Style.flexRow, {minHeight: text(43)}]}>
+                <View style={[Style.flexRow, {minHeight: text(48)}]}>
                     {showChart &&
                         summary.map((item, index) => {
                             return (
@@ -116,7 +116,7 @@ const FundDetail = ({navigation, route}) => {
                             );
                         })}
                 </View>
-                <View style={{height: Platform.select({ios: 220, android: 220})}}>
+                <View style={{height: 220}}>
                     {showChart && (
                         <>
                             {data.part1 && !data.part1.fund.is_monetary ? (
@@ -139,7 +139,12 @@ const FundDetail = ({navigation, route}) => {
                                         />
                                     ) : (
                                         <Chart
-                                            initScript={baseLineChart(chart2.chart, [Colors.red], false, 4)}
+                                            initScript={baseLineChart(chart2.chart, [Colors.red], false, 4, [
+                                                15,
+                                                45,
+                                                15,
+                                                20,
+                                            ])}
                                             data={chart2?.chart}
                                             onChange={onChartChange}
                                             onHide={onHide}
@@ -149,7 +154,13 @@ const FundDetail = ({navigation, route}) => {
                                 </>
                             ) : (
                                 <Chart
-                                    initScript={baseLineChart(chart3.chart, [Colors.red, Colors.lightBlackColor], true)}
+                                    initScript={baseLineChart(
+                                        chart3.chart,
+                                        [Colors.red, Colors.lightBlackColor],
+                                        true,
+                                        2,
+                                        [15, 45, 15, 20]
+                                    )}
                                     data={chart3?.chart}
                                     onChange={onChartChange}
                                     onHide={onHide}

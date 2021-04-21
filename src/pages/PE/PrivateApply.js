@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 21:56:19
+ * @LastEditTime: 2021-04-21 17:47:12
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -60,7 +60,7 @@ const PrivateApply = (props) => {
                                 key={index}
                                 style={[styles.processItem, index === arr.length - 1 ? {marginBottom: text(32)} : {}]}
                                 onLayout={(e) => onLayout(index, e)}>
-                                <View style={[styles.icon, Style.flexCenter]}>
+                                <View style={[styles.icon]}>
                                     <MaterialCommunityIcons
                                         name={item.status === 1 ? 'check-circle' : 'checkbox-blank-circle'}
                                         size={20}
@@ -134,7 +134,7 @@ const PrivateApply = (props) => {
                                         style={[
                                             styles.line,
                                             {
-                                                height: heightArr[index] ? text(heightArr[index] - 2) : text(52),
+                                                height: heightArr[index] ? text(heightArr[index]) + 2 : text(52),
                                             },
                                         ]}
                                     />
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        top: text(28),
+        top: text(32),
         left: Platform.select({ios: text(8), android: text(9)}),
         width: text(1),
         backgroundColor: '#CCD0DB',

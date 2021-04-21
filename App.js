@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 23:19:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-21 19:32:26
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -27,7 +27,7 @@ import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
-import {updateVerifyGesture} from './src/redux/actions/userInfo';
+import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 import Image from 'react-native-fast-image';
 import {px as text, deviceWidth} from './src/utils/appUtil';
@@ -146,6 +146,8 @@ function App(props) {
         NetInfo.addEventListener((state) => {
             if (!state.isConnected) {
                 Toast.show('网络已断开,请检查您的网络');
+            } else {
+                store.dispatch(getUserInfo());
             }
         });
     }, []);
@@ -193,6 +195,20 @@ function App(props) {
         });
     }, []);
 
+    const onStateChange = React.useCallback(
+        (currentRouteName) => {
+            if (Object.keys(modalObj).length > 0) {
+                if (modalObj.page) {
+                    if (modalObj.page === currentRouteName) {
+                        showModal(modalObj);
+                    }
+                } else {
+                    showModal(modalObj);
+                }
+            }
+        },
+        [modalObj, showModal]
+    );
     const getModalData = () => {
         http.get('/common/layer/20210101').then((res) => {
             if (res.code === '000000') {
@@ -231,12 +247,12 @@ function App(props) {
             }
         }
     };
-    const showModal = (modal) => {
+    const showModal = React.useCallback((modal) => {
         if (modal.type === 'image') {
             Modal.show({
                 type: 'image',
                 imageUrl: modal.image,
-                imgWidth: modal.deviceWidth ? deviceWidth : 0,
+                imgWidth: modal.device_width ? deviceWidth : 0,
                 isTouchMaskToClose: false,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);
@@ -262,9 +278,27 @@ function App(props) {
                 cancelText: modal.cancel.text,
                 content: modal.content,
             });
+        } else if (modal.type === 'diy_image') {
+            Modal.show({
+                type: 'image',
+                imageUrl: modal.image,
+                imgWidth: modal.device_width ? deviceWidth : 0,
+                isTouchMaskToClose: false,
+                confirmCallBack: () => {
+                    // console.log(navigationRef.current);
+                    jump(navigationRef.current, modal.url);
+                },
+                content: {
+                    title: modal.title,
+                    text: modal.content,
+                    tip: modal.tip,
+                },
+            });
         }
-        setModalObj({});
-    };
+        setTimeout(() => {
+            setModalObj({});
+        }, 500);
+    }, []);
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
@@ -326,17 +360,7 @@ function App(props) {
                                 ts = new Date().getTime();
                                 const previousRouteName = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
-                                if (Object.keys(modalObj).length > 0) {
-                                    if (modalObj.page) {
-                                        if (modalObj.page === currentRouteName) {
-                                            showModal(modalObj);
-                                        }
-                                    } else {
-                                        if (currentRouteName === 'Index') {
-                                            showModal(modalObj);
-                                        }
-                                    }
-                                }
+                                onStateChange(currentRouteName);
                                 global.previousRouteName = previousRouteName;
                                 global.currentRouteName = currentRouteName;
                                 if (previousRouteName !== currentRouteName) {

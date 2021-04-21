@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 11:11:09
+ * @LastEditTime: 2021-04-21 17:51:36
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -333,12 +333,18 @@ export const baseLineChart = (
         '#EBDD69',
     ],
     percent = false,
-    tofixed = 2
+    tofixed = 2,
+    appendPadding = 10,
+    width = deviceWidth - 10,
+    height = 220
 ) => `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio,
+    appendPadding: ${JSON.stringify(appendPadding)},
+    width: ${width},
+    height: ${height}
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
