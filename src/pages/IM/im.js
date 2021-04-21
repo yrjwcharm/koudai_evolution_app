@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 18:16:45
+ * @LastEditTime: 2021-04-21 12:29:34
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -865,65 +865,67 @@ const IM = (props) => {
                 style={{height: px(442), backgroundColor: '#fff'}}
                 ref={bottomModal}
                 title={modalContent?.head}>
-                <ScrollView style={{flex: 1}}>
-                    <View
+                <View style={{flex: 1}}>
+                    <ScrollView
                         style={{
                             paddingHorizontal: px(16),
                             paddingTop: px(22),
                             paddingBottom: isIphoneX() ? 34 : px(20),
                         }}>
-                        <Text style={{fontSize: px(13), color: Colors.lightBlackColor, lineHeight: px(20)}}>
-                            {modalContent?.answer_ori}
-                        </Text>
-                        {modalContent?.buttons ? (
-                            <>
-                                <View style={[Style.flexRowCenter, {marginTop: px(30), marginBottom: px(16)}]}>
-                                    {modalContent?.buttons?.map((item, index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                key={index}
-                                                title={item.text}
+                        <TouchableOpacity activeOpacity={1}>
+                            <Text style={{fontSize: px(13), color: Colors.lightBlackColor, lineHeight: px(20)}}>
+                                {modalContent?.answer_ori}
+                            </Text>
+                            {modalContent?.buttons ? (
+                                <View style={{marginBottom: px(16)}}>
+                                    <View style={[Style.flexRowCenter, {marginTop: px(30), marginBottom: px(16)}]}>
+                                        {modalContent?.buttons?.map((item, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    key={index}
+                                                    title={item.text}
+                                                    onPress={() => {
+                                                        submitQues(
+                                                            item.status,
+                                                            modalContent.question_id,
+                                                            modalContent.id,
+                                                            'modal'
+                                                        );
+                                                    }}
+                                                    style={[
+                                                        Style.flexRowCenter,
+                                                        styles.button,
+                                                        {backgroundColor: item.status == 2 ? Colors.btnColor : '#fff'},
+                                                    ]}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(12),
+                                                            color: item.status == 2 ? '#fff' : Colors.lightGrayColor,
+                                                        }}>
+                                                        {item.text}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+                                    {modalContent?.buttons && modalContent?.buttons[0].status == 2 ? (
+                                        <Text style={styles.sm_text}>
+                                            以上问题都没有，请转
+                                            <Text
                                                 onPress={() => {
-                                                    submitQues(
-                                                        item.status,
-                                                        modalContent.question_id,
-                                                        modalContent.id,
-                                                        'modal'
-                                                    );
+                                                    staff(modalContent?.content);
                                                 }}
-                                                style={[
-                                                    Style.flexRowCenter,
-                                                    styles.button,
-                                                    {backgroundColor: item.status == 2 ? Colors.btnColor : '#fff'},
-                                                ]}>
-                                                <Text
-                                                    style={{
-                                                        fontSize: px(12),
-                                                        color: item.status == 2 ? '#fff' : Colors.lightGrayColor,
-                                                    }}>
-                                                    {item.text}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                </View>
-                                {modalContent?.buttons && modalContent?.buttons[0].status == 2 ? (
-                                    <Text style={styles.sm_text}>
-                                        以上问题都没有，请转
-                                        <Text
-                                            onPress={() => {
-                                                staff(modalContent?.content);
-                                            }}
-                                            style={{color: Colors.btnColor}}>
-                                            投资顾问
+                                                style={{color: Colors.btnColor}}>
+                                                投资顾问
+                                            </Text>
                                         </Text>
-                                    </Text>
-                                ) : null}
-                            </>
-                        ) : null}
-                    </View>
-                </ScrollView>
+                                    ) : null}
+                                </View>
+                            ) : null}
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
             </BottomModal>
             <_Modal visible={showFullImage} transparent={true}>
                 <ImageViewer

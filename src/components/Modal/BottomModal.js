@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 13:45:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-21 12:26:20
  * @Description: 底部弹窗
  */
 import React from 'react';
@@ -68,6 +68,7 @@ const BottomModal = React.forwardRef((props, ref) => {
                             ) : null}
                         </View>
                     )}
+
                     {children}
                 </TouchableOpacity>
             </TouchableOpacity>
@@ -79,6 +80,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
+        position: 'relative',
+        zIndex: 100,
     },
     con: {
         paddingBottom: isIphoneX() ? 34 : 0,

@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 18:58:04
+ * @LastEditTime: 2021-04-21 14:09:41
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -106,64 +106,60 @@ class TradeBuy extends Component {
      * @param {*}
      * @return {*}
      */
-    submit = async (password) => {
+    submit = (password) => {
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
-        let buy_id;
         if (type == 0) {
-            buy_id = await this.plan(this.state.amount);
+            this.plan(this.state.amount).then((buy_id) => {
+                http.post('/trade/buy/do/20210101', {
+                    poid,
+                    buy_id: buy_id || this.state.planData.buy_id,
+                    amount: this.state.amount,
+                    password,
+                    trade_method: bank?.pay_type,
+                    pay_method: bank.pay_method || '',
+                }).then((res) => {
+                    Toast.hide(toast);
+                    if (res.code === '000000') {
+                        this.props.navigation.navigate('TradeProcessing', res.result);
+                    } else {
+                        Toast.show(res.message, {
+                            onHidden: () => {
+                                if (res.code === 'TA2803') {
+                                    this.passwordModal.show();
+                                }
+                            },
+                        });
+                    }
+                });
+            });
+        } else {
+            http.post('/trade/fix_invest/do/20210101', {
+                poid,
+                amount: this.state.amount,
+                password,
+                trade_method: bankSelect?.pay_type,
+                pay_method: bankSelect?.pay_method || '',
+                cycle: currentDate[0],
+                timing: currentDate[1],
+                need_buy: this.need_buy,
+            }).then((res) => {
+                Toast.hide(toast);
+                if (res.code === '000000') {
+                    this.props.navigation.replace('TradeFixedConfirm', res.result);
+                } else {
+                    Toast.show(res.message);
+                }
+            });
         }
-        type == 0
-            ? http
-                  .post('/trade/buy/do/20210101', {
-                      poid,
-                      buy_id: buy_id || this.state.planData.buy_id,
-                      amount: this.state.amount,
-                      password,
-                      trade_method: bank?.pay_type,
-                      pay_method: bank.pay_method || '',
-                  })
-                  .then((res) => {
-                      Toast.hide(toast);
-                      if (res.code === '000000') {
-                          this.props.navigation.navigate('TradeProcessing', res.result);
-                      } else {
-                          Toast.show(res.message, {
-                              onHidden: () => {
-                                  if (res.code === 'TA2803') {
-                                      this.passwordModal.show();
-                                  }
-                              },
-                          });
-                      }
-                  })
-            : http
-                  .post('/trade/fix_invest/do/20210101', {
-                      poid,
-                      amount: this.state.amount,
-                      password,
-                      trade_method: bankSelect?.pay_type,
-                      pay_method: bankSelect?.pay_method || '',
-                      cycle: currentDate[0],
-                      timing: currentDate[1],
-                      need_buy: this.need_buy,
-                  })
-                  .then((res) => {
-                      Toast.hide(toast);
-                      if (res.code === '000000') {
-                          this.props.navigation.replace('TradeFixedConfirm', res.result);
-                      } else {
-                          Toast.show(res.message);
-                      }
-                  });
     };
     /**
      * @description:购买计划 生产buyid
      * @param {*} plan
      * @return {*}
      */
-    plan = _.debounce((amount) => {
+    plan = (amount) => {
         return new Promise((resove, reject) => {
             const params = {
                 amount: amount || this.state.data.buy_info.initial_amount,
@@ -171,9 +167,11 @@ class TradeBuy extends Component {
                 poid: this.state.poid,
                 init: this.state.amount ? 0 : 1,
             };
+
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
                     this.setState({planData: data.result, fee_text: data.result.fee_text});
+                    console.log('plan', data.result.buy_id);
                     resove(data.result.buy_id);
                 } else {
                     this.setState({
@@ -184,13 +182,14 @@ class TradeBuy extends Component {
                 }
             });
         });
-    }, 300);
+    };
 
     /**
      * @description: 金额输入
      * @param {*} onInput
      * @return {*}
      */
+    timer = null;
     onInput = async (_amount, init) => {
         let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
 
@@ -221,11 +220,14 @@ class TradeBuy extends Component {
                         });
                     }
                 } else if (_amount >= this.state.data.buy_info.initial_amount) {
+                    clearTimeout(this.timer);
                     this.setState({
                         buyBtnCanClick: this.state.errTip == '' ? true : false,
                         mfbTip: false,
                     });
-                    await this.plan(_amount);
+                    this.timer = setTimeout(() => {
+                        this.plan(_amount);
+                    }, 500);
                 } else {
                     this.setState({buyBtnCanClick: false, mfbTip: false});
                     if (_amount) {
