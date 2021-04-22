@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 14:03:24
+ * @LastEditTime: 2021-04-22 14:23:26
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -178,6 +178,7 @@ class MfbOut extends Component {
     }
     // 提交数据
     submitData = (password) => {
+        let toast = Toast.showLoading();
         const {code, amount, data, bankSelect, optionChoose} = this.state;
         this.setState({password: this.state.password}, () => {
             http.post('/wallet/withdraw/do/20210101', {
@@ -187,6 +188,7 @@ class MfbOut extends Component {
                 pay_method: data.pay_methods[bankSelect].pay_method,
                 type: optionChoose,
             }).then((res) => {
+                Toast.hide(toast);
                 if (res.code === '000000') {
                     this.props.navigation.navigate('TradeProcessing', {txn_id: res.result.txn_id});
                 } else {

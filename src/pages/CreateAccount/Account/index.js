@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 17:04:27
+ * @LastEditTime: 2021-04-22 13:05:01
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -206,6 +206,9 @@ class Index extends Component {
                             placeholder="请输入您的姓名"
                             onChangeText={this.onChangeName}
                             value={name}
+                            onBlur={() => {
+                                global.LogTool('acName');
+                            }}
                             returnKeyType={'next'}
                         />
                         <View style={[Style.flexRow, styles.border]}>
@@ -214,6 +217,9 @@ class Index extends Component {
                                 placeholder="请输入您的身份证号"
                                 onChangeText={this.onChangeIdNo}
                                 value={id_no}
+                                onBlur={() => {
+                                    global.LogTool('acIdNo');
+                                }}
                                 maxLength={18}
                                 errorMsg={idErrorMsg}
                                 inputStyle={{flex: 1, borderBottomWidth: 0}}

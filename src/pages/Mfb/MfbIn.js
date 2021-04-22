@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 14:20:45
+ * @LastEditTime: 2021-04-22 14:23:06
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
@@ -100,7 +100,8 @@ class MfbIn extends Component {
         this.bankCard.show();
     };
     submitData = (password) => {
-        const {bankSelect, data, code} = this.state;
+        const {bankSelect, code} = this.state;
+        let toast = Toast.showLoading();
         this.setState(
             {
                 password: this.state.password,
@@ -112,6 +113,7 @@ class MfbIn extends Component {
                     password: password,
                     pay_method: bankSelect.pay_method,
                 }).then((res) => {
+                    Toast.hide(toast);
                     if (res.code === '000000') {
                         this.props.navigation.navigate('TradeProcessing', {
                             txn_id: res.result.txn_id,

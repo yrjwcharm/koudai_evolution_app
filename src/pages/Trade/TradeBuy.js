@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 11:10:56
+ * @LastEditTime: 2021-04-22 12:18:18
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -107,6 +107,7 @@ class TradeBuy extends Component {
      * @return {*}
      */
     submit = (password) => {
+        global.LogTool('tpwd');
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
@@ -652,6 +653,9 @@ class TradeBuy extends Component {
                                     styles.inputStyle,
                                     {fontFamily: `${amount}`.length > 0 ? Font.numMedium : null},
                                 ]}
+                                onBlur={() => {
+                                    global.LogTool('buy_input');
+                                }}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.placeholderColor}
                                 onChangeText={(amount) => {

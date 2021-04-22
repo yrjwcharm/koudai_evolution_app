@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 11:32:34
+ * @LastEditTime: 2021-04-22 13:07:35
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -80,6 +80,7 @@ class BankInfo extends Component {
      * @return {*}
      */
     confirm = () => {
+        global.LogTool('account');
         const {phone, code, selectBank, bank_no, checked} = this.state;
         this.props.update({phone, bank_no, selectBank});
         var checkData = [
@@ -320,6 +321,9 @@ class BankInfo extends Component {
                             placeholder="请输入您的银行卡号"
                             keyboardType={'number-pad'}
                             maxLength={23}
+                            onBlur={() => {
+                                global.LogTool('acBankNo');
+                            }}
                             errorMsg={bankErrMes}
                             value={bank_no}
                             onChangeText={this.onChangeBankNo}
@@ -342,6 +346,9 @@ class BankInfo extends Component {
                             placeholder="请输入您的银行预留手机号"
                             keyboardType={'number-pad'}
                             maxLength={11}
+                            onBlur={() => {
+                                global.LogTool('acPhone');
+                            }}
                             errorMsg={phoneError}
                             value={phone}
                             onChangeText={this.onChangePhone}
@@ -353,6 +360,9 @@ class BankInfo extends Component {
                                 placeholder="请输入验证码"
                                 keyboardType={'number-pad'}
                                 maxLength={6}
+                                onBlur={() => {
+                                    global.LogTool('acCode');
+                                }}
                                 value={code}
                                 onChangeText={(_code) => {
                                     this.setState({code: inputInt(_code)}, () => {

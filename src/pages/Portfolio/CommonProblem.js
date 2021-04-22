@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-19 18:36:15
- * @LastEditTime: 2021-04-21 12:44:25
- * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 14:43:47
+ * @LastEditors: yhc
  * @Description: 常见问题
  */
 import React, {useEffect, useState} from 'react';
@@ -13,7 +13,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import http from '../../services';
 import {px as text} from '../../utils/appUtil';
 import {Style, Colors, Space} from '../../common/commonStyle';
-import HTML from '../../components/RenderHtml';
 
 const CommonProblem = ({navigation, route}) => {
     const [data, setData] = useState({});
@@ -85,6 +84,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        borderColor: '#fff',
+        borderWidth: 0.5,
         paddingHorizontal: Space.padding,
     },
     header: {
@@ -100,6 +101,7 @@ const styles = StyleSheet.create({
         lineHeight: text(22),
         fontWeight: '500',
         marginLeft: text(6),
+        flex: 1,
     },
     content: {
         backgroundColor: '#fff',

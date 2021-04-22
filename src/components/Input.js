@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:49:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 16:43:39
+ * @LastEditTime: 2021-04-22 13:01:37
  * @Description:带lable的输入框
  */
 /**
@@ -113,8 +113,6 @@ class Input extends Component {
                         <View style={[{flexDirection: 'row', flex: 1, padding: 0}, styles.center]}>
                             <TextInput
                                 {...this.props}
-                                onBlur={this._onBlur}
-                                onFocus={this._onFocus}
                                 style={[
                                     styles.input,
                                     textInputStyle,

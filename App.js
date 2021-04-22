@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:17:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-22 14:54:56
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -404,6 +404,13 @@ function App(props) {
             },
         },
     };
+    const getRouteNameId = (route, routeName, id) => {
+        if (route.name == routeName && route.params?.[id]) {
+            return route.params?.[id];
+        } else {
+            return '';
+        }
+    };
     let ts = new Date().getTime();
     return (
         <SafeAreaProvider>
@@ -430,11 +437,23 @@ function App(props) {
                                 ts = new Date().getTime();
                                 const previousRouteName = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
+                                let currentRoute = navigationRef.current.getCurrentRoute();
+                                console.log(navigationRef.current.getCurrentRoute());
                                 onStateChange(currentRouteName);
                                 global.previousRouteName = previousRouteName;
                                 global.currentRouteName = currentRouteName;
                                 if (previousRouteName !== currentRouteName) {
-                                    LogTool('jump', null, null, currentRouteName, previousRouteName, null, null);
+                                    LogTool(
+                                        'jump',
+                                        null,
+                                        null,
+                                        currentRouteName +
+                                            getRouteNameId(currentRoute, 'ArticleDetail', 'article_id') +
+                                            getRouteNameId(currentRoute, 'DetailAccount', 'upid'),
+                                        previousRouteName,
+                                        null,
+                                        null
+                                    );
                                     LogTool('staytime', null, null, previousRouteName, null, staytime);
                                 }
                                 // Save the current route name for later comparison

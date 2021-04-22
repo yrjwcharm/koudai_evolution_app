@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-18 12:44:12
+ * @LastEditTime: 2021-04-22 14:29:19
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';
@@ -75,8 +75,7 @@ export default function PrivateAssets(props) {
                                     Style.flexRow,
                                     styles.item_list,
                                     {backgroundColor: _d % 2 == 0 ? '#fff' : '#F7F8FA'},
-                                ]}
-                                key={'list' + _d}>
+                                ]}>
                                 <Text style={{flex: 1, fontSize: text(13)}}>{_i.title}</Text>
                                 <Text style={{fontSize: text(13)}}>{_i.publish_at}</Text>
                             </TouchableOpacity>
@@ -181,6 +180,8 @@ export default function PrivateAssets(props) {
                         <FixedButton
                             disabled={data.button.avail == 0}
                             title={data.button.text}
+                            desc={data.button?.countdown}
+                            descStyle={{fontSize: px(12), color: '#fff'}}
                             style={{backgroundColor: '#CEA26B'}}
                             onPress={submitOrder}
                             disabledColor={'#ddd'}
