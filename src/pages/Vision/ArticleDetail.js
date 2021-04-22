@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 18:35:18
+ * @LastEditTime: 2021-04-22 21:14:27
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -81,6 +81,10 @@ const ArticleDetail = ({navigation, route}) => {
                 }, 2000);
                 if (res.code === '000000') {
                     init();
+                } else {
+                    setTimeout(() => {
+                        shareModal.current.hide();
+                    }, 1000);
                 }
             });
         },
@@ -107,6 +111,10 @@ const ArticleDetail = ({navigation, route}) => {
                 }, 2000);
                 if (res.code === '000000') {
                     init();
+                } else {
+                    setTimeout(() => {
+                        shareModal.current.hide();
+                    }, 1000);
                 }
             });
         },

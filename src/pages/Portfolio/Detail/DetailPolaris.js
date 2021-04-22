@@ -2,11 +2,11 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 15:08:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 20:34:36
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
 import {px as text, isIphoneX} from '../../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import Image from 'react-native-fast-image';
@@ -28,7 +28,7 @@ export default function DetailPolaris({route, navigation}) {
     const [period, setPeriod] = useState('y3');
     const bottomModal = React.useRef(null);
     const [type, setType] = useState(1);
-    const [chart, setChart] = useState();
+    const [chart, setChart] = useState([]);
     const jump = useJump();
     const tabClick = useRef(true);
     const init = useCallback(() => {
@@ -157,12 +157,16 @@ export default function DetailPolaris({route, navigation}) {
                                 {data?.part_line?.title}
                             </Text>
 
-                            <RenderChart
-                                chartData={chartData}
-                                chart={chart}
-                                type={type}
-                                width={deviceWidth - text(40)}
-                            />
+                            <View style={{minHeight: Platform.select({ios: text(240), android: text(248)})}}>
+                                {chart.length > 0 && (
+                                    <RenderChart
+                                        chartData={chartData}
+                                        chart={chart}
+                                        type={type}
+                                        width={deviceWidth - text(40)}
+                                    />
+                                )}
+                            </View>
 
                             <View
                                 style={{
