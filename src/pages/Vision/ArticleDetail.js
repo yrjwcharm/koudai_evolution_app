@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:14:27
+ * @LastEditTime: 2021-04-22 22:32:16
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,6 +34,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [finishRead, setFinishRead] = useState(false);
     const timeRef = useRef(Date.now());
     const [finishLoad, setFinishLoad] = useState(false);
+    const isArticle = useRef(route.params?.is_article !== undefined ? route.params?.is_article : true);
 
     // 滚动回调
     const onScroll = useCallback((event) => {
@@ -124,14 +125,16 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
     const back = useCallback(() => {
-        let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
-        progress = progress > 100 ? 100 : progress;
-        postProgress({
-            article_id: route.params?.article_id,
-            latency: Date.now() - timeRef.current,
-            done_status: data?.read_info?.done_status || +finishRead,
-            article_progress: progress,
-        });
+        if (isArticle.current) {
+            let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
+            progress = progress > 100 ? 100 : progress;
+            postProgress({
+                article_id: route.params?.article_id,
+                latency: Date.now() - timeRef.current,
+                done_status: data?.read_info?.done_status || +finishRead,
+                article_progress: progress,
+            });
+        }
     }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
@@ -166,10 +169,12 @@ const ArticleDetail = ({navigation, route}) => {
         });
     }, [navigation, hasNet]);
     useEffect(() => {
-        if (scrollY > 80) {
-            navigation.setOptions({title: '文章内容'});
-        } else {
-            navigation.setOptions({title: ''});
+        if (isArticle.current) {
+            if (scrollY > 80) {
+                navigation.setOptions({title: '文章内容'});
+            } else {
+                navigation.setOptions({title: ''});
+            }
         }
     }, [navigation, scrollY]);
     useEffect(() => {
@@ -233,7 +238,7 @@ const ArticleDetail = ({navigation, route}) => {
                         startInLoadingState
                         style={{height: webviewHeight}}
                     />
-                    {finishLoad && Object.keys(data).length > 0 && (
+                    {finishLoad && isArticle.current && Object.keys(data).length > 0 && (
                         <>
                             <Text
                                 style={[
