@@ -34,7 +34,7 @@ export default class MyModal extends Component {
         this.imageUrl = props.imageUrl;
         this.state = {
             isVisible: this.props.isVisible || false,
-            imgHeight: 0,
+            imgHeight: props.imgHeight || 0,
             imgWidth: props.imgWidth || text(280),
             showImgClose: false,
         };
@@ -192,9 +192,9 @@ export default class MyModal extends Component {
                                             {width: this.state.imgWidth, height: this.state.imgHeight},
                                             this.props.imageStyle,
                                         ]}
-                                        onLayout={() => this.setSizeIos(this.imageUrl)}
+                                        onLayout={() => !this.state.imgHeight && this.setSizeIos(this.imageUrl)}
                                         onLoadEnd={() => this.setState({showImgClose: true})}
-                                        onLoadStart={() => this.setSize(this.imageUrl)}
+                                        onLoadStart={() => !this.state.imgHeight && this.setSize(this.imageUrl)}
                                     />
                                     {this.props.content ? (
                                         <View style={styles.diyContent}>

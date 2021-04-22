@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 17:58:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 21:40:03
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -252,9 +252,9 @@ function App(props) {
         http.get('/common/layer/20210101').then((res) => {
             if (res.code === '000000') {
                 // console.log(res);
-                if (res.result.type === 'alert_image' && res.result.image) {
+                if (res.result.image) {
                     Image.getSize(res.result.image, (w, h) => {
-                        const height = Math.floor(h / (w / text(280)));
+                        const height = Math.floor(h / (w / (res.result.device_width ? deviceWidth : text(280))));
                         imageH.current = height;
                         if (res.result.page) {
                             if (res.result.page === navigationRef?.current?.getCurrentRoute()?.name) {
@@ -324,6 +324,7 @@ function App(props) {
                 type: 'image',
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
+                imgHeight: imageH.current,
                 isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);
@@ -359,6 +360,7 @@ function App(props) {
                 type: 'image',
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
+                imgHeight: imageH.current,
                 isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);
