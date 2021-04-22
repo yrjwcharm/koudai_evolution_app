@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 10:58:52
+ * @LastEditTime: 2021-04-22 14:46:12
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -203,6 +203,7 @@ const ArticleDetail = ({navigation, route}) => {
                     scrollIndicatorInsets={{right: 1}}
                     scrollEventThrottle={16}>
                     <ShareModal
+                        ctrl={`/article/${route.params?.article_id}`}
                         likeCallback={onFavor}
                         collectCallback={onCollect}
                         ref={shareModal}
@@ -221,7 +222,7 @@ const ArticleDetail = ({navigation, route}) => {
                         ref={webviewRef}
                         scalesPageToFit={Platform.select({ios: true, android: false})}
                         source={{
-                            uri: `${BaseUrl.H5}/article/${route.params?.article_id || 1}`,
+                            uri: `${BaseUrl.H5}/article/${route.params?.article_id}`,
                         }}
                         startInLoadingState
                         style={{height: webviewHeight}}

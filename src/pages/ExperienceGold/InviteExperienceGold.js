@@ -2,7 +2,7 @@
  * @Date: 2021-03-11 10:03:53
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 19:29:35
+ * @LastEditTime: 2021-04-22 14:44:02
  * @Description: 邀请好友得体验金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,7 +34,12 @@ const InviteExperienceGold = ({navigation}) => {
 
     return (
         <ScrollView style={styles.container}>
-            <ShareModal ref={shareModal} title={'理财魔方体验金'} shareContent={data?.share_info || {}} />
+            <ShareModal
+                ctrl={'invite_experience_gold'}
+                ref={shareModal}
+                title={'理财魔方体验金'}
+                shareContent={data?.share_info || {}}
+            />
             <Image source={{uri: data?.top_bg}} style={styles.topBg} />
             <ImageBackground
                 source={{uri: data?.bag_bg}}

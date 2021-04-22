@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 13:49:07
+ * @LastEditTime: 2021-04-22 10:24:07
  * @Description: 找回交易密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -77,7 +77,7 @@ const ResetLoginPwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'default'}
                 maxLength={20}
-                onChangeText={(pwd) => setIdCardNum(/[\d|X]*/g.exec(pwd)[0])}
+                onChangeText={(pwd) => setIdCardNum(pwd.length <= 17 ? pwd.replace(/\D/g, '') : pwd.replace(/\W/g, ''))}
                 placeholder={'请输入您的身份证号'}
                 title={'身份证号'}
                 value={idCardNum}

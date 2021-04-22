@@ -19,7 +19,7 @@ import * as Animatable from 'react-native-animatable';
  * @param {Function} confirmCallBack //确认的回掉函数
  * @param {Function} cancelCallBack //取消的回掉函数
  */
-const modalWidth = 260;
+const modalWidth = 280;
 export default class MyModal extends Component {
     constructor(props) {
         super(props);
@@ -173,9 +173,16 @@ export default class MyModal extends Component {
                             animation="bounceIn"
                             style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
                             {/* 图片弹窗 */}
-                            <View
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                onPress={() => this.setModalVisiable(false)}
                                 style={[Style.flexCenter, {position: 'relative', paddingTop: text(31), width: width}]}>
-                                <TouchableOpacity activeOpacity={0.8} onPress={this.confirm.bind(this)}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={(e) => {
+                                        e.stopPropagation();
+                                        this.confirm();
+                                    }}>
                                     <Image
                                         source={{
                                             uri: this.imageUrl,
@@ -218,7 +225,7 @@ export default class MyModal extends Component {
                                         />
                                     </TouchableOpacity>
                                 )}
-                            </View>
+                            </TouchableOpacity>
                         </Animatable.View>
                     )}
                 </View>

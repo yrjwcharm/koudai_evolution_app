@@ -3,13 +3,13 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 19:32:26
+ * @LastEditTime: 2021-04-22 14:17:20
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
 import React, {useRef} from 'react';
 import {Provider} from 'react-redux';
-import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState} from 'react-native';
+import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState, Image} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
 // import {useColorScheme} from 'react-native-appearance';
@@ -29,7 +29,7 @@ import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
-import Image from 'react-native-fast-image';
+// import Image from 'react-native-fast-image';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
@@ -62,7 +62,8 @@ function App(props) {
     const navigationRef = useRef();
     const routeNameRef = useRef();
     const [modalObj, setModalObj] = React.useState({});
-    const [useInfo, setUserInfo] = React.useState({});
+    const [userInfo, setUserInfo] = React.useState({});
+    const imageH = useRef(0);
     //如果有更新的提示
     const syncImmediate = () => {
         CodePush.sync({
@@ -180,43 +181,107 @@ function App(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
-        getModalData();
-    }, []);
-    React.useEffect(() => {
-        store.subscribe(() => {
+        const listener = store.subscribe(() => {
             // console.log(store.getState().userInfo.toJS());
             const next = store.getState().userInfo.toJS();
             setUserInfo((prev) => {
                 if (!prev.is_login && next.is_login) {
                     getModalData();
                 }
+                if (prev.is_login) {
+                    showGesture(next).then((res) => {
+                        if (!res) {
+                            onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
+                        }
+                    });
+                }
                 return next;
             });
         });
-    }, []);
+        return () => listener();
+    }, [getModalData, modalObj, onStateChange, showGesture]);
 
+    const showGesture = React.useCallback((userinfo) => {
+        return (async function () {
+            const res = await Storage.get('gesturePwd');
+            if (res && res[`${userinfo.uid}`]) {
+                const result = await Storage.get('openGesturePwd');
+                if (result && result[`${userinfo.uid}`]) {
+                    if (userinfo.is_login && !userinfo.verifyGesture) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        })();
+    }, []);
     const onStateChange = React.useCallback(
-        (currentRouteName) => {
+        (currentRouteName, show) => {
             if (Object.keys(modalObj).length > 0) {
                 if (modalObj.page) {
                     if (modalObj.page === currentRouteName) {
-                        showModal(modalObj);
+                        if (currentRouteName === 'Home') {
+                            if (show) {
+                                showModal(modalObj);
+                            }
+                        } else {
+                            showModal(modalObj);
+                        }
                     }
                 } else {
-                    showModal(modalObj);
+                    if (currentRouteName === 'Index') {
+                        showModal(modalObj);
+                    }
                 }
             }
         },
         [modalObj, showModal]
     );
-    const getModalData = () => {
+    const getModalData = React.useCallback(() => {
         http.get('/common/layer/20210101').then((res) => {
             if (res.code === '000000') {
                 // console.log(res);
-                setModalObj(res.result);
+                if (res.result.type === 'alert_image' && res.result.image) {
+                    Image.getSize(res.result.image, (w, h) => {
+                        const height = Math.floor(h / (w / text(280)));
+                        imageH.current = height;
+                        if (res.result.page) {
+                            if (res.result.page === navigationRef?.current?.getCurrentRoute()?.name) {
+                                showModal(res.result);
+                            } else {
+                                setModalObj(res.result);
+                            }
+                        } else {
+                            if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
+                                showModal(res.result);
+                            } else {
+                                setModalObj(res.result);
+                            }
+                        }
+                    });
+                } else {
+                    if (res.result.page) {
+                        if (res.result.page === navigationRef?.current?.getCurrentRoute()?.name) {
+                            showModal(res.result);
+                        } else {
+                            setModalObj(res.result);
+                        }
+                    } else {
+                        if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
+                            showModal(res.result);
+                        } else {
+                            setModalObj(res.result);
+                        }
+                    }
+                }
             }
         });
-    };
+    }, [showModal]);
     const jump = (navigation, url, type = 'navigate') => {
         if (url) {
             if (url.type === 2) {
@@ -253,7 +318,7 @@ function App(props) {
                 type: 'image',
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
-                isTouchMaskToClose: false,
+                isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);
                     jump(navigationRef.current, modal.url);
@@ -262,28 +327,33 @@ function App(props) {
         } else if (modal.type === 'alert_image') {
             Modal.show({
                 confirm: modal.cancel ? true : false,
-                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url),
-                confirmText: modal.confirm.text,
-                cancelCallBack: () => jump(navigationRef.current, modal.cancel.url),
-                cancelText: modal.cancel.text,
-                content: modal.content,
-                customTitleView: <Image source={{uri: modal.image}} style={{width: text(280), height: text(154)}} />,
+                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                confirmText: modal.confirm.text || '',
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+                customTitleView: (
+                    <Image source={{uri: modal.image}} style={{width: text(280), height: imageH.current}} />
+                ),
+                isTouchMaskToClose: modal.touch_close,
             });
         } else if (modal.type === 'confirm') {
             Modal.show({
                 confirm: modal.cancel ? true : false,
-                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url),
-                confirmText: modal.confirm.text,
-                cancelCallBack: () => jump(navigationRef.current, modal.cancel.url),
-                cancelText: modal.cancel.text,
-                content: modal.content,
+                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                confirmText: modal.confirm.text || '',
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+                isTouchMaskToClose: modal.touch_close,
+                title: modal.title || '',
             });
         } else if (modal.type === 'diy_image') {
             Modal.show({
                 type: 'image',
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
-                isTouchMaskToClose: false,
+                isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
                     // console.log(navigationRef.current);
                     jump(navigationRef.current, modal.url);

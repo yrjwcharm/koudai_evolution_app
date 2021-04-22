@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 16:00:58
+ * @LastEditTime: 2021-04-22 11:22:41
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -43,7 +43,11 @@ export default class index extends Component {
                 Toast.show(res.message, {
                     onHidden: () => {
                         if (res.code === '10001') {
-                            this.jumpPage('Login', {fr: this.props.route?.params?.fr || '', mobile});
+                            if (this.props.route?.params?.fr) {
+                                this.jumpPage('Login', {mobile});
+                            } else {
+                                this.jumpPage('Login', {fr: 'register', mobile});
+                            }
                         }
                     },
                 });

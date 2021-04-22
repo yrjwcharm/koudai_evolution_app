@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 13:59:57
+ * @LastEditTime: 2021-04-22 14:42:30
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -208,7 +208,12 @@ const Settings = ({navigation}) => {
                     );
                 })}
             </ScrollView>
-            <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={shareContent?.share_info || {}} />
+            <ShareModal
+                ctrl={'share_lcmf'}
+                ref={shareModal}
+                title={'分享理财魔方'}
+                shareContent={shareContent?.share_info || {}}
+            />
         </View>
     );
 };

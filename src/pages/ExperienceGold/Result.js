@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 15:17:26
  * @Description:体验金结果页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 21:53:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 14:44:49
  */
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet} from 'react-native';
@@ -44,7 +44,12 @@ export default function Result({navigation}) {
     }, []);
     return (
         <ScrollView style={styles.container}>
-            <ShareModal ref={shareModal} title={'理财魔方体验金'} shareContent={data?.share_info || {}} />
+            <ShareModal
+                ctrl={'invite_experience_gold'}
+                ref={shareModal}
+                title={'理财魔方体验金'}
+                shareContent={data?.share_info || {}}
+            />
             {Object.keys(data).length > 0 && (
                 <View style={styles.top_sty}>
                     {data.is_success == true ? (

@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 22:14:51
+ * @LastEditTime: 2021-04-22 14:43:08
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -112,7 +112,12 @@ export default function LCMF({route, navigation}) {
                         startInLoadingState={true}
                         style={{flex: 1}}
                     />
-                    <ShareModal ref={shareModal} title={'分享理财魔方'} shareContent={data?.share_info || {}} />
+                    <ShareModal
+                        ctrl={route.params?.scene || 'fund_safe'}
+                        ref={shareModal}
+                        title={'分享理财魔方'}
+                        shareContent={data?.share_info || {}}
+                    />
                 </>
             ) : (
                 <>

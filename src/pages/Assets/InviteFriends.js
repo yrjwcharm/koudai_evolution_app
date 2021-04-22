@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-11 10:53:21
+ * @LastEditTime: 2021-04-22 14:41:54
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -188,7 +188,12 @@ const InviteFriends = ({navigation}) => {
                     style={styles.rules}
                 />
             </View>
-            <ShareModal ref={shareModal} title={'邀请好友'} shareContent={data?.share_info || {}} />
+            <ShareModal
+                ctrl={'invite_friends'}
+                ref={shareModal}
+                title={'邀请好友'}
+                shareContent={data?.share_info || {}}
+            />
         </ScrollView>
     );
 };

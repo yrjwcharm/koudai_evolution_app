@@ -4,10 +4,10 @@
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:01:46
+ * @LastEditTime: 2021-04-22 14:12:59
  */
 import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text} from '../../utils/appUtil';
 import Http from '../../services';
@@ -17,20 +17,33 @@ import Empty from '../../components/EmptyTip';
 import {useFocusEffect} from '@react-navigation/native';
 export default function PlanDetail(props) {
     const [data, setData] = useState({});
+    const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
-            Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid}).then((res) => {
-                setShowEmpty(true);
-                setData(res.result);
-            });
+            Http.get('/trade/invest_plan/list/20210101', {poid: props.route?.params?.poid})
+                .then((res) => {
+                    setLoading(false);
+                    if (res.code === '000000') {
+                        setData(res.result);
+                    }
+                    setShowEmpty(true);
+                })
+                .catch(() => {
+                    setLoading(false);
+                    setShowEmpty(true);
+                });
         }, [props.route])
     );
     const jumpPage = (invest_id) => {
         props.navigation.navigate('FixedPlanDetail', {invest_id});
     };
-    return (
+    return loading ? (
+        <View style={[Style.flexCenter, {flex: 1}]}>
+            <ActivityIndicator color={Colors.brandColor} />
+        </View>
+    ) : (
         <ScrollView style={Style.containerPadding}>
             {Object.keys(data).length > 0 ? (
                 data.map((_item, _index) => {

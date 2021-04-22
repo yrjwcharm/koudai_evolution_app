@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 10:33:15
+ * @LastEditTime: 2021-04-22 14:48:17
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -99,6 +99,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         }).then((res) => {
                             hide();
                             Toast.show('分享成功');
+                            global.LogTool('share', props.ctrl);
                         });
                     } catch (e) {
                         if (e instanceof WeChat.WechatError) {
@@ -125,6 +126,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         }).then(() => {
                             hide();
                             Toast.show('分享成功');
+                            global.LogTool('share', props.ctrl);
                         });
                     } catch (e) {
                         if (e instanceof WeChat.WechatError) {
@@ -167,6 +169,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                     },
                     (success, method) => {
                         hide();
+                        global.LogTool('share', props.ctrl);
                     }
                 );
             }
