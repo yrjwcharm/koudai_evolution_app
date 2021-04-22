@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 17:29:50
+ * @LastEditTime: 2021-04-22 11:32:34
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -54,6 +54,12 @@ class BankInfo extends Component {
         if (this.state.second < 60) {
             this.timer();
         }
+        if (this.state.phone) {
+            this.onChangePhone(this.state.phone);
+        }
+        if (this.state.bank_no) {
+            this.onChangeBankNo(this.state.bank_no);
+        }
         http.get('/passport/bank_list/20210101').then((data) => {
             this.setState({bankList: data.result});
         });
@@ -62,9 +68,6 @@ class BankInfo extends Component {
         this.time && clearInterval(this.time);
     }
     checkData = (phone, code, selectBank, bank_no) => {
-        var phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-        this.setState({bankErrMes: bank_no && bank_no.replace(/ /g, '').length >= 16 ? '' : '请输入正确的银行卡号'});
-        this.setState({phoneError: phoneReg.test(phone) ? '' : '请输入正确的手机号'});
         if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 19) {
             this.setState({btnDisable: false});
         } else {
@@ -258,9 +261,25 @@ class BankInfo extends Component {
                     .replace(/(\d{4})(?=\d)/g, '$1 '),
             },
             () => {
+                this.setState({
+                    bankErrMes:
+                        this.state.bank_no && this.state.bank_no.replace(/ /g, '').length >= 16
+                            ? ''
+                            : '请输入正确的银行卡号',
+                });
                 this.checkData(phone, code, selectBank, value);
             }
         );
+    };
+    onChangePhone = (_phone) => {
+        const {bank_no, selectBank, code} = this.state;
+        this.setState({phone: inputInt(_phone)}, () => {
+            var phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+            this.setState({
+                phoneError: phoneReg.test(this.state.phone) ? '' : '请输入正确的手机号',
+            });
+            this.checkData(this.state.phone, code, selectBank, bank_no);
+        });
     };
     render() {
         const {verifyText, bank_no, bankList, selectBank, phone, code, phoneError, bankErrMes} = this.state;
@@ -325,11 +344,7 @@ class BankInfo extends Component {
                             maxLength={11}
                             errorMsg={phoneError}
                             value={phone}
-                            onChangeText={(_phone) => {
-                                this.setState({phone: inputInt(_phone)}, () => {
-                                    this.checkData(this.state.phone, code, selectBank, bank_no);
-                                });
-                            }}
+                            onChangeText={this.onChangePhone}
                         />
 
                         <View style={Style.flexRow}>

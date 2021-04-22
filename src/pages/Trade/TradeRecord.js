@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 19:50:24
+ * @LastEditTime: 2021-04-22 10:28:50
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -28,8 +28,6 @@ const TradeRecord = ({route, navigation}) => {
     const isMfb = route?.params?.fr == 'mfb';
     const getData = useCallback(
         (_page, toast, scene) => {
-            console.log(page);
-
             let Page = _page || page;
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
@@ -66,7 +64,10 @@ const TradeRecord = ({route, navigation}) => {
     useEffect(() => {
         getData();
     }, [getData]);
-    const onLoadMore = () => {
+    const onLoadMore = ({distanceFromEnd}) => {
+        if (distanceFromEnd < 0) {
+            return;
+        }
         if (hasMore) {
             setPage(page + 1);
         }
@@ -185,7 +186,7 @@ const TradeRecord = ({route, navigation}) => {
                 renderItem={renderItem}
                 ListFooterComponent={!loading && data?.length > 0 && ListFooterComponent}
                 keyExtractor={(item, index) => index.toString()}
-                onEndReachedThreshold={0.2}
+                onEndReachedThreshold={0.5}
                 onEndReached={onLoadMore}
                 refreshing={loading}
                 onRefresh={onRefresh}

@@ -42,7 +42,7 @@ axios.interceptors.request.use(async (config) => {
     config.headers.Authorization = token;
     config.params = {
         ...config.data,
-        app: 'p_a',
+        app: '4000',
         ts: new Date().getTime(),
         did: DeviceInfo.getUniqueId(),
         uid,

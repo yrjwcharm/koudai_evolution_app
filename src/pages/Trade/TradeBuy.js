@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 14:09:41
+ * @LastEditTime: 2021-04-22 11:10:56
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -167,11 +167,9 @@ class TradeBuy extends Component {
                 poid: this.state.poid,
                 init: this.state.amount ? 0 : 1,
             };
-
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
                     this.setState({planData: data.result, fee_text: data.result.fee_text});
-                    console.log('plan', data.result.buy_id);
                     resove(data.result.buy_id);
                 } else {
                     this.setState({
@@ -202,7 +200,7 @@ class TradeBuy extends Component {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `您当日剩余可用额度为${selectCard.left_amount}`,
+                        errTip: `您当日剩余可用额度为${selectCard.left_amount}，推荐使用大额汇款`,
                         mfbTip: false,
                     });
                 } else if (_amount > selectCard.single_amount) {
@@ -509,26 +507,25 @@ class TradeBuy extends Component {
             <View style={{marginBottom: px(12)}}>
                 <View style={[Style.flexRow, styles.bankCard]}>
                     {large_pay_method ? (
-                        <Ratio
-                            style={{marginRight: px(10)}}
-                            checked={!this.state.isLargeAmount}
-                            index={0}
-                            onChange={this.ratioChange}
-                        />
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                this.ratioChange(null, 0);
+                            }}
+                            style={Style.flexRow}>
+                            <Ratio style={{marginRight: px(10)}} checked={!this.state.isLargeAmount} index={0} />
+                            <Image
+                                style={styles.bank_icon}
+                                source={{
+                                    uri: bankSelect?.bank_icon,
+                                }}
+                            />
+                        </TouchableOpacity>
                     ) : null}
-                    <TouchableOpacity
-                        onPress={this.changeBankCard}
-                        activeOpacity={0.8}
-                        style={[Style.flexBetween, {flex: 1}]}>
+                    <View style={[Style.flexBetween, {flex: 1}]}>
                         {pay_methods?.length > 0 ? (
                             <>
-                                <Image
-                                    style={styles.bank_icon}
-                                    source={{
-                                        uri: bankSelect?.bank_icon,
-                                    }}
-                                />
-                                <View style={{flex: 1}}>
+                                <TouchableOpacity activeOpacity={0.8} onPress={this.changeBankCard} style={{flex: 1}}>
                                     <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                         {bankSelect?.bank_name}
                                         {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
@@ -536,7 +533,7 @@ class TradeBuy extends Component {
                                     <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                         {bankSelect?.limit_desc}
                                     </Text>
-                                </View>
+                                </TouchableOpacity>
                                 {bankSelect.pay_method == 'wallet' ? (
                                     <TouchableOpacity
                                         activeOpacity={0.8}
@@ -556,7 +553,7 @@ class TradeBuy extends Component {
                                 )}
                             </>
                         ) : null}
-                    </TouchableOpacity>
+                    </View>
                 </View>
                 {large_pay_method ? (
                     <View
@@ -565,20 +562,22 @@ class TradeBuy extends Component {
                             Style.flexBetween,
                             {borderTopColor: Colors.borderColor, borderTopWidth: 0.5},
                         ]}>
-                        <Ratio
-                            style={{marginRight: px(10)}}
-                            index={1}
-                            checked={this.state.isLargeAmount}
-                            onChange={this.ratioChange}
-                        />
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                this.ratioChange(null, 1);
+                            }}
+                            style={Style.flexRow}>
+                            <Ratio style={{marginRight: px(10)}} index={1} checked={this.state.isLargeAmount} />
+                            <Image
+                                style={styles.bank_icon}
+                                source={{
+                                    uri: large_pay_method.bank_icon,
+                                }}
+                            />
+                        </TouchableOpacity>
                         {pay_methods ? (
                             <>
-                                <Image
-                                    style={styles.bank_icon}
-                                    source={{
-                                        uri: large_pay_method.bank_icon,
-                                    }}
-                                />
                                 <View style={{flex: 1}}>
                                     <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                         {large_pay_method.bank_name}
