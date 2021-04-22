@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 15:23:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-22 17:58:21
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -444,7 +444,6 @@ function App(props) {
                                 const previousRouteName = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
                                 let currentRoute = navigationRef.current.getCurrentRoute();
-                                console.log(navigationRef.current.getCurrentRoute());
                                 onStateChange(currentRouteName, homeShowModal.current);
                                 global.previousRouteName = previousRouteName;
                                 global.currentRouteName = currentRouteName;

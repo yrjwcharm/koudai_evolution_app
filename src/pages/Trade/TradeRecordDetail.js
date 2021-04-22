@@ -2,11 +2,11 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 16:38:50
+ * @LastEditTime: 2021-04-22 18:31:09
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
-import {Text, View, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {px, isIphoneX, tagColor, getTradeColor} from '../../utils/appUtil';
 import {Style, Colors, Font} from '../../common/commonStyle';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -71,6 +71,7 @@ const TradeRecordDetail = (props) => {
             if (res.code == '000000') {
                 Toast.show('撤单成功！');
                 getData();
+                DeviceEventEmitter.emit('cancleOrder', '撤单成功');
             } else {
                 Toast.show(res.message);
             }

@@ -3,7 +3,7 @@
  * @Author: yhc
 <<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 16:22:54
+ * @LastEditTime: 2021-04-22 21:22:10
 =======
  * @LastEditors: dx
  * @LastEditTime: 2021-04-21 15:13:03
@@ -75,6 +75,8 @@ const Index = (props) => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [allMsg, setAll] = useState(0);
+    const [baner, setBaner] = useState([]);
+    const updateSwiper = useRef(false);
     let scrollingRight = '';
     let lastx = '';
     const snapScroll = useRef(null);
@@ -84,6 +86,12 @@ const Index = (props) => {
             http.get('/home/detail/20210101')
                 .then((res) => {
                     setData(res.result);
+                    if (baner.length == res.result.banner_list.length) {
+                        updateSwiper.current = false;
+                    } else {
+                        updateSwiper.current = true;
+                    }
+                    setBaner(res.result.banner_list);
                     setLoading(false);
                     setRefreshing(false);
                     if (res.result.login_status !== 0 && isFocused) {
@@ -94,15 +102,19 @@ const Index = (props) => {
                     setLoading(false);
                 });
         },
-        [isFocused, readInterface]
+        [isFocused, readInterface, baner]
     );
-
     useFocusEffect(
         useCallback(() => {
             showPrivacyPop();
             getData();
+            return () => {
+                if (updateSwiper.current) {
+                    setBaner([]);
+                }
+            };
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
+        }, [updateSwiper.current])
     );
 
     useEffect(() => {
@@ -307,7 +319,7 @@ const Index = (props) => {
                             colors={['#fff', Colors.bgColor]}
                             style={styles.container}>
                             <View style={styles.swiper}>
-                                {data?.banner_list ? (
+                                {baner.length > 0 && (
                                     <Swiper
                                         height={px(120)}
                                         autoplay
@@ -326,11 +338,12 @@ const Index = (props) => {
                                             width: px(12),
                                             ...styles.dotStyle,
                                         }}>
-                                        {data?.banner_list?.map((banner, index) => (
+                                        {baner.map((banner, index) => (
                                             <TouchableOpacity
                                                 key={index}
                                                 activeOpacity={0.9}
                                                 onPress={() => {
+                                                    global.LogTool('swiper', banner.id);
                                                     jump(banner.url);
                                                 }}>
                                                 <FastImage
@@ -342,7 +355,7 @@ const Index = (props) => {
                                             </TouchableOpacity>
                                         ))}
                                     </Swiper>
-                                ) : null}
+                                )}
                             </View>
                             {/* 运营位 */}
                             {data?.ad_info && (
@@ -363,6 +376,7 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
+
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 

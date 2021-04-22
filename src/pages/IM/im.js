@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 12:29:34
+ * @LastEditTime: 2021-04-22 15:52:15
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -660,6 +660,7 @@ const IM = (props) => {
             </View>
         ) : null;
     };
+    console.log(messages);
     const renderTextButton = ({isOpen, isSelf, message}) => {
         var id = message.id;
         message = message?.content;
@@ -695,6 +696,7 @@ const IM = (props) => {
                                         ) : (
                                             <Text />
                                         )}
+
                                         <Text
                                             onPress={() => {
                                                 showPop({...message, id});
@@ -705,53 +707,65 @@ const IM = (props) => {
                                         </Text>
                                     </View>
                                 </View>
-                            ) : (
-                                message?.buttons?.length > 0 && (
-                                    <>
-                                        <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
-                                            {message?.buttons?.map((item, index) => {
-                                                return (
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.8}
-                                                        key={index}
-                                                        title={item.text}
-                                                        onPress={() => {
-                                                            submitQues(item.status, message.question_id, id);
-                                                        }}
-                                                        style={[
-                                                            Style.flexRowCenter,
-                                                            styles.button,
-                                                            {
-                                                                backgroundColor:
-                                                                    item.status == 2 ? Colors.btnColor : '#fff',
-                                                            },
-                                                        ]}>
-                                                        <Text
-                                                            style={{
-                                                                fontSize: px(12),
-                                                                color:
-                                                                    item.status == 2 ? '#fff' : Colors.lightGrayColor,
-                                                            }}>
-                                                            {item.text}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                );
-                                            })}
-                                        </View>
-                                        {message?.buttons && message?.buttons[0].status == 2 ? (
-                                            <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
-                                                还未解决？转
-                                                <Text
+                            ) : message?.buttons?.length > 0 ? (
+                                <>
+                                    <View style={[Style.flexRowCenter, {marginBottom: px(16)}]}>
+                                        {message?.buttons?.map((item, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    key={index}
+                                                    title={item.text}
                                                     onPress={() => {
-                                                        staff(message?.content);
+                                                        submitQues(item.status, message.question_id, id);
                                                     }}
-                                                    style={{color: Colors.btnColor}}>
-                                                    投资顾问
-                                                </Text>
+                                                    style={[
+                                                        Style.flexRowCenter,
+                                                        styles.button,
+                                                        {
+                                                            backgroundColor:
+                                                                item.status == 2 ? Colors.btnColor : '#fff',
+                                                        },
+                                                    ]}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: px(12),
+                                                            color: item.status == 2 ? '#fff' : Colors.lightGrayColor,
+                                                        }}>
+                                                        {item.text}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
+                                    {message?.buttons && message?.buttons[0].status == 2 ? (
+                                        <Text style={[styles.sm_text, {marginBottom: px(10)}]}>
+                                            还未解决？转
+                                            <Text
+                                                onPress={() => {
+                                                    staff(message?.content);
+                                                }}
+                                                style={{color: Colors.btnColor}}>
+                                                投资顾问
                                             </Text>
-                                        ) : null}
-                                    </>
-                                )
+                                        </Text>
+                                    ) : null}
+                                </>
+                            ) : (
+                                <View
+                                    style={{
+                                        paddingVertical: px(14),
+                                        borderTopColor: '#E2E4EA',
+                                        borderTopWidth: 0.5,
+                                    }}>
+                                    {message?.status !== -1 ? (
+                                        <Text style={[styles.sm_text, {textAlign: 'left'}]}>
+                                            {message?.status == 0 ? ' 该问题未解决' : '该问题已解决'}
+                                        </Text>
+                                    ) : (
+                                        <Text />
+                                    )}
+                                </View>
                             )}
                         </View>
                     </View>

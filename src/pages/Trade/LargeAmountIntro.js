@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 12:16:24
+ * @LastEditTime: 2021-04-22 17:48:25
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View} from 'react-native';
@@ -27,9 +27,9 @@ const LargeAmountIntro = () => {
             .catch((err) => Alert(err));
     };
     const img_list = [
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/1651618564855_.pic_hd.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/1661618564857_.pic_hd.png',
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/1671618564860_.pic_hd.png',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/large_payment.jpg',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/largeamount2.jpg',
+        'https://static.licaimofang.com/wp-content/uploads/2021/04/largeamount3.jpg',
     ];
     return (
         <View style={{backgroundColor: Colors.bgColor}}>

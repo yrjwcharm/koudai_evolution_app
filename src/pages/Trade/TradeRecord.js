@@ -2,11 +2,11 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 10:28:50
+ * @LastEditTime: 2021-04-22 19:10:09
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import http from '../../services/index.js';
@@ -23,11 +23,12 @@ const TradeRecord = ({route, navigation}) => {
     const [hasMore, setHasMore] = useState(false);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(false);
     const [tabActive, setActiveTab] = useState(0);
     const jump = useJump();
     const isMfb = route?.params?.fr == 'mfb';
     const getData = useCallback(
-        (_page, toast, scene) => {
+        (_page, toast) => {
             let Page = _page || page;
             setLoading(true);
             http.get(isMfb ? 'wallet/records/20210101' : '/order/records/20210101', {
@@ -42,7 +43,7 @@ const TradeRecord = ({route, navigation}) => {
                     if (toast) {
                         Toast.show('交易记录已更新', {duration: 500});
                     }
-                    if (Page == 1 || scene) {
+                    if (Page == 1) {
                         setData(res.result.list);
                     } else {
                         setData((prevData) => {
@@ -56,14 +57,26 @@ const TradeRecord = ({route, navigation}) => {
         },
         [page, tabActive, route, isMfb]
     );
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         getData(page);
-    //     }, [getData, page])
-    // );
     useEffect(() => {
         getData();
     }, [getData]);
+    useEffect(() => {
+        let listen = DeviceEventEmitter.addListener('cancleOrder', () => {
+            setRefresh(true);
+        });
+        return () => {
+            listen && listen.remove();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            if (refresh) {
+                getData(1);
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [refresh])
+    );
     const onLoadMore = ({distanceFromEnd}) => {
         if (distanceFromEnd < 0) {
             return;
@@ -76,6 +89,7 @@ const TradeRecord = ({route, navigation}) => {
         getData(1, 'toast');
     };
     const changeTab = (obj) => {
+        setData([]);
         setHasMore(false);
         setPage(1);
         setActiveTab(obj.i);
@@ -115,6 +129,7 @@ const TradeRecord = ({route, navigation}) => {
                     style={styles.card}
                     key={item?.time}
                     onPress={() => {
+                        setRefresh(false);
                         jump(item.url);
                     }}>
                     <>

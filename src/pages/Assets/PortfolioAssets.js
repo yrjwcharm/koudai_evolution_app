@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 15:16:10
+ * @LastEditTime: 2021-04-22 21:16:15
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -470,7 +470,7 @@ export default function PortfolioAssets(props) {
     return loading ? (
         renderLoading()
     ) : (
-        <>
+        <View style={{backgroundColor: Colors.bgColor}}>
             <ScrollView
                 scrollIndicatorInsets={{right: 1}}
                 refreshControl={
@@ -768,7 +768,7 @@ export default function PortfolioAssets(props) {
                 </BottomModal>
                 <BottomDesc />
             </ScrollView>
-        </>
+        </View>
     );
 }
 

@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 18:07:37
+ * @LastEditTime: 2021-04-22 21:15:15
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -231,22 +231,20 @@ export default function MessageNotice({navigation, route}) {
     };
 
     return (
-        <>
-            <FlatList
-                data={list}
-                initialNumToRender={10}
-                ListEmptyComponent={showEmpty ? <Empty text={'暂无数据'} /> : null}
-                keyExtractor={(item, index) => item + index}
-                ListFooterComponent={renderFooter}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                renderItem={renderItem}
-                style={{backgroundColor: Colors.bgColor}}
-                extraData={list}
-            />
-        </>
+        <FlatList
+            data={list}
+            initialNumToRender={10}
+            ListEmptyComponent={showEmpty ? <Empty text={'暂无数据'} /> : null}
+            keyExtractor={(item, index) => item + index}
+            ListFooterComponent={renderFooter}
+            onEndReached={onEndReached}
+            onEndReachedThreshold={0.5}
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+            renderItem={renderItem}
+            style={{backgroundColor: Colors.bgColor}}
+            extraData={list}
+        />
     );
 }
 const styles = StyleSheet.create({
