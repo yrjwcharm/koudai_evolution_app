@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 14:23:26
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 19:04:42
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -279,6 +279,7 @@ class MfbOut extends Component {
                     ref={(ref) => {
                         this.bankCard = ref;
                     }}
+                    select={bankSelect}
                     onDone={(item, index) => {
                         this.getBankInfo(
                             index,
