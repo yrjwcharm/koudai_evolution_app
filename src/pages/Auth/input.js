@@ -1,15 +1,27 @@
 /*
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:27:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 20:50:42
  * @Description:
  */
 import React from 'react';
 import {Colors, Style} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
-export default function input(props) {
+import {useFocusEffect} from '@react-navigation/native';
+export default function Input(props) {
+    const inputRef = React.useRef(null);
+    useFocusEffect(
+        React.useCallback(() => {
+            if (props.autoFocus) {
+                const isFocused = inputRef.current?.isFocused();
+                if (!isFocused) {
+                    inputRef.current?.focus();
+                }
+            }
+        }, [props.autoFocus])
+    );
     return (
         <View style={[styles.login_input_tel, props.style]}>
             <View style={styles.lable}>
@@ -17,6 +29,7 @@ export default function input(props) {
                 <View style={styles.line} />
             </View>
             <TextInput
+                ref={inputRef}
                 {...props}
                 style={[styles.input, {fontSize: px(16)}]}
                 placeholderTextColor={Colors.placeholderColor}

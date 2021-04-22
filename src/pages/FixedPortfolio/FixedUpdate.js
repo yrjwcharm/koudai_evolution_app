@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 17:04:08
+ * @LastEditTime: 2021-04-22 18:07:51
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
@@ -243,7 +243,7 @@ export default function FixedUpdate({navigation, route}) {
                         {data?.target_info?.target_amount?.value && (
                             <Text style={styles.input_sty}> {formaNum(data?.target_info?.target_amount?.value)}</Text>
                         )}
-                        {data?.target_info?.first_invest?.value && (
+                        {data?.target_info?.first_invest?.value ? (
                             <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                                 <Text style={{color: '#545968', flex: 1}}>
                                     {formaNum(data?.target_info?.first_invest?.text)}
@@ -252,7 +252,7 @@ export default function FixedUpdate({navigation, route}) {
                                     {data?.target_info?.first_invest?.value}
                                 </Text>
                             </View>
-                        )}
+                        ) : null}
                         <View style={[Style.flexBetween, styles.count_wrap_sty]}>
                             <Text style={{color: '#545968', flex: 1}}>
                                 {cycle.split(' ')[0]}

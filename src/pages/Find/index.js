@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 14:31:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 20:19:46
  * @Description:发现
  */
-import React, {useState, useCallback, useRef} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import {px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
@@ -20,7 +20,12 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 const Index = (props) => {
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(true);
     const isFocused = useIsFocused();
     const userInfo = useSelector((store) => store.userInfo);
     const inset = useSafeAreaInsets();
@@ -32,9 +37,12 @@ const Index = (props) => {
     useFocusEffect(
         useCallback(() => {
             snapScroll?.current?.scrollTo({x: 0, y: 0, animated: false});
-            getData();
-        }, [getData])
+            hasNet && getData();
+        }, [getData, hasNet])
     );
+    useEffect(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
 
     let scrollingRight = '';
     let lastx = '';
@@ -69,246 +77,262 @@ const Index = (props) => {
             </View>
         );
     };
-    return loading ? (
-        renderLoading()
-    ) : (
-        <>
-            {!userInfo.toJS().is_login && isFocused && <LoginMask />}
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+    return hasNet ? (
+        loading ? (
+            renderLoading()
+        ) : (
+            <>
+                {!userInfo.toJS().is_login && isFocused && <LoginMask />}
 
-            <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
-            <ScrollView
-                style={{backgroundColor: Colors.bgColor}}
-                scrollEventThrottle={16}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
-                <View style={styles.container}>
-                    <LinearGradient
-                        start={{x: 0, y: 0}}
-                        end={{x: 0, y: 1}}
-                        colors={['#fff', '#F5F6F8']}
-                        style={{paddingHorizontal: Space.padding}}>
-                        <View style={{paddingTop: px(24), paddingBottom: px(12), backgroundColor: '#fff'}}>
-                            <Text style={styles.header_title}>推荐</Text>
-                        </View>
-                        {/* 今日推荐 */}
-                        <>
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={() => {
-                                    jump(data?.recommend?.button?.url);
-                                }}
-                                style={[styles.recommend, styles.card]}>
-                                <View style={[styles.header]}>
-                                    <View style={Style.flexRow}>
-                                        <FastImage
-                                            style={{height: px(24), width: px(24), marginTop: px(-6)}}
-                                            source={require('../../assets/img/logo.png')}
-                                        />
-                                        <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
+                <ScrollView
+                    style={{backgroundColor: Colors.bgColor}}
+                    scrollEventThrottle={16}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
+                    <View style={styles.container}>
+                        <LinearGradient
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            colors={['#fff', '#F5F6F8']}
+                            style={{paddingHorizontal: Space.padding}}>
+                            <View style={{paddingTop: px(24), paddingBottom: px(12), backgroundColor: '#fff'}}>
+                                <Text style={styles.header_title}>推荐</Text>
+                            </View>
+                            {/* 今日推荐 */}
+                            <>
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    onPress={() => {
+                                        jump(data?.recommend?.button?.url);
+                                    }}
+                                    style={[styles.recommend, styles.card]}>
+                                    <View style={[styles.header]}>
+                                        <View style={Style.flexRow}>
+                                            <FastImage
+                                                style={{height: px(24), width: px(24), marginTop: px(-6)}}
+                                                source={require('../../assets/img/logo.png')}
+                                            />
+                                            <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                                        </View>
+                                        <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
                                     </View>
-                                    <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
-                                </View>
-                                <FastImage
-                                    style={{
-                                        height: px(320),
-                                    }}
-                                    source={{
-                                        uri: data?.recommend?.background,
-                                    }}
-                                />
-                                <View style={{padding: Space.cardPadding}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={[styles.card_title, {fontSize: px(16)}]}>
-                                            {data?.recommend?.name}
-                                        </Text>
-                                        {data?.recommend?.labels && (
-                                            <Text style={styles.card_title_dexc}>
-                                                {data?.recommend?.labels.map((item, index) =>
-                                                    index == 0 ? (
-                                                        <Text key={index}>{item}</Text>
+                                    <FastImage
+                                        style={{
+                                            height: px(320),
+                                        }}
+                                        source={{
+                                            uri: data?.recommend?.background,
+                                        }}
+                                    />
+                                    <View style={{padding: Space.cardPadding}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={[styles.card_title, {fontSize: px(16)}]}>
+                                                {data?.recommend?.name}
+                                            </Text>
+                                            {data?.recommend?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {data?.recommend?.labels.map((item, index) =>
+                                                        index == 0 ? (
+                                                            <Text key={index}>{item}</Text>
+                                                        ) : (
+                                                            <Text key={index}>｜{item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                                            <Text
+                                                style={[
+                                                    styles.radio,
+                                                    {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
+                                                ]}>
+                                                {data?.recommend?.yield?.ratio}
+                                            </Text>
+                                            {/* <BoxShadow setting={shadow}> */}
+                                            <LinearGradient
+                                                start={{x: 0, y: 0.25}}
+                                                end={{x: 0, y: 0.8}}
+                                                colors={['#FF9463', '#FF7D41']}
+                                                style={styles.recommend_btn}>
+                                                <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
+                                            </LinearGradient>
+                                            {/* </BoxShadow> */}
+                                        </View>
+                                        <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        </LinearGradient>
+
+                        {/* 专业理财 */}
+                        <View style={{marginBottom: px(20)}}>
+                            <Text style={[styles.large_title, {paddingLeft: px(16)}]}>{data?.part2?.group_name}</Text>
+                            <ScrollView
+                                horizontal={true}
+                                height={px(217)}
+                                ref={snapScroll}
+                                style={{paddingLeft: px(16)}}
+                                onScrollEndDrag={() => {
+                                    var interval = px(214); // WIDTH OF 1 CHILD COMPONENT
+                                    var snapTo = scrollingRight
+                                        ? Math.ceil(lastx / interval)
+                                        : Math.floor(lastx / interval);
+                                    var scrollTo = snapTo * interval;
+                                    snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+                                }}
+                                scrollEventThrottle={100}
+                                onScroll={(event) => {
+                                    var nextx = event.nativeEvent.contentOffset.x;
+                                    scrollingRight = nextx > lastx;
+                                    lastx = nextx;
+                                }}
+                                showsHorizontalScrollIndicator={false}>
+                                {data?.part2?.plans?.map((item, index) => (
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={[
+                                            styles.major_card,
+                                            styles.card,
+                                            {marginRight: index == data?.part2?.plans?.length - 1 ? px(28) : px(12)},
+                                        ]}
+                                        key={index}
+                                        onPress={() => {
+                                            jump(item?.url);
+                                        }}>
+                                        <Text style={styles.card_title}>{item.name}</Text>
+                                        {item?.labels && (
+                                            <Text style={[styles.card_title_dexc, {marginTop: px(4)}]}>
+                                                {item?.labels.map((_item, _index) =>
+                                                    _index == 0 ? (
+                                                        <Text key={_index}>{_item}</Text>
                                                     ) : (
-                                                        <Text key={index}>｜{item}</Text>
+                                                        <Text key={_index}>｜{_item}</Text>
                                                     )
                                                 )}
                                             </Text>
                                         )}
-                                    </View>
-                                    <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                                        <Text
-                                            style={[
-                                                styles.radio,
-                                                {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
-                                            ]}>
-                                            {data?.recommend?.yield?.ratio}
-                                        </Text>
-                                        {/* <BoxShadow setting={shadow}> */}
-                                        <LinearGradient
-                                            start={{x: 0, y: 0.25}}
-                                            end={{x: 0, y: 0.8}}
-                                            colors={['#FF9463', '#FF7D41']}
-                                            style={styles.recommend_btn}>
-                                            <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
-                                        </LinearGradient>
-                                        {/* </BoxShadow> */}
-                                    </View>
-                                    <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </>
-                    </LinearGradient>
 
-                    {/* 专业理财 */}
-                    <View style={{marginBottom: px(20)}}>
-                        <Text style={[styles.large_title, {paddingLeft: px(16)}]}>{data?.part2?.group_name}</Text>
-                        <ScrollView
-                            horizontal={true}
-                            height={px(217)}
-                            ref={snapScroll}
-                            style={{paddingLeft: px(16)}}
-                            onScrollEndDrag={() => {
-                                var interval = px(214); // WIDTH OF 1 CHILD COMPONENT
-                                var snapTo = scrollingRight
-                                    ? Math.ceil(lastx / interval)
-                                    : Math.floor(lastx / interval);
-                                var scrollTo = snapTo * interval;
-                                snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
-                            }}
-                            scrollEventThrottle={100}
-                            onScroll={(event) => {
-                                var nextx = event.nativeEvent.contentOffset.x;
-                                scrollingRight = nextx > lastx;
-                                lastx = nextx;
-                            }}
-                            showsHorizontalScrollIndicator={false}>
-                            {data?.part2?.plans?.map((item, index) => (
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                        {item?.yield?.chart && (
+                                            <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
+                                                <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
+                                            </View>
+                                        )}
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </View>
+                        {/* 目标理财 */}
+
+                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
+                            {data?.part1?.plans?.map((item, index) => (
                                 <TouchableOpacity
-                                    activeOpacity={0.9}
-                                    style={[
-                                        styles.major_card,
-                                        styles.card,
-                                        {marginRight: index == data?.part2?.plans?.length - 1 ? px(28) : px(12)},
-                                    ]}
-                                    key={index}
+                                    activeOpacity={0.8}
                                     onPress={() => {
                                         jump(item?.url);
-                                    }}>
-                                    <Text style={styles.card_title}>{item.name}</Text>
-                                    {item?.labels && (
-                                        <Text style={[styles.card_title_dexc, {marginTop: px(4)}]}>
-                                            {item?.labels.map((_item, _index) =>
-                                                _index == 0 ? (
-                                                    <Text key={_index}>{_item}</Text>
-                                                ) : (
-                                                    <Text key={_index}>｜{_item}</Text>
-                                                )
+                                    }}
+                                    key={index}
+                                    style={[
+                                        styles.card,
+                                        {borderRadius: 8},
+                                        Style.flexRow,
+                                        {marginTop: index != 0 ? px(12) : 0},
+                                    ]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
                                             )}
-                                        </Text>
-                                    )}
-
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                    <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                    {item?.yield?.chart && (
-                                        <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
-                                            <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
                                         </View>
-                                    )}
+                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
+                                    </View>
+                                    <FastImage
+                                        style={styles.img_icon}
+                                        resizeMode={FastImage.resizeMode.contain}
+                                        source={{
+                                            uri: item?.background,
+                                        }}
+                                    />
+                                    <View style={{position: 'absolute', right: px(16)}}>
+                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                    </View>
                                 </TouchableOpacity>
                             ))}
-                        </ScrollView>
-                    </View>
-                    {/* 目标理财 */}
+                        </View>
 
-                    <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
-                        <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
-                        {data?.part1?.plans?.map((item, index) => (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    jump(item?.url);
-                                }}
-                                key={index}
-                                style={[
-                                    styles.card,
-                                    {borderRadius: 8},
-                                    Style.flexRow,
-                                    {marginTop: index != 0 ? px(12) : 0},
-                                ]}>
-                                <View style={{padding: Space.cardPadding, flex: 1}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.card_title}>{item?.name}</Text>
-                                        {item?.labels && (
-                                            <Text style={styles.card_title_dexc}>
-                                                {item?.labels.map((_item, _index) =>
-                                                    _index == 0 ? (
-                                                        <Text key={_index}>{_item}</Text>
-                                                    ) : (
-                                                        <Text key={_index}>｜{_item}</Text>
-                                                    )
-                                                )}
-                                            </Text>
-                                        )}
-                                    </View>
-                                    <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                    <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                </View>
-                                <FastImage
-                                    style={styles.img_icon}
-                                    resizeMode={FastImage.resizeMode.contain}
-                                    source={{
-                                        uri: item?.background,
+                        {/* 增值服务 */}
+                        <View style={{paddingHorizontal: px(16)}}>
+                            <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
+                            {data?.part3?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item?.url);
                                     }}
-                                />
-                                <View style={{position: 'absolute', right: px(16)}}>
-                                    <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                </View>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-
-                    {/* 增值服务 */}
-                    <View style={{paddingHorizontal: px(16)}}>
-                        <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                        {data?.part3?.plans?.map((item, index) => (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    jump(item?.url);
-                                }}
-                                key={index}
-                                style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
-                                <View style={{padding: Space.cardPadding, flex: 1}}>
-                                    <View style={Style.flexRow}>
-                                        <Text style={styles.card_title}>{item?.name}</Text>
-                                        {item?.labels && (
-                                            <Text style={styles.card_title_dexc}>
-                                                {item?.labels.map((_item, _index) =>
-                                                    _index == 0 ? (
-                                                        <Text key={_index}>{_item}</Text>
-                                                    ) : (
-                                                        <Text key={_index}>｜{_item}</Text>
-                                                    )
-                                                )}
-                                            </Text>
-                                        )}
+                                    key={index}
+                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        <Text style={styles.large_text}>{item?.desc}</Text>
+                                        <Text style={styles.light_text}>{item?.slogan}</Text>
                                     </View>
-                                    <Text style={styles.large_text}>{item?.desc}</Text>
-                                    <Text style={styles.light_text}>{item?.slogan}</Text>
-                                </View>
-                                <FastImage
-                                    style={[styles.img_icon, {width: px(78), height: px(70)}]}
-                                    resizeMode={FastImage.resizeMode.contain}
-                                    source={{
-                                        uri: item?.background,
-                                    }}
-                                />
-                                <View style={{position: 'absolute', right: px(16)}}>
-                                    <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                </View>
-                            </TouchableOpacity>
-                        ))}
+                                    <FastImage
+                                        style={[styles.img_icon, {width: px(78), height: px(70)}]}
+                                        resizeMode={FastImage.resizeMode.contain}
+                                        source={{
+                                            uri: item?.background,
+                                        }}
+                                    />
+                                    <View style={{position: 'absolute', right: px(16)}}>
+                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
-                </View>
-                <BottomDesc />
-            </ScrollView>
+                    <BottomDesc />
+                </ScrollView>
+            </>
+        )
+    ) : (
+        <>
+            <Empty
+                img={require('../../assets/img/emptyTip/noNetwork.png')}
+                text={'哎呀！网络出问题了'}
+                desc={'网络不给力，请检查您的网络设置'}
+                style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
+            />
+            <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
         </>
     );
 };

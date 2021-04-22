@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-03-29 15:08:12
+ * @LastEditTime: 2021-04-22 18:43:28
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -16,20 +16,24 @@ import {Button} from '../../../components/Button';
 import {useNavigation} from '@react-navigation/native';
 import {BottomModal} from '../../../components/Modal';
 import Toast from '../../../components/Toast';
+import {useJump} from '../../../components/hooks';
 
 const FixedBtn = (props) => {
     const {btns, style} = props;
     const navigation = useNavigation();
     const bottomModal = useRef(null);
+    const jump = useJump();
     // 咨询弹窗内容渲染
     const renderContactContent = () => {
         const onPress = (item) => {
             if (item.type === 'im') {
+                global.LogTool('im');
                 bottomModal.current.hide();
                 navigation.navigate('IM');
             } else if (item.type === 'tel') {
                 bottomModal.current.hide();
                 const url = `tel:${item.sno}`;
+                global.LogTool('phone', url);
                 Linking.canOpenURL(url)
                     .then((supported) => {
                         if (!supported) {
@@ -91,7 +95,9 @@ const FixedBtn = (props) => {
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
                         onPress={() => {
-                            navigation.navigate(btns[1].url.path, btns[1].url.params);
+                            global.LogTool('buy');
+                            jump(btns[1].url);
+                            // navigation.navigate(btns[1].url.path, btns[1].url.params);
                         }}
                     />
                     <BottomModal title={'选择咨询方式'} ref={bottomModal} children={renderContactContent()} />

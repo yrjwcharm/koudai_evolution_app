@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:48:17
+ * @LastEditTime: 2021-04-22 21:11:44
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -76,12 +76,13 @@ const ShareModal = React.forwardRef((props, ref) => {
         setVisible(false);
     };
 
-    const toastShow = (t, duration = 2000) => {
+    const toastShow = (t, duration = 2000, {onHidden} = {}) => {
         setToastText(t);
         setShowToast(true);
         setTimeout(() => {
             setShowToast(false);
             setToastText('');
+            onHidden && onHidden();
         }, duration);
     };
 
