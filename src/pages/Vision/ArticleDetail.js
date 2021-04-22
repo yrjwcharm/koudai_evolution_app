@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:46:12
+ * @LastEditTime: 2021-04-22 18:35:18
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -166,19 +166,17 @@ const ArticleDetail = ({navigation, route}) => {
     }, [navigation, scrollY]);
     useEffect(() => {
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad) {
-            setTimeout(() => {
-                setFinishRead((prev) => {
-                    if (!prev) {
-                        postProgress({
-                            article_id: route.params?.article_id,
-                            latency: Date.now() - timeRef.current,
-                            done_status: 1,
-                            article_progress: 100,
-                        });
-                    }
-                    return true;
-                });
-            }, 100);
+            setFinishRead((prev) => {
+                if (!prev) {
+                    postProgress({
+                        article_id: route.params?.article_id,
+                        latency: Date.now() - timeRef.current,
+                        done_status: 1,
+                        article_progress: 100,
+                    });
+                }
+                return true;
+            });
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {

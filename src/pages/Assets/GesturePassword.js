@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Platform} from 'react-native';
+import {useNavigation, useRoute, useFocusEffect} from '@react-navigation/native';
 import OkGesturePassword from '../../components/gesturePassword/OkGesturePassword';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -8,8 +8,7 @@ import {Colors, Space, Style} from '../../common/commonStyle';
 import Toast from '../../components/Toast';
 import storage from '../../utils/storage';
 import {updateVerifyGesture} from '../../redux/actions/userInfo';
-import {useDispatch} from 'react-redux';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // 修复了偏移的bug，在navigation存在或者statusBar的情况都可以适用
 
 export default function GesturePassword({option}) {
@@ -37,6 +36,7 @@ export default function GesturePassword({option}) {
     const isOpenRef = useRef(false);
     const passwordRef = useRef('');
     const refreshRef = useRef(true);
+    const gestureRef = useRef(null);
     useEffect(() => {
         // 修改手势密码
         if (route?.params?.option == 'modify') {
@@ -62,7 +62,17 @@ export default function GesturePassword({option}) {
                 });
             }
         });
-    }, [navigation, route, userInfo]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            if (Platform.OS === 'android') {
+                setTimeout(() => {
+                    gestureRef.current?.recomputeLayout();
+                }, 300);
+            }
+        }, [])
+    );
 
     const _onEnd = (pwd) => {
         // console.log(pwd, passwordRef.current);
@@ -106,7 +116,7 @@ export default function GesturePassword({option}) {
             if (passwordRef.current == pwd) {
                 setStatus(true);
                 setIsWarning(false);
-                setTitle('请输入新的手势密码');
+                setTitle('请绘制新的解锁图案');
                 passwordRef.current = '';
                 refreshRef.current = false;
                 // console.log(password, '---password');
@@ -246,6 +256,7 @@ export default function GesturePassword({option}) {
             </View> */}
             <Text>{title}</Text>
             <OkGesturePassword
+                ref={gestureRef}
                 style={styles.gesturePassword}
                 pointBackgroundColor={'white'}
                 showArrow={false}
@@ -261,9 +272,7 @@ export default function GesturePassword({option}) {
                 }}
                 onFinish={(pwd) => {
                     _onEnd(pwd);
-                    setTimeout(() => {
-                        _resetHeadPoint();
-                    }, 500);
+                    _resetHeadPoint();
                 }}
             />
             {option === 'verify' && (
