@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:17:26
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 15:24:45
+ * @LastEditTime: 2021-04-22 20:12:10
  * @Description:首页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -37,6 +37,9 @@ import JPush from 'jpush-react-native';
 import Storage from '../../utils/storage';
 import RNExitApp from 'react-native-exit-app';
 import _ from 'lodash';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -62,6 +65,8 @@ const RenderTitle = (props) => {
 };
 
 const Index = (props) => {
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
     const [data, setData] = useState(null);
     const isFocused = useIsFocused();
@@ -91,14 +96,21 @@ const Index = (props) => {
         },
         [isFocused, readInterface]
     );
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
 
     useFocusEffect(
         useCallback(() => {
             showPrivacyPop();
-            getData();
+            hasNet && getData();
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [])
+        }, [hasNet])
     );
+    useEffect(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
 
     useEffect(() => {
         JPush.init();
@@ -252,7 +264,7 @@ const Index = (props) => {
             </View>
         );
     };
-    return (
+    return hasNet ? (
         <>
             {loading ? (
                 renderLoading()
@@ -647,6 +659,16 @@ const Index = (props) => {
                     </ScrollView>
                 </>
             )}
+        </>
+    ) : (
+        <>
+            <Empty
+                img={require('../../assets/img/emptyTip/noNetwork.png')}
+                text={'哎呀！网络出问题了'}
+                desc={'网络不给力，请检查您的网络设置'}
+                style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
+            />
+            <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
         </>
     );
 };
