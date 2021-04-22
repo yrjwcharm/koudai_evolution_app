@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 12:18:18
+ * @LastEditTime: 2021-04-22 15:23:41
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -515,25 +515,41 @@ class TradeBuy extends Component {
                             }}
                             style={Style.flexRow}>
                             <Ratio style={{marginRight: px(10)}} checked={!this.state.isLargeAmount} index={0} />
-                            <Image
-                                style={styles.bank_icon}
-                                source={{
-                                    uri: bankSelect?.bank_icon,
-                                }}
-                            />
+                            {this.state.type == 0 ? (
+                                <Image
+                                    style={styles.bank_icon}
+                                    source={{
+                                        uri: bankSelect?.bank_icon,
+                                    }}
+                                />
+                            ) : null}
                         </TouchableOpacity>
                     ) : null}
                     <View style={[Style.flexBetween, {flex: 1}]}>
                         {pay_methods?.length > 0 ? (
                             <>
-                                <TouchableOpacity activeOpacity={0.8} onPress={this.changeBankCard} style={{flex: 1}}>
-                                    <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
-                                        {bankSelect?.bank_name}
-                                        {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
-                                    </Text>
-                                    <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
-                                        {bankSelect?.limit_desc}
-                                    </Text>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={this.changeBankCard}
+                                    style={[{flex: 1}, Style.flexRow]}>
+                                    {this.state.type == 1 ? (
+                                        <Image
+                                            style={styles.bank_icon}
+                                            source={{
+                                                uri: bankSelect?.bank_icon,
+                                            }}
+                                        />
+                                    ) : null}
+
+                                    <View>
+                                        <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
+                                            {bankSelect?.bank_name}
+                                            {bankSelect?.bank_no ? <Text>({bankSelect?.bank_no})</Text> : null}
+                                        </Text>
+                                        <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
+                                            {bankSelect?.limit_desc}
+                                        </Text>
+                                    </View>
                                 </TouchableOpacity>
                                 {bankSelect.pay_method == 'wallet' ? (
                                     <TouchableOpacity
