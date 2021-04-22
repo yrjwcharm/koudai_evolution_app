@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 14:54:56
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-22 15:23:58
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -64,6 +64,7 @@ function App(props) {
     const [modalObj, setModalObj] = React.useState({});
     const [userInfo, setUserInfo] = React.useState({});
     const imageH = useRef(0);
+    const homeShowModal = useRef(true);
     //如果有更新的提示
     const syncImmediate = () => {
         CodePush.sync({
@@ -191,7 +192,12 @@ function App(props) {
                 if (prev.is_login) {
                     showGesture(next).then((res) => {
                         if (!res) {
+                            // console.log('-------------true');
+                            homeShowModal.current = true;
                             onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
+                        } else {
+                            // console.log('-------------false');
+                            homeShowModal.current = false;
                         }
                     });
                 }
@@ -439,7 +445,7 @@ function App(props) {
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
                                 let currentRoute = navigationRef.current.getCurrentRoute();
                                 console.log(navigationRef.current.getCurrentRoute());
-                                onStateChange(currentRouteName);
+                                onStateChange(currentRouteName, homeShowModal.current);
                                 global.previousRouteName = previousRouteName;
                                 global.currentRouteName = currentRouteName;
                                 if (previousRouteName !== currentRouteName) {
