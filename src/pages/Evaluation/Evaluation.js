@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 17:54:55
+ * @LastEditTime: 2021-04-22 21:46:59
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -72,6 +72,7 @@ class Question extends Component {
         //点击tag 回退的步数
         previousCount: 0,
         loading_text: '',
+        nextUrl: '', //最后一步跳转
     };
     //动画进行时不能点击下一题
     canNextClick = false;
@@ -159,6 +160,10 @@ class Question extends Component {
         if (action == 'submit' && this.fr != 'risk') {
             this.setState({finishTest: true});
             setTimeout(() => {
+                if (this.state.nextUrl) {
+                    this.props.jump(this.state.nextUrl, 'replace');
+                    return;
+                }
                 this.props.navigation.replace('EvaluationResult', {
                     upid: this.state.upid,
                     summary_id: this.state.summary_id,
@@ -396,7 +401,11 @@ class Question extends Component {
                 };
                 http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
-                        this.setState({loading_text: res?.result?.loading_text, upid: res.result.upid});
+                        this.setState({
+                            loading_text: res?.result?.loading_text,
+                            upid: res.result.upid,
+                            nextUrl: res.result.next_url,
+                        });
                     }
                 });
                 this.clearValueTimer = setTimeout(() => {
