@@ -3,7 +3,7 @@
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 18:07:51
+ * @LastEditTime: 2021-04-22 21:33:10
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
@@ -43,11 +43,17 @@ export default function FixedUpdate({navigation, route}) {
     const [loading, setLoading] = useState(true);
     const addNum = () => {
         setNum((prev) => {
+            if (prev + intervalRef.current > payMethod.day_limit) {
+                Toast.show(`${cycleRef.current}投入金额最大为${formaNum(payMethod.day_limit, 'nozero')}`);
+            }
             return prev + intervalRef.current > payMethod.day_limit ? payMethod.day_limit : prev + intervalRef.current;
         });
     };
     const subtractNum = () => {
         setNum((prev) => {
+            if (prev - intervalRef.current < initAmount.current) {
+                Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
+            }
             return prev - intervalRef.current < initAmount.current ? initAmount.current : prev - intervalRef.current;
         });
     };

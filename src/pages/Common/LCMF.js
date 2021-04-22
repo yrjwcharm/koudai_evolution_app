@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:43:08
+ * @LastEditTime: 2021-04-22 21:57:52
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -98,7 +98,7 @@ export default function LCMF({route, navigation}) {
     }, [netInfo]);
 
     return (
-        <View style={{flex: 1, backgroundColor: Colors.brandColor}}>
+        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {hasNet ? (
                 <>
                     <RNWebView
