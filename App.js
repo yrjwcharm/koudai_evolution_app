@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:40:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-23 19:21:15
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -436,7 +436,6 @@ function App(props) {
                             // theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
                             ref={navigationRef}
                             onReady={() => {
-                                // console.log(object)
                                 global.refName = navigationRef.current.getCurrentRoute().name;
                                 return (routeNameRef.current = navigationRef.current.getCurrentRoute().name);
                             }}
@@ -456,7 +455,8 @@ function App(props) {
                                         null,
                                         currentRouteName +
                                             getRouteNameId(currentRoute, 'ArticleDetail', 'article_id') +
-                                            getRouteNameId(currentRoute, 'DetailAccount', 'upid'),
+                                            getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id') +
+                                            getRouteNameId(currentRoute, 'DetailPolaris', 'poid'),
                                         previousRouteName,
                                         null,
                                         null

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-27 16:12:22
  * @Description:银行产品提现
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 19:41:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-23 18:56:59
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
@@ -25,9 +25,7 @@ export default function BankWithdraw({navigation, route}) {
     const [amount, setAmount] = useState('');
     const [enable, setEnable] = useState(false);
     const [tips, setTips] = useState('');
-    const passwordInput = () => {
-        passwordModal.current.show();
-    };
+
     useEffect(() => {
         Http.get('trade/bank/withdraw/info/20210101', {
             bank_code: route.params.bank_code,
@@ -67,7 +65,6 @@ export default function BankWithdraw({navigation, route}) {
         });
     };
     const onChangeText = useCallback((value) => {
-        console.log(value);
         code = value;
         if (value.length === 6) {
             Http.post(
@@ -87,7 +84,7 @@ export default function BankWithdraw({navigation, route}) {
         }
     }, []);
     const onInput = (amount) => {
-        if (amount >= data.bank_account.balance.val) {
+        if (amount > data.bank_account.balance.val) {
             setTips(`最大可取出额为${data.bank_account.balance.val}`);
             setAmount(data.bank_account.balance.val.toString());
             setEnable(false);
@@ -136,7 +133,7 @@ export default function BankWithdraw({navigation, route}) {
                             />
                         </View>
                     </View>
-                    {tips ? <Text style={{color: Colors.red}}>{tips}</Text> : null}
+                    {tips ? <Text style={{color: Colors.red, paddingLeft: text(14)}}>{tips}</Text> : null}
                     <Text style={[{padding: text(15)}, Style.descSty]}>{data.pay_info.title}</Text>
                     <View style={[Style.flexRow, styles.card_item, styles.card_select]}>
                         <View style={Style.flexRow}>

@@ -2,12 +2,13 @@
  * @Date: 2021-03-08 11:55:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 17:07:09
+ * @LastEditTime: 2021-04-23 19:49:59
  * @Description:
  */
 import React, {PureComponent} from 'react';
 import {View, TouchableOpacity, StyleSheet, ActivityIndicator, Text, Image} from 'react-native';
 import {px} from '../../../../utils/appUtil';
+import {Style} from '../../../../common/commonStyle';
 export default class ImageMessage extends PureComponent {
     state = {
         scale: '',
@@ -63,7 +64,9 @@ export default class ImageMessage extends PureComponent {
                                 }}
                             />
                         ) : (
-                            <View style={{height: px(120)}} />
+                            <View style={[Style.flexCenter, {height: px(120), width: px(60)}]}>
+                                <ActivityIndicator color="#999" size="small" />
+                            </View>
                         )}
 
                         {showIsRead && chatType !== 'group' && isSelf && (

@@ -737,7 +737,6 @@ class ChatWindow extends PureComponent {
         // const currentList = this.state.isInverted ? messageList : messageList.reverse();
         // .slice()
         // .sort((a, b) => (this.state.isInverted ? b.time - a.time : a.time - b.time));
-        console.log(this.state.isInverted);
         const panelContainerHeight = allPanelHeight + (this.isIphoneX ? this.props.iphoneXBottomPadding : 0);
         return (
             <View

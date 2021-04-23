@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 19:18:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-23 19:31:15
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -66,6 +66,7 @@ const requestExternalStoragePermission = async (permission, grantedCallback, blo
                         break;
                     case RESULTS.LIMITED:
                         console.log('The permission is limited: some actions are possible');
+                        grantedCallback();
                         break;
                     case RESULTS.GRANTED:
                         console.log('The permission is granted');
