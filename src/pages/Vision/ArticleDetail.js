@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 22:32:16
+ * @LastEditTime: 2021-04-23 15:31:16
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -233,7 +233,9 @@ const ArticleDetail = ({navigation, route}) => {
                         ref={webviewRef}
                         scalesPageToFit={Platform.select({ios: true, android: false})}
                         source={{
-                            uri: `${BaseUrl.H5}/article/${route.params?.article_id}`,
+                            uri: isArticle.current
+                                ? `${BaseUrl.H5}/article/${route.params?.article_id}`
+                                : `${BaseUrl.H5}${route.params?.link}`,
                         }}
                         startInLoadingState
                         style={{height: webviewHeight}}
