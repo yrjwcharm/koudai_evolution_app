@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 20:39:04
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-23 17:56:03
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -12,7 +12,7 @@ import {px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import Praise from '../../components/Praise';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const MessageBoard = (props) => {
@@ -32,7 +32,9 @@ const MessageBoard = (props) => {
     }, [netInfo]);
 
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
     }, [netInfo]);
     useEffect(() => {
         if (hasNet) {

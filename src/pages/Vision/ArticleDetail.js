@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 15:33:40
+ * @LastEditTime: 2021-04-23 17:56:39
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,7 @@ import http from '../../services/index.js';
 import Toast from '../../components/Toast';
 import {ShareModal} from '../../components/Modal';
 import BaseUrl from '../../services/config';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const ArticleDetail = ({navigation, route}) => {
@@ -193,7 +193,9 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
     }, [netInfo]);
     useEffect(() => {
         if (hasNet) {

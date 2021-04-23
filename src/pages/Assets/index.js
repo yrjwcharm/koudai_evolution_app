@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 20:16:24
+ * @LastEditTime: 2021-04-23 17:48:05
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -36,7 +36,7 @@ import http from '../../services/index.js';
 import {useJump, useShowGesture} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import GesturePassword from './GesturePassword';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 function HomeScreen({navigation, route}) {
@@ -289,8 +289,10 @@ function HomeScreen({navigation, route}) {
         return () => listener();
     }, [hasNet, isFocused, navigation, init, userInfo, showGesture]);
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
-    }, [netInfo]);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
+    }, []);
 
     return hasNet ? (
         loading ? (

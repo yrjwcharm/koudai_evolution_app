@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:57:52
+ * @LastEditTime: 2021-04-23 17:55:43
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,7 @@ import http from '../../services';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useSelector} from 'react-redux';
 export default function LCMF({route, navigation}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -94,7 +94,9 @@ export default function LCMF({route, navigation}) {
         }
     }, [hasNet, route]);
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
     }, [netInfo]);
 
     return (

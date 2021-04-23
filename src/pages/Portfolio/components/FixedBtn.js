@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-04-22 18:43:28
+ * @LastEditTime: 2021-04-23 18:28:15
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -95,7 +95,7 @@ const FixedBtn = (props) => {
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
                         onPress={() => {
-                            global.LogTool('buy');
+                            global.LogTool('detailBuy', btns[1]?.title);
                             jump(btns[1].url);
                             // navigation.navigate(btns[1].url.path, btns[1].url.params);
                         }}
@@ -110,7 +110,9 @@ const FixedBtn = (props) => {
                     textStyle={styles.btnText}
                     descStyle={styles.descText}
                     onPress={() => {
-                        navigation.navigate(btns[0]?.url.path, btns[0]?.url.params);
+                        global.LogTool('detailBuy', btns[0]?.title);
+                        jump(btns[0].url);
+                        // navigation.navigate(btns[0]?.url.path, btns[0]?.url.params);
                     }}
                 />
             )}

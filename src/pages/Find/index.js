@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 20:19:46
+ * @LastEditTime: 2021-04-23 17:50:33
  * @Description:发现
  */
 import React, {useState, useCallback, useRef, useEffect} from 'react';
@@ -20,7 +20,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const Index = (props) => {
@@ -41,7 +41,9 @@ const Index = (props) => {
         }, [getData, hasNet])
     );
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
     }, [netInfo]);
 
     let scrollingRight = '';

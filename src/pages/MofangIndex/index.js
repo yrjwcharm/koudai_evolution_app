@@ -30,7 +30,7 @@ import JPush from 'jpush-react-native';
 import Storage from '../../utils/storage';
 import RNExitApp from 'react-native-exit-app';
 import _ from 'lodash';
-import {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 const shadow = {
@@ -112,7 +112,9 @@ const Index = (props) => {
     );
 
     useEffect(() => {
-        setHasNet(netInfo.isConnected);
+        NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
     }, [netInfo]);
 
     useEffect(() => {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:11:44
+ * @LastEditTime: 2021-04-23 18:32:20
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -88,6 +88,7 @@ const ShareModal = React.forwardRef((props, ref) => {
 
     const share = (item) => {
         if (item.type === 'ShareAppMessage') {
+            global.LogTool('shareStart', props.ctrl);
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
                     try {
@@ -100,7 +101,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         }).then((res) => {
                             hide();
                             Toast.show('分享成功');
-                            global.LogTool('share', props.ctrl);
+                            global.LogTool('shareSuccess', props.ctrl);
                         });
                     } catch (e) {
                         if (e instanceof WeChat.WechatError) {
@@ -115,6 +116,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 }
             });
         } else if (item.type == 'ShareTimeline') {
+            global.LogTool('shareStart', props.ctrl);
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
                     try {
@@ -127,7 +129,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         }).then(() => {
                             hide();
                             Toast.show('分享成功');
-                            global.LogTool('share', props.ctrl);
+                            global.LogTool('shareSuccess', props.ctrl);
                         });
                     } catch (e) {
                         if (e instanceof WeChat.WechatError) {
@@ -158,6 +160,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 Toast.show('复制成功');
             }, 500);
         } else if (item.type === 'MoreOptions') {
+            global.LogTool('shareStart', props.ctrl);
             if (Object.keys(shareContent).length > 0) {
                 ActionSheetIOS.showShareActionSheetWithOptions(
                     {
@@ -170,7 +173,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                     },
                     (success, method) => {
                         hide();
-                        global.LogTool('share', props.ctrl);
+                        global.LogTool('shareSuccess', props.ctrl);
                     }
                 );
             }
