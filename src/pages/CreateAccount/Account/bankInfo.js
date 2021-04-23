@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 13:07:35
+ * @LastEditTime: 2021-04-23 11:33:57
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -263,10 +263,7 @@ class BankInfo extends Component {
             },
             () => {
                 this.setState({
-                    bankErrMes:
-                        this.state.bank_no && this.state.bank_no.replace(/ /g, '').length >= 16
-                            ? ''
-                            : '请输入正确的银行卡号',
+                    bankErrMes: this.state.bank_no?.replace(/ /g, '').length >= 16 ? '' : '请输入正确的银行卡号',
                 });
                 this.checkData(phone, code, selectBank, value);
             }
