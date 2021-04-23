@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 17:50:33
+ * @LastEditTime: 2021-04-23 18:36:05
  * @Description:发现
  */
 import React, {useState, useCallback, useRef, useEffect} from 'react';
@@ -41,10 +41,11 @@ const Index = (props) => {
         }, [getData, hasNet])
     );
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
-    }, [netInfo]);
+        return () => listener();
+    }, []);
 
     let scrollingRight = '';
     let lastx = '';

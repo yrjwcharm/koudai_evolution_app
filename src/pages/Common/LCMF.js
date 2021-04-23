@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 17:55:43
+ * @LastEditTime: 2021-04-23 18:36:31
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -94,10 +94,11 @@ export default function LCMF({route, navigation}) {
         }
     }, [hasNet, route]);
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
-    }, [netInfo]);
+        return () => listener();
+    }, []);
 
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>

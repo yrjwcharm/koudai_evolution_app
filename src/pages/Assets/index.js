@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 17:48:05
+ * @LastEditTime: 2021-04-23 18:35:26
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -289,9 +289,10 @@ function HomeScreen({navigation, route}) {
         return () => listener();
     }, [hasNet, isFocused, navigation, init, userInfo, showGesture]);
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
+        return () => listener();
     }, []);
 
     return hasNet ? (

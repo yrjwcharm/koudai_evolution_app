@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 17:56:39
+ * @LastEditTime: 2021-04-23 18:37:16
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -193,10 +193,11 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
-    }, [netInfo]);
+        return () => listener();
+    }, []);
     useEffect(() => {
         if (hasNet) {
             init();

@@ -112,10 +112,11 @@ const Index = (props) => {
     );
 
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
-    }, [netInfo]);
+        return () => listener();
+    }, []);
 
     useEffect(() => {
         JPush.init();

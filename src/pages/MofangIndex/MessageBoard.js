@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 17:56:03
+ * @LastEditTime: 2021-04-23 18:37:01
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -32,10 +32,11 @@ const MessageBoard = (props) => {
     }, [netInfo]);
 
     useEffect(() => {
-        NetInfo.addEventListener((state) => {
+        const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
-    }, [netInfo]);
+        return () => listener();
+    }, []);
     useEffect(() => {
         if (hasNet) {
             getData();
