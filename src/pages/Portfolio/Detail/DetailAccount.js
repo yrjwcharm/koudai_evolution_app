@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -171,7 +171,11 @@ export default function DetailAccount({route, navigation}) {
                     {chartData?.yield_info?.remark && (
                         <View style={{paddingBottom: text(20), paddingHorizontal: text(16), backgroundColor: '#fff'}}>
                             <Text style={{marginTop: text(10), marginBottom: text(5)}}>
-                                <MaterialCommunityIcons name={'circle-medium'} color={'#4BA471'} size={15} />
+                                <MaterialCommunityIcons
+                                    name={'circle-medium'}
+                                    color={chartData?.yield_info?.remark?.color || '#4BA471'}
+                                    size={15}
+                                />
                                 <Text style={{fontSize: text(12)}}>{chartData?.yield_info?.remark?.title} </Text>
                                 <Text
                                     style={{
