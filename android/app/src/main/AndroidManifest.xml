@@ -1,12 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
   package="com.licaimofang.app">
     <uses-permission android:name="android.permission.INTERNET" />
+     <!--获取读写外置存储权限-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
+      android:screenOrientation="portrait"
       android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      android:usesCleartextTraffic="true"
       android:theme="@style/AppTheme">
        <activity
         android:name=".wxapi.WXEntryActivity"
@@ -30,6 +37,9 @@
           <data android:scheme="lcmf" />
        </intent-filter>
       </activity>
+       <meta-data
+        android:name="UMENG_CHANNEL"
+        android:value="${UMENG_CHANNEL_VALUE}" />
       <meta-data
         android:name="JPUSH_CHANNEL"
         android:value="${JPUSH_CHANNEL}" />

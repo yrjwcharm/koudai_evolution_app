@@ -1,112 +1,98 @@
+/*
+ * @Date: tabIconSizetabIconSize-11-04 11:56:24
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-30 14:00:41
+ * @Description: 底部Tab路由
+ */
 import * as React from 'react';
-// import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import IMScreen from '../pages/IM/index'
-import HomeScreen from '../pages/Home/index'
-import IndexScreen from '../pages/Index/index'
-import TabBarBadge from '../components/TabBarBadge'
-import { BlurView, VibrancyView } from '@react-native-community/blur';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { deviceWidth, deviceHeight, px, isIphoneX } from '../utils/screenUtils'
+import FastImage from 'react-native-fast-image';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Home from '../pages/Assets/index';
+import {px, isIphoneX} from '../utils/appUtil';
+import Find from '../pages/Find'; //发现页
+import Index from '../pages/MofangIndex'; //魔方首页
+import {Colors} from '../common/commonStyle';
 const Tab = createBottomTabNavigator();
-import { View, Text, TouchableOpacity } from 'react-native';
-function MyTabBar ({ state, descriptors, navigation }) {
-  console.log(deviceWidth, deviceHeight)
-  const focusedOptions = descriptors[state.routes[state.index].key].options;
-
-  if (focusedOptions.tabBarVisible === false) {
-    return null;
-  }
-
-  return (
-    <VibrancyView style={{ flexDirection: 'row', height: isIphoneX() ? px(76) : px(48), backgroundColor: 'rgba(255,255,255,0.6)', position: 'absolute', bottom: 0, width: deviceWidth }} blurType="light"
-    >
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-              ? options.title
-              : route.name;
-
-        const isFocused = state.index === index;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-
-        return (
-          <TouchableOpacity
-            accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={{ flex: 1, alignItems: 'center' }}
-          >
-            <Text style={{ color: isFocused ? 'red' : 'black' }}>
-              {label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </VibrancyView>
-  );
+const tabIconSize = px(22);
+export default function Tabbar() {
+    return (
+        <Tab.Navigator
+            initialRouteName="Index"
+            screenOptions={({route, navigation}) => ({
+                tabBarIcon: ({focused}) => {
+                    global.navigation = navigation;
+                    if (route.name === 'Index') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/mofangActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/mofang.png')}
+                                />
+                            );
+                        }
+                    } else if (route.name === 'Find') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxianActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/faxian.png')}
+                                />
+                            );
+                        }
+                    } else if (route.name === 'Home') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/wodeActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/wode.png')}
+                                />
+                            );
+                        }
+                    }
+                },
+            })}
+            backBehavior={'none'}
+            tabBarOptions={{
+                activeTintColor: Colors.btnColor,
+                inactiveTintColor: '#4E556C',
+                allowFontScaling: false,
+                labelStyle: {
+                    marginBottom: isIphoneX() ? px(18) : px(10),
+                    fontSize: px(11),
+                },
+                style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
+            }}>
+            <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
+            <Tab.Screen
+                name="Find"
+                component={Find}
+                options={{
+                    tabBarLabel: '发现',
+                }}
+            />
+            <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
+        </Tab.Navigator>
+    );
 }
-
-// ...
-
-
-export default function Tabbar () {
-  return (
-    <Tab.Navigator
-      // tabBar={props => <MyTabBar {...props} />}
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          if (route.name === 'IndexScreen') {
-            if (focused) {
-              return <AntDesign name="setting" size={size} color={color} />
-            }
-            return <AntDesign name="home" size={size} color={color} />;
-          } else if (route.name === 'IMScreen') {
-            return <AntDesign name="cloudo" size={size} color={color} />;
-          } else if (route.name === 'HomeScreen') {
-            return <AntDesign name="mail" size={size} color={color} />;
-          } else if (route.name === 'setting') {
-            return <AntDesign name="setting" size={size} color={color} />;
-          }
-        },
-
-      })}
-      tabBarOptions={{
-        // activeTintColor: 'tomato',
-        // inactiveTintColor: 'gray',
-        allowFontScaling: false,
-        // style: { backgroundColor: '#ddd', opacity: 0.9, position: 'absolute', filter: 10 }
-      }}
-    >
-      <Tab.Screen name="IndexScreen" component={IndexScreen} options={{
-        tabBarLabel: '首页',
-        tabBarBadge: 3
-      }} />
-      <Tab.Screen name="IMScreen" options={{ tabBarBadge: 3 }} component={IMScreen} />
-      <Tab.Screen name="HomeScreen" component={HomeScreen} />
-    </Tab.Navigator>
-  );
-} 

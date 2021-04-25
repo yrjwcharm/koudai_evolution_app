@@ -58,3 +58,10 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 .history
+
+/android/app/release/
+/android/app/debug/
+/android/app/CESHI/
+/android/app/BAIDU/
+/src/services/config.js
+/ios/Podfile.lock

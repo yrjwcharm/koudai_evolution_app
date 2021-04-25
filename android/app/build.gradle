@@ -1,7 +1,7 @@
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
-
+import groovy.json.JsonSlurper
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -82,9 +82,10 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle" //热更新
 
 project.ext.vectoricons = [
-        iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'AntDesign.ttf','Entypo.ttf','EvilIcons.ttf','Ionicons.ttf','Foundation.ttf','Feather.ttf']
+        iconFontNames: ['FontAwesome.ttf', 'MaterialIcons.ttf', 'EvilIcons.ttf' ,'AntDesign.ttf','Entypo.ttf','EvilIcons.ttf','Ionicons.ttf','Foundation.ttf','Feather.ttf','MaterialCommunityIcons.ttf','Octicons.ttf','SimpleLineIcons.ttf']
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
@@ -124,7 +125,18 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
-
+def getAppVersion() {
+    def inputFile = new File("../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson['version']
+}
+def getAppVersionCode() {
+    def inputFile = new File("../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson['versionCode']
+}
+def appVersion = getAppVersion()
+def appVersionCode = getAppVersionCode()
 android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -133,17 +145,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+packagingOptions {
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+    }    
     defaultConfig {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersion
         multiDexEnabled true //配置多个dex
+        flavorDimensions "default"
         // renderscriptTargetApi 23
         // renderscriptSupportModeEnabled true
+        missingDimensionStrategy 'react-native-camera', 'general'
         manifestPlaceholders = [
+                  UMENG_CHANNEL_VALUE: "DEFAULT_TEST",
                   JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "developer-default"        //在此替换你的channel，也可使用默认的
           ]
@@ -151,6 +171,7 @@ android {
         abiFilters "armeabi-v7a","x86"
        }
     }
+
     packagingOptions {
       pickFirst "lib/arm64-v8a/librealm-jni.so"
     }
@@ -164,15 +185,27 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+             keyAlias = "alias_name"
+             keyPassword = "asdjkl" // And these must be set to non-empty in order to have the signing step added to the task graph.
+             storeFile = file("mofang-release-enimo.keystore")
+             storePassword = "asdjkl"
         }
+         release {
+                // These must be set or Gradle will complain (even if they are overridden).
+                keyAlias = "alias_name"
+                keyPassword = "asdjkl" // And these must be set to non-empty in order to have the signing step added to the task graph.
+                storeFile = file("mofang-release-enimo.keystore")
+                storePassword = "asdjkl"
+            }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            resValue "string", "CodePushDeploymentKey", '""'
+        }
+        releaseStaging {
+            resValue "string", "CodePushDeploymentKey",'"pQme0qmjQHHW0ANDIM8qrK0HdEsBLOd3X9Q0L"'
+            matchingFallbacks = ['release']
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -180,23 +213,50 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-    }
-
-    // applicationVariants are e.g. debug, release
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
-            // https://developer.android.com/studio/build/configure-apk-splits.html
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {  // null for the universal-debug, universal-release variants
-                output.versionCodeOverride =
-                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+             android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "mofang_v${defaultConfig.versionCode}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
+                }
             }
-
+            resValue "string", "CodePushDeploymentKey", '"UAQoDp5PzfpdRBGvG4YpyYNEgceSe0PHBq6mY"'
         }
     }
+ productFlavors {
+        QQ {}
+        _360 {}
+        XIAOMI {}
+        WANGDOUJIA {}
+        BAIDU {}
+        _91 {}
+        ANZHUO {}
+        ZHIXING {}
+        CESHI {}
+        WWW {}
+        VIVO {}
+        OPPO {}
+        MEIZU {}
+        huanliang {}
+        yingyongbaocpd {}
+        sanxing {}
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
+    }
+    // applicationVariants are e.g. debug, release
+    // applicationVariants.all { variant ->
+    //     variant.outputs.each { output ->
+    //         // For each separate APK per architecture, set a unique version code as described here:
+    //         // https://developer.android.com/studio/build/configure-apk-splits.html
+    //         def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+    //         def abi = output.getFilter(OutputFile.ABI)
+    //         if (abi != null) {  // null for the universal-debug, universal-release variants
+    //             output.versionCodeOverride =
+    //                     versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+    //         }
+
+    //     }
+    // }
 }
 
 dependencies {
@@ -209,10 +269,22 @@ dependencies {
     implementation project(':jcore-react-native')  // 添加 jcore 依赖
     implementation project(':react-native-wechat-lib') //微信
     implementation project(':react-native-splash-screen') //启动页
+    implementation project(':react-native-fs') //文件读写
+    implementation project(path: ':react-native-community_viewpager')
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
+    implementation project(':react-native-exit-app')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
+  // 如果你需要支持Android4.0(API level 14)之前的版本
+    implementation 'com.facebook.fresco:animated-base-support:1.3.0'
 
+    // 如果你需要支持GIF动图
+    implementation 'com.facebook.fresco:animated-gif:2.0.0'
+
+    // 如果你需要支持WebP格式，包括WebP动图
+    implementation 'com.facebook.fresco:animated-webp:2.1.0'
+    implementation 'com.facebook.fresco:webpsupport:2.0.0'
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
         exclude group:'com.squareup.okhttp3', module:'okhttp'
@@ -239,3 +311,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
+}

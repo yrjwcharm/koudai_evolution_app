@@ -1,7 +1,15 @@
 PODS:
+  - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
+  - BVLinearGradient (2.5.6):
+    - React
   - CocoaAsyncSocket (7.6.4)
   - CocoaLibEvent (1.0.0)
+  - CodePush (6.4.1):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.12)
+    - React-Core
+    - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.63.3)
   - FBReactNativeSpec (0.63.3):
@@ -71,17 +79,37 @@ PODS:
     - React
   - JPush (2.8.1):
     - React
-  - lottie-ios (3.1.9)
+  - JWT (3.0.0-beta.12):
+    - Base64 (~> 1.1.2)
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
+    - libwebp/webp
+  - libwebp/mux (1.2.0):
+    - libwebp/demux
+  - libwebp/webp (1.2.0)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
+  - Permission-Camera (3.0.0):
+    - RNPermissions
+  - Permission-Notifications (3.0.0):
+    - RNPermissions
+  - Permission-PhotoLibrary (3.0.0):
+    - RNPermissions
+  - Picker (4.3.7):
+    - Picker/Core (= 4.3.7)
+  - Picker/Core (4.3.7):
+    - React
   - RCTRequired (0.63.3)
   - RCTTypeSafety (0.63.3):
     - FBLazyVector (= 0.63.3)
     - Folly (= 2020.01.13.00)
     - RCTRequired (= 0.63.3)
     - React-Core (= 0.63.3)
-  - RCTWeChat (1.1.25):
+  - RCTWeChat (1.1.26):
     - React-Core
   - React (0.63.3):
     - React-Core (= 0.63.3)
@@ -247,11 +275,38 @@ PODS:
     - React
   - react-native-blur (0.8.0):
     - React
-  - react-native-netinfo (5.9.7):
+  - react-native-camera (3.42.0):
     - React-Core
+    - react-native-camera/RCT (= 3.42.0)
+    - react-native-camera/RN (= 3.42.0)
+  - react-native-camera/RCT (3.42.0):
+    - React-Core
+  - react-native-camera/RN (3.42.0):
+    - React-Core
+  - react-native-image-picker (3.1.3):
+    - React-Core
+  - react-native-netinfo (5.9.10):
+    - React-Core
+  - react-native-orientation-locker (1.1.8):
+    - React
+  - react-native-pdf (6.2.2):
+    - React-Core
+  - react-native-progress-bar-android (1.0.4):
+    - React
+  - react-native-progress-view (1.2.3):
+    - React
   - react-native-safe-area-context (3.1.9):
     - React-Core
+  - react-native-slider (3.0.3):
+    - React
   - react-native-splash-screen (3.2.0):
+    - React
+  - react-native-video (5.1.1):
+    - React-Core
+    - react-native-video/Video (= 5.1.1)
+  - react-native-video/Video (5.1.1):
+    - React-Core
+  - react-native-viewpager (2.0.2):
     - React
   - react-native-webview (10.10.2):
     - React-Core
@@ -315,33 +370,60 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
+  - ReactNativeExceptionHandler (2.10.9):
+    - React-Core
+  - rn-fetch-blob (0.12.0):
+    - React-Core
   - RNCAsyncStorage (1.12.1):
     - React-Core
   - RNCClipboard (1.5.1):
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
-  - RNDeviceInfo (7.0.2):
+  - RNDeviceInfo (7.4.0):
     - React-Core
-  - RNGestureHandler (1.8.0):
+  - RNExitApp (1.1.0):
     - React
-  - RNReanimated (1.13.1):
-    - React
-  - RNScreens (2.14.0):
+  - RNFastImage (8.3.4):
     - React-Core
+    - SDWebImage (~> 5.8)
+    - SDWebImageWebPCoder (~> 0.6.1)
+  - RNFS (2.16.6):
+    - React
+  - RNGestureHandler (1.9.0):
+    - React-Core
+  - RNMagicMove (0.6.6):
+    - React
+  - RNPermissions (3.0.0):
+    - React-Core
+  - RNReanimated (1.13.2):
+    - React-Core
+  - RNScreens (2.16.1):
+    - React-Core
+  - RNSVG (12.1.0):
+    - React
   - RNVectorIcons (7.1.0):
     - React
+  - SDWebImage (5.10.4):
+    - SDWebImage/Core (= 5.10.4)
+  - SDWebImage/Core (5.10.4)
+  - SDWebImageWebPCoder (0.6.1):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.7)
+  - SSZipArchive (2.2.3)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
   - Flipper (~> 0.54.0)
   - Flipper-DoubleConversion (= 1.1.7)
-  - Flipper-Folly (~> 2.2)
+  - Flipper-Folly (= 2.3.0)
   - Flipper-Glog (= 0.3.6)
   - Flipper-PeerTalk (~> 0.0.4)
   - Flipper-RSocket (~> 1.1)
@@ -362,7 +444,10 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - JCore (from `../node_modules/jcore-react-native`)
   - JPush (from `../node_modules/jpush-react-native`)
-  - lottie-ios (from `../node_modules/lottie-ios`)
+  - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
+  - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
+  - Picker (from `../node_modules/react-native-picker`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - RCTWeChat (from `../node_modules/react-native-wechat-lib`)
@@ -378,9 +463,18 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-appearance (from `../node_modules/react-native-appearance`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
+  - react-native-pdf (from `../node_modules/react-native-pdf`)
+  - "react-native-progress-bar-android (from `../node_modules/@react-native-community/progress-bar-android`)"
+  - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-video (from `../node_modules/react-native-video`)
+  - "react-native-viewpager (from `../node_modules/@react-native-community/viewpager`)"
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -392,18 +486,27 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
+  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
+  - RNExitApp (from `../node_modules/react-native-exit-app`)
+  - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNMagicMove (from `../node_modules/react-native-magic-move`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   trunk:
+    - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
@@ -414,10 +517,19 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
+    - JWT
+    - libwebp
     - OpenSSL-Universal
+    - SDWebImage
+    - SDWebImageWebPCoder
+    - SSZipArchive
     - YogaKit
 
 EXTERNAL SOURCES:
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -432,8 +544,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/jcore-react-native"
   JPush:
     :path: "../node_modules/jpush-react-native"
-  lottie-ios:
-    :path: "../node_modules/lottie-ios"
+  Permission-Camera:
+    :path: "../node_modules/react-native-permissions/ios/Camera"
+  Permission-Notifications:
+    :path: "../node_modules/react-native-permissions/ios/Notifications"
+  Permission-PhotoLibrary:
+    :path: "../node_modules/react-native-permissions/ios/PhotoLibrary"
+  Picker:
+    :path: "../node_modules/react-native-picker"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -460,12 +578,30 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-appearance"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-orientation-locker:
+    :path: "../node_modules/react-native-orientation-locker"
+  react-native-pdf:
+    :path: "../node_modules/react-native-pdf"
+  react-native-progress-bar-android:
+    :path: "../node_modules/@react-native-community/progress-bar-android"
+  react-native-progress-view:
+    :path: "../node_modules/@react-native-community/progress-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
+  react-native-viewpager:
+    :path: "../node_modules/@react-native-community/viewpager"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
@@ -488,6 +624,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeExceptionHandler:
+    :path: "../node_modules/react-native-exception-handler"
+  rn-fetch-blob:
+    :path: "../node_modules/rn-fetch-blob"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCClipboard:
@@ -496,21 +636,36 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
+  RNExitApp:
+    :path: "../node_modules/react-native-exit-app"
+  RNFastImage:
+    :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNMagicMove:
+    :path: "../node_modules/react-native-magic-move"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
+  CodePush: 352a7efabd0a7079a1138a5c6f677baedb0dedf9
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 878b59e31113e289e275165efbe4b54fa614d43d
   FBReactNativeSpec: 7da9338acfb98d4ef9e5536805a0704572d33c2f
@@ -525,11 +680,16 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   JCore: 1cb4afdeb092d8d0830e889012283c19056af8ab
   JPush: b389c8181b1a5f8978cd06a3811c76fbd848862c
-  lottie-ios: 3a3758ef5a008e762faec9c9d50a39842f26d124
+  JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
+  Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
+  Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
+  Permission-PhotoLibrary: cb9cdc1e3744e26ab404297a8e289d50c8ee27e8
+  Picker: 37554355aef82a532ea95b71b6eeba66bc86182b
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
-  RCTWeChat: eeae3323bef0d40d78181dbc7b3a1a33cd5a358e
+  RCTWeChat: 289c92186c1f55716a6378af55388292d94b2d9e
   React: f36e90f3ceb976546e97df3403e37d226f79d0e3
   React-callinvoker: 18874f621eb96625df7a24a7dc8d6e07391affcd
   React-Core: ac3d816b8e3493970153f4aaf0cff18af0bb95e6
@@ -540,9 +700,18 @@ SPEC CHECKSUMS:
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
   react-native-appearance: 0f0e5fc2fcef70e03d48c8fe6b00b9158c2ba8aa
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-netinfo: 250dc0ca126512f618a8a2ca6a936577e1f66586
+  react-native-camera: cf8a153d33138dcc457172fc3c33fdf4e5d288d2
+  react-native-image-picker: 98920a299f85c566800d5b0a884352504a7585eb
+  react-native-netinfo: 30fb89fa913c342be82a887b56e96be6d71201dd
+  react-native-orientation-locker: f0ca1a8e5031dab6b74bfb4ab33a17ed2c2fcb0d
+  react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
+  react-native-progress-bar-android: be43138ab7da30d51fc038bafa98e9ed594d0c40
+  react-native-progress-view: 21b1e29e70c7559c16c9e0a04c4adc19fce6ede2
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
+  react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
+  react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
+  react-native-viewpager: 88f4269c19d626d2ccd5f7c7f5f7f76422ddb9e3
   react-native-webview: 0aa2cde4ee7e3e1c5fffdf64dbce9c709aa18155
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
@@ -554,17 +723,28 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
+  ReactNativeExceptionHandler: f1638ffd507ef1b1794af25884fa0eb30dd5c551
+  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
-  RNDeviceInfo: e1d82a27d0c1ea6278e3b141784dc38e51fc90f4
-  RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
-  RNReanimated: dd8c286ab5dd4ba36d3a7fef8bff7e08711b5476
-  RNScreens: 2e278a90eb15092ed261d4f2271e3fc9b60d08d4
+  RNDeviceInfo: 9538a884f862fe4aa0d7cead9f34e292d41ba8f6
+  RNExitApp: c4e052df2568b43bec8a37c7cd61194d4cfee2c3
+  RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
+  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
+  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
+  RNMagicMove: acc7d9dff86dd68588b01cb3515182e50b50b81c
+  RNPermissions: 99dd8d4a30ff13509b949ca63cd1f69edc461775
+  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
+  RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
+  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a5710eacc9d8bd7518ce164cd9efcf3d31e9f0c7
+PODFILE CHECKSUM: 591b19964e7c7557930ffdb5c987c445296c8fe7
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.9.3

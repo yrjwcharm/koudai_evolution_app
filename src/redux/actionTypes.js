@@ -1,14 +1,10 @@
+/*
+ * @Date: 2021-03-25 10:57:56
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-03-26 18:08:16
+ * @Description:
+ */
 export default {
-  LoginIn: 'LoginIn',
-  SaveUser: 'SaveUser',
-  LoginOut: 'LoginOut',
-  Register: 'Register',
-  GetFriendList: 'GetFriendList',
-  AddTalkList: 'AddTalkList',
-  DeleteTalkList: 'DeleteTalkList',
-  AddRoomMessage: 'AddRoomMessage',
-  AddRoomUnReadMsg: 'AddRoomUnReadMsg',
-  DeleteRoomUnReadMsg: 'DeleteRoomUnReadMsg',
-  AddRoomLastMsg: 'AddRoomLastMsg',
-  FriendAction: 'FriendAction',
-}
+    UserInfo: 'UserInfo',
+};
