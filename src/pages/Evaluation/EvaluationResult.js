@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 17:48:37
+ * @LastEditTime: 2021-04-25 14:30:46
  * @Description:规划结果页
  */
 
@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
+        backgroundColor: '#fff',
         paddingBottom: isIphoneX() ? 84 : 50,
     },
     name: {
