@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-23 19:21:15
+ * @LastEditTime: 2021-04-30 11:23:46
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -141,7 +141,7 @@ function App(props) {
         heartBeat();
         setInterval(() => {
             heartBeat();
-        }, 3000000);
+        }, 60000);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
@@ -183,7 +183,6 @@ function App(props) {
     }, []);
     React.useEffect(() => {
         const listener = store.subscribe(() => {
-            // console.log(store.getState().userInfo.toJS());
             const next = store.getState().userInfo.toJS();
             setUserInfo((prev) => {
                 if (!prev.is_login && next.is_login) {
@@ -251,7 +250,6 @@ function App(props) {
     const getModalData = React.useCallback(() => {
         http.get('/common/layer/20210101').then((res) => {
             if (res.code === '000000') {
-                // console.log(res);
                 if (res.result.image) {
                     Image.getSize(res.result.image, (w, h) => {
                         const height = Math.floor(h / (w / (res.result.device_width ? deviceWidth : text(280))));
@@ -442,29 +440,22 @@ function App(props) {
                             onStateChange={() => {
                                 var staytime = new Date().getTime() - ts;
                                 ts = new Date().getTime();
-                                const previousRouteName = routeNameRef.current;
+                                const previousRoutePageId = routeNameRef.current;
                                 const currentRouteName = navigationRef.current.getCurrentRoute().name;
                                 let currentRoute = navigationRef.current.getCurrentRoute();
                                 onStateChange(currentRouteName, homeShowModal.current);
-                                global.previousRouteName = previousRouteName;
-                                global.currentRouteName = currentRouteName;
-                                if (previousRouteName !== currentRouteName) {
-                                    LogTool(
-                                        'jump',
-                                        null,
-                                        null,
-                                        currentRouteName +
-                                            getRouteNameId(currentRoute, 'ArticleDetail', 'article_id') +
-                                            getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id') +
-                                            getRouteNameId(currentRoute, 'DetailPolaris', 'poid'),
-                                        previousRouteName,
-                                        null,
-                                        null
-                                    );
-                                    LogTool('staytime', null, null, previousRouteName, null, staytime);
+                                let article_id = getRouteNameId(currentRoute, 'ArticleDetail', 'article_id');
+                                let cu_plan_id = getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id');
+                                let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
+                                let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
+                                let currentRoutePageId = currentRouteName + article_id + cu_plan_id + poid + scene;
+                                global.previousRoutePageId = previousRoutePageId;
+                                global.currentRoutePageId = currentRoutePageId;
+                                if (previousRoutePageId !== currentRouteName) {
+                                    LogTool('jump', null, null, currentRoutePageId, previousRoutePageId, null, null);
+                                    LogTool('staytime', null, null, previousRoutePageId, null, staytime);
                                 }
-                                // Save the current route name for later comparison
-                                routeNameRef.current = currentRouteName;
+                                routeNameRef.current = currentRoutePageId;
                             }}
                             linking={linking}>
                             <AppStack />

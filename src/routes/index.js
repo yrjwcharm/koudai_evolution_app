@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 14:41:48
+ * @LastEditTime: 2021-04-27 18:57:42
  * @Description:路由表
  */
 import React from 'react';
@@ -148,7 +148,11 @@ export default function AppStack() {
         <Stack.Navigator
             initialRouteName="Loading"
             headerMode="screen"
+            // keyboardHandlingEnabled={true}
             screenOptions={{
+                ...TransitionPresets.SlideFromRightIOS,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
                 headerBackImage: () => {
                     return (
                         <Feather
@@ -158,18 +162,16 @@ export default function AppStack() {
                         />
                     );
                 },
+
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
-                // animationEnabled: false,
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
                     fontSize: px(18),
                     maxWidth: px(280),
                 },
                 headerTitleAllowFontScaling: false,
-                gestureEnabled: true,
-                // cardOverlayEnabled: true,
-                ...TransitionPresets.SlideFromRightIOS,
+
                 headerStyle: {
                     backgroundColor: Colors.navBgColor,
                     shadowOpacity: 0,
@@ -236,6 +238,7 @@ export default function AppStack() {
                 component={Register}
                 options={{
                     title: '',
+                    gestureEnabled: false,
                 }}
             />
             <Stack.Screen

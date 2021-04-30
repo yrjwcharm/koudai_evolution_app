@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 16:09:20
+ * @LastEditTime: 2021-04-26 18:41:36
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -48,6 +48,7 @@ class Chart extends PureComponent {
         if (this.props.updateScript) {
             this.chart.current.injectJavaScript(this.props.updateScript(data));
         } else {
+            console.log('update');
             this.chart.current.injectJavaScript(changeData(data));
         }
     };

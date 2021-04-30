@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 13:05:01
+ * @LastEditTime: 2021-04-26 14:10:26
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
