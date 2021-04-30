@@ -193,7 +193,9 @@ export default function DetailRetiredPlan({navigation, route}) {
                 setTableData((prev) => {
                     const next = _.cloneDeep(prev);
                     next.tr_list[0][1] = res.result.yield_info.label[1].val;
-                    next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                    if (res.result.yield_info.label[2]) {
+                        next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                    }
                     return next;
                 });
             }

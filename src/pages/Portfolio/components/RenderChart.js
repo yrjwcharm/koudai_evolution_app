@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-04-30 15:13:28
+ * @LastEditTime: 2021-04-30 16:35:39
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -43,17 +43,17 @@ export default function RenderChart(props) {
                     }
                     _value = (range[0] * 100).toFixed(2) + '%' + scope;
                 }
-                _textPortfolio.current.setNativeProps({
+                _textPortfolio.current?.setNativeProps({
                     text: _value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             } else {
-                _textPortfolio.current.setNativeProps({
+                _textPortfolio.current?.setNativeProps({
                     text: items[0]?.value,
                     style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
                 });
             }
-            _textBenchmark.current.setNativeProps({
+            _textBenchmark.current?.setNativeProps({
                 text: items[1]?.value,
                 style: [
                     styles.legend_title_sty,
@@ -68,12 +68,12 @@ export default function RenderChart(props) {
     const onHide = useCallback(() => {
         const _data = chartData?.yield_info;
         _textTime.current?.setNativeProps({text: _data?.label && _data?.label[0].val});
-        _textPortfolio.current.setNativeProps({
+        _textPortfolio.current?.setNativeProps({
             text: _data?.label && _data?.label[1].val,
             style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[1].val)}],
         });
 
-        _textBenchmark.current.setNativeProps({
+        _textBenchmark.current?.setNativeProps({
             text: _data?.label && _data?.label[2].val,
             style: [
                 styles.legend_title_sty,
@@ -101,7 +101,7 @@ export default function RenderChart(props) {
     return chartData ? (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
-                <View style={styles.legend_sty}>
+                <View style={[styles.legend_sty, {minWidth: 112}]}>
                     {lowLine === 1 && type !== 2 ? (
                         <Text style={styles.chartTitle}>{chartData?.yield_info?.title}</Text>
                     ) : (
@@ -119,7 +119,7 @@ export default function RenderChart(props) {
                     )}
                 </View>
                 {chartData?.yield_info?.label[1] ? (
-                    <View style={styles.legend_sty}>
+                    <View style={[styles.legend_sty, {minWidth: 124}]}>
                         <TextInput
                             style={[
                                 styles.legend_title_sty,
@@ -158,7 +158,7 @@ export default function RenderChart(props) {
                                 Style.flexRow,
                                 {alignItems: 'center', marginRight: chartData?.yield_info?.tips ? px(16) : 0},
                             ]}>
-                            {lowLine === 1 ? (
+                            {lowLine === 1 && type !== 2 ? (
                                 <Text style={{color: Colors.defaultColor, fontSize: Font.textH3}}>--</Text>
                             ) : (
                                 <CircleLegend color={['#E8EAEF', '#545968']} />

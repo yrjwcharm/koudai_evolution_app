@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -88,7 +88,7 @@ export default function DetailAccount({route, navigation}) {
                         benchmark_id: res.result.benchmark_id,
                         poid: res.result.poid,
                         period: res.result.period,
-                        type: type,
+                        type: 1,
                     }).then((resp) => {
                         setChartData(resp.result);
                         setChart(resp.result.yield_info.chart);
@@ -98,7 +98,6 @@ export default function DetailAccount({route, navigation}) {
             .catch(() => {
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigation, rightPress, route.params]);
     const renderLoading = () => {
         return (
@@ -119,6 +118,7 @@ export default function DetailAccount({route, navigation}) {
     };
     useFocusEffect(
         useCallback(() => {
+            setType(1);
             init();
         }, [init])
     );
