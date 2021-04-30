@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';

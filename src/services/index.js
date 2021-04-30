@@ -34,6 +34,7 @@ axios.interceptors.request.use(async (config) => {
     var uid = '';
     var utid = '';
     let result = await Storage.get('loginStatus');
+    let device = await DeviceInfo.getDeviceName();
     if (result) {
         token = result.access_token;
         uid = result.uid;
@@ -49,7 +50,7 @@ axios.interceptors.request.use(async (config) => {
         utid,
         chn: global.channel,
         ver: DeviceInfo.getVersion(),
-        // device: DeviceInfo.getDeviceNameSync() || '',
+        device: device || '',
         request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
     };
     return config;

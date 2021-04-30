@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 20:48:07
+ * @LastEditTime: 2021-04-27 17:12:06
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -10,7 +10,6 @@ import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-nat
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
-import {Colors} from '../../common/commonStyle';
 import Toast from '../../components/Toast';
 export default function WebView({route, navigation}) {
     const webview = useRef(null);

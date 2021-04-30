@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-28 09:53:11
+ * @LastEditTime: 2021-04-30 16:02:58
  * @Description:规划结果页
  */
 
@@ -78,7 +78,7 @@ export default class planResult extends Component {
     summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
-            if (this.fr == 'risk') {
+            if (this.props.route?.params?.fr == 'risk') {
                 return;
             }
             if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {

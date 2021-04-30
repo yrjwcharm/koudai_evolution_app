@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-28 09:53:19
+ * @LastEditTime: 2021-04-30 16:02:13
  * @Description:路由表
  */
 import React from 'react';
@@ -169,7 +169,9 @@ export default function AppStack() {
         <Stack.Navigator
             initialRouteName="Loading"
             headerMode="screen"
+            // keyboardHandlingEnabled={true}
             screenOptions={{
+                ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
                     return (
                         <Feather
@@ -179,9 +181,9 @@ export default function AppStack() {
                         />
                     );
                 },
+
                 headerBackTitleVisible: false,
                 headerTitleAlign: 'center',
-                // animationEnabled: false,
                 headerTitleStyle: {
                     color: Colors.navTitleColor,
                     fontSize: px(18),
@@ -257,6 +259,7 @@ export default function AppStack() {
                 component={Register}
                 options={{
                     title: '',
+                    gestureEnabled: false,
                 }}
             />
             <Stack.Screen
