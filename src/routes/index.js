@@ -1,16 +1,15 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 14:41:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-28 09:53:19
  * @Description:路由表
  */
 import React from 'react';
-import {Platform, Text} from 'react-native';
+import {Platform, Keyboard} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
-import DetailScreen from '../pages/Portfolio/index';
 import LineChart from '../pages/Chart/lineChart.js';
 import StickyScreen from '../pages/sticky';
 import {Colors} from '../common/commonStyle';
@@ -140,10 +139,32 @@ import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance'; //保险落地页
 import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
+import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis';
 
 const Stack = createStackNavigator();
 
 export default function AppStack() {
+    const [gestureEnabled, setGestureEnabled] = React.useState(true);
+
+    const keyboardDidShow = React.useCallback(() => {
+        setGestureEnabled(false);
+    }, []);
+    const keyboardDidHide = React.useCallback(() => {
+        setGestureEnabled(true);
+    }, []);
+
+    React.useEffect(() => {
+        if (Platform.OS === 'android') {
+            Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+            Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+        }
+        return () => {
+            if (Platform.OS === 'android') {
+                Keyboard.removeListener('keyboardDidShow', keyboardDidShow);
+                Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+            }
+        };
+    }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
             initialRouteName="Loading"
@@ -167,7 +188,7 @@ export default function AppStack() {
                     maxWidth: px(280),
                 },
                 headerTitleAllowFontScaling: false,
-                gestureEnabled: true,
+                gestureEnabled: gestureEnabled,
                 // cardOverlayEnabled: true,
                 ...TransitionPresets.SlideFromRightIOS,
                 headerStyle: {
@@ -257,13 +278,6 @@ export default function AppStack() {
                 component={SetLoginPassword}
                 options={{
                     title: '',
-                }}
-            />
-            <Stack.Screen
-                name="DetailScreen"
-                component={DetailScreen}
-                options={{
-                    headerShown: false,
                 }}
             />
             <Stack.Screen
@@ -528,6 +542,7 @@ export default function AppStack() {
             <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
             <Stack.Screen name="DetailInsurance" component={DetailInsurance} options={{title: '魔方保障计划'}} />
             <Stack.Screen name="LcmfPolicy" component={LcmfPolicy} options={{title: '理财魔方隐私政策'}} />
+            <Stack.Screen name="PerformanceAnalysis" component={PerformanceAnalysis} options={{title: '业绩解析'}} />
         </Stack.Navigator>
     );
 }

@@ -1,5 +1,6 @@
-import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Image, Platform} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Platform} from 'react-native';
 import React, {Component} from 'react';
+import Image from 'react-native-fast-image';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {deviceWidth as width, deviceHeight as height, px as text, px} from '../../utils/appUtil';
 import {Colors, Font, Style} from '../../common/commonStyle';
@@ -68,27 +69,27 @@ export default class MyModal extends Component {
     }
     //设置图片宽高--android、ios有兼容
     //android
-    setSize = (imgItem) => {
-        let showH;
-        if (Platform.OS != 'ios') {
-            Image.getSize(imgItem, (w, h) => {
-                //多张则循环判断处理
-                showH = Math.floor(h / (w / this.state.imgWidth));
-                this.setState({imgHeight: showH});
-            });
-        }
-    };
-    //ios
-    setSizeIos = (imgItem) => {
-        let showH;
-        if (Platform.OS == 'ios') {
-            Image.getSize(imgItem, (w, h) => {
-                //同安卓
-                showH = Math.floor(h / (w / this.state.imgWidth));
-                this.setState({imgHeight: showH});
-            });
-        }
-    };
+    // setSize = (imgItem) => {
+    //     let showH;
+    //     if (Platform.OS != 'ios') {
+    //         Image.getSize(imgItem, (w, h) => {
+    //             //多张则循环判断处理
+    //             showH = Math.floor(h / (w / this.state.imgWidth));
+    //             this.setState({imgHeight: showH});
+    //         });
+    //     }
+    // };
+    // //ios
+    // setSizeIos = (imgItem) => {
+    //     let showH;
+    //     if (Platform.OS == 'ios') {
+    //         Image.getSize(imgItem, (w, h) => {
+    //             //同安卓
+    //             showH = Math.floor(h / (w / this.state.imgWidth));
+    //             this.setState({imgHeight: showH});
+    //         });
+    //     }
+    // };
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             isVisible: nextProps.isVisible,
@@ -192,9 +193,9 @@ export default class MyModal extends Component {
                                             {width: this.state.imgWidth, height: this.state.imgHeight},
                                             this.props.imageStyle,
                                         ]}
-                                        onLayout={() => !this.state.imgHeight && this.setSizeIos(this.imageUrl)}
+                                        // onLayout={() => !this.state.imgHeight && this.setSizeIos(this.imageUrl)}
                                         onLoadEnd={() => this.setState({showImgClose: true})}
-                                        onLoadStart={() => !this.state.imgHeight && this.setSize(this.imageUrl)}
+                                        // onLoadStart={() => !this.state.imgHeight && this.setSize(this.imageUrl)}
                                     />
                                     {this.props.content ? (
                                         <View style={styles.diyContent}>

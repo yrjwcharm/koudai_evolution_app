@@ -7069,6 +7069,11 @@ react-native-appearance@^0.3.4:
     invariant "^2.2.4"
     use-subscription "^1.0.0"
 
+react-native-background-timer@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npm.taobao.org/react-native-background-timer/download/react-native-background-timer-2.4.1.tgz#a3bc1cafa8c1e3aeefd0611de120298b67978a0f"
+  integrity sha1-o7wcr6jB467v0GEd4SApi2eXig8=
+
 react-native-camera@^3.42.0:
   version "3.42.0"
   resolved "https://registry.npm.taobao.org/react-native-camera/download/react-native-camera-3.42.0.tgz#e9778b77a2da96e42d604d1766ca331281b5b85f"

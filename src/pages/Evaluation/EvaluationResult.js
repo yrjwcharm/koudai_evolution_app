@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 14:30:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-28 09:53:11
  * @Description:规划结果页
  */
 
@@ -253,11 +253,7 @@ export default class planResult extends Component {
                                             </View>
                                             <View>
                                                 <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                                                    <Text
-                                                        style={[
-                                                            styles.sm_radio,
-                                                            {fontSize: px(24), marginRight: px(9)},
-                                                        ]}>
+                                                    <Text style={[styles.sm_radio, {fontSize: px(24)}]}>
                                                         {tab[1]?.val}
                                                     </Text>
                                                     {/* <View style={[Style.flexRow]}>
@@ -265,7 +261,9 @@ export default class planResult extends Component {
                                                         <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
                                                     </View> */}
                                                 </View>
-                                                <Text style={styles.desc_text}> {tab[1]?.name}</Text>
+                                                <Text style={[styles.desc_text, {textAlign: 'right'}]}>
+                                                    {tab[1]?.name}
+                                                </Text>
                                             </View>
                                         </View>
                                     ) : type == 2 ? (
@@ -287,8 +285,8 @@ export default class planResult extends Component {
                                         style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
                                         {name ? (
                                             <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
+                                                start={{x: 0.25, y: 0}}
+                                                end={{x: 0.8, y: 0}}
                                                 colors={['#FF7D7D', '#E74949']}
                                                 style={[styles.recommend_btn, {top: px(20)}]}>
                                                 <Text style={styles.btn_text}>{name}</Text>
@@ -302,8 +300,8 @@ export default class planResult extends Component {
                                         style={{height: px(180), marginBottom: px(20)}}>
                                         {name ? (
                                             <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
+                                                start={{x: 0.25, y: 0}}
+                                                end={{x: 0.8, y: 0}}
                                                 colors={['#FF7D7D', '#E74949']}
                                                 style={styles.recommend_btn}>
                                                 <Text style={styles.btn_text}>{name}</Text>
@@ -322,7 +320,7 @@ export default class planResult extends Component {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
                                         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                            <Text style={styles.key}> {plan.plan_yield_info.title}</Text>
+                                            <Text style={styles.key}>{plan.plan_yield_info.title}</Text>
                                             <Text style={styles.plan_goal_amount}>
                                                 {plan.plan_yield_info.val}
                                                 {plan.plan_yield_info.unit}

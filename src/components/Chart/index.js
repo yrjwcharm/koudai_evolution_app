@@ -1,14 +1,15 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 16:09:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-26 11:25:27
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
-import {StyleSheet, Platform, View, Text} from 'react-native';
+import {StyleSheet, Platform, View, Text, ActivityIndicator} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
+import {Colors} from '../../common/commonStyle';
 import _ from 'lodash';
 const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
@@ -66,11 +67,19 @@ class Chart extends PureComponent {
         const {webView: WebView, data, onChange, initScript, ...props} = this.props;
         return (
             <WebView
+                allowFileAccess
+                allowFileAccessFromFileURLs
+                allowUniversalAccessFromFileURLs
                 javaScriptEnabled
                 ref={this.chart}
                 scrollEnabled={false}
                 style={styles.webView}
                 injectedJavaScript={initScript}
+                renderLoading={() => (
+                    <View style={{flex: 1}}>
+                        <ActivityIndicator color={Colors.brandColor} />
+                    </View>
+                )}
                 source={source}
                 startInLoadingState={true}
                 originWhitelist={['*']}

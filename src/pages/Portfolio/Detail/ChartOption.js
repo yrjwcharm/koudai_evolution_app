@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 13:51:12
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-27 14:46:28
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -27,7 +27,16 @@ export const baseChart = (data) => `(function(){
       } else if (index === total - 1) {
         textCfg.textAlign = 'right';
       }
+      textCfg.fontFamily = 'DINAlternate-Bold';
       return textCfg;
+    }
+  });
+  chart.axis('value', {
+    label: function label(text) {
+      const cfg = {};
+      cfg.fontFamily = 'DINAlternate-Bold';
+      cfg.text = text;
+      return cfg;
     }
   });
   chart.legend(false);
@@ -126,13 +135,7 @@ export const histogram = (data, min, height) =>
       const cfg = {
         fontSize: 10
       };
-      // // 第一个点左对齐，最后一个点右对齐，其余居中，只有一个点时左对齐
-      // if (index === 0) {
-      //   cfg.textAlign = 'start';
-      // }
-      // if (index > 0 && index === total - 1) {
-      //   cfg.textAlign = 'end';
-      // }
+      cfg.fontFamily = 'DINAlternate-Bold';
       cfg.text = text + '%';  // cfg.text 支持文本格式化处理
       return cfg;
     }
@@ -156,7 +159,7 @@ export const histogram = (data, min, height) =>
       content: obj.val.toFixed(2) + '%',
       style: {
         textAlign,
-        fill: '#4E556C',
+        fill: '#545968',
         fontWeight: 'bold',
         fontSize: 10
       },

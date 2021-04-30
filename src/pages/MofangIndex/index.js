@@ -395,7 +395,14 @@ const Index = (props) => {
                                             : jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: px(14)}}>
-                                    <FastImage style={styles.robot} source={require('../../assets/img/robot1.png')} />
+                                    <ImageBackground
+                                        source={require('../../assets/img/robotShadow.png')}
+                                        style={styles.robot}>
+                                        <FastImage
+                                            style={{width: px(80), height: px(80)}}
+                                            source={require('../../assets/img/robot.gif')}
+                                        />
+                                    </ImageBackground>
                                     <View style={styles.recommen_card}>
                                         <ImageBackground
                                             source={require('../../assets/img/index/recommendBg.png')}
@@ -418,18 +425,20 @@ const Index = (props) => {
                                             <View style={[styles.recommen_bottom, Style.flexBetween]}>
                                                 <View style={Style.flexRow}>
                                                     <View style={Style.flexRow}>
-                                                        {data?.custom_info?.user_avatar_list.map((avar, index) => {
-                                                            return (
-                                                                <Image
-                                                                    key={index}
-                                                                    source={{uri: avar}}
-                                                                    style={[
-                                                                        styles.user_avatar,
-                                                                        {marginLeft: index != 0 ? px(-6) : 0},
-                                                                    ]}
-                                                                />
-                                                            );
-                                                        })}
+                                                        {data?.custom_info?.user_avatar_list
+                                                            ?.slice(0, 2)
+                                                            .map((avar, index) => {
+                                                                return (
+                                                                    <Image
+                                                                        key={index}
+                                                                        source={{uri: avar}}
+                                                                        style={[
+                                                                            styles.user_avatar,
+                                                                            {marginLeft: index != 0 ? px(-6) : 0},
+                                                                        ]}
+                                                                    />
+                                                                );
+                                                            })}
                                                     </View>
                                                     <Text style={{fontSize: px(12), marginLeft: px(8)}}>
                                                         已有
@@ -759,7 +768,7 @@ const styles = StyleSheet.create({
     },
     robot: {
         width: px(80),
-        height: px(81),
+        height: px(80),
         top: px(-24),
         left: px(4),
         position: 'absolute',
@@ -780,14 +789,14 @@ const styles = StyleSheet.create({
     },
     recommen_bottom: {
         height: px(62),
-        backgroundColor: '#FBEFDD',
+        backgroundColor: '#FFE9C9',
         paddingHorizontal: px(16),
         marginTop: px(24),
     },
     recommend_btn: {
         height: px(38),
         justifyContent: 'center',
-        paddingHorizontal: px(22),
+        paddingHorizontal: px(32),
         borderRadius: 20,
     },
     btn_text: {

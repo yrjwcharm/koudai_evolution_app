@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-23 19:21:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-30 14:58:46
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -31,6 +31,7 @@ import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 // import Image from 'react-native-fast-image';
 import {px as text, deviceWidth} from './src/utils/appUtil';
+import BackgroundTimer from 'react-native-background-timer';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -381,6 +382,13 @@ function App(props) {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
             LogTool(appState);
+        }
+        if (appState.match(/background/)) {
+            BackgroundTimer.runBackgroundTimer(() => {
+                store.dispatch(updateVerifyGesture(false));
+            }, 600000);
+        } else if (appState.match(/active/)) {
+            BackgroundTimer.stopBackgroundTimer();
         }
     };
     // const prefix = Linking.makeUrl('/');

@@ -2,10 +2,10 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 17:27:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-30 15:13:28
  */
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
 import {baseAreaChart} from './ChartOption';
 import {px as text, px} from '../../../utils/appUtil';
@@ -14,7 +14,17 @@ import {Chart} from '../../../components/Chart';
 import CircleLegend from '../../../components/CircleLegend';
 import {BottomModal} from '../../../components/Modal';
 export default function RenderChart(props) {
-    const {chartData = {}, chart = [], type, style, width, height, tootipScope = true, showFutureArea = true} = props;
+    const {
+        chartData = {},
+        chart = [],
+        type,
+        style,
+        width,
+        height,
+        tootipScope = true,
+        showFutureArea = true,
+        lowLine = 0,
+    } = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
@@ -22,7 +32,7 @@ export default function RenderChart(props) {
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
+            _textTime.current?.setNativeProps({text: items[0]?.title});
             if (type == 2 && showFutureArea) {
                 let range = items[0]?.origin?.value;
                 let _value = '';
@@ -45,16 +55,19 @@ export default function RenderChart(props) {
             }
             _textBenchmark.current.setNativeProps({
                 text: items[1]?.value,
-                style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
+                style: [
+                    styles.legend_title_sty,
+                    {color: lowLine === 1 ? Colors.defaultColor : getColor(items[1]?.value)},
+                ],
             });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [getColor, tootipScope, type]
     );
     // 图表滑动结束
-    const onHide = ({items}) => {
+    const onHide = useCallback(() => {
         const _data = chartData?.yield_info;
-        _textTime.current.setNativeProps({text: _data?.label && _data?.label[0].val});
+        _textTime.current?.setNativeProps({text: _data?.label && _data?.label[0].val});
         _textPortfolio.current.setNativeProps({
             text: _data?.label && _data?.label[1].val,
             style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[1].val)}],
@@ -62,9 +75,12 @@ export default function RenderChart(props) {
 
         _textBenchmark.current.setNativeProps({
             text: _data?.label && _data?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(_data?.label && _data?.label[2].val)}],
+            style: [
+                styles.legend_title_sty,
+                {color: lowLine === 1 ? Colors.defaultColor : getColor(_data?.label && _data?.label[2].val)},
+            ],
         });
-    };
+    }, [chartData, getColor, lowLine]);
     const getColor = useCallback((t) => {
         if (!t) {
             return Colors.defaultColor;
@@ -77,63 +93,92 @@ export default function RenderChart(props) {
             return Colors.red;
         }
     }, []);
+    useEffect(() => {
+        if (chartData?.yield_info && chart?.length > 0) {
+            onHide();
+        }
+    }, [chart, chartData, onHide]);
     return chartData ? (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
-            <View style={[Style.flexRow, {justifyContent: 'space-around', paddingLeft: 10}]}>
+            <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={styles.legend_sty}>
-                    <TextInput
-                        ref={_textTime}
-                        style={[styles.legend_title_sty, {width: text(100)}]}
-                        defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
-                        editable={false}
-                    />
-                    <Text style={styles.legend_desc_sty}>
-                        {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
-                    </Text>
+                    {lowLine === 1 && type !== 2 ? (
+                        <Text style={styles.chartTitle}>{chartData?.yield_info?.title}</Text>
+                    ) : (
+                        <>
+                            <TextInput
+                                ref={_textTime}
+                                style={[styles.legend_title_sty, {width: text(100)}]}
+                                defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
+                                editable={false}
+                            />
+                            <Text style={styles.legend_desc_sty}>
+                                {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
+                            </Text>
+                        </>
+                    )}
                 </View>
-                <View style={styles.legend_sty}>
-                    <TextInput
-                        style={[
-                            styles.legend_title_sty,
-                            {color: getColor(chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val)},
-                        ]}
-                        ref={_textPortfolio}
-                        defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val}
-                        editable={false}
-                    />
-                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                        <CircleLegend color={['#FFECEC', '#E74949']} />
-                        <Text style={styles.legend_desc_sty}>
-                            {chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.key}
-                        </Text>
+                {chartData?.yield_info?.label[1] ? (
+                    <View style={styles.legend_sty}>
+                        <TextInput
+                            style={[
+                                styles.legend_title_sty,
+                                {color: getColor(chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val)},
+                            ]}
+                            ref={_textPortfolio}
+                            defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.val}
+                            editable={false}
+                        />
+                        <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                            <CircleLegend color={['#FFECEC', '#E74949']} />
+                            <Text style={[styles.legend_desc_sty, {marginLeft: text(4)}]}>
+                                {chartData?.yield_info?.label && chartData?.yield_info?.label[1]?.key}
+                            </Text>
+                        </View>
                     </View>
-                </View>
-                <View style={styles.legend_sty}>
-                    <TextInput
-                        style={[styles.legend_title_sty, {color: getColor(chartData?.yield_info?.label[2]?.val)}]}
-                        ref={_textBenchmark}
-                        defaultValue={chartData?.yield_info?.label[2]?.val}
-                        editable={false}
-                    />
-                    <View
-                        style={[
-                            Style.flexRow,
-                            {alignItems: 'center', marginRight: chartData?.yield_info?.tips ? px(16) : 0},
-                        ]}>
-                        <CircleLegend color={['#E8EAEF', '#545968']} />
-                        <Text style={styles.legend_desc_sty}>{chartData?.yield_info?.label[2]?.key}</Text>
-                        {chartData?.yield_info?.tips && (
-                            <TouchableOpacity
-                                style={{position: 'absolute', right: text(-16)}}
-                                onPress={() => bottomModal.current.show()}>
-                                <Image
-                                    style={{width: text(16), height: text(16)}}
-                                    source={require('../../../assets/img/tip.png')}
-                                />
-                            </TouchableOpacity>
-                        )}
+                ) : null}
+                {chartData?.yield_info?.label[2] ? (
+                    <View style={styles.legend_sty}>
+                        <TextInput
+                            style={[
+                                styles.legend_title_sty,
+                                {
+                                    color:
+                                        lowLine === 1
+                                            ? Colors.defaultColor
+                                            : getColor(chartData?.yield_info?.label[2]?.val),
+                                },
+                            ]}
+                            ref={_textBenchmark}
+                            defaultValue={chartData?.yield_info?.label[2]?.val}
+                            editable={false}
+                        />
+                        <View
+                            style={[
+                                Style.flexRow,
+                                {alignItems: 'center', marginRight: chartData?.yield_info?.tips ? px(16) : 0},
+                            ]}>
+                            {lowLine === 1 ? (
+                                <Text style={{color: Colors.defaultColor, fontSize: Font.textH3}}>--</Text>
+                            ) : (
+                                <CircleLegend color={['#E8EAEF', '#545968']} />
+                            )}
+                            <Text style={[styles.legend_desc_sty, {marginLeft: text(4)}]}>
+                                {chartData?.yield_info?.label[2]?.key}
+                            </Text>
+                            {chartData?.yield_info?.tips ? (
+                                <TouchableOpacity
+                                    style={{position: 'absolute', right: text(-16)}}
+                                    onPress={() => bottomModal.current.show()}>
+                                    <Image
+                                        style={{width: text(16), height: text(16)}}
+                                        source={require('../../../assets/img/tip.png')}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
                     </View>
-                </View>
+                ) : null}
             </View>
             {chart?.length > 0 && (
                 <Chart
@@ -144,7 +189,7 @@ export default function RenderChart(props) {
                         true,
                         2,
                         width,
-                        props.appendPadding || 10,
+                        props.appendPadding || [10, 10, 10, 15],
                         null,
                         height,
                         chartData?.yield_info?.max_ratio,
@@ -156,18 +201,20 @@ export default function RenderChart(props) {
                     style={{width: '100%'}}
                 />
             )}
-            <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
-                <View style={[{padding: text(16)}]}>
-                    <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                        {chartData?.yield_info?.tips?.content[0]?.val}
-                    </Text>
-                    <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[1]?.key}:</Text>
-                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                        {chartData?.yield_info?.tips?.content[1]?.val}
-                    </Text>
-                </View>
-            </BottomModal>
+            {chartData?.yield_info?.tips ? (
+                <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
+                    <View style={[{padding: text(16)}]}>
+                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                            {chartData?.yield_info?.tips?.content[0]?.val}
+                        </Text>
+                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[1]?.key}:</Text>
+                        <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                            {chartData?.yield_info?.tips?.content[1]?.val}
+                        </Text>
+                    </View>
+                </BottomModal>
+            ) : null}
         </View>
     ) : null;
 }
@@ -186,7 +233,7 @@ const styles = StyleSheet.create({
     },
     legend_desc_sty: {
         fontSize: text(11),
-        color: '#545968',
+        color: Colors.descColor,
     },
     radio_sty: {
         color: '#9AA1B2',
@@ -208,4 +255,10 @@ const styles = StyleSheet.create({
         paddingVertical: text(2),
     },
     tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
+    chartTitle: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
+        fontWeight: '600',
+    },
 });

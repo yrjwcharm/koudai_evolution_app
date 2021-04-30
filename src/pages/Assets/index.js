@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:35:26
+ * @LastEditTime: 2021-04-25 16:51:53
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -274,10 +274,11 @@ function HomeScreen({navigation, route}) {
     );
     useFocusEffect(
         useCallback(() => {
+            !userInfo.toJS().is_login && scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [])
+        }, [userInfo])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
