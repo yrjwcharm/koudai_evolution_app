@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-27 18:19:21
+ * @LastEditTime: 2021-05-06 14:51:42
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -563,10 +563,12 @@ class TradeBuy extends Component {
                                         </Text>
                                     </TouchableOpacity>
                                 ) : (
-                                    <Text style={{color: Colors.lightGrayColor}}>
-                                        切换
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={this.changeBankCard}>
+                                        <Text style={{color: Colors.lightGrayColor}}>
+                                            切换
+                                            <Icon name={'right'} size={px(12)} />
+                                        </Text>
+                                    </TouchableOpacity>
                                 )}
                             </>
                         ) : null}
