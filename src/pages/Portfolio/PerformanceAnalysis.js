@@ -2,7 +2,7 @@
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-05-07 10:14:30
+ * @LastEditTime: 2021-05-07 18:25:35
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -107,7 +107,7 @@ const baseAreaChart = (
         '#EBDD69',
     ],
     areaColors = [Colors.red, Colors.lightBlackColor],
-    percent = false,
+    percent = true,
     tofixed = 2,
     max = null
 ) => `
@@ -210,10 +210,11 @@ const area = (source, percent = true, tofixed = 2) => `
   });
   chart.axis('date', false);
   chart.axis('value', {
-    label: (text) => {
-      const cfg = {};
-      cfg.fontFamily = 'DINAlternate-Bold';
-      return cfg;
+    label: function label(text) {
+        const cfg = {};
+        cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+        cfg.fontFamily = 'DINAlternate-Bold';
+        return cfg;
     }
   });
 chart.legend(false);
@@ -371,6 +372,39 @@ const PerformanceAnalysis = ({navigation, route}) => {
                                                 />
                                             )}
                                         </View>
+                                        <View style={[Style.flexRow, {flexWrap: 'wrap', marginTop: text(4)}]}>
+                                            {data[item]?.label?.map((label, idx, arr) => {
+                                                return (
+                                                    <View key={label + idx} style={[Style.flexRowCenter, {flex: 1}]}>
+                                                        {idx !== arr.length - 1 ? (
+                                                            <View
+                                                                style={{
+                                                                    width: text(8),
+                                                                    height: text(8),
+                                                                    backgroundColor: label.color,
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <Text
+                                                                style={{
+                                                                    color: label.color,
+                                                                    fontSize: Font.textH3,
+                                                                }}>
+                                                                ---
+                                                            </Text>
+                                                        )}
+                                                        <Text
+                                                            style={{
+                                                                ...styles.columnText,
+                                                                color: Colors.defaultColor,
+                                                                marginLeft: text(4),
+                                                            }}>
+                                                            {label.key}
+                                                        </Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
                                     </View>
                                 )}
                                 {index === 2 &&
@@ -385,7 +419,7 @@ const PerformanceAnalysis = ({navigation, route}) => {
                                                         marginTop: Space.marginVertical,
                                                     },
                                                 ]}>
-                                                {'近5年累计收益率'}
+                                                {data[item]?.sub_title}
                                             </Text>
                                             <View
                                                 style={[
@@ -440,12 +474,17 @@ const PerformanceAnalysis = ({navigation, route}) => {
                                             type={'part'}
                                         />
                                     ))}
-                                <View style={styles.conclusionBox}>
-                                    <Image source={require('../../assets/img/detail/quot.png')} style={styles.quot} />
-                                    <View style={{flex: 1}}>
-                                        <Html style={styles.conclusion} html={data[item]?.tip} />
+                                {data[item]?.tip ? (
+                                    <View style={styles.conclusionBox}>
+                                        <Image
+                                            source={require('../../assets/img/detail/quot.png')}
+                                            style={styles.quot}
+                                        />
+                                        <View style={{flex: 1}}>
+                                            <Html style={styles.conclusion} html={data[item]?.tip} />
+                                        </View>
                                     </View>
-                                </View>
+                                ) : null}
                             </View>
                             <View style={styles.gap} />
                         </View>
@@ -619,6 +658,12 @@ const styles = StyleSheet.create({
     gap: {
         height: text(10),
         backgroundColor: Colors.bgColor,
+    },
+    columnText: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.descColor,
+        textAlign: 'center',
     },
 });
 

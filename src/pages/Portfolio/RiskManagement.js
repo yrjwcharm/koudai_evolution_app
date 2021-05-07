@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-30 10:21:46
+ * @LastEditTime: 2021-05-07 17:38:17
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -105,7 +105,6 @@ class RiskManagement extends Component {
             data: {},
             alias: [],
             refreshing: false,
-            tips: '',
         };
         this.lineColor = [Colors.red, Colors.lightBlackColor, Colors.descColor];
     }
@@ -137,7 +136,7 @@ class RiskManagement extends Component {
         this.bottomModal.show();
     };
     render() {
-        const {data, alias, refreshing, tips} = this.state;
+        const {data, alias, refreshing} = this.state;
         return (
             <ScrollView
                 style={[styles.container]}

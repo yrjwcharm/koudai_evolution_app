@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-04-19 19:52:10
+ * @LastEditTime: 2021-05-07 17:19:04
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -17,6 +17,7 @@ import {px as text, isIphoneX} from '../../utils/appUtil';
 import {Style, Colors, Space, Font} from '../../common/commonStyle';
 import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
+import {useFocusEffect} from '@react-navigation/native';
 
 const RatioColor = [
     '#E1645C',
@@ -33,6 +34,15 @@ const RatioColor = [
     '#5E71E8',
     '#EBDD69',
 ];
+
+function Focus({init}) {
+    useFocusEffect(
+        React.useCallback(() => {
+            init();
+        }, [init])
+    );
+    return null;
+}
 
 export class AssetsConfigDetail extends Component {
     constructor(props) {
@@ -133,11 +143,12 @@ export class AssetsConfigDetail extends Component {
     };
     render() {
         const {amount, activeSections, data} = this.state;
-        const {invest_form, deploy_title, deploy_content, deploy_detail, bottom, btns} = data;
+        const {invest_form, deploy_title, deploy_content, deploy_detail, btns} = data;
         return (
             <>
                 {Object.keys(data).length > 0 && (
                     <ScrollView style={styles.container}>
+                        <Focus init={this.init} />
                         <View style={styles.topPart}>
                             <View style={[Style.flexBetween, {flexDirection: 'row'}]}>
                                 <Text style={[styles.lableTitle]}>{invest_form.title}</Text>

@@ -130,18 +130,13 @@ export default function DetailAccount({route, navigation}) {
             {Object.keys(data).length > 0 ? (
                 <ScrollView nestedScrollEnabled={true} style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
-                    <View style={Style.flexRow}>
+                    <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
                             <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                         </View>
                         {data.line_drawback && data.low_line === 1 && (
-                            <View
-                                style={[
-                                    Style.flexCenter,
-                                    styles.container_sty,
-                                    {justifyContent: 'flex-end', paddingTop: text(19)},
-                                ]}>
+                            <View style={[Style.flexCenter, styles.container_sty]}>
                                 <Text
                                     style={[
                                         styles.amount_sty,
@@ -464,10 +459,11 @@ const styles = StyleSheet.create({
         marginRight: text(-10),
     },
     container_sty: {
-        paddingTop: text(12),
+        justifyContent: 'flex-end',
         paddingBottom: text(20),
         backgroundColor: '#fff',
         flex: 1,
+        height: '100%',
     },
     amount_sty: {
         color: Colors.red,

@@ -2,28 +2,31 @@
  * @Date: 2021-01-22 10:51:10
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-30 14:55:06
+ * @LastEditTime: 2021-05-07 17:20:05
  * @Description: 资产增强
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import FitImage from 'react-native-fit-image';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font, Space} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import http from '../../services';
 import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
+import {useFocusEffect} from '@react-navigation/native';
 
 const AssetsEnhance = ({navigation, route}) => {
     const [data, setData] = useState({});
-    useEffect(() => {
-        http.get('/portfolio/asset_enhance/20210101', {...(route.params || {})}).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-                navigation.setOptions({title: res.result.title || '资产增强'});
-            }
-        });
-    }, [navigation, route]);
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/portfolio/asset_enhance/20210101', {...(route.params || {})}).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                    navigation.setOptions({title: res.result.title || '资产增强'});
+                }
+            });
+        }, [navigation, route])
+    );
     return (
         <View style={styles.container}>
             {Object.keys(data).length > 0 && (
