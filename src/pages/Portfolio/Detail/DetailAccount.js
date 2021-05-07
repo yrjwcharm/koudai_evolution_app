@@ -257,7 +257,7 @@ export default function DetailAccount({route, navigation}) {
                                         fontSize: Font.textH3,
                                         lineHeight: text(19),
                                         color: Colors.descColor,
-                                        textAlign: 'justify',
+                                        // textAlign: 'justify',
                                     }}>
                                     {data.line_info?.line_desc?.desc}
                                 </Text>
