@@ -2,18 +2,18 @@
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-30 15:31:12
+ * @LastEditTime: 2021-05-07 10:14:30
  * @Description: 业绩解析
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {ActivityIndicator, Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import {useFocusEffect} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import http from '../../services';
 import {Chart} from '../../components/Chart';
-import Tab from '../../components/TabBar';
 import Html from '../../components/RenderHtml';
 import FixedBtn from './components/FixedBtn';
 import Dot from './components/Dot';
@@ -244,41 +244,39 @@ const PerformanceAnalysis = ({navigation, route}) => {
     const [page, setPage] = useState(route.params?.page || 0);
     const offsetTopRef = useRef({});
     const scrollRef = useRef(null);
-    const scrollValue = new Animated.Value(0);
 
     const onScroll = (event) => {
         const y = event.nativeEvent.contentOffset.y;
         if (y >= offsetTopRef.current[1]?.y && y < offsetTopRef.current[2]?.y) {
-            scrollValue.setValue(1);
             setPage(1);
         } else if (y >= offsetTopRef.current[2]?.y) {
-            scrollValue.setValue(2);
             setPage(2);
         } else {
-            scrollValue.setValue(0);
             setPage(0);
         }
     };
 
-    useEffect(() => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/portfolio/yield_parse/20210426', {
-            upid: route.params?.upid,
-        })
-            .then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result || {});
-                    setTabs(res.result?.tabs || {});
-                    setShowEmpty(res.result ? false : true);
-                } else {
-                    setShowEmpty(true);
-                }
-                setLoading(false);
+    useFocusEffect(
+        useCallback(() => {
+            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/portfolio/yield_parse/20210426', {
+                upid: route.params?.upid,
             })
-            .catch(() => {
-                setLoading(false);
-                setShowEmpty(true);
-            });
-    }, [route]);
+                .then((res) => {
+                    if (res.code === '000000') {
+                        setData(res.result || {});
+                        setTabs(res.result?.tabs || {});
+                        setShowEmpty(res.result ? false : true);
+                    } else {
+                        setShowEmpty(true);
+                    }
+                    setLoading(false);
+                })
+                .catch(() => {
+                    setLoading(false);
+                    setShowEmpty(true);
+                });
+        }, [route])
+    );
 
     return loading ? (
         <View style={[Style.flexCenter, {flex: 1, backgroundColor: '#fff'}]}>
@@ -286,17 +284,6 @@ const PerformanceAnalysis = ({navigation, route}) => {
         </View>
     ) : (
         <View style={styles.container}>
-            {/* {Object.values(tabs).length > 0 && (
-                <Tab
-                    containerWidth={deviceWidth}
-                    activeTab={page}
-                    tabs={Object.values(tabs)}
-                    goToPage={(cur) => {
-                        scrollRef.current?.scrollTo({x: 0, y: offsetTopRef.current[cur]?.y + 10, animated: true});
-                    }}
-                    scrollValue={scrollValue}
-                />
-            )} */}
             <View style={[Style.flexRow, {height: text(44)}]}>
                 {Object.values(tabs).map((tab, index) => {
                     return (
@@ -345,84 +332,114 @@ const PerformanceAnalysis = ({navigation, route}) => {
                                 {index === 0 && (
                                     <View style={{minHeight: text(320)}}>
                                         <View style={[Style.flexRow, {height: text(160)}]}>
-                                            {data[item]?.drawback_chart && (
-                                                <Chart
-                                                    initScript={baseAreaChart(
-                                                        data[item]?.yield_chart,
-                                                        [Colors.red, Colors.lightBlackColor],
-                                                        ['l(90) 0:#E74949 1:#fff', 'transparent']
-                                                    )}
+                                            {data[item]?.drawback_chart ? (
+                                                <>
+                                                    <Chart
+                                                        initScript={baseAreaChart(
+                                                            data[item]?.yield_chart,
+                                                            [Colors.red, Colors.lightBlackColor],
+                                                            ['l(90) 0:#E74949 1:#fff', 'transparent']
+                                                        )}
+                                                        data={data[item]?.yield_chart}
+                                                    />
+                                                    <Text style={styles.chartTitle}>{'收益'}</Text>
+                                                </>
+                                            ) : (
+                                                <Empty
+                                                    img={require('../../assets/img/emptyTip/noProfit.png')}
+                                                    style={{paddingVertical: text(40)}}
+                                                    text={'暂无收益数据'}
+                                                    type={'part'}
                                                 />
                                             )}
-                                            <Text style={styles.chartTitle}>{'收益'}</Text>
                                         </View>
                                         <View style={[Style.flexRow, {height: text(160)}]}>
-                                            {data[item]?.drawback_chart && (
-                                                <Chart initScript={area(data[item]?.drawback_chart)} />
+                                            {data[item]?.drawback_chart ? (
+                                                <>
+                                                    <Chart
+                                                        initScript={area(data[item]?.drawback_chart)}
+                                                        data={data[item]?.drawback_chart}
+                                                    />
+                                                    <Text style={styles.chartTitle}>{'回撤'}</Text>
+                                                </>
+                                            ) : (
+                                                <Empty
+                                                    img={require('../../assets/img/emptyTip/noProfit.png')}
+                                                    style={{paddingVertical: text(40)}}
+                                                    text={'暂无回撤数据'}
+                                                    type={'part'}
+                                                />
                                             )}
-                                            <Text style={styles.chartTitle}>{'回撤'}</Text>
                                         </View>
                                     </View>
                                 )}
-                                {data[item]?.chart && (
-                                    <>
-                                        <Text
-                                            style={[
-                                                styles.cellText,
-                                                styles.thText,
-                                                {
-                                                    textAlign: 'center',
-                                                    marginTop: Space.marginVertical,
-                                                },
-                                            ]}>
-                                            {'近5年累计收益率'}
-                                        </Text>
-                                        <View
-                                            style={[
-                                                Style.flexRowCenter,
-                                                {paddingTop: text(8), paddingBottom: Space.padding},
-                                            ]}>
-                                            <View style={Style.flexCenter}>
-                                                <Text style={[styles.profit, {color: Colors.red}]}>
-                                                    {data[item]?.chart.label[0]?.val}
-                                                </Text>
-                                                <View style={[Style.flexRow, {marginTop: text(8)}]}>
-                                                    <Dot bgColor={'rgba(250, 54, 65, 0.15)'} color={Colors.red} />
-                                                    <Text style={[styles.cellText, {marginLeft: text(4)}]}>
-                                                        {data[item]?.chart.label[0]?.name}
+                                {index === 2 &&
+                                    (data[item]?.chart ? (
+                                        <>
+                                            <Text
+                                                style={[
+                                                    styles.cellText,
+                                                    styles.thText,
+                                                    {
+                                                        textAlign: 'center',
+                                                        marginTop: Space.marginVertical,
+                                                    },
+                                                ]}>
+                                                {'近5年累计收益率'}
+                                            </Text>
+                                            <View
+                                                style={[
+                                                    Style.flexRowCenter,
+                                                    {paddingTop: text(8), paddingBottom: Space.padding},
+                                                ]}>
+                                                <View style={Style.flexCenter}>
+                                                    <Text style={[styles.profit, {color: Colors.red}]}>
+                                                        {data[item]?.chart.label[0]?.val}
                                                     </Text>
+                                                    <View style={[Style.flexRow, {marginTop: text(8)}]}>
+                                                        <Dot bgColor={'rgba(250, 54, 65, 0.15)'} color={Colors.red} />
+                                                        <Text style={[styles.cellText, {marginLeft: text(4)}]}>
+                                                            {data[item]?.chart.label[0]?.name}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                <Text style={styles.vs}>{'VS'}</Text>
+                                                <View style={Style.flexCenter}>
+                                                    <Text style={styles.profit}>{data[item]?.chart.label[1]?.val}</Text>
+                                                    <View style={[Style.flexRow, {marginTop: text(8)}]}>
+                                                        <Dot
+                                                            bgColor={'rgba(84, 89, 104, 0.2)'}
+                                                            color={Colors.lightBlackColor}
+                                                        />
+                                                        <Text style={[styles.cellText, {marginLeft: text(4)}]}>
+                                                            {data[item]?.chart.label[1]?.name}
+                                                        </Text>
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <Text style={styles.vs}>{'VS'}</Text>
-                                            <View style={Style.flexCenter}>
-                                                <Text style={styles.profit}>{data[item]?.chart.label[1]?.val}</Text>
-                                                <View style={[Style.flexRow, {marginTop: text(8)}]}>
-                                                    <Dot
-                                                        bgColor={'rgba(84, 89, 104, 0.2)'}
-                                                        color={Colors.lightBlackColor}
-                                                    />
-                                                    <Text style={[styles.cellText, {marginLeft: text(4)}]}>
-                                                        {data[item]?.chart.label[1]?.name}
-                                                    </Text>
-                                                </View>
+                                            <View style={{minHeight: text(180)}}>
+                                                <Chart
+                                                    initScript={dodgeColumn(
+                                                        data[item]?.chart.data,
+                                                        [Colors.red, Colors.lightBlackColor],
+                                                        deviceWidth - text(32),
+                                                        [10, 5, 45, 0],
+                                                        20,
+                                                        0.5,
+                                                        true,
+                                                        false
+                                                    )}
+                                                />
                                             </View>
-                                        </View>
-                                        <View style={{minHeight: text(180)}}>
-                                            <Chart
-                                                initScript={dodgeColumn(
-                                                    data[item]?.chart.data,
-                                                    [Colors.red, Colors.lightBlackColor],
-                                                    deviceWidth - text(32),
-                                                    [10, 5, 45, 0],
-                                                    20,
-                                                    0.5,
-                                                    true,
-                                                    false
-                                                )}
-                                            />
-                                        </View>
-                                    </>
-                                )}
+                                        </>
+                                    ) : (
+                                        <Empty
+                                            img={require('../../assets/img/emptyTip/noProfit.png')}
+                                            style={{paddingVertical: text(40)}}
+                                            text={'暂无累计收益数据'}
+                                            type={'part'}
+                                        />
+                                    ))}
                                 <View style={styles.conclusionBox}>
                                     <Image source={require('../../assets/img/detail/quot.png')} style={styles.quot} />
                                     <View style={{flex: 1}}>
