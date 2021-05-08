@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-30 16:02:13
+ * @LastEditTime: 2021-05-08 11:30:57
  * @Description:路由表
  */
 import React from 'react';
@@ -509,7 +509,7 @@ export default function AppStack() {
             <Stack.Screen name="GetRationalValue" component={GetRationalValue} options={{title: '信任值获取方法'}} />
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{headerShown: false}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
-            <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友注册'}} />
+            <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友'}} />
             <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
             <Stack.Screen name="ForgetLoginPwd" component={ForgetLoginPwd} options={{title: ''}} />
             <Stack.Screen

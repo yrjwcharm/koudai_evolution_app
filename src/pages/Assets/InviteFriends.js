@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:41:54
+ * @LastEditTime: 2021-05-08 11:30:43
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -163,7 +163,7 @@ const InviteFriends = ({navigation}) => {
                     <LinearGradient
                         colors={['#FFF0B3', '#FFDC77', '#FFD666', '#FEC340']}
                         style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
-                        <Text style={styles.btnText}>{'邀请好友赚魔分'}</Text>
+                        <Text style={styles.btnText}>{'邀请好友'}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>

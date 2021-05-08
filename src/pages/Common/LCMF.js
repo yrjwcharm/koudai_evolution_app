@@ -2,12 +2,13 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:36:31
+ * @LastEditTime: 2021-05-08 15:12:56
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
+import {useFocusEffect} from '@react-navigation/native';
 import {WebView as RNWebView} from 'react-native-webview';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
@@ -78,10 +79,6 @@ export default function LCMF({route, navigation}) {
             ),
             title: route?.params?.title || '',
         });
-        StatusBar.setBarStyle('light-content');
-        return () => {
-            StatusBar.setBarStyle('dark-content');
-        };
     }, [navigation, route]);
     useEffect(() => {
         if (hasNet) {
@@ -99,6 +96,14 @@ export default function LCMF({route, navigation}) {
         });
         return () => listener();
     }, []);
+    useFocusEffect(
+        useCallback(() => {
+            StatusBar.setBarStyle('light-content');
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
+    );
 
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>

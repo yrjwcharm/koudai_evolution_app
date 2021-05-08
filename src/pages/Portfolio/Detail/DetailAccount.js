@@ -198,7 +198,7 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-                    {chartData?.yield_info?.remark && data.low_line !== 1 && (
+                    {chartData?.yield_info?.remark && (data.low_line !== 1 || type !== 1) && (
                         <View
                             style={{
                                 paddingBottom: text(20),
@@ -216,7 +216,7 @@ export default function DetailAccount({route, navigation}) {
                                     style={{
                                         color: chartData?.yield_info?.remark?.color || '#4BA471',
                                         fontSize: text(15),
-                                        fontWeight: 'bold',
+                                        // fontWeight: 'bold',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {chartData?.yield_info?.remark?.ratio}
@@ -225,14 +225,47 @@ export default function DetailAccount({route, navigation}) {
                             {chartData?.yield_info?.remark?.content && (
                                 <Html
                                     html={chartData?.yield_info?.remark?.content}
-                                    style={{fontSize: text(12), lineHeight: text(18), color: '#9397A3'}}
+                                    style={{
+                                        fontSize: Font.textSm,
+                                        lineHeight: text(18),
+                                        color: Colors.descColor,
+                                        textAlign: 'justify',
+                                    }}
                                 />
+                            )}
+                            {data.low_line === 1 && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                    }}
+                                    style={[
+                                        Style.flexRowCenter,
+                                        {
+                                            borderColor: Colors.borderColor,
+                                            borderTopWidth: Space.borderWidth,
+                                            paddingTop: Space.padding,
+                                            marginTop: Space.marginVertical,
+                                            marginBottom: text(-4),
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
+                                        {data.line_info?.button?.text}
+                                    </Text>
+                                    <FontAwesome
+                                        name={'angle-right'}
+                                        size={18}
+                                        color={Colors.brandColor}
+                                        style={{marginLeft: text(4)}}
+                                    />
+                                </TouchableOpacity>
                             )}
                         </View>
                     )}
 
                     {/* 底线 */}
-                    {data.low_line === 1 && (
+                    {data.low_line === 1 && type === 1 && (
                         <View style={{paddingHorizontal: Space.padding, backgroundColor: '#fff'}}>
                             <View style={styles.lowLineBox}>
                                 <Text
@@ -247,15 +280,15 @@ export default function DetailAccount({route, navigation}) {
                                     ]}>
                                     {data.line_info?.line_desc?.title}
                                 </Text>
-                                <Text
+                                <Html
                                     style={{
                                         fontSize: Font.textH3,
                                         lineHeight: text(19),
                                         color: Colors.descColor,
-                                        // textAlign: 'justify',
-                                    }}>
-                                    {data.line_info?.line_desc?.desc}
-                                </Text>
+                                        textAlign: 'justify',
+                                    }}
+                                    html={data.line_info?.line_desc?.desc}
+                                />
                             </View>
                             <TouchableOpacity
                                 activeOpacity={0.8}
