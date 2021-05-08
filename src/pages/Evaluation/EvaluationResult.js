@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-30 16:02:58
+ * @LastEditTime: 2021-05-08 09:36:34
  * @Description:规划结果页
  */
 
@@ -22,6 +22,7 @@ import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal} from '../../components/Modal';
+import {WebView as RNWebView} from 'react-native-webview';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -73,6 +74,7 @@ export default class planResult extends Component {
         chart: '', //图表数据
         lableAnimation: true,
         data: '', //展示数据
+        h5Chart: this.props.route.params?.chart_h5_url || '', // h5Chart链接
     };
     upid = this.props.route?.params?.upid;
     summary_id = this.props.route?.params?.summary_id;
@@ -95,8 +97,8 @@ export default class planResult extends Component {
             }
         });
         http.get('/questionnaire/chart/20210101', {
-            upid: this.upid || 87,
-            summary_id: this.summary_id || 3981,
+            upid: this.upid,
+            summary_id: this.summary_id,
         }).then((chart) => {
             this.setState({chart: chart.result});
             this.animationTimer = setTimeout(() => {
