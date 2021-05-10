@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-04-23 18:28:15
+ * @LastEditTime: 2021-05-10 16:00:02
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -33,7 +33,7 @@ const FixedBtn = (props) => {
             } else if (item.type === 'tel') {
                 bottomModal.current.hide();
                 const url = `tel:${item.sno}`;
-                global.LogTool('phone', url);
+                global.LogTool('call');
                 Linking.canOpenURL(url)
                     .then((supported) => {
                         if (!supported) {

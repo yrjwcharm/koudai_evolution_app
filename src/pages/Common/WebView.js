@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-27 17:12:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-10 15:59:25
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -71,6 +71,7 @@ export default function WebView({route, navigation}) {
                         if (data) {
                             const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
                             if (url) {
+                                global.LogTool('call');
                                 Linking.canOpenURL(url)
                                     .then((supported) => {
                                         if (!supported) {

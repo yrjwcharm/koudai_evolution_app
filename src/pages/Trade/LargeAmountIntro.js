@@ -2,8 +2,8 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 17:48:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-10 16:00:30
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View} from 'react-native';
@@ -17,6 +17,7 @@ const btnHeight = isIphoneX() ? text(90) : text(66);
 const LargeAmountIntro = () => {
     const callTel = () => {
         const url = 'tel:400-080-8208';
+        global.LogTool('call');
         Linking.canOpenURL(url)
             .then((supported) => {
                 if (!supported) {
