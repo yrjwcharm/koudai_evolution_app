@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-21 16:43:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-10 21:00:07
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -150,12 +150,13 @@ class Login extends Component {
                     style={[styles.text, {color: Colors.btnColor, alignSelf: 'center', height: px(30)}]}>
                     立即注册
                 </Text>
-
-                <WechatView
-                    weChatLogin={this.weChatLogin}
-                    fr={this.props.route?.params?.fr || ''}
-                    style={{marginTop: px(16)}}
-                />
+                {this.props.userInfo.toJS().show_wx_login_btn ? (
+                    <WechatView
+                        weChatLogin={this.weChatLogin}
+                        fr={this.props.route?.params?.fr || ''}
+                        style={{marginTop: px(16)}}
+                    />
+                ) : null}
             </ScrollView>
         );
     }

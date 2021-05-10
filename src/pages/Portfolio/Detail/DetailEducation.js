@@ -1,12 +1,5 @@
-// /*
-//  * @Author: xjh
-//  * @Date: 2021-01-27 18:33:13
-//  * @Description:养老详情页
-//  * @LastEditors: xjh
-//  * @LastEditTime: 2021-01-27 18:37:22
-//  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
@@ -487,7 +480,10 @@ export default function DetailEducation({navigation, route}) {
                                                 chart={chart}
                                                 type={type}
                                                 showFutureArea={false}
-                                                style={{marginTop: text(20)}}
+                                                style={{
+                                                    marginTop: text(20),
+                                                    height: Platform.OS == 'android' ? text(260) : text(250),
+                                                }}
                                                 width={deviceWidth - text(40)}
                                             />
                                             <View

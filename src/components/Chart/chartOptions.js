@@ -116,7 +116,7 @@ export const baseChart = (data, width, height) => `(function(){
       if (index === 0) {
         textCfg.textAlign = 'left';
       } else if (index === total - 1) {
-        textCfg.textAlign = 'right';
+        // textCfg.textAlign = 'right';
       }
       return textCfg;
     }

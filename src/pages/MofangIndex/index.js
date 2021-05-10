@@ -33,6 +33,9 @@ import _ from 'lodash';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import {connect} from 'react-redux';
+import {updateUserInfo} from '../../redux/actions/userInfo';
+import {useDispatch} from 'react-redux';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -69,6 +72,7 @@ const Index = (props) => {
     const [loading, setLoading] = useState(true);
     const [allMsg, setAll] = useState(0);
     const [baner, setBaner] = useState([]);
+    const dispatch = useDispatch();
     let scrollingRight = '';
     let lastx = '';
     const snapScroll = useRef(null);
@@ -112,6 +116,9 @@ const Index = (props) => {
     );
 
     useEffect(() => {
+        http.get('/mapi/app/config/20210101').then((res) => {
+            dispatch(updateUserInfo(res.result));
+        });
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
