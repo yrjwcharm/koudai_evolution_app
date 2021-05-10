@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-08 09:36:34
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-10 17:55:23
  * @Description:规划结果页
  */
 
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -282,20 +282,32 @@ export default class planResult extends Component {
                             )}
                             {chart &&
                                 (type == 1 ? (
-                                    <Animatable.View
-                                        animation="fadeInUp"
-                                        style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
-                                        {name ? (
-                                            <LinearGradient
-                                                start={{x: 0.25, y: 0}}
-                                                end={{x: 0.8, y: 0}}
-                                                colors={['#FF7D7D', '#E74949']}
-                                                style={[styles.recommend_btn, {top: px(20)}]}>
-                                                <Text style={styles.btn_text}>{name}</Text>
-                                            </LinearGradient>
-                                        ) : null}
-                                        <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
-                                    </Animatable.View>
+                                    this.state.h5Chart ? (
+                                        <View pointerEvents="none" style={{height: px(190), marginVertical: px(20)}}>
+                                            <RNWebView
+                                                startInLoadingState
+                                                source={{uri: this.state.h5Chart}}
+                                                scalesPageToFit={true}
+                                            />
+                                        </View>
+                                    ) : (
+                                        <Animatable.View
+                                            animation="fadeInUp"
+                                            style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
+                                            {name ? (
+                                                <LinearGradient
+                                                    start={{x: 0.25, y: 0}}
+                                                    end={{x: 0.8, y: 0}}
+                                                    colors={['#FF7D7D', '#E74949']}
+                                                    style={[styles.recommend_btn, {top: px(20)}]}>
+                                                    <Text style={styles.btn_text}>{name}</Text>
+                                                </LinearGradient>
+                                            ) : null}
+                                            <Chart
+                                                initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))}
+                                            />
+                                        </Animatable.View>
+                                    )
                                 ) : (
                                     <Animatable.View
                                         animation="fadeInUp"

@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-23 19:31:15
+ * @LastEditTime: 2021-05-10 13:53:21
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -247,6 +247,14 @@ const debounce = (fn, delay = 500, isImmediate = true) => {
         };
     }
 };
+const parseQuery = function (query) {
+    var reg = /([^=&\s]+)[=\s]*([^&\s]*)/g;
+    var obj = {};
+    while (reg.exec(query)) {
+        obj[RegExp.$1] = RegExp.$2;
+    }
+    return obj;
+};
 //获取安全区域高度
 // function getStatusBarHeight() {
 //     if (Platform.OS == 'ios') {
@@ -273,4 +281,5 @@ export {
     inputInt,
     onlyNumber,
     debounce,
+    parseQuery,
 };

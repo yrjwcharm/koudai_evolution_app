@@ -33,6 +33,7 @@ export default class MyModal extends Component {
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
         this.imageUrl = props.imageUrl;
+        this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.state = {
             isVisible: this.props.isVisible || false,
             imgHeight: props.imgHeight || 0,
@@ -62,7 +63,7 @@ export default class MyModal extends Component {
         }, 100);
     }
     confirm() {
-        this.setModalVisiable(false);
+        this.clickClose === false ? '' : this.setModalVisiable(false);
         setTimeout(() => {
             this.props.confirmCallBack && this.props.confirmCallBack();
         }, 500);

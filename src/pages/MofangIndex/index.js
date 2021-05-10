@@ -11,7 +11,7 @@ import {
     BackHandler,
     Image,
 } from 'react-native';
-import {px, deviceWidth, formaNum} from '../../utils/appUtil';
+import {px, deviceWidth, formaNum, parseQuery} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
@@ -125,7 +125,7 @@ const Index = (props) => {
             JPush.addConnectEventListener((result) => {
                 console.log('connectListener:' + JSON.stringify(result));
             });
-            // JPush.setBadge({badge: 10, appbadge: '123'});
+            JPush.setBadge({badge: 0, appbadge: '123'});
 
             JPush.getRegistrationID((result) => {
                 console.log('registerID:' + JSON.stringify(result));
@@ -134,8 +134,15 @@ const Index = (props) => {
             //通知回调
             JPush.addNotificationListener((result) => {
                 console.log('notificationListener:' + JSON.stringify(result));
-                if (JSON.stringify(result.extras.route)) {
-                    props.navigation.navigate(result.extras.route);
+                if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                    if (result.extras.route?.indexOf('?') > -1) {
+                        props.navigation.navigate(
+                            result.extras.route.split('?')[0],
+                            parseQuery(result.extras.route.split('?')[1])
+                        );
+                    } else {
+                        props.navigation.navigate(result.extras.route);
+                    }
                 }
             });
             //本地通知回调

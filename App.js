@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-30 16:01:18
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-10 16:10:11
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -32,6 +32,7 @@ import {Modal} from './src/components/Modal';
 // import Image from 'react-native-fast-image';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
+import {View} from 'react-native-animatable';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -334,12 +335,21 @@ function App(props) {
             Modal.show({
                 confirm: modal.cancel ? true : false,
                 confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                clickClose: false,
                 confirmText: modal.confirm.text || '',
                 cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
                 cancelText: modal.cancel?.text || '',
                 content: modal.content || '',
                 customTitleView: (
-                    <Image source={{uri: modal.image}} style={{width: text(280), height: imageH.current}} />
+                    <Image
+                        source={{uri: modal.image}}
+                        style={{
+                            width: text(280),
+                            height: imageH.current,
+                            borderTopRightRadius: 8,
+                            borderTopLeftRadius: 8,
+                        }}
+                    />
                 ),
                 isTouchMaskToClose: modal.touch_close,
             });
