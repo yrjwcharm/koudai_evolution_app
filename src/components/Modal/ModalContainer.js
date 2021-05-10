@@ -104,7 +104,7 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={this.state.isVisible}
                 onRequestClose={() => {
-                    this.setModalVisiable(false);
+                    this.isTouchMaskToClose ? this.setModalVisiable(false) : null;
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
                     {/* 弹窗遮罩 */}

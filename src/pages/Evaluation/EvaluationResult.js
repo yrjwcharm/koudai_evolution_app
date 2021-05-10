@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 17:55:23
+ * @LastEditTime: 2021-05-10 18:32:50
  * @Description:规划结果页
  */
 
@@ -282,8 +282,11 @@ export default class planResult extends Component {
                             )}
                             {chart &&
                                 (type == 1 ? (
+                                    //智能组合动画
                                     this.state.h5Chart ? (
-                                        <View pointerEvents="none" style={{height: px(190), marginVertical: px(20)}}>
+                                        <View
+                                            pointerEvents="none"
+                                            style={{height: px(190), marginTop: px(20), marginBottom: px(10)}}>
                                             <RNWebView
                                                 startInLoadingState
                                                 source={{uri: this.state.h5Chart}}
