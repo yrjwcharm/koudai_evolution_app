@@ -2,7 +2,7 @@
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-05-07 18:25:35
+ * @LastEditTime: 2021-05-10 17:17:42
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -259,7 +259,7 @@ const PerformanceAnalysis = ({navigation, route}) => {
 
     useFocusEffect(
         useCallback(() => {
-            http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/portfolio/yield_parse/20210426', {
+            http.get('/portfolio/yield_parse/20210426', {
                 upid: route.params?.upid,
             })
                 .then((res) => {
