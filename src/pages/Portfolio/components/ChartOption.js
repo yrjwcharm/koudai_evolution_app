@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-29 19:14:07
+ * @LastEditTime: 2021-05-10 10:49:40
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -651,7 +651,8 @@ export const basicPieChart = (
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - 50},
-    height: ${text(280)},
+    height: ${text(220)},
+    appendPadding: [5, 15, 15, 30]
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('percent', {
@@ -676,6 +677,7 @@ export const basicPieChart = (
       color: '#545968',
     },
   });
+  chart.legend(false);
   chart.coord('polar', {
     transposed: true,
     innerRadius: 0.7,

@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-05-08 17:04:32
+ * @LastEditTime: 2021-05-08 20:34:06
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     },
     banner: {
         width: '100%',
-        height: text(189),
-        marginBottom: text(-48),
+        height: text(209),
+        marginBottom: text(-44),
     },
     inviteBox: {
         marginHorizontal: Space.marginAlign,

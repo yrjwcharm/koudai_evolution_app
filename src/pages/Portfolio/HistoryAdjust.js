@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 20:00:31
+ * @LastEditTime: 2021-05-10 10:47:12
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -136,10 +136,27 @@ const HistoryAdjust = ({navigation, route}) => {
                                 ))}
                         </View> */}
                         {chart.length > 0 && (
-                            <View style={{height: text(288)}}>
+                            <View style={{height: text(220)}}>
                                 <Chart initScript={basicPieChart(chart)} data={chart} />
                             </View>
                         )}
+                        <View
+                            style={[
+                                Style.flexRow,
+                                {flexWrap: 'wrap', paddingLeft: Space.padding, marginBottom: text(8)},
+                            ]}>
+                            {chart.map((item, index) => {
+                                return (
+                                    <View
+                                        style={[Style.flexRow, {width: '50%', marginBottom: text(8)}]}
+                                        key={RatioColor[index]}>
+                                        <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
+                                        <Text style={styles.legendName}>{item.name}</Text>
+                                        <Text style={styles.legendVal}>{item.percent}%</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
                         {data?.intros?.content ? (
                             <View style={{marginTop: text(8)}}>
                                 <Text style={[styles.intro_title]}>{data.intros.title}</Text>
@@ -172,7 +189,7 @@ const styles = StyleSheet.create({
     },
     topPart: {
         paddingHorizontal: Space.marginAlign,
-        paddingTop: text(26),
+        paddingTop: Space.padding,
         paddingBottom: Space.marginVertical,
         backgroundColor: '#fff',
     },
@@ -190,6 +207,18 @@ const styles = StyleSheet.create({
     },
     barPart: {
         height: '100%',
+    },
+    legendName: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.descColor,
+        width: text(86),
+    },
+    legendVal: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.descColor,
+        fontFamily: Font.numFontFamily,
     },
     intros: {
         fontSize: text(13),
@@ -222,9 +251,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     circle: {
-        width: text(12),
-        height: text(12),
-        borderRadius: text(6),
+        width: text(10),
+        height: text(10),
+        borderRadius: text(5),
         marginRight: text(8),
     },
     assets_l1_name: {
