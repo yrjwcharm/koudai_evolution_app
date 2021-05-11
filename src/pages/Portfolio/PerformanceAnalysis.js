@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-10 17:17:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 11:49:18
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {ActivityIndicator, Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import {useFocusEffect} from '@react-navigation/native';
@@ -280,7 +280,7 @@ const PerformanceAnalysis = ({navigation, route}) => {
     );
 
     return loading ? (
-        <View style={[Style.flexCenter, {flex: 1, backgroundColor: '#fff'}]}>
+        <View style={[Style.flexCenter, {flex: 1, backgroundColor: '#fff', borderColor: '#fff', borderWidth: 0.5}]}>
             <ActivityIndicator color={Colors.brandColor} />
         </View>
     ) : (

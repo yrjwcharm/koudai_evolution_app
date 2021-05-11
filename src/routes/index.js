@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-08 11:30:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 11:32:03
  * @Description:路由表
  */
 import React from 'react';
@@ -139,7 +139,7 @@ import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance'; //保险落地页
 import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
-import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis';
+import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis'; //业绩基准
 
 const Stack = createStackNavigator();
 

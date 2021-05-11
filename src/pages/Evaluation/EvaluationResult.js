@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 18:32:50
+ * @LastEditTime: 2021-05-11 12:40:42
  * @Description:规划结果页
  */
 
@@ -286,11 +286,15 @@ export default class planResult extends Component {
                                     this.state.h5Chart ? (
                                         <View
                                             pointerEvents="none"
-                                            style={{height: px(190), marginTop: px(20), marginBottom: px(10)}}>
+                                            style={{
+                                                height: 210,
+                                                marginTop: px(20),
+                                                marginBottom: px(10),
+                                            }}>
                                             <RNWebView
                                                 startInLoadingState
                                                 source={{uri: this.state.h5Chart}}
-                                                scalesPageToFit={true}
+                                                scalesPageToFit={false}
                                             />
                                         </View>
                                     ) : (

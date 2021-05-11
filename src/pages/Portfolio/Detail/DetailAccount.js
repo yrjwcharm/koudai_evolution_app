@@ -105,6 +105,8 @@ export default function DetailAccount({route, navigation}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{
@@ -216,7 +218,6 @@ export default function DetailAccount({route, navigation}) {
                                     style={{
                                         color: chartData?.yield_info?.remark?.color || '#4BA471',
                                         fontSize: text(15),
-                                        // fontWeight: 'bold',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {chartData?.yield_info?.remark?.ratio}

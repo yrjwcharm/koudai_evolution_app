@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 20:14:43
+ * @LastEditTime: 2021-05-11 11:10:51
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -100,7 +100,7 @@ export default function RenderChart(props) {
     }, [chart, chartData, onHide]);
     return chartData ? (
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
-            <View style={[Style.flexRow]}>
+            <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={[styles.legend_sty]}>
                     {lowLine === 1 && type !== 2 ? (
                         <Text style={styles.chartTitle}>{chartData?.yield_info?.title}</Text>
@@ -220,7 +220,8 @@ export default function RenderChart(props) {
 }
 const styles = StyleSheet.create({
     legend_sty: {
-        flex: 1,
+        // flex: 1,
+        // justifyContent: 'space-between',
         alignItems: 'center',
     },
     legend_title_sty: {

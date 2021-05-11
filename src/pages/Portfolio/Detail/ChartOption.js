@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: dx
- * @LastEditTime: 2021-04-27 14:46:28
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 12:41:56
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -108,7 +108,7 @@ export const pieChart = (data, map) => `
   });
   chart.guide().html({
     position: [ '50%', '50%' ],
-    html: '<div style="width: 250px;text-align: center;font-size:12px">'+'全球资产配置'+'</div>'
+    html: '<div style="width: 250px;text-align: center;font-size:10px">'+'全球资产配置'+'</div>'
   });
   chart.render();
 })()

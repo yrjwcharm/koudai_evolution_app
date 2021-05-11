@@ -167,6 +167,8 @@ export default function DetailRetiredPlan({navigation, route}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{

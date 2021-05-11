@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth, onlyNumber, px} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -197,6 +197,8 @@ export default function DetailEducation({navigation, route}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{
@@ -336,7 +338,7 @@ export default function DetailEducation({navigation, route}) {
     ) : (
         <>
             {Object.keys(data).length > 0 ? (
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     <InputModal {...modalProps} ref={inputModal}>
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
@@ -472,64 +474,58 @@ export default function DetailEducation({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <View style={{minHeight: text(300)}}>
-                                    {true && (
-                                        <>
-                                            <RenderChart
-                                                chartData={chartData}
-                                                chart={chart}
-                                                type={type}
-                                                showFutureArea={false}
-                                                style={{
-                                                    marginTop: text(20),
-                                                    height: Platform.OS == 'android' ? text(260) : text(250),
-                                                }}
-                                                width={deviceWidth - text(40)}
-                                            />
-                                            <View
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    height: 50,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginHorizontal: Space.marginAlign,
-                                                }}>
-                                                {subTabs?.map((_item, _index) => {
-                                                    return (
-                                                        <TouchableOpacity
-                                                            activeOpacity={1}
-                                                            style={[
-                                                                styles.btn_sty,
-                                                                {
-                                                                    backgroundColor:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? '#F1F6FF'
-                                                                            : '#fff',
-                                                                    borderWidth:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? 0
-                                                                            : 0.5,
-                                                                },
-                                                            ]}
-                                                            key={_index}
-                                                            onPress={() => changeTab(_item.val, _item.type)}>
-                                                            <Text
-                                                                style={{
-                                                                    color:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? '#0051CC'
-                                                                            : '#555B6C',
-                                                                    fontSize: text(12),
-                                                                }}>
-                                                                {_item.name}
-                                                            </Text>
-                                                        </TouchableOpacity>
-                                                    );
-                                                })}
-                                            </View>
-                                        </>
-                                    )}
-                                </View>
+                                {true && (
+                                    <>
+                                        <RenderChart
+                                            chartData={chartData}
+                                            chart={chart}
+                                            type={type}
+                                            showFutureArea={false}
+                                            style={{
+                                                marginTop: text(20),
+                                            }}
+                                            width={deviceWidth - text(40)}
+                                        />
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                marginTop: text(10),
+                                                justifyContent: 'space-between',
+                                                marginHorizontal: Space.marginAlign,
+                                            }}>
+                                            {subTabs?.map((_item, _index) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        style={[
+                                                            styles.btn_sty,
+                                                            {
+                                                                backgroundColor:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#F1F6FF'
+                                                                        : '#fff',
+                                                                borderWidth:
+                                                                    period == _item.val && type == _item.type ? 0 : 0.5,
+                                                            },
+                                                        ]}
+                                                        key={_index}
+                                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                                        <Text
+                                                            style={{
+                                                                color:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#0051CC'
+                                                                        : '#555B6C',
+                                                                fontSize: text(12),
+                                                            }}>
+                                                            {_item.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    </>
+                                )}
 
                                 {/* 表格 */}
                                 <Table data={tableData} />
