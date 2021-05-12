@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 15:33:05
+ * @LastEditTime: 2021-04-25 17:22:29
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -23,6 +23,7 @@ import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 var inputValue = 0;
+let timer = null;
 export default class TradeRedeem extends Component {
     constructor(props) {
         super(props);
@@ -68,7 +69,7 @@ export default class TradeRedeem extends Component {
     }
     getPlanInfo() {
         return new Promise((resolve, reject) => {
-            const {tableData, init} = this.state;
+            const {tableData, init, inputValue} = this.state;
             Http.get('/trade/redeem/plan/20210101', {
                 percent: inputValue / 100,
                 trade_method: this.state.trade_method,
@@ -156,22 +157,26 @@ export default class TradeRedeem extends Component {
             }
         });
     };
+
     onChange = (_text) => {
         let text = onlyNumber(_text);
-        this.setState({inputValue: text});
         if (text && text != 0) {
             if (text > 100) {
                 text = '100';
             }
             inputValue = text;
-            this.setState({btnClick: true, init: 0}, () => {
-                this.getPlanInfo();
+            this.setState({btnClick: true, inputValue: text, init: 0}, () => {
+                timer && clearTimeout(timer);
+                timer = setTimeout(() => {
+                    this.getPlanInfo();
+                }, 300);
             });
         } else {
-            this.setState({btnClick: false, tips: '', init: 1});
+            this.setState({btnClick: false, inputValue: '', tips: '', init: 1});
         }
     };
-    selectAge = () => {
+    redmeeClick = () => {
+        global.LogTool('redeem');
         setTimeout(() => {
             const option = [];
             var _id;
@@ -366,7 +371,7 @@ export default class TradeRedeem extends Component {
                     <FixedButton
                         title={data?.button?.text}
                         disabled={data?.button?.avail == 0 || btnClick == false}
-                        onPress={this.selectAge}
+                        onPress={this.redmeeClick}
                     />
                 )}
             </View>

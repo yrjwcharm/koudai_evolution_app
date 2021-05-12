@@ -2,12 +2,13 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:14:45
+ * @LastEditTime: 2021-04-28 11:13:50
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {px as text, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -16,6 +17,7 @@ import {Chart} from '../../components/Chart';
 import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
+import {BottomModal} from '../../components/Modal';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -28,6 +30,8 @@ const NetValueTrend = ({poid}) => {
     const textBenchmark = useRef(null);
     const [showEmpty, setShowEmpty] = useState(false);
     const tabClick = useRef(true);
+    const [tip, setTip] = useState({});
+    const bottomModal = useRef(null);
 
     const init = useCallback(() => {
         setChart_data([]);
@@ -75,26 +79,32 @@ const NetValueTrend = ({poid}) => {
         [getColor]
     );
     // 图表滑动结束
-    const onHide = useCallback(
-        ({items}) => {
-            chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
-            chartData.label[1] &&
-                textThisFund.current.setNativeProps({
-                    text: `${chartData.label[1]?.val}`,
-                    style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
-                });
-            chartData.label[2] &&
-                textBenchmark.current.setNativeProps({
-                    text: `${chartData.label[2]?.val}`,
-                    style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
-                });
-        },
-        [chartData, getColor]
-    );
+    const onHide = useCallback(() => {
+        chartData.label[0] && textTime.current.setNativeProps({text: chartData.label[0]?.val});
+        chartData.label[1] &&
+            textThisFund.current.setNativeProps({
+                text: `${chartData.label[1]?.val}`,
+                style: [styles.legendTitle, {color: getColor(`${chartData.label[1]?.val}`)}],
+            });
+        chartData.label[2] &&
+            textBenchmark.current.setNativeProps({
+                text: `${chartData.label[2]?.val}`,
+                style: [styles.legendTitle, {color: getColor(`${chartData.label[2]?.val}`)}],
+            });
+    }, [chartData, getColor]);
+    const showTips = (tips) => {
+        setTip(tips);
+        bottomModal.current.show();
+    };
 
     useEffect(() => {
         init();
     }, [init]);
+    useEffect(() => {
+        if (chartData.label) {
+            onHide();
+        }
+    }, [chartData, onHide]);
     return (
         <ScrollView
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -130,6 +140,17 @@ const NetValueTrend = ({poid}) => {
                                             <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
                                                 {item.name}
                                             </Text>
+                                            {chartData?.tips && index === 2 && (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={{position: 'absolute', right: text(-16)}}
+                                                    onPress={() => showTips(chartData.tips)}>
+                                                    <FastImage
+                                                        style={{width: text(16), height: text(16)}}
+                                                        source={require('../../assets/img/tip.png')}
+                                                    />
+                                                </TouchableOpacity>
+                                            )}
                                         </View>
                                     </View>
                                 );
@@ -240,6 +261,20 @@ const NetValueTrend = ({poid}) => {
                     }
                 </Text>
             </View>
+            <BottomModal ref={bottomModal} title={tip?.title}>
+                <View style={{padding: text(16)}}>
+                    {tip?.content?.map((item, index) => {
+                        return (
+                            <View key={index}>
+                                <Text style={styles.tipTitle}>{item.key}:</Text>
+                                <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                    {item?.val}
+                                </Text>
+                            </View>
+                        );
+                    })}
+                </View>
+            </BottomModal>
         </ScrollView>
     );
 };
@@ -345,6 +380,12 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         color: Colors.darkGrayColor,
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: text(20),
+        fontSize: Font.textH2,
+        marginBottom: text(4),
     },
 });
 

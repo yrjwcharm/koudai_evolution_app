@@ -2,7 +2,7 @@
  * @Date: 2021-01-28 15:50:06
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 17:56:49
+ * @LastEditTime: 2021-04-30 15:26:35
  * @Description: 基金详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -86,35 +86,31 @@ const FundDetail = ({navigation, route}) => {
         return (
             <>
                 <View style={[Style.flexRow, {minHeight: text(48)}]}>
-                    {showChart &&
-                        summary.map((item, index) => {
-                            return (
-                                <View key={item.key + index} style={styles.legendItem}>
-                                    <TextInput
-                                        defaultValue={`${item.val}`}
-                                        editable={false}
-                                        ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                        style={[
-                                            styles.legendTitle,
-                                            index !== 0 ? {color: getColor(`${item.val}`)} : {},
-                                        ]}
-                                    />
-                                    <View style={Style.flexRow}>
-                                        {index !== 0 && (
-                                            <Dot
-                                                bgColor={
-                                                    index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
-                                                }
-                                                color={index === 1 ? Colors.red : Colors.descColor}
-                                            />
-                                        )}
-                                        <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                            {item.key}
-                                        </Text>
-                                    </View>
+                    {summary.map((item, index) => {
+                        return (
+                            <View key={item.key + index} style={styles.legendItem}>
+                                <TextInput
+                                    defaultValue={`${item.val}`}
+                                    editable={false}
+                                    ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
+                                    style={[styles.legendTitle, index !== 0 ? {color: getColor(`${item.val}`)} : {}]}
+                                />
+                                <View style={Style.flexRow}>
+                                    {index !== 0 && (
+                                        <Dot
+                                            bgColor={
+                                                index === 1 ? 'rgba(231, 73, 73, 0.15)' : 'rgba(84, 89, 104, 0.15)'
+                                            }
+                                            color={index === 1 ? Colors.red : Colors.descColor}
+                                        />
+                                    )}
+                                    <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                        {item.key}
+                                    </Text>
                                 </View>
-                            );
-                        })}
+                            </View>
+                        );
+                    })}
                 </View>
                 <View style={{height: 220}}>
                     {showChart && (
@@ -229,18 +225,18 @@ const FundDetail = ({navigation, route}) => {
         ({items}) => {
             // console.log(items);
             if (curTab === 0) {
-                textTime.current.setNativeProps({text: items[0]?.title});
-                textThisFund.current.setNativeProps({
+                textTime.current?.setNativeProps({text: items[0]?.title});
+                textThisFund.current?.setNativeProps({
                     text: `${items[0]?.value}`,
                     style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
                 });
-                textBenchmark.current.setNativeProps({
+                textBenchmark.current?.setNativeProps({
                     text: `${items[1]?.value}`,
                     style: [styles.legendTitle, {color: getColor(`${items[1]?.value}`)}],
                 });
             } else {
-                textTime.current.setNativeProps({text: items[0]?.title});
-                textThisFund.current.setNativeProps({
+                textTime.current?.setNativeProps({text: items[0]?.title});
+                textThisFund.current?.setNativeProps({
                     text: `${items[0]?.value}`,
                     style: [styles.legendTitle, {color: getColor(`${items[0]?.value}`)}],
                 });
@@ -252,39 +248,39 @@ const FundDetail = ({navigation, route}) => {
     const onHide = useCallback(() => {
         if (curTab === 0) {
             if (data.part1 && !data.part1.fund.is_monetary) {
-                chart1.summary[0] && textTime.current.setNativeProps({text: chart1.summary[0]?.val});
-                chart1.summary[1] &&
-                    textThisFund.current.setNativeProps({
-                        text: `${chart1.summary[1]?.val}`,
-                        style: [styles.legendTitle, {color: getColor(`${chart1.summary[1]?.val}`)}],
+                summary[0] && textTime.current?.setNativeProps({text: summary[0]?.val});
+                summary[1] &&
+                    textThisFund.current?.setNativeProps({
+                        text: `${summary[1]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${summary[1]?.val}`)}],
                     });
-                chart1.summary[2] &&
-                    textBenchmark.current.setNativeProps({
-                        text: `${chart1.summary[2]?.val}`,
-                        style: [styles.legendTitle, {color: getColor(`${chart1.summary[2]?.val}`)}],
+                summary[2] &&
+                    textBenchmark.current?.setNativeProps({
+                        text: `${summary[2]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${summary[2]?.val}`)}],
                     });
             } else {
-                chart3.summary[0] && textTime.current.setNativeProps({text: chart3.summary[0]?.val});
-                chart3.summary[1] &&
-                    textThisFund.current.setNativeProps({
-                        text: `${chart3.summary[1]?.val}`,
-                        style: [styles.legendTitle, {color: getColor(`${chart3.summary[1]?.val}`)}],
+                summary[0] && textTime.current?.setNativeProps({text: summary[0]?.val});
+                summary[1] &&
+                    textThisFund.current?.setNativeProps({
+                        text: `${summary[1]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${summary[1]?.val}`)}],
                     });
-                chart3.summary[2] &&
-                    textBenchmark.current.setNativeProps({
-                        text: `${chart3.summary[2]?.val}`,
-                        style: [styles.legendTitle, {color: getColor(`${chart3.summary[2]?.val}`)}],
+                summary[2] &&
+                    textBenchmark.current?.setNativeProps({
+                        text: `${summary[2]?.val}`,
+                        style: [styles.legendTitle, {color: getColor(`${summary[2]?.val}`)}],
                     });
             }
         } else {
-            chart2.summary[0] && textTime.current.setNativeProps({text: chart2.summary[0]?.val});
-            chart2.summary[1] &&
-                textThisFund.current.setNativeProps({
-                    text: `${chart2.summary[1]?.val}`,
-                    style: [styles.legendTitle, {color: getColor(`${chart2.summary[1]?.val}`)}],
+            summary[0] && textTime.current?.setNativeProps({text: summary[0]?.val});
+            summary[1] &&
+                textThisFund.current?.setNativeProps({
+                    text: `${summary[1]?.val}`,
+                    style: [styles.legendTitle, {color: getColor(`${summary[1]?.val}`)}],
                 });
         }
-    }, [data.part1, curTab, chart1.summary, chart2.summary, chart3.summary, getColor]);
+    }, [data.part1, curTab, summary, getColor]);
 
     useEffect(() => {
         init();
@@ -300,6 +296,11 @@ const FundDetail = ({navigation, route}) => {
             getChart2();
         }
     }, [data.part1, curTab, getChart1, getChart2, getChart3]);
+    useEffect(() => {
+        if (summary.length > 0) {
+            onHide();
+        }
+    }, [onHide, summary]);
     return (
         Object.keys(data).length > 0 && (
             <ScrollView style={styles.container} scrollIndicatorInsets={{right: 1}}>

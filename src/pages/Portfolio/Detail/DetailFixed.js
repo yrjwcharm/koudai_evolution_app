@@ -2,15 +2,15 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: dx
- * @LastEditTime: 2021-04-17 10:39:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 11:53:01
  */
 
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, px, deviceWidth} from '../../../utils/appUtil';
+import {px as text, px} from '../../../utils/appUtil';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../../components/BottomDesc';
@@ -90,6 +90,8 @@ export default function DetailAccount({route, navigation}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{

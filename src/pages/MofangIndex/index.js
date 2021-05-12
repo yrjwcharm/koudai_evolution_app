@@ -11,7 +11,7 @@ import {
     BackHandler,
     Image,
 } from 'react-native';
-import {px, deviceWidth, formaNum} from '../../utils/appUtil';
+import {px, deviceWidth, formaNum, parseQuery} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
@@ -33,6 +33,9 @@ import _ from 'lodash';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import {connect} from 'react-redux';
+import {updateUserInfo} from '../../redux/actions/userInfo';
+import {useDispatch} from 'react-redux';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -69,6 +72,7 @@ const Index = (props) => {
     const [loading, setLoading] = useState(true);
     const [allMsg, setAll] = useState(0);
     const [baner, setBaner] = useState([]);
+    const dispatch = useDispatch();
     let scrollingRight = '';
     let lastx = '';
     const snapScroll = useRef(null);
@@ -112,6 +116,9 @@ const Index = (props) => {
     );
 
     useEffect(() => {
+        http.get('/mapi/app/config/20210101').then((res) => {
+            dispatch(updateUserInfo(res.result));
+        });
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });
@@ -125,7 +132,7 @@ const Index = (props) => {
             JPush.addConnectEventListener((result) => {
                 console.log('connectListener:' + JSON.stringify(result));
             });
-            // JPush.setBadge({badge: 10, appbadge: '123'});
+            JPush.setBadge({badge: 0, appbadge: '123'});
 
             JPush.getRegistrationID((result) => {
                 console.log('registerID:' + JSON.stringify(result));
@@ -134,8 +141,15 @@ const Index = (props) => {
             //通知回调
             JPush.addNotificationListener((result) => {
                 console.log('notificationListener:' + JSON.stringify(result));
-                if (JSON.stringify(result.extras.route)) {
-                    props.navigation.navigate(result.extras.route);
+                if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                    if (result.extras.route?.indexOf('?') > -1) {
+                        props.navigation.navigate(
+                            result.extras.route.split('?')[0],
+                            parseQuery(result.extras.route.split('?')[1])
+                        );
+                    } else {
+                        props.navigation.navigate(result.extras.route);
+                    }
                 }
             });
             //本地通知回调
@@ -395,7 +409,14 @@ const Index = (props) => {
                                             : jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: px(14)}}>
-                                    <FastImage style={styles.robot} source={require('../../assets/img/robot1.png')} />
+                                    <ImageBackground
+                                        source={require('../../assets/img/robotShadow.png')}
+                                        style={styles.robot}>
+                                        <FastImage
+                                            style={{width: px(80), height: px(80)}}
+                                            source={require('../../assets/img/robot.gif')}
+                                        />
+                                    </ImageBackground>
                                     <View style={styles.recommen_card}>
                                         <ImageBackground
                                             source={require('../../assets/img/index/recommendBg.png')}
@@ -418,18 +439,20 @@ const Index = (props) => {
                                             <View style={[styles.recommen_bottom, Style.flexBetween]}>
                                                 <View style={Style.flexRow}>
                                                     <View style={Style.flexRow}>
-                                                        {data?.custom_info?.user_avatar_list.map((avar, index) => {
-                                                            return (
-                                                                <Image
-                                                                    key={index}
-                                                                    source={{uri: avar}}
-                                                                    style={[
-                                                                        styles.user_avatar,
-                                                                        {marginLeft: index != 0 ? px(-6) : 0},
-                                                                    ]}
-                                                                />
-                                                            );
-                                                        })}
+                                                        {data?.custom_info?.user_avatar_list
+                                                            ?.slice(0, 2)
+                                                            .map((avar, index) => {
+                                                                return (
+                                                                    <Image
+                                                                        key={index}
+                                                                        source={{uri: avar}}
+                                                                        style={[
+                                                                            styles.user_avatar,
+                                                                            {marginLeft: index != 0 ? px(-6) : 0},
+                                                                        ]}
+                                                                    />
+                                                                );
+                                                            })}
                                                     </View>
                                                     <Text style={{fontSize: px(12), marginLeft: px(8)}}>
                                                         已有
@@ -759,7 +782,7 @@ const styles = StyleSheet.create({
     },
     robot: {
         width: px(80),
-        height: px(81),
+        height: px(80),
         top: px(-24),
         left: px(4),
         position: 'absolute',
@@ -780,14 +803,14 @@ const styles = StyleSheet.create({
     },
     recommen_bottom: {
         height: px(62),
-        backgroundColor: '#FBEFDD',
+        backgroundColor: '#FFE9C9',
         paddingHorizontal: px(16),
         marginTop: px(24),
     },
     recommend_btn: {
         height: px(38),
         justifyContent: 'center',
-        paddingHorizontal: px(22),
+        paddingHorizontal: px(32),
         borderRadius: 20,
     },
     btn_text: {

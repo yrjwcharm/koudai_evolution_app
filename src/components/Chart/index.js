@@ -2,14 +2,16 @@
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-08 16:09:20
+ * @LastEditTime: 2021-05-10 20:21:10
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
-import {StyleSheet, Platform, View, Text} from 'react-native';
+import {StyleSheet, Platform, View, Text, ActivityIndicator} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
+import {Colors} from '../../common/commonStyle';
 import _ from 'lodash';
+import {px} from '../../utils/appUtil';
 const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
@@ -48,6 +50,7 @@ class Chart extends PureComponent {
         if (this.props.updateScript) {
             this.chart.current.injectJavaScript(this.props.updateScript(data));
         } else {
+            console.log('update');
             this.chart.current.injectJavaScript(changeData(data));
         }
     };
@@ -66,11 +69,19 @@ class Chart extends PureComponent {
         const {webView: WebView, data, onChange, initScript, ...props} = this.props;
         return (
             <WebView
+                allowFileAccess
+                allowFileAccessFromFileURLs
+                allowUniversalAccessFromFileURLs
                 javaScriptEnabled
                 ref={this.chart}
                 scrollEnabled={false}
                 style={styles.webView}
                 injectedJavaScript={initScript}
+                renderLoading={() => (
+                    <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: px(40)}}>
+                        <ActivityIndicator color={Colors.brandColor} />
+                    </View>
+                )}
                 source={source}
                 startInLoadingState={true}
                 originWhitelist={['*']}
@@ -84,8 +95,6 @@ class Chart extends PureComponent {
 const styles = StyleSheet.create({
     webView: {
         flex: 1,
-        // height: 300,
-        // backgroundColor: 'transparent',
     },
 });
 

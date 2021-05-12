@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 21:46:59
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-07 16:35:52
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -160,13 +160,14 @@ class Question extends Component {
         if (action == 'submit' && this.fr != 'risk') {
             this.setState({finishTest: true});
             setTimeout(() => {
-                if (this.state.nextUrl) {
-                    this.props.jump(this.state.nextUrl, 'replace');
+                if (this.nextUrl) {
+                    this.props.jump(this.nextUrl, 'replace');
                     return;
                 }
                 this.props.navigation.replace('EvaluationResult', {
-                    upid: this.state.upid,
+                    upid: this.upid,
                     summary_id: this.state.summary_id,
+                    chart_h5_url: this.chart_h5_url,
                 });
             }, 2000);
         } else if (action == 'submit' && this.fr == 'risk') {
@@ -406,6 +407,9 @@ class Question extends Component {
                             upid: res.result.upid,
                             nextUrl: res.result.next_url,
                         });
+                        this.upid = res.result.upid;
+                        this.nextUrl = res.result.next_url;
+                        this.chart_h5_url = res.result.chart_h5_url;
                     }
                 });
                 this.clearValueTimer = setTimeout(() => {

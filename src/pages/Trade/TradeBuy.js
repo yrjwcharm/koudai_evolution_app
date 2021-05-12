@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 15:23:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-06 14:51:42
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -563,10 +563,12 @@ class TradeBuy extends Component {
                                         </Text>
                                     </TouchableOpacity>
                                 ) : (
-                                    <Text style={{color: Colors.lightGrayColor}}>
-                                        切换
-                                        <Icon name={'right'} size={px(12)} />
-                                    </Text>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={this.changeBankCard}>
+                                        <Text style={{color: Colors.lightGrayColor}}>
+                                            切换
+                                            <Icon name={'right'} size={px(12)} />
+                                        </Text>
+                                    </TouchableOpacity>
                                 )}
                             </>
                         ) : null}
@@ -674,9 +676,12 @@ class TradeBuy extends Component {
                                 }}
                                 placeholder={buy_info.hidden_text}
                                 placeholderTextColor={Colors.placeholderColor}
-                                onChangeText={(amount) => {
-                                    this.setState({amount: onlyNumber(amount)});
-                                    this.onInput(onlyNumber(amount));
+                                onChangeText={(_amount) => {
+                                    if (_amount >= 100000000) {
+                                        Toast.show('金额需小于1亿');
+                                    }
+                                    this.setState({amount: onlyNumber(_amount >= 100000000 ? '99999999.99' : _amount)});
+                                    this.onInput(onlyNumber(_amount));
                                 }}
                                 value={`${amount}`}
                             />

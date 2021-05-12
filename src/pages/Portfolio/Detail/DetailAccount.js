@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -14,6 +14,7 @@ import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import BottomDesc from '../../../components/BottomDesc';
 import {Chart} from '../../../components/Chart';
 import {histogram, pieChart} from './ChartOption';
@@ -87,7 +88,7 @@ export default function DetailAccount({route, navigation}) {
                         benchmark_id: res.result.benchmark_id,
                         poid: res.result.poid,
                         period: res.result.period,
-                        type: type,
+                        type: 1,
                     }).then((resp) => {
                         setChartData(resp.result);
                         setChart(resp.result.yield_info.chart);
@@ -97,7 +98,6 @@ export default function DetailAccount({route, navigation}) {
             .catch(() => {
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navigation, rightPress, route.params]);
     const renderLoading = () => {
         return (
@@ -105,6 +105,8 @@ export default function DetailAccount({route, navigation}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{
@@ -118,6 +120,7 @@ export default function DetailAccount({route, navigation}) {
     };
     useFocusEffect(
         useCallback(() => {
+            setType(1);
             init();
         }, [init])
     );
@@ -129,11 +132,40 @@ export default function DetailAccount({route, navigation}) {
             {Object.keys(data).length > 0 ? (
                 <ScrollView nestedScrollEnabled={true} style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     {data?.processing_info && <Notice content={data?.processing_info} />}
-                    <View style={[styles.container_sty]}>
-                        <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
-                        <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
+                    <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
+                        <View style={[Style.flexCenter, styles.container_sty]}>
+                            <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
+                            <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
+                        </View>
+                        {data.line_drawback && data.low_line === 1 && (
+                            <View style={[Style.flexCenter, styles.container_sty]}>
+                                <Text
+                                    style={[
+                                        styles.amount_sty,
+                                        {fontSize: text(26), lineHeight: text(30), color: Colors.defaultColor},
+                                    ]}>
+                                    {data.line_drawback.ratio_val}
+                                </Text>
+                                <Text style={[styles.radio_sty, {marginTop: text(6)}]}>
+                                    {data.line_drawback.ratio_desc}
+                                </Text>
+                            </View>
+                        )}
                     </View>
-                    <RenderChart chartData={chartData} chart={chart} type={type} />
+                    {data.low_line === 1 && (
+                        <View style={{backgroundColor: '#fff'}}>
+                            <View style={[Style.flexRowCenter, styles.tags]}>
+                                {data.tags?.map((tag, index) => {
+                                    return (
+                                        <View key={tag} style={styles.tag}>
+                                            <Text style={styles.tagText}>{tag}</Text>
+                                        </View>
+                                    );
+                                })}
+                            </View>
+                        </View>
+                    )}
+                    <RenderChart lowLine={data.low_line} chartData={chartData} chart={chart} type={type} />
 
                     <View
                         style={{
@@ -168,8 +200,13 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-                    {chartData?.yield_info?.remark && (
-                        <View style={{paddingBottom: text(20), paddingHorizontal: text(16), backgroundColor: '#fff'}}>
+                    {chartData?.yield_info?.remark && (data.low_line !== 1 || type !== 1) && (
+                        <View
+                            style={{
+                                paddingBottom: text(20),
+                                paddingHorizontal: Space.padding,
+                                backgroundColor: '#fff',
+                            }}>
                             <Text style={{marginTop: text(10), marginBottom: text(5)}}>
                                 <MaterialCommunityIcons
                                     name={'circle-medium'}
@@ -181,7 +218,6 @@ export default function DetailAccount({route, navigation}) {
                                     style={{
                                         color: chartData?.yield_info?.remark?.color || '#4BA471',
                                         fontSize: text(15),
-                                        fontWeight: 'bold',
                                         fontFamily: Font.numFontFamily,
                                     }}>
                                     {chartData?.yield_info?.remark?.ratio}
@@ -190,9 +226,94 @@ export default function DetailAccount({route, navigation}) {
                             {chartData?.yield_info?.remark?.content && (
                                 <Html
                                     html={chartData?.yield_info?.remark?.content}
-                                    style={{fontSize: text(12), lineHeight: text(18), color: '#9397A3'}}
+                                    style={{
+                                        fontSize: Font.textSm,
+                                        lineHeight: text(18),
+                                        color: Colors.descColor,
+                                        textAlign: 'justify',
+                                    }}
                                 />
                             )}
+                            {data.low_line === 1 && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                    }}
+                                    style={[
+                                        Style.flexRowCenter,
+                                        {
+                                            borderColor: Colors.borderColor,
+                                            borderTopWidth: Space.borderWidth,
+                                            paddingTop: Space.padding,
+                                            marginTop: Space.marginVertical,
+                                            marginBottom: text(-4),
+                                        },
+                                    ]}>
+                                    <Text
+                                        style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
+                                        {data.line_info?.button?.text}
+                                    </Text>
+                                    <FontAwesome
+                                        name={'angle-right'}
+                                        size={18}
+                                        color={Colors.brandColor}
+                                        style={{marginLeft: text(4)}}
+                                    />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    )}
+
+                    {/* 底线 */}
+                    {data.low_line === 1 && type === 1 && (
+                        <View style={{paddingHorizontal: Space.padding, backgroundColor: '#fff'}}>
+                            <View style={styles.lowLineBox}>
+                                <Text
+                                    style={[
+                                        {
+                                            fontSize: Font.textH3,
+                                            lineHeight: text(17),
+                                            color: Colors.defaultColor,
+                                            fontWeight: '500',
+                                        },
+                                        {paddingTop: text(12), paddingBottom: text(4)},
+                                    ]}>
+                                    {data.line_info?.line_desc?.title}
+                                </Text>
+                                <Html
+                                    style={{
+                                        fontSize: Font.textH3,
+                                        lineHeight: text(19),
+                                        color: Colors.descColor,
+                                        textAlign: 'justify',
+                                    }}
+                                    html={data.line_info?.line_desc?.desc}
+                                />
+                            </View>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                    data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                }}
+                                style={[
+                                    Style.flexRowCenter,
+                                    {
+                                        borderColor: Colors.borderColor,
+                                        borderTopWidth: Space.borderWidth,
+                                        paddingVertical: Space.padding,
+                                    },
+                                ]}>
+                                <Text style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
+                                    {data.line_info?.button?.text}
+                                </Text>
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={18}
+                                    color={Colors.brandColor}
+                                    style={{marginLeft: text(4)}}
+                                />
+                            </TouchableOpacity>
                         </View>
                     )}
 
@@ -284,7 +405,7 @@ export default function DetailAccount({route, navigation}) {
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
                                     </View>
                                 </View>
-                                <View style={{height: text(160)}}>
+                                <View style={{height: text(162)}}>
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,
@@ -372,13 +493,16 @@ const styles = StyleSheet.create({
         marginRight: text(-10),
     },
     container_sty: {
-        paddingHorizontal: text(16),
-        paddingVertical: text(20),
+        justifyContent: 'flex-end',
+        paddingBottom: text(20),
         backgroundColor: '#fff',
+        flex: 1,
+        height: '100%',
     },
     amount_sty: {
-        color: '#E74949',
+        color: Colors.red,
         fontSize: text(34),
+        lineHeight: text(40),
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
     },
@@ -399,8 +523,9 @@ const styles = StyleSheet.create({
         color: '#545968',
     },
     radio_sty: {
-        color: '#9AA1B2',
-        fontSize: text(12),
+        color: Colors.darkGrayColor,
+        fontSize: Font.textH3,
+        lineHeight: text(17),
         textAlign: 'center',
         marginTop: text(4),
     },
@@ -441,5 +566,32 @@ const styles = StyleSheet.create({
         height: text(24),
         position: 'absolute',
         bottom: 0,
+    },
+    lowLineBox: {
+        marginTop: text(6),
+        marginBottom: Space.marginVertical,
+        paddingHorizontal: Space.padding,
+        paddingBottom: text(14),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#F1F7FF',
+    },
+    tags: {
+        marginHorizontal: Space.marginAlign,
+        marginBottom: Space.marginVertical,
+        paddingBottom: text(20),
+        borderBottomWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    tag: {
+        marginHorizontal: text(4),
+        paddingVertical: text(2),
+        paddingHorizontal: text(10),
+        borderRadius: text(4),
+        backgroundColor: '#F0F6FD',
+    },
+    tagText: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: Colors.brandColor,
     },
 });

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-02-07 10:54:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-25 19:13:06
  * @Description:
  */
 import React, {PureComponent} from 'react';
@@ -42,8 +42,15 @@ class LineChartScreen extends PureComponent {
         console.log(tooltip);
     };
     componentDidMount() {
+        // setTimeout(() => {
+        //     this.changeData(20);
+        // }, 2000);
+        // setTimeout(() => {
+        //     this.changeData(30);
+        // }, 4000);
         this.props.navigation.addListener('beforeRemove', (e) => {
             // Prevent default behavior of leaving the screen
+
             e.preventDefault();
             // Prompt the user before leaving the screen
             Alert.alert(

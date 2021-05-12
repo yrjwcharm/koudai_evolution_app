@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-04-20 13:02:46
+ * @LastEditTime: 2021-05-07 17:38:17
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -55,7 +55,15 @@ const area = (source, alias = [], percent = true, tofixed = 0) => `
       } else if (index === total - 1) {
         textCfg.textAlign = 'right';
       }
+      textCfg.fontFamily = 'DINAlternate-Bold';
       return textCfg;
+    }
+  });
+  chart.axis('value', {
+    label: (text) => {
+      const cfg = {};
+      cfg.fontFamily = 'DINAlternate-Bold';
+      return cfg;
     }
   });
 //   chart.legend('type', {
@@ -97,7 +105,6 @@ class RiskManagement extends Component {
             data: {},
             alias: [],
             refreshing: false,
-            tips: '',
         };
         this.lineColor = [Colors.red, Colors.lightBlackColor, Colors.descColor];
     }
@@ -129,7 +136,7 @@ class RiskManagement extends Component {
         this.bottomModal.show();
     };
     render() {
-        const {data, alias, refreshing, tips} = this.state;
+        const {data, alias, refreshing} = this.state;
         return (
             <ScrollView
                 style={[styles.container]}
@@ -161,7 +168,9 @@ class RiskManagement extends Component {
                                                 }}
                                             />
                                         ) : (
-                                            <Text style={{color: this.lineColor[index], fontSize: text(12)}}>---</Text>
+                                            <Text style={{color: this.lineColor[index], fontSize: Font.textH3}}>
+                                                ---
+                                            </Text>
                                         )}
                                         <Text
                                             style={{

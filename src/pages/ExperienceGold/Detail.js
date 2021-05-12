@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-24 14:09:57
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 18:21:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-25 16:55:34
  * @Description: 体验金首页
  */
 
@@ -75,7 +75,9 @@ const ExperienceGold = ({navigation}) => {
     };
     return (
         <>
-            <ScrollView style={{flex: 1}} refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
+            <ScrollView
+                style={{flex: 1, backgroundColor: Colors.bgColor}}
+                refreshControl={<RefreshControl onRefresh={init} refreshing={refreshing} />}>
                 <LinearGradient
                     style={styles.bg}
                     colors={['#D4AC6F', 'rgba(212, 172, 111, 0)']}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 15:52:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-10 15:59:37
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -96,6 +96,7 @@ const IM = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const phone = () => {
+        global.LogTool('call');
         Linking.canOpenURL('tel:4000808208')
             .then((supported) => {
                 if (!supported) {
@@ -783,7 +784,7 @@ const IM = (props) => {
                     activeOpacity={0.9}
                     style={styles.article_con}
                     onPress={() => {
-                        props.navigation.navigate('ArticleDetail', {id: article.id});
+                        props.navigation.navigate('ArticleDetail', {article_id: article.id});
                     }}>
                     <FastImage
                         source={{uri: article.cover}}

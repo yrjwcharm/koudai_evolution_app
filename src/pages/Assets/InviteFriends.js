@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:41:54
+ * @LastEditTime: 2021-05-08 20:34:06
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -159,12 +159,8 @@ const InviteFriends = ({navigation}) => {
                         shareModal.current.show();
                     }}
                     activeOpacity={0.8}
-                    style={[styles.btn, {backgroundColor: 'transparent'}]}>
-                    <LinearGradient
-                        colors={['#FFF0B3', '#FFDC77', '#FFD666', '#FEC340']}
-                        style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
-                        <Text style={styles.btnText}>{'邀请好友赚魔分'}</Text>
-                    </LinearGradient>
+                    style={[Style.flexCenter, styles.btn, {backgroundColor: '#FFD24D'}]}>
+                    <Text style={styles.btnText}>{'邀请好友'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={{marginHorizontal: Space.marginAlign}}>
@@ -257,16 +253,16 @@ const styles = StyleSheet.create({
         // fontWeight: 'bold',
     },
     btn: {
-        borderRadius: text(23),
-        width: text(279),
-        height: text(46),
-        backgroundColor: '#FFD666',
+        borderRadius: text(8),
+        width: text(308),
+        height: text(45),
+        backgroundColor: '#FFD24D',
         overflow: 'hidden',
     },
     btnText: {
-        fontSize: text(18),
-        lineHeight: text(27),
-        color: '#923808',
+        fontSize: text(15),
+        lineHeight: text(21),
+        color: Colors.defaultColor,
         fontWeight: '500',
     },
     tableWrap: {

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 17:48:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-25 14:42:28
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image, ScrollView} from 'react-native';
@@ -36,6 +36,7 @@ export default function Trade({navigation, route}) {
 
     useEffect(() => {
         http.get('/freefund/buy/20210101', {}).then((res) => {
+            navigation.setOptions({title: res.result.title || ''});
             setData(res.result);
             http.get('trade/buy/plan/20210101', {
                 poid: route.params?.poid,
@@ -57,8 +58,7 @@ export default function Trade({navigation, route}) {
         });
     };
     return (
-        <View style={[styles.container]}>
-            <Header title={data.title} leftIcon="chevron-left" />
+        <View style={styles.container}>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{flex: 1}}>
                     <TouchableOpacity

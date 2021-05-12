@@ -2,28 +2,42 @@
  * @Author: xjh
  * @Date: 2021-03-01 17:09:55
  * @Description:产品说明书
- * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 16:18:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-28 18:20:12
  */
 import React, {useState, useEffect} from 'react';
-import {Text, ScrollView, StyleSheet} from 'react-native';
+import {ScrollView, StyleSheet, Image} from 'react-native';
 import FitImage from 'react-native-fit-image';
+import FastImage from 'react-native-fast-image';
 import Http from '../../../services';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, deviceWidth} from '../../../utils/appUtil';
 export default function ProductIntro({route}) {
     const [data, setData] = useState([]);
     useEffect(() => {
         Http.get('/portfolio/introduce/20210101', {
             upid: route.params.upid,
         }).then((res) => {
-            setData(res.result.image_list);
+            res.result?.image_list?.map((item) => {
+                Image.getSize(item, (w, h) => {
+                    const height = Math.floor(h / (w / deviceWidth));
+                    setData((prev) => {
+                        return [...prev, {url: item, height}];
+                    });
+                });
+            });
         });
-    }, []);
+    }, [route.params]);
     return (
         <ScrollView style={[styles.container]} scrollIndicatorInsets={{right: 1}}>
             {data.length > 0 &&
                 data?.map((item, index) => {
-                    return <FitImage key={index} source={{uri: item}} />;
+                    return (
+                        <FastImage
+                            key={index}
+                            source={{uri: item.url}}
+                            style={{width: deviceWidth, height: item.height}}
+                        />
+                    );
                 })}
         </ScrollView>
     );

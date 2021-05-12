@@ -1,15 +1,8 @@
-// /*
-//  * @Author: xjh
-//  * @Date: 2021-01-27 18:33:13
-//  * @Description:养老详情页
-//  * @LastEditors: xjh
-//  * @LastEditTime: 2021-01-27 18:37:22
-//  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {px as text, formaNum, deviceWidth, onlyNumber} from '../../../utils/appUtil';
+import {px as text, formaNum, deviceWidth, onlyNumber, px} from '../../../utils/appUtil';
 import Html from '../../../components/RenderHtml';
 import Http from '../../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -204,6 +197,8 @@ export default function DetailEducation({navigation, route}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{
@@ -230,7 +225,9 @@ export default function DetailEducation({navigation, route}) {
                 setTableData((prev) => {
                     const next = _.cloneDeep(prev);
                     next.tr_list[0][1] = res.result.yield_info.label[1].val;
-                    next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                    if (res.result.yield_info.label[2]) {
+                        next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                    }
                     return next;
                 });
             }
@@ -341,7 +338,7 @@ export default function DetailEducation({navigation, route}) {
     ) : (
         <>
             {Object.keys(data).length > 0 ? (
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
                     <InputModal {...modalProps} ref={inputModal}>
                         <View style={[Style.flexRow, styles.inputContainer]}>
                             <Text style={styles.unit}>¥</Text>
@@ -477,61 +474,58 @@ export default function DetailEducation({navigation, route}) {
                         <View style={styles.content_sty}>
                             <View style={styles.card_sty}>
                                 <Text style={styles.title_sty}>{chartData?.title}</Text>
-                                <View style={{minHeight: text(300)}}>
-                                    {true && (
-                                        <>
-                                            <RenderChart
-                                                chartData={chartData}
-                                                chart={chart}
-                                                type={type}
-                                                showFutureArea={false}
-                                                style={{marginTop: text(20)}}
-                                                width={deviceWidth - text(40)}
-                                            />
-                                            <View
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    height: 50,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'space-between',
-                                                    marginHorizontal: Space.marginAlign,
-                                                }}>
-                                                {subTabs?.map((_item, _index) => {
-                                                    return (
-                                                        <TouchableOpacity
-                                                            activeOpacity={1}
-                                                            style={[
-                                                                styles.btn_sty,
-                                                                {
-                                                                    backgroundColor:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? '#F1F6FF'
-                                                                            : '#fff',
-                                                                    borderWidth:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? 0
-                                                                            : 0.5,
-                                                                },
-                                                            ]}
-                                                            key={_index}
-                                                            onPress={() => changeTab(_item.val, _item.type)}>
-                                                            <Text
-                                                                style={{
-                                                                    color:
-                                                                        period == _item.val && type == _item.type
-                                                                            ? '#0051CC'
-                                                                            : '#555B6C',
-                                                                    fontSize: text(12),
-                                                                }}>
-                                                                {_item.name}
-                                                            </Text>
-                                                        </TouchableOpacity>
-                                                    );
-                                                })}
-                                            </View>
-                                        </>
-                                    )}
-                                </View>
+                                {true && (
+                                    <>
+                                        <RenderChart
+                                            chartData={chartData}
+                                            chart={chart}
+                                            type={type}
+                                            showFutureArea={false}
+                                            style={{
+                                                marginTop: text(20),
+                                            }}
+                                            width={deviceWidth - text(40)}
+                                        />
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                marginTop: text(10),
+                                                justifyContent: 'space-between',
+                                                marginHorizontal: Space.marginAlign,
+                                            }}>
+                                            {subTabs?.map((_item, _index) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={1}
+                                                        style={[
+                                                            styles.btn_sty,
+                                                            {
+                                                                backgroundColor:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#F1F6FF'
+                                                                        : '#fff',
+                                                                borderWidth:
+                                                                    period == _item.val && type == _item.type ? 0 : 0.5,
+                                                            },
+                                                        ]}
+                                                        key={_index}
+                                                        onPress={() => changeTab(_item.val, _item.type)}>
+                                                        <Text
+                                                            style={{
+                                                                color:
+                                                                    period == _item.val && type == _item.type
+                                                                        ? '#0051CC'
+                                                                        : '#555B6C',
+                                                                fontSize: text(12),
+                                                            }}>
+                                                            {_item.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    </>
+                                )}
 
                                 {/* 表格 */}
                                 <Table data={tableData} />

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-21 16:23:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 10:31:48
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -187,7 +187,7 @@ class SetLoginPassword extends Component {
     render() {
         const {code, password, btnClick, verifyText, code_btn_click} = this.state;
         return (
-            <ScrollView style={styles.login_content}>
+            <ScrollView style={styles.login_content} keyboardShouldPersistTaps="handled">
                 <Text style={styles.title}>请输入短信验证码</Text>
                 <Text style={styles.title_desc}>验证码已发送至{handlePhone(this.props.route?.params?.mobile)}</Text>
                 <View style={[Style.flexRowCenter, styles.code_view]}>

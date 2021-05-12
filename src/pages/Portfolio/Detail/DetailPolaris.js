@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 20:34:36
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-11 11:52:13
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
@@ -66,6 +66,8 @@ export default function DetailPolaris({route, navigation}) {
                 style={{
                     flex: 1,
                     backgroundColor: '#fff',
+                    borderColor: '#fff',
+                    borderWidth: 0.5,
                 }}>
                 <Image
                     style={{
@@ -158,14 +160,12 @@ export default function DetailPolaris({route, navigation}) {
                             </Text>
 
                             <View style={{minHeight: Platform.select({ios: text(240), android: text(248)})}}>
-                                {chart.length > 0 && (
-                                    <RenderChart
-                                        chartData={chartData}
-                                        chart={chart}
-                                        type={type}
-                                        width={deviceWidth - text(40)}
-                                    />
-                                )}
+                                <RenderChart
+                                    chartData={chartData}
+                                    chart={chart}
+                                    type={type}
+                                    width={deviceWidth - text(40)}
+                                />
                             </View>
 
                             <View

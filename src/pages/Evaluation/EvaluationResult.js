@@ -2,12 +2,12 @@
  * @Date: 2021-01-27 21:07:14
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-21 17:48:37
+ * @LastEditTime: 2021-05-11 12:40:42
  * @Description:规划结果页
  */
 
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, BackHandler} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Header from '../../components/NavBar';
@@ -22,6 +22,7 @@ import FastImage from 'react-native-fast-image';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
 import {Modal} from '../../components/Modal';
+import {WebView as RNWebView} from 'react-native-webview';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -73,12 +74,13 @@ export default class planResult extends Component {
         chart: '', //图表数据
         lableAnimation: true,
         data: '', //展示数据
+        h5Chart: this.props.route.params?.chart_h5_url || '', // h5Chart链接
     };
     upid = this.props.route?.params?.upid;
     summary_id = this.props.route?.params?.summary_id;
     componentDidMount() {
         this.props.navigation.addListener('beforeRemove', (e) => {
-            if (this.fr == 'risk') {
+            if (this.props.route?.params?.fr == 'risk') {
                 return;
             }
             if (e.data.action.type == 'POP' || e.data.action.type == 'GO_BACK') {
@@ -95,8 +97,8 @@ export default class planResult extends Component {
             }
         });
         http.get('/questionnaire/chart/20210101', {
-            upid: this.upid || 87,
-            summary_id: this.summary_id || 3981,
+            upid: this.upid,
+            summary_id: this.summary_id,
         }).then((chart) => {
             this.setState({chart: chart.result});
             this.animationTimer = setTimeout(() => {
@@ -253,11 +255,7 @@ export default class planResult extends Component {
                                             </View>
                                             <View>
                                                 <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                                                    <Text
-                                                        style={[
-                                                            styles.sm_radio,
-                                                            {fontSize: px(24), marginRight: px(9)},
-                                                        ]}>
+                                                    <Text style={[styles.sm_radio, {fontSize: px(24)}]}>
                                                         {tab[1]?.val}
                                                     </Text>
                                                     {/* <View style={[Style.flexRow]}>
@@ -265,7 +263,9 @@ export default class planResult extends Component {
                                                         <Text style={[styles.sm_radio, {color: Colors.red}]}>14.35%</Text>
                                                     </View> */}
                                                 </View>
-                                                <Text style={styles.desc_text}> {tab[1]?.name}</Text>
+                                                <Text style={[styles.desc_text, {textAlign: 'right'}]}>
+                                                    {tab[1]?.name}
+                                                </Text>
                                             </View>
                                         </View>
                                     ) : type == 2 ? (
@@ -282,28 +282,47 @@ export default class planResult extends Component {
                             )}
                             {chart &&
                                 (type == 1 ? (
-                                    <Animatable.View
-                                        animation="fadeInUp"
-                                        style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
-                                        {name ? (
-                                            <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
-                                                colors={['#FF7D7D', '#E74949']}
-                                                style={[styles.recommend_btn, {top: px(20)}]}>
-                                                <Text style={styles.btn_text}>{name}</Text>
-                                            </LinearGradient>
-                                        ) : null}
-                                        <Chart initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))} />
-                                    </Animatable.View>
+                                    //智能组合动画
+                                    this.state.h5Chart ? (
+                                        <View
+                                            pointerEvents="none"
+                                            style={{
+                                                height: 210,
+                                                marginTop: px(20),
+                                                marginBottom: px(10),
+                                            }}>
+                                            <RNWebView
+                                                startInLoadingState
+                                                source={{uri: this.state.h5Chart}}
+                                                scalesPageToFit={false}
+                                            />
+                                        </View>
+                                    ) : (
+                                        <Animatable.View
+                                            animation="fadeInUp"
+                                            style={{height: px(220), paddingHorizontal: px(10), marginBottom: px(20)}}>
+                                            {name ? (
+                                                <LinearGradient
+                                                    start={{x: 0.25, y: 0}}
+                                                    end={{x: 0.8, y: 0}}
+                                                    colors={['#FF7D7D', '#E74949']}
+                                                    style={[styles.recommend_btn, {top: px(20)}]}>
+                                                    <Text style={styles.btn_text}>{name}</Text>
+                                                </LinearGradient>
+                                            ) : null}
+                                            <Chart
+                                                initScript={chartOptions.baseComChart(chart, deviceWidth, px(220))}
+                                            />
+                                        </Animatable.View>
+                                    )
                                 ) : (
                                     <Animatable.View
                                         animation="fadeInUp"
                                         style={{height: px(180), marginBottom: px(20)}}>
                                         {name ? (
                                             <LinearGradient
-                                                start={{x: 0, y: 0.25}}
-                                                end={{x: 0, y: 0.8}}
+                                                start={{x: 0.25, y: 0}}
+                                                end={{x: 0.8, y: 0}}
                                                 colors={['#FF7D7D', '#E74949']}
                                                 style={styles.recommend_btn}>
                                                 <Text style={styles.btn_text}>{name}</Text>
@@ -322,7 +341,7 @@ export default class planResult extends Component {
                                             this.jumpNext(plan?.url?.path, plan?.url?.params);
                                         }}>
                                         <View style={[Style.flexRow, {marginBottom: px(10)}]}>
-                                            <Text style={styles.key}> {plan.plan_yield_info.title}</Text>
+                                            <Text style={styles.key}>{plan.plan_yield_info.title}</Text>
                                             <Text style={styles.plan_goal_amount}>
                                                 {plan.plan_yield_info.val}
                                                 {plan.plan_yield_info.unit}
@@ -426,6 +445,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
+        backgroundColor: '#fff',
         paddingBottom: isIphoneX() ? 84 : 50,
     },
     name: {

@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:26:04
+ * @LastEditTime: 2021-05-07 10:03:17
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -16,13 +16,11 @@ import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Modal} from '../../components/Modal';
-import {useJump} from '../../components/hooks';
 import {Chart} from '../../components/Chart';
 import {areaChart} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
 const AccProfit = ({poid}) => {
     const insets = useSafeAreaInsets();
-    const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
     const [period, setPeriod] = useState('this_year');
@@ -177,6 +175,8 @@ const AccProfit = ({poid}) => {
                                     chartData.chart,
                                     [Colors.red],
                                     [Colors.red],
+                                    undefined,
+                                    text(224),
                                     {value: '累计收益(元)'},
                                     false,
                                     0

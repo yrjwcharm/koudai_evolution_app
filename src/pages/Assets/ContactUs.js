@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 09:56:37
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-25 11:24:38
+ * @LastEditTime: 2021-05-10 15:58:56
  * @Description: 联系我们
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -24,6 +24,7 @@ const ContactUs = ({navigation}) => {
         if (item.type === 'online') {
             navigation.navigate('IM');
         } else if (item.type === 'phone') {
+            global.LogTool('call');
             const url = `tel:${item.value}`;
             Linking.canOpenURL(url)
                 .then((supported) => {

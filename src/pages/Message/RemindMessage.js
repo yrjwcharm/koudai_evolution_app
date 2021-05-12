@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: dx
- * @LastEditTime: 2021-04-14 15:09:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-04-25 17:27:09
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -100,7 +100,7 @@ export default function RemindMessage({navigation}) {
                                     resizeMode="contain"
                                     style={{width: text(40), height: text(40)}}
                                 />
-                                {data?.point?.unread ? (
+                                {data?.service?.unread ? (
                                     <View style={styles.point_sty}>
                                         <Text
                                             style={{
@@ -108,7 +108,7 @@ export default function RemindMessage({navigation}) {
                                                 fontSize: text(11),
                                                 fontFamily: Font.numFontFamily,
                                             }}>
-                                            {data?.point?.unread > 99 ? '99+' : data?.point?.unread}
+                                            {data?.service?.unread > 99 ? '99+' : data?.service?.unread}
                                         </Text>
                                     </View>
                                 ) : null}

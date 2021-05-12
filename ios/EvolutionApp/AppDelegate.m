@@ -52,6 +52,8 @@ static void InitializeFlipper(UIApplication *application) {
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     // NSLog(@"进入前台");
+     [application setApplicationIconBadgeNumber:0];   //清除角标
+    [application cancelAllLocalNotifications];
     [_visualEffectView removeFromSuperview];
     
 }

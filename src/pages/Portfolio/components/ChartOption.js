@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 17:51:36
+ * @LastEditTime: 2021-05-10 10:49:40
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -66,6 +66,7 @@ export const baseAreaChart = (
       } else if (index === total - 1 ) {
         textCfg.textAlign = 'right';
       }
+      textCfg.fontFamily = 'DINAlternate-Bold';
       return textCfg;
     }
   });
@@ -73,6 +74,7 @@ export const baseAreaChart = (
     label: function label(text) {
       const cfg = {};
       cfg.text = Math.abs(parseFloat(text)) < 1 && Math.abs(parseFloat(text)) > 0 ? parseFloat(text).toFixed(2) + "%" : parseFloat(text) + "%";
+      cfg.fontFamily = 'DINAlternate-Bold';
       return cfg;
     }
   });
@@ -183,8 +185,12 @@ export const baseAreaChart = (
         duration: 500
       }
     })
-    .style({
-      lineWidth: 1
+    .style('type', {
+      lineWidth: 1,
+      lineDash(val) {
+        if (val === '底线') return [4, 4, 4];
+        else return [];
+      }
     });
     chart.point().position('date*value').size('tag', function(val) {
       return val ? 3 : 0;
@@ -223,6 +229,8 @@ export const areaChart = (
         '#EBDD69',
     ],
     areaColors,
+    width = deviceWidth,
+    height = text(220),
     alias = {},
     percent = false,
     tofixed = 2
@@ -231,7 +239,9 @@ export const areaChart = (
 chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
-  padding: [56, 'auto', 'auto']
+  padding: [56, 'auto', 'auto'],
+  width: ${width},
+  height: ${height}
 });
 chart.source(${JSON.stringify(data)});
 chart.scale({
@@ -257,6 +267,7 @@ chart.axis('date', {
     } else if (index === total - 1) {
       textCfg.textAlign = 'right';
     }
+    textCfg.fontFamily = 'DINAlternate-Bold';
     return textCfg;
   }
 });
@@ -264,6 +275,7 @@ chart.axis('value', {
   label: (text) => {
     const cfg = {};
     cfg.text = ${percent ? '(text * 100).toFixed(' + tofixed + ') + "%"' : '(text * 1).toFixed(' + tofixed + ')'};
+    cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
 });
@@ -367,7 +379,15 @@ export const baseLineChart = (
       } else if (index === total - 1) {
         textCfg.textAlign = 'right';
       }
+      textCfg.fontFamily = 'DINAlternate-Bold';
       return textCfg;
+    }
+  });
+  chart.axis('value', {
+    label: (text) => {
+      const cfg = {};
+      cfg.fontFamily = 'DINAlternate-Bold';
+      return cfg;
     }
   });
   chart.legend(false);
@@ -464,6 +484,7 @@ export const percentStackColumn = (
       } else if (index === total - 1) {
         textCfg.textAlign = 'right';
       }
+      textCfg.fontFamily = 'DINAlternate-Bold';
       return textCfg;
     }
   });
@@ -471,6 +492,7 @@ export const percentStackColumn = (
     label: function label(text) {
       const cfg = {};
       cfg.text = text / 100 + '%';
+      cfg.fontFamily = 'DINAlternate-Bold';
       return cfg;
     }
   });
@@ -515,13 +537,21 @@ export const dodgeColumn = (
         '#F18D60',
         '#5E71E8',
         '#EBDD69',
-    ]
+    ],
+    width = deviceWidth,
+    appendPadding = [15, 15, 25],
+    size = 10,
+    marginRatio = 0,
+    showGuide = false,
+    showTooltip = true
 ) => `
 (function(){
 chart = new F2.Chart({
   id: 'chart',
   pixelRatio: window.devicePixelRatio,
+  width: ${width},
   height: ${text(220)},
+  appendPadding: ${JSON.stringify(appendPadding)}
 });
 chart.source(${JSON.stringify(data)}, {
   value: {
@@ -531,11 +561,20 @@ chart.source(${JSON.stringify(data)}, {
     },
   }
 });
+chart.axis('date', {
+  label: function label(text, index, total) {
+    const textCfg = {};
+    textCfg.text = text;
+    textCfg.fontFamily = 'DINAlternate-Bold';
+    return textCfg;
+  }
+});
 chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
     cfg.text = number.toFixed(0) + "%";
+    cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
 });
@@ -549,12 +588,39 @@ chart.tooltip({
     window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
   },
 });
+if (!${showTooltip}) {
+  chart.tooltip(false);
+}
 chart.interval()
   .position('date*value')
   .color('type', ${JSON.stringify(colors)})
-  .adjust('dodge')
-  .size(10);
+  .adjust({
+    type: 'dodge',
+    marginRatio: ${marginRatio}
+  })
+  .size(${size});
 chart.render();
+if (${showGuide}) {
+  const offset = -5;
+  const canvas = chart.get('canvas');
+  const group = canvas.addGroup();
+  ${JSON.stringify(data)}.forEach(function(obj) {
+    const point = chart.getPosition(obj);
+    group.addShape('text', {
+      attrs: {
+        x: point.x + (obj.type === '上证指数' ? 13 : -12),
+        y: point.y + (obj.value > 0 ? -5 : 15),
+        text: (obj.value * 100).toFixed(2) + '%',
+        textAlign: 'center',
+        textBaseline: 'bottom',
+        fill: '#545968',
+        fontSize: 10,
+        lineHeight: 11,
+        fontFamily: 'DINAlternate-Bold'
+      }
+    });
+  });
+}
 })();
 `;
 
@@ -585,7 +651,8 @@ export const basicPieChart = (
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - 50},
-    height: ${text(280)},
+    height: ${text(220)},
+    appendPadding: [5, 15, 15, 30]
   });
   chart.source(${JSON.stringify(data)});
   chart.scale('percent', {
@@ -604,11 +671,13 @@ export const basicPieChart = (
       symbol: 'circle', // marker 的形状
       radius: 5 // 半径大小
     },
-    titleStyle: {
+    nameStyle: {
       fontSize: 13,
-      color: '#4E556C',
+      lineHeight: 18,
+      color: '#545968',
     },
   });
+  chart.legend(false);
   chart.coord('polar', {
     transposed: true,
     innerRadius: 0.7,

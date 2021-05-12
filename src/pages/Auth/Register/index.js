@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 11:22:41
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-10 20:48:38
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -16,7 +16,8 @@ import Agreements from '../../../components/Agreements';
 import http from '../../../services/';
 import Toast from '../../../components/Toast';
 import FastImage from 'react-native-fast-image';
-export default class index extends Component {
+import {connect} from 'react-redux';
+class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -120,12 +121,17 @@ export default class index extends Component {
                         去登录
                     </Text>
                 </View>
-                <WechatView fr={this.props.route?.params?.fr || ''} />
+                {this.props.userInfo.show_wx_login_btn ? <WechatView fr={this.props.route?.params?.fr || ''} /> : null}
             </ScrollView>
         );
     }
 }
-
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo?.toJS(),
+    };
+};
+export default connect(mapStateToProps, null)(Index);
 const styles = StyleSheet.create({
     login_content: {
         padding: text(23),

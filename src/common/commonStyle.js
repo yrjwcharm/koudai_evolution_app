@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-12-28 11:53:01
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 21:46:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-04-26 15:50:48
  * @Description:主题及公共样式表
  */
 
@@ -67,7 +67,7 @@ export const Space = {
     cardPadding: text(16),
     /** width **/
     //圆角
-    borderRadius: text(8),
+    borderRadius: text(6),
     // 边框线宽度
     borderWidth: 0.5,
     // 分割线高度
