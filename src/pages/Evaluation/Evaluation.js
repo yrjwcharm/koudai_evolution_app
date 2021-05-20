@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-13 19:09:30
+ * @LastEditTime: 2021-05-20 17:29:45
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -390,6 +390,7 @@ class Question extends Component {
                 http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
                         layoutAnimation();
+                        this.jumpNext(option);
                         this.setState(
                             {
                                 loading_text: res?.result?.loading_text,
@@ -397,17 +398,17 @@ class Question extends Component {
                             },
                             () => {
                                 this.setState({finishTest: true});
-                                // setTimeout(() => {
-                                //     if (res.result.next_url) {
-                                //         this.props.jump(this.nextUrl, 'replace');
-                                //         return;
-                                //     }
-                                //     this.props.navigation.replace('EvaluationResult', {
-                                //         upid: res.result.upid,
-                                //         summary_id: this.state.summary_id,
-                                //         chart_h5_url: res.result.chart_h5_url,
-                                //     });
-                                // }, 2000);
+                                setTimeout(() => {
+                                    if (res.result.next_url) {
+                                        this.props.jump(this.nextUrl, 'replace');
+                                        return;
+                                    }
+                                    this.props.navigation.replace('EvaluationResult', {
+                                        upid: res.result.upid,
+                                        summary_id: this.state.summary_id,
+                                        chart_h5_url: res.result.chart_h5_url,
+                                    });
+                                }, 2000);
                             }
                         );
                         // this.upid = res.result.upid;
