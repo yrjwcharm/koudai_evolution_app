@@ -2,12 +2,12 @@
  * @Date: 2021-01-20 10:35:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-26 14:02:53
+ * @LastEditTime: 2021-05-18 17:13:33
  * @Description: 自定义tabbar
  */
 
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView} from 'react-native';
 import {Colors, Space} from '../common/commonStyle';
 import {px} from '../utils/appUtil';
 const Button = (props) => {
@@ -29,10 +29,10 @@ export default class TabBar extends Component {
                 ? this.props.btnColor
                 : Colors.btnColor
             : Colors.darkGrayColor;
-        const fontSize = isTabActive ? px(15) : px(14);
+        const fontSize = isTabActive ? (this.props.activeFontSize ? this.props.activeFontSize : px(15)) : px(14);
         return (
             <Button
-                style={{flex: 1, height, backgroundColor: '#fff'}}
+                style={{flex: 1, height}}
                 key={name}
                 accessible={true}
                 accessibilityLabel={name}
@@ -103,7 +103,7 @@ export default class TabBar extends Component {
                         const renderTab = this.props.renderTab || this.renderTab;
                         return renderTab(name, page, isTabActive, this.props.goToPage);
                     })}
-                    {this._renderUnderline()}
+                    {this.props.hideUnderLine ? null : this._renderUnderline()}
                 </View>
             </View>
         );
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderColor: Colors.borderColor,
-        // borderTopWidth: Space.borderWidth,
         borderBottomWidth: Space.borderWidth,
         backgroundColor: '#fff',
     },

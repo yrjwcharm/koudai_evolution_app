@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-12 18:43:10
+ * @LastEditTime: 2021-05-19 16:21:55
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -12,7 +12,6 @@ import {Provider} from 'react-redux';
 import {StatusBar, Platform, BackHandler, Linking, UIManager, AppState, Image} from 'react-native';
 import {PersistGate} from 'redux-persist/integration/react';
 import {NavigationContainer} from '@react-navigation/native';
-// import {useColorScheme} from 'react-native-appearance';
 import AppStack from './src/routes';
 import configStore from './src/redux';
 import CodePush from 'react-native-code-push';
@@ -29,10 +28,8 @@ import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
-// import Image from 'react-native-fast-image';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
-import {View} from 'react-native-animatable';
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -137,7 +134,11 @@ function App(props) {
     global.ErrorUtils.setGlobalHandler((error) => {
         console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
         console.log(error, error.name, error.message);
-        http.post('/mapi/report/app_log/20210101', {error_type: error.name, error_msg: error.message});
+        http.post('/mapi/report/app_log/20210101', {
+            error: JSON.stringify(error),
+            error_type: error.name,
+            error_msg: error.message,
+        });
     }, true);
     React.useEffect(() => {
         heartBeat();

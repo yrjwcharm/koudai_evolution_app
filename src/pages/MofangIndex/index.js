@@ -33,8 +33,8 @@ import _ from 'lodash';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
-import {connect} from 'react-redux';
 import {updateUserInfo} from '../../redux/actions/userInfo';
+import UpdateCom from '../../components/UpdateCom';
 import {useDispatch} from 'react-redux';
 const shadow = {
     color: '#E3E6EE',
@@ -123,6 +123,7 @@ const Index = (props) => {
             setHasNet(state.isConnected);
         });
         return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -374,6 +375,7 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
+
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -689,6 +691,7 @@ const Index = (props) => {
                             </>
                             <BottomDesc />
                         </LinearGradient>
+                        <UpdateCom />
                     </ScrollView>
                 </>
             )}

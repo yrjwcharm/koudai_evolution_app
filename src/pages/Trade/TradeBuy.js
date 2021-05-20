@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-06 14:51:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-20 17:03:15
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -611,7 +611,7 @@ class TradeBuy extends Component {
                                         this.jumpPage('LargeAmount');
                                     }}>
                                     <Text style={{color: Colors.yellow}}>
-                                        去汇款
+                                        去使用
                                         <Icon name={'right'} size={px(12)} />
                                     </Text>
                                 </TouchableOpacity>

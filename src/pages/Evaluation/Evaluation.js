@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-07 16:35:52
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-13 19:09:30
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -157,20 +157,7 @@ class Question extends Component {
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
-        if (action == 'submit' && this.fr != 'risk') {
-            this.setState({finishTest: true});
-            setTimeout(() => {
-                if (this.nextUrl) {
-                    this.props.jump(this.nextUrl, 'replace');
-                    return;
-                }
-                this.props.navigation.replace('EvaluationResult', {
-                    upid: this.upid,
-                    summary_id: this.state.summary_id,
-                    chart_h5_url: this.chart_h5_url,
-                });
-            }, 2000);
-        } else if (action == 'submit' && this.fr == 'risk') {
+        if (action == 'submit' && this.fr == 'risk') {
             this.setState({finishTest: true});
             setTimeout(() => {
                 this.props.navigation.pop(1);
@@ -402,14 +389,30 @@ class Question extends Component {
                 };
                 http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
-                        this.setState({
-                            loading_text: res?.result?.loading_text,
-                            upid: res.result.upid,
-                            nextUrl: res.result.next_url,
-                        });
-                        this.upid = res.result.upid;
-                        this.nextUrl = res.result.next_url;
-                        this.chart_h5_url = res.result.chart_h5_url;
+                        layoutAnimation();
+                        this.setState(
+                            {
+                                loading_text: res?.result?.loading_text,
+                                nextUrl: res.result.next_url,
+                            },
+                            () => {
+                                this.setState({finishTest: true});
+                                // setTimeout(() => {
+                                //     if (res.result.next_url) {
+                                //         this.props.jump(this.nextUrl, 'replace');
+                                //         return;
+                                //     }
+                                //     this.props.navigation.replace('EvaluationResult', {
+                                //         upid: res.result.upid,
+                                //         summary_id: this.state.summary_id,
+                                //         chart_h5_url: res.result.chart_h5_url,
+                                //     });
+                                // }, 2000);
+                            }
+                        );
+                        // this.upid = res.result.upid;
+                        // this.nextUrl = res.result.next_url;
+                        // this.chart_h5_url = res.result.chart_h5_url;
                     }
                 });
                 this.clearValueTimer = setTimeout(() => {
@@ -478,6 +481,7 @@ class Question extends Component {
             loading_text,
             warnText,
         } = this.state;
+        console.log(finishTest);
         const current_ques = questions[current];
         let previousTest = current - 1;
         let tagList = [];

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-10 15:59:37
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-13 14:43:25
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -512,7 +512,7 @@ const IM = (props) => {
     const openPicker = () => {
         const options = {
             quality: 0.4,
-            // maxWidth: px(238),
+            // maxWidth: px(236),
             // maxHeight: px(300),
         };
         setTimeout(() => {
@@ -661,18 +661,17 @@ const IM = (props) => {
             </View>
         ) : null;
     };
-    console.log(messages);
     const renderTextButton = ({isOpen, isSelf, message}) => {
         var id = message.id;
         message = message?.content;
         return (
             message && (
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', marginLeft: px(6)}}>
                     <View style={[styles.triangle, styles.left_triangle]} />
                     <View
                         style={{
                             backgroundColor: '#fff',
-                            width: px(238),
+                            width: px(236),
                             borderRadius: px(4),
                         }}>
                         <View style={{paddingHorizontal: px(12)}}>
@@ -806,12 +805,12 @@ const IM = (props) => {
     const renderQuestionMessage = ({isOpen, isSelf, message}) => {
         message = message.content.result;
         return (
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', marginLeft: px(6)}}>
                 <View style={[styles.triangle, styles.left_triangle]} />
                 <View
                     style={{
                         backgroundColor: '#fff',
-                        width: px(238),
+                        width: px(236),
                         borderRadius: px(4),
                     }}>
                     <View style={{paddingHorizontal: px(12)}}>
@@ -1006,7 +1005,7 @@ const IM = (props) => {
                 }, 500)}
                 textMessageContanierStyle={{
                     paddingVertical: px(12),
-                    maxWidth: px(238),
+                    maxWidth: px(236),
                 }}
                 messageErrorIcon={<AntDesign name="exclamationcircle" size={px(16)} color={Colors.orange} />}
                 rightMessageTextStyle={styles.text}
@@ -1102,7 +1101,7 @@ const styles = StyleSheet.create({
     },
     article_con: {
         backgroundColor: '#fff',
-        width: px(238),
+        width: px(236),
         borderRadius: px(4),
         padding: px(8),
         flexDirection: 'row',

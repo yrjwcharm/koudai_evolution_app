@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-30 14:00:41
+ * @LastEditTime: 2021-05-18 15:24:08
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -12,6 +12,7 @@ import Home from '../pages/Assets/index';
 import {px, isIphoneX} from '../utils/appUtil';
 import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
+import Vision from '../pages/Vision/Vision';
 import {Colors} from '../common/commonStyle';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
@@ -54,6 +55,22 @@ export default function Tabbar() {
                                 />
                             );
                         }
+                    } else if (route.name === 'Vision') {
+                        if (focused) {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/shiyeActive.png')}
+                                />
+                            );
+                        } else {
+                            return (
+                                <FastImage
+                                    style={{width: tabIconSize, height: tabIconSize}}
+                                    source={require('../assets/img/tabIcon/shiye.png')}
+                                />
+                            );
+                        }
                     } else if (route.name === 'Home') {
                         if (focused) {
                             return (
@@ -85,13 +102,8 @@ export default function Tabbar() {
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen
-                name="Find"
-                component={Find}
-                options={{
-                    tabBarLabel: '发现',
-                }}
-            />
+            <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
+            <Tab.Screen name="Vision" options={{tabBarLabel: '视野'}} component={Vision} />
             <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
         </Tab.Navigator>
     );

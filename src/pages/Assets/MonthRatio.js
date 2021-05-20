@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-28 11:15:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-17 14:04:44
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -145,7 +145,7 @@ const NetValueTrend = ({poid}) => {
                                 );
                             })}
                         </View>
-                        <View style={{height: 220}}>
+                        <View style={{height: 240}}>
                             {chartData.chart && (
                                 <Chart
                                     initScript={dodgeColumn(chartData.chart, [Colors.red, Colors.lightBlackColor])}

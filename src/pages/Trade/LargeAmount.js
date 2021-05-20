@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-18 12:28:26
+ * @LastEditTime: 2021-05-20 17:02:50
  */
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, ScrollView} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
