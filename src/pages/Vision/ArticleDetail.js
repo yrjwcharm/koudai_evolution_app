@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:37:16
+ * @LastEditTime: 2021-05-20 19:13:14
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,7 +20,10 @@ import BaseUrl from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import LoginMask from '../../components/LoginMask';
+import {useSelector} from 'react-redux';
 const ArticleDetail = ({navigation, route}) => {
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const headerHeight = useHeaderHeight();
@@ -210,6 +213,7 @@ const ArticleDetail = ({navigation, route}) => {
 
     return (
         <View style={[styles.container]}>
+            {!userInfo.is_login && <LoginMask />}
             {hasNet ? (
                 <ScrollView
                     style={{flex: 1}}
@@ -228,6 +232,7 @@ const ArticleDetail = ({navigation, route}) => {
                             ...data?.share_info,
                         }}
                         title={data?.title}
+                        needLogin={!userInfo.is_login}
                     />
                     <RNWebView
                         javaScriptEnabled

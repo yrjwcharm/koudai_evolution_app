@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-13 17:04:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-20 18:10:39
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -48,14 +48,17 @@ export default class TradeAdjust extends Component {
         });
     }
     confirmBtn = () => {
-        Modal.show({
-            confirm: true,
-            content:
-                '因本次调仓可能会涉及到部分持有时间不足7天的基金，其中涉及到风控资产将立即赎回。其他基金为规避相应惩罚性手续费，将会对该部分基金做延时赎回。请确认是否调仓。',
-            cancelText: '取消调仓',
-            confirmText: '确认调仓',
-            confirmCallBack: this.passwordInput,
-        });
+        if (this.state.data.notice) {
+            Modal.show({
+                confirm: true,
+                content: this.state.notice,
+                cancelText: '取消调仓',
+                confirmText: '确认调仓',
+                confirmCallBack: this.passwordInput,
+            });
+        } else {
+            this.passwordInput();
+        }
     };
     submit = (password) => {
         let toast = Toast.showLoading();

@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:32:20
+ * @LastEditTime: 2021-05-20 19:11:45
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -17,8 +17,10 @@ import Mask from '../Mask';
 import Toast from '../Toast';
 import Clipboard from '@react-native-community/clipboard';
 import * as WeChat from 'react-native-wechat-lib';
+import {useNavigation} from '@react-navigation/native';
 
 const ShareModal = React.forwardRef((props, ref) => {
+    const navigation = useNavigation();
     const {
         backdrop = true, // 是否有蒙层
         header = '', // 自定义头部
@@ -28,6 +30,7 @@ const ShareModal = React.forwardRef((props, ref) => {
         shareContent = {}, // 分享内容
         likeCallback = () => {},
         collectCallback = () => {},
+        needLogin = false,
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -89,6 +92,10 @@ const ShareModal = React.forwardRef((props, ref) => {
     const share = (item) => {
         if (item.type === 'ShareAppMessage') {
             global.LogTool('shareStart', props.ctrl);
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
                     try {
@@ -117,6 +124,10 @@ const ShareModal = React.forwardRef((props, ref) => {
             });
         } else if (item.type == 'ShareTimeline') {
             global.LogTool('shareStart', props.ctrl);
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
                     try {
@@ -145,15 +156,28 @@ const ShareModal = React.forwardRef((props, ref) => {
             });
         } else if (item.type === 'Like') {
             // hide();
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             setTimeout(() => {
                 likeCallback();
             }, 500);
         } else if (item.type === 'Collect') {
             // hide();
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             setTimeout(() => {
                 collectCallback();
             }, 500);
         } else if (item.type === 'Copy') {
+            global.LogTool('copy', props.ctrl);
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             Clipboard.setString(shareContent.link);
             hide();
             setTimeout(() => {
@@ -161,6 +185,10 @@ const ShareModal = React.forwardRef((props, ref) => {
             }, 500);
         } else if (item.type === 'MoreOptions') {
             global.LogTool('shareStart', props.ctrl);
+            if (needLogin) {
+                hide();
+                return navigation.navigate('Login');
+            }
             if (Object.keys(shareContent).length > 0) {
                 ActionSheetIOS.showShareActionSheetWithOptions(
                     {

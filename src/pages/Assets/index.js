@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-25 16:51:53
+ * @LastEditTime: 2021-05-21 18:42:09
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -39,6 +39,8 @@ import GesturePassword from './GesturePassword';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import Modal from '../../components/Modal/ModalContainer';
+import Mask from '../../components/Mask';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -58,6 +60,9 @@ function HomeScreen({navigation, route}) {
     const scrollRef = useRef(null);
     const showGesture = useShowGesture();
     const [loading, setLoading] = useState(true);
+    const [choice, setChoice] = useState('');
+    const [isVisible, setIsVisible] = useState(false);
+    const [modalData, setModalData] = useState({});
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -127,10 +132,22 @@ function HomeScreen({navigation, route}) {
                     .catch(() => {
                         setLoading(false);
                     });
+                http.get('/common/survey/20210521', {survey_id: 1}).then((res) => {
+                    if (res.code === '000000') {
+                        if (res.result.options) {
+                            setChoice('');
+                            setModalData(res.result);
+                            setIsVisible(true);
+                        }
+                    }
+                });
             }
         },
         [readInterface, userInfo]
     );
+    const reportSurvey = (answer) => {
+        http.post('/common/survey/report/20210521', {survey_id: 1, answer});
+    };
     const readInterface = useCallback(() => {
         if (userInfo.toJS()?.is_login) {
             http.get('/message/unread/20210101').then((res) => {
@@ -303,6 +320,56 @@ function HomeScreen({navigation, route}) {
             <View style={styles.container}>
                 {/* 登录注册蒙层 */}
                 {!userInfo.toJS().is_login && isFocused && <LoginMask />}
+                {isVisible && (
+                    <>
+                        <Mask />
+                        <Modal
+                            children={() => (
+                                <View
+                                    style={[
+                                        Style.flexRow,
+                                        {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)},
+                                    ]}>
+                                    {modalData.options?.map((item, index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                key={item.key}
+                                                onPress={() => setChoice(item.key)}
+                                                style={[
+                                                    Style.flexCenter,
+                                                    styles.option,
+                                                    choice === item.key ? styles.acOption : {},
+                                                    {marginRight: index % 2 === 0 ? text(12) : 0},
+                                                ]}>
+                                                <Text
+                                                    numberOfLines={1}
+                                                    style={[
+                                                        styles.optionText,
+                                                        choice === item.key ? {color: '#fff'} : {},
+                                                    ]}>
+                                                    {item.val}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                            )}
+                            clickClose={false}
+                            confirmCallBack={() => {
+                                setIsVisible(false);
+                                reportSurvey(choice);
+                            }}
+                            confirmText={'确认'}
+                            destroy={() => {
+                                setIsVisible(false);
+                                reportSurvey('');
+                            }}
+                            isVisible={isVisible}
+                            title={modalData.title}
+                        />
+                    </>
+                )}
                 <Header
                     title={'我的资产'}
                     scrollY={scrollY}
@@ -902,6 +969,24 @@ const styles = StyleSheet.create({
         right: text(3),
         top: text(5),
         zIndex: 10,
+    },
+    option: {
+        marginBottom: text(12),
+        borderRadius: text(4),
+        borderWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+        width: text(100),
+        height: text(32),
+    },
+    acOption: {
+        borderColor: Colors.brandColor,
+        backgroundColor: Colors.brandColor,
+    },
+    optionText: {
+        fontSize: Font.textH2,
+        lineHeight: text(20),
+        color: Colors.descColor,
+        maxWidth: text(84),
     },
 });
 export default HomeScreen;

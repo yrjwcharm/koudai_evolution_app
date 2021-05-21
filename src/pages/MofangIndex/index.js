@@ -333,7 +333,7 @@ const Index = (props) => {
                         }>
                         <LinearGradient
                             start={{x: 0, y: 0}}
-                            end={{x: 0, y: 0.3}}
+                            end={{x: 0, y: data?.show_recommend ? 0.1 : 0.3}}
                             colors={['#fff', Colors.bgColor]}
                             style={styles.container}>
                             <View style={styles.swiper}>
@@ -411,7 +411,7 @@ const Index = (props) => {
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 
                             {/* 推荐 */}
-                            {data?.custom_info && (
+                            {data?.custom_info && !data.show_recommend ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -489,6 +489,55 @@ const Index = (props) => {
                                                 </LinearGradient>
                                             </View>
                                         </ImageBackground>
+                                    </View>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        data?.login_status == 0
+                                            ? props.navigation.navigate('Register', {
+                                                  redirect: data?.custom_info?.button?.url,
+                                              })
+                                            : jump(data?.custom_info?.button?.url);
+                                    }}
+                                    style={{marginBottom: px(20), marginTop: data?.login_status === 0 ? 0 : px(8)}}>
+                                    <View style={styles.recommendBox}>
+                                        <FastImage
+                                            source={require('../../assets/img/index/recommendShadow.png')}
+                                            style={styles.recommendShadow}
+                                        />
+                                        <View style={Style.flexRow}>
+                                            <FastImage
+                                                source={require('../../assets/img/index/recommendIcon.png')}
+                                                style={styles.recommendIcon}
+                                            />
+                                            <Text style={[styles.poName, {marginRight: px(8)}]}>
+                                                {data?.custom_info?.name}
+                                            </Text>
+                                            <Text style={styles.poDesc}>{data?.custom_info?.desc}</Text>
+                                        </View>
+                                        <Text style={[styles.yieldRatio, {marginTop: Space.marginVertical}]}>
+                                            {data?.custom_info?.yield.ratio}
+                                        </Text>
+                                        <Text style={[styles.poDesc, {marginTop: px(6), textAlign: 'center'}]}>
+                                            {data?.custom_info?.yield.title}
+                                        </Text>
+                                        <LinearGradient
+                                            colors={['#FF9463', '#FF7D41']}
+                                            start={{x: 0, y: 0}}
+                                            end={{x: 0, y: 1}}
+                                            style={[Style.flexCenter, styles.recommendBtn]}>
+                                            <Text
+                                                style={{
+                                                    fontSize: Font.textH2,
+                                                    lineHeight: px(20),
+                                                    color: '#fff',
+                                                    fontWeight: '500',
+                                                }}>
+                                                {data?.custom_info?.button?.text}
+                                            </Text>
+                                        </LinearGradient>
                                     </View>
                                 </TouchableOpacity>
                             )}
@@ -959,5 +1008,50 @@ const styles = StyleSheet.create({
         width: Space.borderWidth,
         height: px(33),
         backgroundColor: Colors.borderColor,
+    },
+    recommendBox: {
+        paddingTop: Space.padding,
+        paddingBottom: px(20),
+        paddingLeft: px(14),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+        position: 'relative',
+    },
+    recommendShadow: {
+        width: px(204),
+        height: px(147),
+        position: 'absolute',
+        top: px(1),
+        right: px(1),
+    },
+    recommendIcon: {
+        width: px(24),
+        height: px(24),
+        marginRight: px(4),
+    },
+    poName: {
+        fontSize: px(17),
+        lineHeight: px(24),
+        color: Colors.defaultColor,
+        fontWeight: '500',
+    },
+    poDesc: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.descColor,
+    },
+    yieldRatio: {
+        fontSize: px(32),
+        lineHeight: px(37),
+        color: Colors.red,
+        fontFamily: Font.numFontFamily,
+        textAlign: 'center',
+    },
+    recommendBtn: {
+        marginTop: px(20),
+        marginLeft: px(51),
+        borderRadius: px(22),
+        width: px(240),
+        height: px(44),
     },
 });
