@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 17:03:15
+ * @LastEditTime: 2021-05-20 19:12:39
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -24,7 +24,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
-import _ from 'lodash';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);

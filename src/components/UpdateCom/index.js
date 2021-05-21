@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-19 17:18:40
+ * @LastEditTime: 2021-05-20 19:31:11
  * @Description:
  */
 
@@ -86,6 +86,7 @@ class UpdateModal extends Component {
     }
 
     syncImmediate() {
+        // CodePush.getApp
         CodePush.checkForUpdate(key)
             .then((update) => {
                 console.log('-------' + update);
@@ -101,14 +102,9 @@ class UpdateModal extends Component {
             });
     }
 
-    componentWillMount() {
-        CodePush.disallowRestart();
-        this.syncImmediate();
-    }
-
     componentDidMount() {
-        console.log(Platform);
-        CodePush.allowRestart();
+        CodePush.notifyAppReady();
+        this.syncImmediate();
     }
 
     _immediateUpdate() {

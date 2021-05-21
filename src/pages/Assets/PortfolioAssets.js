@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 21:16:15
+ * @LastEditTime: 2021-05-20 18:27:46
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -730,7 +730,7 @@ export default function PortfolioAssets(props) {
                                         {tip?.show_point == 1 ? ' 评分 < 90' : '需调仓'}
                                     </Text>
                                     <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                        您的持仓比例与系统的最优配置比例基本一致。您可以选择追加购买，不需要进行调仓。
+                                        您的持仓与系统的最优配置比例配置较大，系统建议您给需调仓的组合进行调仓或追加购买降低偏离值。
                                     </Text>
                                 </View>
                             </View>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 18:05:50
+ * @LastEditTime: 2021-05-20 18:11:59
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -157,11 +157,7 @@ class Question extends Component {
         const {translateY, opacity, value, questions, previousCount} = this.state;
         this.startTime = new Date().getTime();
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
-        if (action == 'submit' && this.fr == 'risk') {
-            setTimeout(() => {
-                this.props.navigation.pop(1);
-            }, 2000);
-        } else if (action == 'submit') {
+        if (action == 'submit' && this.fr != 'risk') {
             setTimeout(() => {
                 if (this.next_url) {
                     this.props.jump(this.nextUrl, 'replace');
@@ -172,6 +168,10 @@ class Question extends Component {
                     summary_id: this.state.summary_id,
                     chart_h5_url: this.chart_h5_url,
                 });
+            }, 2000);
+        } else if (action == 'submit' && this.fr == 'risk') {
+            setTimeout(() => {
+                this.props.navigation.pop(1);
             }, 2000);
         } else {
             this.setState({
@@ -403,43 +403,16 @@ class Question extends Component {
                 };
                 http.post('/questionnaire/report/20210101', params).then((res) => {
                     if (option.action == 'submit') {
-                        layoutAnimation();
                         this.upid = res.result.upid;
                         this.nextUrl = res.result.next_url;
                         this.chart_h5_url = res.result.chart_h5_url;
                         this.setState(
                             {
                                 loading_text: res?.result?.loading_text,
-                                nextUrl: res.result.next_url,
                                 finishTest: true,
                             },
                             () => {
                                 this.showNextAnimation(option.action);
-                                // Animated.sequence([
-                                //     Animated.parallel([
-                                //         Animated.timing(translateY, {
-                                //             toValue: offsetY,
-                                //             duration: 300,
-                                //             useNativeDriver: false,
-                                //         }),
-                                //         Animated.timing(opacity, {
-                                //             toValue: 0,
-                                //             duration: 300,
-                                //             useNativeDriver: false,
-                                //         }),
-                                //     ]),
-                                // ]).start(() => {});
-                                // setTimeout(() => {
-                                //     if (res.result.next_url) {
-                                //         this.props.jump(this.nextUrl, 'replace');
-                                //         return;
-                                //     }
-                                //     this.props.navigation.replace('EvaluationResult', {
-                                //         upid: res.result.upid,
-                                //         summary_id: this.state.summary_id,
-                                //         chart_h5_url: res.result.chart_h5_url,
-                                //     });
-                                // }, 2000);
                             }
                         );
                     }

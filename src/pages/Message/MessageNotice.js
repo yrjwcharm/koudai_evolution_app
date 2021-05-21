@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 21:15:15
+ * @LastEditTime: 2021-05-21 10:16:52
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -111,7 +111,7 @@ export default function MessageNotice({navigation, route}) {
                             color: Colors.darkGrayColor,
                             paddingBottom: isIphoneX() ? 34 : px(16),
                         }}>
-                        {hasMore ? '正在加载...' : '我们是有底线的...'}
+                        {hasMore ? '正在加载...' : list.length >= 10 ? '我们是有底线的...' : ''}
                     </Text>
                 )}
             </>
@@ -183,7 +183,7 @@ export default function MessageNotice({navigation, route}) {
                         </View>
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
                             <Text
-                                numberOfLines={3}
+                                numberOfLines={6}
                                 style={[styles.content_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
                                 {item.content}
                             </Text>
@@ -205,24 +205,24 @@ export default function MessageNotice({navigation, route}) {
                             <FastImage source={{uri: item.img_url}} style={styles.cover_img} />
                         </View>
                         <View style={styles.content_wrap_sty}>
-                            <View style={styles.content_ac_sty}>
+                            <View style={{flex: 1}}>
                                 <Text
                                     numberOfLines={2}
                                     style={[
-                                        {flex: 1, fontSize: text(16), fontWeight: 'bold', lineHeight: text(22)},
+                                        styles.card_title,
                                         {color: item?.is_read == 1 ? '#9AA1B2' : Colors.defaultColor},
                                     ]}>
                                     {item.title}
                                 </Text>
-                                <AntDesign name={'right'} color={'#8F95A7'} />
+                                <Text
+                                    style={{
+                                        fontSize: Font.textH3,
+                                        color: item?.is_read == 1 ? '#9AA1B2' : '#9AA1B2',
+                                    }}>
+                                    {item.post_time}
+                                </Text>
                             </View>
-                            <Text
-                                style={{
-                                    fontSize: Font.textH3,
-                                    color: item?.is_read == 1 ? '#9AA1B2' : '#9AA1B2',
-                                }}>
-                                {item.post_time}
-                            </Text>
+                            {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
                         </View>
                     </TouchableOpacity>
                 )}
@@ -283,20 +283,27 @@ const styles = StyleSheet.create({
     content_sty: {
         color: '#545968',
         lineHeight: text(18),
-        marginRight: text(10),
+        flex: 1,
+        textAlign: 'justify',
+        marginRight: px(16),
     },
     content_wrap_sty: {
         margin: text(16),
-    },
-    content_ac_sty: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: text(10),
     },
     cover_img: {
         borderTopLeftRadius: text(10),
         borderTopRightRadius: text(10),
         height: text(144),
         width: deviceWidth - text(32),
+    },
+    card_title: {
+        flex: 1,
+        fontSize: text(16),
+        fontWeight: 'bold',
+        lineHeight: text(22),
+        marginBottom: text(10),
     },
 });
