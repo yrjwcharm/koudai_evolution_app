@@ -502,12 +502,12 @@ const Index = (props) => {
                                             : jump(data?.custom_info?.button?.url);
                                     }}
                                     style={{marginBottom: px(20), marginTop: data?.login_status === 0 ? 0 : px(8)}}>
-                                    <View style={styles.recommendBox}>
+                                    <View style={[styles.recommendBox, {alignItems: 'center'}]}>
                                         <FastImage
                                             source={require('../../assets/img/index/recommendShadow.png')}
                                             style={styles.recommendShadow}
                                         />
-                                        <View style={Style.flexRow}>
+                                        <View style={[Style.flexRow, {width: '100%', paddingLeft: px(14)}]}>
                                             <FastImage
                                                 source={require('../../assets/img/index/recommendIcon.png')}
                                                 style={styles.recommendIcon}
@@ -1012,7 +1012,6 @@ const styles = StyleSheet.create({
     recommendBox: {
         paddingTop: Space.padding,
         paddingBottom: px(20),
-        paddingLeft: px(14),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
         position: 'relative',
@@ -1049,7 +1048,6 @@ const styles = StyleSheet.create({
     },
     recommendBtn: {
         marginTop: px(20),
-        marginLeft: px(51),
         borderRadius: px(22),
         width: px(240),
         height: px(44),
