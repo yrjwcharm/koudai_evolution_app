@@ -395,7 +395,18 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-
+                            {/* <FastImage
+                                source={require('../../assets/img/index/aboutBg.png')}
+                                style={{width: 300, height: 300}}
+                            />
+                            <FastImage
+                                source={require('../../assets/img/index/aboutBg.png')}
+                                style={{width: 300, height: 300}}
+                            />
+                            <FastImage
+                                source={require('../../assets/img/index/aboutBg.png')}
+                                style={{width: 300, height: 300}}
+                            /> */}
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 
@@ -540,6 +551,7 @@ const Index = (props) => {
                                     <QuestionCard data={data?.qa_list} />
                                 </View>
                             )}
+
                             {/* 听听魔方用户怎么说 */}
                             <View>
                                 <RenderTitle title={'听听魔方用户怎么说'} />

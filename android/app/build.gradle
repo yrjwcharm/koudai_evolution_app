@@ -155,8 +155,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode appVersionCode
-        versionName appVersion
+        versionCode 60100
+        versionName '6.0.1'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
@@ -204,7 +204,7 @@ packagingOptions {
             resValue "string", "CodePushDeploymentKey", '""'
         }
         releaseStaging {
-            resValue "string", "CodePushDeploymentKey",'"pQme0qmjQHHW0ANDIM8qrK0HdEsBLOd3X9Q0L"'
+            resValue "string", "CodePushDeploymentKey",'"KpUIC7zcDUQeNLCQHjtRFxq9Lvlj4ksvOXqog"'
             matchingFallbacks = ['release']
         }
         release {
@@ -218,7 +218,7 @@ packagingOptions {
                     outputFileName = "mofang_v${defaultConfig.versionCode}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
                 }
             }
-            resValue "string", "CodePushDeploymentKey", '"UAQoDp5PzfpdRBGvG4YpyYNEgceSe0PHBq6mY"'
+            resValue "string", "CodePushDeploymentKey", '"mQIL8kHux4al7whqojdBXDruT0534ksvOXqog"'
         }
     }
  productFlavors {

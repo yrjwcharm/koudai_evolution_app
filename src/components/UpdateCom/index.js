@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 19:31:11
+ * @LastEditTime: 2021-05-21 18:25:05
  * @Description:
  */
 
@@ -14,11 +14,11 @@ import CodePush from 'react-native-code-push';
 import Toast from '../Toast';
 
 let codePushOptions = {
-    checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+    checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
 const key = Platform.select({
-    ios: 'GxJFC6XpWKTFC1ZVBxkVr8TSPSQCc9EjTnmiF',
-    android: 'pQme0qmjQHHW0ANDIM8qrK0HdEsBLOd3X9Q0L',
+    ios: 'qZvFXrgna5jUoog5qLM1KWLTyvpy4ksvOXqog',
+    android: 'KpUIC7zcDUQeNLCQHjtRFxq9Lvlj4ksvOXqog',
 });
 class UpdateModal extends Component {
     constructor(props) {
@@ -70,51 +70,55 @@ class UpdateModal extends Component {
 
     codePushDownloadDidProgress(progress) {
         if (this.state.immediateUpdate) {
-            this.currProgress = progress.receivedBytes / progress.totalBytes;
+            this.currProgress = parseFloat(((progress.receivedBytes / progress.totalBytes) * 100) / 100);
             if (this.currProgress >= 1) {
                 this.setState({modalVisible: false});
             } else {
                 this.setState({
                     progress: this.currProgress.toFixed(2) * 100,
                 });
-                Animated.spring(this.progress, {
-                    toValue: this.currProgress.toFixed(2),
-                    useNativeDriver: false,
-                }).start();
+
+                this.currProgress &&
+                    Animated.spring(this.progress, {
+                        toValue: this.currProgress == 0 ? 0 : this.currProgress.toFixed(2),
+                        useNativeDriver: false,
+                    }).start();
             }
         }
     }
 
     syncImmediate() {
-        // CodePush.getApp
         CodePush.checkForUpdate(key)
             .then((update) => {
-                console.log('-------' + update);
+                console.log('----------1111111' + update);
                 if (!update) {
-                    Toast.show('已是最新版本！');
                 } else {
-                    Toast.show('需要更新');
                     this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
                 }
             })
             .catch((res) => {
-                Toast.show(res);
+                console.log(res);
             });
     }
 
-    componentDidMount() {
-        CodePush.notifyAppReady();
+    UNSAFE_componentWillMount() {
+        // 组件活动状态不允许重启
+        // CodePush.notifyAppReady();
+        CodePush.disallowRestart();
         this.syncImmediate();
     }
-
-    _immediateUpdate() {
+    componentDidMount() {
+        // 组件卸载时可以运行重启更新了
+        CodePush.allowRestart();
+    }
+    _immediateUpdate = () => {
         this.setState({immediateUpdate: true});
         CodePush.sync(
             {deploymentKey: key, updateDialog: false, installMode: CodePush.InstallMode.IMMEDIATE},
             this.codePushStatusDidChange.bind(this),
             this.codePushDownloadDidProgress.bind(this)
         );
-    }
+    };
 
     renderModal() {
         return (
@@ -177,7 +181,7 @@ class UpdateModal extends Component {
                                                     width: px(140),
                                                     justifyContent: 'center',
                                                 }}
-                                                onPress={() => this._immediateUpdate()}>
+                                                onPress={this._immediateUpdate}>
                                                 <Text
                                                     style={{
                                                         fontSize: px(16),
@@ -205,7 +209,7 @@ class UpdateModal extends Component {
                                                     flex: 1,
                                                     justifyContent: 'center',
                                                 }}
-                                                onPress={() => this._immediateUpdate()}>
+                                                onPress={this._immediateUpdate}>
                                                 <Text
                                                     style={{
                                                         fontSize: px(16),

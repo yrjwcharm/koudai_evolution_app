@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 19:12:39
+ * @LastEditTime: 2021-05-21 18:47:58
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -692,12 +692,22 @@ class TradeBuy extends Component {
                         </View>
 
                         {planData.fee_text && errTip == '' && this.state.type == 0 ? (
-                            <View style={styles.tip}>
-                                <HTML
-                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
-                                    html={planData?.fee_text}
-                                />
-                            </View>
+                            <>
+                                <View style={styles.tip}>
+                                    <HTML
+                                        style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                        html={planData?.fee_text}
+                                    />
+                                </View>
+                                {planData?.score_text ? (
+                                    <View style={styles.tip}>
+                                        <HTML
+                                            style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                            html={planData?.score_text}
+                                        />
+                                    </View>
+                                ) : null}
+                            </>
                         ) : errTip ? (
                             <View style={styles.tip}>
                                 <Text style={{color: Colors.red}}>
