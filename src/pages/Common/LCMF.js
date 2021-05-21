@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-05-08 15:12:56
+ * @LastEditTime: 2021-05-20 19:06:16
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,6 +20,7 @@ import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useSelector} from 'react-redux';
+import LoginMask from '../../components/LoginMask';
 export default function LCMF({route, navigation}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const netInfo = useNetInfo();
@@ -107,6 +108,7 @@ export default function LCMF({route, navigation}) {
 
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
+            {!userInfo.is_login && route.params?.scene !== 'know_lcmf' && <LoginMask />}
             {hasNet ? (
                 <>
                     <RNWebView
@@ -125,6 +127,7 @@ export default function LCMF({route, navigation}) {
                         ref={shareModal}
                         title={'分享理财魔方'}
                         shareContent={data?.share_info || {}}
+                        needLogin={!userInfo.is_login && route.params?.scene !== 'know_lcmf'}
                     />
                 </>
             ) : (

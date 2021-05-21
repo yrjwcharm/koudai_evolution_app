@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:37:01
+ * @LastEditTime: 2021-05-20 18:42:57
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -15,7 +15,10 @@ import Praise from '../../components/Praise';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import LoginMask from '../../components/LoginMask';
+import {useSelector} from 'react-redux';
 const MessageBoard = (props) => {
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const [comment, setComment] = useState(null);
@@ -44,6 +47,7 @@ const MessageBoard = (props) => {
     }, [getData, hasNet]);
     return (
         <View style={styles.container}>
+            {!userInfo.is_login && <LoginMask />}
             {hasNet ? (
                 <>
                     <View style={Style.flexRow}>
