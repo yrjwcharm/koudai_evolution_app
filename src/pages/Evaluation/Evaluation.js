@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 18:11:59
+ * @LastEditTime: 2021-05-24 14:36:16
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -483,7 +483,6 @@ class Question extends Component {
             loading_text,
             warnText,
         } = this.state;
-        console.log(finishTest);
         const current_ques = questions[current];
         let previousTest = current - 1;
         let tagList = [];

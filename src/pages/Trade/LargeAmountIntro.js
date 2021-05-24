@@ -2,8 +2,8 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: dx
- * @LastEditTime: 2021-05-10 16:00:30
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-24 16:44:37
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View} from 'react-native';
@@ -28,9 +28,9 @@ const LargeAmountIntro = () => {
             .catch((err) => Alert(err));
     };
     const img_list = [
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/large_payment.jpg',
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/largeamount2.jpg',
-        'https://static.licaimofang.com/wp-content/uploads/2021/04/largeamount3.jpg',
+        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_1.jpg',
+        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_2.jpg',
+        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_3.jpg',
     ];
     return (
         <View style={{backgroundColor: Colors.bgColor}}>

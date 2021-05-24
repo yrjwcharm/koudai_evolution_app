@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-21 18:47:58
+ * @LastEditTime: 2021-05-24 17:20:00
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -54,6 +54,7 @@ class TradeBuy extends Component {
             isLargeAmount: false,
             largeAmount: '',
             fixTip: '',
+            largeAmountAB: false,
         };
     }
     getTab = () => {
@@ -165,7 +166,7 @@ class TradeBuy extends Component {
                 amount: amount || this.state.data.buy_info.initial_amount,
                 pay_method: this.state.bankSelect?.pay_method,
                 poid: this.state.poid,
-                init: this.state.amount ? 0 : 1,
+                init: amount ? 0 : 1,
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -191,16 +192,17 @@ class TradeBuy extends Component {
     onInput = async (_amount, init) => {
         let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
 
-        if (!_amount && this.state.type == 0 && !init) {
+        if (!_amount && this.state.type == 0) {
             await this.plan('');
         }
-        this.setState({errTip: '', fixTip: ''}, async () => {
+        this.setState({errTip: '', fixTip: '', largeAmountAB: false}, async () => {
             if (this.state.type == 0) {
                 if (_amount > selectCard.left_amount && selectCard.pay_method !== 'wallet') {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `您当日剩余可用额度为${selectCard.left_amount}，推荐使用大额汇款`,
+                        errTip: `您当日剩余可用额度为${selectCard.left_amount}，推荐使用大额极速购`,
+                        largeAmountAB: this.state.data.large_pay_abtest ? true : false,
                         mfbTip: false,
                     });
                 } else if (_amount > selectCard.single_amount) {
@@ -513,7 +515,12 @@ class TradeBuy extends Component {
                                 this.ratioChange(null, 0);
                             }}
                             style={Style.flexRow}>
-                            <Ratio style={{marginRight: px(10)}} checked={!this.state.isLargeAmount} index={0} />
+                            <Ratio
+                                style={{marginRight: px(10)}}
+                                click={true}
+                                checked={!this.state.isLargeAmount}
+                                index={0}
+                            />
                             {this.state.type == 0 ? (
                                 <Image
                                     style={styles.bank_icon}
@@ -586,7 +593,12 @@ class TradeBuy extends Component {
                                 this.ratioChange(null, 1);
                             }}
                             style={Style.flexRow}>
-                            <Ratio style={{marginRight: px(10)}} index={1} checked={this.state.isLargeAmount} />
+                            <Ratio
+                                style={{marginRight: px(10)}}
+                                index={1}
+                                click={true}
+                                checked={this.state.isLargeAmount}
+                            />
                             <Image
                                 style={styles.bank_icon}
                                 source={{
@@ -600,6 +612,19 @@ class TradeBuy extends Component {
                                     <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                         {large_pay_method.bank_name}
                                     </Text>
+                                    {this.state.data.large_pay_abtest ? (
+                                        <View
+                                            style={[
+                                                Style.flexRow,
+                                                {flex: 1, marginRight: px(12), marginBottom: px(4)},
+                                            ]}>
+                                            <FastImage
+                                                source={require('../../assets/img/trade/fire.png')}
+                                                style={[styles.large_icon, {alignSelf: 'flex-start'}]}
+                                            />
+                                            <Text style={styles.large_text}>限时免申购手续费</Text>
+                                        </View>
+                                    ) : null}
                                     <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                         {large_pay_method.limit_desc}
                                     </Text>
@@ -709,20 +734,43 @@ class TradeBuy extends Component {
                                 ) : null}
                             </>
                         ) : errTip ? (
-                            <View style={styles.tip}>
-                                <Text style={{color: Colors.red}}>
-                                    {errTip}
-                                    {mfbTip ? (
-                                        <Text
-                                            style={{color: Colors.btnColor}}
-                                            onPress={() => {
-                                                this.jumpPage('MfbIn', {fr: 'trade_buy'});
-                                            }}>
-                                            立即充值
+                            <>
+                                <View style={styles.tip}>
+                                    <Text style={{color: Colors.red}}>
+                                        {errTip}
+                                        {mfbTip ? (
+                                            <Text
+                                                style={{color: Colors.btnColor}}
+                                                onPress={() => {
+                                                    this.jumpPage('MfbIn', {fr: 'trade_buy'});
+                                                }}>
+                                                立即充值
+                                            </Text>
+                                        ) : null}
+                                    </Text>
+                                </View>
+                                {this.state.largeAmountAB ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={[styles.large_tip, Style.flexBetween]}
+                                        onPress={() => {
+                                            this.jumpPage('LargeAmount');
+                                        }}>
+                                        <View style={[Style.flexRow, {flex: 1, marginRight: px(12)}]}>
+                                            <FastImage
+                                                source={require('../../assets/img/trade/fire.png')}
+                                                style={[styles.large_icon, {alignSelf: 'flex-start'}]}
+                                            />
+                                            <Text style={styles.large_text}>
+                                                使用大额极速购，限时免申购手续费（先购后返）
+                                            </Text>
+                                        </View>
+                                        <Text style={{color: Colors.yellow}}>
+                                            <Icon name={'right'} color size={px(12)} />
                                         </Text>
-                                    ) : null}
-                                </Text>
-                            </View>
+                                    </TouchableOpacity>
+                                ) : null}
+                            </>
                         ) : null}
                         {errTip == '' && this.state.fixTip ? (
                             <View
@@ -888,7 +936,7 @@ const styles = StyleSheet.create({
     },
     bankCard: {
         backgroundColor: '#fff',
-        height: px(68),
+        paddingVertical: px(12),
         paddingHorizontal: px(14),
     },
     bank_icon: {
@@ -950,6 +998,23 @@ const styles = StyleSheet.create({
         color: Colors.darkGrayColor,
         fontSize: px(12),
         lineHeight: px(17),
+    },
+    large_tip: {
+        backgroundColor: '#FFF5E5',
+        padding: px(6),
+        marginBottom: px(12),
+        borderRadius: px(4),
+    },
+    large_icon: {
+        width: px(15),
+        height: px(15),
+        marginRight: px(2),
+    },
+    large_text: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        flex: 1,
+        color: Colors.orange,
     },
 });
 

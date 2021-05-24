@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-31 17:22:23
+ * @LastEditTime: 2021-05-24 17:20:33
  */
 import React, {Component} from 'react';
 import {View, TouchableOpacity, StyleSheet} from 'react-native';
@@ -29,7 +29,11 @@ export default class Radio extends Component {
         this.props.onChange(!this.state.checked, this.state.index);
     }
     render() {
-        return (
+        return this.props.click ? (
+            <View style={[styles.radio_circle, Style.flexRowCenter, this.props.style]}>
+                {this.props.checked && <View style={styles.radio_fill} />}
+            </View>
+        ) : (
             <TouchableOpacity
                 style={[styles.radio_circle, Style.flexRowCenter, this.props.style]}
                 activeOpacity={0.9}

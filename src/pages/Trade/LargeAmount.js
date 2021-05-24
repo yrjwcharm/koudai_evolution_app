@@ -3,12 +3,12 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 17:02:50
+ * @LastEditTime: 2021-05-24 18:04:32
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, px} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -22,8 +22,8 @@ import {useFocusEffect} from '@react-navigation/native';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 
 const tips = [
-    {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款。'},
-    {title: '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝。'},
+    {title: '1.请使用上述指定的汇款银行卡的网上银行、手机银行或银行柜台，用转账汇款功能向魔方监管户中汇款；'},
+    {title: '2. 转账后预计5分钟内即可点击页面下方按钮，确认资金到账情况，汇款到账后将自动存入魔方宝；'},
     {title: '3. 如您已汇款，但迟迟查询不到余额，可拨打客服电话：', tel: '400-080-8208'},
     {title: '4. 民生银行是理财魔方的资金监管银行，您的汇款资金安全有保障。'},
 ];
@@ -37,7 +37,7 @@ const LargeAmount = (props) => {
                 headerRight: () => {
                     return (
                         <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                            <Text style={styles.right_sty}>{'汇款说明'}</Text>
+                            <Text style={styles.right_sty}>{'使用说明'}</Text>
                         </TouchableOpacity>
                     );
                 },
@@ -87,15 +87,14 @@ const LargeAmount = (props) => {
                         (Style.containerPadding,
                         {padding: 0, marginBottom: btnHeight, borderTopWidth: 0.5, borderColor: Colors.borderColor})
                     }>
-                    <Notice content={data?.processing} isClose={true} />
+                    <Notice content={{content: data?.processing}} isClose={true} />
+                    {/* <View>
+                        <Text style={styles.content_sty}>
+                            当您向魔方监管户中汇入资金，系统确认收到后将存入魔方宝。若需要该买其他任何组合您可以立即使用。
+                        </Text>
+                    </View> */}
                     <View style={[{padding: Space.padding}, styles.card_sty]}>
-                        <View>
-                            <Text style={styles.title_sty}>极速汇款</Text>
-                            <Text style={styles.content_sty}>
-                                当您向魔方监管户中汇入资金，系统确认收到后将存入魔方宝。若需要购买其他任何组合您可立即使用。
-                            </Text>
-                        </View>
-                        <Text style={styles.title_sty}>汇款流程</Text>
+                        <Text style={styles.title_sty}>大额极速购-使用流程</Text>
                         <View style={styles.process_wrap}>
                             <Image
                                 source={{
@@ -107,18 +106,22 @@ const LargeAmount = (props) => {
                         </View>
                         <View style={styles.process_list}>
                             <Html
-                                html={"1.使用指定银行卡<br/>向<font style='color:#E74949'>魔方监管户</font>汇款"}
+                                html={
+                                    "1.使用指定银行卡<br/><font style='color:#E74949'>向<font style='font-weight:bold'>魔方监管户</font>汇款</font>"
+                                }
                                 style={{lineHeight: text(18)}}
                             />
                             <Html
-                                html={'<span style="textAlign:center">2.资金到账后存入<br/>魔方宝</span>'}
+                                html={'<span style="textAlign:center">2.汇款金额存入<br/>魔方宝</span>'}
                                 style={{lineHeight: text(18)}}
                             />
                         </View>
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
-                        <Text style={styles.title_sty}>支持银行卡</Text>
-                        <Text style={styles.desc_sty}>仅支持以下银行卡的转账汇款，否则资金将原路返回</Text>
+                        <Text style={[styles.title_sty, {marginBottom: text(16)}]}>
+                            可用银行卡列表<Text style={styles.desc_sty}> (仅支持已绑定银行卡汇款)</Text>
+                        </Text>
+
                         <>
                             {data?.pay_methods?.map((_item, _index) => {
                                 return (
@@ -158,15 +161,15 @@ const LargeAmount = (props) => {
                                     }}
                                 />
                                 <View style={{flex: 1}}>
-                                    <Text style={styles.text}>添加新银行卡</Text>
+                                    <Text style={styles.text}>使用新卡汇款</Text>
                                 </View>
                                 <Entypo name={'chevron-thin-right'} size={12} color={'#000'} />
                             </TouchableOpacity>
                         </>
                     </View>
                     <View style={[{padding: Space.padding}, styles.card_sty, {paddingBottom: 0}]}>
-                        <Text style={[styles.title_sty, {paddingBottom: text(15)}]}>
-                            魔方监管户<Text style={{color: '#E74949', fontSize: 12}}>（民生银行全程监管）</Text>
+                        <Text style={[styles.title_sty, {paddingBottom: text(16)}]}>
+                            魔方监管户信息<Text style={styles.desc_sty}>（民生银行监管）</Text>
                         </Text>
                         <View>
                             <View style={[Style.flexRow, styles.item_wrap_sty]}>
@@ -212,7 +215,7 @@ const LargeAmount = (props) => {
                                     <Text key={_i + _d} style={{lineHeight: text(18), color: '#545968'}}>
                                         {_i.title}
                                     </Text>
-                                    {_i.tel ? <Text style={{color: '#E74949'}}> {_i.tel}</Text> : null}
+                                    {_i.tel ? <Text style={{color: '#E74949'}}> {_i.tel}；</Text> : null}
                                 </View>
                             );
                         })}
@@ -253,8 +256,9 @@ const styles = StyleSheet.create({
         marginBottom: text(12),
     },
     desc_sty: {
-        color: '#545968',
+        color: Colors.red,
         fontSize: Font.textH3,
+        fontWeight: '400',
         paddingTop: text(8),
         paddingBottom: text(13),
     },
