@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 17:27:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-25 16:44:01
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -105,7 +105,8 @@ export default function RemindMessage({navigation}) {
                                         <Text
                                             style={{
                                                 color: '#fff',
-                                                fontSize: text(11),
+                                                fontSize: Font.textSm,
+                                                lineHeight: text(12),
                                                 fontFamily: Font.numFontFamily,
                                             }}>
                                             {data?.service?.unread > 99 ? '99+' : data?.service?.unread}
@@ -140,7 +141,8 @@ export default function RemindMessage({navigation}) {
                                         <Text
                                             style={{
                                                 color: '#fff',
-                                                fontSize: text(11),
+                                                fontSize: Font.textSm,
+                                                lineHeight: text(12),
                                                 fontFamily: Font.numFontFamily,
                                             }}>
                                             {data?.point?.unread > 99 ? '99+' : data?.point?.unread}
@@ -189,8 +191,8 @@ export default function RemindMessage({navigation}) {
                                                     <Text
                                                         style={{
                                                             color: '#fff',
-                                                            fontSize: 11,
-                                                            lineHeight: 12,
+                                                            fontSize: Font.textSm,
+                                                            lineHeight: text(12),
                                                             fontFamily: Font.numFontFamily,
                                                         }}>
                                                         {_item?.unread > 99 ? '99+' : _item?.unread}
