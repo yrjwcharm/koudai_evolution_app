@@ -24,10 +24,9 @@ class UpdateModal extends Component {
     constructor(props) {
         super(props);
         this.currProgress = 0;
-        this.progress = new Animated.Value(0);
         this.syncMessage = '';
         this.state = {
-            progress: 0,
+            progress: new Animated.Value(0),
             modalVisible: false,
             isMandatory: false,
             immediateUpdate: false,
@@ -75,7 +74,7 @@ class UpdateModal extends Component {
                 this.setState({modalVisible: false});
             } else {
                 this.setState({
-                    progress: this.currProgress.toFixed(2) * 100,
+                    progress: new Animated.Value(this.currProgress),
                 });
 
                 this.currProgress &&
@@ -241,7 +240,7 @@ class UpdateModal extends Component {
                                             <Animated.View
                                                 style={{
                                                     position: 'absolute',
-                                                    width: this.progress.interpolate({
+                                                    width: this.state.progress.interpolate({
                                                         inputRange: [0, 1],
                                                         outputRange: [0, 1 * px(220)],
                                                     }),
@@ -268,7 +267,7 @@ class UpdateModal extends Component {
                                                     fontFamily: Font.numMedium,
                                                     textAlign: 'center',
                                                 }}>
-                                                {Math.round(this.state.progress)}%
+                                                {Math.round(this.currProgress * 100)}%
                                             </Text>
                                         </View>
                                     </View>

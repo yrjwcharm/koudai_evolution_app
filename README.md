@@ -43,8 +43,8 @@ cd ios&&pod install
 ### 5、启动项目(模拟器)
 
 ```
-react-native run-ios 启动IOS
-react-native run-android 启动安卓
+react-native run-ios #启动IOS
+react-native run-android #启动安卓
 ```
 
 ### 调试app
