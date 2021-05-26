@@ -395,18 +395,9 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-                            {/* <FastImage
-                                source={require('../../assets/img/index/aboutBg.png')}
-                                style={{width: 300, height: 300}}
-                            />
-                            <FastImage
-                                source={require('../../assets/img/index/aboutBg.png')}
-                                style={{width: 300, height: 300}}
-                            />
-                            <FastImage
-                                source={require('../../assets/img/index/aboutBg.png')}
-                                style={{width: 300, height: 300}}
-                            /> */}
+
+                          
+
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 

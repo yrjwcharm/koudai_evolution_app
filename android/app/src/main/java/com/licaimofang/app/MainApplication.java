@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-18 14:10:02
+ * @LastEditTime: 2021-05-26 11:13:13
  * @Description: 
  */
 
@@ -40,6 +40,12 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
            packages.add(new WeChatPackage());
+          new CodePush(
+         "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog",
+         MainApplication.this,
+         BuildConfig.DEBUG,
+         "https://cps.licaimofang.com/" 
+      );
           //  packages.add(new RNExitAppPackage());
           return packages;
         }

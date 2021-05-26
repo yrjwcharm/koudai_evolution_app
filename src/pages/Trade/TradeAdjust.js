@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: dx
- * @LastEditTime: 2021-05-20 18:10:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-26 12:00:45
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -51,7 +51,7 @@ export default class TradeAdjust extends Component {
         if (this.state.data.notice) {
             Modal.show({
                 confirm: true,
-                content: this.state.notice,
+                content: this.state.data.notice,
                 cancelText: '取消调仓',
                 confirmText: '确认调仓',
                 confirmCallBack: this.passwordInput,

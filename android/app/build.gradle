@@ -204,7 +204,7 @@ packagingOptions {
             resValue "string", "CodePushDeploymentKey", '""'
         }
         releaseStaging {
-            resValue "string", "CodePushDeploymentKey",'"KpUIC7zcDUQeNLCQHjtRFxq9Lvlj4ksvOXqog"'
+            resValue "string", "CodePushDeploymentKey",'"umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog"'
             matchingFallbacks = ['release']
         }
         release {
@@ -218,7 +218,7 @@ packagingOptions {
                     outputFileName = "mofang_v${defaultConfig.versionCode}_${releaseTime()}_${variant.productFlavors[0].name}.apk"
                 }
             }
-            resValue "string", "CodePushDeploymentKey", '"mQIL8kHux4al7whqojdBXDruT0534ksvOXqog"'
+            resValue "string", "CodePushDeploymentKey", '"Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog"'
         }
     }
  productFlavors {

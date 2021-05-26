@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-21 18:25:05
+ * @LastEditTime: 2021-05-26 10:13:45
  * @Description:
  */
 
@@ -17,8 +17,8 @@ let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
 const key = Platform.select({
-    ios: 'qZvFXrgna5jUoog5qLM1KWLTyvpy4ksvOXqog',
-    android: 'KpUIC7zcDUQeNLCQHjtRFxq9Lvlj4ksvOXqog',
+    ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
+    android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
 });
 class UpdateModal extends Component {
     constructor(props) {
