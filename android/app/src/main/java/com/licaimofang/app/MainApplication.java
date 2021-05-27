@@ -46,7 +46,8 @@ public class MainApplication extends Application implements ReactApplication {
                 if (reactPackage instanceof CodePush) {
                     CodePush.getJSBundleFile();
                     new CodePush(
-                            "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog",
+//                             "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog",
+                            "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",
                             MainApplication.this,
                             BuildConfig.DEBUG,
                             "https://cps.licaimofang.com/");

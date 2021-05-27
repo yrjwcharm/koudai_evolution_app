@@ -18,8 +18,10 @@ let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
 const key = Platform.select({
-    ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
-    android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
+    // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
+    // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
+    ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
+    android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
 });
 class UpdateModal extends Component {
     constructor(props) {
