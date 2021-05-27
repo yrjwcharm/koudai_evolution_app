@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-05-20 19:06:16
+ * @LastEditTime: 2021-05-27 17:56:27
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -28,6 +28,7 @@ export default function LCMF({route, navigation}) {
     const jump = useJump();
     const shareModal = useRef(null);
     const [data, setData] = useState({});
+    const [showLogin, setShowLogin] = useState(false);
 
     const onMessage = (event) => {
         const eventData = JSON.parse(event.nativeEvent.data);
@@ -105,10 +106,16 @@ export default function LCMF({route, navigation}) {
             };
         }, [])
     );
+    useFocusEffect(
+        useCallback(() => {
+            setTimeout(() => {
+                setShowLogin(!userInfo.is_login && route.params?.scene !== 'know_lcmf');
+            }, 100);
+        }, [route, userInfo])
+    );
 
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
-            {!userInfo.is_login && route.params?.scene !== 'know_lcmf' && <LoginMask />}
             {hasNet ? (
                 <>
                     <RNWebView
@@ -122,6 +129,7 @@ export default function LCMF({route, navigation}) {
                         startInLoadingState={true}
                         style={{flex: 1}}
                     />
+                    {showLogin && <LoginMask />}
                     <ShareModal
                         ctrl={route.params?.scene || 'fund_safe'}
                         ref={shareModal}
