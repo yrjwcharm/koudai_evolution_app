@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-26 10:13:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-27 12:51:05
  * @Description:
  */
 
@@ -12,6 +12,7 @@ import {deviceWidth, deviceHeight, px} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import CodePush from 'react-native-code-push';
 import Toast from '../Toast';
+import {destroy} from '../Modal/Modal';
 
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
@@ -92,7 +93,9 @@ class UpdateModal extends Component {
                 console.log('----------1111111' + update);
                 if (!update) {
                 } else {
-                    this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
+                    this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory}, () => {
+                        destroy();
+                    });
                 }
             })
             .catch((res) => {

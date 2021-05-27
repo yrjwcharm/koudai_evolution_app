@@ -3,10 +3,10 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: dx
- * @LastEditTime: 2021-05-25 16:44:01
+ * @LastEditTime: 2021-05-27 13:28:11
  */
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
 import Http from '../../services';
@@ -106,8 +106,11 @@ export default function RemindMessage({navigation}) {
                                             style={{
                                                 color: '#fff',
                                                 fontSize: Font.textSm,
-                                                lineHeight: text(12),
+                                                lineHeight: Platform.select({ios: text(12), android: Font.textSm}),
                                                 fontFamily: Font.numFontFamily,
+                                                transform: [
+                                                    {translateY: Platform.select({ios: 0, android: text(0.5)})},
+                                                ],
                                             }}>
                                             {data?.service?.unread > 99 ? '99+' : data?.service?.unread}
                                         </Text>
@@ -142,8 +145,11 @@ export default function RemindMessage({navigation}) {
                                             style={{
                                                 color: '#fff',
                                                 fontSize: Font.textSm,
-                                                lineHeight: text(12),
+                                                lineHeight: Platform.select({ios: text(12), android: Font.textSm}),
                                                 fontFamily: Font.numFontFamily,
+                                                transform: [
+                                                    {translateY: Platform.select({ios: 0, android: text(0.5)})},
+                                                ],
                                             }}>
                                             {data?.point?.unread > 99 ? '99+' : data?.point?.unread}
                                         </Text>
@@ -192,8 +198,19 @@ export default function RemindMessage({navigation}) {
                                                         style={{
                                                             color: '#fff',
                                                             fontSize: Font.textSm,
-                                                            lineHeight: text(12),
+                                                            lineHeight: Platform.select({
+                                                                ios: text(12),
+                                                                android: Font.textSm,
+                                                            }),
                                                             fontFamily: Font.numFontFamily,
+                                                            transform: [
+                                                                {
+                                                                    translateY: Platform.select({
+                                                                        ios: 0,
+                                                                        android: text(0.5),
+                                                                    }),
+                                                                },
+                                                            ],
                                                         }}>
                                                         {_item?.unread > 99 ? '99+' : _item?.unread}
                                                     </Text>

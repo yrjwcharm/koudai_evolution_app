@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-05-21 18:42:09
+ * @LastEditTime: 2021-05-27 12:13:57
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -357,8 +357,10 @@ function HomeScreen({navigation, route}) {
                             )}
                             clickClose={false}
                             confirmCallBack={() => {
-                                setIsVisible(false);
-                                reportSurvey(choice);
+                                if (choice) {
+                                    setIsVisible(false);
+                                    reportSurvey(choice);
+                                }
                             }}
                             confirmText={'确认'}
                             destroy={() => {

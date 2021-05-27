@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-02-02 16:22:05
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-27 12:44:08
  * @Description:
  */
 /**
@@ -19,7 +19,7 @@ import RootSibling from 'react-native-root-siblings';
 import ModalRender from './ModalContainer';
 import Mask from '../Mask';
 let rootSibling = null;
-function destroy() {
+export function destroy() {
     if (rootSibling) {
         rootSibling.destroy();
     }

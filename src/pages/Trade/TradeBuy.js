@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-24 17:20:00
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-27 12:23:24
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -201,7 +201,7 @@ class TradeBuy extends Component {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `您当日剩余可用额度为${selectCard.left_amount}，推荐使用大额极速购`,
+                        errTip: `您当日剩余可用额度为${selectCard.left_amount}元，推荐使用大额极速购`,
                         largeAmountAB: this.state.data.large_pay_abtest ? true : false,
                         mfbTip: false,
                     });
