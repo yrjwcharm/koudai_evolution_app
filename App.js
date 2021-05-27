@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-21 10:32:52
+ * @LastEditors: dx
+ * @LastEditTime: 2021-05-27 16:45:29
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -421,7 +421,9 @@ function App(props) {
                                 let cu_plan_id = getRouteNameId(currentRoute, 'DetailAccount', 'cu_plan_id');
                                 let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
                                 let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
-                                let currentRoutePageId = currentRouteName + article_id + cu_plan_id + poid + scene;
+                                let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
+                                let currentRoutePageId =
+                                    currentRouteName + article_id + cu_plan_id + poid + scene + type;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {
