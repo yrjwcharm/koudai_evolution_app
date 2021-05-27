@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 12:51:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-05-28 01:32:51
  * @Description:
  */
 
@@ -95,9 +95,10 @@ class UpdateModal extends Component {
                 console.log('----------1111111' + update);
                 if (!update) {
                 } else {
-                    this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory}, () => {
-                        destroy();
-                    });
+                    destroy();
+                    setTimeout(() => {
+                        this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
+                    }, 100);
                 }
             })
             .catch((res) => {
