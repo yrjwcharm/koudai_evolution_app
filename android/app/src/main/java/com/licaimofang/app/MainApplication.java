@@ -42,17 +42,13 @@ public class MainApplication extends Application implements ReactApplication {
             // packages.add(new MyReactNativePackage());
             packages.add(new WeChatPackage());
 
-            for (ReactPackage reactPackage : packages) {
-                if (reactPackage instanceof CodePush) {
-                    CodePush.getJSBundleFile();
-                    new CodePush(
-//                             "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog",
-                            "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",
-                            MainApplication.this,
-                            BuildConfig.DEBUG,
-                            "https://cps.licaimofang.com/");
-                }
-            }
+            CodePush.getJSBundleFile();
+            new CodePush(
+//                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging
+                   "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",    // production
+                    MainApplication.this,
+                    BuildConfig.DEBUG,
+                    "https://cps.licaimofang.com/");
             //  packages.add(new RNExitAppPackage());
             return packages;
         }
