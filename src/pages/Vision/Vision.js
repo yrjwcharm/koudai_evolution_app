@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 15:56:50
+ * @LastEditTime: 2021-05-31 10:08:09
  * @Description:视野
  */
 import React, {useState} from 'react';
@@ -20,6 +20,7 @@ import Question from './components/Question'; //魔方问答
 import Contact from './components/Contact'; //策略沟通
 import MarketDynamic from './components/MarketDynamic'; //市场动态
 import Voice from './components/Vioce'; //魔方声音
+import LinearGradient from 'react-native-linear-gradient';
 const shadow = {
     color: '#ddd',
     border: 12,
@@ -40,12 +41,16 @@ const Vision = ({navigation, route}) => {
     const jump = useJump();
     const [show, setShow] = useState(false);
     return (
-        <View style={{paddingTop: inset.top, flex: 1, backgroundColor: Colors.bgColor}}>
+        <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 0, y: 1}}
+            colors={['#fff', '#F5F6F8']}
+            style={{paddingTop: inset.top, flex: 1}}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 <ScrollableTabView
                     renderTabBar={() => (
                         <ScrollTabbar
-                            boxStyle={{paddingLeft: px(8), paddingRight: px(52), backgroundColor: Colors.bgColor}}
+                            boxStyle={{paddingLeft: px(8), paddingRight: px(52), backgroundColor: 'transparent'}}
                         />
                     )}
                     initialPage={0}>
@@ -69,7 +74,7 @@ const Vision = ({navigation, route}) => {
                     </TouchableOpacity>
                 </BoxShadow>
             </View>
-        </View>
+        </LinearGradient>
     );
 };
 
@@ -82,6 +87,6 @@ const styles = StyleSheet.create({
         paddingLeft: px(11),
         paddingRight: px(17),
         justifyContent: 'center',
-        backgroundColor: Colors.bgColor,
+        backgroundColor: '#fff',
     },
 });
