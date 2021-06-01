@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 12:22:06
+ * @LastEditTime: 2021-06-01 17:08:52
  * @Description:视野文章模块
  */
 
@@ -56,7 +56,14 @@ export default function VisionArticle({data = '', style}) {
             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                 <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
-                <Praise comment={data} type={'article'} />
+                <Praise
+                    comment={{
+                        favor_status: data?.favor_status,
+                        favor_num: parseInt(data?.favor_num),
+                        id: data?.id,
+                    }}
+                    type={'article'}
+                />
             </View>
         </TouchableOpacity>
     );

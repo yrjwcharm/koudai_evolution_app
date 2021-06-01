@@ -3,14 +3,14 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-31 16:49:39
+ * @LastEditTime: 2021-06-01 17:17:31
  * @Description:音频模块
  */
 
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
-import {px, deviceWidth} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
@@ -26,14 +26,19 @@ const VioceCard = ({data, style}) => {
             }}>
             <View style={Style.flexRow}>
                 <View style={{flex: 1}}>
-                    <View style={Style.flexRow}>
-                        <FastImage
-                            source={{uri: data?.cate_icon}}
-                            style={{width: px(16), height: px(16), marginRight: px(6)}}
-                        />
-                        <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate}</Text>
-                    </View>
-                    <Text numberOfLines={2} style={styles.title}>
+                    {data?.cate_icon ? (
+                        <View style={[Style.flexRow, {marginBottom: px(9)}]}>
+                            <FastImage
+                                source={{uri: data?.cate_icon}}
+                                style={{width: px(16), height: px(16), marginRight: px(6)}}
+                            />
+                            <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate}</Text>
+                        </View>
+                    ) : null}
+                    <Text numberOfLines={1} style={styles.title}>
+                        {data.album_name}
+                    </Text>
+                    <Text numberOfLines={2} style={styles.detail}>
                         {data.title}
                     </Text>
                     <View style={Style.flexRow}>
@@ -41,10 +46,9 @@ const VioceCard = ({data, style}) => {
                         <Text style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
                             {data?.author?.nickname}
                         </Text>
-                        <FastImage
-                            source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/04/投顾观点@3x1.png'}}
-                            style={{width: px(12), height: px(12)}}
-                        />
+                        {data?.author?.icon ? (
+                            <FastImage source={{uri: data?.author?.icon}} style={{width: px(12), height: px(12)}} />
+                        ) : null}
                     </View>
                 </View>
                 <View style={styles.cover_con}>
@@ -81,14 +85,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: px(16),
     },
+    detail: {
+        fontSize: px(12),
+        color: Colors.lightBlackColor,
+        lineHeight: px(17),
+        height: px(36),
+    },
     title: {
         fontSize: px(14),
         color: Colors.defaultColor,
         fontWeight: 'bold',
         lineHeight: px(20),
         marginBottom: px(12),
-        marginTop: px(9),
-        height: px(40),
     },
     light_text: {
         color: Colors.lightGrayColor,

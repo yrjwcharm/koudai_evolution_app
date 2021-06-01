@@ -86,7 +86,7 @@ axios.interceptors.response.use(
 );
 export default class http {
     static async get(url, params, config, showLoading = true) {
-        if (url.indexOf('tj.licaimofang.com/v.gif') > -1) {
+        if (url.indexOf('tj.licaimofang.com/v.gif') > -1 || url.indexOf('/heart_beat/20210101') > -1) {
             showError = false;
         } else {
             showError = true;

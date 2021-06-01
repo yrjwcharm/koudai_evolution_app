@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-31 15:36:49
+ * @LastEditTime: 2021-06-01 17:07:54
  * @Description:推荐模块
  */
 import React, {useState, useRef} from 'react';
@@ -13,7 +13,7 @@ import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
 import {Button} from '../Button';
-
+import Praise from '../Praise';
 const RecommendCard = ({data, style}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
@@ -41,15 +41,34 @@ const RecommendCard = ({data, style}) => {
                     </Text>
                     {data?.locked ? null : (
                         <>
-                            <View style={Style.flexRow}>
-                                {/* <FastImage/> */}
-                                <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>理财魔方</Text>
-                                {/* <FastImage/> */}
+                            <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                                <FastImage
+                                    source={{uri: data?.author?.avatar}}
+                                    style={{width: px(26), height: px(26)}}
+                                />
+                                <Text
+                                    style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
+                                    {data?.author?.nickname}
+                                </Text>
+                                {data?.author?.icon ? (
+                                    <FastImage
+                                        source={{uri: data?.author?.icon}}
+                                        style={{width: px(12), height: px(12)}}
+                                    />
+                                ) : null}
                             </View>
+
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                 <Text style={styles.light_text}>22人已阅读</Text>
 
-                                {/* <Praise comment={data} type={'article'} /> */}
+                                <Praise
+                                    type={'article'}
+                                    comment={{
+                                        favor_status: data?.favor_status,
+                                        favor_num: parseInt(data?.favor_num),
+                                        id: data?.id,
+                                    }}
+                                />
                             </View>
                         </>
                     )}

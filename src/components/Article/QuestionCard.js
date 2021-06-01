@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 11:09:50
+ * @LastEditTime: 2021-06-01 17:17:10
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -39,7 +39,7 @@ export default function QuestionCard({data = []}) {
                             </Text>
                         </View>
                         <View style={styles.content}>
-                            <Text style={[styles.article_content, {fontSize: px(12)}]}>
+                            <Text numberOfLines={2} style={[styles.article_content, {fontSize: px(12)}]}>
                                 <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>
                                     {item.author_name}：
                                 </Text>
