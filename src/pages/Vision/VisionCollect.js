@@ -2,11 +2,11 @@
  * @Date: 2021-05-18 16:06:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-18 17:45:17
+ * @LastEditTime: 2021-06-01 15:11:37
  * @Description:收藏 历史
  */
 
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
 import {useJump} from '../../components/hooks';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -20,7 +20,21 @@ import {Colors} from '../../common/commonStyle';
 
 const VisionCollect = ({navigation}) => {
     const inset = useSafeAreaInsets();
+    const [refreshing, setRefreshing] = useState(false);
+    const [likeList, setLikeList] = useState({});
+    const [collectList, setCollectList] = useState({});
+    const [viewList, setViewList] = useState({});
     const jump = useJump();
+    useEffect(() => {
+        getData();
+    }, [getData]);
+    const getData = useCallback(() => {
+        setRefreshing(true);
+        http.get('/vision/resource/list/20210524').then((res) => {
+            setRefreshing(false);
+            setLikeList(res.result);
+        });
+    }, [k]);
     return (
         <LinearGradient
             start={{x: 0, y: 0}}
@@ -44,18 +58,7 @@ const VisionCollect = ({navigation}) => {
                         activeFontSize={px(20)}
                     />
                 )}>
-                <View tabLabel="收藏">
-                    <Text>
-                        2021年1月27日 — 使用NODE_ENV 最多的地方是webpack 配置文件，用来判断当前环境是开发 ... "cross-env
-                        REACT_APP_ENV=staging node scripts/build.js", ...
-                    </Text>
-                    <Text>111</Text>
-                    <Text>111</Text>
-                    <Text>111</Text>
-                    <Text>111</Text>
-                    <Text>111</Text>
-                    <Text>111</Text>
-                </View>
+                <View tabLabel="收藏" />
                 <View tabLabel="赞过" />
                 <View tabLabel="历史" />
             </ScrollableTabView>

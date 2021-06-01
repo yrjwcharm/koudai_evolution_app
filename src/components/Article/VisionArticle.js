@@ -1,9 +1,9 @@
 /*
- * @Date: 2021-02-04 14:55:46
+ * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-31 18:45:54
- * @Description:首页发现页文章卡片
+ * @LastEditTime: 2021-06-01 12:22:06
+ * @Description:视野文章模块
  */
 
 import React from 'react';
@@ -14,7 +14,7 @@ import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
 
-export default function ArticleCard({data = '', style}) {
+export default function VisionArticle({data = '', style}) {
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -25,23 +25,33 @@ export default function ArticleCard({data = '', style}) {
             }}>
             <View style={Style.flexRow}>
                 <View style={{flex: 1}}>
-                    <Text numberOfLines={2} style={styles.article_title}>
-                        {data?.title}
-                    </Text>
-                    {data?.detail ? (
-                        <Text numberOfLines={2} style={styles.article_content}>
-                            {data?.detail}
+                    {data?.cate_icon ? (
+                        <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                            <FastImage
+                                source={{uri: data?.cate_icon}}
+                                style={{width: px(16), height: px(16), marginRight: px(6)}}
+                            />
+                            <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
+                        </View>
+                    ) : null}
+                    {data?.title ? (
+                        <Text
+                            numberOfLines={data?.cover ? 3 : 2}
+                            style={[styles.article_content, {height: data?.cover ? px(63) : px(42)}]}>
+                            {data?.title}
                         </Text>
                     ) : (
-                        <Text style={{height: px(40)}} />
+                        <Text style={{height: data?.cover ? px(63) : px(42)}} />
                     )}
                 </View>
-                <FastImage
-                    style={styles.article_img}
-                    source={{
-                        uri: data?.cover,
-                    }}
-                />
+                {data?.cover ? (
+                    <FastImage
+                        style={styles.article_img}
+                        source={{
+                            uri: data?.cover,
+                        }}
+                    />
+                ) : null}
             </View>
             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                 <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
@@ -76,10 +86,11 @@ const styles = StyleSheet.create({
         fontSize: px(12),
     },
     article_content: {
-        fontSize: px(12),
-        color: Colors.lightBlackColor,
+        fontSize: px(14),
+        color: Colors.defaultColor,
         lineHeight: px(20),
-        marginTop: px(8),
+
+        fontWeight: 'bold',
     },
     content: {
         fontSize: px(12),

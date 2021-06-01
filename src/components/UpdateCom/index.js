@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-28 01:32:51
+ * @LastEditTime: 2021-06-01 10:13:58
  * @Description:
  */
 
@@ -102,7 +102,7 @@ class UpdateModal extends Component {
                 }
             })
             .catch((res) => {
-                console.log(res);
+                console.log(JSON.stringify(res));
             });
     }
 

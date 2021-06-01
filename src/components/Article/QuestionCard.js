@@ -2,13 +2,13 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 12:10:17
+ * @LastEditTime: 2021-06-01 11:09:50
  * @Description:用户问答卡片
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
-import {px, deviceWidth} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 
@@ -17,7 +17,6 @@ export default function QuestionCard({data = []}) {
     return (
         <>
             {data.map((item, index) => {
-                // let height = item?.name?.length > 18 ? px(190) : px(168);
                 return (
                     <TouchableOpacity
                         key={index}
@@ -27,7 +26,12 @@ export default function QuestionCard({data = []}) {
                         }}
                         style={[styles.ques_card]}>
                         <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
-                        <Text style={styles.article_content}>{item?.nickname}</Text>
+                        <Text style={styles.article_content}>
+                            {item?.phase ? (
+                                <Text style={{color: Colors.defaultColor, fontWeight: 'bold'}}>{item?.phase}：</Text>
+                            ) : null}
+                            {item?.nickname}
+                        </Text>
                         <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
                             <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
                             <Text numberOfLines={2} style={styles.article_title}>
@@ -40,7 +44,6 @@ export default function QuestionCard({data = []}) {
                                     {item.author_name}：
                                 </Text>
                                 {item?.content}
-                                <Text style={Style.more}>全文</Text>
                             </Text>
                         </View>
                     </TouchableOpacity>

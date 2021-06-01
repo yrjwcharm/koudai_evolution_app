@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-19 15:44:22
+ * @LastEditTime: 2021-06-01 14:52:44
  * @Description:
  */
 
@@ -69,6 +69,7 @@ export default class SegmentTabBar extends Component {
     renderTab = (name, page, isTabActive, onPressHandler) => {
         const textColor = isTabActive ? Colors.defaultColor : Colors.lightBlackColor;
         const textFontSize = isTabActive ? px(20) : px(14);
+        const textFontWeight = isTabActive ? '700' : '400';
         return (
             <Button
                 style={{flex: 1, height: tabHeight, paddingHorizontal: px(8)}}
@@ -81,7 +82,7 @@ export default class SegmentTabBar extends Component {
                     onPressHandler(page);
                 }}>
                 <View style={[styles.tab]}>
-                    <Text style={[{color: textColor, fontSize: textFontSize}]}>{name}</Text>
+                    <Text style={[{color: textColor, fontSize: textFontSize, fontWeight: textFontWeight}]}>{name}</Text>
                 </View>
             </Button>
         );
