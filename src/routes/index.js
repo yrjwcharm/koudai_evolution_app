@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-24 16:47:49
+ * @LastEditTime: 2021-06-01 19:44:05
  * @Description:路由表
  */
 import React from 'react';
@@ -141,7 +141,7 @@ import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance'; //保�
 import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
 import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis'; //业绩基准
 import VisionCollect from '../pages/Vision/VisionCollect'; //文章收藏
-
+import AlbumList from '../pages/Vision/AlbumList'; //音频专辑列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -548,6 +548,7 @@ export default function AppStack() {
             <Stack.Screen name="LcmfPolicy" component={LcmfPolicy} options={{title: '理财魔方隐私政策'}} />
             <Stack.Screen name="PerformanceAnalysis" component={PerformanceAnalysis} options={{title: '业绩解析'}} />
             <Stack.Screen name="VisionCollect" component={VisionCollect} options={{headerShown: false}} />
+            <Stack.Screen name="AlbumList" component={AlbumList} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

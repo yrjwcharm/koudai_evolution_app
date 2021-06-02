@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 17:17:31
+ * @LastEditTime: 2021-06-02 14:20:45
  * @Description:音频模块
  */
 
@@ -15,7 +15,7 @@ import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import Icon from 'react-native-vector-icons/Ionicons';
-const VioceCard = ({data, style}) => {
+const VioceCard = ({data, style, scene}) => {
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -32,15 +32,24 @@ const VioceCard = ({data, style}) => {
                                 source={{uri: data?.cate_icon}}
                                 style={{width: px(16), height: px(16), marginRight: px(6)}}
                             />
-                            <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate}</Text>
+                            <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
                         </View>
                     ) : null}
-                    <Text numberOfLines={1} style={styles.title}>
-                        {data.album_name}
-                    </Text>
-                    <Text numberOfLines={2} style={styles.detail}>
-                        {data.title}
-                    </Text>
+                    {scene == 'recommend' || scene == 'collect' ? (
+                        <Text numberOfLines={2} style={styles.title}>
+                            {data.title}
+                        </Text>
+                    ) : (
+                        <>
+                            <Text numberOfLines={1} style={styles.title}>
+                                {data.album_name}
+                            </Text>
+                            <Text numberOfLines={2} style={styles.detail}>
+                                {data.title}
+                            </Text>
+                        </>
+                    )}
+
                     <View style={Style.flexRow}>
                         <FastImage source={{uri: data?.author?.avatar}} style={{width: px(26), height: px(26)}} />
                         <Text style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
@@ -51,17 +60,26 @@ const VioceCard = ({data, style}) => {
                         ) : null}
                     </View>
                 </View>
-                <View style={styles.cover_con}>
-                    <FastImage source={{uri: data?.cover}} style={styles.cover} />
-                    <View style={[styles.media_duration, Style.flexRow]}>
-                        <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
+                {data?.cover ? (
+                    <View style={styles.cover_con}>
+                        <FastImage source={{uri: data?.cover}} style={styles.cover} />
+                        <View style={[styles.media_duration, Style.flexRow]}>
+                            <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
 
-                        <Text style={{fontSize: px(12), color: '#fff', fontFamily: Font.numMedium, marginLeft: px(3)}}>
-                            {data?.media_duration}
-                        </Text>
+                            <Text
+                                style={{
+                                    fontSize: px(12),
+                                    color: '#fff',
+                                    fontFamily: Font.numMedium,
+                                    marginLeft: px(3),
+                                }}>
+                                {data?.media_duration}
+                            </Text>
+                        </View>
                     </View>
-                </View>
+                ) : null}
             </View>
+
             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                 <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
                 <Praise
@@ -83,7 +101,9 @@ const styles = StyleSheet.create({
     card: {
         borderRadius: px(8),
         backgroundColor: '#fff',
-        padding: px(16),
+        paddingHorizontal: px(16),
+        paddingTop: px(15),
+        paddingBottom: px(12),
     },
     detail: {
         fontSize: px(12),

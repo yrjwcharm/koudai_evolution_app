@@ -2,11 +2,11 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 14:54:21
+ * @LastEditTime: 2021-06-02 14:40:12
  * @Description:推荐
  */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ScrollView, RefreshControl} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
 import {Colors, Style, Space} from '../../../common/commonStyle';
 import {px, deviceWidth} from '../../../utils/appUtil';
@@ -43,19 +43,19 @@ const Recommend = () => {
             </View>
         );
     };
-    return (
+    return Object.keys(data).length > 0 ? (
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
             <View style={{padding: px(16), paddingTop: px(12)}}>
                 <RecommendCard style={{marginBottom: px(16)}} data={data.part1} />
                 {data?.part2?.map((item, index) => {
-                    return RenderCate(item, {marginBottom: px(12)});
+                    return RenderCate(item, {marginBottom: px(12)}, 'recommend');
                 })}
                 {data?.part3?.map((item) => {
                     return (
                         <>
                             <RenderTitle title={item.title} />
                             {item?.list?.map((_article, index) => {
-                                return RenderCate(_article, {marginBottom: px(12)});
+                                return RenderCate(_article, {marginBottom: px(12)}, 'recommend');
                             })}
                         </>
                     );
@@ -63,6 +63,8 @@ const Recommend = () => {
             </View>
             <BottomDesc />
         </ScrollView>
+    ) : (
+        <ActivityIndicator size="small" animating={true} />
     );
 };
 

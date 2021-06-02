@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-31 09:58:09
+ * @LastEditTime: 2021-06-02 15:10:12
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -103,7 +103,22 @@ export default function Tabbar() {
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
             <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
-            <Tab.Screen name="Vision" options={{tabBarLabel: '视野'}} component={Vision} />
+            <Tab.Screen
+                name="Vision"
+                options={{
+                    tabBarLabel: '视野',
+                    tabBarBadge: '',
+                    tabBarBadgeStyle: {
+                        backgroundColor: '#E74949',
+                        width: 8,
+                        height: 8,
+                        minWidth: 0,
+                        marginLeft: 5,
+                        borderRadius: 4,
+                    },
+                }}
+                component={Vision}
+            />
             <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
         </Tab.Navigator>
     );

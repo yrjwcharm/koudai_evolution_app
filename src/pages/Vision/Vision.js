@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 14:51:18
+ * @LastEditTime: 2021-06-02 15:09:24
  * @Description:视野
  */
 import React, {useState, useEffect} from 'react';
@@ -18,6 +18,8 @@ import {BoxShadow} from 'react-native-shadow';
 import Recommend from './components/Recommend'; //推荐
 import CommonView from './components/CommonView'; //魔方问答
 import LinearGradient from 'react-native-linear-gradient';
+import {useSelector} from 'react-redux';
+import LoginMask from '../../components/LoginMask';
 const shadow = {
     color: '#ddd',
     border: 12,
@@ -36,13 +38,24 @@ const shadow = {
 const Vision = ({navigation, route}) => {
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
+    const userInfo = useSelector((store) => store.userInfo);
 
     useEffect(() => {
         http.get('/vision/tabs/20210524').then((res) => {
             setTabs(res.result);
         });
     }, []);
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', (e) => {
+            // Prevent default behavior
+            // console.log('object');
+            // e.preventDefault();
+            // Do something manually
+            // ...
+        });
 
+        return unsubscribe;
+    }, [navigation]);
     const _renderDynamicView = () => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
@@ -56,31 +69,34 @@ const Vision = ({navigation, route}) => {
     };
 
     return (
-        <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} colors={['#fff', '#F5F6F8']} style={{flex: 1}}>
-            <View style={{height: inset.top}} />
-            <View style={[Style.flexRow, {flex: 1}]}>
-                {tabs?.length > 0 ? (
-                    <ScrollableTabView renderTabBar={() => <ScrollTabbar boxStyle={styles.tab} />} initialPage={0}>
-                        {_renderDynamicView()}
-                    </ScrollableTabView>
-                ) : null}
-                <BoxShadow setting={shadow}>
-                    <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={['#FBFBFC', '#F6F7F9']}>
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            style={styles.menu}
-                            onPress={() => {
-                                navigation.navigate('VisionCollect');
-                            }}>
-                            <Image
-                                source={require('../../assets/img/vision/menu.png')}
-                                style={{width: px(24), height: px(24)}}
-                            />
-                        </TouchableOpacity>
-                    </LinearGradient>
-                </BoxShadow>
-            </View>
-        </LinearGradient>
+        <>
+            {!userInfo.toJS().is_login && <LoginMask />}
+            <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} colors={['#fff', '#F5F6F8']} style={{flex: 1}}>
+                <View style={{height: inset.top}} />
+                <View style={[Style.flexRow, {flex: 1}]}>
+                    {tabs?.length > 0 ? (
+                        <ScrollableTabView renderTabBar={() => <ScrollTabbar boxStyle={styles.tab} />} initialPage={0}>
+                            {_renderDynamicView()}
+                        </ScrollableTabView>
+                    ) : null}
+                    <BoxShadow setting={shadow}>
+                        <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={['#FBFBFC', '#F6F7F9']}>
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                style={styles.menu}
+                                onPress={() => {
+                                    navigation.navigate('VisionCollect');
+                                }}>
+                                <Image
+                                    source={require('../../assets/img/vision/menu.png')}
+                                    style={{width: px(24), height: px(24)}}
+                                />
+                            </TouchableOpacity>
+                        </LinearGradient>
+                    </BoxShadow>
+                </View>
+            </LinearGradient>
+        </>
     );
 };
 

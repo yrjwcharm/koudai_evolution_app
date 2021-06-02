@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 16:06:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 15:11:37
+ * @LastEditTime: 2021-06-01 18:31:30
  * @Description:收藏 历史
  */
 
@@ -17,6 +17,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全
 import {px} from '../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors} from '../../common/commonStyle';
+import CommonView from './components/CommonView';
 
 const VisionCollect = ({navigation}) => {
     const inset = useSafeAreaInsets();
@@ -34,11 +35,12 @@ const VisionCollect = ({navigation}) => {
             setRefreshing(false);
             setLikeList(res.result);
         });
-    }, [k]);
+    }, []);
+
     return (
         <LinearGradient
             start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
+            end={{x: 0, y: 0.2}}
             colors={['#fff', '#F5F6F8']}
             style={{paddingTop: inset.top, flex: 1}}>
             <TouchableOpacity
@@ -58,9 +60,9 @@ const VisionCollect = ({navigation}) => {
                         activeFontSize={px(20)}
                     />
                 )}>
-                <View tabLabel="收藏" />
-                <View tabLabel="赞过" />
-                <View tabLabel="历史" />
+                <CommonView tabLabel="收藏" scene="collect" type={'favor'} />
+                <CommonView tabLabel="赞过" scene="collect" type={'collect'} />
+                <CommonView tabLabel="历史" scene="collect" type={'history'} />
             </ScrollableTabView>
         </LinearGradient>
     );

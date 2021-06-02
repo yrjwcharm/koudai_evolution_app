@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 17:08:52
+ * @LastEditTime: 2021-06-01 19:28:35
  * @Description:视野文章模块
  */
 
@@ -14,8 +14,9 @@ import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
 
-export default function VisionArticle({data = '', style}) {
+export default function VisionArticle({data = '', style, scene}) {
     const jump = useJump();
+    let numberOfLines = scene == 'recommend' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
     return (
         <TouchableOpacity
             style={[styles.card, style]}
@@ -36,12 +37,12 @@ export default function VisionArticle({data = '', style}) {
                     ) : null}
                     {data?.title ? (
                         <Text
-                            numberOfLines={data?.cover ? 3 : 2}
-                            style={[styles.article_content, {height: data?.cover ? px(63) : px(42)}]}>
+                            numberOfLines={numberOfLines}
+                            style={[styles.article_content, {height: px(21) * numberOfLines}]}>
                             {data?.title}
                         </Text>
                     ) : (
-                        <Text style={{height: data?.cover ? px(63) : px(42)}} />
+                        <Text style={{height: px(21) * numberOfLines}} />
                     )}
                 </View>
                 {data?.cover ? (
@@ -53,18 +54,21 @@ export default function VisionArticle({data = '', style}) {
                     />
                 ) : null}
             </View>
-            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
-                <Praise
-                    comment={{
-                        favor_status: data?.favor_status,
-                        favor_num: parseInt(data?.favor_num),
-                        id: data?.id,
-                    }}
-                    type={'article'}
-                />
-            </View>
+            {scene == 'collect' ? null : (
+                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                    <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
+
+                    <Praise
+                        comment={{
+                            favor_status: data?.favor_status,
+                            favor_num: parseInt(data?.favor_num),
+                            id: data?.id,
+                        }}
+                        type={'article'}
+                    />
+                </View>
+            )}
         </TouchableOpacity>
     );
 }
