@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 19:28:35
+ * @LastEditTime: 2021-06-02 15:35:36
  * @Description:视野文章模块
  */
 
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         color: Colors.defaultColor,
         lineHeight: px(20),
-
         fontWeight: 'bold',
     },
     content: {

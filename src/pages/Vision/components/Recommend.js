@@ -64,7 +64,7 @@ const Recommend = () => {
             <BottomDesc />
         </ScrollView>
     ) : (
-        <ActivityIndicator size="small" animating={true} />
+        <ActivityIndicator size="large" animating={true} />
     );
 };
 

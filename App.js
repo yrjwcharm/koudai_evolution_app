@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 16:45:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-04 13:56:59
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -26,6 +26,7 @@ import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
+import {updateVision} from './src/redux/actions/visionData';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
@@ -63,6 +64,17 @@ function App(props) {
             channel: channel,
             jpush_rid: registerID,
             platform: Platform.OS,
+        }).then((res) => {
+            // && navigationRef.current.getCurrentRoute().name !== 'Vision'
+            if (res.code == '000000') {
+                // res.result.vision_update
+                store.dispatch(
+                    updateVision({
+                        visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : '哈哈哈',
+                        visionTabUpdate: 'market' || res.result.vision_update,
+                    })
+                );
+            }
         });
     };
     // heartbeat
@@ -98,7 +110,7 @@ function App(props) {
         heartBeat();
         setInterval(() => {
             heartBeat();
-        }, 60000);
+        }, 10000);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {

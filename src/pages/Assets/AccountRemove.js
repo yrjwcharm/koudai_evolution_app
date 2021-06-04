@@ -1,15 +1,14 @@
 /*
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-13 11:20:02
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-02 15:16:50
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
-import {useDispatch, useSelector} from 'react-redux';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useDispatch} from 'react-redux';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/Modal';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -22,8 +21,6 @@ import {getUserInfo} from '../../redux/actions/userInfo';
 import {VerifyCodeModal} from '../../components/Modal';
 
 const AccountRemove = ({navigation, route}) => {
-    const userInfo = useSelector((store) => store.userInfo);
-    const insets = useSafeAreaInsets();
     const dispatch = useDispatch();
     const [data, setData] = useState({});
     const codeModal = useRef(null);

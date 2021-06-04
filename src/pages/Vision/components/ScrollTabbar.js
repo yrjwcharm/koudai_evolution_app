@@ -2,14 +2,16 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 14:52:44
+ * @LastEditTime: 2021-06-04 14:30:42
  * @Description:
  */
 
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, DeviceEventEmitter} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
+import {connect} from 'react-redux';
+import {updateVision} from '../../../redux/actions/visionData';
 const PhoneWidth = Dimensions.get('window').width;
 const tabHeight = px(42);
 const Button = (props) => {
@@ -19,7 +21,7 @@ const Button = (props) => {
         </TouchableOpacity>
     );
 };
-export default class SegmentTabBar extends Component {
+class ScrollTabbar extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -79,9 +81,17 @@ export default class SegmentTabBar extends Component {
                 onLayout={this.measureTab.bind(this, page)}
                 accessibilityTraits="button"
                 onPress={() => {
+                    if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k) {
+                        this.props.dispatch(updateVision({visionTabUpdate: ''}));
+                        DeviceEventEmitter.emit('VisionTabUpdate', this.props.tabList[page].k);
+                    }
                     onPressHandler(page);
                 }}>
                 <View style={[styles.tab]}>
+                    {this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k &&
+                    this.props.tabList[this.props.activeTab].k !== this.props.vision.toJS().visionTabUpdate ? (
+                        <View style={styles.badge} />
+                    ) : null}
                     <Text style={[{color: textColor, fontSize: textFontSize, fontWeight: textFontWeight}]}>{name}</Text>
                 </View>
             </Button>
@@ -108,7 +118,8 @@ export default class SegmentTabBar extends Component {
         );
     }
 }
-
+const mapStateToProps = (state) => state;
+export default connect(mapStateToProps)(ScrollTabbar);
 const styles = StyleSheet.create({
     tabBarBox: {
         height: tabHeight,
@@ -131,5 +142,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
         justifyContent: 'space-around',
+    },
+    badge: {
+        width: px(8),
+        height: px(8),
+        borderRadius: px(4),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        right: px(-4),
+        top: px(8),
     },
 });

@@ -2,25 +2,52 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 19:35:55
+ * @LastEditTime: 2021-06-04 14:54:39
  * @Description:tab公共模块
  *
  */
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, FlatList, ActivityIndicator, DeviceEventEmitter} from 'react-native';
 import http from '../../../services/index.js';
 import {Colors, Style} from '../../../common/commonStyle';
-import {px} from '../../../utils/appUtil';
+import {px, debounce} from '../../../utils/appUtil';
 import EmptyTip from '../../../components/EmptyTip';
 import RenderCate from './RenderCate.js';
+import {useSelector, useDispatch} from 'react-redux';
+import _ from 'lodash';
 const CommonView = ({k, scene, type}) => {
     const [data, setData] = useState({});
+    const visionTabUpdate = useSelector((store) => store.vision).toJS().visionTabUpdate;
     const [refreshing, setRefreshing] = useState(false);
+    const dispatch = useDispatch();
     const key = scene == 'collect' ? type : k;
     const url = scene == 'collect' ? `/vision/${key}/list/20210524` : `/vision/${key}/articles/20210524`;
     useEffect(() => {
         getData();
     }, [getData]);
+    useEffect(() => {
+        let timer = DeviceEventEmitter.addListener(
+            'VisionTabUpdate',
+            _.debounce((value) => {
+                setRefreshing(true);
+                http.get(`/vision/${value}/articles/20210524`, {
+                    page: 1,
+                }).then((res) => {
+                    setRefreshing(false);
+                    setData((prevData) => {
+                        let _data = {...prevData};
+                        _data[value] = res.result;
+                        _data[value].page = 1;
+                        return _data;
+                    });
+                });
+                // 刷新界面等
+            }, 500)
+        );
+        return () => {
+            timer && timer.remove();
+        };
+    }, []);
     const getData = useCallback(
         (_type) => {
             _type !== 'loadmore' && setRefreshing(true);
@@ -28,7 +55,7 @@ const CommonView = ({k, scene, type}) => {
 
             if (_type == 'loadmore') {
                 setData((prev) => {
-                    page = prev?.[k]?.page ? prev?.[k]?.page + 1 : 2;
+                    page = prev?.[key]?.page ? prev?.[key]?.page + 1 : 2;
                     http.get(url, {
                         page,
                     }).then((res) => {
@@ -60,12 +87,12 @@ const CommonView = ({k, scene, type}) => {
                 });
             }
         },
-        [k, key, url]
+        [key, url]
     );
     const ListFooterComponent = () => {
         return (
             <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>
-                {data?.[k]?.has_more ? (
+                {data?.[key]?.has_more ? (
                     <>
                         <ActivityIndicator size="small" animating={true} />
                         <Text style={{color: Colors.darkGrayColor, marginLeft: px(4)}}>正在加载...</Text>
@@ -90,7 +117,7 @@ const CommonView = ({k, scene, type}) => {
                         ) : null
                     }
                     ListEmptyComponent={!refreshing && <EmptyTip />}
-                    ListFooterComponent={!refreshing && data?.[k]?.list?.length > 0 && ListFooterComponent}
+                    ListFooterComponent={!refreshing && data?.[key]?.list?.length > 0 && ListFooterComponent}
                     renderItem={({item}) => {
                         return RenderCate(item, {marginBottom: px(12)}, scene);
                     }}

@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 14:20:45
+ * @LastEditTime: 2021-06-02 15:29:46
  * @Description:音频模块
  */
 
@@ -79,18 +79,19 @@ const VioceCard = ({data, style, scene}) => {
                     </View>
                 ) : null}
             </View>
-
-            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
-                <Praise
-                    type={'article'}
-                    comment={{
-                        favor_status: data?.favor_status,
-                        favor_num: parseInt(data?.favor_num),
-                        id: data?.id,
-                    }}
-                />
-            </View>
+            {scene == 'collect' ? null : (
+                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+                    <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
+                    <Praise
+                        type={'article'}
+                        comment={{
+                            favor_status: data?.favor_status,
+                            favor_num: parseInt(data?.favor_num),
+                            id: data?.id,
+                        }}
+                    />
+                </View>
+            )}
         </TouchableOpacity>
     );
 };

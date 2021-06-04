@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 15:10:12
+ * @LastEditTime: 2021-06-04 11:37:00
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -14,9 +14,11 @@ import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
 import Vision from '../pages/Vision/Vision';
 import {Colors} from '../common/commonStyle';
+import {useSelector} from 'react-redux';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
+    const vision = useSelector((store) => store.vision);
     return (
         <Tab.Navigator
             initialRouteName="Index"
@@ -110,8 +112,8 @@ export default function Tabbar() {
                     tabBarBadge: '',
                     tabBarBadgeStyle: {
                         backgroundColor: '#E74949',
-                        width: 8,
-                        height: 8,
+                        width: vision.toJS().visionUpdate ? 8 : 0,
+                        height: vision.toJS().visionUpdate ? 8 : 0,
                         minWidth: 0,
                         marginLeft: 5,
                         borderRadius: 4,

@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 17:17:10
+ * @LastEditTime: 2021-06-02 15:29:11
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -11,8 +11,8 @@ import {Colors, Style, Space} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
-
-export default function QuestionCard({data = []}) {
+import Praise from '../Praise';
+export default function QuestionCard({data = [], scene}) {
     const jump = useJump();
     return (
         <>
@@ -46,6 +46,19 @@ export default function QuestionCard({data = []}) {
                                 {item?.content}
                             </Text>
                         </View>
+                        {scene == 'collect' ? null : (
+                            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                                <Text style={styles.light_text}>{item?.view_num}人已阅读</Text>
+                                <Praise
+                                    type={'article'}
+                                    comment={{
+                                        favor_status: item?.favor_status,
+                                        favor_num: parseInt(item?.favor_num),
+                                        id: item?.id,
+                                    }}
+                                />
+                            </View>
+                        )}
                     </TouchableOpacity>
                 );
             })}
@@ -89,6 +102,11 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: Space.cardPadding,
         paddingTop: px(20),
+        paddingBottom: px(12),
         marginBottom: px(12),
+    },
+    light_text: {
+        color: Colors.lightGrayColor,
+        fontSize: px(12),
     },
 });
