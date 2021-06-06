@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 17:42:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-06 11:37:20
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -21,9 +21,13 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LoginMask from '../../components/LoginMask';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import {updateVision} from '../../redux/actions/visionData.js';
+import _ from 'lodash';
 const ArticleDetail = ({navigation, route}) => {
+    const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
+    const visionData = useSelector((store) => store.vision).toJS();
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const headerHeight = useHeaderHeight();
@@ -137,8 +141,11 @@ const ArticleDetail = ({navigation, route}) => {
                 done_status: data?.read_info?.done_status || +finishRead,
                 article_progress: progress,
             });
+            if (progress == 100 && route.params?.article_id) {
+                dispatch(updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))}));
+            }
         }
-    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);

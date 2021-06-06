@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 14:19:09
+ * @LastEditTime: 2021-06-06 15:49:51
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -14,8 +14,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import Praise from '../../components/Praise';
 import {useJump} from '../../components/hooks';
+import {useSelector, useDispatch} from 'react-redux';
+import {updateVision} from '../../redux/actions/visionData';
 const AlbumList = ({navigation, route}) => {
-    const [list, setList] = useState({});
+    const visionData = useSelector((store) => store.vision).toJS();
+    const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const jump = useJump();
@@ -28,12 +31,13 @@ const AlbumList = ({navigation, route}) => {
                 setHasMore(res.result.has_more);
                 navigation.setOptions({title: res.result.title});
                 if (type === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
+                    dispatch(updateVision({albumList: visionData.albumList.concat(res.result.list || [])}));
                 } else {
-                    setList(res.result.list || []);
+                    dispatch(updateVision({albumList: res.result.list || []}));
                 }
             });
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [navigation, route, page]
     );
     useEffect(() => {
@@ -64,7 +68,7 @@ const AlbumList = ({navigation, route}) => {
                     jump(item?.url);
                 }}>
                 <View style={[Style.flexRow, {flex: 1}]}>
-                    <View>
+                    <View style={{flex: 1}}>
                         <Text
                             numberOfLines={2}
                             style={[styles.title, {fontSize: px(15), lineHeight: px(24), height: px(48)}]}>
@@ -139,17 +143,17 @@ const AlbumList = ({navigation, route}) => {
                         <ActivityIndicator size="small" animating={true} />
                         <Text style={{color: Colors.darkGrayColor, marginLeft: px(4)}}>正在加载...</Text>
                     </>
-                ) : (
+                ) : visionData.albumList?.length >= 10 ? (
                     <Text style={{color: Colors.darkGrayColor, marginTop: px(4)}}>我们是有底线的...</Text>
-                )}
+                ) : null}
             </View>
         );
     };
     return (
         <FlatList
-            data={list}
+            data={visionData.albumList}
             style={{paddingHorizontal: px(16), backgroundColor: '#fff'}}
-            ListFooterComponent={!refreshing && list?.length > 0 && ListFooterComponent}
+            ListFooterComponent={!refreshing && visionData.albumList?.length > 0 && ListFooterComponent}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             onEndReachedThreshold={0.5}

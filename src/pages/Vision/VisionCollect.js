@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 16:06:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 16:52:48
+ * @LastEditTime: 2021-06-04 18:34:26
  * @Description:收藏 历史
  */
 
@@ -21,21 +21,6 @@ import CommonView from './components/CommonView';
 
 const VisionCollect = ({navigation}) => {
     const inset = useSafeAreaInsets();
-    const [refreshing, setRefreshing] = useState(false);
-    const [likeList, setLikeList] = useState({});
-    const [collectList, setCollectList] = useState({});
-    const [viewList, setViewList] = useState({});
-    const jump = useJump();
-    useEffect(() => {
-        getData();
-    }, [getData]);
-    const getData = useCallback(() => {
-        setRefreshing(true);
-        http.get('/vision/resource/list/20210524').then((res) => {
-            setRefreshing(false);
-            setLikeList(res.result);
-        });
-    }, []);
 
     return (
         <LinearGradient

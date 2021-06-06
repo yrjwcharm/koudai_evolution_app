@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 15:35:36
+ * @LastEditTime: 2021-06-06 11:14:25
  * @Description:视野文章模块
  */
 
@@ -13,8 +13,9 @@ import {px} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
-
+import {useSelector} from 'react-redux';
 export default function VisionArticle({data = '', style, scene}) {
+    const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
     let numberOfLines = scene == 'recommend' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
     return (
@@ -38,7 +39,15 @@ export default function VisionArticle({data = '', style, scene}) {
                     {data?.title ? (
                         <Text
                             numberOfLines={numberOfLines}
-                            style={[styles.article_content, {height: px(21) * numberOfLines}]}>
+                            style={[
+                                styles.article_content,
+                                {
+                                    height: px(21) * numberOfLines,
+                                    color: visionData?.readList?.includes(data.id)
+                                        ? Colors.lightBlackColor
+                                        : Colors.defaultColor,
+                                },
+                            ]}>
                             {data?.title}
                         </Text>
                     ) : (
@@ -58,7 +67,6 @@ export default function VisionArticle({data = '', style, scene}) {
             {scene == 'collect' ? null : (
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                     <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
-
                     <Praise
                         comment={{
                             favor_status: data?.favor_status,
@@ -83,7 +91,6 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         fontWeight: 'bold',
         lineHeight: px(20),
-        color: Colors.defaultColor,
     },
     article_img: {
         width: px(84),

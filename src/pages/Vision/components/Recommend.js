@@ -2,20 +2,23 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 14:40:12
+ * @LastEditTime: 2021-06-06 15:51:42
  * @Description:推荐
  */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity} from 'react-native';
 import http from '../../../services/index.js';
-import {Colors, Style, Space} from '../../../common/commonStyle';
-import {px, deviceWidth} from '../../../utils/appUtil';
-import {useJump} from '../../../components/hooks';
-import FastImage from 'react-native-fast-image';
+import {Colors, Style} from '../../../common/commonStyle';
+import {px} from '../../../utils/appUtil';
 import BottomDesc from '../../../components/BottomDesc.js';
 import RecommendCard from '../../../components/Article/RecommendCard';
 import RenderCate from './RenderCate';
-const Recommend = () => {
+import {useSelector, useDispatch} from 'react-redux';
+import {updateVision} from '../../../redux/actions/visionData.js';
+import _ from 'lodash';
+const Recommend = (props) => {
+    const visionData = useSelector((store) => store.vision).toJS();
+    const dispatch = useDispatch();
     const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     useEffect(() => {
@@ -24,13 +27,26 @@ const Recommend = () => {
     const init = () => {
         setRefreshing(true);
         http.get('/vision/recommend/20210524').then((res) => {
+            let readList = _.reduce(
+                res?.result?.list,
+                (result, value) => {
+                    value.view_status == 1 && result.push(value.id);
+                    return result;
+                },
+                []
+            );
+            dispatch(updateVision({readList: _.uniq(visionData.readList.concat(readList))}));
             setRefreshing(false);
             setData(res.result);
         });
     };
-    const RenderTitle = (props) => {
+    const RenderTitle = (_props) => {
         return (
-            <View
+            <TouchableOpacity
+                key={_props._key}
+                onPress={() => {
+                    global.visionTabChange(1);
+                }}
                 style={[
                     Style.flexBetween,
                     {
@@ -38,33 +54,35 @@ const Recommend = () => {
                         marginTop: px(4),
                     },
                 ]}>
-                <Text style={styles.large_title}>{props.title}</Text>
-                {props.more_text ? <Text style={Style.more}>{props.more_text}</Text> : null}
-            </View>
+                <Text style={styles.large_title}>{_props.title}</Text>
+                {_props.more_text ? <Text style={Style.more}>{_props.more_text}</Text> : null}
+            </TouchableOpacity>
         );
     };
     return Object.keys(data).length > 0 ? (
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
+        <ScrollView
+            key={1}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
             <View style={{padding: px(16), paddingTop: px(12)}}>
                 <RecommendCard style={{marginBottom: px(16)}} data={data.part1} />
                 {data?.part2?.map((item, index) => {
                     return RenderCate(item, {marginBottom: px(12)}, 'recommend');
                 })}
-                {data?.part3?.map((item) => {
+                {data?.part3?.map((item, index) => {
                     return (
-                        <>
-                            <RenderTitle title={item.title} />
+                        <View key={index + 'i'}>
+                            <RenderTitle _key={index} title={item.title} more_text={'更多'} />
                             {item?.list?.map((_article, index) => {
                                 return RenderCate(_article, {marginBottom: px(12)}, 'recommend');
                             })}
-                        </>
+                        </View>
                     );
                 })}
             </View>
             <BottomDesc />
         </ScrollView>
     ) : (
-        <ActivityIndicator size="large" animating={true} />
+        <ActivityIndicator style={{marginTop: px(40)}} size="large" animating={true} />
     );
 };
 

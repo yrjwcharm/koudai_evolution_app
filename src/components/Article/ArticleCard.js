@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-31 18:45:54
+ * @LastEditTime: 2021-06-06 15:19:28
  * @Description:首页发现页文章卡片
  */
 
@@ -18,6 +18,7 @@ export default function ArticleCard({data = '', style}) {
     const jump = useJump();
     return (
         <TouchableOpacity
+            key={data.id}
             style={[styles.card, style]}
             activeOpacity={0.9}
             onPress={() => {

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 12:40:51
+ * @LastEditTime: 2021-06-06 15:29:44
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -51,19 +51,13 @@ const Vision = ({navigation, route}) => {
             dispatch(updateVision({visionUpdate: ''}));
         }, [dispatch])
     );
-    // useEffect(() => {
-    //     const unsubscribe = navigation.addListener('tabPress', (e) => {
-    //         dispatch(updateVision({visionUpdate: false}));
-    //     });
-    //     return unsubscribe;
-    // }, [navigation, dispatch]);
     const _renderDynamicView = () => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
             if (tabs[i].k == 'recommend') {
-                _views.push(<Recommend tabLabel={tabs[i].v} k={tabs[i].k} />);
+                _views.push(<Recommend key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
             } else {
-                _views.push(<CommonView tabLabel={tabs[i].v} k={tabs[i].k} />);
+                _views.push(<CommonView key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
             }
         }
         return _views;

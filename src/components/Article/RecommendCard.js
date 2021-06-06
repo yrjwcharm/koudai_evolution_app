@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 18:06:39
+ * @LastEditTime: 2021-06-06 15:56:59
  * @Description:推荐模块
  */
 import React, {useState, useRef} from 'react';
@@ -14,10 +14,48 @@ import FastImage from 'react-native-fast-image';
 import {BlurView} from '@react-native-community/blur';
 import {Button} from '../Button';
 import Praise from '../Praise';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
+import {Modal} from '../Modal';
 const RecommendCard = ({data, style}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
+    const [reserved, setReserved] = useState(data.reserved);
     const viewRef = useRef(null);
+    const subscription = () => {
+        if (reserved) {
+            return;
+        }
+        checkNotifications().then(({status, settings}) => {
+            if (status == 'denied' || status == 'blocked') {
+                openLink();
+            } else {
+                setReserved(true);
+                // http
+            }
+        });
+    };
+    const openLink = () => {
+        requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+            // …
+            if (status == 'granted') {
+                setReserved(true);
+            } else {
+                blockCal();
+            }
+        });
+    };
+    //权限提示弹窗
+    const blockCal = () => {
+        Modal.show({
+            title: '权限申请',
+            content: '避免错过调仓加仓消息，请打开通知权限',
+            confirm: true,
+            confirmText: '前往',
+            confirmCallBack: () => {
+                openSettings().catch(() => console.warn('cannot open settings'));
+            },
+        });
+    };
     return (
         <>
             <TouchableOpacity
@@ -59,7 +97,7 @@ const RecommendCard = ({data, style}) => {
                             </View>
 
                             <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                                <Text style={styles.light_text}>22人已阅读</Text>
+                                <Text style={styles.light_text}>{data.view_num}人已阅读</Text>
 
                                 <Praise
                                     type={'article'}
@@ -73,6 +111,14 @@ const RecommendCard = ({data, style}) => {
                         </>
                     )}
                 </View>
+                <Button
+                    onPress={subscription}
+                    title={reserved ? '已预约' : '更新提醒'}
+                    disabled={reserved}
+                    disabledColor={'#9AA1B2'}
+                    style={{height: px(32), paddingHorizontal: px(14), borderRadius: px(16)}}
+                    textStyle={{fontSize: px(13), fontWeight: '700'}}
+                />
                 {data?.locked ? (
                     <>
                         <View
@@ -90,8 +136,9 @@ const RecommendCard = ({data, style}) => {
                             />
                             <Text style={styles.blur_text}>{data.recommend_time}</Text>
                             <Button
-                                title={data.reserved ? '已预约' : '更新提醒'}
-                                disabled={data.reserved}
+                                onPress={subscription}
+                                title={reserved ? '已预约' : '更新提醒'}
+                                disabled={reserved}
                                 style={{height: px(32), paddingHorizontal: px(14), borderRadius: px(16)}}
                                 textStyle={{fontSize: px(13), fontWeight: '700'}}
                             />

@@ -2,16 +2,16 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 14:30:42
+ * @LastEditTime: 2021-06-06 15:13:45
  * @Description:
  */
 
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, DeviceEventEmitter} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from 'react-native';
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import {connect} from 'react-redux';
-import {updateVision} from '../../../redux/actions/visionData';
+import {updateVision, updateFresh} from '../../../redux/actions/visionData';
 const PhoneWidth = Dimensions.get('window').width;
 const tabHeight = px(42);
 const Button = (props) => {
@@ -36,6 +36,7 @@ class ScrollTabbar extends Component {
         this.scrollToIndex(nextProps.activeTab);
     }
     componentDidMount() {
+        global.visionTabChange = this.props.goToPage;
         setTimeout(() => {
             this.scrollToIndex(this.props.activeTab);
         }, 100);
@@ -83,7 +84,12 @@ class ScrollTabbar extends Component {
                 onPress={() => {
                     if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k) {
                         this.props.dispatch(updateVision({visionTabUpdate: ''}));
-                        DeviceEventEmitter.emit('VisionTabUpdate', this.props.tabList[page].k);
+                        // this.props.vision
+                        //     .toJS()
+                        //     .flatListRef?.current?.scrollToOffset({animated: true, viewPosition: 0, index: 0}); //刷新时滚动到顶部
+                        // setTimeout(() => {
+                        this.props.dispatch(updateFresh(this.props.tabList[page].k));
+                        // }, 100);
                     }
                     onPressHandler(page);
                 }}>
