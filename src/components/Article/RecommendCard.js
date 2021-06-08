@@ -2,11 +2,11 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:56:59
+ * @LastEditTime: 2021-06-07 11:55:04
  * @Description:推荐模块
  */
-import React, {useState, useRef} from 'react';
-import {StyleSheet, Text, View, findNodeHandle, TouchableOpacity} from 'react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {StyleSheet, Text, View, findNodeHandle, TouchableOpacity, AppState} from 'react-native';
 import {Colors, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import {useJump} from '../hooks';
@@ -16,29 +16,73 @@ import {Button} from '../Button';
 import Praise from '../Praise';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import {Modal} from '../Modal';
+import http from '../../services';
+import Toast from '../Toast';
 const RecommendCard = ({data, style}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
     const [reserved, setReserved] = useState(data.reserved);
     const viewRef = useRef(null);
+    const postReserve = (sucess) => {
+        http.post('/vision/recommend/reserve/20210524', {id: data.id}).then((res) => {
+            if (res.code === '000000') {
+                sucess();
+                Toast.show(res.message);
+            }
+        });
+    };
+    useEffect(() => {
+        AppState.addEventListener('change', _handleAppStateChange);
+        return () => {
+            AppState.removeEventListener('change', _handleAppStateChange);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    const _handleAppStateChange = (nextAppState) => {
+        if (nextAppState === 'active') {
+            _checkNotifications(
+                () => {
+                    postReserve(() => {
+                        setReserved(true);
+                    });
+                },
+                () => {
+                    setReserved(false);
+                }
+            );
+        }
+    };
+
+    const _checkNotifications = (sucess, fail) => {
+        checkNotifications().then(({status, settings}) => {
+            if (status == 'denied' || status == 'blocked') {
+                fail();
+            } else {
+                sucess();
+            }
+        });
+    };
     const subscription = () => {
         if (reserved) {
             return;
         }
-        checkNotifications().then(({status, settings}) => {
-            if (status == 'denied' || status == 'blocked') {
+        _checkNotifications(
+            () => {
+                postReserve(() => {
+                    setReserved(true);
+                });
+            },
+            () => {
                 openLink();
-            } else {
-                setReserved(true);
-                // http
             }
-        });
+        );
     };
     const openLink = () => {
         requestNotifications(['alert', 'sound']).then(({status, settings}) => {
-            // …
             if (status == 'granted') {
-                setReserved(true);
+                postReserve(() => {
+                    setReserved(true);
+                });
             } else {
                 blockCal();
             }
@@ -111,14 +155,7 @@ const RecommendCard = ({data, style}) => {
                         </>
                     )}
                 </View>
-                <Button
-                    onPress={subscription}
-                    title={reserved ? '已预约' : '更新提醒'}
-                    disabled={reserved}
-                    disabledColor={'#9AA1B2'}
-                    style={{height: px(32), paddingHorizontal: px(14), borderRadius: px(16)}}
-                    textStyle={{fontSize: px(13), fontWeight: '700'}}
-                />
+
                 {data?.locked ? (
                     <>
                         <View
@@ -139,6 +176,7 @@ const RecommendCard = ({data, style}) => {
                                 onPress={subscription}
                                 title={reserved ? '已预约' : '更新提醒'}
                                 disabled={reserved}
+                                disabledColor={'#9AA1B2'}
                                 style={{height: px(32), paddingHorizontal: px(14), borderRadius: px(16)}}
                                 textStyle={{fontSize: px(13), fontWeight: '700'}}
                             />

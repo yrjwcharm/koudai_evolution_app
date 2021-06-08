@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 13:56:59
+ * @LastEditTime: 2021-06-06 18:13:08
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -70,8 +70,8 @@ function App(props) {
                 // res.result.vision_update
                 store.dispatch(
                     updateVision({
-                        visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : '哈哈哈',
-                        visionTabUpdate: 'market' || res.result.vision_update,
+                        visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : res.result.vision_update,
+                        visionTabUpdate: res.result.vision_update,
                     })
                 );
             }
@@ -110,7 +110,7 @@ function App(props) {
         heartBeat();
         setInterval(() => {
             heartBeat();
-        }, 10000);
+        }, 60000);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {

@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 11:37:20
+ * @LastEditTime: 2021-06-07 11:28:24
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -24,10 +24,16 @@ import LoginMask from '../../components/LoginMask';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData.js';
 import _ from 'lodash';
+import RenderCate from './components/RenderCate.js';
+import LinearGradient from 'react-native-linear-gradient';
+import RenderTitle from './components/RenderTitle';
+import {isIPhoneX} from '../../components/IM/app/chat/utils.js';
+import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
+    const [recommendData, setRecommendData] = useState({});
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
     const headerHeight = useHeaderHeight();
@@ -54,6 +60,9 @@ const ArticleDetail = ({navigation, route}) => {
                 setData(res.result);
                 setFinishRead(!!res.result.read_info?.done_status);
             }
+        });
+        http.get('/community/article/recommend/20210524', {id: route.params?.article_id}).then((result) => {
+            setRecommendData(result.result);
         });
     }, [route]);
 
@@ -141,11 +150,8 @@ const ArticleDetail = ({navigation, route}) => {
                 done_status: data?.read_info?.done_status || +finishRead,
                 article_progress: progress,
             });
-            if (progress == 100 && route.params?.article_id) {
-                dispatch(updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))}));
-            }
         }
-    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData]);
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
@@ -191,6 +197,11 @@ const ArticleDetail = ({navigation, route}) => {
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad) {
             setFinishRead((prev) => {
                 if (!prev) {
+                    if (route.params?.article_id) {
+                        dispatch(
+                            updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))})
+                        );
+                    }
                     postProgress({
                         article_id: route.params?.article_id,
                         latency: Date.now() - timeRef.current,
@@ -201,7 +212,7 @@ const ArticleDetail = ({navigation, route}) => {
                 return true;
             });
         }
-    }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight]);
+    }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData]);
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
@@ -273,7 +284,11 @@ const ArticleDetail = ({navigation, route}) => {
                                 ) : (
                                     <View style={{height: text(161)}} />
                                 )}
-                                <View style={[Style.flexRow, {paddingBottom: text(64)}]}>
+                                <View
+                                    style={[
+                                        Style.flexRow,
+                                        {paddingBottom: Object.keys(recommendData).length > 0 ? 0 : text(64)},
+                                    ]}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => onFavor('normal')}
@@ -320,6 +335,23 @@ const ArticleDetail = ({navigation, route}) => {
                                         <Text style={styles.finishText}>{'分享'}</Text>
                                     </TouchableOpacity>
                                 </View>
+                                {Object.keys(recommendData).length > 0 ? (
+                                    <LinearGradient
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 0, y: 0.2}}
+                                        colors={['#fff', '#F5F6F8']}>
+                                        <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
+                                            <RenderTitle title={recommendData?.portfolios?.title} />
+                                            {recommendData?.portfolios?.list?.map((item, index) => {
+                                                return <PortfolioCard data={item} style={{marginBottom: text(12)}} />;
+                                            })}
+                                            <RenderTitle title={recommendData?.articles?.title} />
+                                            {recommendData?.articles?.list?.map((item, index) => {
+                                                return RenderCate(item, {marginBottom: text(12)}, 'article');
+                                            })}
+                                        </View>
+                                    </LinearGradient>
+                                ) : null}
                             </>
                         )}
                     </ScrollView>

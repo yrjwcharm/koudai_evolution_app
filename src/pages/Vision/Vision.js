@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:29:44
+ * @LastEditTime: 2021-06-06 18:17:34
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -65,7 +65,6 @@ const Vision = ({navigation, route}) => {
 
     return (
         <>
-            {!userInfo.toJS().is_login && <LoginMask />}
             <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} colors={['#fff', '#F5F6F8']} style={{flex: 1}}>
                 <View style={{height: inset.top}} />
                 <View style={[Style.flexRow, {flex: 1}]}>
@@ -93,6 +92,7 @@ const Vision = ({navigation, route}) => {
                     </BoxShadow>
                 </View>
             </LinearGradient>
+            {!userInfo.toJS().is_login && <LoginMask />}
         </>
     );
 };

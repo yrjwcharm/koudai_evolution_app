@@ -2,19 +2,19 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:19:28
+ * @LastEditTime: 2021-06-07 17:50:20
  * @Description:首页发现页文章卡片
  */
 
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Colors, Style, Space} from '../../common/commonStyle';
-import {px} from '../../utils/appUtil';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Colors, Style, Space } from '../../common/commonStyle';
+import { px } from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
-import {useJump} from '../hooks';
+import { useJump } from '../hooks';
 
-export default function ArticleCard({data = '', style}) {
+export default function ArticleCard({ data = '', style }) {
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -25,7 +25,7 @@ export default function ArticleCard({data = '', style}) {
                 jump(data?.url);
             }}>
             <View style={Style.flexRow}>
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                     <Text numberOfLines={2} style={styles.article_title}>
                         {data?.title}
                     </Text>
@@ -34,8 +34,8 @@ export default function ArticleCard({data = '', style}) {
                             {data?.detail}
                         </Text>
                     ) : (
-                        <Text style={{height: px(40)}} />
-                    )}
+                            <Text style={{ height: px(40) }} />
+                        )}
                 </View>
                 <FastImage
                     style={styles.article_img}
@@ -44,7 +44,7 @@ export default function ArticleCard({data = '', style}) {
                     }}
                 />
             </View>
-            <View style={[Style.flexBetween, {marginTop: px(8)}]}>
+            <View style={[Style.flexBetween, { marginTop: px(8) }]}>
                 <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
 
                 <Praise comment={data} type={'article'} />

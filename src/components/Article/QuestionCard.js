@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 15:29:11
+ * @LastEditTime: 2021-06-07 11:35:36
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -22,7 +22,7 @@ export default function QuestionCard({data = [], scene}) {
                         key={index}
                         activeOpacity={0.9}
                         onPress={() => {
-                            jump(item?.url);
+                            jump(item?.url, scene == 'article' ? 'push' : 'navigate');
                         }}
                         style={[styles.ques_card]}>
                         <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />

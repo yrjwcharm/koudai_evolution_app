@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 11:14:25
+ * @LastEditTime: 2021-06-07 11:29:25
  * @Description:视野文章模块
  */
 
@@ -23,7 +23,7 @@ export default function VisionArticle({data = '', style, scene}) {
             style={[styles.card, style]}
             activeOpacity={0.9}
             onPress={() => {
-                jump(data?.url);
+                jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }}>
             <View style={Style.flexRow}>
                 <View style={{flex: 1}}>
