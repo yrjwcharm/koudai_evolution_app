@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 15:07:56
+ * @LastEditTime: 2021-06-09 19:00:28
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -16,6 +16,7 @@ import Praise from '../../components/Praise';
 import {useJump} from '../../components/hooks';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
+import _ from 'lodash';
 const AlbumList = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
@@ -30,10 +31,28 @@ const AlbumList = ({navigation, route}) => {
                 setRefreshing(false);
                 setHasMore(res.result.has_more);
                 navigation.setOptions({title: res.result.title});
+                let readList = _.reduce(
+                    res?.result?.list,
+                    (result, value) => {
+                        value.view_status == 1 && result.push(value.id);
+                        return result;
+                    },
+                    []
+                );
                 if (type === 'loadmore') {
-                    dispatch(updateVision({albumList: visionData.albumList.concat(res.result.list || [])}));
+                    dispatch(
+                        updateVision({
+                            albumList: visionData.albumList.concat(res.result.list || []),
+                            albumListendList: _.uniq(visionData?.albumListendList.concat(readList)),
+                        })
+                    );
                 } else {
-                    dispatch(updateVision({albumList: res.result.list || []}));
+                    dispatch(
+                        updateVision({
+                            albumList: res.result.list || [],
+                            albumListendList: readList,
+                        })
+                    );
                 }
             });
         },
