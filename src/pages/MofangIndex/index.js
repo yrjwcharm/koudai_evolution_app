@@ -36,6 +36,7 @@ import {Button} from '../../components/Button';
 import {updateUserInfo} from '../../redux/actions/userInfo';
 import UpdateCom from '../../components/UpdateCom';
 import {useDispatch} from 'react-redux';
+import GuideTips from '../../components/GuideTips';
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -72,6 +73,7 @@ const Index = (props) => {
     const [loading, setLoading] = useState(true);
     const [allMsg, setAll] = useState(0);
     const [baner, setBaner] = useState([]);
+    const [hotRefresh, setHotRefresh] = useState(false);
     const dispatch = useDispatch();
     let scrollingRight = '';
     let lastx = '';
@@ -143,6 +145,13 @@ const Index = (props) => {
             JPush.addNotificationListener((result) => {
                 console.log('notificationListener:' + JSON.stringify(result));
                 if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                    if (result.extras.route?.indexOf('CreateAccount') > -1) {
+                        //push开户打点
+                        global.LogTool('PushOpenAccountRecall');
+                    }
+                    if (result.extras.route?.indexOf('Evalution') > -1) {
+                        global.LogTool('PushOpenEnvolutionRecall');
+                    }
                     if (result.extras.route?.indexOf('?') > -1) {
                         props.navigation.navigate(
                             result.extras.route.split('?')[0],
@@ -176,6 +185,7 @@ const Index = (props) => {
         Storage.get('privacy').then(
             _.debounce((res) => {
                 if (res) {
+                    setHotRefresh(true);
                     return;
                 }
                 setTimeout(() => {
@@ -190,6 +200,7 @@ const Index = (props) => {
                             }
                         },
                         confirmCallBack: () => {
+                            setHotRefresh(true);
                             Storage.save('privacy', 'privacy');
                         },
                         children: () => {
@@ -404,6 +415,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('IndexCustomCardStart');
                                         data?.login_status == 0
                                             ? props.navigation.navigate('Register', {
                                                   redirect: data?.custom_info?.button?.url,
@@ -484,13 +496,14 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('IndexProductCardStart');
                                         data?.login_status == 0
                                             ? props.navigation.navigate('Register', {
                                                   redirect: data?.custom_info?.button?.url,
                                               })
                                             : jump(data?.custom_info?.button?.url);
                                     }}
-                                    style={{marginBottom: px(20), marginTop: data?.login_status === 0 ? 0 : px(8)}}>
+                                    style={{marginBottom: px(20)}}>
                                     <View style={[styles.recommendBox, {alignItems: 'center'}]}>
                                         <FastImage
                                             source={require('../../assets/img/index/recommendShadow.png')}
@@ -741,8 +754,11 @@ const Index = (props) => {
                             </>
                             <BottomDesc />
                         </LinearGradient>
-                        <UpdateCom />
+                        {hotRefresh && <UpdateCom />}
                     </ScrollView>
+                    {data?.guide_tip ? (
+                        <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(17)}} />
+                    ) : null}
                 </>
             )}
         </>

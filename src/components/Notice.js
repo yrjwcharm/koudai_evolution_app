@@ -3,10 +3,10 @@
  * @Date: 2021-01-25 11:42:26
  * @Description:小黄条
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-16 22:49:08
+ * @LastEditTime: 2021-06-09 17:13:52
  */
-import React, {useState, useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated, LayoutAnimation} from 'react-native';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {px as text, px} from '../utils/appUtil';
 import {Space, Style} from '../common/commonStyle';
@@ -19,11 +19,17 @@ export default function Notice(props) {
             {props.content?.content ? (
                 <TouchableOpacity
                     activeOpacity={0.9}
-                    style={[Style.flexRow, styles.yellow_wrap_sty]}
+                    style={[Style.flexBetween, styles.yellow_wrap_sty, props.style]}
                     onPress={() => {
+                        props.content?.log_id && global.LogTool(props.content?.log_id);
                         jump(props.content?.url);
                     }}>
                     <HTML style={styles.yellow_sty} html={props.content.content} />
+                    {props.content?.button ? (
+                        <View style={styles.btn}>
+                            <Text style={styles.btn_text}>{props.content?.button?.text}</Text>
+                        </View>
+                    ) : null}
                 </TouchableOpacity>
             ) : null}
         </>
@@ -42,6 +48,18 @@ const styles = StyleSheet.create({
         lineHeight: text(18),
         fontSize: text(13),
         flex: 1,
+    },
+    btn: {
+        borderRadius: px(14),
+        paddingVertical: px(5),
+        paddingHorizontal: px(10),
+        backgroundColor: '#FF7D41',
+    },
+    btn_text: {
+        fontWeight: '600',
+        color: '#fff',
+        fontSize: px(12),
+        lineHeight: px(17),
     },
 });
 

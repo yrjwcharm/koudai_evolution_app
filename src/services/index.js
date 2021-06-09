@@ -49,7 +49,7 @@ axios.interceptors.request.use(async (config) => {
         uid,
         utid,
         chn: global.channel,
-        ver: DeviceInfo.getVersion(),
+        ver: '6.0.2',
         device: device || '',
         request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
     };

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-23 18:36:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-09 14:12:40
  * @Description:发现
  */
 import React, {useState, useCallback, useRef, useEffect} from 'react';
@@ -102,7 +102,7 @@ const Index = (props) => {
                             end={{x: 0, y: 1}}
                             colors={['#fff', '#F5F6F8']}
                             style={{paddingHorizontal: Space.padding}}>
-                            <View style={{paddingTop: px(24), paddingBottom: px(12), backgroundColor: '#fff'}}>
+                            <View style={{paddingVertical: px(12), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
                             {/* 今日推荐 */}
@@ -156,7 +156,6 @@ const Index = (props) => {
                                                 ]}>
                                                 {data?.recommend?.yield?.ratio}
                                             </Text>
-                                            {/* <BoxShadow setting={shadow}> */}
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
                                                 end={{x: 0, y: 0.8}}
@@ -164,7 +163,6 @@ const Index = (props) => {
                                                 style={styles.recommend_btn}>
                                                 <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
                                             </LinearGradient>
-                                            {/* </BoxShadow> */}
                                         </View>
                                         <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
                                     </View>
@@ -173,63 +171,52 @@ const Index = (props) => {
                         </LinearGradient>
 
                         {/* 专业理财 */}
-                        <View style={{marginBottom: px(20)}}>
-                            <Text style={[styles.large_title, {paddingLeft: px(16)}]}>{data?.part2?.group_name}</Text>
-                            <ScrollView
-                                horizontal={true}
-                                height={px(217)}
-                                ref={snapScroll}
-                                style={{paddingLeft: px(16)}}
-                                onScrollEndDrag={() => {
-                                    var interval = px(214); // WIDTH OF 1 CHILD COMPONENT
-                                    var snapTo = scrollingRight
-                                        ? Math.ceil(lastx / interval)
-                                        : Math.floor(lastx / interval);
-                                    var scrollTo = snapTo * interval;
-                                    snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
-                                }}
-                                scrollEventThrottle={100}
-                                onScroll={(event) => {
-                                    var nextx = event.nativeEvent.contentOffset.x;
-                                    scrollingRight = nextx > lastx;
-                                    lastx = nextx;
-                                }}
-                                showsHorizontalScrollIndicator={false}>
-                                {data?.part2?.plans?.map((item, index) => (
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        style={[
-                                            styles.major_card,
-                                            styles.card,
-                                            {marginRight: index == data?.part2?.plans?.length - 1 ? px(28) : px(12)},
-                                        ]}
-                                        key={index}
-                                        onPress={() => {
-                                            jump(item?.url);
-                                        }}>
-                                        <Text style={styles.card_title}>{item.name}</Text>
-                                        {item?.labels && (
-                                            <Text style={[styles.card_title_dexc, {marginTop: px(4)}]}>
-                                                {item?.labels.map((_item, _index) =>
-                                                    _index == 0 ? (
-                                                        <Text key={_index}>{_item}</Text>
-                                                    ) : (
-                                                        <Text key={_index}>｜{_item}</Text>
-                                                    )
-                                                )}
-                                            </Text>
-                                        )}
-
+                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                            <Text style={[styles.large_title]}>{data?.part2?.group_name}</Text>
+                            {data?.part2?.plans?.map((item, index) => (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    onPress={() => {
+                                        jump(item?.url);
+                                    }}
+                                    key={index}
+                                    style={[
+                                        styles.card,
+                                        {borderRadius: 8},
+                                        Style.flexRow,
+                                        {marginTop: index != 0 ? px(12) : 0},
+                                    ]}>
+                                    <View style={{padding: Space.cardPadding, flex: 1}}>
+                                        <View style={Style.flexRow}>
+                                            <Text style={styles.card_title}>{item?.name}</Text>
+                                            {item?.labels && (
+                                                <Text style={styles.card_title_dexc}>
+                                                    {item?.labels.map((_item, _index) =>
+                                                        _index == 0 ? (
+                                                            <Text key={_index}>{_item}</Text>
+                                                        ) : (
+                                                            <Text key={_index}>｜{_item}</Text>
+                                                        )
+                                                    )}
+                                                </Text>
+                                            )}
+                                        </View>
                                         <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                        {item?.yield?.chart && (
-                                            <View style={{height: px(69), width: px(170), marginTop: px(14)}}>
-                                                <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
-                                            </View>
-                                        )}
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
+                                    </View>
+                                    {item?.yield?.chart && (
+                                        <View
+                                            style={{
+                                                height: px(80),
+                                                width: px(100),
+                                                marginTop: px(14),
+                                                marginRight: px(16),
+                                            }}>
+                                            <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
+                                        </View>
+                                    )}
+                                </TouchableOpacity>
+                            ))}
                         </View>
                         {/* 目标理财 */}
 

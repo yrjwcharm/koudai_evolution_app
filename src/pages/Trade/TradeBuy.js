@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 12:23:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-09 18:11:58
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -521,16 +521,21 @@ class TradeBuy extends Component {
                                 checked={!this.state.isLargeAmount}
                                 index={0}
                             />
-                            {this.state.type == 0 ? (
-                                <Image
-                                    style={styles.bank_icon}
-                                    source={{
-                                        uri: bankSelect?.bank_icon,
-                                    }}
-                                />
-                            ) : null}
+                            <Image
+                                style={styles.bank_icon}
+                                source={{
+                                    uri: bankSelect?.bank_icon,
+                                }}
+                            />
                         </TouchableOpacity>
-                    ) : null}
+                    ) : (
+                        <Image
+                            style={styles.bank_icon}
+                            source={{
+                                uri: bankSelect?.bank_icon,
+                            }}
+                        />
+                    )}
                     <View style={[Style.flexBetween, {flex: 1}]}>
                         {pay_methods?.length > 0 ? (
                             <>
@@ -538,15 +543,6 @@ class TradeBuy extends Component {
                                     activeOpacity={0.8}
                                     onPress={this.changeBankCard}
                                     style={[{flex: 1}, Style.flexRow]}>
-                                    {this.state.type == 1 ? (
-                                        <Image
-                                            style={styles.bank_icon}
-                                            source={{
-                                                uri: bankSelect?.bank_icon,
-                                            }}
-                                        />
-                                    ) : null}
-
                                     <View>
                                         <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                             {bankSelect?.bank_name}

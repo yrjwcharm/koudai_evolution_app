@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 16:45:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-09 17:42:03
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -260,7 +260,7 @@ function App(props) {
                 WeChat.isWXAppInstalled().then((isInstalled) => {
                     if (isInstalled) {
                         WeChat.launchMiniProgram({
-                            userName: 'gh_476ff6861b86',
+                            userName: url.app_id,
                             miniProgramType: 0,
                             path: url.path,
                         });
@@ -282,7 +282,7 @@ function App(props) {
                 imgHeight: imageH.current,
                 isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
-                    // console.log(navigationRef.current);
+                    modal.log_id && global.LogTool(modal.log_id);
                     jump(navigationRef.current, modal.url);
                 },
             });
