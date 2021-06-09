@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:36:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:41:39
+ * @LastEditTime: 2021-06-08 15:01:11
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -14,6 +14,7 @@ const defaultState = fromJS({
     refreshing: false,
     readList: [], //已阅读的文章
     albumList: [], //专辑列表
+    albumListendList: [], //已听完的专辑列表
 });
 
 export default function Vision(state = defaultState, action) {

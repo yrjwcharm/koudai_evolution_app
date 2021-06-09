@@ -54,6 +54,7 @@
 		<string>weixin</string>
 		<string>wechat</string>
 		<string>weixinULAPI</string>
+		<string>alipay</string>
 		<string>tel</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>

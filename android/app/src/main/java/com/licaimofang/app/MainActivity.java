@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-29 17:49:42
+ * @LastEditTime: 2021-06-08 18:50:53
  * @Description: 
  */
 package com.licaimofang.app;
@@ -29,5 +29,4 @@ public class MainActivity extends ReactActivity {
       SplashScreen.show(this,R.style.SplashScreenTheme);  // here
       super.onCreate(savedInstanceState);
   }
-
 }

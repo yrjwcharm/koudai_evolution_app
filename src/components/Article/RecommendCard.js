@@ -2,10 +2,10 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-07 11:55:04
+ * @LastEditTime: 2021-06-08 17:13:43
  * @Description:推荐模块
  */
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {StyleSheet, Text, View, findNodeHandle, TouchableOpacity, AppState} from 'react-native';
 import {Colors, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
@@ -18,6 +18,7 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
 import {Modal} from '../Modal';
 import http from '../../services';
 import Toast from '../Toast';
+import {useFocusEffect} from '@react-navigation/native';
 const RecommendCard = ({data, style}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
@@ -31,13 +32,23 @@ const RecommendCard = ({data, style}) => {
             }
         });
     };
-    useEffect(() => {
-        AppState.addEventListener('change', _handleAppStateChange);
-        return () => {
-            AppState.removeEventListener('change', _handleAppStateChange);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            _checkNotifications(
+                () => {
+                    setReserved(true);
+                },
+                () => {
+                    setReserved(false);
+                }
+            );
+            return () => {
+                AppState.removeEventListener('change', _handleAppStateChange);
+            };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [reserved])
+    );
+
     const _handleAppStateChange = (nextAppState) => {
         if (nextAppState === 'active') {
             _checkNotifications(
@@ -58,6 +69,7 @@ const RecommendCard = ({data, style}) => {
             if (status == 'denied' || status == 'blocked') {
                 fail();
             } else {
+                console.log(sucess);
                 sucess();
             }
         });
@@ -66,6 +78,7 @@ const RecommendCard = ({data, style}) => {
         if (reserved) {
             return;
         }
+        AppState.addEventListener('change', _handleAppStateChange);
         _checkNotifications(
             () => {
                 postReserve(() => {
@@ -92,7 +105,7 @@ const RecommendCard = ({data, style}) => {
     const blockCal = () => {
         Modal.show({
             title: '权限申请',
-            content: '避免错过调仓加仓消息，请打开通知权限',
+            content: '我们将在文章更新的时候，为您推送提醒，请开启通知权限。',
             confirm: true,
             confirmText: '前往',
             confirmCallBack: () => {
@@ -199,6 +212,7 @@ export default RecommendCard;
 const styles = StyleSheet.create({
     card: {
         borderRadius: px(8),
+        overflow: 'hidden',
         backgroundColor: '#fff',
     },
     light_text: {

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 18:17:34
+ * @LastEditTime: 2021-06-08 17:26:40
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -21,6 +21,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
 import {useFocusEffect} from '@react-navigation/native';
+// import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 const shadow = {
     color: '#ddd',
     border: 12,
@@ -37,18 +38,18 @@ const shadow = {
     },
 };
 const Vision = ({navigation, route}) => {
+    // const netInfo = useNetInfo();
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo);
-    useEffect(() => {
-        http.get('/vision/tabs/20210524').then((res) => {
-            setTabs(res.result);
-        });
-    }, []);
+
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
+            http.get('/vision/tabs/20210524').then((res) => {
+                setTabs(res.result);
+            });
         }, [dispatch])
     );
     const _renderDynamicView = () => {
@@ -111,6 +112,5 @@ const styles = StyleSheet.create({
         paddingLeft: px(11),
         paddingRight: px(17),
         justifyContent: 'center',
-        // backgroundColor: '#F5F6F8',
     },
 });

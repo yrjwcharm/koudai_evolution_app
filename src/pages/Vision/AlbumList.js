@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:49:51
+ * @LastEditTime: 2021-06-08 15:07:56
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -71,7 +71,17 @@ const AlbumList = ({navigation, route}) => {
                     <View style={{flex: 1}}>
                         <Text
                             numberOfLines={2}
-                            style={[styles.title, {fontSize: px(15), lineHeight: px(24), height: px(48)}]}>
+                            style={[
+                                styles.title,
+                                {
+                                    color: visionData?.albumListendList?.includes(item.id)
+                                        ? Colors.lightBlackColor
+                                        : Colors.defaultColor,
+                                    fontSize: px(15),
+                                    lineHeight: px(24),
+                                    height: px(48),
+                                },
+                            ]}>
                             {item?.title}
                         </Text>
                         <View style={[Style.flexRowCenter, styles.play]}>
@@ -110,7 +120,16 @@ const AlbumList = ({navigation, route}) => {
                 onPress={() => {
                     jump(item?.url);
                 }}>
-                <Text numberOfLines={2} style={[styles.title]}>
+                <Text
+                    numberOfLines={2}
+                    style={[
+                        styles.title,
+                        {
+                            color: visionData?.albumListendList?.includes(item.id)
+                                ? Colors.lightBlackColor
+                                : Colors.defaultColor,
+                        },
+                    ]}>
                     {item?.title}
                 </Text>
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
@@ -175,7 +194,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: '700',
-        color: Colors.defaultColor,
         fontSize: px(14),
         lineHeight: px(20),
         height: px(40),

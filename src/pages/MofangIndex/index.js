@@ -23,7 +23,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {BoxShadow} from 'react-native-shadow';
 import http from '../../services/index.js';
 import BottomDesc from '../../components/BottomDesc';
-import {useLinkTo, useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
 import JPush from 'jpush-react-native';
@@ -70,6 +70,7 @@ const Index = (props) => {
     const scrollView = useRef(null);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [hotRefresh, setHotRefresh] = useState(false);
     const [allMsg, setAll] = useState(0);
     const [baner, setBaner] = useState([]);
     const dispatch = useDispatch();
@@ -176,6 +177,7 @@ const Index = (props) => {
         Storage.get('privacy').then(
             _.debounce((res) => {
                 if (res) {
+                    setHotRefresh(true);
                     return;
                 }
                 setTimeout(() => {
@@ -190,6 +192,7 @@ const Index = (props) => {
                             }
                         },
                         confirmCallBack: () => {
+                            setHotRefresh(true);
                             Storage.save('privacy', 'privacy');
                         },
                         children: () => {
@@ -741,7 +744,7 @@ const Index = (props) => {
                             </>
                             <BottomDesc />
                         </LinearGradient>
-                        <UpdateCom />
+                        {hotRefresh && <UpdateCom />}
                     </ScrollView>
                 </>
             )}

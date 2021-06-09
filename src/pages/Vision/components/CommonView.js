@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:12:00
+ * @LastEditTime: 2021-06-08 14:35:37
  * @Description:tab公共模块
  *
  */
@@ -93,7 +93,7 @@ const CommonView = ({k, scene, type}) => {
     };
     return (
         <>
-            <View style={{paddingTop: px(12), flex: 1}}>
+            <View style={{flex: 1}}>
                 <FlatList
                     data={visionData?.[key]?.list}
                     ref={flatListRef}
