@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 17:26:40
+ * @LastEditTime: 2021-06-10 15:25:27
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -21,7 +21,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision} from '../../redux/actions/visionData';
 import {useFocusEffect} from '@react-navigation/native';
-// import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import Empty from '../../components/EmptyTip';
+import {Button} from '../../components/Button';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 const shadow = {
     color: '#ddd',
     border: 12,
@@ -38,7 +40,9 @@ const shadow = {
     },
 };
 const Vision = ({navigation, route}) => {
-    // const netInfo = useNetInfo();
+    const visionData = useSelector((store) => store.vision).toJS();
+    const netInfo = useNetInfo();
+    const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
@@ -47,11 +51,14 @@ const Vision = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
-            http.get('/vision/tabs/20210524').then((res) => {
-                setTabs(res.result);
-            });
-        }, [dispatch])
+            hasNet && getTabs();
+        }, [dispatch, hasNet])
     );
+    const getTabs = () => {
+        http.get('/vision/tabs/20210524').then((res) => {
+            setTabs(res.result);
+        });
+    };
     const _renderDynamicView = () => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
@@ -63,37 +70,67 @@ const Vision = ({navigation, route}) => {
         }
         return _views;
     };
-
-    return (
+    const renderContent = () => {
+        return (
+            <>
+                <LinearGradient
+                    start={{x: 0, y: 0}}
+                    end={{x: 0, y: 0.2}}
+                    colors={['#fff', '#F5F6F8']}
+                    style={{flex: 1}}>
+                    <View style={{height: inset.top}} />
+                    <View style={[Style.flexRow, {flex: 1}]}>
+                        {tabs?.length > 0 ? (
+                            <ScrollableTabView
+                                renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
+                                initialPage={0}>
+                                {_renderDynamicView()}
+                            </ScrollableTabView>
+                        ) : null}
+                        <BoxShadow setting={shadow}>
+                            <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={['#FBFBFC', '#F6F7F9']}>
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    style={styles.menu}
+                                    onPress={() => {
+                                        navigation.navigate('VisionCollect');
+                                    }}>
+                                    <Image
+                                        source={require('../../assets/img/vision/menu.png')}
+                                        style={{width: px(24), height: px(24)}}
+                                    />
+                                </TouchableOpacity>
+                            </LinearGradient>
+                        </BoxShadow>
+                    </View>
+                </LinearGradient>
+                {!userInfo.toJS().is_login && <LoginMask />}
+            </>
+        );
+    };
+    useEffect(() => {
+        const listener = NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
+        return () => listener();
+    }, []);
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+    return hasNet ? (
+        renderContent()
+    ) : Object.keys(visionData?.recommend).length > 0 ? (
+        renderContent()
+    ) : (
         <>
-            <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 0.2}} colors={['#fff', '#F5F6F8']} style={{flex: 1}}>
-                <View style={{height: inset.top}} />
-                <View style={[Style.flexRow, {flex: 1}]}>
-                    {tabs?.length > 0 ? (
-                        <ScrollableTabView
-                            renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
-                            initialPage={0}>
-                            {_renderDynamicView()}
-                        </ScrollableTabView>
-                    ) : null}
-                    <BoxShadow setting={shadow}>
-                        <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={['#FBFBFC', '#F6F7F9']}>
-                            <TouchableOpacity
-                                activeOpacity={0.9}
-                                style={styles.menu}
-                                onPress={() => {
-                                    navigation.navigate('VisionCollect');
-                                }}>
-                                <Image
-                                    source={require('../../assets/img/vision/menu.png')}
-                                    style={{width: px(24), height: px(24)}}
-                                />
-                            </TouchableOpacity>
-                        </LinearGradient>
-                    </BoxShadow>
-                </View>
-            </LinearGradient>
-            {!userInfo.toJS().is_login && <LoginMask />}
+            <Empty
+                img={require('../../assets/img/emptyTip/noNetwork.png')}
+                text={'哎呀！网络出问题了'}
+                desc={'网络不给力，请检查您的网络设置'}
+                style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
+            />
+            <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
         </>
     );
 };

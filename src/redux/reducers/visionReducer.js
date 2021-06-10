@@ -2,13 +2,14 @@
  * @Date: 2020-11-26 18:36:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 15:01:11
+ * @LastEditTime: 2021-06-10 15:26:55
  * @Description:
  */
 import actionTypes from '../actionTypes';
 import {fromJS} from 'immutable';
 const defaultState = fromJS({
     // 将对象转成immutable对象
+    recommend: {},
     visionTabUpdate: '', //视野上部tab更新
     visionUpdate: '', //视野tab更新
     refreshing: false,

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 14:36:34
+ * @LastEditTime: 2021-06-10 15:34:01
  * @Description:推荐
  */
 import React, {useState, useEffect} from 'react';
@@ -20,7 +20,6 @@ import RenderTitle from './RenderTitle.js';
 const Recommend = (props) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
-    const [data, setData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     useEffect(() => {
         init();
@@ -38,32 +37,32 @@ const Recommend = (props) => {
                 },
                 []
             );
-            dispatch(updateVision({readList: _.uniq(visionData.readList.concat(readList))}));
+            dispatch(updateVision({recommend: res.result, readList: _.uniq(visionData.readList.concat(readList))}));
             setRefreshing(false);
-            setData(res.result);
         });
     };
 
-    return Object.keys(data).length > 0 ? (
+    return Object.keys(visionData?.recommend).length > 0 ? (
         <ScrollView
             key={1}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
             <View style={{padding: px(16), paddingTop: 0}}>
-                <RecommendCard style={{marginBottom: px(16)}} data={data.part1} />
-                {data?.part2?.map((item, index) => {
+                <RecommendCard style={{marginBottom: px(16)}} data={visionData?.recommend?.part1} />
+                {visionData?.recommend?.part2?.map((item, index) => {
                     return RenderCate(item, {marginBottom: px(12)}, 'recommend');
                 })}
-                {data?.part3?.map((item, index) => {
+                {visionData?.recommend?.part3?.map((item, index) => {
                     return (
                         <View key={index + 'i'}>
                             <RenderTitle
                                 _key={index}
                                 title={item.title}
-                                more_text={'更多'}
+                                more_text={item?.has_more ? '更多' : ''}
                                 onPress={() => {
                                     global.visionTabChange(1);
                                 }}
                             />
+
                             {item?.list?.map((_article, index) => {
                                 return RenderCate(_article, {marginBottom: px(12)}, 'recommend');
                             })}
