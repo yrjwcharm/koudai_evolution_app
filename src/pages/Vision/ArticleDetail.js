@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 19:07:20
+ * @LastEditTime: 2021-06-10 17:39:34
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -153,7 +153,7 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
     const back = useCallback(() => {
-        if (isArticle.current) {
+        if (isArticle.current && route?.params?.cate_id !== 'voice') {
             let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
             progress = progress > 100 ? 100 : progress;
             postProgress({
@@ -206,7 +206,7 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [navigation, scrollY]);
     useEffect(() => {
-        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad) {
+        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.cate_id !== 'voice') {
             setFinishRead((prev) => {
                 if (!prev) {
                     if (route.params?.article_id) {
