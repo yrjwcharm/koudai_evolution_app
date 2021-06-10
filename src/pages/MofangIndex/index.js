@@ -335,6 +335,7 @@ const Index = (props) => {
                             )}
                         </View>
                     </View>
+
                     <ScrollView
                         style={{backgroundColor: Colors.bgColor}}
                         scrollEventThrottle={16}
