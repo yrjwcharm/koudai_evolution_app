@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 17:42:03
+ * @LastEditTime: 2021-06-10 16:26:35
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -260,7 +260,7 @@ function App(props) {
                 WeChat.isWXAppInstalled().then((isInstalled) => {
                     if (isInstalled) {
                         WeChat.launchMiniProgram({
-                            userName: url.app_id,
+                            userName: url?.params?.app_id,
                             miniProgramType: 0,
                             path: url.path,
                         });

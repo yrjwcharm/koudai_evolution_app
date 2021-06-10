@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 11:51:44
+ * @LastEditTime: 2021-06-10 16:26:46
  * @Description: 自定义跳转钩子
  */
 import React from 'react';
@@ -29,7 +29,7 @@ function useJump() {
                 WeChat.isWXAppInstalled().then((isInstalled) => {
                     if (isInstalled) {
                         WeChat.launchMiniProgram({
-                            userName: url.app_id,
+                            userName: url?.params?.app_id,
                             miniProgramType: 0,
                             path: url.path,
                         });
