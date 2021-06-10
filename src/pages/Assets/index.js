@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 17:14:53
+ * @LastEditTime: 2021-06-10 19:01:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -453,7 +453,11 @@ function HomeScreen({navigation, route}) {
                                     jump(notice?.system?.url);
                                 }}>
                                 <Animated.View
-                                    style={[styles.systemMsgContainer, Style.flexBetween, {opacity: fadeAnim}]}>
+                                    style={[
+                                        styles.systemMsgContainer,
+                                        Style.flexBetween,
+                                        {opacity: fadeAnim, paddingRight: notice?.system?.button ? text(16) : text(38)},
+                                    ]}>
                                     <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
                                     <View style={styles.btn}>
                                         <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
