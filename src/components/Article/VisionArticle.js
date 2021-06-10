@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-07 11:29:25
+ * @LastEditTime: 2021-06-10 18:04:20
  * @Description:视野文章模块
  */
 
@@ -43,9 +43,10 @@ export default function VisionArticle({data = '', style, scene}) {
                                 styles.article_content,
                                 {
                                     height: px(21) * numberOfLines,
-                                    color: visionData?.readList?.includes(data.id)
-                                        ? Colors.lightBlackColor
-                                        : Colors.defaultColor,
+                                    color:
+                                        visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
                                 },
                             ]}>
                             {data?.title}
