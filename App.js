@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 14:54:01
+ * @LastEditTime: 2021-06-11 15:20:14
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -156,37 +156,35 @@ function App(props) {
                 }
             })
             .catch((res) => {
-                console.log('store.dispatch(updateUserInfo({hotRefresh: true}));');
                 store.dispatch(updateUserInfo({hotRefreshData: ''}));
                 console.log(JSON.stringify(res));
             });
     }, []);
     React.useEffect(() => {
-        const listener = store.subscribe(() => {
-            console.log(' React.useEffect(() ');
-            const next = store.getState().userInfo.toJS();
-            setUserInfo((prev) => {
-                if (!next.hotRefreshData) {
-                    if (!prev.is_login && next.is_login) {
-                        getModalData();
-                    }
-                }
-
-                if (prev.is_login) {
-                    showGesture(next).then((res) => {
-                        if (!res) {
-                            // console.log('-------------true');
-                            homeShowModal.current = true;
-                            onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
-                        } else {
-                            // console.log('-------------false');
-                            homeShowModal.current = false;
+        var listener = '';
+        setTimeout(() => {
+            listener = store.subscribe(() => {
+                const next = store.getState().userInfo.toJS();
+                setUserInfo((prev) => {
+                    if (!next.hotRefreshData) {
+                        if (!prev.is_login && next.is_login) {
+                            getModalData();
                         }
-                    });
-                }
-                return next;
+                    }
+                    if (prev.is_login) {
+                        showGesture(next).then((res) => {
+                            if (!res) {
+                                homeShowModal.current = true;
+                                onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
+                            } else {
+                                homeShowModal.current = false;
+                            }
+                        });
+                    }
+                    return next;
+                });
             });
-        });
+        }, 100);
         return () => listener();
     }, [getModalData, modalObj, onStateChange, showGesture]);
 
