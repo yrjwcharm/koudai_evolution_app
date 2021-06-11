@@ -36,6 +36,12 @@ import {Button} from '../../components/Button';
 import {updateUserInfo} from '../../redux/actions/userInfo';
 import UpdateCom from '../../components/UpdateCom';
 import {useDispatch} from 'react-redux';
+import GuideTips from '../../components/GuideTips';
+import CodePush from 'react-native-code-push';
+
+let codePushOptions = {
+    checkFrequency: CodePush.CheckFrequency.MANUAL,
+};
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -144,6 +150,13 @@ const Index = (props) => {
             JPush.addNotificationListener((result) => {
                 console.log('notificationListener:' + JSON.stringify(result));
                 if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                    if (result.extras.route?.indexOf('CreateAccount') > -1) {
+                        //push开户打点
+                        global.LogTool('PushOpenAccountRecall');
+                    }
+                    if (result.extras.route?.indexOf('Evalution') > -1) {
+                        global.LogTool('PushOpenEnvolutionRecall');
+                    }
                     if (result.extras.route?.indexOf('?') > -1) {
                         props.navigation.navigate(
                             result.extras.route.split('?')[0],
@@ -378,7 +391,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -407,6 +419,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('IndexCustomCardStart');
                                         data?.login_status == 0
                                             ? props.navigation.navigate('Register', {
                                                   redirect: data?.custom_info?.button?.url,
@@ -487,13 +500,14 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('IndexProductCardStart');
                                         data?.login_status == 0
                                             ? props.navigation.navigate('Register', {
                                                   redirect: data?.custom_info?.button?.url,
                                               })
                                             : jump(data?.custom_info?.button?.url);
                                     }}
-                                    style={{marginBottom: px(20), marginTop: data?.login_status === 0 ? 0 : px(8)}}>
+                                    style={{marginBottom: px(20)}}>
                                     <View style={[styles.recommendBox, {alignItems: 'center'}]}>
                                         <FastImage
                                             source={require('../../assets/img/index/recommendShadow.png')}
@@ -746,6 +760,9 @@ const Index = (props) => {
                         </LinearGradient>
                         {hotRefresh && <UpdateCom />}
                     </ScrollView>
+                    {data?.guide_tip ? (
+                        <GuideTips data={data?.guide_tip} style={{position: 'absolute', bottom: px(17)}} />
+                    ) : null}
                 </>
             )}
         </>
@@ -762,7 +779,7 @@ const Index = (props) => {
     );
 };
 
-export default Index;
+export default CodePush(codePushOptions)(Index);
 
 const styles = StyleSheet.create({
     container: {

@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 10:13:58
+ * @LastEditTime: 2021-06-11 16:27:58
  * @Description:
  */
 
@@ -12,11 +12,8 @@ import {deviceWidth, deviceHeight, px} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import CodePush from 'react-native-code-push';
 import Toast from '../Toast';
-import {destroy} from '../Modal/Modal';
+import {connect} from 'react-redux';
 
-let codePushOptions = {
-    checkFrequency: CodePush.CheckFrequency.MANUAL,
-};
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -90,20 +87,29 @@ class UpdateModal extends Component {
     }
 
     syncImmediate() {
-        CodePush.checkForUpdate(key)
-            .then((update) => {
-                console.log('----------1111111' + update);
-                if (!update) {
-                } else {
-                    destroy();
-                    setTimeout(() => {
-                        this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
-                    }, 100);
-                }
-            })
-            .catch((res) => {
-                console.log(JSON.stringify(res));
-            });
+        if (Object.keys(this.props.userInfo?.hotRefreshData).length > 0) {
+            setTimeout(() => {
+                this.setState({
+                    modalVisible: true,
+                    updateInfo: this.props.userInfo?.hotRefreshData,
+                    isMandatory: this.props.userInfo?.hotRefreshData.isMandatory,
+                });
+            }, 1000);
+        }
+        // CodePush.checkForUpdate(key)
+        //     .then((update) => {
+        //         console.log('----------1111111' + update);
+        //         if (!update) {
+        //         } else {
+        //             destroy();
+        //             setTimeout(() => {
+        //                 this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
+        //             }, 1000);
+        //         }
+        //     })
+        //     .catch((res) => {
+        //         console.log(JSON.stringify(res));
+        //     });
     }
 
     UNSAFE_componentWillMount() {
@@ -318,5 +324,10 @@ const styles = StyleSheet.create({
         // borderBottomRightRadius: 10,
     },
 });
-
-export default CodePush(codePushOptions)(UpdateModal);
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo?.toJS(),
+    };
+};
+const Ref = connect(mapStateToProps, null)(UpdateModal);
+export default Ref;

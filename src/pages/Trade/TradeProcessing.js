@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-04-22 14:53:35
+ * @LastEditTime: 2021-06-10 16:16:25
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -104,7 +104,7 @@ const TradeProcessing = ({navigation, route}) => {
         (value) => {
             if (value.length === 6) {
                 http.post('/trade/recharge/verify_code_confirm/20210101', {
-                    txn_id: bankInfo.txn_id,
+                    txn_id: txn_id,
                     code: value,
                 }).then((res) => {
                     if (res.code === '000000') {
@@ -121,7 +121,7 @@ const TradeProcessing = ({navigation, route}) => {
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [bankInfo.txn_id]
+        [txn_id]
     );
     useEffect(() => {
         init(true);

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 18:13:08
+ * @LastEditTime: 2021-06-11 16:30:46
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -25,11 +25,18 @@ import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
-import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
-import {updateVision} from './src/redux/actions/visionData';
+import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
+import CodePush from 'react-native-code-push';
+
+const key = Platform.select({
+    // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
+    // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
+    ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
+    android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
+});
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -59,6 +66,20 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+    React.useEffect(() => {
+        CodePush.checkForUpdate(key)
+            .then((update) => {
+                if (!update) {
+                    store.dispatch(updateUserInfo({hotRefreshData: ''}));
+                } else {
+                    store.dispatch(updateUserInfo({hotRefreshData: update}));
+                }
+            })
+            .catch((res) => {
+                store.dispatch(updateUserInfo({hotRefreshData: ''}));
+                console.log(JSON.stringify(res));
+            });
+    }, []);
     const postHeartData = (registerID, channel) => {
         http.post('/common/device/heart_beat/20210101', {
             channel: channel,
@@ -150,28 +171,32 @@ function App(props) {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     React.useEffect(() => {
-        const listener = store.subscribe(() => {
-            const next = store.getState().userInfo.toJS();
-            setUserInfo((prev) => {
-                if (!prev.is_login && next.is_login) {
-                    getModalData();
-                }
-                if (prev.is_login) {
-                    showGesture(next).then((res) => {
-                        if (!res) {
-                            // console.log('-------------true');
-                            homeShowModal.current = true;
-                            onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
-                        } else {
-                            // console.log('-------------false');
-                            homeShowModal.current = false;
+        var listener = '';
+        setTimeout(() => {
+            listener = store.subscribe(() => {
+                const next = store.getState().userInfo.toJS();
+                setUserInfo((prev) => {
+                    if (!next.hotRefreshData) {
+                        if (!prev.is_login && next.is_login) {
+                            getModalData();
                         }
-                    });
-                }
-                return next;
+                    }
+                    if (prev.is_login) {
+                        showGesture(next).then((res) => {
+                            if (!res) {
+                                homeShowModal.current = true;
+                                onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
+                            } else {
+                                homeShowModal.current = false;
+                            }
+                        });
+                    }
+                    return next;
+                });
             });
-        });
+        }, 100);
         return () => listener();
     }, [getModalData, modalObj, onStateChange, showGesture]);
 
@@ -272,7 +297,7 @@ function App(props) {
                 WeChat.isWXAppInstalled().then((isInstalled) => {
                     if (isInstalled) {
                         WeChat.launchMiniProgram({
-                            userName: 'gh_476ff6861b86',
+                            userName: url?.params?.app_id,
                             miniProgramType: 0,
                             path: url.path,
                         });
@@ -294,7 +319,7 @@ function App(props) {
                 imgHeight: imageH.current,
                 isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
-                    // console.log(navigationRef.current);
+                    modal.log_id && global.LogTool(modal.log_id);
                     jump(navigationRef.current, modal.url);
                 },
             });

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 12:13:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-10 19:01:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -446,15 +446,32 @@ function HomeScreen({navigation, route}) {
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
                         {/* 系统通知 */}
                         {!hideMsg && notice?.system ? (
-                            <Animated.View style={[styles.systemMsgContainer, {opacity: fadeAnim}]}>
-                                <Text style={styles.systemMsgText}>{notice.system}</Text>
-                                <TouchableOpacity
-                                    style={styles.closeSystemMsg}
-                                    activeOpacity={0.8}
-                                    onPress={hideSystemMsg}>
-                                    <EvilIcons name={'close'} size={22} color={Colors.yellow} />
-                                </TouchableOpacity>
-                            </Animated.View>
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
+                                    jump(notice?.system?.url);
+                                }}>
+                                <Animated.View
+                                    style={[
+                                        styles.systemMsgContainer,
+                                        Style.flexBetween,
+                                        {opacity: fadeAnim, paddingRight: notice?.system?.button ? text(16) : text(38)},
+                                    ]}>
+                                    <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
+                                    <View style={styles.btn}>
+                                        <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
+                                    </View>
+                                    {notice?.system?.button ? null : (
+                                        <TouchableOpacity
+                                            style={styles.closeSystemMsg}
+                                            activeOpacity={0.8}
+                                            onPress={hideSystemMsg}>
+                                            <EvilIcons name={'close'} size={22} color={Colors.yellow} />
+                                        </TouchableOpacity>
+                                    )}
+                                </Animated.View>
+                            </TouchableOpacity>
                         ) : null}
                         {/* 资产信息 */}
                         <View style={[styles.summaryTitle, Style.flexCenter]}>
@@ -989,6 +1006,18 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         color: Colors.descColor,
         maxWidth: text(84),
+    },
+    btn: {
+        borderRadius: text(14),
+        paddingVertical: text(5),
+        paddingHorizontal: text(10),
+        backgroundColor: '#FF7D41',
+    },
+    btn_text: {
+        fontWeight: '600',
+        color: '#fff',
+        fontSize: text(12),
+        lineHeight: text(17),
     },
 });
 export default HomeScreen;

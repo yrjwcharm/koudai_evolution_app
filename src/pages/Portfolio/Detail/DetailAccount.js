@@ -267,7 +267,7 @@ export default function DetailAccount({route, navigation}) {
 
                     {/* 底线 */}
                     {data.low_line === 1 && type === 1 && (
-                        <View style={{paddingHorizontal: Space.padding, backgroundColor: '#fff'}}>
+                        <View style={styles.line_con}>
                             <View style={styles.lowLineBox}>
                                 <Text
                                     style={[
@@ -294,25 +294,18 @@ export default function DetailAccount({route, navigation}) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
+                                    global.LogTool('bottomlineMoreBtn');
                                     data.line_info?.button?.avail && jump(data.line_info?.button?.url);
                                 }}
-                                style={[
-                                    Style.flexRowCenter,
-                                    {
-                                        borderColor: Colors.borderColor,
-                                        borderTopWidth: Space.borderWidth,
-                                        paddingVertical: Space.padding,
-                                    },
-                                ]}>
+                                style={styles.line_btn}>
+                                {data.line_info?.tip ? (
+                                    <View style={styles.line_flag}>
+                                        <Text style={{color: '#fff', fontSize: px(11)}}>{data.line_info?.tip}</Text>
+                                    </View>
+                                ) : null}
                                 <Text style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
                                     {data.line_info?.button?.text}
                                 </Text>
-                                <FontAwesome
-                                    name={'angle-right'}
-                                    size={18}
-                                    color={Colors.brandColor}
-                                    style={{marginLeft: text(4)}}
-                                />
                             </TouchableOpacity>
                         </View>
                     )}
@@ -593,5 +586,29 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: Colors.brandColor,
+    },
+    line_btn: {
+        paddingVertical: px(8),
+        borderColor: Colors.brandColor,
+        borderWidth: 1,
+        borderRadius: px(18),
+        paddingHorizontal: px(24),
+        marginBottom: px(16),
+    },
+    line_con: {
+        paddingHorizontal: Space.padding,
+        backgroundColor: '#fff',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    line_flag: {
+        paddingVertical: px(3),
+        paddingHorizontal: px(6),
+        backgroundColor: Colors.red,
+        borderRadius: px(8),
+        borderBottomLeftRadius: 0,
+        position: 'absolute',
+        right: -px(30),
+        top: -px(8),
     },
 });

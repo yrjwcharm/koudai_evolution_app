@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 13:28:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-10 11:05:52
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -15,6 +15,7 @@ import {useJump} from '../../components/hooks/';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import {Modal} from '../../components/Modal';
 import {useFocusEffect} from '@react-navigation/native';
+import Notice from '../../components/Notice';
 export default function RemindMessage({navigation}) {
     const [data, setData] = useState({});
     const [hide, setHide] = useState(false);
@@ -60,13 +61,14 @@ export default function RemindMessage({navigation}) {
             },
         });
     };
+    console.log(showNotice, hide);
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <>
-                    {!hide && showNotice && (
+                    {!hide && showNotice ? (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                            <Text style={styles.yellow_sty}>{data?.notice?.text}</Text>
+                            <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}
@@ -78,14 +80,23 @@ export default function RemindMessage({navigation}) {
                                         paddingHorizontal: text(10),
                                         paddingVertical: text(5),
                                     }}>
-                                    {data?.notice?.button?.text}
+                                    开启
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => closeNotice()}>
                                 <AntDesign name={'close'} size={12} color={'#EB7121'} />
                             </TouchableOpacity>
                         </View>
-                    )}
+                    ) : data?.notice?.text ? (
+                        <Notice
+                            content={{
+                                log_id: data?.notice?.log_id,
+                                content: data?.notice?.text,
+                                url: data?.notice?.button?.url,
+                                button: data?.notice?.button,
+                            }}
+                        />
+                    ) : null}
 
                     <ScrollView style={{flex: 1, padding: text(16)}}>
                         <TouchableOpacity

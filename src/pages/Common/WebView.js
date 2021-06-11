@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 10:51:18
+ * @LastEditTime: 2021-06-11 16:27:50
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -11,7 +11,9 @@ import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 export default function WebView({route, navigation}) {
+    const jump = useJump();
     const webview = useRef(null);
     const [title, setTitle] = useState('');
     const [token, setToken] = useState('');
@@ -66,7 +68,7 @@ export default function WebView({route, navigation}) {
                     onMessage={(event) => {
                         const data = event.nativeEvent.data;
                         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-                        if (data) {
+                        if (data && data.indexOf('https') <= -1) {
                             const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
                             if (url) {
                                 global.LogTool('call');
@@ -81,6 +83,9 @@ export default function WebView({route, navigation}) {
                                     })
                                     .catch((err) => Toast.show(err));
                             }
+                        } else if (data && data.indexOf('https') > -1) {
+                            //保险保单跳转外链
+                            jump({type: 2, path: data});
                         }
                     }}
                     originWhitelist={['*']}
