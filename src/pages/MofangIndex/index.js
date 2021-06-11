@@ -37,6 +37,11 @@ import {updateUserInfo} from '../../redux/actions/userInfo';
 import UpdateCom from '../../components/UpdateCom';
 import {useDispatch} from 'react-redux';
 import GuideTips from '../../components/GuideTips';
+import CodePush from 'react-native-code-push';
+
+let codePushOptions = {
+    checkFrequency: CodePush.CheckFrequency.MANUAL,
+};
 const shadow = {
     color: '#E3E6EE',
     border: 8,
@@ -386,7 +391,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -775,7 +779,7 @@ const Index = (props) => {
     );
 };
 
-export default Index;
+export default CodePush(codePushOptions)(Index);
 
 const styles = StyleSheet.create({
     container: {

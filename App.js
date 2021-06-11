@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 12:09:32
+ * @LastEditTime: 2021-06-11 14:54:01
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -25,10 +25,18 @@ import Storage from './src/utils/storage';
 import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
-import {updateVerifyGesture, getUserInfo} from './src/redux/actions/userInfo';
+import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
+import CodePush from 'react-native-code-push';
+
+const key = Platform.select({
+    // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
+    // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
+    ios: 'ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog',
+    android: 'Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog',
+});
 global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest; //调试中可看到网络请求
 if (Platform.OS === 'android') {
     //启用安卓动画
@@ -139,12 +147,31 @@ function App(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
+        CodePush.checkForUpdate(key)
+            .then((update) => {
+                if (!update) {
+                    store.dispatch(updateUserInfo({hotRefreshData: ''}));
+                } else {
+                    store.dispatch(updateUserInfo({hotRefreshData: update}));
+                }
+            })
+            .catch((res) => {
+                console.log('store.dispatch(updateUserInfo({hotRefresh: true}));');
+                store.dispatch(updateUserInfo({hotRefreshData: ''}));
+                console.log(JSON.stringify(res));
+            });
+    }, []);
+    React.useEffect(() => {
         const listener = store.subscribe(() => {
+            console.log(' React.useEffect(() ');
             const next = store.getState().userInfo.toJS();
             setUserInfo((prev) => {
-                if (!prev.is_login && next.is_login) {
-                    getModalData();
+                if (!next.hotRefreshData) {
+                    if (!prev.is_login && next.is_login) {
+                        getModalData();
+                    }
                 }
+
                 if (prev.is_login) {
                     showGesture(next).then((res) => {
                         if (!res) {
