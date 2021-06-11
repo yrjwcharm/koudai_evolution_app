@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 18:20:15
+ * @LastEditTime: 2021-06-11 18:02:17
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -70,6 +70,8 @@ const ArticleDetail = ({navigation, route}) => {
         if (eventData.indexOf('article_id') !== -1) {
             navigation.push('ArticleDetail', {article_id: eventData.split('article_id=')[1]});
         } else if (eventData == 'VoiceHearOut' && !finishRead) {
+            console.log('object');
+            setFinishRead(true);
             //听完音频
             postProgress({
                 article_id: route.params?.article_id,
@@ -291,7 +293,9 @@ const ArticleDetail = ({navigation, route}) => {
                                             source={require('../../assets/img/article/finish.gif')}
                                             style={styles.finishImg}
                                         />
-                                        <Text style={styles.finishText}>{'您已阅读完本篇文章'}</Text>
+                                        <Text style={styles.finishText}>
+                                            {route.params.cate_id == 'voice' ? '您已听完' : '您已阅读完本篇文章'}
+                                        </Text>
                                     </View>
                                 ) : (
                                     <View style={{height: text(161)}} />

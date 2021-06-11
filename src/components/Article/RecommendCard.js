@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 17:13:43
+ * @LastEditTime: 2021-06-11 17:45:42
  * @Description:推荐模块
  */
 import React, {useState, useRef, useEffect, useCallback} from 'react';
@@ -69,7 +69,6 @@ const RecommendCard = ({data, style}) => {
             if (status == 'denied' || status == 'blocked') {
                 fail();
             } else {
-                console.log(sucess);
                 sucess();
             }
         });
