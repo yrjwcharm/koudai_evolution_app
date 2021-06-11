@@ -2,7 +2,7 @@
  * @Date: 2021-05-13 10:39:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 12:10:20
+ * @LastEditTime: 2021-06-11 12:16:13
  * @Description:
  */
 
@@ -97,7 +97,7 @@ class UpdateModal extends Component {
                     destroy();
                     setTimeout(() => {
                         this.setState({modalVisible: true, updateInfo: update, isMandatory: update.isMandatory});
-                    }, 100);
+                    }, 1000);
                 }
             })
             .catch((res) => {
