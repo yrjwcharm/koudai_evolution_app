@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 16:30:46
+ * @LastEditTime: 2021-06-15 15:40:14
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -30,6 +30,7 @@ import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
+import {updateVision} from './src/redux/actions/visionData';
 
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -86,9 +87,7 @@ function App(props) {
             jpush_rid: registerID,
             platform: Platform.OS,
         }).then((res) => {
-            // && navigationRef.current.getCurrentRoute().name !== 'Vision'
             if (res.code == '000000') {
-                // res.result.vision_update
                 store.dispatch(
                     updateVision({
                         visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : res.result.vision_update,

@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 18:02:17
+ * @LastEditTime: 2021-06-15 15:43:43
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -69,24 +69,24 @@ const ArticleDetail = ({navigation, route}) => {
         const eventData = event.nativeEvent.data;
         if (eventData.indexOf('article_id') !== -1) {
             navigation.push('ArticleDetail', {article_id: eventData.split('article_id=')[1]});
-        } else if (eventData == 'VoiceHearOut' && !finishRead) {
-            console.log('object');
-            setFinishRead(true);
-            //听完音频
-            postProgress({
-                article_id: route.params?.article_id,
-                latency: Date.now() - timeRef.current,
-                done_status: 1,
-                article_progress: 100,
-            });
-            dispatch(
-                updateVision({
-                    albumListendList: _.uniq(visionData?.albumListendList?.concat([route.params?.article_id])),
-                })
-            );
         } else {
             if (eventData) {
                 setFinishLoad(true);
+                if (eventData == 'VoiceHearOut' && !finishRead) {
+                    setFinishRead(true);
+                    //听完音频
+                    postProgress({
+                        article_id: route.params?.article_id,
+                        latency: Date.now() - timeRef.current,
+                        done_status: 1,
+                        article_progress: 100,
+                    });
+                    dispatch(
+                        updateVision({
+                            albumListendList: _.uniq(visionData?.albumListendList?.concat([route.params?.article_id])),
+                        })
+                    );
+                }
             }
             setHeight(eventData * 1 || deviceHeight);
         }
