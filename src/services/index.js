@@ -8,7 +8,6 @@ import DeviceInfo from 'react-native-device-info';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.baseURL = baseConfig.HTTP;
-let showError = true;
 axios.defaults.transformRequest = [
     function (data) {
         let ret = '';
@@ -59,18 +58,15 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        // Toast.show('网络异常，请稍后再试~');
-        showError && Toast.show('网络异常，请稍后再试~');
+        console.log(err.config);
+        if (err.config.url.indexOf('https://tj.licaimofang.com/v.gif') <= -1) {
+            Toast.show('网络异常，请稍后再试~');
+        }
         Promise.reject(err);
     }
 );
 export default class http {
     static async get(url, params, config, showLoading = true) {
-        if (url.indexOf('tj.licaimofang.com/v.gif') > -1) {
-            showError = false;
-        } else {
-            showError = true;
-        }
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');
@@ -91,8 +87,6 @@ export default class http {
         // }
     }
     static async post(url, params, showLoading = '') {
-        showError = true;
-
         try {
             let toast = '';
             if (showLoading) {
