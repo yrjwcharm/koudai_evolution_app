@@ -5,18 +5,9 @@ import Storage from '../utils/storage';
 import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
-import NetInfo from '@react-native-community/netinfo';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-// axios.defaults.headers = {
-//     'Content-Type': 'application/x-www-form-urlencoded',
-// };
-//监控网络变化
-// NetInfo.addEventListener((state) => {
-//     if (!state.isConnected) {
-//         // Toast.showInfo('网络已断开,请检查您的网络');
-//     }
-// });
+
 let showError = true;
 axios.defaults.transformRequest = [
     function (data) {
@@ -68,19 +59,7 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        // Toast.show('网络异常，请稍后再试~');
         showError && Toast.show('网络异常，请稍后再试~');
-        // NetInfo.fetch().then((state) => {
-        //     if (state.isConnected) {
-        //         Toast.show('服务器开小差了...');
-        //     } else {
-        //         if (err && err.stack.indexOf('timeout') > -1) {
-        //             Toast.show('您的网络环境不稳定...');
-        //         } else {
-        //             Toast.show('网络请求失败,请检查您的网络');
-        //         }
-        //     }
-        // });
         Promise.reject(err);
     }
 );
