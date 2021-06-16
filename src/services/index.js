@@ -3,12 +3,13 @@ import qs from 'qs';
 import baseConfig from './config';
 import Storage from '../utils/storage';
 import Toast from '../components/Toast';
+import createStore from '../redux/';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
+import {Platform} from 'react-native';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-
-let showError = true;
+axios.defaults.baseURL = baseConfig.HTTP;
 axios.defaults.transformRequest = [
     function (data) {
         let ret = '';
@@ -18,8 +19,11 @@ axios.defaults.transformRequest = [
         return ret;
     },
 ];
+const store = createStore().store;
+
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
+    // console.log(store.getState().userInfo.toJS().api);
     //拦截器处理
     var token = '';
     var uid = '';
@@ -42,6 +46,7 @@ axios.interceptors.request.use(async (config) => {
         chn: global.channel,
         ver: '6.1.0',
         device: device || '',
+        platform: Platform.OS,
         request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
     };
     return config;
@@ -59,23 +64,21 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        showError && Toast.show('网络异常，请稍后再试~');
+        console.log(err.config);
+        if (
+            err.config.url.indexOf('https://tj.licaimofang.com/v.gif') <= -1 &&
+            err.config.url.indexOf('/common/device/heart_beat/20210101') <= -1
+        ) {
+            Toast.show('网络异常，请稍后再试~');
+        }
         Promise.reject(err);
     }
 );
 export default class http {
     static async get(url, params, config, showLoading = true) {
-        if (url.indexOf('tj.licaimofang.com/v.gif') > -1 || url.indexOf('/heart_beat/20210101') > -1) {
-            showError = false;
-        } else {
-            showError = true;
-        }
         try {
             if (showLoading) {
                 // Toast.showLoading('加载中...');
-            }
-            if (!url.indexOf('http') > -1) {
-                axios.defaults.baseURL = baseConfig.HTTP; // 改变 axios 实例的 baseURL
             }
             let query = await qs.stringify(params);
             let res = null;
@@ -92,10 +95,6 @@ export default class http {
         // }
     }
     static async post(url, params, showLoading = '') {
-        showError = true;
-        if (!url.indexOf('http') > -1) {
-            axios.defaults.baseURL = baseConfig.HTTP; // 改变 axios 实例的 baseURL
-        }
         try {
             let toast = '';
             if (showLoading) {

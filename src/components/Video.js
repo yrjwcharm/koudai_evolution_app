@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-19 18:00:57
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-12 19:34:32
+ * @LastEditTime: 2021-06-16 16:36:13
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Dimensions} from 'react-native';
@@ -15,10 +15,7 @@ import Slider from '@react-native-community/slider';
 import Orientation from 'react-native-orientation-locker';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {px as text} from '../utils/appUtil';
-import PropTypes from 'prop-types';
 let screenWidth = Dimensions.get('window').width - 32;
-let screenHeight = Dimensions.get('window').height;
-console.log(screenWidth + '   ' + screenHeight + '带有小数');
 
 export default class App extends React.Component {
     static defaultProps = {
