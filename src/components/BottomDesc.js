@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-04-21 17:30:52
+ * @LastEditTime: 2021-06-16 19:11:42
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -14,7 +14,7 @@ import {Colors, Font, Space, Style} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
-import BaseUrl from '../services/config';
+import {baseURL} from '../services/config';
 const BottomDesc = (props) => {
     const userInfo = useSelector((store) => store.userInfo);
     const {style} = props;
@@ -111,7 +111,7 @@ const BottomDesc = (props) => {
                                 onPress={() => {
                                     global.LogTool('bottomDesc');
                                     navigation.navigate(item.btn.jump_to, {
-                                        link: `${BaseUrl.H5}/fundSafe`,
+                                        link: `${baseURL.H5}/fundSafe`,
                                         title: '资金安全',
                                     });
                                 }}>
