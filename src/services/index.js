@@ -59,7 +59,10 @@ axios.interceptors.response.use(
     },
     (err) => {
         console.log(err.config);
-        if (err.config.url.indexOf('https://tj.licaimofang.com/v.gif') <= -1) {
+        if (
+            err.config.url.indexOf('https://tj.licaimofang.com/v.gif') <= -1 &&
+            err.config.url.indexOf('/common/device/heart_beat/20210101') <= -1
+        ) {
             Toast.show('网络异常，请稍后再试~');
         }
         Promise.reject(err);
