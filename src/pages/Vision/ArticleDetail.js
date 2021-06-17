@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-15 15:43:43
+ * @LastEditTime: 2021-06-17 16:01:46
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -155,7 +155,7 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
     const back = useCallback(() => {
-        if (isArticle.current && route?.params?.cate_id !== 'voice') {
+        if (isArticle.current && route?.params?.type !== 2) {
             let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
             progress = progress > 100 ? 100 : progress;
             postProgress({
@@ -208,7 +208,7 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [navigation, scrollY]);
     useEffect(() => {
-        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.cate_id !== 'voice') {
+        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
             setFinishRead((prev) => {
                 if (!prev) {
                     if (route.params?.article_id) {
@@ -294,7 +294,7 @@ const ArticleDetail = ({navigation, route}) => {
                                             style={styles.finishImg}
                                         />
                                         <Text style={styles.finishText}>
-                                            {route.params.cate_id == 'voice' ? '您已听完' : '您已阅读完本篇文章'}
+                                            {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
                                         </Text>
                                     </View>
                                 ) : (

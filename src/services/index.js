@@ -3,7 +3,6 @@ import qs from 'qs';
 import baseConfig from './config';
 import Storage from '../utils/storage';
 import Toast from '../components/Toast';
-import createStore from '../redux/';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
 import {Platform} from 'react-native';
@@ -19,11 +18,9 @@ axios.defaults.transformRequest = [
         return ret;
     },
 ];
-const store = createStore().store;
 
 // // axios拦截器
 axios.interceptors.request.use(async (config) => {
-    // console.log(store.getState().userInfo.toJS().api);
     //拦截器处理
     var token = '';
     var uid = '';
