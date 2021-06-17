@@ -2,7 +2,7 @@
  * @Date: 2021-01-05 16:12:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-06 13:30:31
+ * @LastEditTime: 2021-06-17 09:57:23
  * @Description:数字键盘
  */
 import React from 'react';
@@ -74,7 +74,7 @@ const DATA_SOURCES = [
         },
         {
             type: 'image',
-            value: 'https://static.licaimofang.com/wp-content/uploads/2020/12/risk_control_icon.png',
+            value: 'icon',
         },
     ],
 ];

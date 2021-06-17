@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-04-22 14:29:19
+ * @LastEditTime: 2021-06-17 09:55:02
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';
@@ -152,10 +152,7 @@ export default function PrivateAssets(props) {
                                     </View>
                                 )}
                             </View>
-                            {/* <Image
-                                source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/09/SLV_02.jpg'}}
-                                style={{width: deviceWidth, height: 920}}
-                            /> */}
+
                             <View style={{marginTop: -0.5}}>
                                 {data?.introduce.map((_img, _i) => {
                                     return <FitImage key={_i + '_img'} source={{uri: _img}} />;

@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-24 14:36:16
+ * @LastEditTime: 2021-06-17 09:49:45
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -159,7 +159,7 @@ class Question extends Component {
         let _current = this.state.current + (previousCount == 0 ? 1 : previousCount);
         if (action == 'submit' && this.fr != 'risk') {
             setTimeout(() => {
-                if (this.next_url) {
+                if (this.nextUrl) {
                     this.props.jump(this.nextUrl, 'replace');
                     return;
                 }

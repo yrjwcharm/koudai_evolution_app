@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-06-16 19:11:42
+ * @LastEditTime: 2021-06-17 10:05:37
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -15,15 +15,13 @@ import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {baseURL} from '../services/config';
+const endorce_CMBC1 = require('../assets/img/common/endorce_CMBC1.png');
+const endorce_PABC1 = require('../assets/img/common/endorce_PABC1.png');
 const BottomDesc = (props) => {
     const userInfo = useSelector((store) => store.userInfo);
     const {style} = props;
     const [type, setType] = useState(userInfo.toJS().po_ver === 0 ? 'yingmi' : 'xuanyuan');
     const [data, setData] = useState({
-        image:
-            type === 'xuanyuan'
-                ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC1.png'
-                : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC1.png',
         desc: [
             {
                 title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,
@@ -50,10 +48,6 @@ const BottomDesc = (props) => {
     }, [userInfo]);
     useEffect(() => {
         setData({
-            image:
-                type === 'xuanyuan'
-                    ? 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_CMBC1.png'
-                    : 'https://static.licaimofang.com/wp-content/uploads/2021/04/endorce_PABC1.png',
             desc: [
                 {
                     title: `基金销售服务由${type === 'xuanyuan' ? '玄元保险' : '盈米'}提供`,
@@ -77,15 +71,14 @@ const BottomDesc = (props) => {
 
     return (
         <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
-            {data.image && (
-                <View style={styles.item}>
-                    <FastImage
-                        resizeMode={FastImage.resizeMode.contain}
-                        source={{uri: data.image}}
-                        style={[styles.img]}
-                    />
-                </View>
-            )}
+            <View style={styles.item}>
+                <FastImage
+                    resizeMode={FastImage.resizeMode.contain}
+                    source={type === 'xuanyuan' ? endorce_CMBC1 : endorce_PABC1}
+                    style={[styles.img]}
+                />
+            </View>
+
             {data?.desc?.map((item, index, arr) => {
                 return (
                     <View style={styles.item} key={index}>

@@ -5,6 +5,7 @@ import Storage from '../utils/storage';
 import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
 import DeviceInfo from 'react-native-device-info';
+import {Platform} from 'react-native';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.transformRequest = [
@@ -40,7 +41,8 @@ axios.interceptors.request.use(
             uid,
             utid,
             chn: global.channel,
-            ver: '6.0.2',
+            ver: '6.0.3',
+            platform: Platform.OS,
             device: device || '',
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
         };

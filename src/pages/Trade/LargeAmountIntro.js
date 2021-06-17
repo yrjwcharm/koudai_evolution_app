@@ -2,15 +2,14 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 13:52:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-17 10:29:12
  */
 import React from 'react';
-import {ScrollView, Linking, Alert, View} from 'react-native';
-import FitImage from 'react-native-fit-image';
+import {ScrollView, Linking, Alert, View, Image} from 'react-native';
 import Agreement from '../../components/Agreements';
 import {FixedButton} from '../../components/Button';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import Toast from '../../components/Toast/';
 import {Colors} from '../../common/commonStyle';
 const btnHeight = isIphoneX() ? text(90) : text(66);
@@ -27,17 +26,25 @@ const LargeAmountIntro = () => {
             })
             .catch((err) => Alert(err));
     };
-    const img_list = [
-        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_1.jpg',
-        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_2.jpg',
-        'https://static.licaimofang.com/wp-content/uploads/2021/05/large_pay_3.png',
-    ];
+
     return (
         <View style={{backgroundColor: Colors.bgColor}}>
             <ScrollView style={{marginBottom: btnHeight}}>
-                {img_list.map((_item, _index) => {
-                    return <FitImage key={_index} source={{uri: _item}} resizeMode="contain" />;
-                })}
+                <Image
+                    source={require('../../assets/img/common/large_pay_1.jpg')}
+                    style={{width: deviceWidth, height: deviceWidth * 0.74}}
+                    // resizeMode="contain"
+                />
+                <Image
+                    source={require('../../assets/img/common/large_pay_2.jpg')}
+                    style={{width: deviceWidth, height: deviceWidth * 1.36}}
+                    // resizeMode="contain"
+                />
+                <Image
+                    source={require('../../assets/img/common/large_pay_3.png')}
+                    style={{width: deviceWidth, height: deviceWidth * 2.3}}
+                    // resizeMode="contain"
+                />
                 <Agreement
                     isHide={true}
                     data={[{title: '《理财魔方汇款交易须知》', id: 37}]}
