@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-16 18:51:32
+ * @LastEditTime: 2021-06-17 11:01:15
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -17,10 +17,10 @@ export default function Loading({navigation}) {
     };
     useEffect(() => {
         Storage.get('AppGuide').then((res) => {
-            http.get('/hdsfkajhdkjsahdjkahskjdhasjkdjksfop[g[owdfp[oewjop;wjop;mapi/app/config/2021010/1')
+            http.get('/health/check')
                 .then((result) => {
                     dispatch(getUserInfo());
-                    console.log(result.result);
+                    console.log(result.result); //不能去掉
                     if (res) {
                         navigation.replace('Tab');
                     } else {
