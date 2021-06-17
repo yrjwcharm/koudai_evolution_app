@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-28 11:13:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-17 09:33:15
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -252,13 +252,11 @@ const NetValueTrend = ({poid}) => {
             <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
-                    {'每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。'}
+                    每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。
                 </Text>
-                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么我的净值走势和我的累计收益不一致'}</Text>
+                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>什么我的净值走势和我的累计收益不一致</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
-                    {
-                        '每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。'
-                    }
+                    净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
                 </Text>
             </View>
             <BottomModal ref={bottomModal} title={tip?.title}>
