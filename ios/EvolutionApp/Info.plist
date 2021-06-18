@@ -48,7 +48,7 @@
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>CodePushServerURL</key>
-	<string>https://cps.licaimofang.com</string>
+	<string>https://47.97.119.232</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>weixin</string>
