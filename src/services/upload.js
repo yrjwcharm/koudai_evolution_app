@@ -2,12 +2,12 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 20:44:58
+ * @LastEditTime: 2021-06-18 15:10:31
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
 import {Platform} from 'react-native';
-import baseConfig from './config';
+import {SERVER_URL} from './config';
 import Storage from '../utils/storage';
 
 const upload = async (url, file, otherParams, succ, failed) => {
@@ -16,7 +16,7 @@ const upload = async (url, file, otherParams, succ, failed) => {
     try {
         RNFetchBlob.fetch(
             'POST',
-            url.indexOf('http') > -1 ? url : `${baseConfig.HTTP}${url}`,
+            url.indexOf('http') > -1 ? url : `${SERVER_URL[global.env].HTTP}${url}`,
             {
                 'Content-Type': 'multipart/form-data',
                 // eslint-disable-next-line prettier/prettier

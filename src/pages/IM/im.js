@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-18 15:02:57
+ * @LastEditTime: 2021-06-18 15:14:30
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -41,7 +41,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import { SERVER_URL} from '../../services/config';
+import {SERVER_URL} from '../../services/config';
 import * as Animatable from 'react-native-animatable';
 import Toast from '../../components/Toast';
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
@@ -541,7 +541,7 @@ const IM = (props) => {
                     });
 
                     upload(
-                        `${global.env}/upload/oss`,
+                        `${SERVER_URL[global.env].IMApi}/upload/oss`,
                         response,
                         [
                             {name: 'file_key', data: cmid},

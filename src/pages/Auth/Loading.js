@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-18 14:42:10
+ * @LastEditTime: 2021-06-18 15:06:53
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -21,8 +21,11 @@ export default function Loading({navigation}) {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check')
                 .then((result) => {
-                    global.env = 'online1';
-                    // global.env = result.result.env;
+                    if (result.result?.env) {
+                        global.env = result.result.env;
+                    } else {
+                        global.env = 'online';
+                    }
                     dispatch(getUserInfo());
                     if (res) {
                         navigation.replace('Tab');
