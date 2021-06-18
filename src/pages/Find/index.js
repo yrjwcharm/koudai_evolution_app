@@ -3,7 +3,7 @@
  * @Author: yhc
  * @LastEditors: yhc
 <<<<<<< HEAD
- * @LastEditTime: 2021-06-02 15:50:54
+ * @LastEditTime: 2021-06-18 17:08:44
 =======
  * @LastEditTime: 2021-06-09 14:12:40
 >>>>>>> v6.0.2
@@ -211,8 +211,8 @@ const Index = (props) => {
                                     {item?.yield?.chart && (
                                         <View
                                             style={{
-                                                height: px(80),
-                                                width: px(100),
+                                                height: px(60),
+                                                width: px(80),
                                                 marginTop: px(14),
                                                 marginRight: px(16),
                                             }}>

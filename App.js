@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-15 15:40:14
+ * @LastEditTime: 2021-06-18 16:36:51
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -222,7 +222,7 @@ function App(props) {
         (currentRouteName, show) => {
             if (Object.keys(modalObj).length > 0) {
                 if (modalObj.page) {
-                    if (modalObj.page === currentRouteName) {
+                    if (modalObj.page?.includes(currentRouteName)) {
                         if (currentRouteName === 'Home') {
                             if (show) {
                                 showModal(modalObj);
@@ -248,7 +248,7 @@ function App(props) {
                         const height = Math.floor(h / (w / (res.result.device_width ? deviceWidth : text(280))));
                         imageH.current = height;
                         if (res.result.page) {
-                            if (res.result.page === navigationRef?.current?.getCurrentRoute()?.name) {
+                            if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
                                 showModal(res.result);
                             } else {
                                 setModalObj(res.result);
@@ -263,7 +263,7 @@ function App(props) {
                     });
                 } else {
                     if (res.result.page) {
-                        if (res.result.page === navigationRef?.current?.getCurrentRoute()?.name) {
+                        if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
                             showModal(res.result);
                         } else {
                             setModalObj(res.result);
