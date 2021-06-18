@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-16 19:12:40
+ * @LastEditTime: 2021-06-18 15:02:57
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -41,10 +41,9 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import {baseURL} from '../../services/config';
+import { SERVER_URL} from '../../services/config';
 import * as Animatable from 'react-native-animatable';
 import Toast from '../../components/Toast';
-const url = baseURL.WS;
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
 const _timeout = 4000; //检测消息是否发送成功
 const maxConnectTime = 20 * 60 * 1000; //最大连接时间
@@ -112,7 +111,7 @@ const IM = (props) => {
     const initWebSocket = (type) => {
         try {
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            WS.current = new WebSocket(url);
+            WS.current = new WebSocket(SERVER_URL[global.env].WS);
             initWsEvent(type);
         } catch (e) {
             console.log('WebSocket err:', e);
@@ -136,7 +135,7 @@ const IM = (props) => {
     const initWsEvent = (type) => {
         //建立WebSocket连接
         WS.current.onopen = function () {
-            http.get(`${baseURL.IMApi}/im/token`)
+            http.get(`${SERVER_URL[global.env].IMApi}/im/token`)
                 .then((data) => {
                     if (type == 'reconnect') {
                         setMessages([]);
@@ -542,7 +541,7 @@ const IM = (props) => {
                     });
 
                     upload(
-                        `${baseURL.IMApi}/upload/oss`,
+                        `${global.env}/upload/oss`,
                         response,
                         [
                             {name: 'file_key', data: cmid},

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-06-17 10:05:37
+ * @LastEditTime: 2021-06-18 15:02:41
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -14,7 +14,7 @@ import {Colors, Font, Space, Style} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
-import {baseURL} from '../services/config';
+import {SERVER_URL} from '../services/config';
 const endorce_CMBC1 = require('../assets/img/common/endorce_CMBC1.png');
 const endorce_PABC1 = require('../assets/img/common/endorce_PABC1.png');
 const BottomDesc = (props) => {
@@ -104,7 +104,7 @@ const BottomDesc = (props) => {
                                 onPress={() => {
                                     global.LogTool('bottomDesc');
                                     navigation.navigate(item.btn.jump_to, {
-                                        link: `${baseURL.H5}/fundSafe`,
+                                        link: `${SERVER_URL[global.env].H5}/fundSafe`,
                                         title: '资金安全',
                                     });
                                 }}>

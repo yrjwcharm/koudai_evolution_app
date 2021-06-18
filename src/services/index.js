@@ -20,7 +20,7 @@ axios.defaults.transformRequest = [
 // // axios拦截器
 axios.interceptors.request.use(
     async (config) => {
-        config.baseURL = SERVER_URL[global.api || env].HTTP;
+        config.baseURL = SERVER_URL[global.env || env].HTTP;
         //拦截器处理
         var token = '';
         var uid = '';

@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 15:48:00
+ * @LastEditTime: 2021-06-18 14:42:10
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -13,7 +13,7 @@ import http from '../../services';
 import Toast from '../../components/Toast';
 export default function Loading({navigation}) {
     const dispatch = useDispatch();
-    const envList = ['online1'];
+    const envList = ['online1', 'online2'];
     global.getUserInfo = () => {
         dispatch(getUserInfo());
     };
@@ -21,7 +21,8 @@ export default function Loading({navigation}) {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check')
                 .then((result) => {
-                    global.api = result.result.env;
+                    global.env = 'online1';
+                    // global.env = result.result.env;
                     dispatch(getUserInfo());
                     if (res) {
                         navigation.replace('Tab');
@@ -32,7 +33,7 @@ export default function Loading({navigation}) {
                 .catch(() => {
                     const getHealthEnv = (i, length) => {
                         global.LogTool('Host', envList[i]);
-                        global.api = envList[i];
+                        global.env = envList[i];
                         http.get('/health/check')
                             .then((result) => {
                                 console.log(result.result);
