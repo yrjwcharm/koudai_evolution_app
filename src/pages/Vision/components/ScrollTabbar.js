@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-06 15:13:45
+ * @LastEditTime: 2021-06-21 13:36:03
  * @Description:
  */
 
@@ -82,15 +82,15 @@ class ScrollTabbar extends Component {
                 onLayout={this.measureTab.bind(this, page)}
                 accessibilityTraits="button"
                 onPress={() => {
-                    if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k) {
-                        this.props.dispatch(updateVision({visionTabUpdate: ''}));
-                        // this.props.vision
-                        //     .toJS()
-                        //     .flatListRef?.current?.scrollToOffset({animated: true, viewPosition: 0, index: 0}); //刷新时滚动到顶部
-                        // setTimeout(() => {
-                        this.props.dispatch(updateFresh(this.props.tabList[page].k));
-                        // }, 100);
-                    }
+                    // if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k) {
+                    //     this.props.dispatch(updateVision({visionTabUpdate: ''}));
+                    //     // this.props.vision
+                    //     //     .toJS()
+                    //     //     .flatListRef?.current?.scrollToOffset({animated: true, viewPosition: 0, index: 0}); //刷新时滚动到顶部
+                    //     // setTimeout(() => {
+                    //     this.props.dispatch(updateFresh(this.props.tabList[page].k));
+                    //     // }, 100);
+                    // }
                     onPressHandler(page);
                 }}>
                 <View style={[styles.tab]}>

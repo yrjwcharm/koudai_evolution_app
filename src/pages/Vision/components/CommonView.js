@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 14:35:37
+ * @LastEditTime: 2021-06-21 13:50:27
  * @Description:tab公共模块
  *
  */
@@ -97,7 +97,7 @@ const CommonView = ({k, scene, type}) => {
                 <FlatList
                     data={visionData?.[key]?.list}
                     ref={flatListRef}
-                    style={{paddingHorizontal: px(16)}}
+                    style={{paddingHorizontal: px(16), paddingTop: px(10)}}
                     ListHeaderComponent={
                         visionData?.[k]?.notice ? (
                             <Text style={{fontSize: px(12), color: Colors.lightGrayColor, marginBottom: px(16)}}>

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 12:33:29
+ * @LastEditTime: 2021-06-21 13:36:37
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -19,7 +19,7 @@ import CommonView from './components/CommonView'; //魔方问答
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
-import {updateVision} from '../../redux/actions/visionData';
+import {updateVision, updateFresh} from '../../redux/actions/visionData';
 import {useFocusEffect} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
@@ -85,6 +85,12 @@ const Vision = ({navigation, route}) => {
                         {tabs?.length > 0 ? (
                             <ScrollableTabView
                                 renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
+                                onChangeTab={(obj) => {
+                                    if (visionData.visionTabUpdate == tabs[obj.i].k) {
+                                        dispatch(updateVision({visionTabUpdate: ''}));
+                                        dispatch(updateFresh(tabs[obj.i].k));
+                                    }
+                                }}
                                 initialPage={0}>
                                 {_renderDynamicView()}
                             </ScrollableTabView>
