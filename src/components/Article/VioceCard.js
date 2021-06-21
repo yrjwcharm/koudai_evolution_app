@@ -3,14 +3,14 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 18:22:36
+ * @LastEditTime: 2021-06-21 13:15:19
  * @Description:音频模块
  */
 
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
-import {px} from '../../utils/appUtil';
+import {px, debounce} from '../../utils/appUtil';
 import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
@@ -22,9 +22,9 @@ const VioceCard = ({data, style, scene}) => {
         <TouchableOpacity
             activeOpacity={0.9}
             style={[styles.card, style]}
-            onPress={() => {
+            onPress={debounce(() => {
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
-            }}>
+            }, 300)}>
             <View style={Style.flexRow}>
                 <View style={{flex: 1}}>
                     {data?.cate_icon ? (

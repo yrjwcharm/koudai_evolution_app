@@ -2,13 +2,13 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-07 11:35:36
+ * @LastEditTime: 2021-06-21 13:15:40
  * @Description:用户问答卡片
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
-import {px} from '../../utils/appUtil';
+import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 import Praise from '../Praise';
@@ -21,9 +21,9 @@ export default function QuestionCard({data = [], scene}) {
                     <TouchableOpacity
                         key={index}
                         activeOpacity={0.9}
-                        onPress={() => {
+                        onPress={debounce(() => {
                             jump(item?.url, scene == 'article' ? 'push' : 'navigate');
-                        }}
+                        }, 300)}
                         style={[styles.ques_card]}>
                         <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
                         <Text style={styles.article_content}>
