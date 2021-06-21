@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 18:09:02
+ * @LastEditTime: 2021-06-21 19:16:47
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -47,7 +47,6 @@ const Vision = ({navigation, route}) => {
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo);
-
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));

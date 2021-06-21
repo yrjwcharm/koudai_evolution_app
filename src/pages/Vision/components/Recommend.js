@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 18:09:12
+ * @LastEditTime: 2021-06-21 20:10:20
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -27,8 +27,10 @@ const Recommend = (props) => {
     }, [init]);
     // useFocusEffect(
     //     useCallback(() => {
-    //         init();
-    //     }, [init])
+    //         http.get('/vision/recommend/20210524').then((res) => {
+    //             setRecommendData(res.result);
+    //         });
+    //     }, [])
     // );
     const init = useCallback(
         (type) => {

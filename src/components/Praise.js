@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-20 17:38:30
+ * @LastEditTime: 2021-06-21 19:24:16
  * @Description:点赞模块
  */
 
@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 export default function Praise(props) {
-    const {style, comment, type = ''} = props;
+    const {style, comment, type = '', noClick = false} = props;
     const [like, setLike] = useState();
     const [num, setNum] = useState();
     useEffect(() => {
@@ -35,6 +35,9 @@ export default function Praise(props) {
         [comment.id, type]
     );
     const press = () => {
+        if (noClick) {
+            return;
+        }
         if (like == 1) {
             setLike(0);
             let like_num = num - 1;

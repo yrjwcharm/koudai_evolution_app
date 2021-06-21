@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 18:26:21
+ * @LastEditTime: 2021-06-21 19:24:39
  * @Description:音频模块
  */
 
@@ -25,7 +25,7 @@ const VioceCard = ({data, style, scene}) => {
             onPress={debounce(() => {
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
-            <View style={Style.flexRow}>
+            <View style={{flexDirection: 'row'}}>
                 <View style={{flex: 1}}>
                     {data?.cate_icon ? (
                         <View style={[Style.flexRow, {marginBottom: px(9)}]}>
@@ -51,8 +51,8 @@ const VioceCard = ({data, style, scene}) => {
                         </>
                     )}
 
-                    <View style={Style.flexRow}>
-                        <FastImage source={{uri: data?.author?.avatar}} style={{width: px(26), height: px(26)}} />
+                    <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                        <FastImage source={{uri: data?.author?.avatar}} style={styles.avatar} />
                         <Text style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
                             {data?.author?.nickname}
                         </Text>
@@ -84,6 +84,7 @@ const VioceCard = ({data, style, scene}) => {
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                     <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
                     <Praise
+                        noClick={scene == 'recommend' ? false : true}
                         type={'article'}
                         comment={{
                             favor_status: data?.favor_status,
@@ -142,5 +143,12 @@ const styles = StyleSheet.create({
         opacity: 0.7,
         left: px(20),
         backgroundColor: '#000000',
+    },
+    avatar: {
+        width: px(26),
+        height: px(26),
+        borderColor: Colors.lineColor,
+        borderWidth: 1,
+        borderRadius: px(13),
     },
 });
