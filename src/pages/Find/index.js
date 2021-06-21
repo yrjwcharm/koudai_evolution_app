@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 14:12:40
+ * @LastEditTime: 2021-06-18 17:10:33
  * @Description:发现
  */
 import React, {useState, useCallback, useRef, useEffect} from 'react';
@@ -207,8 +207,8 @@ const Index = (props) => {
                                     {item?.yield?.chart && (
                                         <View
                                             style={{
-                                                height: px(80),
-                                                width: px(100),
+                                                height: px(60),
+                                                width: px(80),
                                                 marginTop: px(14),
                                                 marginRight: px(16),
                                             }}>
