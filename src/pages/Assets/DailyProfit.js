@@ -2,10 +2,10 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 10:25:21
+ * @LastEditTime: 2021-06-17 11:36:01
  * @Description: 日收益
  */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {LayoutAnimation, SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
@@ -15,25 +15,25 @@ import {px as text, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
-
 const DailyProfit = ({poid}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
+    const next = useRef(null);
     const [list, setList] = useState([]);
     const [activeSections, setActiveSections] = useState([0]);
     const [maxData, setMaxData] = useState(0);
     const [showEmpty, setShowEmpty] = useState(false);
     const init = useCallback(
         (status, first) => {
-            // status === 'refresh' && setRefreshing(true);
             const url = poid ? '/portfolio/profit/daily/20210101' : '/profit/user_daily/20210101';
             http.get(url, {
-                uid: '1000000001',
                 page,
                 poid,
+                next: next.current,
             }).then((res) => {
+                next.current = res.result.next;
                 setShowEmpty(true);
                 setHasMore(res.result.has_more);
                 setRefreshing(false);

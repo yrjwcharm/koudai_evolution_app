@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 15:25:27
+ * @LastEditTime: 2021-06-21 12:33:29
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -51,9 +51,11 @@ const Vision = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
-            hasNet && getTabs();
-        }, [dispatch, hasNet])
+        }, [dispatch])
     );
+    useEffect(() => {
+        hasNet && getTabs();
+    }, [hasNet]);
     const getTabs = () => {
         http.get('/vision/tabs/20210524').then((res) => {
             setTabs(res.result);

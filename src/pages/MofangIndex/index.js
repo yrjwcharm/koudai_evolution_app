@@ -103,7 +103,8 @@ const Index = (props) => {
                         readInterface();
                     }
                 })
-                .catch(() => {
+                .catch((err) => {
+                    console.log(err);
                     setLoading(false);
                 });
         },

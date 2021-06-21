@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 09:33:15
+ * @LastEditTime: 2021-06-21 11:42:30
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -354,7 +354,6 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontFamily: Font.numMedium,
         padding: 0,
-        // fontWeight: 'bold',
     },
     legendDesc: {
         fontSize: Font.textSm,

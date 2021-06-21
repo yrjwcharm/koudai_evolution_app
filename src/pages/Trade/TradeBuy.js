@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 18:11:58
+ * @LastEditTime: 2021-06-17 10:10:14
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -815,7 +815,7 @@ class TradeBuy extends Component {
                 <BottomDesc />
                 <BottomModal ref={(ref) => (this.bottomModal = ref)} title="低估值定投计算方式">
                     <FastImage
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2020/03/WechatIMG183.png'}}
+                        source={require('../../assets/img/common/fixIcon.png')}
                         resizeMode={FastImage.resizeMode.contain}
                         style={{width: px(322), height: px(251), marginLeft: (deviceWidth - px(322)) / 2}}
                     />

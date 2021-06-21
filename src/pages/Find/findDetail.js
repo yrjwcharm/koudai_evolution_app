@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-15 17:52:57
+ * @LastEditTime: 2021-06-21 12:23:10
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+        borderColor: 'transparent',
+        borderWidth: 0.5,
     },
     recommend: {
         borderRadius: 8,

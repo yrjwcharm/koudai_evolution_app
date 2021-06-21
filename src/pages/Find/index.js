@@ -1,14 +1,3 @@
-/*
- * @Date: 2021-01-30 11:09:32
- * @Author: yhc
- * @LastEditors: yhc
-<<<<<<< HEAD
- * @LastEditTime: 2021-06-18 17:08:44
-=======
- * @LastEditTime: 2021-06-09 14:12:40
->>>>>>> v6.0.2
- * @Description:发现
- */
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import {px} from '../../utils/appUtil';

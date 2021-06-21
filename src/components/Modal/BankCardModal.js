@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-19 13:33:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 20:38:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-17 10:06:45
  * @Description: 银行卡选择
  */
 
@@ -111,9 +111,7 @@ const BankCardModal = React.forwardRef((props, ref) => {
                     onPress={addCard}>
                     <Image
                         style={[styles.bank_icon, {width: text(36)}]}
-                        source={{
-                            uri: 'https://static.licaimofang.com/wp-content/uploads/2021/04/yhk2@3x.png',
-                        }}
+                        source={require('../../assets/img/common/mfbIcon.png')}
                     />
                     <View style={{flex: 1}}>
                         <Text style={styles.text}>添加新银行卡</Text>

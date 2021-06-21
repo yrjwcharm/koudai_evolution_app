@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-24 18:04:32
+ * @LastEditTime: 2021-06-17 10:08:42
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView} from 'react-native';
@@ -97,9 +97,7 @@ const LargeAmount = (props) => {
                         <Text style={styles.title_sty}>大额极速购-使用流程</Text>
                         <View style={styles.process_wrap}>
                             <Image
-                                source={{
-                                    uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/largeAmount.png',
-                                }}
+                                source={require('../../assets/img/common/largeAmount.png')}
                                 resizeMode="contain"
                                 style={styles.image_sty}
                             />
@@ -156,9 +154,7 @@ const LargeAmount = (props) => {
                                 }>
                                 <Image
                                     style={[styles.bank_icon, {width: text(36), marginLeft: text(-5)}]}
-                                    source={{
-                                        uri: 'https://static.licaimofang.com/wp-content/uploads/2021/03/yhk2@3x.png',
-                                    }}
+                                    source={require('../../assets/img/common/mfbIcon.png')}
                                 />
                                 <View style={{flex: 1}}>
                                     <Text style={styles.text}>使用新卡汇款</Text>

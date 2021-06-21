@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-27 12:44:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-17 10:07:03
  * @Description:
  */
 /**
@@ -11,7 +11,7 @@
  *  Modal.show({
               type: 'image',
               imageUrl:
-                  'https://static.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
+                  'https://.licaimofang.com/wp-content/uploads/2020/12/银行转稳健弹窗1211.png',
           });
  */
 import React from 'react';

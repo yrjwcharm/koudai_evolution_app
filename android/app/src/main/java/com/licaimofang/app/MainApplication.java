@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-26 11:13:13
+ * @LastEditTime: 2021-06-18 15:18:01
  * @Description:
  */
 
@@ -48,7 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
                    "Zf0nwukX4eu3BF8c14lysOLgVC3O4ksvOXqog",    // production
                     MainApplication.this,
                     BuildConfig.DEBUG,
-                    "https://cps.licaimofang.com/");
+                    "https://47.97.119.232/");
             //  packages.add(new RNExitAppPackage());
             return packages;
         }

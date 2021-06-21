@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 19:01:51
+ * @LastEditTime: 2021-06-18 18:21:31
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -459,10 +459,12 @@ function HomeScreen({navigation, route}) {
                                         {opacity: fadeAnim, paddingRight: notice?.system?.button ? text(16) : text(38)},
                                     ]}>
                                     <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
-                                    <View style={styles.btn}>
-                                        <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
-                                    </View>
-                                    {notice?.system?.button ? null : (
+
+                                    {notice?.system?.button ? (
+                                        <View style={styles.btn}>
+                                            <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
+                                        </View>
+                                    ) : (
                                         <TouchableOpacity
                                             style={styles.closeSystemMsg}
                                             activeOpacity={0.8}

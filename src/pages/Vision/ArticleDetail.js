@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 16:01:46
+ * @LastEditTime: 2021-06-21 11:47:14
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,7 +16,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
 import {ShareModal} from '../../components/Modal';
-import BaseUrl from '../../services/config';
+import {SERVER_URL} from '../../services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
@@ -274,8 +274,8 @@ const ArticleDetail = ({navigation, route}) => {
                             scalesPageToFit={Platform.select({ios: true, android: false})}
                             source={{
                                 uri: isArticle.current
-                                    ? `${BaseUrl.H5}/article/${route.params?.article_id}`
-                                    : `${BaseUrl.H5}${route.params?.link}`,
+                                    ? `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`
+                                    : `${SERVER_URL[global.env].H5}${route.params?.link}`,
                             }}
                             startInLoadingState
                             style={{height: webviewHeight}}

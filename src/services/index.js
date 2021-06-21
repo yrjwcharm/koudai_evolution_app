@@ -1,6 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
-import baseConfig from './config';
+import {SERVER_URL, env} from './config';
 import Storage from '../utils/storage';
 import Toast from '../components/Toast';
 axios.defaults.timeout = 10000;
@@ -8,7 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 import {Platform} from 'react-native';
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.baseURL = baseConfig.HTTP;
+axios.defaults.baseURL = SERVER_URL[env].HTTP;
 axios.defaults.transformRequest = [
     function (data) {
         let ret = '';
@@ -20,34 +20,40 @@ axios.defaults.transformRequest = [
 ];
 
 // // axios拦截器
-axios.interceptors.request.use(async (config) => {
-    //拦截器处理
-    var token = '';
-    var uid = '';
-    var utid = '';
-    let result = await Storage.get('loginStatus');
-    let device = await DeviceInfo.getDeviceName();
-    if (result) {
-        token = result.access_token;
-        uid = result.uid;
-        utid = result.utid;
+axios.interceptors.request.use(
+    async (config) => {
+        config.baseURL = SERVER_URL[global.env || env].HTTP;
+        //拦截器处理
+        var token = '';
+        var uid = '';
+        var utid = '';
+        let result = await Storage.get('loginStatus');
+        let device = await DeviceInfo.getDeviceName();
+        if (result) {
+            token = result.access_token;
+            uid = result.uid;
+            utid = result.utid;
+        }
+        config.headers.Authorization = token;
+        config.params = {
+            ...config.data,
+            app: '4000',
+            ts: new Date().getTime(),
+            did: DeviceInfo.getUniqueId(),
+            uid,
+            utid,
+            chn: global.channel,
+            ver: '6.0.3',
+            platform: Platform.OS,
+            device: device || '',
+            request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
+        };
+        return config;
+    },
+    (err) => {
+        console.log(JSON.stringify(err));
     }
-    config.headers.Authorization = token;
-    config.params = {
-        ...config.data,
-        app: '4000',
-        ts: new Date().getTime(),
-        did: DeviceInfo.getUniqueId(),
-        uid,
-        utid,
-        chn: global.channel,
-        ver: '6.1.0',
-        device: device || '',
-        platform: Platform.OS,
-        request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
-    };
-    return config;
-});
+);
 axios.interceptors.response.use(
     (response) => {
         //请求返回数据处理
@@ -61,10 +67,11 @@ axios.interceptors.response.use(
         return response.data.data || response.data;
     },
     (err) => {
-        console.log(err.config);
         if (
             err.config.url.indexOf('https://tj.licaimofang.com/v.gif') <= -1 &&
-            err.config.url.indexOf('/common/device/heart_beat/20210101') <= -1
+            err.config.url.indexOf('/common/device/heart_beat/20210101') <= -1 &&
+            err.config.url.indexOf('/health/check') <= -1 &&
+            err.config.url.indexOf('/common/user_info/20210101') <= -1
         ) {
             Toast.show('网络异常，请稍后再试~');
         }
@@ -74,9 +81,6 @@ axios.interceptors.response.use(
 export default class http {
     static async get(url, params, config, showLoading = true) {
         try {
-            if (showLoading) {
-                // Toast.showLoading('加载中...');
-            }
             let query = await qs.stringify(params);
             let res = null;
             if (!params) {

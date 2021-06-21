@@ -2,17 +2,16 @@
  * @Author: xjh
  * @Date: 2021-01-29 18:57:52
  * @Description:银行购买
- * @LastEditors: xjh
- * @LastEditTime: 2021-01-29 19:48:51
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-17 10:12:09
  */
 
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
+import {Colors, Font, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
-import {BankCardModal, Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Radio from '../../components/Radio';
 import Mask from '../../components/Mask';
@@ -57,7 +56,7 @@ class BankRedeem extends Component {
                 amount: this.state.amount,
                 password: this.state.password,
             }).then((res) => {
-                props.navigation.navigate('asset');
+                this.props.navigation.navigate('asset');
             });
         });
     }
@@ -102,10 +101,7 @@ class BankRedeem extends Component {
                     </View>
                 </View>
                 <View style={[{backgroundColor: '#fff', padding: px(16)}, Style.flexRow]}>
-                    <Image
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/01/icon_qthtz@2x.png'}}
-                        style={{width: 40, height: 40}}
-                    />
+                    <Image source={require('../../assets/img/common/bankBuy.png')} style={{width: 40, height: 40}} />
                     <View style={{flex: 1, marginLeft: px(10)}}>
                         <View
                             style={[
