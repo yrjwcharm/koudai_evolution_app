@@ -2,10 +2,10 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 15:34:01
+ * @LastEditTime: 2021-06-21 14:24:16
  * @Description:推荐
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {StyleSheet, View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
 import {Colors} from '../../../common/commonStyle';
@@ -17,30 +17,35 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderTitle from './RenderTitle.js';
+import {useFocusEffect} from '@react-navigation/native';
 const Recommend = (props) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState(false);
-    useEffect(() => {
-        init();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
 
-    const init = () => {
-        setRefreshing(true);
-        http.get('/vision/recommend/20210524').then((res) => {
-            let readList = _.reduce(
-                res?.result?.list,
-                (result, value) => {
-                    value.view_status == 1 && result.push(value.id);
-                    return result;
-                },
-                []
-            );
-            dispatch(updateVision({recommend: res.result, readList: _.uniq(visionData.readList.concat(readList))}));
-            setRefreshing(false);
-        });
-    };
+    const init = useCallback(
+        (type) => {
+            type == 'refresh' && setRefreshing(true);
+            http.get('/vision/recommend/20210524').then((res) => {
+                let readList = _.reduce(
+                    res?.result?.list,
+                    (result, value) => {
+                        value.view_status == 1 && result.push(value.id);
+                        return result;
+                    },
+                    []
+                );
+                dispatch(updateVision({recommend: res.result, readList: _.uniq(visionData.readList.concat(readList))}));
+                setRefreshing(false);
+            });
+        },
+        [dispatch, visionData]
+    );
 
     return Object.keys(visionData?.recommend).length > 0 ? (
         <ScrollView
