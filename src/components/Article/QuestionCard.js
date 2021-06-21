@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 13:15:40
+ * @LastEditTime: 2021-06-21 16:28:13
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -11,9 +11,11 @@ import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
+import {useSelector} from 'react-redux';
 import Praise from '../Praise';
 export default function QuestionCard({data = [], scene}) {
     const jump = useJump();
+    const visionData = useSelector((store) => store.vision).toJS();
     return (
         <>
             {data.map((item, index) => {
@@ -34,7 +36,17 @@ export default function QuestionCard({data = [], scene}) {
                         </Text>
                         <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
                             <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
-                            <Text numberOfLines={2} style={styles.article_title}>
+                            <Text
+                                numberOfLines={2}
+                                style={[
+                                    styles.article_title,
+                                    {
+                                        color:
+                                            visionData?.readList?.includes(item.id) && scene !== 'collect'
+                                                ? Colors.lightBlackColor
+                                                : Colors.defaultColor,
+                                    },
+                                ]}>
                                 {item?.name}
                             </Text>
                         </View>

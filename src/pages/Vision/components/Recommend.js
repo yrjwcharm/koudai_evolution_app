@@ -2,13 +2,12 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 14:24:16
+ * @LastEditTime: 2021-06-21 18:09:12
  * @Description:推荐
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {StyleSheet, View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
-import {Colors} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
 import BottomDesc from '../../../components/BottomDesc.js';
 import RecommendCard from '../../../components/Article/RecommendCard';
@@ -21,26 +20,42 @@ import {useFocusEffect} from '@react-navigation/native';
 const Recommend = (props) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
+    const [recommendData, setRecommendData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
-    useFocusEffect(
-        useCallback(() => {
-            init();
-        }, [init])
-    );
-
+    useEffect(() => {
+        init();
+    }, [init]);
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         init();
+    //     }, [init])
+    // );
     const init = useCallback(
         (type) => {
             type == 'refresh' && setRefreshing(true);
             http.get('/vision/recommend/20210524').then((res) => {
-                let readList = _.reduce(
-                    res?.result?.list,
+                let readList1 = _.reduce(
+                    res?.result?.part2,
                     (result, value) => {
                         value.view_status == 1 && result.push(value.id);
                         return result;
                     },
                     []
                 );
-                dispatch(updateVision({recommend: res.result, readList: _.uniq(visionData.readList.concat(readList))}));
+                let readList2 = [];
+                for (var i = 0; i < res?.result?.part3.length; i++) {
+                    for (var j = 0; j < res?.result?.part3[i].list.length; j++) {
+                        if (res?.result?.part3[i].list[j].view_status == 1) {
+                            readList2.push(res?.result?.part3[i].list[j].id);
+                        }
+                    }
+                }
+                dispatch(
+                    updateVision({
+                        recommend: res.result,
+                        readList: _.uniq(visionData.readList.concat(readList1).concat(readList2)),
+                    })
+                );
                 setRefreshing(false);
             });
         },

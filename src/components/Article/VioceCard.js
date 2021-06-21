@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 13:15:19
+ * @LastEditTime: 2021-06-21 18:26:21
  * @Description:音频模块
  */
 
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         paddingVertical: px(4),
         position: 'absolute',
         borderRadius: px(6),
-        opacity: 0.8,
+        opacity: 0.7,
         left: px(20),
         backgroundColor: '#000000',
     },

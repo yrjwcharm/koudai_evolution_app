@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 13:50:27
+ * @LastEditTime: 2021-06-21 18:27:31
  * @Description:tab公共模块
  *
  */
@@ -16,6 +16,7 @@ import RenderCate from './RenderCate.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
+import {useFocusEffect} from '@react-navigation/native';
 const CommonView = ({k, scene, type}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const flatListRef = useRef(null);
@@ -25,6 +26,11 @@ const CommonView = ({k, scene, type}) => {
     useEffect(() => {
         getData();
     }, [getData]);
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         getData();
+    //     }, [getData])
+    // );
     useLayoutEffect(() => {
         dispatch(updateVision({flatListRef}));
     }, [dispatch]);

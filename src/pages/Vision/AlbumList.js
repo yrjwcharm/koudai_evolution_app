@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-09 19:00:28
+ * @LastEditTime: 2021-06-21 15:54:53
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -18,10 +18,10 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
 import _ from 'lodash';
 const AlbumList = ({navigation, route}) => {
-    const visionData = useSelector((store) => store.vision).toJS();
-    const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
+    const visionData = useSelector((store) => store.vision).toJS();
+    const dispatch = useDispatch();
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback(
@@ -29,7 +29,6 @@ const AlbumList = ({navigation, route}) => {
             type == 'refresh' && setRefreshing(true);
             http.get('/vision/album/articles/20210524', {page, album_id: route?.params?.album_id}).then((res) => {
                 setRefreshing(false);
-                setHasMore(res.result.has_more);
                 navigation.setOptions({title: res.result.title});
                 let readList = _.reduce(
                     res?.result?.list,
@@ -54,18 +53,13 @@ const AlbumList = ({navigation, route}) => {
                         })
                     );
                 }
+                setHasMore(res.result.has_more);
             });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [navigation, route, page]
     );
-    useEffect(() => {
-        if (page === 1) {
-            getData('refresh', true);
-        } else {
-            getData('loadmore');
-        }
-    }, [getData, page]);
+
     // 上拉加载
     const onEndReached = useCallback(
         ({distanceFromEnd}) => {
@@ -187,17 +181,26 @@ const AlbumList = ({navigation, route}) => {
             </View>
         );
     };
+    useEffect(() => {
+        if (page === 1) {
+            getData('refresh');
+        } else {
+            getData('loadmore');
+        }
+    }, [getData, page]);
     return (
         <FlatList
             data={visionData.albumList}
+            refreshing={refreshing}
             style={{paddingHorizontal: px(16), backgroundColor: '#fff'}}
             ListFooterComponent={!refreshing && visionData.albumList?.length > 0 && ListFooterComponent}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.2}
             onEndReached={onEndReached}
-            refreshing={refreshing}
-            onRefresh={getData}
+            onRefresh={() => {
+                setPage(1);
+            }}
         />
     );
 };
