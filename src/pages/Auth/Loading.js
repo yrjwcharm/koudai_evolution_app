@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 15:31:14
+ * @LastEditTime: 2021-06-22 17:32:21
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -20,7 +20,7 @@ export default function Loading({navigation}) {
     };
     useEffect(() => {
         Storage.get('AppGuide').then((res) => {
-            http.get('/health/check')
+            http.get('/health/check', {env})
                 .then((result) => {
                     if (!__DEV__) {
                         if (result.result?.env) {

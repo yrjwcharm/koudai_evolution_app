@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 15:53:08
+ * @LastEditTime: 2021-06-22 17:31:06
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,7 +17,6 @@ import Storage from '../../utils/storage';
 import Toast from '../../components/Toast';
 import {InputModal} from '../../components/Modal';
 import {useDispatch} from 'react-redux';
-import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 const Settings = ({navigation}) => {
     const dispatch = useDispatch();
@@ -58,7 +57,6 @@ const Settings = ({navigation}) => {
                         Http.post('/auth/user/logout/20210101').then((res) => {
                             if (res.code === '000000') {
                                 Storage.delete('loginStatus');
-                                dispatch(resetVision());
                                 dispatch(getUserInfo());
                                 dispatch(
                                     updateUserInfo({
