@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 15:13:53
+ * @LastEditTime: 2021-06-22 18:02:02
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -17,6 +17,21 @@ import {useJump} from '../../components/hooks';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
 import _ from 'lodash';
+import {BoxShadow} from 'react-native-shadow';
+const shadow = {
+    color: '#0051CC',
+    border: 10,
+    radius: px(16),
+    opacity: 0.2,
+    x: 9,
+    y: 3,
+    width: px(70),
+    height: px(33),
+    style: {
+        marginTop: px(24),
+        marginBottom: px(6),
+    },
+};
 const AlbumList = ({navigation, route}) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
@@ -98,10 +113,12 @@ const AlbumList = ({navigation, route}) => {
                             ]}>
                             {item?.title}
                         </Text>
-                        <View style={[Style.flexRowCenter, styles.play]}>
-                            <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
-                            <Text style={styles.play_text}>播放</Text>
-                        </View>
+                        <BoxShadow setting={shadow}>
+                            <View style={[Style.flexRowCenter, styles.play]}>
+                                <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
+                                <Text style={styles.play_text}>播放</Text>
+                            </View>
+                        </BoxShadow>
                     </View>
                     {item?.cover ? (
                         <View style={styles.cover_con}>
@@ -184,7 +201,6 @@ const AlbumList = ({navigation, route}) => {
     };
     useEffect(() => {
         if (page === 1) {
-            console.log('refresh');
             getData('refresh');
         } else {
             getData('loadmore');
@@ -227,7 +243,6 @@ const styles = StyleSheet.create({
         borderRadius: px(16),
         width: px(88),
         height: px(33),
-        marginTop: px(24),
     },
     cover_con: {
         marginLeft: px(13),
