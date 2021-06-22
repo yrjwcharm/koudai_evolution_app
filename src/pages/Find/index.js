@@ -95,7 +95,7 @@ const Index = (props) => {
                             end={{x: 0, y: 1}}
                             colors={['#fff', '#F5F6F8']}
                             style={{paddingHorizontal: Space.padding}}>
-                            <View style={{paddingVertical: px(12), backgroundColor: '#fff'}}>
+                            <View style={{paddingBottom: px(15), paddingTop: px(9), backgroundColor: '#fff'}}>
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
                             {/* 今日推荐 */}

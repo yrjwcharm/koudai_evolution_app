@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 11:24:56
+ * @LastEditTime: 2021-06-22 14:11:31
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -25,13 +25,14 @@ const Recommend = (props) => {
     useEffect(() => {
         init();
     }, [init]);
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         http.get('/vision/recommend/20210524').then((res) => {
-    //             setRecommendData(res.result);
-    //         });
-    //     }, [])
-    // );
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/vision/recommend/20210524').then((res) => {
+                setRecommendData(res.result.part1);
+            });
+        }, [])
+    );
+    console.log(recommendData);
     const init = useCallback(
         (type) => {
             type == 'refresh' && setRefreshing(true);
@@ -45,10 +46,12 @@ const Recommend = (props) => {
                     []
                 );
                 let readList2 = [];
-                for (var i = 0; i < res?.result?.part3.length; i++) {
-                    for (var j = 0; j < res?.result?.part3[i].list.length; j++) {
-                        if (res?.result?.part3[i].list[j].view_status == 1) {
-                            readList2.push(res?.result?.part3[i].list[j].id);
+                for (var i = 0; i < res?.result?.part3?.length; i++) {
+                    if (res?.result?.part3[i]?.list) {
+                        for (var j = 0; j < res?.result?.part3[i]?.list.length; j++) {
+                            if (res?.result?.part3[i].list[j].view_status == 1) {
+                                readList2.push(res?.result?.part3[i].list[j].id);
+                            }
                         }
                     }
                 }
@@ -69,7 +72,7 @@ const Recommend = (props) => {
             key={1}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
             <View style={{padding: px(16), paddingTop: px(8)}}>
-                <RecommendCard style={{marginBottom: px(16)}} data={visionData?.recommend?.part1} />
+                <RecommendCard style={{marginBottom: px(16)}} data={recommendData} />
                 {visionData?.recommend?.part2?.map((item, index) => {
                     return RenderCate(item, {marginBottom: px(12)}, 'recommend');
                 })}

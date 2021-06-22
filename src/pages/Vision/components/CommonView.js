@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 11:16:09
+ * @LastEditTime: 2021-06-22 12:09:31
  * @Description:tab公共模块
  *
  */
@@ -18,7 +18,6 @@ import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
 const CommonView = ({k, scene, type}) => {
     const visionData = useSelector((store) => store.vision).toJS();
-    const flatListRef = useRef(null);
     const dispatch = useDispatch();
     const key = scene == 'collect' ? type : k;
     const url = scene == 'collect' ? `/vision/${key}/list/20210524` : `/vision/${key}/articles/20210524`;
@@ -26,9 +25,6 @@ const CommonView = ({k, scene, type}) => {
         getData();
     }, [getData]);
 
-    useLayoutEffect(() => {
-        dispatch(updateVision({flatListRef}));
-    }, [dispatch]);
     const getData = useCallback(
         (_type) => {
             _type !== 'loadmore' && dispatch(updateVision({refreshing: true}));
@@ -97,7 +93,6 @@ const CommonView = ({k, scene, type}) => {
             <View style={{flex: 1}}>
                 <FlatList
                     data={visionData?.[key]?.list}
-                    ref={flatListRef}
                     style={{paddingHorizontal: px(16), paddingTop: px(10)}}
                     ListHeaderComponent={
                         visionData?.[k]?.notice ? (

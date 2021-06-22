@@ -817,8 +817,8 @@ const styles = StyleSheet.create({
         height: px(3),
     },
     logo: {
-        width: px(158),
-        height: px(63),
+        width: px(140),
+        height: px(49),
         // marginRight: px(9),
     },
     secure_card: {

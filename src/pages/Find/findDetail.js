@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 10:31:28
+ * @LastEditTime: 2021-06-22 11:58:54
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -63,7 +63,7 @@ const FindDetail = (props) => {
                         source={require('../../assets/img/find/close.png')}
                     />
                 </TouchableOpacity>
-                <ScrollView scrollIndicatorInsets={{right: 1}}>
+                <ScrollView scrollIndicatorInsets={{right: 1}} style={{backgroundColor: Colors.bgColor}}>
                     {/* header */}
                     <View style={[styles.recommend]}>
                         <View
@@ -138,8 +138,7 @@ const FindDetail = (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.bgColor,
-        borderColor: '#fff',
+        borderColor: Colors.bgColor,
         borderWidth: 0.5,
     },
     recommend: {
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
     img_title: {
         color: '#fff',
         fontSize: px(26),
-        lineHeight: px(28),
+        lineHeight: px(30),
         fontWeight: '700',
     },
     tip_text: {

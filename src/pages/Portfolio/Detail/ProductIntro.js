@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-01 17:09:55
  * @Description:产品说明书
- * @LastEditors: dx
- * @LastEditTime: 2021-04-28 18:20:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-06-22 13:28:38
  */
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, Image} from 'react-native';
