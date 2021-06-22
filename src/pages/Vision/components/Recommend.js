@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 14:11:31
+ * @LastEditTime: 2021-06-22 17:12:19
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -32,7 +32,6 @@ const Recommend = (props) => {
             });
         }, [])
     );
-    console.log(recommendData);
     const init = useCallback(
         (type) => {
             type == 'refresh' && setRefreshing(true);

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 19:16:47
+ * @LastEditTime: 2021-06-22 17:19:04
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -43,22 +43,30 @@ const Vision = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
+    const [showError, setShowError] = useState(false);
+
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
-    const userInfo = useSelector((store) => store.userInfo);
+    const userInfo = useSelector((store) => store.userInfo).toJS();
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
         }, [dispatch])
     );
     useEffect(() => {
+        setTabs([]);
         hasNet && getTabs();
-    }, [hasNet]);
+    }, [hasNet, userInfo.is_login]);
+
     const getTabs = () => {
-        http.get('/vision/tabs/20210524').then((res) => {
-            setTabs(res.result);
-        });
+        http.get('/vision/tabs/20210524')
+            .then((res) => {
+                setTabs(res.result);
+            })
+            .catch(() => {
+                setShowError(true);
+            });
     };
     const _renderDynamicView = () => {
         const _views = [];
@@ -111,7 +119,7 @@ const Vision = ({navigation, route}) => {
                         </BoxShadow>
                     </View>
                 </LinearGradient>
-                {!userInfo.toJS().is_login && <LoginMask />}
+                {!userInfo.is_login && <LoginMask />}
             </>
         );
     };
@@ -121,25 +129,31 @@ const Vision = ({navigation, route}) => {
         });
         return () => listener();
     }, []);
+    const NetError = () => {
+        return (
+            <>
+                <Empty
+                    img={require('../../assets/img/emptyTip/noNetwork.png')}
+                    text={'哎呀！网络出问题了'}
+                    desc={'网络不给力，请检查您的网络设置'}
+                    style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
+                />
+                <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
+            </>
+        );
+    };
     // 刷新一下
     const refreshNetWork = useCallback(() => {
+        getTabs();
         setHasNet(netInfo.isConnected);
     }, [netInfo]);
-    return hasNet ? (
-        renderContent()
-    ) : Object.keys(visionData?.recommend).length > 0 ? (
-        renderContent()
-    ) : (
-        <>
-            <Empty
-                img={require('../../assets/img/emptyTip/noNetwork.png')}
-                text={'哎呀！网络出问题了'}
-                desc={'网络不给力，请检查您的网络设置'}
-                style={{paddingTop: inset.top + px(100), paddingBottom: px(60)}}
-            />
-            <Button title={'刷新一下'} style={{marginHorizontal: px(20)}} onPress={refreshNetWork} />
-        </>
-    );
+    return hasNet
+        ? showError
+            ? NetError()
+            : renderContent()
+        : Object.keys(visionData?.recommend).length > 0
+        ? renderContent()
+        : NetError();
 };
 
 export default Vision;

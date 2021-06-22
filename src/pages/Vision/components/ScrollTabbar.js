@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 11:26:46
+ * @LastEditTime: 2021-06-22 15:19:40
  * @Description:
  */
 
@@ -11,7 +11,6 @@ import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from '
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import {connect} from 'react-redux';
-import {updateVision, updateFresh} from '../../../redux/actions/visionData';
 const PhoneWidth = Dimensions.get('window').width;
 const tabHeight = px(42);
 const Button = (props) => {

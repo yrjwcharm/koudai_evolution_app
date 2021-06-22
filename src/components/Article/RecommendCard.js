@@ -2,10 +2,10 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 17:45:42
+ * @LastEditTime: 2021-06-22 16:30:24
  * @Description:推荐模块
  */
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import {StyleSheet, Text, View, findNodeHandle, TouchableOpacity, AppState} from 'react-native';
 import {Colors, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
@@ -19,6 +19,7 @@ import {Modal} from '../Modal';
 import http from '../../services';
 import Toast from '../Toast';
 import {useFocusEffect} from '@react-navigation/native';
+
 const RecommendCard = ({data, style}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
@@ -34,21 +35,12 @@ const RecommendCard = ({data, style}) => {
     };
     useFocusEffect(
         useCallback(() => {
-            _checkNotifications(
-                () => {
-                    setReserved(true);
-                },
-                () => {
-                    setReserved(false);
-                }
-            );
             return () => {
                 AppState.removeEventListener('change', _handleAppStateChange);
             };
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [reserved])
     );
-
     const _handleAppStateChange = (nextAppState) => {
         if (nextAppState === 'active') {
             _checkNotifications(

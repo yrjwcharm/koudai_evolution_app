@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 18:27:32
+ * @LastEditTime: 2021-06-22 16:13:41
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -10,6 +10,12 @@ import http from '../../services';
 export const updateVision = (vision) => {
     return {
         type: actionTypes.Vision,
+        payload: vision,
+    };
+};
+export const resetVision = (vision) => {
+    return {
+        type: actionTypes.ResetVision,
         payload: vision,
     };
 };

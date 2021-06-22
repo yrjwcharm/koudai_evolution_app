@@ -323,12 +323,11 @@ const Index = (props) => {
                                         jump({path: 'Register'});
                                         global.LogTool();
                                     }}
-                                    style={[Style.more, {marginTop: px(-20)}]}>
+                                    style={[Style.more]}>
                                     登录/注册
                                 </Text>
                             ) : (
                                 <TouchableOpacity
-                                    style={{marginTop: px(-20)}}
                                     onPress={() => {
                                         jump({path: 'RemindMessage'});
                                     }}>

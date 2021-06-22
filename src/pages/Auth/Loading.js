@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 11:30:32
+ * @LastEditTime: 2021-06-22 15:31:14
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -11,6 +11,7 @@ import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 import http from '../../services';
 import Toast from '../../components/Toast';
+import {env} from '../../services/config';
 export default function Loading({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online1', 'online2'];
@@ -21,10 +22,14 @@ export default function Loading({navigation}) {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check')
                 .then((result) => {
-                    if (result.result?.env) {
-                        global.env = result.result.env;
+                    if (!__DEV__) {
+                        if (result.result?.env) {
+                            global.env = result.result.env;
+                        } else {
+                            global.env = 'online';
+                        }
                     } else {
-                        global.env = 'online';
+                        global.env = env;
                     }
                     dispatch(getUserInfo());
                     if (res) {
