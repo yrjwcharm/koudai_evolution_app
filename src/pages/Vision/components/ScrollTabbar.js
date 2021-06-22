@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 19:14:50
+ * @LastEditTime: 2021-06-22 11:26:46
  * @Description:
  */
 
@@ -71,7 +71,7 @@ class ScrollTabbar extends Component {
 
     renderTab = (name, page, isTabActive, onPressHandler) => {
         const textColor = isTabActive ? Colors.defaultColor : Colors.lightBlackColor;
-        const textFontSize = isTabActive ? px(20) : px(14);
+        const textFontSize = isTabActive ? px(22) : px(14);
         const textFontWeight = isTabActive ? '700' : '400';
         return (
             <Button

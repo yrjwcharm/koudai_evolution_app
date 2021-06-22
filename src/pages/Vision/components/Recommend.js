@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 20:10:20
+ * @LastEditTime: 2021-06-22 11:24:56
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -68,7 +68,7 @@ const Recommend = (props) => {
         <ScrollView
             key={1}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
-            <View style={{padding: px(16), paddingTop: 0}}>
+            <View style={{padding: px(16), paddingTop: px(8)}}>
                 <RecommendCard style={{marginBottom: px(16)}} data={visionData?.recommend?.part1} />
                 {visionData?.recommend?.part2?.map((item, index) => {
                     return RenderCate(item, {marginBottom: px(12)}, 'recommend');

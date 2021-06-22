@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:31:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 12:26:40
+ * @LastEditTime: 2021-06-22 11:30:32
  * @Description:
  */
 import React, {useEffect} from 'react';
@@ -22,7 +22,7 @@ export default function Loading({navigation}) {
             http.get('/health/check')
                 .then((result) => {
                     if (result.result?.env) {
-                        global.env = 'test' || result.result.env;
+                        global.env = result.result.env;
                     } else {
                         global.env = 'online';
                     }

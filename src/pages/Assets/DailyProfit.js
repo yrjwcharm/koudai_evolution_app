@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 11:36:01
+ * @LastEditTime: 2021-06-22 11:08:46
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -208,8 +208,8 @@ const DailyProfit = ({poid}) => {
     );
 
     useEffect(() => {
-        if (page === 1) {
-            init('refresh', true);
+        if (page == 1) {
+            init('refresh');
         } else {
             init('loadmore');
         }
@@ -222,16 +222,17 @@ const DailyProfit = ({poid}) => {
                     list.map((o) => Math.abs(parseFloat(o.profit?.replace(/,/g, ''))))
                 )
             );
-            LayoutAnimation.configureNext({
-                duration: 500, //持续时间
-                create: {
-                    type: 'linear',
-                    property: 'opacity',
-                },
-                update: {
-                    type: 'linear',
-                },
-            });
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+            // LayoutAnimation.configureNext({
+            //     duration: 300, //持续时间
+            //     create: {
+            //         type: 'linear',
+            //         property: 'opacity',
+            //     },
+            //     update: {
+            //         type: 'linear',
+            //     },
+            // });
         }
     }, [list]);
     return (
@@ -243,7 +244,7 @@ const DailyProfit = ({poid}) => {
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.2}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderSectionHeader={renderSectionHeader}

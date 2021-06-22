@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 15:54:53
+ * @LastEditTime: 2021-06-22 10:38:18
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -26,7 +26,7 @@ const AlbumList = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback(
         (type) => {
-            type == 'refresh' && setRefreshing(true);
+            // type == 'refresh' && setRefreshing(true);
             http.get('/vision/album/articles/20210524', {page, album_id: route?.params?.album_id}).then((res) => {
                 setRefreshing(false);
                 navigation.setOptions({title: res.result.title});
