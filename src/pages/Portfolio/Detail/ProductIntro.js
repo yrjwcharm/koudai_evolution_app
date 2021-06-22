@@ -3,11 +3,10 @@
  * @Date: 2021-03-01 17:09:55
  * @Description:产品说明书
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 13:28:38
+ * @LastEditTime: 2021-06-22 14:36:16
  */
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, Image} from 'react-native';
-import FitImage from 'react-native-fit-image';
 import FastImage from 'react-native-fast-image';
 import Http from '../../../services';
 import {px as text, deviceWidth} from '../../../utils/appUtil';
@@ -27,9 +26,10 @@ export default function ProductIntro({route}) {
             });
         });
     }, [route.params]);
+    console.log(data);
     return (
         <ScrollView style={[styles.container]} scrollIndicatorInsets={{right: 1}}>
-            {data.length > 0 &&
+            {data.length > 2 &&
                 data?.map((item, index) => {
                     return (
                         <FastImage
