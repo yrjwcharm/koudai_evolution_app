@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 16:30:24
+ * @LastEditTime: 2021-06-23 13:31:59
  * @Description:推荐模块
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -19,42 +19,54 @@ import {Modal} from '../Modal';
 import http from '../../services';
 import Toast from '../Toast';
 import {useFocusEffect} from '@react-navigation/native';
-
-const RecommendCard = ({data, style}) => {
+const RecommendCard = ({data, style, onPress}) => {
     const jump = useJump();
     const [blurRef, setBlurRef] = useState(null);
-    const [reserved, setReserved] = useState(data.reserved);
     const viewRef = useRef(null);
+    const [reserved, setReserved] = useState(data.reserved);
     const postReserve = (sucess) => {
         http.post('/vision/recommend/reserve/20210524', {id: data.id}).then((res) => {
             if (res.code === '000000') {
+                AppState.removeEventListener('change', _handleAppStateChange);
                 sucess();
                 Toast.show(res.message);
             }
         });
     };
+
     useFocusEffect(
         useCallback(() => {
+            setReserved((pre) => {
+                if (pre == data.reserved) {
+                    return pre;
+                } else {
+                    return data.reserved;
+                }
+            });
             return () => {
                 AppState.removeEventListener('change', _handleAppStateChange);
             };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [reserved])
+        }, [_handleAppStateChange, data.reserved])
     );
-    const _handleAppStateChange = (nextAppState) => {
-        if (nextAppState === 'active') {
-            _checkNotifications(
-                () => {
-                    postReserve(() => {
-                        setReserved(true);
-                    });
-                },
-                () => {
-                    setReserved(false);
-                }
-            );
-        }
-    };
+    const _handleAppStateChange = useCallback(
+        (nextAppState) => {
+            if (nextAppState === 'active' && !reserved) {
+                _checkNotifications(
+                    () => {
+                        postReserve(() => {
+                            setReserved(true);
+                        });
+                    },
+                    () => {
+                        AppState.removeEventListener('change', _handleAppStateChange);
+                        setReserved(false);
+                    }
+                );
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [reserved]
+    );
 
     const _checkNotifications = (sucess, fail) => {
         checkNotifications().then(({status, settings}) => {
@@ -69,7 +81,7 @@ const RecommendCard = ({data, style}) => {
         if (reserved) {
             return;
         }
-        AppState.addEventListener('change', _handleAppStateChange);
+        onPress && onPress();
         _checkNotifications(
             () => {
                 postReserve(() => {
@@ -100,6 +112,7 @@ const RecommendCard = ({data, style}) => {
             confirm: true,
             confirmText: '前往',
             confirmCallBack: () => {
+                AppState.addEventListener('change', _handleAppStateChange);
                 openSettings().catch(() => console.warn('cannot open settings'));
             },
         });

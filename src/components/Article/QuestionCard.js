@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 16:28:13
+ * @LastEditTime: 2021-06-23 12:09:40
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -24,6 +24,7 @@ export default function QuestionCard({data = [], scene}) {
                         key={index}
                         activeOpacity={0.9}
                         onPress={debounce(() => {
+                            global.LogTool('visionArticle', item.id);
                             jump(item?.url, scene == 'article' ? 'push' : 'navigate');
                         }, 300)}
                         style={[styles.ques_card]}>

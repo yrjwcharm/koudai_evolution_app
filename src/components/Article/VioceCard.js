@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 19:24:39
+ * @LastEditTime: 2021-06-23 12:08:57
  * @Description:音频模块
  */
 
@@ -23,6 +23,7 @@ const VioceCard = ({data, style, scene}) => {
             activeOpacity={0.9}
             style={[styles.card, style]}
             onPress={debounce(() => {
+                global.LogTool('visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
             <View style={{flexDirection: 'row'}}>

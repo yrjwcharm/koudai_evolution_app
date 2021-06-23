@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 11:58:54
+ * @LastEditTime: 2021-06-22 19:32:26
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -99,7 +99,10 @@ const FindDetail = (props) => {
                                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                     <Text style={styles.radio}>{data?.plan_info?.yield?.ratio}</Text>
                                     <TouchableOpacity
-                                        onPress={() => jump(data?.plan_info?.button.url)}
+                                        onPress={() => {
+                                            global.LogTool('findTargetDetailStart', props.route.params?.plan_id);
+                                            jump(data?.plan_info?.button.url);
+                                        }}
                                         activeOpacity={0.9}>
                                         <LinearGradient
                                             start={{x: 0, y: 0.25}}

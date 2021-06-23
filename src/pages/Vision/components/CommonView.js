@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 17:20:42
+ * @LastEditTime: 2021-06-23 10:50:29
  * @Description:tab公共模块
  *
  */
@@ -76,7 +76,7 @@ const CommonView = ({k, scene, type}) => {
     );
     const ListFooterComponent = () => {
         return (
-            <View style={[Style.flexRowCenter, {paddingVertical: px(6)}]}>
+            <View style={[Style.flexRowCenter, {paddingBottom: px(18)}]}>
                 {visionData?.[key]?.has_more ? (
                     <>
                         <ActivityIndicator size="small" animating={true} />

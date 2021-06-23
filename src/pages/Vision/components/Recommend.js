@@ -2,11 +2,11 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 17:12:19
+ * @LastEditTime: 2021-06-23 13:32:27
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
-import {StyleSheet, View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
+import {View, ScrollView, RefreshControl, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
 import {px} from '../../../utils/appUtil';
 import BottomDesc from '../../../components/BottomDesc.js';
@@ -18,9 +18,9 @@ import _ from 'lodash';
 import RenderTitle from './RenderTitle.js';
 import {useFocusEffect} from '@react-navigation/native';
 const Recommend = (props) => {
+    const [recommendData, setRecommendData] = useState({});
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
-    const [recommendData, setRecommendData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     useEffect(() => {
         init();
@@ -65,13 +65,18 @@ const Recommend = (props) => {
         },
         [dispatch, visionData]
     );
-
-    return Object.keys(visionData?.recommend).length > 0 ? (
+    return Object.keys(recommendData).length > 0 ? (
         <ScrollView
             key={1}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
             <View style={{padding: px(16), paddingTop: px(8)}}>
-                <RecommendCard style={{marginBottom: px(16)}} data={recommendData} />
+                <RecommendCard
+                    style={{marginBottom: px(16)}}
+                    data={recommendData}
+                    onPress={() => {
+                        global.LogTool('visionRecArticle', recommendData.id);
+                    }}
+                />
                 {visionData?.recommend?.part2?.map((item, index) => {
                     return RenderCate(item, {marginBottom: px(12)}, 'recommend');
                 })}

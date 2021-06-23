@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:55:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-07 17:50:20
+ * @LastEditTime: 2021-06-22 18:58:58
  * @Description:首页发现页文章卡片
  */
 
@@ -14,7 +14,7 @@ import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
 
-export default function ArticleCard({data = '', style}) {
+export default function ArticleCard({data = '', style, onPress}) {
     const jump = useJump();
     return (
         <TouchableOpacity
@@ -22,6 +22,7 @@ export default function ArticleCard({data = '', style}) {
             style={[styles.card, style]}
             activeOpacity={0.9}
             onPress={() => {
+                onPress && onPress();
                 jump(data?.url);
             }}>
             <View style={Style.flexRow}>

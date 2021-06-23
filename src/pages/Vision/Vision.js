@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 17:19:04
+ * @LastEditTime: 2021-06-23 12:04:08
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -93,6 +93,7 @@ const Vision = ({navigation, route}) => {
                             <ScrollableTabView
                                 renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
                                 onChangeTab={(obj) => {
+                                    global.LogTool('visionTabIndex', tabs[obj.i].k);
                                     if (visionData.visionTabUpdate == tabs[obj.i].k) {
                                         dispatch(updateVision({visionTabUpdate: ''}));
                                         dispatch(updateFresh(tabs[obj.i].k));
@@ -108,6 +109,7 @@ const Vision = ({navigation, route}) => {
                                     activeOpacity={0.9}
                                     style={styles.menu}
                                     onPress={() => {
+                                        global.LogTool('visionMisc');
                                         navigation.navigate('VisionCollect');
                                     }}>
                                     <Image

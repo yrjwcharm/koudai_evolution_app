@@ -266,6 +266,7 @@ const Index = (props) => {
                             activeOpacity={0.9}
                             style={[Style.flexBetween, styles.secure_card, styles.common_card]}
                             onPress={() => {
+                                index == 0 ? global.LogTool('indexSecurity') : global.LogTool('indexInvestPhilosophy');
                                 jump(item?.url);
                             }}>
                             <View>
@@ -329,6 +330,7 @@ const Index = (props) => {
                             ) : (
                                 <TouchableOpacity
                                     onPress={() => {
+                                        global.LogTool('indexNotificationCenter');
                                         jump({path: 'RemindMessage'});
                                     }}>
                                     {allMsg ? <View style={styles.new_message} /> : null}
@@ -596,7 +598,12 @@ const Index = (props) => {
                             {data?.article_info && (
                                 <View style={{marginBottom: px(20)}}>
                                     <RenderTitle title={'推荐阅读'} />
-                                    <ArticleCard data={data?.article_info} />
+                                    <ArticleCard
+                                        data={data?.article_info}
+                                        onPress={() => {
+                                            global.LogTool('indexRecArticle', data?.article_info?.id);
+                                        }}
+                                    />
                                 </View>
                             )}
                             {/* 魔方问答 */}
@@ -677,6 +684,7 @@ const Index = (props) => {
                                     activeOpacity={0.9}
                                     style={styles.aboutCard}
                                     onPress={() => {
+                                        global.LogTool('indexAboutMofang');
                                         jump(data?.about_info?.url);
                                     }}>
                                     <View

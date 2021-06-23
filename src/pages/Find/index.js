@@ -103,6 +103,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={1}
                                     onPress={() => {
+                                        global.LogTool('findRecProduct', data?.recommend?.plan_id);
                                         jump(data?.recommend?.button?.url);
                                     }}
                                     style={[styles.recommend, styles.card]}>
@@ -170,6 +171,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('findProduct', item.plan_id);
                                         jump(item?.url);
                                     }}
                                     key={index}
@@ -219,6 +221,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('findTargetProductStart', item.plan_id);
                                         jump(item?.url);
                                     }}
                                     key={index}
@@ -267,6 +270,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('findExtraProductStart', item.plan_id);
                                         jump(item?.url);
                                     }}
                                     key={index}

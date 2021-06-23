@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 13:14:58
+ * @LastEditTime: 2021-06-23 12:09:28
  * @Description:视野文章模块
  */
 
@@ -23,9 +23,10 @@ export default function VisionArticle({data = '', style, scene}) {
             style={[styles.card, style]}
             activeOpacity={0.9}
             onPress={debounce(() => {
+                global.LogTool('visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
-            <View style={Style.flexRow}>
+            <View style={{flexDirection: 'row'}}>
                 <View style={{flex: 1}}>
                     {data?.cate_icon ? (
                         <View style={[Style.flexRow, {marginBottom: px(8)}]}>
