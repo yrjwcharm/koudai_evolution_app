@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 18:02:02
+ * @LastEditTime: 2021-06-23 16:36:19
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -165,7 +165,7 @@ const AlbumList = ({navigation, route}) => {
                 </Text>
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                     <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
-                    <View style={[Style.flexBetween, {width: px(100)}]}>
+                    <View style={[Style.flexBetween, {width: px(120)}]}>
                         <View style={Style.flexRow}>
                             <Icon name="md-play-circle-outline" size={px(16)} color={Colors.lightBlackColor} />
                             <Text style={[styles.gray_text, {color: Colors.lightBlackColor}]}>

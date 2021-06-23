@@ -61,7 +61,11 @@ const RenderTitle = (props) => {
                 },
             ]}>
             <Text style={styles.large_title}>{props.title}</Text>
-            {props.more_text ? <Text style={Style.more}>{props.more_text}</Text> : null}
+            {props.more_text ? (
+                <Text onPress={props.onPress} style={Style.more}>
+                    {props.more_text}
+                </Text>
+            ) : null}
         </View>
     );
 };
@@ -597,7 +601,13 @@ const Index = (props) => {
                             {/* 推荐阅读 */}
                             {data?.article_info && (
                                 <View style={{marginBottom: px(20)}}>
-                                    <RenderTitle title={'推荐阅读'} />
+                                    <RenderTitle
+                                        title={'推荐阅读'}
+                                        more_text={'更多'}
+                                        onPress={() => {
+                                            jump({path: 'Vision'});
+                                        }}
+                                    />
                                     <ArticleCard
                                         data={data?.article_info}
                                         onPress={() => {
