@@ -1,7 +1,7 @@
 {
   "name": "EvolutionApp",
   "version": "6.1.0",
-  "versionCode": 61001,
+  "versionCode": 61002,
   "private": true,
   "scripts": {
     "android": "react-native run-android",
