@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:25:11
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 12:04:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-06-23 11:23:48
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -25,8 +25,10 @@ const DailyProfit = ({poid}) => {
     const [activeSections, setActiveSections] = useState([0]);
     const [maxData, setMaxData] = useState(0);
     const [showEmpty, setShowEmpty] = useState(false);
+    const canLoadRef = useRef(true); // 是否可以加载下一页
     const init = useCallback(
         (status, first) => {
+            canLoadRef.current = false;
             const url = poid ? '/portfolio/profit/daily/20210101' : '/profit/user_daily/20210101';
             http.get(url, {
                 page,
@@ -42,6 +44,7 @@ const DailyProfit = ({poid}) => {
                 } else if (status === 'refresh') {
                     setList(res.result.list || []);
                 }
+                canLoadRef.current = true;
             });
         },
         [page, poid]
@@ -56,7 +59,7 @@ const DailyProfit = ({poid}) => {
             if (distanceFromEnd < 0) {
                 return false;
             }
-            if (hasMore) {
+            if (hasMore && canLoadRef.current) {
                 setPage((p) => p + 1);
             }
         },
