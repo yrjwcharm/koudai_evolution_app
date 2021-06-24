@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 13:32:27
+ * @LastEditTime: 2021-06-24 11:25:41
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -35,6 +35,11 @@ const Recommend = (props) => {
     const init = useCallback(
         (type) => {
             type == 'refresh' && setRefreshing(true);
+            if (type == 'refresh') {
+                http.get('/vision/recommend/20210524').then((res) => {
+                    setRecommendData(res.result.part1);
+                });
+            }
             http.get('/vision/recommend/20210524').then((res) => {
                 let readList1 = _.reduce(
                     res?.result?.part2,

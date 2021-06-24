@@ -605,6 +605,7 @@ const Index = (props) => {
                                         title={'推荐阅读'}
                                         more_text={'更多'}
                                         onPress={() => {
+                                            global.LogTool('indexRecMore');
                                             jump({path: 'Vision'});
                                         }}
                                     />

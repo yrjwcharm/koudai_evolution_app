@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 16:36:19
+ * @LastEditTime: 2021-06-24 11:52:19
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -40,37 +40,39 @@ const AlbumList = ({navigation, route}) => {
     const jump = useJump();
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback(
-        (type) => {
+        (type, _page) => {
             // console.log('object');
-            // type == 'refresh' && setRefreshing(true);
-            http.get('/vision/album/articles/20210524', {page, album_id: route?.params?.album_id}).then((res) => {
-                setRefreshing(false);
-                navigation.setOptions({title: res.result.title});
-                let readList = _.reduce(
-                    res?.result?.list,
-                    (result, value) => {
-                        value.view_status == 1 && result.push(value.id);
-                        return result;
-                    },
-                    []
-                );
-                if (type === 'loadmore') {
-                    dispatch(
-                        updateVision({
-                            albumList: visionData.albumList.concat(res.result.list || []),
-                            albumListendList: _.uniq(visionData?.albumListendList.concat(readList)),
-                        })
+            // type == 'refresh'  && setRefreshing(true);
+            http.get('/vision/album/articles/20210524', {page: _page || page, album_id: route?.params?.album_id}).then(
+                (res) => {
+                    setRefreshing(false);
+                    navigation.setOptions({title: res.result.title});
+                    let readList = _.reduce(
+                        res?.result?.list,
+                        (result, value) => {
+                            value.view_status == 1 && result.push(value.id);
+                            return result;
+                        },
+                        []
                     );
-                } else {
-                    dispatch(
-                        updateVision({
-                            albumList: res.result.list || [],
-                            albumListendList: readList,
-                        })
-                    );
+                    if (type === 'loadmore') {
+                        dispatch(
+                            updateVision({
+                                albumList: visionData.albumList.concat(res.result.list || []),
+                                albumListendList: _.uniq(visionData?.albumListendList.concat(readList)),
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            updateVision({
+                                albumList: res.result.list || [],
+                                albumListendList: readList,
+                            })
+                        );
+                    }
+                    setHasMore(res.result.has_more);
                 }
-                setHasMore(res.result.has_more);
-            });
+            );
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [navigation, route, page]
@@ -217,7 +219,11 @@ const AlbumList = ({navigation, route}) => {
             onEndReachedThreshold={0.2}
             onEndReached={onEndReached}
             onRefresh={() => {
-                setPage(1);
+                if (page == 1) {
+                    getData('refresh', 1);
+                } else {
+                    setPage(1);
+                }
             }}
         />
     );

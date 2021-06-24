@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 13:31:59
+ * @LastEditTime: 2021-06-24 11:55:28
  * @Description:推荐模块
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -19,8 +19,10 @@ import {Modal} from '../Modal';
 import http from '../../services';
 import Toast from '../Toast';
 import {useFocusEffect} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 const RecommendCard = ({data, style, onPress}) => {
     const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo).toJS();
     const [blurRef, setBlurRef] = useState(null);
     const viewRef = useRef(null);
     const [reserved, setReserved] = useState(data.reserved);
@@ -33,7 +35,6 @@ const RecommendCard = ({data, style, onPress}) => {
             }
         });
     };
-
     useFocusEffect(
         useCallback(() => {
             setReserved((pre) => {
@@ -173,7 +174,7 @@ const RecommendCard = ({data, style, onPress}) => {
                     )}
                 </View>
 
-                {data?.locked ? (
+                {data?.locked && userInfo.is_login ? (
                     <>
                         <View
                             style={{
