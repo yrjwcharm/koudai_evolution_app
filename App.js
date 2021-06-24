@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 19:30:01
+ * @LastEditTime: 2021-06-24 14:25:59
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -91,7 +91,7 @@ function App(props) {
                 store.dispatch(
                     updateVision({
                         visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : res.result.vision_update,
-                        visionTabUpdate: res.result.vision_update,
+                        visionTabUpdate: 12 || res.result.vision_update,
                     })
                 );
             }

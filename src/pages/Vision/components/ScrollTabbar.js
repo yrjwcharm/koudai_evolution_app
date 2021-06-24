@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 15:19:40
+ * @LastEditTime: 2021-06-24 14:35:28
  * @Description:
  */
 
@@ -85,7 +85,7 @@ class ScrollTabbar extends Component {
                 }}>
                 <View style={[styles.tab]}>
                     {this.props.vision.toJS().visionTabUpdate == this.props.tabList[page].k &&
-                    this.props.tabList[this.props.activeTab].k !== this.props.vision.toJS().visionTabUpdate ? (
+                    this.props.tabList[this.props.activeTab].k != this.props.vision.toJS().visionTabUpdate ? (
                         <View style={styles.badge} />
                     ) : null}
                     <Text style={[{color: textColor, fontSize: textFontSize, fontWeight: textFontWeight}]}>{name}</Text>

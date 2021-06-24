@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:38:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 16:13:41
+ * @LastEditTime: 2021-06-24 14:31:37
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -21,8 +21,7 @@ export const resetVision = (vision) => {
 };
 export const updateFresh = (value) => {
     return (dispatch) => {
-        let _data = {refreshing: true};
-        // _data[value] = {};
+        let _data = {refreshing: true, visionTabUpdate: ''};
         dispatch(updateVision(_data));
         setTimeout(() => {
             http.get(`/vision/${value}/articles/20210524`, {
