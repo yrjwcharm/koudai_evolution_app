@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-14 15:34:56
+ * @LastEditTime: 2021-06-29 18:24:30
  * @Description:app引导页
  */
 
@@ -13,6 +13,7 @@ import Swiper from 'react-native-swiper';
 import {deviceWidth, deviceHeight, px} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import Storage from '../../../utils/storage';
+import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
 const styles = StyleSheet.create({
     imgage: {
@@ -27,6 +28,9 @@ const image2 = require('../../../assets/img/appGuide/largeslider2.png');
 const image3 = require('../../../assets/img/appGuide/largeslider3.png');
 const image4 = require('../../../assets/img/appGuide/largeslider4.png');
 export default function AppGuide({navigation}) {
+    useEffect(() => {
+        SplashScreen.hide();
+    }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>

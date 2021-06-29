@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-01 19:44:05
+ * @LastEditTime: 2021-06-29 18:49:00
  * @Description:路由表
  */
 import React from 'react';
@@ -129,8 +129,6 @@ import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold';
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
 import QuestionWithdraw from '../pages/ExperienceGold/QuestionWithdraw'; //体验金答题页
-import Loading from '../pages/Auth/Loading';
-// import Index from '../pages/Index/index'; //
 import ArticleDetail from '../pages/Vision/ArticleDetail'; // 文章详情
 import AdjustRecord from '../pages/Portfolio/AdjustRecord'; // 调仓记录
 import MyScore from '../pages/Assets/MyScore'; // 我的魔分
@@ -142,6 +140,7 @@ import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
 import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis'; //业绩基准
 import VisionCollect from '../pages/Vision/VisionCollect'; //文章收藏
 import AlbumList from '../pages/Vision/AlbumList'; //音频专辑列表
+import Launch from '../pages/Auth/Launch'; //广告
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -168,9 +167,8 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="Loading"
+            initialRouteName="Launch"
             headerMode="screen"
-            // keyboardHandlingEnabled={true}
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
                 headerBackImage: () => {
@@ -203,9 +201,14 @@ export default function AppStack() {
                     elevation: 0,
                 },
             }}>
-            <Stack.Screen name="Tab" component={TabScreen} options={{headerShown: false}} />
-            <Stack.Screen name="Loading" component={Loading} options={{headerShown: false}} />
-
+            <Stack.Screen
+                name="Tab"
+                component={TabScreen}
+                options={{
+                    ...TransitionPresets.ScaleFromCenterAndroid,
+                    headerShown: false,
+                }}
+            />
             <Stack.Screen
                 name="TradeBuy"
                 component={TradeBuy}
@@ -549,6 +552,7 @@ export default function AppStack() {
             <Stack.Screen name="PerformanceAnalysis" component={PerformanceAnalysis} options={{title: '业绩解析'}} />
             <Stack.Screen name="VisionCollect" component={VisionCollect} options={{headerShown: false}} />
             <Stack.Screen name="AlbumList" component={AlbumList} options={{title: ''}} />
+            <Stack.Screen name="Launch" component={Launch} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }
