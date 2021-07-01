@@ -2,16 +2,16 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-30 18:07:40
+ * @LastEditTime: 2021-07-01 18:53:02
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px, isIPhoneX} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
@@ -31,7 +31,7 @@ import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
 import Picker from 'react-native-picker';
 import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
-import {isIPhoneX} from '../../components/IM/app/chat/utils.js';
+import LottieView from 'lottie-react-native';
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -53,6 +53,12 @@ const ArticleDetail = ({navigation, route}) => {
     const [finishRead, setFinishRead] = useState(false);
     const timeRef = useRef(Date.now());
     const [finishLoad, setFinishLoad] = useState(false);
+    const [favor_num, setFavorNum] = useState(0);
+    const [favor_status, setFavorStatus] = useState(false);
+    const [collect_status, setCollectStatus] = useState(false);
+    const [collect_num, setCollectNum] = useState(0);
+    const zanRef = useRef(null);
+    const collectRef = useRef(null);
     const isArticle = useRef(route.params?.is_article !== undefined ? route.params?.is_article : true);
 
     // 滚动回调
@@ -60,17 +66,25 @@ const ArticleDetail = ({navigation, route}) => {
         const y = event.nativeEvent.contentOffset.y;
         setScrollY(y);
     }, []);
-    const init = useCallback(() => {
-        http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result);
-                setFinishRead(!!res.result.read_info?.done_status);
-            }
-        });
-        http.get('/community/article/recommend/20210524', {id: route.params?.article_id}).then((result) => {
-            setRecommendData(result.result);
-        });
-    }, [route]);
+    const init = useCallback(
+        (type) => {
+            http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
+                if (res.code === '000000') {
+                    setCollectNum(res.result.collect_num);
+                    setCollectStatus(res.result.collect_status);
+                    setFavorNum(res.result.favor_num);
+                    setFavorStatus(res.result.favor_status);
+                    setData(res.result);
+
+                    setFinishRead(!!res.result.read_info?.done_status);
+                }
+            });
+            http.get('/community/article/recommend/20210524', {id: route.params?.article_id}).then((result) => {
+                setRecommendData(result.result);
+            });
+        },
+        [route]
+    );
 
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
@@ -137,60 +151,72 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
+            if (!favor_status && type == 'normal') {
+                Vibration.vibrate(100);
+            }
+            setFavorNum((preNum) => {
+                return favor_status ? --preNum : ++preNum;
+            });
+            setFavorStatus((pre_status) => {
+                zanRef.current.play();
+                return !pre_status;
+            });
+
             btnClick.current = false;
             http.post('/community/favor/20210101', {
                 resource_id: data?.id,
                 resource_cate: 'article',
                 action_type: data?.favor_status ? 0 : 1,
             }).then((res) => {
-                if (type === 'normal') {
-                    Toast.show(res.message);
-                } else {
+                if (type !== 'normal') {
                     shareModal.current.toastShow(res.message);
                 }
                 setTimeout(() => {
                     btnClick.current = true;
-                }, 2000);
-                if (res.code === '000000') {
-                    init();
-                } else {
+                }, 100);
+                if (res.code !== '000000') {
                     setTimeout(() => {
                         shareModal.current.hide();
                     }, 1000);
                 }
             });
         },
-        [data, init]
+        [data, favor_status]
     );
     const onCollect = useCallback(
         (type) => {
             if (!btnClick.current) {
                 return false;
             }
+            if (!collect_status && type == 'normal') {
+                Vibration.vibrate(100);
+            }
+            setCollectNum((preNum) => {
+                return collect_status ? --preNum : ++preNum;
+            });
+            setCollectStatus((pre_status) => {
+                return !pre_status;
+            });
             btnClick.current = false;
             http.post('/community/collect/20210101', {
                 resource_id: data?.id,
                 resource_cate: 'article',
                 action_type: data?.collect_status ? 0 : 1,
             }).then((res) => {
-                if (type === 'normal') {
-                    Toast.show(res.message);
-                } else {
+                if (type !== 'normal') {
                     shareModal.current.toastShow(res.message);
                 }
                 setTimeout(() => {
                     btnClick.current = true;
-                }, 2000);
-                if (res.code === '000000') {
-                    init();
-                } else {
+                }, 100);
+                if (res.code !== '000000') {
                     setTimeout(() => {
                         shareModal.current.hide();
                     }, 1000);
                 }
             });
         },
-        [data, init]
+        [data, collect_status]
     );
     const postProgress = useCallback((params) => {
         http.post('/community/article/progress/20210101', params || {});
@@ -318,8 +344,8 @@ const ArticleDetail = ({navigation, route}) => {
                             ref={shareModal}
                             more={more}
                             shareContent={{
-                                favor_status: data?.favor_status,
-                                collect_status: data?.collect_status,
+                                favor_status: favor_status,
+                                collect_status: collect_status,
                                 ...data?.share_info,
                             }}
                             title={data?.title}
@@ -328,7 +354,6 @@ const ArticleDetail = ({navigation, route}) => {
                         <RNWebView
                             javaScriptEnabled
                             onMessage={onMessage}
-                            // originWhitelist={['*']}
                             ref={webviewRef}
                             scalesPageToFit={Platform.select({ios: true, android: false})}
                             source={{
@@ -367,32 +392,38 @@ const ArticleDetail = ({navigation, route}) => {
                                         activeOpacity={0.8}
                                         onPress={() => onFavor('normal')}
                                         style={[Style.flexCenter, {flex: 1}]}>
-                                        <Image
+                                        <LottieView
+                                            ref={zanRef}
+                                            loop={false}
+                                            autoPlay
                                             source={
-                                                data?.favor_status
-                                                    ? require('../../assets/img/article/bigZanActive.png')
-                                                    : require('../../assets/img/article/bigZan.png')
+                                                favor_status
+                                                    ? require('../../assets/animation/zanActive.json')
+                                                    : require('../../assets/animation/zan.json')
                                             }
-                                            style={styles.actionIcon}
+                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
                                         />
-                                        <Text style={styles.finishText}>{`点赞${
-                                            data?.favor_num >= 0 ? data?.favor_num : 0
-                                        }`}</Text>
+
+                                        <Text style={styles.finishText}>{`点赞${favor_num >= 0 ? favor_num : 0}`}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         onPress={() => onCollect('normal')}
                                         style={[Style.flexCenter, {flex: 1}]}>
-                                        <Image
+                                        <LottieView
+                                            ref={collectRef}
+                                            loop={false}
+                                            autoPlay
                                             source={
-                                                data?.collect_status
-                                                    ? require('../../assets/img/article/collectActive.png')
-                                                    : require('../../assets/img/article/collect.png')
+                                                collect_status
+                                                    ? require('../../assets/animation/collect.json')
+                                                    : require('../../assets/animation/collectActive.json')
                                             }
-                                            style={styles.actionIcon}
+                                            style={{height: px(40), width: px(40), marginBottom: px(-4)}}
                                         />
+
                                         <Text style={styles.finishText}>{`收藏${
-                                            data?.collect_num >= 0 ? data?.collect_num : 0
+                                            collect_num >= 0 ? collect_num : 0
                                         }`}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
@@ -401,10 +432,13 @@ const ArticleDetail = ({navigation, route}) => {
                                             setMore(false);
                                             shareModal.current.show();
                                         }}
-                                        style={[Style.flexCenter, {flex: 1}]}>
+                                        style={[Style.flexCenter, {flex: 1, marginBottom: px(-10)}]}>
                                         <Image
                                             source={require('../../assets/img/article/share.png')}
-                                            style={styles.actionIcon}
+                                            style={[
+                                                styles.actionIcon,
+                                                {width: px(20), height: px(20), marginBottom: px(4)},
+                                            ]}
                                         />
                                         <Text style={styles.finishText}>{'分享'}</Text>
                                     </TouchableOpacity>
@@ -475,9 +509,9 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     actionIcon: {
-        width: text(20),
-        height: text(20),
-        marginBottom: text(4),
+        width: text(40),
+        height: text(40),
+        marginBottom: text(-4),
     },
     footnote: {
         fontSize: Font.textH3,

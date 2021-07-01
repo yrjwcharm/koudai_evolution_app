@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 10:48:48
+ * @LastEditTime: 2021-07-01 15:38:29
  * @Description:tab公共模块
  *
  */
@@ -26,6 +26,7 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
         getData();
     }, [getData]);
     const tabRefresh = () => {
+        global.LogTool('tabDoubleClick', k);
         scrollRef?.current?.scrollToOffset({offset: 0, animated: false});
         setTimeout(() => {
             getData();

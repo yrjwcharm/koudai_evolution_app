@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 10:47:41
+ * @LastEditTime: 2021-07-01 15:37:27
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -72,6 +72,7 @@ const Vision = ({navigation, route}) => {
             }
         });
         return unsubscribe;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused, navigation]);
     const getTabs = () => {
         http.get('/vision/tabs/20210524')

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 10:45:37
+ * @LastEditTime: 2021-07-01 15:39:08
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
@@ -16,14 +16,12 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
 import RenderTitle from './RenderTitle.js';
-import {useFocusEffect, useIsFocused, useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 const Recommend = React.forwardRef((props, ref) => {
     const [recommendData, setRecommendData] = useState({});
-    const navigation = useNavigation();
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
     const scrollRef = useRef(null);
-    const isFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false);
     useEffect(() => {
         init();
@@ -37,6 +35,7 @@ const Recommend = React.forwardRef((props, ref) => {
         }, [])
     );
     const tabRefresh = () => {
+        global.LogTool('tabDoubleClick', 'recommend');
         scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
         setTimeout(() => {
             init('refresh');
