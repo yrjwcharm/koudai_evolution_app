@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-24 11:55:28
+ * @LastEditTime: 2021-06-30 10:38:44
  * @Description:推荐模块
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -163,6 +163,7 @@ const RecommendCard = ({data, style, onPress}) => {
 
                                 <Praise
                                     type={'article'}
+                                    noClick={true}
                                     comment={{
                                         favor_status: data?.favor_status,
                                         favor_num: parseInt(data?.favor_num),

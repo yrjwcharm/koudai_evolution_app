@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-21 19:24:16
+ * @LastEditTime: 2021-06-30 10:38:12
  * @Description:点赞模块
  */
 
@@ -12,6 +12,7 @@ import {px, formaNum} from '../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
+import {View} from 'react-native-animatable';
 export default function Praise(props) {
     const {style, comment, type = '', noClick = false} = props;
     const [like, setLike] = useState();
@@ -52,29 +53,31 @@ export default function Praise(props) {
     };
 
     return (
-        <TouchableOpacity activeOpacity={0.8} style={[Style.flexRow, style]} onPress={press}>
-            {like == 1 ? (
-                <FastImage
-                    resizeMode={FastImage.resizeMode.contain}
-                    style={{width: px(12), height: px(12)}}
-                    source={require('../assets/img/article/zanActive.png')}
-                />
-            ) : (
-                <FastImage
-                    resizeMode={FastImage.resizeMode.contain}
-                    style={{width: px(12), height: px(12)}}
-                    source={require('../assets/img/article/zan.png')}
-                />
-            )}
+        <View pointerEvents={noClick ? 'none' : 'auto'} style={style}>
+            <TouchableOpacity activeOpacity={0.8} style={Style.flexRow} onPress={press}>
+                {like == 1 ? (
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        style={{width: px(12), height: px(12)}}
+                        source={require('../assets/img/article/zanActive.png')}
+                    />
+                ) : (
+                    <FastImage
+                        resizeMode={FastImage.resizeMode.contain}
+                        style={{width: px(12), height: px(12)}}
+                        source={require('../assets/img/article/zan.png')}
+                    />
+                )}
 
-            <Text
-                style={{
-                    fontSize: px(12),
-                    color: Colors.lightBlackColor,
-                    marginLeft: px(4),
-                }}>
-                {num < 0 ? 0 : formaNum(num, 'nozero')}
-            </Text>
-        </TouchableOpacity>
+                <Text
+                    style={{
+                        fontSize: px(12),
+                        color: Colors.lightBlackColor,
+                        marginLeft: px(4),
+                    }}>
+                    {num < 0 ? 0 : formaNum(num, 'nozero')}
+                </Text>
+            </TouchableOpacity>
+        </View>
     );
 }

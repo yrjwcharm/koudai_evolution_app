@@ -2,11 +2,11 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 10:50:29
+ * @LastEditTime: 2021-07-01 10:48:48
  * @Description:tab公共模块
  *
  */
-import React, {useRef, useEffect, useCallback, useLayoutEffect} from 'react';
+import React, {useRef, useEffect, useCallback} from 'react';
 import {Text, View, FlatList, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
 import {Colors, Style} from '../../../common/commonStyle';
@@ -16,7 +16,8 @@ import RenderCate from './RenderCate.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
-const CommonView = ({k, scene, type}) => {
+const CommonView = React.forwardRef(({k, scene, type}, ref) => {
+    const scrollRef = useRef(null);
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
     const key = scene == 'collect' ? type : k;
@@ -24,6 +25,17 @@ const CommonView = ({k, scene, type}) => {
     useEffect(() => {
         getData();
     }, [getData]);
+    const tabRefresh = () => {
+        scrollRef?.current?.scrollToOffset({offset: 0, animated: false});
+        setTimeout(() => {
+            getData();
+        }, 200);
+    };
+    React.useImperativeHandle(ref, () => {
+        return {
+            tabRefresh,
+        };
+    });
 
     const getData = useCallback(
         (_type) => {
@@ -56,7 +68,8 @@ const CommonView = ({k, scene, type}) => {
                 http.get(url, {
                     page,
                 }).then((res) => {
-                    let _data = {...visionData, refreshing: false};
+                    dispatch(updateVision({refreshing: false}));
+                    let _data = {...visionData};
                     let readList = _.reduce(
                         res?.result?.list,
                         (result, value) => {
@@ -92,6 +105,7 @@ const CommonView = ({k, scene, type}) => {
         <>
             <View style={{flex: 1}}>
                 <FlatList
+                    ref={scrollRef}
                     data={visionData?.[key]?.list}
                     style={{paddingHorizontal: px(16), paddingTop: px(10)}}
                     ListHeaderComponent={
@@ -119,6 +133,6 @@ const CommonView = ({k, scene, type}) => {
             </View>
         </>
     );
-};
+});
 
 export default CommonView;

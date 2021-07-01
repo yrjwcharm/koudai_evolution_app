@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 12:08:57
+ * @LastEditTime: 2021-07-01 11:42:22
  * @Description:音频模块
  */
 
@@ -15,15 +15,22 @@ import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import LinearGradient from 'react-native-linear-gradient';
+import {useSelector, useDispatch} from 'react-redux';
+import {updateVision} from '../../redux/actions/visionData';
 const VioceCard = ({data, style, scene}) => {
+    const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
+    const dispatch = useDispatch();
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             style={[styles.card, style]}
             onPress={debounce(() => {
                 global.LogTool('visionArticle', data.id);
+                if (visionData?.album_update == data.album_id) {
+                    dispatch(updateVision({album_update: ''}));
+                }
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
             <View style={{flexDirection: 'row'}}>
@@ -43,9 +50,12 @@ const VioceCard = ({data, style, scene}) => {
                         </Text>
                     ) : (
                         <>
-                            <Text numberOfLines={1} style={styles.title}>
-                                {data.album_name}
-                            </Text>
+                            <View style={Style.flexRow}>
+                                <Text numberOfLines={1} style={[styles.title]}>
+                                    {data.album_name}
+                                </Text>
+                                {visionData?.album_update == data.album_id ? <View style={styles.badge} /> : null}
+                            </View>
                             <Text numberOfLines={2} style={styles.detail}>
                                 {data.title}
                             </Text>
@@ -65,19 +75,16 @@ const VioceCard = ({data, style, scene}) => {
                 {data?.cover ? (
                     <View style={styles.cover_con}>
                         <FastImage source={{uri: data?.cover}} style={styles.cover} />
-                        <View style={[styles.media_duration, Style.flexRow]}>
-                            <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
-
-                            <Text
-                                style={{
-                                    fontSize: px(12),
-                                    color: '#fff',
-                                    fontFamily: Font.numMedium,
-                                    marginLeft: px(3),
-                                }}>
-                                {data?.media_duration}
-                            </Text>
-                        </View>
+                        <LinearGradient
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            style={[styles.media_duration, {justifyContent: 'flex-end'}]}
+                            colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
+                            <View style={[Style.flexRow]}>
+                                <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
+                                <Text style={styles.duration_text}>{data?.media_duration}</Text>
+                            </View>
+                        </LinearGradient>
                     </View>
                 ) : null}
             </View>
@@ -85,7 +92,7 @@ const VioceCard = ({data, style, scene}) => {
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                     <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
                     <Praise
-                        noClick={scene == 'recommend' ? false : true}
+                        noClick={true}
                         type={'article'}
                         comment={{
                             favor_status: data?.favor_status,
@@ -135,15 +142,15 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
     },
     media_duration: {
-        top: 46,
+        bottom: 0,
         zIndex: 100,
-        paddingHorizontal: px(10),
+        height: px(34),
+        width: px(106),
+        paddingHorizontal: px(8),
         paddingVertical: px(4),
         position: 'absolute',
-        borderRadius: px(6),
-        opacity: 0.7,
-        left: px(20),
-        backgroundColor: '#000000',
+        borderBottomLeftRadius: px(8),
+        borderBottomRightRadius: px(8),
     },
     avatar: {
         width: px(26),
@@ -151,5 +158,19 @@ const styles = StyleSheet.create({
         borderColor: Colors.lineColor,
         borderWidth: 1,
         borderRadius: px(13),
+    },
+    duration_text: {
+        fontSize: px(12),
+        color: '#fff',
+        fontFamily: Font.numMedium,
+        marginLeft: px(3),
+    },
+    badge: {
+        width: px(8),
+        height: px(8),
+        borderRadius: px(4),
+        marginLeft: px(8),
+        marginTop: px(-12),
+        backgroundColor: Colors.red,
     },
 });

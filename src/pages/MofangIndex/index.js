@@ -186,7 +186,7 @@ const Index = (props) => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
             if (isFocused) {
                 getData('refresh');
-                scrollView?.current?.scrollTo({x: 0, y: 0, animated: true});
+                scrollView?.current?.scrollTo({x: 0, y: 0, animated: false});
             }
         });
         return unsubscribe;

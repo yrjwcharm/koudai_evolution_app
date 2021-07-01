@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 18:29:55
+ * @LastEditTime: 2021-06-30 18:07:40
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -11,7 +11,7 @@ import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight} from '../../utils/appUtil.js';
+import {px as text, deviceHeight, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Toast from '../../components/Toast';
@@ -28,13 +28,20 @@ import RenderCate from './components/RenderCate.js';
 import LinearGradient from 'react-native-linear-gradient';
 import RenderTitle from './components/RenderTitle';
 import PortfolioCard from '../../components/Portfolios/PortfolioCard.js';
+import Picker from 'react-native-picker';
+import Mask from '../../components/Mask.js';
+import FastImage from 'react-native-fast-image';
+import {isIPhoneX} from '../../components/IM/app/chat/utils.js';
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
     const [recommendData, setRecommendData] = useState({});
     const netInfo = useNetInfo();
+    const scrollRef = useRef(null);
     const [hasNet, setHasNet] = useState(true);
+    const [showMask, setShowMask] = useState(false);
+    const [showGoTop, setShowGoTop] = useState(false);
     const headerHeight = useHeaderHeight();
     const webviewRef = useRef(null);
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
@@ -86,6 +93,38 @@ const ArticleDetail = ({navigation, route}) => {
                             albumListendList: _.uniq(visionData?.albumListendList?.concat([route.params?.article_id])),
                         })
                     );
+                } else if (eventData == 'AudioError') {
+                    setShowMask(true);
+                    Picker.init({
+                        pickerTitleColor: [31, 36, 50, 1],
+                        pickerTitleText: '音质反馈',
+                        pickerCancelBtnText: '取消',
+                        pickerConfirmBtnText: '确定',
+                        pickerBg: [255, 255, 255, 1],
+                        pickerToolBarBg: [249, 250, 252, 1],
+                        pickerData: ['不能正常播放', '音质太差', '声音太小'],
+                        pickerFontColor: [33, 33, 33, 1],
+                        pickerRowHeight: 36,
+                        pickerConfirmBtnColor: [0, 81, 204, 1],
+                        pickerCancelBtnColor: [128, 137, 155, 1],
+                        pickerTextEllipsisLen: 100,
+                        wheelFlex: [1, 1],
+                        onPickerCancel: () => setShowMask(false),
+                        onPickerConfirm: (pickedValue, pickedIndex) => {
+                            http.post('/community/feedback/20210701', {
+                                resource_id: route.params?.article_id,
+                                resource_type: 1,
+                                option: pickedIndex + 1,
+                            }).then((res) => {
+                                Toast.show(res.message);
+                                if (res.code == '000000') {
+                                    webviewRef.current?.postMessage('VoiceFeedBack');
+                                }
+                            });
+                            setShowMask(false);
+                        },
+                    });
+                    Picker.show();
                 }
                 if (eventData * 1) {
                     setHeight(eventData * 1 || deviceHeight);
@@ -210,6 +249,12 @@ const ArticleDetail = ({navigation, route}) => {
         }
     }, [navigation, scrollY]);
     useEffect(() => {
+        //回到顶部
+        if (scrollY > deviceHeight * 0.4) {
+            setShowGoTop(true);
+        } else {
+            setShowGoTop(false);
+        }
         if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
             setFinishRead((prev) => {
                 if (!prev) {
@@ -244,12 +289,24 @@ const ArticleDetail = ({navigation, route}) => {
         const listener = navigation.addListener('beforeRemove', back);
         return () => listener();
     }, [back, navigation]);
-
+    const goTop = () => {
+        scrollRef?.current?.scrollTo({x: 0, y: 0, animated: true});
+    };
     return (
         <View style={[styles.container]}>
             {hasNet ? (
                 <>
+                    {showMask && <Mask />}
+                    {showGoTop ? (
+                        <TouchableOpacity onPress={goTop} activeOpacity={1} style={styles.goTop}>
+                            <FastImage
+                                source={require('../../assets/img/article/goTop.png')}
+                                style={{width: text(44), height: text(44)}}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                     <ScrollView
+                        ref={scrollRef}
                         style={{flex: 1}}
                         onScroll={onScroll}
                         scrollIndicatorInsets={{right: 1}}
@@ -284,11 +341,10 @@ const ArticleDetail = ({navigation, route}) => {
                         />
                         {finishLoad && isArticle.current && Object.keys(data).length > 0 && (
                             <>
-                                <Text
-                                    style={[
-                                        styles.finishText,
-                                        {color: Colors.lightGrayColor, padding: Space.padding},
-                                    ]}>{`本文更新于${data?.edit_time} · 著作权 为©理财魔方 所有，未经许可禁止转载`}</Text>
+                                <Text style={[styles.footnote, {marginBottom: text(2)}]}>
+                                    本文更新于{data?.edit_time}
+                                </Text>
+                                <Text style={styles.footnote}>著作权 为©理财魔方 所有，未经许可禁止转载</Text>
                                 {finishRead ? (
                                     <View style={[Style.flexCenter, styles.finishBox]}>
                                         <Image
@@ -422,6 +478,18 @@ const styles = StyleSheet.create({
         width: text(20),
         height: text(20),
         marginBottom: text(4),
+    },
+    footnote: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        paddingHorizontal: text(16),
+        color: Colors.lightGrayColor,
+    },
+    goTop: {
+        position: 'absolute',
+        right: px(16),
+        bottom: isIPhoneX ? 34 + px(40) : px(40),
+        zIndex: 10,
     },
 });
 

@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 12:09:28
+ * @LastEditTime: 2021-07-01 11:24:19
  * @Description:视野文章模块
  */
 
@@ -75,6 +75,7 @@ export default function VisionArticle({data = '', style, scene}) {
                             favor_num: parseInt(data?.favor_num),
                             id: data?.id,
                         }}
+                        noClick={true}
                         type={'article'}
                     />
                 </View>

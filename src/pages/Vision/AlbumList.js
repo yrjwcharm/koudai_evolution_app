@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-24 11:52:19
+ * @LastEditTime: 2021-06-30 16:29:45
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -90,7 +90,7 @@ const AlbumList = ({navigation, route}) => {
         },
         [hasMore]
     );
-    const renderItem = ({item}) => {
+    const renderItem = ({item, index}) => {
         return item?.is_latest ? (
             <TouchableOpacity
                 activeOpacity={0.9}
@@ -100,21 +100,44 @@ const AlbumList = ({navigation, route}) => {
                 }}>
                 <View style={[Style.flexRow, {flex: 1}]}>
                     <View style={{flex: 1}}>
-                        <Text
-                            numberOfLines={2}
-                            style={[
-                                styles.title,
-                                {
-                                    color: visionData?.albumListendList?.includes(item.id)
-                                        ? Colors.lightBlackColor
-                                        : Colors.defaultColor,
-                                    fontSize: px(15),
-                                    lineHeight: px(24),
-                                    height: px(48),
-                                },
-                            ]}>
-                            {item?.title}
-                        </Text>
+                        {visionData?.albumListendList?.includes(item.id) ? (
+                            <Text
+                                numberOfLines={2}
+                                style={[
+                                    styles.title,
+                                    {
+                                        color: visionData?.albumListendList?.includes(item.id)
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
+                                        fontSize: px(15),
+                                        lineHeight: px(24),
+                                        height: px(48),
+                                    },
+                                ]}>
+                                {item?.title}
+                            </Text>
+                        ) : (
+                            <>
+                                <FastImage
+                                    source={require('../../assets/img/article/voiceUpdate.png')}
+                                    style={{width: px(34), height: px(18), position: 'absolute', left: 0, top: px(3)}}
+                                />
+                                <Text
+                                    numberOfLines={2}
+                                    style={[
+                                        styles.title,
+                                        {
+                                            fontSize: px(15),
+                                            lineHeight: px(24),
+                                            height: px(48),
+                                        },
+                                    ]}>
+                                    &emsp;&emsp;&ensp;&ensp;
+                                    {item?.title}
+                                </Text>
+                            </>
+                        )}
+
                         <BoxShadow setting={shadow}>
                             <View style={[Style.flexRowCenter, styles.play]}>
                                 <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
@@ -138,6 +161,7 @@ const AlbumList = ({navigation, route}) => {
 
                     <Praise
                         type={'article'}
+                        noClick={true}
                         comment={{
                             favor_status: item?.favor_status,
                             favor_num: parseInt(item?.favor_num),
@@ -153,18 +177,41 @@ const AlbumList = ({navigation, route}) => {
                 onPress={() => {
                     jump(item?.url);
                 }}>
-                <Text
-                    numberOfLines={2}
-                    style={[
-                        styles.title,
-                        {
-                            color: visionData?.albumListendList?.includes(item.id)
-                                ? Colors.lightBlackColor
-                                : Colors.defaultColor,
-                        },
-                    ]}>
-                    {item?.title}
-                </Text>
+                {visionData?.albumListendList?.includes(item.id) || index > 2 ? (
+                    <Text
+                        numberOfLines={2}
+                        style={[
+                            styles.title,
+                            {
+                                color: visionData?.albumListendList?.includes(item.id)
+                                    ? Colors.lightBlackColor
+                                    : Colors.defaultColor,
+                            },
+                        ]}>
+                        {item?.title}
+                    </Text>
+                ) : (
+                    <>
+                        <FastImage
+                            source={require('../../assets/img/article/voiceUpdate.png')}
+                            style={{width: px(34), height: px(18), position: 'absolute', left: 0, top: px(16)}}
+                        />
+                        <Text
+                            numberOfLines={2}
+                            style={[
+                                styles.title,
+                                {
+                                    color: visionData?.albumListendList?.includes(item.id)
+                                        ? Colors.lightBlackColor
+                                        : Colors.defaultColor,
+                                },
+                            ]}>
+                            &emsp;&emsp;&ensp;&ensp;
+                            {item?.title}
+                        </Text>
+                    </>
+                )}
+
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                     <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
                     <View style={[Style.flexBetween, {width: px(120)}]}>
@@ -175,6 +222,7 @@ const AlbumList = ({navigation, route}) => {
                             </Text>
                         </View>
                         <Praise
+                            noClick={true}
                             type={'article'}
                             comment={{
                                 favor_status: item?.favor_status,

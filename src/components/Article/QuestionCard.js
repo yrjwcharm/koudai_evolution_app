@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 12:09:40
+ * @LastEditTime: 2021-06-30 10:33:09
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -64,6 +64,7 @@ export default function QuestionCard({data = [], scene}) {
                                 <Text style={styles.light_text}>{item?.view_num}人已阅读</Text>
                                 <Praise
                                     type={'article'}
+                                    noClick={true}
                                     comment={{
                                         favor_status: item?.favor_status,
                                         favor_num: parseInt(item?.favor_num),

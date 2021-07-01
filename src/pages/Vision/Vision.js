@@ -2,10 +2,10 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-23 18:47:55
+ * @LastEditTime: 2021-07-01 10:47:41
  * @Description:视野
  */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from './components/ScrollTabbar';
@@ -20,10 +20,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import {updateVision, updateFresh} from '../../redux/actions/visionData';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+let activeTab = 0;
 const shadow = {
     color: '#ddd',
     border: 12,
@@ -42,9 +43,11 @@ const shadow = {
 const Vision = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const netInfo = useNetInfo();
+    const recommedRef = useRef();
+    const comViewRef = useRef();
+    const isFocused = useIsFocused();
     const [hasNet, setHasNet] = useState(true);
     const [showError, setShowError] = useState(false);
-
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
@@ -58,7 +61,18 @@ const Vision = ({navigation, route}) => {
         setTabs([]);
         hasNet && getTabs();
     }, [hasNet, userInfo.is_login]);
-
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('tabPress', (e) => {
+            if (isFocused) {
+                if (activeTab == 0) {
+                    recommedRef.current?.tabRefresh();
+                } else {
+                    comViewRef.current?.tabRefresh();
+                }
+            }
+        });
+        return unsubscribe;
+    }, [isFocused, navigation]);
     const getTabs = () => {
         http.get('/vision/tabs/20210524')
             .then((res) => {
@@ -68,13 +82,14 @@ const Vision = ({navigation, route}) => {
                 setShowError(true);
             });
     };
+
     const _renderDynamicView = () => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
             if (tabs[i].k == 'recommend') {
-                _views.push(<Recommend key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
+                _views.push(<Recommend ref={recommedRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
             } else {
-                _views.push(<CommonView key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
+                _views.push(<CommonView ref={comViewRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
             }
         }
         return _views;
@@ -93,6 +108,7 @@ const Vision = ({navigation, route}) => {
                             <ScrollableTabView
                                 renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
                                 onChangeTab={(obj) => {
+                                    activeTab = obj.i;
                                     global.LogTool('visionTabIndex', tabs[obj.i].k);
                                     if (visionData.visionTabUpdate == tabs[obj.i].k) {
                                         dispatch(updateVision({visionTabUpdate: ''}));
