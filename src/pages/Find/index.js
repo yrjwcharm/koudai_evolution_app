@@ -29,7 +29,7 @@ const Index = (props) => {
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
-            snapScroll?.current?.scrollTo({x: 0, y: 0, animated: false});
+            // snapScroll?.current?.scrollTo({x: 0, y: 0, animated: false});
             hasNet && getData();
         }, [getData, hasNet])
     );
@@ -39,6 +39,16 @@ const Index = (props) => {
         });
         return () => listener();
     }, []);
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('tabPress', (e) => {
+            if (isFocused) {
+                snapScroll?.current?.scrollTo({x: 0, y: 0, animated: false});
+                hasNet && getData('refresh');
+                global.LogTool('tabDoubleClick', 'Find');
+            }
+        });
+        return () => unsubscribe();
+    }, [isFocused, props.navigation, getData, hasNet]);
 
     let scrollingRight = '';
     let lastx = '';
@@ -88,6 +98,7 @@ const Index = (props) => {
                 <ScrollView
                     style={{backgroundColor: Colors.bgColor}}
                     scrollEventThrottle={16}
+                    ref={snapScroll}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => getData('refresh')} />}>
                     <View style={styles.container}>
                         <LinearGradient
@@ -264,7 +275,7 @@ const Index = (props) => {
                         </View>
 
                         {/* 增值服务 */}
-                        <View style={{paddingHorizontal: px(16)}}>
+                        <View style={{marginBottom: data?.polaris_info ? px(8) : 0, paddingHorizontal: px(16)}}>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
                             {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
@@ -306,6 +317,54 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             ))}
                         </View>
+                        {/* 专家策略 */}
+                        {data?.polaris_info && (
+                            <View style={{paddingHorizontal: px(16)}}>
+                                <Text style={styles.large_title}>{data?.polaris_info?.title}</Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        jump(data?.polaris_info?.url);
+                                    }}
+                                    activeOpacity={0.8}
+                                    style={{marginBottom: px(20)}}>
+                                    <View style={[styles.V_card, Style.flexRow]}>
+                                        <FastImage
+                                            style={{
+                                                width: px(40),
+                                                height: px(40),
+                                                marginRight: px(8),
+                                                borderRadius: px(6),
+                                            }}
+                                            source={{uri: data?.polaris_info?.avatar}}
+                                        />
+                                        <View style={{flex: 1}}>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text style={[styles.secure_title, {marginRight: px(4)}]}>
+                                                    {data?.polaris_info?.name}
+                                                </Text>
+                                                <FastImage
+                                                    style={{width: px(17), height: px(17)}}
+                                                    source={{uri: data?.polaris_info?.v_img}}
+                                                />
+                                            </View>
+                                            <View style={Style.flexBetween}>
+                                                <Text numberOfLines={1} style={styles.v_text}>
+                                                    {data?.polaris_info?.detail}
+                                                </Text>
+                                                <View style={[Style.flexRow]}>
+                                                    <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
+                                                    <FontAwesome
+                                                        name={'angle-right'}
+                                                        color={Colors.btnColor}
+                                                        size={18}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
                     <BottomDesc />
                 </ScrollView>
@@ -390,7 +449,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: px(17),
         color: Colors.defaultColor,
-        marginBottom: px(16),
+        marginBottom: px(12),
     },
     major_card: {
         width: px(202),
@@ -414,6 +473,23 @@ const styles = StyleSheet.create({
         fontSize: px(18),
         color: Colors.red,
         lineHeight: px(25),
+    },
+    V_card: {
+        paddingHorizontal: px(16),
+        height: px(75),
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+    },
+    v_text: {
+        color: Colors.lightBlackColor,
+        fontSize: px(12),
+        flex: 1,
+    },
+    secure_title: {
+        fontSize: px(14),
+        lineHeight: px(20),
+        fontWeight: 'bold',
+        color: Colors.defaultColor,
     },
 });
 export default Index;

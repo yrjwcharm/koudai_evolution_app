@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-05-10 16:00:02
+ * @LastEditTime: 2021-07-01 19:10:35
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -84,7 +84,10 @@ const FixedBtn = (props) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.contactBtn, Style.flexCenter]}
-                        onPress={() => bottomModal.current.show()}>
+                        onPress={() => {
+                            global.LogTool('portfolioDetailCustomerServiceStart');
+                            bottomModal.current.show();
+                        }}>
                         <Image source={{uri: btns[0].icon}} style={[styles.contactIcon]} />
                         <Text style={[styles.contactText]}>{btns[0].title}</Text>
                     </TouchableOpacity>

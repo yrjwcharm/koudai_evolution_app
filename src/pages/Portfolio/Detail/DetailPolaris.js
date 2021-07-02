@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 11:52:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-01 19:06:57
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
@@ -87,6 +87,7 @@ export default function DetailPolaris({route, navigation}) {
         setPeriod(p);
         setType(t);
         if (p !== period) {
+            global.LogTool('portfolioDetailChartSwitch', p);
             tabClick.current = false;
             setChart([]);
             Http.get('/portfolio/yield_chart/20210101', {
@@ -342,7 +343,10 @@ export default function DetailPolaris({route, navigation}) {
                                             },
                                         ]}
                                         key={_idx + 'info'}
-                                        onPress={() => jump(_info.url)}>
+                                        onPress={() => {
+                                            global.LogTool('portfolioDetailFeatureStart', 'bottommenu', _idx);
+                                            jump(_info.url);
+                                        }}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
                                         <AntDesign name={'right'} color={'#555B6C'} size={12} />
                                     </TouchableOpacity>

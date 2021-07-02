@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 20:54:15
+ * @LastEditTime: 2021-07-01 18:52:11
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -35,7 +35,10 @@ export default function ListHeader(props) {
                 {paddingBottom: text(12), borderBottomWidth: Space.borderWidth, borderColor: Colors.borderColor},
                 style,
             ]}
-            onPress={() => jump(data.url)}>
+            onPress={() => {
+                props.ctrl && global.LogTool('portfolioDetailFeatureStart', props.ctrl);
+                jump(data.url);
+            }}>
             <View style={[Style.flexRow, {flex: 1}]}>
                 {data.icon ? (
                     <FastImage

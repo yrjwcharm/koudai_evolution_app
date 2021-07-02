@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -43,6 +43,7 @@ export default function DetailAccount({route, navigation}) {
         setPeriod(p);
         setType(t);
         if (p !== period) {
+            global.LogTool('portfolioDetailChartSwitch', p);
             tabClick.current = false;
             setChart([]);
             Http.get('/portfolio/yield_chart/20210101', {
@@ -59,6 +60,7 @@ export default function DetailAccount({route, navigation}) {
         }
     };
     const rightPress = useCallback(() => {
+        global.LogTool('portfolioDetailInstruction');
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});
     }, [navigation, route]);
     const init = useCallback(() => {
@@ -238,6 +240,7 @@ export default function DetailAccount({route, navigation}) {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
+                                        global.LogTool('portfolioDetailFeatureStart', 'bottomline');
                                         data.line_info?.button?.avail && jump(data.line_info?.button?.url);
                                     }}
                                     style={[
@@ -294,7 +297,7 @@ export default function DetailAccount({route, navigation}) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    global.LogTool('bottomlineMoreBtn');
+                                    global.LogTool('portfolioDetailFeatureStart', 'bottomline');
                                     data.line_info?.button?.avail && jump(data.line_info?.button?.url);
                                 }}
                                 style={styles.line_btn}>
@@ -313,7 +316,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 全球配置 */}
                     {data?.asset_deploy ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.asset_deploy?.header} color={Colors.brandColor} />
+                            <ListHeader data={data?.asset_deploy?.header} color={Colors.brandColor} ctrl={'global'} />
                             <View style={{height: text(140)}}>
                                 <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
                             </View>
@@ -342,7 +345,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 智能调仓 */}
                     {data?.adjust_info ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.adjust_info.header} />
+                            <ListHeader data={data?.adjust_info.header} ctrl={'smartAdjustment'} />
                             <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                                 {data?.adjust_info.items.map((_i, _d) => {
                                     return (
@@ -371,7 +374,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 资产增强 */}
                     {data?.asset_enhance ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.asset_enhance?.header} />
+                            <ListHeader data={data?.asset_enhance?.header} ctrl={'assets'} />
                             <FitImage
                                 source={{uri: data?.asset_enhance?.img}}
                                 resizeMode="contain"
@@ -382,7 +385,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 风险控制 */}
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.risk_info?.header} />
+                            <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
                                     <View style={{flex: 1, position: 'relative'}}>
@@ -455,7 +458,10 @@ export default function DetailAccount({route, navigation}) {
                                         },
                                     ]}
                                     key={_idx + 'info'}
-                                    onPress={() => jump(_info.url)}>
+                                    onPress={() => {
+                                        global.LogTool('portfolioDetailFeatureStart', 'bottommenu', _idx);
+                                        jump(_info.url);
+                                    }}>
                                     <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
                                     <AntDesign name={'right'} color={'#555B6C'} size={12} />
                                 </TouchableOpacity>

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-18 18:21:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-02 10:25:51
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -15,11 +15,14 @@ import {
     TouchableOpacity,
     StatusBar,
     LayoutAnimation,
+    Platform,
     RefreshControl,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
+import Swiper from 'react-native-swiper';
+import Carousel from 'react-native-snap-carousel';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -41,6 +44,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/ModalContainer';
 import Mask from '../../components/Mask';
+import HTML from '../../components/RenderHtml';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -53,6 +57,8 @@ function HomeScreen({navigation, route}) {
     const [holdingData, setHoldingData] = useState({});
     const [userBasicInfo, setUserBasicInfo] = useState({});
     const [notice, setNotice] = useState({});
+    const [centerData, setCenterData] = useState([]);
+    const [page, setPage] = useState(0);
     const fadeAnim = useRef(new Animated.Value(1)).current;
     const insets = useSafeAreaInsets();
     const jump = useJump();
@@ -139,6 +145,11 @@ function HomeScreen({navigation, route}) {
                             setModalData(res.result);
                             setIsVisible(true);
                         }
+                    }
+                });
+                http.get('/asset/center_control/20210101').then((res) => {
+                    if (res.code === '000000') {
+                        setCenterData(res.result || []);
                     }
                 });
             }
@@ -271,6 +282,51 @@ function HomeScreen({navigation, route}) {
             </View>
         );
     };
+    /** @name 渲染中控滑块 */
+    const renderItem = ({item, index}) => {
+        return (
+            <View
+                style={{...styles.contentBox, height: text(144)}}
+                key={item + index}
+                onLayout={() => console.log(index)}>
+                {item.tag ? (
+                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                        <View style={[styles.contentTag, {backgroundColor: item.color}]}>
+                            <Text style={styles.contentTagText}>{item.tag}</Text>
+                        </View>
+                        {item.pub_time ? (
+                            <Text
+                                style={{
+                                    ...styles.contentTagText,
+                                    color: Colors.lightGrayColor,
+                                    fontWeight: '400',
+                                }}>
+                                {item.pub_time}
+                            </Text>
+                        ) : null}
+                    </View>
+                ) : null}
+                {item.title ? <HTML html={item.title} style={{...styles.contentTitle, marginBottom: text(4)}} /> : null}
+                <Text
+                    numberOfLines={2}
+                    style={[styles.contentText, {height: text(38)}, item.title ? {} : {color: Colors.defaultColor}]}>
+                    {item.content}
+                </Text>
+                {item.button ? (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            global.LogTool('assetsConsoleStart', item.id);
+                            jump(item.button.url);
+                        }}
+                        style={[Style.flexRowCenter, styles.checkBtn, styles.bottomBtn, {backgroundColor: item.color}]}>
+                        <Text style={{...styles.noticeText, marginRight: text(6)}}>{item.button.text}</Text>
+                        <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                    </TouchableOpacity>
+                ) : null}
+            </View>
+        );
+    };
 
     useFocusEffect(
         useCallback(() => {
@@ -302,6 +358,7 @@ function HomeScreen({navigation, route}) {
             if (isFocused && userInfo?.toJS()?.is_login) {
                 scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
                 hasNet && !showGesture && init('refresh');
+                global.LogTool('tabDoubleClick', 'Home');
             }
         });
         return () => listener();
@@ -403,7 +460,10 @@ function HomeScreen({navigation, route}) {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     style={Style.flexRow}
-                                    onPress={() => navigation.navigate('Profile')}>
+                                    onPress={() => {
+                                        global.LogTool('assetsAvatarStart');
+                                        navigation.navigate('Profile');
+                                    }}>
                                     <Image
                                         source={
                                             userInfo?.toJS()?.avatar
@@ -433,6 +493,7 @@ function HomeScreen({navigation, route}) {
                             </View>
                             <TouchableOpacity
                                 onPress={() => {
+                                    global.LogTool('assetsNotificationCenter');
                                     jump({path: 'RemindMessage'});
                                 }}>
                                 {newMes ? <View style={styles.new_message} /> : null}
@@ -556,7 +617,7 @@ function HomeScreen({navigation, route}) {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
-                                        global.LogTool('click', 'top_menus', item.id);
+                                        global.LogTool('assetsIconsStart', 'top_menus', item.id);
                                         jump(item.url);
                                     }}
                                     key={`topmenu${item.id}`}
@@ -568,14 +629,102 @@ function HomeScreen({navigation, route}) {
                         })}
                     </View>
                     {/* 中控 */}
-                    {/* <View style={[styles.centerCtrl, {marginBottom: text(12)}]}>
-                <Text style={styles.centerCtrlTitle}>{'中控内容'}</Text>
-                <Text style={styles.centerCtrlContent}>
-                    {
-                        '您当前的配置和主线有些偏离，建议您尽可跟随调仓可以让您的收益最大化。您也可以追加购买调整比例 '
-                    }
-                </Text>
-            </View> */}
+                    {centerData.length > 0 && (
+                        <LinearGradient
+                            colors={['#DEECFF', '#E2EEFF']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            style={[styles.centerCtrl]}>
+                            <Image source={require('../../assets/personal/smile.gif')} style={styles.robotSty} />
+                            <Text
+                                style={{
+                                    ...styles.noticeText,
+                                    color: Colors.defaultColor,
+                                    marginBottom: text(10),
+                                    marginLeft: text(60),
+                                }}>
+                                {`Hi，${userInfo?.toJS()?.nickname || userInfo?.toJS()?.mobile}`}
+                            </Text>
+                            {centerData.length > 1 && (
+                                <Text style={styles.pageText}>
+                                    <Text style={styles.currentPage}>{page + 1}</Text>
+                                    <Text>/{centerData.length}</Text>
+                                </Text>
+                            )}
+                            {centerData.length <= 1 &&
+                                centerData.map((item, index) => {
+                                    return (
+                                        <View
+                                            style={styles.contentBox}
+                                            key={item + index}
+                                            onLayout={() => global.LogTool('assetsConsole', item.id)}>
+                                            {item.tag ? (
+                                                <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                                                    <View style={[styles.contentTag, {backgroundColor: item.color}]}>
+                                                        <Text style={styles.contentTagText}>{item.tag}</Text>
+                                                    </View>
+                                                    {item.pub_time ? (
+                                                        <Text
+                                                            style={{
+                                                                ...styles.contentTagText,
+                                                                color: Colors.lightGrayColor,
+                                                                fontWeight: '400',
+                                                            }}>
+                                                            {item.pub_time}
+                                                        </Text>
+                                                    ) : null}
+                                                </View>
+                                            ) : null}
+                                            {item.title ? (
+                                                <HTML
+                                                    html={item.title}
+                                                    style={{...styles.contentTitle, marginBottom: text(4)}}
+                                                />
+                                            ) : null}
+                                            <Text numberOfLines={2} style={styles.contentText}>
+                                                {item.content}
+                                            </Text>
+                                            {item.button ? (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    onPress={() => {
+                                                        global.LogTool('assetsConsoleStart', item.id);
+                                                        jump(item.button.url);
+                                                    }}
+                                                    style={[
+                                                        Style.flexRowCenter,
+                                                        styles.checkBtn,
+                                                        {backgroundColor: item.color},
+                                                    ]}>
+                                                    <Text style={{...styles.noticeText, marginRight: text(6)}}>
+                                                        {item.button.text}
+                                                    </Text>
+                                                    <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                                                </TouchableOpacity>
+                                            ) : null}
+                                        </View>
+                                    );
+                                })}
+                            {centerData.length > 1 && (
+                                <Carousel
+                                    activeSlideAlignment={'start'}
+                                    data={centerData}
+                                    inactiveSlideOpacity={1}
+                                    inactiveSlideScale={0.9}
+                                    loop
+                                    itemHeight={text(144)}
+                                    itemWidth={text(296)}
+                                    onSnapToItem={(index) => {
+                                        global.LogTool('assetsConsole', centerData[index].id);
+                                        setPage(index);
+                                    }}
+                                    renderItem={renderItem}
+                                    sliderHeight={text(144)}
+                                    sliderWidth={text(331)}
+                                />
+                            )}
+                        </LinearGradient>
+                    )}
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
@@ -773,7 +922,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: text(6),
         left: 0,
-        width: text(148),
+        width: text(144),
         height: text(146),
     },
     systemMsgContainer: {
@@ -881,10 +1030,71 @@ const styles = StyleSheet.create({
         color: Colors.descColor,
     },
     centerCtrl: {
+        marginBottom: text(12),
         marginHorizontal: Space.marginAlign,
-        padding: Space.padding,
+        padding: text(12),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+    },
+    robotSty: {
+        width: text(54),
+        height: text(54),
+        position: 'absolute',
+        top: text(3),
+        left: text(12),
+    },
+    pageText: {
+        fontSize: Font.textH3,
+        lineHeight: text(21),
+        color: Colors.descColor,
+        fontFamily: Font.numRegular,
+        position: 'absolute',
+        top: text(10),
+        right: text(16),
+    },
+    currentPage: {
+        fontSize: text(17),
+        color: Colors.defaultColor,
+        fontFamily: Font.numMedium,
+    },
+    contentBox: {
+        padding: text(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+    },
+    contentTag: {
+        paddingVertical: text(1),
+        paddingHorizontal: text(6),
+        borderRadius: text(2),
+    },
+    contentTagText: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: '#fff',
+        fontWeight: '500',
+    },
+    contentTitle: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.defaultColor,
+        fontWeight: '500',
+    },
+    contentText: {
+        fontSize: Font.textH3,
+        lineHeight: text(19),
+        color: Colors.descColor,
+    },
+    checkBtn: {
+        marginTop: text(8),
+        borderRadius: text(22),
+        width: text(80),
+        height: text(26),
+    },
+    bottomBtn: {
+        marginTop: 0,
+        position: 'absolute',
+        bottom: text(12),
+        left: text(12),
     },
     centerCtrlTitle: {
         fontSize: Font.textH1,

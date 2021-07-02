@@ -187,9 +187,10 @@ const Index = (props) => {
             if (isFocused) {
                 getData('refresh');
                 scrollView?.current?.scrollTo({x: 0, y: 0, animated: false});
+                global.LogTool('tabDoubleClick', 'Index');
             }
         });
-        return unsubscribe;
+        return () => unsubscribe();
     }, [isFocused, props.navigation, getData]);
     const showPrivacyPop = () => {
         Storage.get('privacy').then(
@@ -519,7 +520,7 @@ const Index = (props) => {
                                             source={require('../../assets/img/index/recommendShadow.png')}
                                             style={styles.recommendShadow}
                                         />
-                                        <View style={[Style.flexRow, {width: '100%', paddingLeft: px(14)}]}>
+                                        <View style={[Style.flexRowCenter, {width: '100%', paddingLeft: px(14)}]}>
                                             <FastImage
                                                 source={require('../../assets/img/index/recommendIcon.png')}
                                                 style={styles.recommendIcon}
@@ -532,9 +533,29 @@ const Index = (props) => {
                                         <Text style={[styles.yieldRatio, {marginTop: Space.marginVertical}]}>
                                             {data?.custom_info?.yield.ratio}
                                         </Text>
-                                        <Text style={[styles.poDesc, {marginTop: px(6), textAlign: 'center'}]}>
+                                        <Text style={[styles.yieldTitle, {marginTop: px(2), textAlign: 'center'}]}>
                                             {data?.custom_info?.yield.title}
                                         </Text>
+                                        {data?.custom_info?.labels ? (
+                                            <View style={[Style.flexRowCenter, {marginTop: Space.marginVertical}]}>
+                                                {data?.custom_info?.labels?.map?.((item, index) => {
+                                                    return (
+                                                        <View
+                                                            style={[
+                                                                Style.flexRow,
+                                                                index === 0 ? {} : {marginLeft: px(12)},
+                                                            ]}
+                                                            key={item + index}>
+                                                            <FastImage
+                                                                source={require('../../assets/img/index/selling_point.png')}
+                                                                style={styles.sellingPoint}
+                                                            />
+                                                            <Text style={styles.pointText}>{item}</Text>
+                                                        </View>
+                                                    );
+                                                })}
+                                            </View>
+                                        ) : null}
                                         <LinearGradient
                                             colors={['#FF9463', '#FF7D41']}
                                             start={{x: 0, y: 0}}
@@ -605,7 +626,7 @@ const Index = (props) => {
                                         title={'推荐阅读'}
                                         more_text={'更多'}
                                         onPress={() => {
-                                            global.LogTool('indexRecMore');
+                                            global.LogTool('indexRecArticleMore');
                                             jump({path: 'Vision'});
                                         }}
                                     />
@@ -1038,18 +1059,18 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.borderColor,
     },
     recommendBox: {
-        paddingTop: Space.padding,
-        paddingBottom: px(20),
+        paddingTop: px(24),
+        paddingBottom: px(24),
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
         position: 'relative',
     },
     recommendShadow: {
-        width: px(204),
-        height: px(147),
+        width: px(343),
+        height: px(60),
         position: 'absolute',
-        top: px(1),
-        right: px(1),
+        top: 0,
+        right: 0,
     },
     recommendIcon: {
         width: px(24),
@@ -1063,16 +1084,32 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     poDesc: {
-        fontSize: px(13),
-        lineHeight: px(18),
-        color: Colors.descColor,
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.defaultColor,
     },
     yieldRatio: {
-        fontSize: px(32),
-        lineHeight: px(37),
+        fontSize: px(36),
+        lineHeight: px(42),
         color: Colors.red,
         fontFamily: Font.numFontFamily,
         textAlign: 'center',
+    },
+    yieldTitle: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.descColor,
+        fontWeight: '300',
+    },
+    sellingPoint: {
+        width: px(16),
+        height: px(16),
+        marginRight: px(4),
+    },
+    pointText: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.descColor,
     },
     recommendBtn: {
         marginTop: px(20),

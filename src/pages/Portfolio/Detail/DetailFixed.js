@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 11:53:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-01 19:06:33
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -37,6 +37,7 @@ export default function DetailAccount({route, navigation}) {
         setPeriod(p);
         setType(t);
         if (p !== period) {
+            global.LogTool('portfolioDetailChartSwitch', p);
             tabClick.current = false;
             setChart([]);
             Http.get('/portfolio/yield_chart/20210101', {
@@ -242,7 +243,10 @@ export default function DetailAccount({route, navigation}) {
                                             },
                                         ]}
                                         key={_index + '_g'}
-                                        onPress={() => jump(_g.url)}>
+                                        onPress={() => {
+                                            global.LogTool('portfolioDetailFeatureStart', 'bottommenu', _index);
+                                            jump(_g.url);
+                                        }}>
                                         <Text style={{flex: 1, paddingVertical: text(20), color: '#545968'}}>
                                             {_g.title}
                                         </Text>

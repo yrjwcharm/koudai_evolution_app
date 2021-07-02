@@ -67,6 +67,7 @@ export default function DetailRetiredPlan({navigation, route}) {
         setPeriod((prev) => {
             if (prev !== p) {
                 tabClick.current = false;
+                global.LogTool('portfolioDetailChartSwitch', p);
             }
             return p;
         });
@@ -599,7 +600,10 @@ export default function DetailRetiredPlan({navigation, route}) {
                                                 borderColor: '#ddd',
                                             },
                                         ]}
-                                        onPress={() => jump(_q.url)}>
+                                        onPress={() => {
+                                            global.LogTool('portfolioDetailFeatureStart', 'bottommenu', _w);
+                                            jump(_q.url);
+                                        }}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
                                         <AntDesign name={'right'} color={'#555B6C'} size={12} />
                                     </TouchableOpacity>
