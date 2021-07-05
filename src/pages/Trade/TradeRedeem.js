@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 17:22:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-02 11:35:23
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -47,7 +47,7 @@ export default class TradeRedeem extends Component {
     }
     componentDidMount() {
         Http.get('/trade/redeem/info/20210101', {
-            poid: this.props.route.params.poid,
+            poid: this.props.route?.params?.poid,
         }).then((res) => {
             this.getPlanInfo();
             if (res.result.pay_methods.default === 1) {
@@ -73,7 +73,7 @@ export default class TradeRedeem extends Component {
             Http.get('/trade/redeem/plan/20210101', {
                 percent: inputValue / 100,
                 trade_method: this.state.trade_method,
-                poid: this.props.route.params.poid,
+                poid: this.props.route?.params?.poid,
                 init,
             }).then((res) => {
                 if (res.code === '000000') {
@@ -145,7 +145,7 @@ export default class TradeRedeem extends Component {
             password,
             percent: inputValue / 100,
             trade_method: this.state.trade_method,
-            poid: this.props.route.params.poid,
+            poid: this.props.route?.params?.poid,
         }).then((res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
@@ -176,7 +176,7 @@ export default class TradeRedeem extends Component {
         }
     };
     redmeeClick = () => {
-        global.LogTool('redeem');
+        global.LogTool('confirmRedeemEnd', this.props.route?.params?.poid);
         setTimeout(() => {
             const option = [];
             var _id;

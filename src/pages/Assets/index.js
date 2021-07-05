@@ -1,8 +1,13 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
+<<<<<<< HEAD
  * @LastEditors: yhc
  * @LastEditTime: 2021-07-05 15:37:10
+=======
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-02 19:12:15
+>>>>>>> 321ae2ff497c860eccd4c6aac8f886405a7323e7
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -15,13 +20,11 @@ import {
     TouchableOpacity,
     StatusBar,
     LayoutAnimation,
-    Platform,
     RefreshControl,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import Swiper from 'react-native-swiper';
 import Carousel from 'react-native-snap-carousel';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -45,6 +48,10 @@ import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/ModalContainer';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
+import calm from '../../assets/personal/calm.gif';
+import smile from '../../assets/personal/smile.gif';
+import sad from '../../assets/personal/sad.gif';
+import warn from '../../assets/personal/warn.gif';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -69,6 +76,12 @@ function HomeScreen({navigation, route}) {
     const [choice, setChoice] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [modalData, setModalData] = useState({});
+    const moodEnumRef = useRef({
+        1: calm,
+        2: smile,
+        3: sad,
+        4: warn,
+    }); // 机器人表情枚举
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -240,7 +253,7 @@ function HomeScreen({navigation, route}) {
                                     key={`portfolio${po.poid}`}
                                     style={Style.flexRow}
                                     onPress={() => {
-                                        global.LogTool('click', 'portfolio', po.poid);
+                                        global.LogTool('assetsProductStart', po.poid);
                                         jump(po.url);
                                     }}>
                                     <View
@@ -288,20 +301,22 @@ function HomeScreen({navigation, route}) {
             <View
                 style={{...styles.contentBox, height: text(144)}}
                 key={item + index}
-                onLayout={() => console.log(index)}>
+                onLayout={() => {
+                    index === 0 && global.LogTool('assetsConsole', item.type);
+                }}>
                 {item.tag ? (
                     <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                         <View style={[styles.contentTag, {backgroundColor: item.color}]}>
                             <Text style={styles.contentTagText}>{item.tag}</Text>
                         </View>
-                        {item.pub_time ? (
+                        {item.pub_date ? (
                             <Text
                                 style={{
                                     ...styles.contentTagText,
                                     color: Colors.lightGrayColor,
                                     fontWeight: '400',
                                 }}>
-                                {item.pub_time}
+                                {item.pub_date}
                             </Text>
                         ) : null}
                     </View>
@@ -309,14 +324,15 @@ function HomeScreen({navigation, route}) {
                 {item.title ? <HTML html={item.title} style={{...styles.contentTitle, marginBottom: text(4)}} /> : null}
                 <Text
                     numberOfLines={2}
-                    style={[styles.contentText, {height: text(38)}, item.title ? {} : {color: Colors.defaultColor}]}>
+                    style={[styles.contentText, {height: text(40)}, item.title ? {} : {color: Colors.defaultColor}]}>
                     {item.content}
                 </Text>
                 {item.button ? (
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
-                            global.LogTool('assetsConsoleStart', item.id);
+                            global.LogTool('assetsConsoleStart', item.type);
+                            http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
                             jump(item.button.url);
                         }}
                         style={[Style.flexRowCenter, styles.checkBtn, styles.bottomBtn, {backgroundColor: item.color}]}>
@@ -635,7 +651,8 @@ function HomeScreen({navigation, route}) {
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}
                             style={[styles.centerCtrl]}>
-                            <Image source={require('../../assets/personal/smile.gif')} style={styles.robotSty} />
+                            {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
+                            <Image source={moodEnumRef.current[centerData[page].mood || 1]} style={styles.robotSty} />
                             <Text
                                 style={{
                                     ...styles.noticeText,
@@ -657,20 +674,20 @@ function HomeScreen({navigation, route}) {
                                         <View
                                             style={styles.contentBox}
                                             key={item + index}
-                                            onLayout={() => global.LogTool('assetsConsole', item.id)}>
+                                            onLayout={() => global.LogTool('assetsConsole', item.type)}>
                                             {item.tag ? (
                                                 <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                                                     <View style={[styles.contentTag, {backgroundColor: item.color}]}>
                                                         <Text style={styles.contentTagText}>{item.tag}</Text>
                                                     </View>
-                                                    {item.pub_time ? (
+                                                    {item.pub_date ? (
                                                         <Text
                                                             style={{
                                                                 ...styles.contentTagText,
                                                                 color: Colors.lightGrayColor,
                                                                 fontWeight: '400',
                                                             }}>
-                                                            {item.pub_time}
+                                                            {item.pub_date}
                                                         </Text>
                                                     ) : null}
                                                 </View>
@@ -688,7 +705,11 @@ function HomeScreen({navigation, route}) {
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
                                                     onPress={() => {
-                                                        global.LogTool('assetsConsoleStart', item.id);
+                                                        global.LogTool('assetsConsoleStart', item.type);
+                                                        http.post('/asset/center_click/20210101', {
+                                                            id: item.id,
+                                                            type: item.type,
+                                                        });
                                                         jump(item.button.url);
                                                     }}
                                                     style={[
@@ -711,16 +732,17 @@ function HomeScreen({navigation, route}) {
                                     data={centerData}
                                     inactiveSlideOpacity={1}
                                     inactiveSlideScale={0.9}
-                                    loop
                                     itemHeight={text(144)}
-                                    itemWidth={text(296)}
+                                    itemWidth={deviceWidth - text(79)}
+                                    loop
                                     onSnapToItem={(index) => {
-                                        global.LogTool('assetsConsole', centerData[index].id);
+                                        global.LogTool('assetsConsole', centerData[index].type);
                                         setPage(index);
                                     }}
+                                    removeClippedSubviews
                                     renderItem={renderItem}
                                     sliderHeight={text(144)}
-                                    sliderWidth={text(331)}
+                                    sliderWidth={deviceWidth - text(44)}
                                 />
                             )}
                         </LinearGradient>
@@ -741,7 +763,7 @@ function HomeScreen({navigation, route}) {
                                     activeOpacity={0.8}
                                     style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
                                     onPress={() => {
-                                        global.LogTool('click', 'portfolio', item?.portfolios[0].poid);
+                                        global.LogTool('assetsProductStart', item?.portfolios[0].poid);
                                         jump(item?.portfolios[0].url);
                                     }}>
                                     {renderTitle(item?.portfolios[0])}
@@ -797,7 +819,7 @@ function HomeScreen({navigation, route}) {
                             activeOpacity={0.8}
                             style={[styles.iaInfo, Style.flexRow]}
                             onPress={() => {
-                                global.LogTool('click', 'im');
+                                global.LogTool('assetsCustomerServiceStart');
                                 jump(userBasicInfo?.im_info.url);
                             }}>
                             <View style={[Style.flexRow, {flex: 1}]}>
@@ -840,7 +862,7 @@ function HomeScreen({navigation, route}) {
                                     key={`bottommenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}
                                     onPress={() => {
-                                        global.LogTool('click', 'bottom_menus', item.id);
+                                        global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
                                         jump(item.url);
                                     }}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />

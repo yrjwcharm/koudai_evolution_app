@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-20 18:27:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-02 11:25:48
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -67,6 +67,7 @@ export default function PortfolioAssets(props) {
         setPeriod((prev) => {
             if (prev !== p) {
                 tabClick.current = false;
+                global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
             }
             return p;
         });
@@ -267,7 +268,10 @@ export default function PortfolioAssets(props) {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
-                                onPress={() => accountJump(_button.url, _button.action)}
+                                onPress={() => {
+                                    global.LogTool(_button.action, props.route?.params?.poid);
+                                    accountJump(_button.url, _button.action);
+                                }}
                                 disabled={_button.avail == 0}
                                 activeOpacity={1}
                                 style={{
@@ -648,7 +652,10 @@ export default function PortfolioAssets(props) {
                                         marginBottom: px(26),
                                     }}
                                     key={_index + '_item0'}
-                                    onPress={() => jump(_item.url)}>
+                                    onPress={() => {
+                                        global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _item.id);
+                                        jump(_item.url);
+                                    }}>
                                     <FastImage
                                         source={{
                                             uri: _item.icon,
@@ -670,7 +677,10 @@ export default function PortfolioAssets(props) {
                                         marginBottom: px(20),
                                     }}
                                     key={_index + '_e'}
-                                    onPress={() => jump(_e.url)}>
+                                    onPress={() => {
+                                        global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _e.id);
+                                        jump(_e.url);
+                                    }}>
                                     <FastImage
                                         source={{
                                             uri: _e.icon,
