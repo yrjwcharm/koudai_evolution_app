@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 17:41:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-05 19:09:45
  * @Description:路由表
  */
 import React from 'react';
@@ -143,6 +143,7 @@ import AlbumList from '../pages/Vision/AlbumList'; //音频专辑列表
 import Launch from '../pages/Auth/Launch'; //广告
 import Questionnaire from '../pages/Evaluation/Questionnaire'; // 传统风险测评
 import PortfolioMask from '../pages/Portfolio/PortfolioMask'; //详情页蒙层
+import QuestionnaireResult from '../pages/Evaluation/QuestionnaireResult'; // 传统风险评测结果页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -557,6 +558,7 @@ export default function AppStack() {
             <Stack.Screen name="Launch" component={Launch} options={{headerShown: false}} />
             <Stack.Screen name="Questionnaire" component={Questionnaire} options={{title: '风险测评'}} />
             <Stack.Screen name="PortfolioMask" component={PortfolioMask} options={{title: ''}} />
+            <Stack.Screen name="QuestionnaireResult" component={QuestionnaireResult} options={{title: '评测结果'}} />
         </Stack.Navigator>
     );
 }

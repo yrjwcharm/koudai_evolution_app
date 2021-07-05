@@ -2,7 +2,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-01 15:14:24
+ * @LastEditTime: 2021-07-05 19:13:16
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -101,7 +101,7 @@ const Questionnaire = () => {
             if (res.code === '000000') {
                 if (option.action === 'submit') {
                     upidRef.current = res.result.upid;
-                    navigation.replace('EvaluationResult', {
+                    navigation.replace('QuestionnaireResult', {
                         upid: upidRef.current,
                         summary_id: summaryIdRef.current,
                     });
