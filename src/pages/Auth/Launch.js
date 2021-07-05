@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-02 16:19:38
+ * @LastEditTime: 2021-07-05 17:49:00
  * @Description:
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -118,6 +118,7 @@ export default function Launch({navigation}) {
         <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+                global.LogTool('splashClickStart');
                 timer.current && clearInterval(timer.current);
                 dispatch(getUserInfo());
                 navigation.navigate('Tab');
@@ -127,6 +128,7 @@ export default function Launch({navigation}) {
             <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
+                    global.LogTool('splashSkipStart');
                     timer.current && clearInterval(timer.current);
                     authLoading();
                 }}

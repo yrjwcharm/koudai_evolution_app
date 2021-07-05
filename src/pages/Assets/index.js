@@ -1,13 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 15:37:10
-=======
- * @LastEditors: dx
- * @LastEditTime: 2021-07-02 19:12:15
->>>>>>> 321ae2ff497c860eccd4c6aac8f886405a7323e7
+ * @LastEditTime: 2021-07-05 17:43:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';

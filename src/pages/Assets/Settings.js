@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 17:36:48
+ * @LastEditTime: 2021-07-05 17:56:22
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -103,7 +103,7 @@ const Settings = ({navigation}) => {
                 Modal.show({
                     confirm: true,
                     confirmCallBack: () => navigation.navigate('Index'),
-                    content: `已经成功绑定${res.result.nick_name}，请到魔方页面查看`,
+                    content: `已经成功绑定${res.result.nick_name}，请到发现页面查看`,
                     title: '绑定成功',
                 });
                 Http.get('/mapi/config/20210101').then((resp) => {
