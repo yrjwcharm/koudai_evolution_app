@@ -48,6 +48,7 @@ export default class TradeAdjust extends Component {
         });
     }
     confirmBtn = () => {
+        global.LogTool('confirmAdjustmentEnd', this.state.poid);
         if (this.state.data.notice) {
             Modal.show({
                 confirm: true,
