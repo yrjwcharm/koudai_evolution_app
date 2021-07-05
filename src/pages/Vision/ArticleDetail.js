@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 18:53:02
+ * @LastEditTime: 2021-07-05 16:39:00
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,6 +32,7 @@ import Picker from 'react-native-picker';
 import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
+let post_progress = false;
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -59,8 +60,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [collect_num, setCollectNum] = useState(0);
     const zanRef = useRef(null);
     const collectRef = useRef(null);
-    const isArticle = useRef(route.params?.is_article !== undefined ? route.params?.is_article : true);
-
+    const fr = route.params?.fr;
     // 滚动回调
     const onScroll = useCallback((event) => {
         const y = event.nativeEvent.contentOffset.y;
@@ -68,7 +68,7 @@ const ArticleDetail = ({navigation, route}) => {
     }, []);
     const init = useCallback(
         (type) => {
-            http.get('/community/article/status/20210101', {article_id: route.params?.article_id}).then((res) => {
+            http.get('/community/article/status/20210101', {article_id: route.params?.article_id, fr}).then((res) => {
                 if (res.code === '000000') {
                     setCollectNum(res.result.collect_num);
                     setCollectStatus(res.result.collect_status);
@@ -79,11 +79,11 @@ const ArticleDetail = ({navigation, route}) => {
                     setFinishRead(!!res.result.read_info?.done_status);
                 }
             });
-            http.get('/community/article/recommend/20210524', {id: route.params?.article_id}).then((result) => {
+            http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
                 setRecommendData(result.result);
             });
         },
-        [route]
+        [route, fr]
     );
 
     const onMessage = (event) => {
@@ -222,7 +222,7 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
     const back = useCallback(() => {
-        if (isArticle.current && route?.params?.type !== 2) {
+        if (route?.params?.type !== 5 && route?.params?.type !== 2) {
             let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
             progress = progress > 100 ? 100 : progress;
             postProgress({
@@ -230,9 +230,10 @@ const ArticleDetail = ({navigation, route}) => {
                 latency: Date.now() - timeRef.current,
                 done_status: data?.read_info?.done_status || +finishRead,
                 article_progress: progress,
+                fr,
             });
         }
-    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight]);
+    }, [data, finishRead, headerHeight, postProgress, route, scrollY, webviewHeight, fr]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
@@ -255,7 +256,7 @@ const ArticleDetail = ({navigation, route}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
-                            setMore(isArticle.current ? true : false);
+                            setMore(route?.params?.type !== 5 ? true : false);
                             shareModal.current.show();
                         }}
                         style={[Style.flexCenter, styles.topRightBtn]}>
@@ -264,16 +265,16 @@ const ArticleDetail = ({navigation, route}) => {
                 ) : null;
             },
         });
-    }, [navigation, hasNet]);
+    }, [navigation, hasNet, route]);
     useEffect(() => {
-        if (isArticle.current) {
+        if (route?.params?.type !== 5) {
             if (scrollY > 80) {
                 navigation.setOptions({title: '文章内容'});
             } else {
                 navigation.setOptions({title: ''});
             }
         }
-    }, [navigation, scrollY]);
+    }, [navigation, scrollY, route]);
     useEffect(() => {
         //回到顶部
         if (scrollY > deviceHeight * 0.4) {
@@ -289,17 +290,21 @@ const ArticleDetail = ({navigation, route}) => {
                             updateVision({readList: _.uniq(visionData.readList.concat([route.params?.article_id]))})
                         );
                     }
-                    postProgress({
-                        article_id: route.params?.article_id,
-                        latency: Date.now() - timeRef.current,
-                        done_status: 1,
-                        article_progress: 100,
-                    });
                 }
                 return true;
             });
+            if (route.params?.article_id && !post_progress) {
+                postProgress({
+                    article_id: route.params?.article_id,
+                    latency: Date.now() - timeRef.current,
+                    done_status: 1,
+                    article_progress: 100,
+                    fr,
+                });
+                post_progress = true;
+            }
         }
-    }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData]);
+    }, [finishLoad, headerHeight, postProgress, route, scrollY, webviewHeight, dispatch, visionData, fr]);
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
@@ -338,7 +343,9 @@ const ArticleDetail = ({navigation, route}) => {
                         scrollIndicatorInsets={{right: 1}}
                         scrollEventThrottle={16}>
                         <ShareModal
-                            ctrl={isArticle.current ? `/article/${route.params?.article_id}` : route.params?.link}
+                            ctrl={
+                                route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link
+                            }
                             likeCallback={onFavor}
                             collectCallback={onCollect}
                             ref={shareModal}
@@ -357,31 +364,33 @@ const ArticleDetail = ({navigation, route}) => {
                             ref={webviewRef}
                             scalesPageToFit={Platform.select({ios: true, android: false})}
                             source={{
-                                uri: isArticle.current
-                                    ? `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`
-                                    : `${SERVER_URL[global.env].H5}${route.params?.link}`,
+                                uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
                             }}
                             startInLoadingState
                             style={{height: webviewHeight}}
                         />
-                        {finishLoad && isArticle.current && Object.keys(data).length > 0 && (
+                        {finishLoad && Object.keys(data).length > 0 && (
                             <>
                                 <Text style={[styles.footnote, {marginBottom: text(2)}]}>
                                     本文更新于{data?.edit_time}
                                 </Text>
                                 <Text style={styles.footnote}>著作权 为©理财魔方 所有，未经许可禁止转载</Text>
-                                {finishRead ? (
-                                    <View style={[Style.flexCenter, styles.finishBox]}>
-                                        <Image
-                                            source={require('../../assets/img/article/finish.gif')}
-                                            style={styles.finishImg}
-                                        />
-                                        <Text style={styles.finishText}>
-                                            {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
-                                        </Text>
-                                    </View>
+                                {route?.params?.type !== 5 ? (
+                                    finishRead ? (
+                                        <View style={[Style.flexCenter, styles.finishBox]}>
+                                            <Image
+                                                source={require('../../assets/img/article/finish.gif')}
+                                                style={styles.finishImg}
+                                            />
+                                            <Text style={styles.finishText}>
+                                                {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
+                                            </Text>
+                                        </View>
+                                    ) : (
+                                        <View style={{height: text(161)}} />
+                                    )
                                 ) : (
-                                    <View style={{height: text(161)}} />
+                                    <View style={{height: text(20)}} />
                                 )}
                                 <View
                                     style={[

@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-29 19:08:38
+ * @LastEditTime: 2021-07-02 16:19:38
  * @Description:
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -32,12 +32,9 @@ export default function Launch({navigation}) {
     };
     // 获取开机广告数据
     const fetchImg = () => {
-        http.get('http://kapi-web.wanggang.mofanglicai.com.cn:10080/mapi/app/splash/20210628').then((data) => {
+        http.get('/mapi/app/splash/20210628').then((data) => {
             // 缓存广告内容
-            Storage.save(
-                'AD', // 注意:请不要在key中使用_下划线符号!
-                data.result
-            );
+            Storage.save('AD', data.result);
             if (data?.result?.img) {
                 Image.prefetch(data?.result?.img);
             }
