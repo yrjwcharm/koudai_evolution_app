@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-05 19:24:13
+ * @LastEditTime: 2021-07-06 09:59:43
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -33,7 +33,7 @@ const QuestionnaireResult = () => {
             navigation.setOptions({
                 headerRight: () => (
                     <TouchableOpacity activeOpacity={0.8} onPress={() => handleJump(data.top_button.url)}>
-                        <Text style={styles.top_button}>重新测评</Text>
+                        <Text style={styles.top_button}>{data.top_button.text}</Text>
                     </TouchableOpacity>
                 ),
                 title: data.title,
