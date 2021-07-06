@@ -2,7 +2,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-05 19:13:16
+ * @LastEditTime: 2021-07-06 15:41:40
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -35,6 +35,7 @@ const Questionnaire = () => {
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
     const [tips, setTips] = useState('');
+    const clickRef = useRef(true);
 
     const init = useCallback(() => {
         http.get('/questionnaire/start/20210101', {plan_id: route.params?.plan_id, fr: route.params?.fr}).then(
@@ -67,6 +68,10 @@ const Questionnaire = () => {
         });
     }, [route]);
     const jumpNext = (item) => {
+        if (!clickRef.current) {
+            return false;
+        }
+        clickRef.current = false;
         setAnswers((prev) => {
             const next = [...prev];
             next[current] = item.id;
@@ -74,6 +79,9 @@ const Questionnaire = () => {
         });
         if (current === questions.length - 1) {
             reportResult(item);
+            setTimeout(() => {
+                clickRef.current = true;
+            }, 1000);
         } else {
             reportResult(item);
             if (Platform.OS === 'android') {
@@ -82,6 +90,9 @@ const Questionnaire = () => {
             setTimeout(() => {
                 setCurrent((prev) => prev + 1);
                 startTimeRef.current = Date.now();
+                setTimeout(() => {
+                    clickRef.current = true;
+                }, 500);
             }, 500);
         }
     };
@@ -192,6 +203,7 @@ const Questionnaire = () => {
                                 })}
                             {current !== 0 && (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{marginTop: text(24)}}
                                     onPress={() => {
                                         setCurrent((prev) => prev - 1);
