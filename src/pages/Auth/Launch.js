@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 17:49:00
+ * @LastEditTime: 2021-07-06 11:09:51
  * @Description:
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -17,7 +17,7 @@ import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
-
+import _ from 'lodash';
 import {env} from '../../services/config';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
@@ -127,11 +127,11 @@ export default function Launch({navigation}) {
             style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
             <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => {
+                onPress={_.debounce(() => {
                     global.LogTool('splashSkipStart');
                     timer.current && clearInterval(timer.current);
                     authLoading();
-                }}
+                }, 300)}
                 style={[styles.timer, {top: inset.top + px(20)}]}>
                 <Text style={styles.text}>跳过{time}s</Text>
             </TouchableOpacity>

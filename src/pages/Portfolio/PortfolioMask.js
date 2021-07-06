@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 16:52:03
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 17:41:14
+ * @LastEditTime: 2021-07-06 10:39:03
  * @Description:组合详情页蒙层
  */
 import React, {useEffect, useState} from 'react';
@@ -18,12 +18,10 @@ export default function PortfolioMask({navigation}) {
     const [data, setData] = useState({});
     const jump = useJump();
     useEffect(() => {
-        http.get('http://kapi-web.yitao.mofanglicai.com.cn:10080/portfolio/mask/detail/20210601?plan_id=1').then(
-            (res) => {
-                setData(res.result);
-                navigation.setOptions({title: res.result.title});
-            }
-        );
+        http.get('/portfolio/mask/detail/20210601?plan_id=1').then((res) => {
+            setData(res.result);
+            navigation.setOptions({title: res.result.title});
+        });
     }, [navigation]);
     return (
         <View style={{flex: 1}}>
@@ -35,7 +33,7 @@ export default function PortfolioMask({navigation}) {
             ) : null}
 
             <FastImage
-                source={require('../../assets/img/find/portfolio_mask.png')}
+                source={require('../../assets/img/find/portfolioMask.png')}
                 resizeMode={FastImage.resizeMode.stretch}
                 style={{width: deviceWidth, flex: 1}}
             />

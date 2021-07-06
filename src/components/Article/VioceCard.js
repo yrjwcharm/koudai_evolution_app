@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 15:17:32
+ * @LastEditTime: 2021-07-06 15:45:47
  * @Description:音频模块
  */
 
@@ -30,8 +30,8 @@ const VioceCard = ({data, style, scene}) => {
                 global.LogTool('visionArticle', data.id);
                 if (visionData?.album_update?.includes(data.album_id)) {
                     let arr = [...visionData?.album_update];
-                    let index = arr?.indexOf(data.album_id);
-                    dispatch(updateVision({album_update: arr.splice(index, 1)}));
+                    arr.splice(arr?.indexOf(data.album_id), 1);
+                    dispatch(updateVision({album_update: arr}));
                 }
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
