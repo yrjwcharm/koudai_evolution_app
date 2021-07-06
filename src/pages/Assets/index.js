@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-06 10:53:23
+ * @LastEditTime: 2021-07-06 11:44:32
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -117,6 +117,7 @@ function HomeScreen({navigation, route}) {
         (refresh) => {
             refresh === 'refresh' && setRefreshing(true);
             refresh === 'refresh' && setHideMsg(false);
+            setPage(0);
             http.get('/asset/holding/20210101', {
                 // uid: '1000000001',
             }).then((res) => {
