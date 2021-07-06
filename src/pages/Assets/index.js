@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 17:43:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-06 10:53:23
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -46,7 +46,7 @@ import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
 import smile from '../../assets/personal/smile.gif';
 import sad from '../../assets/personal/sad.gif';
-import warn from '../../assets/personal/warn.gif';
+import warn from '../../assets/personal/warning.gif';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
