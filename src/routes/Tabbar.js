@@ -2,17 +2,17 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 11:37:00
+ * @LastEditTime: 2021-07-06 16:27:47
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
 import FastImage from 'react-native-fast-image';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Home from '../pages/Assets/index';
 import {px, isIphoneX} from '../utils/appUtil';
 import Find from '../pages/Find'; //发现页
 import Index from '../pages/MofangIndex'; //魔方首页
-import Vision from '../pages/Vision/Vision';
+import Vision from '../pages/Vision/Vision'; //视野
+import Home from '../pages/Assets/index'; //资产页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
 const Tab = createBottomTabNavigator();

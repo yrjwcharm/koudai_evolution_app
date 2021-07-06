@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 15:29:39
+ * @LastEditTime: 2021-07-06 16:29:06
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -133,7 +133,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 Toast.show(res.message);
                                 if (res.code == '000000') {
                                     webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
-                                    webviewRef.current?.postMessage('VoiceFeedBack');
+                                    // webviewRef.current?.postMessage('VoiceFeedBack');
                                 }
                             });
                             setShowMask(false);
@@ -363,6 +363,13 @@ const ArticleDetail = ({navigation, route}) => {
                             javaScriptEnabled
                             onMessage={onMessage}
                             ref={webviewRef}
+                            onLoadEnd={() => {
+                                if (data.feedback_status == 1) {
+                                    setTimeout(() => {
+                                        webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
+                                    }, 800);
+                                }
+                            }}
                             scalesPageToFit={Platform.select({ios: true, android: false})}
                             source={{
                                 uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
