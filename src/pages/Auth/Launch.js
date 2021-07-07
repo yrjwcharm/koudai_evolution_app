@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 11:09:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-07 10:45:38
  * @Description:
  */
 import React, {useEffect, useState, useRef, useCallback} from 'react';
@@ -121,8 +121,10 @@ export default function Launch({navigation}) {
                 global.LogTool('splashClickStart');
                 timer.current && clearInterval(timer.current);
                 dispatch(getUserInfo());
-                navigation.navigate('Tab');
-                jump(adMes.jump);
+                navigation.replace('Tab');
+                setTimeout(() => {
+                    jump(adMes.jump);
+                }, 0);
             }}
             style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
             <TouchableOpacity
