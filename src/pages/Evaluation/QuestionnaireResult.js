@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-06 09:59:43
+ * @LastEditTime: 2021-07-07 16:00:39
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -14,6 +14,7 @@ import {px as text} from '../../utils/appUtil';
 import http from '../../services';
 import {Button} from '../../components/Button';
 import {useJump} from '../../components/hooks';
+import HTML from '../../components/RenderHtml';
 
 const QuestionnaireResult = () => {
     const jump = useJump();
@@ -53,8 +54,8 @@ const QuestionnaireResult = () => {
                 <ImageBackground source={require('../../assets/img/evaluate/wrap.png')} style={styles.cardWrap}>
                     <Text style={styles.titleWrap}>{data.risk_title}</Text>
                     <Text style={styles.descWrap}>{data.risk_name}</Text>
-                    <View style={{paddingHorizontal: text(51), position: 'relative'}}>
-                        <Text style={styles.contentWrap}>{data.risk_content}</Text>
+                    <View style={styles.contentBox}>
+                        <HTML html={data.risk_content} style={styles.contentWrap} />
                         <Image
                             source={require('../../assets/img/evaluate/yinhaozuo.png')}
                             style={{
@@ -122,8 +123,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginTop: text(12),
     },
+    contentBox: {
+        paddingTop: text(44),
+        paddingHorizontal: text(51),
+        position: 'relative',
+    },
     contentWrap: {
-        marginTop: text(44),
         fontSize: Font.textH2,
         lineHeight: text(22),
         color: Colors.descColor,
