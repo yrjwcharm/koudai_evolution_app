@@ -2,7 +2,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-06 15:41:40
+ * @LastEditTime: 2021-07-07 16:54:56
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -128,12 +128,12 @@ const Questionnaire = () => {
     );
     useEffect(() => {
         const listener = navigation.addListener('beforeRemove', (e) => {
-            if (e.data.action.type === 'GO_BACK') {
+            if (e.data.action.type === 'GO_BACK' || e.data.action.type === 'POP') {
                 e.preventDefault();
                 // Prompt the user before leaving the screen
                 Modal.show({
-                    title: route.params?.fr == 'risk' ? '结束测评' : '结束定制',
-                    content: route.params?.fr == 'risk' ? '确定要结束本次风险测评吗？' : '确定要结束本次定制吗？',
+                    title: '结束测评',
+                    content: '确定要结束本次风险测评吗？',
                     confirm: true,
                     confirmCallBack: () => {
                         navigation.dispatch(e.data.action);
