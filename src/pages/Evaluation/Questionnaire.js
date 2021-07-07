@@ -2,7 +2,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-07 16:54:56
+ * @LastEditTime: 2021-07-07 17:12:14
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -85,7 +85,7 @@ const Questionnaire = () => {
         } else {
             reportResult(item);
             if (Platform.OS === 'android') {
-                Vibration.vibrate(10);
+                Vibration.vibrate(100);
             }
             setTimeout(() => {
                 setCurrent((prev) => prev + 1);

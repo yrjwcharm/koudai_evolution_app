@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-05 17:56:22
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-07 19:00:47
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -102,7 +102,7 @@ const Settings = ({navigation}) => {
                 dispatch(getUserInfo());
                 Modal.show({
                     confirm: true,
-                    confirmCallBack: () => navigation.navigate('Index'),
+                    confirmCallBack: () => navigation.navigate('Find'),
                     content: `已经成功绑定${res.result.nick_name}，请到发现页面查看`,
                     title: '绑定成功',
                 });
