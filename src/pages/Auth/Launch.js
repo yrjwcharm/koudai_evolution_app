@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 11:38:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-08 15:06:41
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -126,7 +126,7 @@ export default function Launch({navigation}) {
         <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
-                global.LogTool('splashClickStart');
+                global.LogTool('splashClickStart', adMes.id);
                 timer.current && clearInterval(timer.current);
                 dispatch(getUserInfo());
                 navigation.replace('Tab');
