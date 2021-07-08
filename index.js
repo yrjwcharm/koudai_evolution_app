@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 14:33:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-29 18:19:37
+ * @LastEditTime: 2021-07-08 14:22:56
  * @Description:
  */
 /**
@@ -20,8 +20,5 @@ console.ignoredYellowBox = [
 ];
 console.disableYellowBox = true; // 关闭全部黄色警告
 AppRegistry.registerComponent(appName, () => {
-    // setTimeout(() => {
-    //     SplashScreen.hide(); //关闭启动页
-    // }, 1000);
     return App;
 });

@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 11:38:48
+ * @LastEditTime: 2021-07-08 14:38:09
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -58,7 +58,9 @@ export default function Launch({navigation}) {
                     dispatch(getUserInfo());
                     if (res) {
                         navigation.replace('Tab');
-                        SplashScreen.hide();
+                        setTimeout(() => {
+                            SplashScreen.hide();
+                        }, 6);
                     } else {
                         navigation.replace('AppGuide');
                     }
@@ -73,7 +75,9 @@ export default function Launch({navigation}) {
                                 dispatch(getUserInfo());
                                 if (res) {
                                     navigation.replace('Tab');
-                                    SplashScreen.hide();
+                                    setTimeout(() => {
+                                        SplashScreen.hide();
+                                    }, 6);
                                 } else {
                                     navigation.replace('AppGuide');
                                 }

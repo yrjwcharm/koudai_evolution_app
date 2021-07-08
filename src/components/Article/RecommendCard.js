@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-30 10:38:44
+ * @LastEditTime: 2021-07-08 11:56:09
  * @Description:推荐模块
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -82,7 +82,6 @@ const RecommendCard = ({data, style, onPress}) => {
         if (reserved) {
             return;
         }
-        onPress && onPress();
         _checkNotifications(
             () => {
                 postReserve(() => {
@@ -123,7 +122,10 @@ const RecommendCard = ({data, style, onPress}) => {
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => {
-                    !data?.locked && jump(data?.url);
+                    if (!data?.locked) {
+                        onPress && onPress();
+                        jump(data?.url);
+                    }
                 }}
                 style={[styles.card, style]}
                 onLayout={() => {
