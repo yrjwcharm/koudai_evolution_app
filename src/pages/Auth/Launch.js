@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 11:31:59
+ * @LastEditTime: 2021-07-08 11:38:48
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -101,17 +101,17 @@ export default function Launch({navigation}) {
                         setTime(AD.skip_time || 3);
                         setAdMes(AD);
                         SplashScreen.hide();
-                        // timer.current = setInterval(() => {
-                        //     setTime((prev) => {
-                        //         if (prev <= 0) {
-                        //             clearInterval(timer.current);
-                        //             authLoading();
-                        //             return 0;
-                        //         } else {
-                        //             return --prev;
-                        //         }
-                        //     });
-                        // }, 1000);
+                        timer.current = setInterval(() => {
+                            setTime((prev) => {
+                                if (prev <= 0) {
+                                    clearInterval(timer.current);
+                                    authLoading();
+                                    return 0;
+                                } else {
+                                    return --prev;
+                                }
+                            });
+                        }, 1000);
                     } else {
                         authLoading();
                     }
