@@ -521,7 +521,7 @@ const Index = (props) => {
                                             source={require('../../assets/img/index/recommendShadow.png')}
                                             style={styles.recommendShadow}
                                         />
-                                        <View style={[Style.flexRowCenter, {width: '100%', paddingLeft: px(14)}]}>
+                                        <View style={[Style.flexRowCenter, {width: '100%'}]}>
                                             <FastImage
                                                 source={require('../../assets/img/index/recommendIcon.png')}
                                                 style={styles.recommendIcon}
@@ -564,8 +564,8 @@ const Index = (props) => {
                                             style={[Style.flexCenter, styles.recommendBtn]}>
                                             <Text
                                                 style={{
-                                                    fontSize: Font.textH2,
-                                                    lineHeight: px(20),
+                                                    fontSize: px(15),
+                                                    lineHeight: px(21),
                                                     color: '#fff',
                                                     fontWeight: '500',
                                                 }}>
@@ -1020,10 +1020,11 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     recommendShadow: {
-        width: px(343),
+        // width: deviceWidth - px(32),
         height: px(60),
         position: 'absolute',
         top: 0,
+        left: 0,
         right: 0,
     },
     recommendIcon: {

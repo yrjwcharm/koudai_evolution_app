@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-07 16:00:39
+ * @LastEditTime: 2021-07-08 16:59:32
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -80,7 +80,7 @@ const QuestionnaireResult = () => {
                     <Button
                         title={data.button.text}
                         onPress={() => handleJump(data.button.url)}
-                        style={{marginTop: text(70), marginHorizontal: text(32), marginBottom: text(40)}}
+                        style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
                     />
                 </ImageBackground>
             )}
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         lineHeight: text(22),
         color: Colors.defaultColor,
         textAlign: 'center',
-        marginTop: text(20),
+        marginTop: text(32),
     },
     descWrap: {
         fontSize: text(22),

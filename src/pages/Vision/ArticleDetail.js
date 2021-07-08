@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 15:48:33
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-08 16:36:50
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -327,6 +327,7 @@ const ArticleDetail = ({navigation, route}) => {
         return () => listener();
     }, [back, navigation]);
     const goTop = () => {
+        global.LogTool('articleBackToTop', route.params?.article_id);
         scrollRef?.current?.scrollTo({x: 0, y: 0, animated: true});
     };
     const hidePicker = () => {

@@ -1,14 +1,14 @@
 /*
  * @Date: 2021-07-05 16:52:03
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 10:39:03
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-08 16:44:24
  * @Description:组合详情页蒙层
  */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {deviceWidth, px} from '../../utils/appUtil';
+import {deviceWidth, px, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
 import {Font, Colors} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
@@ -39,7 +39,12 @@ export default function PortfolioMask({navigation}) {
             />
             {data?.button ? (
                 <Button
-                    style={{position: 'absolute', width: deviceWidth - px(32), left: px(16), bottom: px(80)}}
+                    style={{
+                        position: 'absolute',
+                        width: deviceWidth - px(32),
+                        left: px(16),
+                        bottom: isIphoneX() ? 34 + px(8) : px(8),
+                    }}
                     title={data.button.text}
                     onPress={() => {
                         global.LogTool('portfolioRiskEvaStart');
