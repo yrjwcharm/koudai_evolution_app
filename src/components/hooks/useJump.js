@@ -1,19 +1,21 @@
 /*
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 16:26:46
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-08 11:04:48
  * @Description: 自定义跳转钩子
  */
-import React from 'react';
+import {useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Linking} from 'react-native';
 import Toast from '../Toast';
 import * as WeChat from 'react-native-wechat-lib';
 function useJump() {
     const navigation = useNavigation();
+    const flagRef = useRef(true);
     return (url, type = 'navigate') => {
-        if (url) {
+        if (url && flagRef.current) {
+            flagRef.current = false;
             if (url.type === 2) {
                 Linking.canOpenURL(url.path)
                     .then((supported) => {
@@ -40,6 +42,9 @@ function useJump() {
             } else {
                 navigation[type](url.path, url.params || {});
             }
+            setTimeout(() => {
+                flagRef.current = true;
+            }, 500);
         }
     };
 }
