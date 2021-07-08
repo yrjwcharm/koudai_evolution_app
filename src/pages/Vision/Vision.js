@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 16:05:44
+ * @LastEditTime: 2021-07-08 19:58:07
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,7 +19,7 @@ import CommonView from './components/CommonView'; //魔方问答
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
-import {updateVision, updateFresh} from '../../redux/actions/visionData';
+import {updateVision, updateFresh, resetVision} from '../../redux/actions/visionData';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
@@ -41,6 +41,7 @@ const shadow = {
         top: 0,
     },
 };
+
 const Vision = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const netInfo = useNetInfo();
@@ -53,6 +54,7 @@ const Vision = ({navigation, route}) => {
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
+    let refs = [];
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
@@ -92,9 +94,18 @@ const Vision = ({navigation, route}) => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
             if (tabs[i].k == 'recommend') {
-                _views.push(<Recommend ref={recommedRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
+                _views.push(<Recommend ref={recommedRef} key={tabs[i].k} i={i} tabLabel={tabs[i].v} k={tabs[i].k} />);
             } else {
-                _views.push(<CommonView ref={comViewRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
+                refs.push(React.createRef());
+                _views.push(
+                    <CommonView
+                        ref={comViewRef}
+                        key={tabs[i].k}
+                        _ref={refs[i - 1]}
+                        tabLabel={tabs[i].v}
+                        k={tabs[i].k}
+                    />
+                );
             }
         }
         return _views;

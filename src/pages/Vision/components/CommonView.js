@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 15:38:29
+ * @LastEditTime: 2021-07-08 19:54:55
  * @Description:tab公共模块
  *
  */
@@ -16,8 +16,7 @@ import RenderCate from './RenderCate.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
-const CommonView = React.forwardRef(({k, scene, type}, ref) => {
-    const scrollRef = useRef(null);
+const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
     const key = scene == 'collect' ? type : k;
@@ -27,7 +26,8 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
     }, [getData]);
     const tabRefresh = () => {
         global.LogTool('tabDoubleClick', k);
-        scrollRef?.current?.scrollToOffset({offset: 0, animated: false});
+        console.log(_ref);
+        _ref?.current?.scrollToOffset({offset: 0, animated: false});
         setTimeout(() => {
             getData();
         }, 200);
@@ -106,7 +106,7 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
         <>
             <View style={{flex: 1}}>
                 <FlatList
-                    ref={scrollRef}
+                    ref={_ref}
                     data={visionData?.[key]?.list}
                     style={{paddingHorizontal: px(16), paddingTop: px(10)}}
                     ListHeaderComponent={
@@ -123,7 +123,7 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
                     renderItem={({item}) => {
                         return RenderCate(item, {marginBottom: px(12)}, scene);
                     }}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, _index) => _index.toString()}
                     onEndReachedThreshold={0.5}
                     onEndReached={() => {
                         visionData?.[key]?.has_more && getData('loadmore');

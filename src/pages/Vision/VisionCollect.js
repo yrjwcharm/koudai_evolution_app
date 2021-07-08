@@ -2,26 +2,22 @@
  * @Date: 2021-05-18 16:06:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-04 18:34:26
+ * @LastEditTime: 2021-07-08 19:22:45
  * @Description:收藏 历史
  */
 
-import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
-import {useJump} from '../../components/hooks';
+import React from 'react';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Tabbar from '../../components/TabBar';
-import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {px} from '../../utils/appUtil';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors} from '../../common/commonStyle';
 import CommonView from './components/CommonView';
-
 const VisionCollect = ({navigation}) => {
     const inset = useSafeAreaInsets();
-
     return (
         <LinearGradient
             start={{x: 0, y: 0}}

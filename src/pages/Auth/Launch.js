@@ -3,12 +3,12 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 15:34:40
+ * @LastEditTime: 2021-07-08 18:09:45
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
-import {deviceWidth, deviceHeight, px} from '../../utils/appUtil';
+import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
 import http from '../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -60,7 +60,7 @@ export default function Launch({navigation}) {
                         navigation.replace('Tab');
                         setTimeout(() => {
                             SplashScreen.hide();
-                        }, 6);
+                        }, 8);
                     } else {
                         navigation.replace('AppGuide');
                     }
@@ -77,7 +77,7 @@ export default function Launch({navigation}) {
                                     navigation.replace('Tab');
                                     setTimeout(() => {
                                         SplashScreen.hide();
-                                    }, 6);
+                                    }, 8);
                                 } else {
                                     navigation.replace('AppGuide');
                                 }
@@ -139,23 +139,27 @@ export default function Launch({navigation}) {
                 }, 0);
             }}
             style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
-            <TouchableOpacity
-                activeOpacity={1}
-                onPress={_.debounce(() => {
-                    global.LogTool('splashSkipStart');
-                    timer.current && clearInterval(timer.current);
-                    authLoading();
-                }, 300)}
-                style={[styles.timer, {top: inset.top + px(20)}]}>
-                <Text style={styles.text}>跳过{time}s</Text>
-            </TouchableOpacity>
-            <FastImage source={{uri: adMes.img}} style={styles.imgage} />
-            <View style={[styles.footer]}>
-                <FastImage
-                    source={require('../../assets/img/appGuide/adverseFooter.png')}
-                    style={[styles.footer_img]}
-                />
-            </View>
+            {adMes.img ? (
+                <>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={_.debounce(() => {
+                            global.LogTool('splashSkipStart');
+                            timer.current && clearInterval(timer.current);
+                            authLoading();
+                        }, 300)}
+                        style={[styles.timer, {top: inset.top + px(20)}]}>
+                        <Text style={styles.text}>跳过{time}s</Text>
+                    </TouchableOpacity>
+                    <Image source={{uri: adMes.img}} style={styles.imgage} />
+                    <View style={[styles.footer]}>
+                        <FastImage
+                            source={require('../../assets/img/appGuide/adverseFooter.png')}
+                            style={[styles.footer_img]}
+                        />
+                    </View>
+                </>
+            ) : null}
         </TouchableOpacity>
     );
 }
@@ -182,11 +186,11 @@ const styles = StyleSheet.create({
     footer_img: {
         height: px(65),
         width: px(185),
-        marginTop: px(20),
+        marginTop: px(26),
+        marginBottom: isIphoneX() ? px(26) + 34 : px(26),
         marginLeft: px(-10),
     },
     footer: {
-        height: 150,
         position: 'absolute',
         bottom: 0,
         width: deviceWidth,
