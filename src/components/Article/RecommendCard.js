@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 11:56:09
+ * @LastEditTime: 2021-07-08 16:03:46
  * @Description:推荐模块
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -146,7 +146,13 @@ const RecommendCard = ({data, style, onPress}) => {
                             <View style={[Style.flexRow, {marginTop: px(12)}]}>
                                 <FastImage
                                     source={{uri: data?.author?.avatar}}
-                                    style={{width: px(26), height: px(26)}}
+                                    style={{
+                                        width: px(26),
+                                        height: px(26),
+                                        borderRadius: px(13),
+                                        borderColor: Colors.lineColor,
+                                        borderWidth: 0.5,
+                                    }}
                                 />
                                 <Text
                                     style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
@@ -155,7 +161,10 @@ const RecommendCard = ({data, style, onPress}) => {
                                 {data?.author?.icon ? (
                                     <FastImage
                                         source={{uri: data?.author?.icon}}
-                                        style={{width: px(12), height: px(12)}}
+                                        style={{
+                                            width: px(12),
+                                            height: px(12),
+                                        }}
                                     />
                                 ) : null}
                             </View>

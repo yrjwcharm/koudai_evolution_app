@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 11:55:33
+ * @LastEditTime: 2021-07-08 16:06:37
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
@@ -89,7 +89,7 @@ const Recommend = React.forwardRef((props, ref) => {
             ref={scrollRef}
             key={1}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
-            <View style={{padding: px(16), paddingTop: px(8)}}>
+            <View style={{padding: px(16), paddingTop: px(6)}}>
                 <RecommendCard
                     style={{marginBottom: px(16)}}
                     data={recommendData}

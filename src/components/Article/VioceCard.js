@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 15:23:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-08 16:02:41
  * @Description:音频模块
  */
 
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         width: px(26),
         height: px(26),
         borderColor: Colors.lineColor,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderRadius: px(13),
     },
     duration_text: {
