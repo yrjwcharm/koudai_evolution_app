@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-08 11:37:53
+ * @LastEditTime: 2021-07-08 17:12:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -327,8 +327,8 @@ function HomeScreen({navigation, route}) {
                             jump(item.button.url);
                         }}
                         style={[Style.flexRowCenter, styles.checkBtn, styles.bottomBtn, {backgroundColor: item.color}]}>
-                        <Text style={{...styles.noticeText, marginRight: text(6)}}>{item.button.text}</Text>
-                        <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                        <Text style={{...styles.noticeText, marginRight: text(4)}}>{item.button.text}</Text>
+                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                     </TouchableOpacity>
                 ) : null}
             </View>
@@ -712,10 +712,10 @@ function HomeScreen({navigation, route}) {
                                                         styles.checkBtn,
                                                         {backgroundColor: item.color},
                                                     ]}>
-                                                    <Text style={{...styles.noticeText, marginRight: text(6)}}>
+                                                    <Text style={{...styles.noticeText, marginRight: text(4)}}>
                                                         {item.button.text}
                                                     </Text>
-                                                    <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                                                    <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                                                 </TouchableOpacity>
                                             ) : null}
                                         </View>
