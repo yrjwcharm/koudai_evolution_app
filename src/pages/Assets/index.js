@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-06 11:44:32
+ * @LastEditTime: 2021-07-08 11:05:59
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -16,6 +16,7 @@ import {
     StatusBar,
     LayoutAnimation,
     RefreshControl,
+    Platform,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
@@ -730,7 +731,7 @@ function HomeScreen({navigation, route}) {
                                     inactiveSlideScale={0.9}
                                     itemHeight={text(144)}
                                     itemWidth={deviceWidth - text(79)}
-                                    loop
+                                    loop={Platform.select({android: false, ios: true})}
                                     onSnapToItem={(index) => {
                                         global.LogTool('assetsConsole', centerData[index].type);
                                         setPage(index);
