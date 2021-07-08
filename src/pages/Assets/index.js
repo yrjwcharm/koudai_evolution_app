@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-08 11:05:59
+ * @LastEditTime: 2021-07-08 11:37:53
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -118,7 +118,6 @@ function HomeScreen({navigation, route}) {
         (refresh) => {
             refresh === 'refresh' && setRefreshing(true);
             refresh === 'refresh' && setHideMsg(false);
-            setPage(0);
             http.get('/asset/holding/20210101', {
                 // uid: '1000000001',
             }).then((res) => {
@@ -295,12 +294,7 @@ function HomeScreen({navigation, route}) {
     /** @name 渲染中控滑块 */
     const renderItem = ({item, index}) => {
         return (
-            <View
-                style={{...styles.contentBox, height: text(144)}}
-                key={item + index}
-                onLayout={() => {
-                    index === 0 && global.LogTool('assetsConsole', item.type);
-                }}>
+            <View style={{...styles.contentBox, height: text(144)}} key={item + index}>
                 {item.tag ? (
                     <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                         <View style={[styles.contentTag, {backgroundColor: item.color}]}>
@@ -365,6 +359,13 @@ function HomeScreen({navigation, route}) {
                 StatusBar.setBarStyle('dark-content');
             };
         }, [userInfo])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            if (centerData.length > 0) {
+                centerData[page] && global.LogTool('assetsConsole', centerData[page].type);
+            }
+        }, [centerData, page])
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
@@ -668,10 +669,7 @@ function HomeScreen({navigation, route}) {
                             {centerData.length <= 1 &&
                                 centerData.map((item, index) => {
                                     return (
-                                        <View
-                                            style={styles.contentBox}
-                                            key={item + index}
-                                            onLayout={() => global.LogTool('assetsConsole', item.type)}>
+                                        <View style={styles.contentBox} key={item + index}>
                                             {item.tag ? (
                                                 <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                                                     <View style={[styles.contentTag, {backgroundColor: item.color}]}>
@@ -732,10 +730,7 @@ function HomeScreen({navigation, route}) {
                                     itemHeight={text(144)}
                                     itemWidth={deviceWidth - text(79)}
                                     loop={Platform.select({android: false, ios: true})}
-                                    onSnapToItem={(index) => {
-                                        global.LogTool('assetsConsole', centerData[index].type);
-                                        setPage(index);
-                                    }}
+                                    onSnapToItem={(index) => setPage(index)}
                                     removeClippedSubviews
                                     renderItem={renderItem}
                                     sliderHeight={text(144)}
