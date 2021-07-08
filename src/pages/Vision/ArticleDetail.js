@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 10:32:45
+ * @LastEditTime: 2021-07-08 15:48:33
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -329,11 +329,15 @@ const ArticleDetail = ({navigation, route}) => {
     const goTop = () => {
         scrollRef?.current?.scrollTo({x: 0, y: 0, animated: true});
     };
+    const hidePicker = () => {
+        Picker.hide();
+        setShowMask(false);
+    };
     return (
         <View style={[styles.container]}>
             {hasNet ? (
                 <>
-                    {showMask && <Mask />}
+                    {showMask && <Mask onClick={hidePicker} />}
                     {showGoTop ? (
                         <TouchableOpacity onPress={goTop} activeOpacity={1} style={styles.goTop}>
                             <FastImage
