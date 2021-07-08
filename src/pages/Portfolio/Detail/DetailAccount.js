@@ -240,7 +240,7 @@ export default function DetailAccount({route, navigation}) {
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
-                                        global.LogTool('portfolioDetailFeatureStart', 'bottomline');
+                                        global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
                                         data.line_info?.button?.avail && jump(data.line_info?.button?.url);
                                     }}
                                     style={[
@@ -297,7 +297,7 @@ export default function DetailAccount({route, navigation}) {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 onPress={() => {
-                                    global.LogTool('portfolioDetailFeatureStart', 'bottomline');
+                                    global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
                                     data.line_info?.button?.avail && jump(data.line_info?.button?.url);
                                 }}
                                 style={styles.line_btn}>
@@ -316,7 +316,12 @@ export default function DetailAccount({route, navigation}) {
                     {/* 全球配置 */}
                     {data?.asset_deploy ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.asset_deploy?.header} color={Colors.brandColor} ctrl={'global'} />
+                            <ListHeader
+                                data={data?.asset_deploy?.header}
+                                color={Colors.brandColor}
+                                ctrl={'global'}
+                                oid={1}
+                            />
                             <View style={{height: text(140)}}>
                                 <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
                             </View>
@@ -345,7 +350,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 智能调仓 */}
                     {data?.adjust_info ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.adjust_info.header} ctrl={'smartAdjustment'} />
+                            <ListHeader data={data?.adjust_info.header} ctrl={'smartAdjustment'} oid={2} />
                             <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                                 {data?.adjust_info.items.map((_i, _d) => {
                                     return (
@@ -374,7 +379,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 资产增强 */}
                     {data?.asset_enhance ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.asset_enhance?.header} ctrl={'assets'} />
+                            <ListHeader data={data?.asset_enhance?.header} ctrl={'assets'} oid={3} />
                             <FitImage
                                 source={{uri: data?.asset_enhance?.img}}
                                 resizeMode="contain"
@@ -385,7 +390,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 风险控制 */}
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
-                            <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} />
+                            <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} oid={4} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
                                     <View style={{flex: 1, position: 'relative'}}>

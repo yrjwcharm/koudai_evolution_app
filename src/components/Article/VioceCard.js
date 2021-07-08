@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 15:45:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-08 15:23:15
  * @Description:音频模块
  */
 
@@ -27,7 +27,7 @@ const VioceCard = ({data, style, scene}) => {
             activeOpacity={0.9}
             style={[styles.card, style]}
             onPress={debounce(() => {
-                global.LogTool('visionArticle', data.id);
+                global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 if (visionData?.album_update?.includes(data.album_id)) {
                     let arr = [...visionData?.album_update];
                     arr.splice(arr?.indexOf(data.album_id), 1);

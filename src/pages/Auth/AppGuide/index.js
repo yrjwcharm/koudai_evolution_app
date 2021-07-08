@@ -2,12 +2,12 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 14:23:34
+ * @LastEditTime: 2021-07-08 15:34:30
  * @Description:app引导页
  */
 
 import React, {useEffect} from 'react';
-import {StyleSheet, Image, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 import {deviceWidth, deviceHeight, px} from '../../../utils/appUtil';
@@ -29,7 +29,7 @@ const image3 = require('../../../assets/img/appGuide/largeslider3.png');
 const image4 = require('../../../assets/img/appGuide/largeslider4.png');
 export default function AppGuide({navigation}) {
     useEffect(() => {
-        // SplashScreen.hide();
+        SplashScreen.hide();
     }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>

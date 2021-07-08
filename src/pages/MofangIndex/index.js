@@ -588,7 +588,7 @@ const Index = (props) => {
                                         }}
                                     />
                                     {data?.article_list?.map((item, index) => {
-                                        return RenderCate(item, {marginBottom: px(12)});
+                                        return RenderCate(item, {marginBottom: px(12)}, 'index');
                                     })}
                                 </View>
                             )}

@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-07-01 18:52:11
+ * @LastEditTime: 2021-07-08 11:42:56
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -36,7 +36,7 @@ export default function ListHeader(props) {
                 style,
             ]}
             onPress={() => {
-                props.ctrl && global.LogTool('portfolioDetailFeatureStart', props.ctrl);
+                props.ctrl && global.LogTool('portfolioDetailFeatureStart', props.ctrl, props.oid);
                 jump(data.url);
             }}>
             <View style={[Style.flexRow, {flex: 1}]}>
