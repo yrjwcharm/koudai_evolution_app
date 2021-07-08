@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 15:37:27
+ * @LastEditTime: 2021-07-08 10:25:55
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -24,6 +24,7 @@ import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import _ from 'lodash';
 let activeTab = 0;
 const shadow = {
     color: '#ddd',
@@ -62,15 +63,18 @@ const Vision = ({navigation, route}) => {
         hasNet && getTabs();
     }, [hasNet, userInfo.is_login]);
     useEffect(() => {
-        const unsubscribe = navigation.addListener('tabPress', (e) => {
-            if (isFocused) {
-                if (activeTab == 0) {
-                    recommedRef.current?.tabRefresh();
-                } else {
-                    comViewRef.current?.tabRefresh();
+        const unsubscribe = navigation.addListener(
+            'tabPress',
+            _.debounce((e) => {
+                if (isFocused) {
+                    if (activeTab == 0) {
+                        recommedRef.current?.tabRefresh();
+                    } else {
+                        comViewRef.current?.tabRefresh();
+                    }
                 }
-            }
-        });
+            }, 300)
+        );
         return unsubscribe;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFocused, navigation]);

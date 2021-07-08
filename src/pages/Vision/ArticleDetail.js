@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 16:29:06
+ * @LastEditTime: 2021-07-08 10:32:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -223,6 +223,11 @@ const ArticleDetail = ({navigation, route}) => {
         http.post('/community/article/progress/20210101', params || {});
     }, []);
     const back = useCallback(() => {
+        Picker.isPickerShow((res) => {
+            if (res) {
+                Picker.hide();
+            }
+        });
         if (route?.params?.type !== 5 && route?.params?.type !== 2) {
             let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
             progress = progress > 100 ? 100 : progress;

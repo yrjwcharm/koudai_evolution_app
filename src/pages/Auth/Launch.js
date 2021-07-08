@@ -2,11 +2,11 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-07 10:45:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-08 11:31:59
  * @Description:
  */
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
 import {deviceWidth, deviceHeight, px} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
@@ -19,6 +19,7 @@ import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
 import {env} from '../../services/config';
+import FastImage from 'react-native-fast-image';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online1', 'online2'];
@@ -92,22 +93,29 @@ export default function Launch({navigation}) {
     };
     useEffect(() => {
         global.env = env;
-        Storage.get('AD').then((AD) => {
-            if (AD && AD.img && new Date().getTime() < AD.expired_at * 1000) {
-                setTime(AD.skip_time || 3);
-                setAdMes(AD);
-                SplashScreen.hide();
-                timer.current = setInterval(() => {
-                    setTime((prev) => {
-                        if (prev <= 0) {
-                            clearInterval(timer.current);
-                            authLoading();
-                            return 0;
-                        } else {
-                            return --prev;
-                        }
-                    });
-                }, 1000);
+        //显示引导页的时候不展示广告
+        Storage.get('AppGuide').then((AppGuide) => {
+            if (AppGuide) {
+                Storage.get('AD').then((AD) => {
+                    if (AD && AD.img && new Date().getTime() < AD.expired_at * 1000) {
+                        setTime(AD.skip_time || 3);
+                        setAdMes(AD);
+                        SplashScreen.hide();
+                        // timer.current = setInterval(() => {
+                        //     setTime((prev) => {
+                        //         if (prev <= 0) {
+                        //             clearInterval(timer.current);
+                        //             authLoading();
+                        //             return 0;
+                        //         } else {
+                        //             return --prev;
+                        //         }
+                        //     });
+                        // }, 1000);
+                    } else {
+                        authLoading();
+                    }
+                });
             } else {
                 authLoading();
             }
@@ -137,7 +145,13 @@ export default function Launch({navigation}) {
                 style={[styles.timer, {top: inset.top + px(20)}]}>
                 <Text style={styles.text}>跳过{time}s</Text>
             </TouchableOpacity>
-            <Image source={{uri: adMes.img}} style={styles.imgage} />
+            <FastImage source={{uri: adMes.img}} style={styles.imgage} />
+            <View style={[styles.footer]}>
+                <FastImage
+                    source={require('../../assets/img/appGuide/adverseFooter.png')}
+                    style={[styles.footer_img]}
+                />
+            </View>
         </TouchableOpacity>
     );
 }
@@ -160,5 +174,20 @@ const styles = StyleSheet.create({
         width: px(70),
         paddingVertical: px(3),
         borderRadius: px(16),
+    },
+    footer_img: {
+        height: px(65),
+        width: px(185),
+        marginTop: px(20),
+        marginLeft: px(-10),
+    },
+    footer: {
+        height: 150,
+        position: 'absolute',
+        bottom: 0,
+        width: deviceWidth,
+        zIndex: 20,
+        backgroundColor: '#fff',
+        alignItems: 'center',
     },
 });

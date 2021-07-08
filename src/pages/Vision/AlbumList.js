@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-30 16:29:45
+ * @LastEditTime: 2021-07-08 10:37:05
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -16,6 +16,7 @@ import Praise from '../../components/Praise';
 import {useJump} from '../../components/hooks';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
+import LinearGradient from 'react-native-linear-gradient';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {
@@ -148,11 +149,16 @@ const AlbumList = ({navigation, route}) => {
                     {item?.cover ? (
                         <View style={styles.cover_con}>
                             <FastImage source={{uri: item?.cover}} style={styles.cover} />
-                            <View style={[styles.media_duration, Style.flexRow]}>
-                                <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
-
-                                <Text style={styles.gray_text}>{item?.media_duration}</Text>
-                            </View>
+                            <LinearGradient
+                                start={{x: 0, y: 0}}
+                                end={{x: 0, y: 1}}
+                                style={[styles.media_duration, {justifyContent: 'flex-end'}]}
+                                colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
+                                <View style={[Style.flexRow]}>
+                                    <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
+                                    <Text style={styles.duration_text}>{item?.media_duration}</Text>
+                                </View>
+                            </LinearGradient>
                         </View>
                     ) : null}
                 </View>
@@ -307,15 +313,21 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
     },
     media_duration: {
-        top: 46,
+        bottom: 0,
         zIndex: 100,
-        paddingHorizontal: px(10),
+        height: px(34),
+        width: px(106),
+        paddingHorizontal: px(8),
         paddingVertical: px(4),
         position: 'absolute',
-        borderRadius: px(6),
-        opacity: 0.8,
-        left: px(20),
-        backgroundColor: '#000000',
+        borderBottomLeftRadius: px(8),
+        borderBottomRightRadius: px(8),
+    },
+    duration_text: {
+        fontSize: px(12),
+        color: '#fff',
+        fontFamily: Font.numMedium,
+        marginLeft: px(3),
     },
     play_text: {fontSize: px(13), color: '#fff', marginLeft: px(2), fontWeight: '600'},
     light_text: {color: Colors.lightGrayColor, fontSize: px(12)},
