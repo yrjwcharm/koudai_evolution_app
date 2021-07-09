@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 16:17:49
+ * @LastEditTime: 2021-07-09 17:16:51
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -131,10 +131,10 @@ export default function Launch({navigation}) {
         SplashScreen.hide();
         timer.current = setInterval(() => {
             setTime((prev) => {
-                if (prev <= 0) {
+                if (prev <= 1) {
                     clearInterval(timer.current);
                     authLoading();
-                    return 0;
+                    return 1;
                 } else {
                     return --prev;
                 }
