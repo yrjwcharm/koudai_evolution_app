@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 16:36:50
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-09 15:13:04
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -389,10 +389,14 @@ const ArticleDetail = ({navigation, route}) => {
                         />
                         {finishLoad && Object.keys(data).length > 0 && (
                             <>
-                                <Text style={[styles.footnote, {marginBottom: text(2)}]}>
-                                    本文更新于{data?.edit_time}
-                                </Text>
-                                <Text style={styles.footnote}>著作权 为©理财魔方 所有，未经许可禁止转载</Text>
+                                {route?.params?.type !== 5 ? (
+                                    <>
+                                        <Text style={[styles.footnote, {marginBottom: text(2)}]}>
+                                            本文更新于{data?.edit_time}
+                                        </Text>
+                                        <Text style={styles.footnote}>著作权 为©理财魔方 所有，未经许可禁止转载</Text>
+                                    </>
+                                ) : null}
                                 {route?.params?.type !== 5 ? (
                                     finishRead ? (
                                         <View style={[Style.flexCenter, styles.finishBox]}>

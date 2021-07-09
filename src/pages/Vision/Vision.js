@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 15:03:57
+ * @LastEditTime: 2021-07-09 15:21:29
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -87,6 +87,7 @@ const Vision = ({navigation, route}) => {
         http.get('/vision/tabs/20210524')
             .then((res) => {
                 setTabs(res.result);
+                setShowError(false);
             })
             .catch(() => {
                 setShowError(true);
@@ -176,13 +177,7 @@ const Vision = ({navigation, route}) => {
         setHasNet(netInfo.isConnected);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [netInfo]);
-    return hasNet
-        ? showError
-            ? NetError()
-            : renderContent()
-        : Object.keys(visionData?.recommend).length > 0
-        ? renderContent()
-        : NetError();
+    return hasNet ? renderContent() : NetError();
 };
 
 export default Vision;
