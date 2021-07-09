@@ -90,7 +90,7 @@ const Index = (props) => {
             renderLoading()
         ) : (
             <>
-                {!userInfo.toJS().is_login && isFocused && <LoginMask />}
+                {!userInfo.toJS().is_login && <LoginMask />}
 
                 <View style={{backgroundColor: '#fff', paddingTop: inset.top}} />
                 <ScrollView

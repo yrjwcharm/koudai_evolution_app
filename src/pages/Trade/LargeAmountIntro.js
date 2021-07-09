@@ -2,8 +2,8 @@
  * @Description:大额转账说明页
  * @Autor: xjh
  * @Date: 2021-01-23 13:46:12
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 10:29:12
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-09 16:22:40
  */
 import React from 'react';
 import {ScrollView, Linking, Alert, View, Image} from 'react-native';
@@ -32,7 +32,7 @@ const LargeAmountIntro = () => {
             <ScrollView style={{marginBottom: btnHeight}}>
                 <Image
                     source={require('../../assets/img/common/large_pay_1.jpg')}
-                    style={{width: deviceWidth, height: deviceWidth * 0.74}}
+                    style={{width: deviceWidth, height: deviceWidth * 0.68}}
                     // resizeMode="contain"
                 />
                 <Image
