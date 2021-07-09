@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 15:24:19
+ * @LastEditTime: 2021-07-09 16:27:58
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -61,9 +61,9 @@ const Vision = ({navigation, route}) => {
     );
     useEffect(() => {
         setTabs([]);
-        hasNet && getTabs();
+        getTabs();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasNet, userInfo.is_login]);
+    }, [hasNet, userInfo.is_login, getTabs]);
     useEffect(() => {
         const unsubscribe = navigation.addListener(
             'tabPress',
@@ -82,11 +82,15 @@ const Vision = ({navigation, route}) => {
         };
     }, [isFocused, navigation, tabs]);
 
-    const getTabs = () => {
-        http.get('/vision/tabs/20210524').then((res) => {
-            setTabs(res.result);
-        });
-    };
+    const getTabs = useCallback(() => {
+        http.get('/vision/tabs/20210524')
+            .then((res) => {
+                setTabs(res.result);
+            })
+            .catch((error) => {
+                alert(error);
+            });
+    }, []);
 
     const _renderDynamicView = useCallback(() => {
         const _views = [];

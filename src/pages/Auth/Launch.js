@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 14:51:55
+ * @LastEditTime: 2021-07-09 16:17:49
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -20,6 +20,7 @@ import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
 import {env} from '../../services/config';
 import FastImage from 'react-native-fast-image';
+
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online1', 'online2'];
@@ -29,6 +30,7 @@ export default function Launch({navigation}) {
     const [adMes, setAdMes] = useState({});
     const [time, setTime] = useState(3);
     const clock = useRef(0);
+    let isNavigating = false; //是否正在跳转
     global.getUserInfo = () => {
         dispatch(getUserInfo());
     };
@@ -44,7 +46,7 @@ export default function Launch({navigation}) {
             }
         });
     };
-    const authLoading = () => {
+    const authLoading = (callback) => {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check', {env})
                 .then((result) => {
@@ -59,13 +61,17 @@ export default function Launch({navigation}) {
                         global.env = env;
                     }
                     dispatch(getUserInfo());
-                    if (res) {
-                        navigation.replace('Tab');
-                        setTimeout(() => {
-                            SplashScreen.hide();
-                        }, 8);
+                    if (callback) {
+                        callback();
                     } else {
-                        navigation.replace('AppGuide');
+                        if (res) {
+                            navigation.replace('Tab');
+                            setTimeout(() => {
+                                SplashScreen.hide();
+                            }, 8);
+                        } else {
+                            navigation.replace('AppGuide');
+                        }
                     }
                 })
                 .catch(() => {
@@ -76,13 +82,17 @@ export default function Launch({navigation}) {
                             .then((result) => {
                                 console.log(result.result);
                                 dispatch(getUserInfo());
-                                if (res) {
-                                    navigation.replace('Tab');
-                                    setTimeout(() => {
-                                        SplashScreen.hide();
-                                    }, 8);
+                                if (callback) {
+                                    callback();
                                 } else {
-                                    navigation.replace('AppGuide');
+                                    if (res) {
+                                        navigation.replace('Tab');
+                                        setTimeout(() => {
+                                            SplashScreen.hide();
+                                        }, 8);
+                                    } else {
+                                        navigation.replace('AppGuide');
+                                    }
                                 }
                             })
                             .catch(() => {
@@ -135,13 +145,18 @@ export default function Launch({navigation}) {
         <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
+                if (isNavigating) {
+                    return;
+                }
+                isNavigating = true;
                 global.LogTool('splashClickStart', adMes.id);
                 timer.current && clearInterval(timer.current);
-                dispatch(getUserInfo());
-                navigation.replace('Tab');
-                setTimeout(() => {
-                    jump(adMes.jump);
-                }, 0);
+                authLoading(() => {
+                    navigation.replace('Tab');
+                    setTimeout(() => {
+                        jump(adMes.jump);
+                    }, 0);
+                });
             }}
             style={{flex: 1, backgroundColor: '#fff', position: 'relative'}}>
             {adMes.img ? (
@@ -149,6 +164,10 @@ export default function Launch({navigation}) {
                     <TouchableOpacity
                         activeOpacity={1}
                         onPress={_.debounce(() => {
+                            if (isNavigating) {
+                                return;
+                            }
+                            isNavigating = true;
                             global.LogTool('splashSkipStart');
                             timer.current && clearInterval(timer.current);
                             authLoading();

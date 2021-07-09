@@ -50,8 +50,6 @@ const Index = (props) => {
         return () => unsubscribe();
     }, [isFocused, props.navigation, getData, hasNet]);
 
-    let scrollingRight = '';
-    let lastx = '';
     const snapScroll = useRef(null);
     const getData = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
