@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 17:44:31
+ * @LastEditTime: 2021-07-09 18:18:21
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -68,6 +68,7 @@ const Vision = ({navigation, route}) => {
         const unsubscribe = navigation.addListener(
             'tabPress',
             _.debounce(() => {
+                dispatch(updateVision({refreshing: false}));
                 if (isFocused) {
                     if (activeTab == 0) {
                         recommedRef.current?.tabRefresh();
@@ -75,12 +76,12 @@ const Vision = ({navigation, route}) => {
                         tabs.length > 0 && comViewRef.current?.tabRefresh(tabs[activeTab].k);
                     }
                 }
-            }, 300)
+            }, 500)
         );
         return () => {
             unsubscribe();
         };
-    }, [isFocused, navigation, tabs]);
+    }, [isFocused, navigation, tabs, visionData, dispatch]);
 
     const getTabs = useCallback(() => {
         http.get('/vision/tabs/20210524').then((res) => {
