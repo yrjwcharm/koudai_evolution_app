@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 18:09:45
+ * @LastEditTime: 2021-07-09 14:51:55
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -28,6 +28,7 @@ export default function Launch({navigation}) {
     const inset = useSafeAreaInsets();
     const [adMes, setAdMes] = useState({});
     const [time, setTime] = useState(3);
+    const clock = useRef(0);
     global.getUserInfo = () => {
         dispatch(getUserInfo());
     };
@@ -37,7 +38,9 @@ export default function Launch({navigation}) {
             // 缓存广告内容
             Storage.save('AD', data.result);
             if (data?.result?.img) {
-                Image.prefetch(data?.result?.img);
+                Image.prefetch(data?.result?.img).then((res) => {
+                    console.log(res, '缓存成功');
+                });
             }
         });
     };
@@ -102,20 +105,8 @@ export default function Launch({navigation}) {
             if (AppGuide) {
                 Storage.get('AD').then((AD) => {
                     if (AD && AD.img && new Date().getTime() < AD.expired_at * 1000) {
-                        setTime(AD.skip_time || 3);
                         setAdMes(AD);
-                        SplashScreen.hide();
-                        timer.current = setInterval(() => {
-                            setTime((prev) => {
-                                if (prev <= 0) {
-                                    clearInterval(timer.current);
-                                    authLoading();
-                                    return 0;
-                                } else {
-                                    return --prev;
-                                }
-                            });
-                        }, 1000);
+                        setTime(AD.skip_time || 3);
                     } else {
                         authLoading();
                     }
@@ -126,6 +117,20 @@ export default function Launch({navigation}) {
         });
         fetchImg();
     }, []);
+    const imageLoadEnd = () => {
+        SplashScreen.hide();
+        timer.current = setInterval(() => {
+            setTime((prev) => {
+                if (prev <= 0) {
+                    clearInterval(timer.current);
+                    authLoading();
+                    return 0;
+                } else {
+                    return --prev;
+                }
+            });
+        }, 1000);
+    };
     return (
         <TouchableOpacity
             activeOpacity={1}
@@ -151,7 +156,24 @@ export default function Launch({navigation}) {
                         style={[styles.timer, {top: inset.top + px(20)}]}>
                         <Text style={styles.text}>跳过{time}s</Text>
                     </TouchableOpacity>
-                    <Image source={{uri: adMes.img}} style={styles.imgage} />
+                    <Image
+                        source={{uri: adMes.img}}
+                        style={styles.imgage}
+                        onLoadStart={() => {
+                            clock.current = new Date().getTime();
+                        }}
+                        onLoadEnd={imageLoadEnd}
+                        onProgress={() => {
+                            //如果图片加载时间超过2s
+                            if (new Date().getTime() - clock.current > 2000) {
+                                authLoading();
+                            }
+                        }}
+                        onLoadError={() => {
+                            timer.current && clearInterval(timer.current);
+                            authLoading();
+                        }}
+                    />
                     <View style={[styles.footer]}>
                         <FastImage
                             source={require('../../assets/img/appGuide/adverseFooter.png')}

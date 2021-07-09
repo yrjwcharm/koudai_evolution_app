@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 19:58:07
+ * @LastEditTime: 2021-07-09 15:03:57
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -19,7 +19,7 @@ import CommonView from './components/CommonView'; //魔方问答
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
-import {updateVision, updateFresh, resetVision} from '../../redux/actions/visionData';
+import {updateVision, updateFresh} from '../../redux/actions/visionData';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
@@ -54,7 +54,7 @@ const Vision = ({navigation, route}) => {
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
-    let refs = [];
+
     useFocusEffect(
         useCallback(() => {
             dispatch(updateVision({visionUpdate: ''}));
@@ -63,23 +63,26 @@ const Vision = ({navigation, route}) => {
     useEffect(() => {
         setTabs([]);
         hasNet && getTabs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasNet, userInfo.is_login]);
     useEffect(() => {
         const unsubscribe = navigation.addListener(
             'tabPress',
-            _.debounce((e) => {
+            _.debounce(() => {
                 if (isFocused) {
                     if (activeTab == 0) {
                         recommedRef.current?.tabRefresh();
                     } else {
-                        comViewRef.current?.tabRefresh();
+                        tabs.length > 0 && comViewRef.current?.tabRefresh(tabs[activeTab].k);
                     }
                 }
             }, 300)
         );
-        return unsubscribe;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFocused, navigation]);
+        return () => {
+            unsubscribe();
+        };
+    }, [isFocused, navigation, tabs]);
+
     const getTabs = () => {
         http.get('/vision/tabs/20210524')
             .then((res) => {
@@ -90,26 +93,17 @@ const Vision = ({navigation, route}) => {
             });
     };
 
-    const _renderDynamicView = () => {
+    const _renderDynamicView = useCallback(() => {
         const _views = [];
         for (let i = 0; i < tabs.length; i++) {
             if (tabs[i].k == 'recommend') {
                 _views.push(<Recommend ref={recommedRef} key={tabs[i].k} i={i} tabLabel={tabs[i].v} k={tabs[i].k} />);
             } else {
-                refs.push(React.createRef());
-                _views.push(
-                    <CommonView
-                        ref={comViewRef}
-                        key={tabs[i].k}
-                        _ref={refs[i - 1]}
-                        tabLabel={tabs[i].v}
-                        k={tabs[i].k}
-                    />
-                );
+                _views.push(<CommonView ref={comViewRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
             }
         }
         return _views;
-    };
+    }, [tabs]);
     const renderContent = () => {
         return (
             <>
@@ -180,6 +174,7 @@ const Vision = ({navigation, route}) => {
     const refreshNetWork = useCallback(() => {
         getTabs();
         setHasNet(netInfo.isConnected);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [netInfo]);
     return hasNet
         ? showError

@@ -69,6 +69,7 @@ axios.interceptors.response.use(
     (err) => {
         if (
             err.config.url.indexOf('tj.licaimofang.com/v.gif') <= -1 &&
+            err.config.url.indexOf('/mapi/app/splash/20210628') <= -1 &&
             err.config.url.indexOf('/common/device/heart_beat/20210101') <= -1 &&
             err.config.url.indexOf('/health/check') <= -1 &&
             err.config.url.indexOf('/common/user_info/20210101') <= -1

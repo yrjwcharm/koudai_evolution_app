@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 19:54:55
+ * @LastEditTime: 2021-07-09 14:13:06
  * @Description:tab公共模块
  *
  */
@@ -16,22 +16,21 @@ import RenderCate from './RenderCate.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
 import _ from 'lodash';
-const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
+const CommonView = React.forwardRef(({k, scene, type}, ref) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();
     const key = scene == 'collect' ? type : k;
-    const url = scene == 'collect' ? `/vision/${key}/list/20210524` : `/vision/${key}/articles/20210524`;
     useEffect(() => {
         getData();
     }, [getData]);
-    const tabRefresh = () => {
-        global.LogTool('tabDoubleClick', k);
-        console.log(_ref);
-        _ref?.current?.scrollToOffset({offset: 0, animated: false});
+    const tabRefresh = (_key) => {
+        global.LogTool('tabDoubleClick', _key);
+        visionData[_key + '1']?.scrollToOffset({offset: 0, animated: false});
         setTimeout(() => {
-            getData();
+            getData('', _key);
         }, 200);
     };
+
     React.useImperativeHandle(ref, () => {
         return {
             tabRefresh,
@@ -39,12 +38,12 @@ const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
     });
 
     const getData = useCallback(
-        (_type) => {
+        (_type, _key = key) => {
             _type !== 'loadmore' && dispatch(updateVision({refreshing: true}));
             let page = 1;
             if (_type == 'loadmore') {
-                page = visionData?.[key]?.page ? visionData?.[key]?.page + 1 : 2;
-                http.get(url, {
+                page = visionData?.[_key]?.page ? visionData?.[_key]?.page + 1 : 2;
+                http.get(scene == 'collect' ? `/vision/${key}/list/20210524` : `/vision/${_key}/articles/20210524`, {
                     page,
                 }).then((res) => {
                     let _data = {...visionData};
@@ -57,16 +56,16 @@ const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
                         []
                     );
                     _data.readList = _.uniq(_data.readList.concat(readList));
-                    _data[key] = {
+                    _data[_key] = {
                         has_more: res.result.has_more,
                         notice: res.result.notice,
-                        list: _data[key]?.list.concat(res.result.list || []),
+                        list: _data[_key]?.list.concat(res.result.list || []),
                         page,
                     };
                     dispatch(updateVision(_data));
                 });
             } else {
-                http.get(url, {
+                http.get(scene == 'collect' ? `/vision/${key}/list/20210524` : `/vision/${_key}/articles/20210524`, {
                     page,
                 }).then((res) => {
                     dispatch(updateVision({refreshing: false}));
@@ -80,13 +79,13 @@ const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
                         []
                     );
                     _data.readList = _.uniq(visionData.readList.concat(readList));
-                    _data[key] = res.result;
-                    _data[key].page = page;
+                    _data[_key] = res.result;
+                    _data[_key].page = page;
                     dispatch(updateVision(_data));
                 });
             }
         },
-        [key, url, dispatch, visionData]
+        [key, dispatch, visionData, scene]
     );
     const ListFooterComponent = () => {
         return (
@@ -106,7 +105,9 @@ const CommonView = React.forwardRef(({k, scene, type, _ref}, ref) => {
         <>
             <View style={{flex: 1}}>
                 <FlatList
-                    ref={_ref}
+                    ref={(dom) => {
+                        dom && dispatch(updateVision({[key + '1']: dom}));
+                    }}
                     data={visionData?.[key]?.list}
                     style={{paddingHorizontal: px(16), paddingTop: px(10)}}
                     ListHeaderComponent={
