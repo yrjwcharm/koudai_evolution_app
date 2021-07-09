@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-08 17:12:54
+ * @LastEditTime: 2021-07-09 15:28:18
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -390,7 +390,7 @@ function HomeScreen({navigation, route}) {
         ) : !showGesture ? (
             <View style={styles.container}>
                 {/* 登录注册蒙层 */}
-                {!userInfo.toJS().is_login && isFocused && <LoginMask />}
+                {!userInfo.toJS().is_login && <LoginMask />}
                 {isVisible && (
                     <>
                         <Mask />
