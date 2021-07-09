@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 15:23:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-09 18:53:17
  * @Description:视野文章模块
  */
 
@@ -17,7 +17,7 @@ import {useSelector} from 'react-redux';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
-    let numberOfLines = scene == 'recommend' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
+    let numberOfLines = scene == 'recommend' || scene == 'index' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
     return (
         <TouchableOpacity
             style={[styles.card, style]}

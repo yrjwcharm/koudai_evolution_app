@@ -2,11 +2,11 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 15:13:04
+ * @LastEditTime: 2021-07-09 19:00:19
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Vibration} from 'react-native';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
@@ -133,7 +133,6 @@ const ArticleDetail = ({navigation, route}) => {
                                 Toast.show(res.message);
                                 if (res.code == '000000') {
                                     webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
-                                    // webviewRef.current?.postMessage('VoiceFeedBack');
                                 }
                             });
                             setShowMask(false);
@@ -152,9 +151,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
-            if (!favor_status && type == 'normal') {
-                Vibration.vibrate(100);
-            }
+
             setFavorNum((preNum) => {
                 return favor_status ? --preNum : ++preNum;
             });
@@ -188,9 +185,6 @@ const ArticleDetail = ({navigation, route}) => {
         (type) => {
             if (!btnClick.current) {
                 return false;
-            }
-            if (!collect_status && type == 'normal') {
-                Vibration.vibrate(100);
             }
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;

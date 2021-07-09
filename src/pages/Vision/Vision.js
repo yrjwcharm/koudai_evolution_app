@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 18:18:21
+ * @LastEditTime: 2021-07-09 19:03:11
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -182,7 +182,8 @@ const styles = StyleSheet.create({
         paddingLeft: px(8),
         paddingRight: px(52),
         backgroundColor: 'transparent',
-        marginTop: px(-1),
+        marginTop: px(-1.5),
+        marginLeft: px(-1),
     },
     menu: {
         height: px(42),

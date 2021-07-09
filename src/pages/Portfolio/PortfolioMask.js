@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-05 16:52:03
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 16:44:24
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-09 19:07:57
  * @Description:组合详情页蒙层
  */
 import React, {useEffect, useState} from 'react';
@@ -24,7 +24,7 @@ export default function PortfolioMask({navigation}) {
         });
     }, [navigation]);
     return (
-        <View style={{flex: 1}}>
+        <View style={styles.con}>
             {data?.ratio_info?.length > 0 ? (
                 <View style={{backgroundColor: '#fff', paddingVertical: px(10)}}>
                     <Text style={styles.amount_sty}>{data.ratio_info[1]}</Text>
@@ -57,6 +57,7 @@ export default function PortfolioMask({navigation}) {
 }
 
 const styles = StyleSheet.create({
+    con: {flex: 1, backgroundColor: '#fff'},
     amount_sty: {
         color: Colors.red,
         fontSize: px(34),
