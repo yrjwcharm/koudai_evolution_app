@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 16:27:58
+ * @LastEditTime: 2021-07-09 17:08:11
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -146,7 +146,7 @@ const Vision = ({navigation, route}) => {
                         </BoxShadow>
                     </View>
                 </LinearGradient>
-                {!userInfo.is_login && <LoginMask />}
+                {!userInfo.is_login && <LoginMask scene="vision" />}
             </>
         );
     };
