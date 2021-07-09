@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 15:21:29
+ * @LastEditTime: 2021-07-09 15:24:19
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -49,7 +49,6 @@ const Vision = ({navigation, route}) => {
     const comViewRef = useRef();
     const isFocused = useIsFocused();
     const [hasNet, setHasNet] = useState(true);
-    const [showError, setShowError] = useState(false);
     const inset = useSafeAreaInsets();
     const [tabs, setTabs] = useState([]);
     const dispatch = useDispatch();
@@ -84,14 +83,9 @@ const Vision = ({navigation, route}) => {
     }, [isFocused, navigation, tabs]);
 
     const getTabs = () => {
-        http.get('/vision/tabs/20210524')
-            .then((res) => {
-                setTabs(res.result);
-                setShowError(false);
-            })
-            .catch(() => {
-                setShowError(true);
-            });
+        http.get('/vision/tabs/20210524').then((res) => {
+            setTabs(res.result);
+        });
     };
 
     const _renderDynamicView = useCallback(() => {
