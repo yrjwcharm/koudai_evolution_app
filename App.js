@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-01 11:15:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-09 23:07:51
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -31,6 +31,7 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
+import {throttle} from 'lodash';
 
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -322,74 +323,77 @@ function App(props) {
             }
         }
     };
-    const showModal = React.useCallback((modal) => {
-        if (modal.type === 'image') {
-            Modal.show({
-                type: 'image',
-                imageUrl: modal.image,
-                imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: imageH.current,
-                isTouchMaskToClose: modal.touch_close,
-                confirmCallBack: () => {
-                    modal.log_id && global.LogTool(modal.log_id);
-                    jump(navigationRef.current, modal.url);
-                },
-            });
-        } else if (modal.type === 'alert_image') {
-            Modal.show({
-                confirm: modal.cancel ? true : false,
-                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
-                clickClose: false,
-                confirmText: modal.confirm.text || '',
-                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-                customTitleView: (
-                    <Image
-                        source={{uri: modal.image}}
-                        style={{
-                            width: text(280),
-                            height: imageH.current,
-                            borderTopRightRadius: 8,
-                            borderTopLeftRadius: 8,
-                        }}
-                    />
-                ),
-                isTouchMaskToClose: modal.touch_close,
-            });
-        } else if (modal.type === 'confirm') {
-            Modal.show({
-                confirm: modal.cancel ? true : false,
-                confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
-                confirmText: modal.confirm.text || '',
-                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
-                cancelText: modal.cancel?.text || '',
-                content: modal.content || '',
-                isTouchMaskToClose: modal.touch_close,
-                title: modal.title || '',
-            });
-        } else if (modal.type === 'diy_image') {
-            Modal.show({
-                type: 'image',
-                imageUrl: modal.image,
-                imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: imageH.current,
-                isTouchMaskToClose: modal.touch_close,
-                confirmCallBack: () => {
-                    // console.log(navigationRef.current);
-                    jump(navigationRef.current, modal.url);
-                },
-                content: {
-                    title: modal.title,
-                    text: modal.content,
-                    tip: modal.tip,
-                },
-            });
-        }
-        setTimeout(() => {
-            setModalObj({});
-        }, 500);
-    }, []);
+    const showModal = React.useCallback(
+        throttle((modal) => {
+            if (modal.type === 'image') {
+                Modal.show({
+                    type: 'image',
+                    imageUrl: modal.image,
+                    imgWidth: modal.device_width ? deviceWidth : 0,
+                    imgHeight: imageH.current,
+                    isTouchMaskToClose: modal.touch_close,
+                    confirmCallBack: () => {
+                        modal.log_id && global.LogTool(modal.log_id);
+                        jump(navigationRef.current, modal.url);
+                    },
+                });
+            } else if (modal.type === 'alert_image') {
+                Modal.show({
+                    confirm: modal.cancel ? true : false,
+                    confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                    clickClose: false,
+                    confirmText: modal.confirm.text || '',
+                    cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                    cancelText: modal.cancel?.text || '',
+                    content: modal.content || '',
+                    customTitleView: (
+                        <Image
+                            source={{uri: modal.image}}
+                            style={{
+                                width: text(280),
+                                height: imageH.current,
+                                borderTopRightRadius: 8,
+                                borderTopLeftRadius: 8,
+                            }}
+                        />
+                    ),
+                    isTouchMaskToClose: modal.touch_close,
+                });
+            } else if (modal.type === 'confirm') {
+                Modal.show({
+                    confirm: modal.cancel ? true : false,
+                    confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                    confirmText: modal.confirm.text || '',
+                    cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                    cancelText: modal.cancel?.text || '',
+                    content: modal.content || '',
+                    isTouchMaskToClose: modal.touch_close,
+                    title: modal.title || '',
+                });
+            } else if (modal.type === 'diy_image') {
+                Modal.show({
+                    type: 'image',
+                    imageUrl: modal.image,
+                    imgWidth: modal.device_width ? deviceWidth : 0,
+                    imgHeight: imageH.current,
+                    isTouchMaskToClose: modal.touch_close,
+                    confirmCallBack: () => {
+                        // console.log(navigationRef.current);
+                        jump(navigationRef.current, modal.url);
+                    },
+                    content: {
+                        title: modal.title,
+                        text: modal.content,
+                        tip: modal.tip,
+                    },
+                });
+            }
+            setTimeout(() => {
+                setModalObj({});
+            }, 500);
+        }, 10000),
+        []
+    );
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
