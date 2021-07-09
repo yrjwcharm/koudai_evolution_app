@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 16:52:03
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 19:07:57
+ * @LastEditTime: 2021-07-09 19:08:41
  * @Description:组合详情页蒙层
  */
 import React, {useEffect, useState} from 'react';
@@ -43,7 +43,7 @@ export default function PortfolioMask({navigation}) {
                         position: 'absolute',
                         width: deviceWidth - px(32),
                         left: px(16),
-                        bottom: isIphoneX() ? 34 + px(8) : px(8),
+                        bottom: isIphoneX() ? 34 + px(40) : px(40),
                     }}
                     title={data.button.text}
                     onPress={() => {
