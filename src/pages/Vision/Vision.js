@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 17:08:11
+ * @LastEditTime: 2021-07-09 17:44:31
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -83,13 +83,9 @@ const Vision = ({navigation, route}) => {
     }, [isFocused, navigation, tabs]);
 
     const getTabs = useCallback(() => {
-        http.get('/vision/tabs/20210524')
-            .then((res) => {
-                setTabs(res.result);
-            })
-            .catch((error) => {
-                alert(error);
-            });
+        http.get('/vision/tabs/20210524').then((res) => {
+            setTabs(res.result);
+        });
     }, []);
 
     const _renderDynamicView = useCallback(() => {
