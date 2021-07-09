@@ -2,7 +2,7 @@
  * @Date: 2021-03-17 17:44:16
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 17:10:17
+ * @LastEditTime: 2021-07-09 19:19:05
  * @Description: 登录注册蒙层
  */
 import React, {useState, useRef} from 'react';
@@ -24,7 +24,7 @@ const LoginMask = ({scene}) => {
         <>
             <ImageBackground
                 source={require('../assets/img/vision/visionMask.jpg')}
-                style={[styles.container, {top: inset.top + px(8)}]}>
+                style={[styles.container, {top: inset.top - px(6), width: width - px(10), left: px(5)}]}>
                 <Button title={'注册'} style={styles.registerBtn} onPress={() => navigation.navigate('Register')} />
                 <Button
                     title={'登录'}
