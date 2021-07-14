@@ -172,7 +172,54 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             </>
                         </LinearGradient>
-
+                        {/* 专家策略 */}
+                        {data?.polaris_info && (
+                            <View style={{paddingHorizontal: px(16)}}>
+                                <Text style={styles.large_title}>{data?.polaris_info?.title}</Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        jump(data?.polaris_info?.url);
+                                    }}
+                                    activeOpacity={0.8}
+                                    style={{marginBottom: px(20)}}>
+                                    <View style={[styles.V_card, Style.flexRow]}>
+                                        <FastImage
+                                            style={{
+                                                width: px(40),
+                                                height: px(40),
+                                                marginRight: px(8),
+                                                borderRadius: px(6),
+                                            }}
+                                            source={{uri: data?.polaris_info?.avatar}}
+                                        />
+                                        <View style={{flex: 1}}>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text style={[styles.secure_title, {marginRight: px(4)}]}>
+                                                    {data?.polaris_info?.name}
+                                                </Text>
+                                                <FastImage
+                                                    style={{width: px(17), height: px(17)}}
+                                                    source={{uri: data?.polaris_info?.v_img}}
+                                                />
+                                            </View>
+                                            <View style={Style.flexBetween}>
+                                                <Text numberOfLines={1} style={styles.v_text}>
+                                                    {data?.polaris_info?.detail}
+                                                </Text>
+                                                <View style={[Style.flexRow]}>
+                                                    <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
+                                                    <FontAwesome
+                                                        name={'angle-right'}
+                                                        color={Colors.btnColor}
+                                                        size={18}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                         {/* 专业理财 */}
                         <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
                             <Text style={[styles.large_title]}>{data?.part2?.group_name}</Text>
@@ -315,54 +362,6 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             ))}
                         </View>
-                        {/* 专家策略 */}
-                        {data?.polaris_info && (
-                            <View style={{paddingHorizontal: px(16)}}>
-                                <Text style={styles.large_title}>{data?.polaris_info?.title}</Text>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        jump(data?.polaris_info?.url);
-                                    }}
-                                    activeOpacity={0.8}
-                                    style={{marginBottom: px(20)}}>
-                                    <View style={[styles.V_card, Style.flexRow]}>
-                                        <FastImage
-                                            style={{
-                                                width: px(40),
-                                                height: px(40),
-                                                marginRight: px(8),
-                                                borderRadius: px(6),
-                                            }}
-                                            source={{uri: data?.polaris_info?.avatar}}
-                                        />
-                                        <View style={{flex: 1}}>
-                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
-                                                <Text style={[styles.secure_title, {marginRight: px(4)}]}>
-                                                    {data?.polaris_info?.name}
-                                                </Text>
-                                                <FastImage
-                                                    style={{width: px(17), height: px(17)}}
-                                                    source={{uri: data?.polaris_info?.v_img}}
-                                                />
-                                            </View>
-                                            <View style={Style.flexBetween}>
-                                                <Text numberOfLines={1} style={styles.v_text}>
-                                                    {data?.polaris_info?.detail}
-                                                </Text>
-                                                <View style={[Style.flexRow]}>
-                                                    <Text style={[Style.more, {marginRight: px(2)}]}>详情</Text>
-                                                    <FontAwesome
-                                                        name={'angle-right'}
-                                                        color={Colors.btnColor}
-                                                        size={18}
-                                                    />
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        )}
                     </View>
                     <BottomDesc />
                 </ScrollView>
