@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
- * @LastEditors: dx
- * @LastEditTime: 2021-04-16 23:50:19
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-14 19:18:56
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
@@ -399,7 +399,7 @@ export default function PrivateAssets({navigation, route}) {
                         <TouchableOpacity
                             activeOpacity={1}
                             style={styles.text_sty}
-                            onPress={() => navigation.navigate('AssetNav')}>
+                            onPress={() => navigation.navigate('AssetNav', {code: route.params?.fund_code})}>
                             <Text style={{color: '#545968'}}>更多净值</Text>
                             <AntDesign name={'right'} size={12} color={Colors.lightGrayColor} />
                         </TouchableOpacity>
