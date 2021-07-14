@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-09 23:07:51
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-14 18:13:57
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -172,19 +172,7 @@ function App(props) {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    React.useEffect(() => {
-        CodePush.checkForUpdate(key)
-            .then((update) => {
-                if (!update) {
-                    store.dispatch(updateUserInfo({hotRefreshData: ''}));
-                } else {
-                    store.dispatch(updateUserInfo({hotRefreshData: update}));
-                }
-            })
-            .catch((res) => {
-                store.dispatch(updateUserInfo({hotRefreshData: ''}));
-            });
-    }, []);
+
     React.useEffect(() => {
         var listener = '';
         setTimeout(() => {
