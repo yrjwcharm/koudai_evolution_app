@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 16:34:30
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-04-21 17:47:12
+ * @LastEditTime: 2021-07-15 19:01:35
  */
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -47,6 +47,13 @@ const PrivateApply = (props) => {
     useEffect(() => {
         init();
     }, [init]);
+    useEffect(() => {
+        if (data.title) {
+            props.navigation.setOptions({
+                title: data.title,
+            });
+        }
+    }, [data, props]);
     return (
         <View style={[styles.container, {paddingBottom: isIphoneX() ? text(85) : text(51)}]}>
             <ScrollView
