@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-26 14:10:26
+ * @LastEditTime: 2021-07-27 16:08:09
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -170,7 +170,7 @@ class Index extends Component {
             pickerTextEllipsisLen: 100,
             wheelFlex: [1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.setState({rname: pickedValue[0], showMask: false, rcode: this.state.careerList[pickedIndex]});
+                this.setState({rname: pickedValue[0], showMask: false, rcode: this.state.careerList[pickedIndex].code});
             },
             onPickerCancel: () => {
                 this.setState({showMask: false});

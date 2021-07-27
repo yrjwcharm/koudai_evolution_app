@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 16:02:41
+ * @LastEditTime: 2021-07-23 18:09:50
  * @Description:音频模块
  */
 
@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
     },
     cover_con: {
         marginLeft: px(13),
+        height: px(106),
+        width: px(106),
     },
     cover: {
         height: px(106),

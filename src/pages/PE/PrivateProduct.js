@@ -3,7 +3,7 @@
  * @Date: 2021-01-18 17:21:32
  * @LastEditors: yhc
  * @Desc:私募产品公告
- * @LastEditTime: 2021-06-17 09:55:02
+ * @LastEditTime: 2021-07-23 14:21:51
  */
 import React, {useState, useCallback} from 'react';
 import {View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Image} from 'react-native';

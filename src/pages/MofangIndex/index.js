@@ -115,30 +115,6 @@ const Index = (props) => {
         },
         [isFocused, readInterface]
     );
-    // 刷新一下
-    const refreshNetWork = useCallback(() => {
-        setHasNet(netInfo.isConnected);
-    }, [netInfo]);
-
-    useFocusEffect(
-        useCallback(() => {
-            showPrivacyPop();
-            hasNet && getData();
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [hasNet])
-    );
-
-    useEffect(() => {
-        http.get('/mapi/app/config/20210101').then((res) => {
-            dispatch(updateUserInfo(res.result));
-        });
-        const listener = NetInfo.addEventListener((state) => {
-            setHasNet(state.isConnected);
-        });
-        return () => listener();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         JPush.init();
         setTimeout(() => {
@@ -181,8 +157,32 @@ const Index = (props) => {
             JPush.addCustomMessagegListener((result) => {
                 console.log('customMessageListener:' + JSON.stringify(result));
             });
-        }, 100);
+        }, 50);
     }, [props.navigation]);
+    // 刷新一下
+    const refreshNetWork = useCallback(() => {
+        setHasNet(netInfo.isConnected);
+    }, [netInfo]);
+
+    useFocusEffect(
+        useCallback(() => {
+            showPrivacyPop();
+            hasNet && getData();
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [hasNet])
+    );
+
+    useEffect(() => {
+        http.get('/mapi/app/config/20210101').then((res) => {
+            dispatch(updateUserInfo(res.result));
+        });
+        const listener = NetInfo.addEventListener((state) => {
+            setHasNet(state.isConnected);
+        });
+        return () => listener();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
         const unsubscribe = props.navigation.addListener('tabPress', (e) => {
             if (isFocused) {

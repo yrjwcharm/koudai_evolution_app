@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-14 18:13:57
+ * @LastEditTime: 2021-07-27 15:30:57
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -91,7 +91,7 @@ function App(props) {
             if (res.code == '000000') {
                 store.dispatch(
                     updateVision({
-                        visionUpdate: global.currentRoutePageId.indexOf('Vision') > -1 ? '' : res.result.vision_update,
+                        visionUpdate: global.currentRoutePageId?.indexOf('Vision') > -1 ? '' : res.result.vision_update,
                         visionTabUpdate: res.result.vision_update,
                         album_update: res.result.album_update,
                     })

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 19:03:11
+ * @LastEditTime: 2021-07-23 18:09:03
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -34,7 +34,7 @@ const shadow = {
     x: -2,
     y: 12,
     width: px(52),
-    height: px(22),
+    height: px(21),
     style: {
         position: 'absolute',
         right: 0,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         marginLeft: px(-1),
     },
     menu: {
-        height: px(42),
+        height: px(40),
         width: px(52),
         paddingLeft: px(11),
         paddingRight: px(17),

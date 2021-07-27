@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-12 11:42:40
+ * @LastEditTime: 2021-07-23 18:13:00
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -50,7 +50,9 @@ export default function Launch({navigation}) {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check', {env})
                 .then((result) => {
-                    console.log(result.result);
+                    if (result.code != '000000') {
+                        throw new Error();
+                    }
                     if (!__DEV__) {
                         if (result.result?.env) {
                             global.env = result.result.env;
@@ -80,7 +82,9 @@ export default function Launch({navigation}) {
                         global.env = envList[i];
                         http.get('/health/check')
                             .then((result) => {
-                                console.log(result.result);
+                                if (result.code != '000000') {
+                                    throw new Error();
+                                }
                                 dispatch(getUserInfo());
                                 if (callback) {
                                     callback();
