@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 15:51:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 16:03:49
+ * @LastEditTime: 2021-07-28 16:07:21
  * @Description:根据type生成对应的内容模块
  */
 import React from 'react';
@@ -16,12 +16,14 @@ import QuestionCard from '../../../components/Article/QuestionCard';
  * @param {*} 3 视频文章
  * @param {*} 4 问答文章
  * @param {*} 5 活动文章
+ * @param {*} 6 专辑文章
  * @return {*}
  */
 const RenderCate = (data, style, scene) => {
     let com = '';
     switch (data.type) {
         case 2:
+        case 6:
             com = <VioceCard data={data} key={data.id} style={style} scene={scene} />;
             break;
         case 1:

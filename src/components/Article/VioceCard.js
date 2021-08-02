@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-23 18:09:50
+ * @LastEditTime: 2021-08-02 16:04:50
  * @Description:音频模块
  */
 
@@ -46,7 +46,7 @@ const VioceCard = ({data, style, scene}) => {
                             <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
                         </View>
                     ) : null}
-                    {scene == 'recommend' || scene == 'collect' ? (
+                    {data.type == 2 || scene == 'collect' ? (
                         <Text numberOfLines={2} style={styles.title}>
                             {data.title}
                         </Text>

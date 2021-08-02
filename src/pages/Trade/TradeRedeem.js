@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: dx
- * @LastEditTime: 2021-07-02 11:35:23
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-29 16:06:10
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
@@ -43,7 +43,9 @@ export default class TradeRedeem extends Component {
             redeemTo: '银行卡',
             tips: '',
             init: 1,
+            notice: '', //不足7天的基金弹窗
         };
+        this.notice = '';
     }
     componentDidMount() {
         Http.get('/trade/redeem/info/20210101', {
@@ -80,6 +82,7 @@ export default class TradeRedeem extends Component {
                     tableData.head = res.result.header;
                     tableData.body = res.result.body;
 
+                    this.notice = res.result.notice;
                     if (init != 1) {
                         this.setState({
                             tableData,
@@ -92,6 +95,7 @@ export default class TradeRedeem extends Component {
                     this.setState({
                         btnClick: false,
                     });
+                    this.notice = '';
                     reject();
                     Toast.show(res.message);
                 }
@@ -177,6 +181,23 @@ export default class TradeRedeem extends Component {
     };
     redmeeClick = () => {
         global.LogTool('confirmRedeemEnd', this.props.route?.params?.poid);
+        console.log(this.notice);
+        if (this.notice) {
+            Modal.show({
+                title: '赎回确认',
+                content: this.notice,
+                confirmText: '取消赎回',
+                cancelText: '继续赎回',
+                confirm: true,
+                cancelCallBack: () => {
+                    this.redmeeReason();
+                },
+            });
+        } else {
+            this.redmeeReason();
+        }
+    };
+    redmeeReason = () => {
         setTimeout(() => {
             const option = [];
             var _id;
