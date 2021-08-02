@@ -2,16 +2,14 @@
  * @Description:魔方宝说明
  * @Author: xjh
  * @Date: 2021-01-23 18:18:59
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-31 18:35:04
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-02 15:08:53
  */
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Font, Style} from '../../common/commonStyle';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Http from '../../services';
-import {px as text, isIphoneX} from '../../utils/appUtil';
-const btnHeight = isIphoneX() ? text(90) : text(66);
+import {px as text} from '../../utils/appUtil';
 export default function MfbIntro(props) {
     const [data, setData] = useState({});
     useEffect(() => {
@@ -20,8 +18,8 @@ export default function MfbIntro(props) {
         });
     }, []);
     return (
-        <View style={[Style.containerPadding, {backgroundColor: '#fff'}]}>
-            <ScrollView style={{flex: 1}}>
+        <View style={{backgroundColor: '#fff', flex: 1, paddingVertical: Space.padding}}>
+            <ScrollView style={{flex: 1, paddingHorizontal: Space.padding}}>
                 {Object.keys(data).length > 0 &&
                     data?.content?.map((_item, _index) => {
                         return (
