@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-02 17:50:33
+ * @LastEditTime: 2021-08-02 18:34:09
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -71,12 +71,14 @@ const TopInvestors = ({navigation, route}) => {
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 1}}
                         style={{paddingHorizontal: Space.padding, paddingBottom: px(20)}}>
-                        <View style={Style.flexCenter}>
-                            <Icon name={'triangle-up'} size={22} color={'#fff'} />
-                            <View style={styles.suggestionSty}>
-                                <HTML html={data.console?.desc} style={styles.suggestionTextSty} />
+                        {data.console?.desc ? (
+                            <View style={Style.flexCenter}>
+                                <Icon name={'triangle-up'} size={22} color={'#fff'} />
+                                <View style={styles.suggestionSty}>
+                                    <HTML html={data.console.desc} style={styles.suggestionTextSty} />
+                                </View>
                             </View>
-                        </View>
+                        ) : null}
                         <Text style={styles.title}>{'牛人买入点走势图'}</Text>
                         <View style={{...styles.boxSty, minHeight: px(276)}}>
                             <View style={{height: px(216)}}>
