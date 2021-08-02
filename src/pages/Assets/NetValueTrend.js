@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-27 16:20:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-02 14:00:50
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -212,39 +212,51 @@ const NetValueTrend = ({poid}) => {
                             })}
                         </View>
                     </View>
-                    <View style={styles.buyTableWrap}>
-                        <View style={styles.buyTableHead}>
-                            <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[0]}</Text>
-                            </View>
-                            <View style={[styles.buyTableCell]}>
-                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[1]}</Text>
-                            </View>
-                            <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                <Text style={[styles.buyTableItem, styles.fontColor]}>{chartData.table?.th[2]}</Text>
-                            </View>
-                        </View>
-                        {chartData.table?.tr_list?.map((item, index) => {
-                            return (
-                                <View
-                                    key={index + 'c'}
-                                    style={[
-                                        styles.buyTableBody,
-                                        {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
-                                    ]}>
-                                    <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                        <Text style={styles.buyTableItem}>{item[0]}</Text>
-                                    </View>
-                                    <View style={[styles.buyTableCell]}>
-                                        <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>{item[1]}</Text>
-                                    </View>
-                                    <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                        <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>{item[2]}</Text>
-                                    </View>
+                    {chartData.table && (
+                        <View style={styles.buyTableWrap}>
+                            <View style={styles.buyTableHead}>
+                                <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>
+                                        {chartData.table?.th[0]}
+                                    </Text>
                                 </View>
-                            );
-                        })}
-                    </View>
+                                <View style={[styles.buyTableCell]}>
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>
+                                        {chartData.table?.th[1]}
+                                    </Text>
+                                </View>
+                                <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>
+                                        {chartData.table?.th[2]}
+                                    </Text>
+                                </View>
+                            </View>
+                            {chartData.table?.tr_list?.map((item, index) => {
+                                return (
+                                    <View
+                                        key={index + 'c'}
+                                        style={[
+                                            styles.buyTableBody,
+                                            {backgroundColor: (index + 1) % 2 == 0 ? Colors.bgColor : '#fff'},
+                                        ]}>
+                                        <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                            <Text style={styles.buyTableItem}>{item[0]}</Text>
+                                        </View>
+                                        <View style={[styles.buyTableCell]}>
+                                            <Text style={[styles.buyTableItem, {color: getColor(item[1])}]}>
+                                                {item[1]}
+                                            </Text>
+                                        </View>
+                                        <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                            <Text style={[styles.buyTableItem, {color: getColor(item[2])}]}>
+                                                {item[2]}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    )}
                 </>
             ) : showEmpty ? (
                 <EmptyTip style={{paddingVertical: text(40)}} text={'暂无净值走势数据'} type={'part'} />

@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-27 15:30:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-02 11:17:37
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -313,6 +313,8 @@ function App(props) {
     };
     const showModal = React.useCallback(
         throttle((modal) => {
+            http.post('/common/layer/click/20210801', {log_id: modal.log_id});
+            global.LogTool('campaignPopup', navigationRef.current.getCurrentRoute().name, modal.log_id);
             if (modal.type === 'image') {
                 Modal.show({
                     type: 'image',
@@ -321,14 +323,27 @@ function App(props) {
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
                     confirmCallBack: () => {
-                        modal.log_id && global.LogTool(modal.log_id);
+                        modal.log_id &&
+                            global.LogTool(
+                                'campaignPopupStart',
+                                navigationRef.current.getCurrentRoute().name,
+                                modal.log_id
+                            );
                         jump(navigationRef.current, modal.url);
                     },
                 });
             } else if (modal.type === 'alert_image') {
                 Modal.show({
                     confirm: modal.cancel ? true : false,
-                    confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                    confirmCallBack: () => {
+                        modal.log_id &&
+                            global.LogTool(
+                                'campaignPopupStart',
+                                navigationRef.current.getCurrentRoute().name,
+                                modal.log_id
+                            );
+                        jump(navigationRef.current, modal.confirm.url || '');
+                    },
                     clickClose: false,
                     confirmText: modal.confirm.text || '',
                     cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
@@ -350,7 +365,15 @@ function App(props) {
             } else if (modal.type === 'confirm') {
                 Modal.show({
                     confirm: modal.cancel ? true : false,
-                    confirmCallBack: () => jump(navigationRef.current, modal.confirm.url || ''),
+                    confirmCallBack: () => {
+                        modal.log_id &&
+                            global.LogTool(
+                                'campaignPopupStart',
+                                navigationRef.current.getCurrentRoute().name,
+                                modal.log_id
+                            );
+                        jump(navigationRef.current, modal.confirm.url || '');
+                    },
                     confirmText: modal.confirm.text || '',
                     cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
                     cancelText: modal.cancel?.text || '',
@@ -366,7 +389,12 @@ function App(props) {
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
                     confirmCallBack: () => {
-                        // console.log(navigationRef.current);
+                        modal.log_id &&
+                            global.LogTool(
+                                'campaignPopupStart',
+                                navigationRef.current.getCurrentRoute().name,
+                                modal.log_id
+                            );
                         jump(navigationRef.current, modal.url);
                     },
                     content: {

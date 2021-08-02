@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-09 15:28:18
+ * @LastEditTime: 2021-07-28 16:25:55
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -294,7 +294,7 @@ function HomeScreen({navigation, route}) {
     /** @name 渲染中控滑块 */
     const renderItem = ({item, index}) => {
         return (
-            <View style={{...styles.contentBox, height: text(144)}} key={item + index}>
+            <View style={{...styles.contentBox, height: text(164)}} key={item + index}>
                 {item.tag ? (
                     <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                         <View style={[styles.contentTag, {backgroundColor: item.color}]}>
@@ -312,12 +312,20 @@ function HomeScreen({navigation, route}) {
                         ) : null}
                     </View>
                 ) : null}
-                {item.title ? <HTML html={item.title} style={{...styles.contentTitle, marginBottom: text(4)}} /> : null}
-                <Text
-                    numberOfLines={2}
-                    style={[styles.contentText, {height: text(40)}, item.title ? {} : {color: Colors.defaultColor}]}>
-                    {item.content}
-                </Text>
+                {item.title ? (
+                    <View style={{marginBottom: text(4)}}>
+                        <HTML html={item.title} style={styles.contentTitle} />
+                    </View>
+                ) : null}
+                <View style={{height: text(60)}}>
+                    <HTML
+                        html={item.content}
+                        style={{
+                            ...styles.contentText,
+                            color: item.title ? Colors.descColor : Colors.defaultColor,
+                        }}
+                    />
+                </View>
                 {item.button ? (
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -688,14 +696,11 @@ function HomeScreen({navigation, route}) {
                                                 </View>
                                             ) : null}
                                             {item.title ? (
-                                                <HTML
-                                                    html={item.title}
-                                                    style={{...styles.contentTitle, marginBottom: text(4)}}
-                                                />
+                                                <View style={{marginBottom: text(4)}}>
+                                                    <HTML html={item.title} style={styles.contentTitle} />
+                                                </View>
                                             ) : null}
-                                            <Text numberOfLines={2} style={styles.contentText}>
-                                                {item.content}
-                                            </Text>
+                                            <HTML html={item.content} style={styles.contentText} />
                                             {item.button ? (
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
@@ -1097,6 +1102,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(19),
         color: Colors.descColor,
+        textAlign: 'justify',
     },
     checkBtn: {
         marginTop: text(8),

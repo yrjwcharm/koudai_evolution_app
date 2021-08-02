@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 16:29:55
+ * @LastEditors: dx
+ * @LastEditTime: 2021-07-30 16:59:41
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -14,6 +14,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import Empty from '../../components/EmptyTip';
+import HTML from '../../components/RenderHtml';
 import _ from 'lodash';
 export default function MessageNotice({navigation, route}) {
     const [list, setList] = useState([]);
@@ -123,6 +124,7 @@ export default function MessageNotice({navigation, route}) {
             // is_read==0没读
 
             if (read) {
+                global.LogTool('noticeStart', id);
                 jump(url);
                 return;
             }
@@ -161,6 +163,7 @@ export default function MessageNotice({navigation, route}) {
     const renderItem = ({item, index}) => {
         return (
             <View>
+                {/* 最多六行文字 */}
                 {item?.content_type == 0 && (
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -168,14 +171,14 @@ export default function MessageNotice({navigation, route}) {
                         onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
                         <View style={Style.flexBetween}>
                             <Text
-                                style={[styles.title_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}
+                                style={[styles.title_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}
                                 numberOfLines={2}>
                                 {item.title}
                             </Text>
                             <Text
                                 style={[
                                     styles.time_Sty,
-                                    item?.is_read == 1 ? {color: '#9AA1B2'} : {},
+                                    item?.is_read == 1 ? {color: Colors.darkGrayColor} : {},
                                     {alignSelf: 'flex-start'},
                                 ]}>
                                 {item.post_time}
@@ -184,13 +187,14 @@ export default function MessageNotice({navigation, route}) {
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
                             <Text
                                 numberOfLines={6}
-                                style={[styles.content_sty, item?.is_read == 1 ? {color: '#9AA1B2'} : {}]}>
+                                style={[styles.content_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}>
                                 {item.content}
                             </Text>
                             {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
                         </View>
                     </TouchableOpacity>
                 )}
+                {/* 图文 */}
                 {item?.content_type == 1 && (
                     <TouchableOpacity
                         activeOpacity={0.8}
@@ -210,17 +214,52 @@ export default function MessageNotice({navigation, route}) {
                                     numberOfLines={2}
                                     style={[
                                         styles.card_title,
-                                        {color: item?.is_read == 1 ? '#9AA1B2' : Colors.defaultColor},
+                                        {color: item?.is_read == 1 ? Colors.darkGrayColor : Colors.defaultColor},
                                     ]}>
                                     {item.title}
                                 </Text>
                                 <Text
                                     style={{
                                         fontSize: Font.textH3,
-                                        color: item?.is_read == 1 ? '#9AA1B2' : '#9AA1B2',
+                                        color: item?.is_read == 1 ? Colors.darkGrayColor : Colors.darkGrayColor,
                                     }}>
                                     {item.post_time}
                                 </Text>
+                            </View>
+                            {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
+                        </View>
+                    </TouchableOpacity>
+                )}
+                {/* 不限制几行文字 内容支持html */}
+                {item?.content_type == 2 && (
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.card_sty}
+                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
+                        <View style={Style.flexBetween}>
+                            <Text
+                                style={[styles.title_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}
+                                numberOfLines={2}>
+                                {item.title}
+                            </Text>
+                            <Text
+                                style={[
+                                    styles.time_Sty,
+                                    item?.is_read == 1 ? {color: Colors.darkGrayColor} : {},
+                                    {alignSelf: 'flex-start'},
+                                ]}>
+                                {item.post_time}
+                            </Text>
+                        </View>
+                        <View style={[Style.flexBetween, {marginTop: text(12)}]}>
+                            <View style={{marginRight: Space.marginAlign, flexShrink: 1}}>
+                                <HTML
+                                    html={item?.is_read == 1 ? item.read_content : item.content}
+                                    style={{
+                                        ...styles.content_sty,
+                                        color: item?.is_read == 1 ? Colors.darkGrayColor : Colors.descColor,
+                                    }}
+                                />
                             </View>
                             {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}
                         </View>
@@ -263,10 +302,10 @@ const styles = StyleSheet.create({
     },
     card_sty: {
         backgroundColor: '#fff',
-        padding: text(16),
+        padding: Space.padding,
         borderRadius: text(10),
-        marginTop: text(16),
-        marginHorizontal: text(16),
+        marginTop: Space.marginVertical,
+        marginHorizontal: Space.marginAlign,
     },
     title_sty: {
         color: Colors.defaultColor,
@@ -276,19 +315,19 @@ const styles = StyleSheet.create({
         marginRight: text(12),
     },
     time_Sty: {
-        color: '#9AA1B2',
+        color: Colors.darkGrayColor,
         fontSize: Font.textH3,
         marginTop: text(4),
     },
     content_sty: {
-        color: '#545968',
+        color: Colors.descColor,
         lineHeight: text(18),
         flex: 1,
         textAlign: 'justify',
-        marginRight: px(16),
+        marginRight: Space.marginAlign,
     },
     content_wrap_sty: {
-        margin: text(16),
+        margin: Space.marginAlign,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -297,11 +336,11 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: text(10),
         borderTopRightRadius: text(10),
         height: text(144),
-        width: deviceWidth - text(32),
+        width: deviceWidth - Space.padding * 2,
     },
     card_title: {
         flex: 1,
-        fontSize: text(16),
+        fontSize: Font.textH1,
         fontWeight: 'bold',
         lineHeight: text(22),
         marginBottom: text(10),

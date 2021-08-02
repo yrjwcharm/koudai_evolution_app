@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-07-02 11:25:48
+ * @LastEditTime: 2021-08-02 14:20:59
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -17,8 +17,9 @@ import {
     Dimensions,
     RefreshControl,
 } from 'react-native';
+import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text} from '../../utils/appUtil';
+import {px, px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -35,6 +36,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import CircleLegend from '../../components/CircleLegend';
 import FastImage from 'react-native-fast-image';
 import EmptyTip from '../../components/EmptyTip';
+import GuideTips from '../../components/GuideTips';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -176,10 +178,10 @@ export default function PortfolioAssets(props) {
             text: chart?.label[1].val,
             style: [styles.legend_title_sty, {color: getColor(chart?.label[1].val)}],
         });
-        _textBenchmark.current.setNativeProps({
-            text: chart?.label[2].val,
-            style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
-        });
+        // _textBenchmark.current.setNativeProps({
+        //     text: chart?.label[2].val,
+        //     style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
+        // });
     };
     const getColor = useCallback((t) => {
         if (!t) {
@@ -241,30 +243,41 @@ export default function PortfolioAssets(props) {
     const renderBtn = () => {
         return (
             <View style={styles.plan_card_sty}>
-                <View style={[Style.flexRow, {justifyContent: 'center'}]}>
+                <View style={Style.flexBetween}>
                     <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
                     {card?.title_info?.popup ? (
-                        <TouchableOpacity onPress={() => showTips(card?.title_info?.popup)}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
                             <FastImage
-                                style={{width: text(20), height: text(20), marginTop: text(3)}}
+                                style={{width: text(16), height: text(16)}}
                                 source={require('../../assets/img/tip.png')}
                             />
                         </TouchableOpacity>
                     ) : null}
                 </View>
                 {card?.desc ? (
-                    <View style={{marginTop: px(13)}}>
+                    <View style={{marginVertical: px(12)}}>
                         <Html style={styles.plan_desc_sty} html={card?.desc} />
                     </View>
                 ) : null}
 
-                {card?.notice ? (
+                {/* {card?.notice ? (
                     <View style={styles.blue_wrap_style}>
                         <Text style={styles.blue_text_style}>{card?.notice}</Text>
                     </View>
+                ) : null} */}
+                {card?.notice_info ? (
+                    <View style={{marginBottom: text(16)}}>
+                        <View style={styles.noticeSty}>
+                            <Image
+                                source={require('../../assets/personal/noticeArrow.png')}
+                                style={styles.noticeArrow}
+                            />
+                            <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
+                        </View>
+                    </View>
                 ) : null}
-                <View style={[Style.flexRow, {justifyContent: 'space-between', marginTop: text(14)}]}>
-                    {card.button_list.map((_button, _index, arr) => {
+                <View style={Style.flexBetween}>
+                    {card?.button_list?.map?.((_button, _index, arr) => {
                         return (
                             <TouchableOpacity
                                 key={_index + '_button'}
@@ -306,6 +319,11 @@ export default function PortfolioAssets(props) {
                         );
                     })}
                 </View>
+                {card?.tip ? (
+                    <View style={{marginTop: text(20)}}>
+                        <Text style={styles.cardTips}>{card?.tip}</Text>
+                    </View>
+                ) : null}
             </View>
         );
     };
@@ -347,28 +365,31 @@ export default function PortfolioAssets(props) {
                                         <Text style={styles.legend_desc_sty}>{chart?.label[1]?.name}</Text>
                                     </View>
                                 </View>
-                                <View style={styles.legend_sty}>
-                                    <TextInput
-                                        style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
-                                        ref={_textBenchmark}
-                                        defaultValue={chart?.label[2]?.val}
-                                        editable={false}
-                                    />
-                                    <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                        <CircleLegend color={['#E8EAEF', '#545968']} />
-                                        <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
-                                        {chart?.tips && (
-                                            <TouchableOpacity
-                                                style={{position: 'absolute', right: text(-16)}}
-                                                onPress={() => showTips(chart.tips, 'chart')}>
-                                                <FastImage
-                                                    style={{width: text(16), height: text(16)}}
-                                                    source={require('../../assets/img/tip.png')}
-                                                />
-                                            </TouchableOpacity>
-                                        )}
+                                {chart?.label[2] && (
+                                    <View style={styles.legend_sty}>
+                                        <TextInput
+                                            style={[styles.legend_title_sty, {color: getColor(chart?.label[2]?.val)}]}
+                                            ref={_textBenchmark}
+                                            defaultValue={chart?.label[2]?.val}
+                                            editable={false}
+                                        />
+                                        <View style={[Style.flexRow, {alignItems: 'center'}]}>
+                                            <CircleLegend color={['#E8EAEF', '#545968']} />
+                                            <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
+                                            {chart?.tips && (
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={{position: 'absolute', right: text(-16)}}
+                                                    onPress={() => showTips(chart.tips, 'chart')}>
+                                                    <FastImage
+                                                        style={{width: text(12), height: text(12)}}
+                                                        source={require('../../assets/img/tip.png')}
+                                                    />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
                                     </View>
-                                </View>
+                                )}
                             </View>
                         ) : null}
                         {chartData.length > 0 ? (
@@ -572,9 +593,10 @@ export default function PortfolioAssets(props) {
                                         {data?.progress_bar?.range_text[1]}
                                     </Text>
                                     <TouchableOpacity
+                                        activeOpacity={0.8}
                                         onPress={() => Modal.show({content: '进度条展示您当前已达到目标收益的百分比'})}>
                                         <FastImage
-                                            style={{width: text(20), height: text(20)}}
+                                            style={{width: text(12), height: text(12), marginLeft: text(4)}}
                                             source={require('../../assets/img/tip.png')}
                                         />
                                     </TouchableOpacity>
@@ -778,6 +800,12 @@ export default function PortfolioAssets(props) {
                 </BottomModal>
                 <BottomDesc />
             </ScrollView>
+            {data?.notice_bar ? (
+                <GuideTips
+                    data={data?.notice_bar}
+                    style={{position: 'absolute', bottom: isIphoneX() ? px(17) + 34 : px(17)}}
+                />
+            ) : null}
         </View>
     );
 }
@@ -859,16 +887,14 @@ const styles = StyleSheet.create({
     },
     plan_title_sty: {
         color: Colors.defaultColor,
-        fontSize: Font.textH1,
+        fontSize: text(18),
+        lineHeight: text(25),
         fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: text(9),
     },
     plan_desc_sty: {
-        color: '#545968',
+        color: Colors.descColor,
         fontSize: Font.textH3,
-        lineHeight: text(18),
-        textAlign: 'center',
+        lineHeight: text(21),
     },
     blue_wrap_style: {
         backgroundColor: '#DFEAFC',
@@ -976,4 +1002,28 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
     },
     tipTitle: {fontWeight: 'bold', lineHeight: text(20), fontSize: text(14), marginBottom: text(4)},
+    cardTips: {
+        fontSize: text(9),
+        lineHeight: text(13),
+        color: '#CBCFD9',
+    },
+    noticeSty: {
+        padding: text(12),
+        borderRadius: text(4),
+        backgroundColor: '#FFF5E5',
+        position: 'relative',
+    },
+    noticeTextSty: {
+        fontSize: Font.textH3,
+        lineHeight: text(19),
+        color: Colors.descColor,
+        textAlign: 'justify',
+    },
+    noticeArrow: {
+        height: (36 * (deviceWidth - text(16) * 4 + text(2) + text(2))) / 315,
+        position: 'absolute',
+        right: text(-2),
+        bottom: text(-8),
+        left: text(-2),
+    },
 });

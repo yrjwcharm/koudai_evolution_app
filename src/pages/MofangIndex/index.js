@@ -132,6 +132,7 @@ const Index = (props) => {
             JPush.addNotificationListener((result) => {
                 console.log('notificationListener:' + JSON.stringify(result));
                 if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                    global.LogTool('pushNStart', result.extras.route);
                     if (result.extras.route?.indexOf('CreateAccount') > -1) {
                         //push开户打点
                         global.LogTool('PushOpenAccountRecall');
