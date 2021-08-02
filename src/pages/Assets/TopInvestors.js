@@ -2,11 +2,11 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-02 10:23:07
+ * @LastEditTime: 2021-08-02 17:50:33
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,8 +15,9 @@ import HTML from '../../components/RenderHtml';
 import {Chart} from '../../components/Chart';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import {FixedButton} from '../../components/Button';
+import Empty from '../../components/EmptyTip';
 import {useJump} from '../../components/hooks';
-import {deviceWidth, isIphoneX, px, formaNum} from '../../utils/appUtil';
+import {deviceWidth, isIphoneX, px, formaNum, deviceHeight} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {baseURL} from '../../services/config';
 import http from '../../services';
@@ -26,11 +27,13 @@ const TopInvestors = ({navigation, route}) => {
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y3');
     const [chartData, setChartData] = useState({});
+    const [showEmpty, setShowEmpty] = useState(false);
 
     useEffect(() => {
         http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
             if (res.code === '000000') {
-                setData(res.result);
+                setData(res.result || {});
+                setShowEmpty(true);
             }
         });
     }, [route.params]);
@@ -45,7 +48,7 @@ const TopInvestors = ({navigation, route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period]);
 
-    return (
+    return Object.keys(data).length > 0 ? (
         <View style={{flex: 1, paddingBottom: isIphoneX() ? px(45) + px(8) + 34 : px(45) + px(8) + px(8)}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView style={{flex: 1}}>
@@ -185,6 +188,12 @@ const TopInvestors = ({navigation, route}) => {
                 disabled={!(data.button?.avail || 1)}
                 onPress={() => jump(data.button?.url)}
             />
+        </View>
+    ) : showEmpty ? (
+        <Empty img={require('../../assets/img/emptyTip/noSignal.png')} text={'页面不存在'} />
+    ) : (
+        <View style={[Style.flexCenter, {height: deviceHeight}]}>
+            <ActivityIndicator color={Colors.brandColor} />
         </View>
     );
 };
