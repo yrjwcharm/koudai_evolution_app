@@ -2,7 +2,7 @@
  * @Date: 2021-01-22 13:40:33
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-03 19:13:32
+ * @LastEditTime: 2021-08-04 11:00:59
  * @Description:问答投教
  */
 import React, {Component} from 'react';
@@ -442,7 +442,7 @@ class Question extends Component {
                 this.setState({warnText: '请输入正确金额', warn: true, inputBtnCanClick: false});
                 return false;
             } else {
-                if ((id == 33 && value < this.state.questions[this.state.current]?.min_value) || 2000) {
+                if (id == 33 && value < this.state.questions[this.state.current]?.min_value) {
                     //投资金额
                     this.setState({
                         warn: true,
