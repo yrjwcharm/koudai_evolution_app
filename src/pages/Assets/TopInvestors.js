@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-08-02 18:34:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-04 16:10:25
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -54,7 +54,7 @@ const TopInvestors = ({navigation, route}) => {
                 <ScrollView style={{flex: 1}}>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={{width: deviceWidth, height: px(240)}}
+                        style={{width: deviceWidth, height: px(220)}}
                         onPress={() => jump(data.console?.buy_url)}>
                         {data.console ? (
                             <WebView
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     suggestionSty: {
-        marginTop: px(-6),
+        marginTop: px(-7),
         padding: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
