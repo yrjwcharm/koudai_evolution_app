@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: px(26),
         fontWeight: '700',
-        lineHeight: px(28),
+        lineHeight: px(30),
     },
     header_title: {
         fontSize: px(22),

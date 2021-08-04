@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-04 16:10:25
+ * @LastEditTime: 2021-08-04 16:50:43
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -54,7 +54,7 @@ const TopInvestors = ({navigation, route}) => {
                 <ScrollView style={{flex: 1}}>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        style={{width: deviceWidth, height: px(220)}}
+                        style={{width: deviceWidth, height: px(210)}}
                         onPress={() => jump(data.console?.buy_url)}>
                         {data.console ? (
                             <WebView
