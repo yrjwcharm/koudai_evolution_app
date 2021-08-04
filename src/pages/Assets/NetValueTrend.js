@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-02 14:00:50
+ * @LastEditTime: 2021-08-04 12:03:50
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -146,7 +146,7 @@ const NetValueTrend = ({poid}) => {
                                                     style={{position: 'absolute', right: text(-16)}}
                                                     onPress={() => showTips(chartData.tips)}>
                                                     <FastImage
-                                                        style={{width: text(16), height: text(16)}}
+                                                        style={{width: text(12), height: text(12)}}
                                                         source={require('../../assets/img/tip.png')}
                                                     />
                                                 </TouchableOpacity>
@@ -266,7 +266,7 @@ const NetValueTrend = ({poid}) => {
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
                     每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。
                 </Text>
-                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>什么我的净值走势和我的累计收益不一致</Text>
+                <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>为什么我的净值走势和我的累计收益不一致</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
                     净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
                 </Text>

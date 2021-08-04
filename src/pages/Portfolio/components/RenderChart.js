@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 11:10:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-04 12:05:22
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -171,7 +171,7 @@ export default function RenderChart(props) {
                                     style={{position: 'absolute', right: text(-16)}}
                                     onPress={() => bottomModal.current.show()}>
                                     <Image
-                                        style={{width: text(16), height: text(16)}}
+                                        style={{width: text(12), height: text(12)}}
                                         source={require('../../../assets/img/tip.png')}
                                     />
                                 </TouchableOpacity>
