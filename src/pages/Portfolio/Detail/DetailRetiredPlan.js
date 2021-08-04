@@ -193,14 +193,14 @@ export default function DetailRetiredPlan({navigation, route}) {
             if (res.code === '000000') {
                 setChartData(res.result);
                 setChart(res.result?.yield_info?.chart);
-                setTableData((prev) => {
-                    const next = _.cloneDeep(prev);
-                    next.tr_list[0][1] = res.result.yield_info.label[1].val;
-                    if (res.result.yield_info.label[2]) {
-                        next.tr_list[0][2] = res.result.yield_info.label[2].val;
-                    }
-                    return next;
-                });
+                // setTableData((prev) => {
+                //     const next = _.cloneDeep(prev);
+                //     next.tr_list[0][1] = res.result.yield_info.label[1].val;
+                //     if (res.result.yield_info.label[2]) {
+                //         next.tr_list[0][2] = res.result.yield_info.label[2].val;
+                //     }
+                //     return next;
+                // });
             }
         });
     }, [period, type, route.params]);

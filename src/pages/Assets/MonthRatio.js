@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-17 14:04:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-04 12:03:32
  * @Description: 月度收益率
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -135,7 +135,7 @@ const NetValueTrend = ({poid}) => {
                                                     style={{position: 'absolute', right: text(-16)}}
                                                     onPress={() => showTips(chartData.tips)}>
                                                     <FastImage
-                                                        style={{width: text(16), height: text(16)}}
+                                                        style={{width: text(12), height: text(12)}}
                                                         source={require('../../assets/img/tip.png')}
                                                     />
                                                 </TouchableOpacity>

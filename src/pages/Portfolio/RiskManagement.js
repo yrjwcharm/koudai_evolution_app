@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-05-07 17:38:17
+ * @LastEditTime: 2021-08-04 12:05:13
  * @LastEditors: dx
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
@@ -183,7 +183,7 @@ class RiskManagement extends Component {
                                         {item?.pop ? (
                                             <TouchableOpacity activeOpacity={0.8} onPress={() => this.showTips()}>
                                                 <Image
-                                                    style={{width: text(16), height: text(16)}}
+                                                    style={{width: text(12), height: text(12)}}
                                                     source={require('../../assets/img/tip.png')}
                                                 />
                                             </TouchableOpacity>
