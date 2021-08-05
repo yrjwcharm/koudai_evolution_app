@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-07-28 16:25:55
+ * @LastEditTime: 2021-08-05 10:54:38
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -192,7 +192,9 @@ function HomeScreen({navigation, route}) {
         ) : (
             <View style={[Style.flexRow, {marginBottom: text(10)}]}>
                 <Text style={[styles.accountName, portfolios ? styles.portfoliosName : {}]}>{item.name}</Text>
-                {item.tag ? <Text style={styles.tag}>{item.tag}</Text> : null}
+                {item.tag ? (
+                    <Text style={{...styles.tag, backgroundColor: item.tag_color || Colors.red}}>{item.tag}</Text>
+                ) : null}
             </View>
         );
     }, []);
@@ -334,7 +336,12 @@ function HomeScreen({navigation, route}) {
                             http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
                             jump(item.button.url);
                         }}
-                        style={[Style.flexRowCenter, styles.checkBtn, styles.bottomBtn, {backgroundColor: item.color}]}>
+                        style={[
+                            Style.flexRowCenter,
+                            styles.checkBtn,
+                            styles.bottomBtn,
+                            {backgroundColor: item.color || Colors.red},
+                        ]}>
                         <Text style={{...styles.noticeText, marginRight: text(4)}}>{item.button.text}</Text>
                         <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                     </TouchableOpacity>
@@ -715,7 +722,7 @@ function HomeScreen({navigation, route}) {
                                                     style={[
                                                         Style.flexRowCenter,
                                                         styles.checkBtn,
-                                                        {backgroundColor: item.color},
+                                                        {backgroundColor: item.color || Colors.red},
                                                     ]}>
                                                     <Text style={{...styles.noticeText, marginRight: text(4)}}>
                                                         {item.button.text}
@@ -1002,7 +1009,7 @@ const styles = StyleSheet.create({
         marginRight: text(12),
     },
     noticeBox: {
-        marginTop: text(-5),
+        marginTop: -5,
         paddingVertical: text(2),
         paddingHorizontal: Space.marginAlign,
         backgroundColor: 'rgba(157, 187, 255, 0.68)',

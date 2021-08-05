@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-04 16:50:43
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-05 11:26:50
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -161,7 +161,16 @@ const TopInvestors = ({navigation, route}) => {
                             <View style={{marginTop: px(8)}}>
                                 <Text style={styles.contentSty}>
                                     {'热度值'}
-                                    <Text style={styles.numSty}>{' >80℃'}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: px(18),
+                                            lineHeight: px(18),
+                                            color: Colors.red,
+                                            fontWeight: 'bold',
+                                        }}>
+                                        {' ≥'}
+                                    </Text>
+                                    <Text style={styles.numSty}>{'80℃'}</Text>
                                 </Text>
                             </View>
                             <View style={styles.contentBoxSty}>
