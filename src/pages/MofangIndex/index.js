@@ -616,6 +616,7 @@ const Index = (props) => {
                                             ? Math.ceil(lastx / interval)
                                             : Math.floor(lastx / interval);
                                         var scrollTo = snapTo * interval;
+                                        global.LogTool('indexUserReviewSlide', data?.comment_list[snapTo].id);
                                         snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
                                     }}
                                     scrollEventThrottle={100}
@@ -638,6 +639,7 @@ const Index = (props) => {
                                             ]}
                                             activeOpacity={0.8}
                                             onPress={() => {
+                                                global.LogTool('indexUserReviewDetail', comment.id);
                                                 jump({path: 'MessageBoard', params: {id: comment.id}});
                                             }}>
                                             <View style={Style.flexRow}>
@@ -658,7 +660,7 @@ const Index = (props) => {
                                             <Text style={styles.about_text} numberOfLines={3}>
                                                 {comment.content}
                                             </Text>
-                                            <Praise comment={comment} style={styles.zan} />
+                                            <Praise comment={comment} style={styles.zan} log={'indexUserReviewLike'} />
                                         </TouchableOpacity>
                                     ))}
                                 </ScrollView>

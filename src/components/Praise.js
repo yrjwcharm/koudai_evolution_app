@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 11:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-06-30 10:38:12
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-05 17:02:35
  * @Description:点赞模块
  */
 
@@ -14,7 +14,7 @@ import {Style, Colors} from '../common/commonStyle';
 import http from '../services';
 import {View} from 'react-native-animatable';
 export default function Praise(props) {
-    const {style, comment, type = '', noClick = false} = props;
+    const {style, comment, type = '', noClick = false, log = ''} = props;
     const [like, setLike] = useState();
     const [num, setNum] = useState();
     useEffect(() => {
@@ -39,6 +39,7 @@ export default function Praise(props) {
         if (noClick) {
             return;
         }
+        log && global.LogTool(log, comment.id);
         if (like == 1) {
             setLike(0);
             let like_num = num - 1;
