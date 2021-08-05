@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: dx
- * @LastEditTime: 2021-08-05 11:20:03
+ * @LastEditTime: 2021-08-05 17:09:08
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -124,7 +124,6 @@ export default function MessageNotice({navigation, route}) {
             // is_read==0没读
 
             if (read) {
-                global.LogTool('noticeStart', id);
                 jump(url);
                 return;
             }
@@ -168,7 +167,10 @@ export default function MessageNotice({navigation, route}) {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={styles.card_sty}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
+                        onPress={() => {
+                            global.LogTool('noticeStart', item.id);
+                            readInterface(item.id, '', item.jump_url, item?.is_read, index);
+                        }}>
                         <View style={Style.flexBetween}>
                             <Text
                                 style={[styles.title_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}
@@ -199,7 +201,10 @@ export default function MessageNotice({navigation, route}) {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={[styles.card_sty, {padding: 0}]}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
+                        onPress={() => {
+                            global.LogTool('noticeStart', item.id);
+                            readInterface(item.id, '', item.jump_url, item?.is_read, index);
+                        }}>
                         <View
                             style={{
                                 borderTopLeftRadius: text(10),
@@ -235,7 +240,10 @@ export default function MessageNotice({navigation, route}) {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={styles.card_sty}
-                        onPress={() => readInterface(item.id, '', item.jump_url, item?.is_read, index)}>
+                        onPress={() => {
+                            global.LogTool('noticeStart', item.id);
+                            readInterface(item.id, '', item.jump_url, item?.is_read, index);
+                        }}>
                         <View style={Style.flexBetween}>
                             <Text
                                 style={[styles.title_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}
