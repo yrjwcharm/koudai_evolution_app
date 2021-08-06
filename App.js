@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-08-02 11:17:37
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-06 19:15:29
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -27,12 +27,11 @@ import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
-import {px as text, deviceWidth} from './src/utils/appUtil';
+import {px as text, deviceWidth, parseQuery} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
 import {throttle} from 'lodash';
-
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -68,6 +67,40 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+    React.useEffect(() => {
+        JPush.init();
+        //连接状态
+        JPush.addConnectEventListener((result) => {
+            console.log('connectListener:' + JSON.stringify(result));
+        });
+        JPush.setBadge({badge: 0, appbadge: '123'});
+        JPush.getRegistrationID((result) => {
+            console.log('registerID:' + JSON.stringify(result));
+        });
+        //通知回调
+        JPush.addNotificationListener((result) => {
+            // alert(JSON.stringify(result));
+            if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                global.LogTool('pushNStart', result.extras.route);
+                if (result.extras.route?.indexOf('CreateAccount') > -1) {
+                    //push开户打点
+                    global.LogTool('PushOpenAccountRecall');
+                }
+                if (result.extras.route?.indexOf('Evalution') > -1) {
+                    global.LogTool('PushOpenEnvolutionRecall');
+                }
+                store.dispatch(updateUserInfo({pushRoute: result.extras.route}));
+            }
+        });
+        //本地通知回调
+        JPush.addLocalNotificationListener((result) => {
+            console.log('localNotificationListener:' + JSON.stringify(result));
+        });
+        //自定义消息回调
+        JPush.addCustomMessagegListener((result) => {
+            console.log('customMessageListener:' + JSON.stringify(result));
+        });
+    }, [props.navigation]);
     React.useEffect(() => {
         CodePush.checkForUpdate(key)
             .then((update) => {

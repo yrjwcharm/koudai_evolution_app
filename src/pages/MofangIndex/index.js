@@ -26,7 +26,6 @@ import BottomDesc from '../../components/BottomDesc';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {Modal} from '../../components/Modal';
 import {useJump} from '../../components/hooks';
-import JPush from 'jpush-react-native';
 import Storage from '../../utils/storage';
 import RNExitApp from 'react-native-exit-app';
 import _ from 'lodash';
@@ -35,7 +34,7 @@ import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import {updateUserInfo} from '../../redux/actions/userInfo';
 import UpdateCom from '../../components/UpdateCom';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
@@ -84,6 +83,7 @@ const Index = (props) => {
     const [hotRefresh, setHotRefresh] = useState(false);
     const [allMsg, setAll] = useState(0);
     const [baner, setBaner] = useState([]);
+    const userInfo = useSelector((store) => store.userInfo).toJS();
     const dispatch = useDispatch();
     let scrollingRight = '';
     let lastx = '';
@@ -116,50 +116,19 @@ const Index = (props) => {
         [isFocused, readInterface]
     );
     useEffect(() => {
-        JPush.init();
-        setTimeout(() => {
-            //连接状态
-            JPush.addConnectEventListener((result) => {
-                console.log('connectListener:' + JSON.stringify(result));
-            });
-            JPush.setBadge({badge: 0, appbadge: '123'});
-
-            JPush.getRegistrationID((result) => {
-                console.log('registerID:' + JSON.stringify(result));
-            });
-
-            //通知回调
-            JPush.addNotificationListener((result) => {
-                console.log('notificationListener:' + JSON.stringify(result));
-                if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
-                    global.LogTool('pushNStart', result.extras.route);
-                    if (result.extras.route?.indexOf('CreateAccount') > -1) {
-                        //push开户打点
-                        global.LogTool('PushOpenAccountRecall');
-                    }
-                    if (result.extras.route?.indexOf('Evalution') > -1) {
-                        global.LogTool('PushOpenEnvolutionRecall');
-                    }
-                    if (result.extras.route?.indexOf('?') > -1) {
-                        props.navigation.navigate(
-                            result.extras.route.split('?')[0],
-                            parseQuery(result.extras.route.split('?')[1])
-                        );
-                    } else {
-                        props.navigation.navigate(result.extras.route);
-                    }
-                }
-            });
-            //本地通知回调
-            JPush.addLocalNotificationListener((result) => {
-                console.log('localNotificationListener:' + JSON.stringify(result));
-            });
-            //自定义消息回调
-            JPush.addCustomMessagegListener((result) => {
-                console.log('customMessageListener:' + JSON.stringify(result));
-            });
-        }, 50);
-    }, [props.navigation]);
+        if (userInfo?.pushRoute) {
+            if (userInfo.pushRoute?.indexOf('?') > -1) {
+                props.navigation.navigate(
+                    userInfo.pushRoute.split('?')[0],
+                    parseQuery(userInfo.pushRoute.split('?')[1])
+                );
+                dispatch(updateUserInfo({pushRoute: ''}));
+            } else {
+                props.navigation.navigate(userInfo.pushRoute);
+                dispatch(updateUserInfo({pushRoute: ''}));
+            }
+        }
+    }, [userInfo, props, dispatch]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
