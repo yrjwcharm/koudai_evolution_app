@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-02 16:08:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-06 14:46:19
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -1020,10 +1020,10 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     noticeArrow: {
-        height: (36 * (deviceWidth - text(16) * 4 + text(2) + text(2))) / 315,
+        width: text(24),
+        height: text(8),
         position: 'absolute',
-        right: text(-2),
-        bottom: text(-8),
-        left: text(-2),
+        bottom: text(-7),
+        left: text(36),
     },
 });
