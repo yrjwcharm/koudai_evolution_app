@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-23 18:13:00
+ * @LastEditTime: 2021-08-06 16:42:17
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -105,6 +105,14 @@ export default function Launch({navigation}) {
                                 } else {
                                     global.LogTool('Host', 'failed');
                                     Toast.show('网络异常，请稍后再试~');
+                                    if (res) {
+                                        navigation.replace('Tab');
+                                        setTimeout(() => {
+                                            SplashScreen.hide();
+                                        }, 8);
+                                    } else {
+                                        navigation.replace('AppGuide');
+                                    }
                                 }
                             });
                     };
