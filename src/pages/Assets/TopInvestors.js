@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-06 14:41:31
+ * @LastEditTime: 2021-08-06 17:47:48
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -25,7 +25,7 @@ import http from '../../services';
 const TopInvestors = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-    const [period, setPeriod] = useState('y3');
+    const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState({});
     const [showEmpty, setShowEmpty] = useState(false);
 
@@ -34,6 +34,7 @@ const TopInvestors = ({navigation, route}) => {
             if (res.code === '000000') {
                 setData(res.result || {});
                 setShowEmpty(true);
+                res.result.period && setPeriod(res.result.period);
             }
         });
     }, [route.params]);
