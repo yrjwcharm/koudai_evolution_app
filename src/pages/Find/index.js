@@ -251,6 +251,12 @@ const Index = (props) => {
                                                     )}
                                                 </Text>
                                             )}
+                                            {item?.tags?.includes('new') ? (
+                                                <FastImage
+                                                    source={require('../../assets/img/article/voiceUpdate.png')}
+                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                />
+                                            ) : null}
                                         </View>
                                         <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
@@ -301,6 +307,12 @@ const Index = (props) => {
                                                     )}
                                                 </Text>
                                             )}
+                                            {item?.tags?.includes('new') ? (
+                                                <FastImage
+                                                    source={require('../../assets/img/article/voiceUpdate.png')}
+                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                />
+                                            ) : null}
                                         </View>
                                         <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
@@ -345,6 +357,12 @@ const Index = (props) => {
                                                     )}
                                                 </Text>
                                             )}
+                                            {item?.tags?.includes('new') ? (
+                                                <FastImage
+                                                    source={require('../../assets/img/article/voiceUpdate.png')}
+                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                />
+                                            ) : null}
                                         </View>
                                         <Text style={styles.large_text}>{item?.desc}</Text>
                                         <Text style={styles.light_text}>{item?.slogan}</Text>
