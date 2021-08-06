@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-08-06 14:46:19
+ * @LastEditTime: 2021-08-06 19:14:02
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -803,7 +803,7 @@ export default function PortfolioAssets(props) {
             {data?.notice_bar ? (
                 <GuideTips
                     data={data?.notice_bar}
-                    style={{position: 'absolute', bottom: isIphoneX() ? px(17) + 34 : px(17)}}
+                    style={{position: 'absolute', bottom: isIphoneX() ? px(90) : px(56)}}
                 />
             ) : null}
         </View>
