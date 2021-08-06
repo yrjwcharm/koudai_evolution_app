@@ -2,11 +2,11 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-05 11:26:50
+ * @LastEditTime: 2021-08-06 14:41:31
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, Platform, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -95,7 +95,8 @@ const TopInvestors = ({navigation, route}) => {
                                             chartData.tag_position,
                                             px(208),
                                             chartData.max_ratio,
-                                            false
+                                            false,
+                                            true
                                         )}
                                         style={{width: '100%'}}
                                     />
@@ -185,9 +186,11 @@ const TopInvestors = ({navigation, route}) => {
                         <Text style={styles.title}>{'牛人入选说明'}</Text>
                         <View style={styles.boxSty}>
                             <HTML
-                                html={
-                                    '牛人是指资金进出结构操作优秀，能稳定超越同时期组合收益率最高的的<span style="color: #E74949;font-family: DINAlternate-Bold;fontFamily: DINAlternate-Bold;">1%</span>用户。<br /><span style="color: #121D3A;font-weight: 500;">牛人每日进行更新</span>，保证魔方用户可收到<span style="color: #121D3A;font-weight: 500;">最优买入点</span>信息。'
-                                }
+                                html={`牛人是指资金进出结构操作优秀，能稳定超越同时期组合收益率最高的的<span style="color: #E74949;font-family: DINAlternate-Bold;fontFamily: DINAlternate-Bold;">1%</span>用户。<br /><span style="color: #121D3A;font-weight: ${Platform.select(
+                                    {android: 700, ios: 500}
+                                )};">牛人每日进行更新</span>，保证魔方用户可收到<span style="color: #121D3A;font-weight: ${Platform.select(
+                                    {android: 700, ios: 500}
+                                )};">最优买入点</span>信息。`}
                                 style={styles.suggestionTextSty}
                             />
                         </View>

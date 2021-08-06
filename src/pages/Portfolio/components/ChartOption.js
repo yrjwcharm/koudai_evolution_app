@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-27 16:04:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-06 11:24:12
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -34,7 +34,8 @@ export const baseAreaChart = (
     tag_position = {},
     height = 220,
     max = null,
-    showArea = true
+    showArea = true,
+    showDate = false
 ) => `
 (function(){
   chart = new F2.Chart({
@@ -80,11 +81,11 @@ export const baseAreaChart = (
   });
   chart.legend(false);
   chart.tooltip({
-    // crosshairsStyle: {
-    //   stroke: '#E74949',
-    //   lineWidth: 0.5,
-    //   lineDash: [2],
-    // },
+    crosshairsStyle: ${JSON.stringify(showDate)} ? {
+      stroke: ${JSON.stringify(colors[0])},
+      lineWidth: 0.5,
+      lineDash: [2],
+    } : {},
     crosshairsType: 'y',
     custom: true,
     onChange: function(obj) {
@@ -94,7 +95,7 @@ export const baseAreaChart = (
       window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
     },
     showCrosshairs: true,
-    // showXTip: true,
+    showXTip: ${JSON.stringify(showDate)},
     // showYTip: true,
     // snap: true,
     tooltipMarkerStyle: {
@@ -102,18 +103,19 @@ export const baseAreaChart = (
     },
     // triggerOn: ['touchstart', 'touchmove'],
     // triggerOff: 'touchend',
-    xTipBackground: {
-      fill: '#E74949',
-    },
-    yTipBackground: {
-      fill: '#E74949',
-    },
+    // xTipBackground: {
+    //   fill: '#E74949',
+    // },
+    // yTipBackground: {
+    //   fill: '#E74949',
+    // },
   });
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
       chart.guide().tag({
         position: ${JSON.stringify(tag_position?.buy?.position)},
         content: ${JSON.stringify(tag_position?.buy?.name)},
         limitInPlot:true,
+        offsetY: -5,
         background: {
           fill: '#E74949',
           padding: 2,
