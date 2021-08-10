@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-02 16:04:50
+ * @LastEditTime: 2021-08-10 17:21:22
  * @Description:音频模块
  */
 
@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
+import LazyImage from '../LazyImage';
 const VioceCard = ({data, style, scene}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
@@ -78,7 +79,11 @@ const VioceCard = ({data, style, scene}) => {
                 </View>
                 {data?.cover ? (
                     <View style={styles.cover_con}>
-                        <FastImage source={{uri: data?.cover}} style={styles.cover} />
+                        <LazyImage
+                            source={{uri: data?.cover}}
+                            style={styles.cover}
+                            logoStyle={{width: px(30), height: px(32)}}
+                        />
                         <LinearGradient
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}

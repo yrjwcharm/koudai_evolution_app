@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 10:37:05
+ * @LastEditTime: 2021-08-09 17:52:40
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -121,7 +121,7 @@ const AlbumList = ({navigation, route}) => {
                             <>
                                 <FastImage
                                     source={require('../../assets/img/article/voiceUpdate.png')}
-                                    style={{width: px(34), height: px(18), position: 'absolute', left: 0, top: px(3)}}
+                                    style={{width: px(23), height: px(18), position: 'absolute', left: 0, top: px(3)}}
                                 />
                                 <Text
                                     numberOfLines={2}
@@ -133,7 +133,7 @@ const AlbumList = ({navigation, route}) => {
                                             height: px(48),
                                         },
                                     ]}>
-                                    &emsp;&emsp;&ensp;&ensp;
+                                    &emsp;&emsp;
                                     {item?.title}
                                 </Text>
                             </>
@@ -200,7 +200,7 @@ const AlbumList = ({navigation, route}) => {
                     <>
                         <FastImage
                             source={require('../../assets/img/article/voiceUpdate.png')}
-                            style={{width: px(34), height: px(18), position: 'absolute', left: 0, top: px(16)}}
+                            style={{width: px(23), height: px(18), position: 'absolute', left: 0, top: px(16)}}
                         />
                         <Text
                             numberOfLines={2}
@@ -212,7 +212,7 @@ const AlbumList = ({navigation, route}) => {
                                         : Colors.defaultColor,
                                 },
                             ]}>
-                            &emsp;&emsp;&ensp;&ensp;
+                            &emsp;&emsp;
                             {item?.title}
                         </Text>
                     </>

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-06 19:15:29
+ * @LastEditTime: 2021-08-10 17:06:45
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -524,8 +524,9 @@ function App(props) {
                                 let poid = getRouteNameId(currentRoute, 'DetailPolaris', 'poid');
                                 let scene = getRouteNameId(currentRoute, 'LCMF', 'scene');
                                 let type = getRouteNameId(currentRoute, 'MessageNotice', 'type');
+                                let assetPoid = getRouteNameId(currentRoute, 'PortfolioAssets', 'poid');
                                 let currentRoutePageId =
-                                    currentRouteName + article_id + cu_plan_id + poid + scene + type;
+                                    currentRouteName + article_id + cu_plan_id + poid + scene + type + assetPoid;
                                 global.previousRoutePageId = previousRoutePageId;
                                 global.currentRoutePageId = currentRoutePageId;
                                 if (previousRoutePageId !== currentRouteName) {

@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 18:53:17
+ * @LastEditTime: 2021-08-10 16:42:33
  * @Description:视野文章模块
  */
 
@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 import Praise from '../Praise';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
+import LazyImage from '../LazyImage';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
@@ -57,10 +58,14 @@ export default function VisionArticle({data = '', style, scene}) {
                     )}
                 </View>
                 {data?.cover ? (
-                    <FastImage
+                    <LazyImage
                         style={styles.article_img}
                         source={{
                             uri: data?.cover,
+                        }}
+                        logoStyle={{
+                            width: px(22),
+                            height: px(24),
                         }}
                     />
                 ) : null}
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     article_img: {
         width: px(84),
         height: px(63),
-        borderRadius: 4,
+        borderRadius: px(4),
         marginLeft: px(10),
         alignSelf: 'flex-start',
     },

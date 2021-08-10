@@ -16,6 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
+import LazyImage from '../../components/LazyImage';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -116,24 +117,24 @@ const Index = (props) => {
                                         jump(data?.recommend?.button?.url);
                                     }}
                                     style={[styles.recommend, styles.card]}>
-                                    <View style={[styles.header]}>
-                                        <View style={Style.flexRow}>
-                                            <FastImage
-                                                style={{height: px(24), width: px(24), marginTop: px(-6)}}
-                                                source={require('../../assets/img/logo.png')}
-                                            />
-                                            <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
-                                        </View>
-                                        <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
-                                    </View>
-                                    <FastImage
+                                    <LazyImage
                                         style={{
                                             height: px(320),
                                         }}
                                         source={{
                                             uri: data?.recommend?.background,
-                                        }}
-                                    />
+                                        }}>
+                                        <View style={[styles.header]}>
+                                            <View style={Style.flexRow}>
+                                                <FastImage
+                                                    style={{height: px(24), width: px(24), marginTop: px(-6)}}
+                                                    source={require('../../assets/img/logo.png')}
+                                                />
+                                                <Text style={styles.img_desc}>{data?.recommend?.slogan[0]}</Text>
+                                            </View>
+                                            <Text style={styles.img_title}>{data?.recommend?.slogan[1]}</Text>
+                                        </View>
+                                    </LazyImage>
                                     <View style={{padding: Space.cardPadding}}>
                                         <View style={Style.flexRow}>
                                             <Text style={[styles.card_title, {fontSize: px(16)}]}>
@@ -254,7 +255,7 @@ const Index = (props) => {
                                             {item?.tags?.includes('new') ? (
                                                 <FastImage
                                                     source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
                                                 />
                                             ) : null}
                                         </View>
@@ -310,7 +311,7 @@ const Index = (props) => {
                                             {item?.tags?.includes('new') ? (
                                                 <FastImage
                                                     source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
                                                 />
                                             ) : null}
                                         </View>
@@ -360,7 +361,7 @@ const Index = (props) => {
                                             {item?.tags?.includes('new') ? (
                                                 <FastImage
                                                     source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(34), height: px(18)}}
+                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
                                                 />
                                             ) : null}
                                         </View>
@@ -405,7 +406,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         paddingHorizontal: px(16),
         top: px(16),
-        zIndex: 10,
     },
     img_desc: {
         color: '#fff',

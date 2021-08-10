@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 18:31:09
+ * @LastEditTime: 2021-08-10 16:04:15
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -171,6 +171,11 @@ const TradeRecordDetail = (props) => {
                         {data?.part1?.status?.text}
                     </Text>
                 </View>
+                {data?.part1?.tip ? (
+                    <View style={styles.tip}>
+                        <Text style={{color: '#545968', fontSize: px(12), lineHeight: px(17)}}>{data?.part1?.tip}</Text>
+                    </View>
+                ) : null}
             </View>
             {data?.part2?.length > 0 ? (
                 <View style={{paddingHorizontal: px(14), marginBottom: isIphoneX() ? 34 : px(10)}}>
@@ -423,6 +428,13 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         color: Colors.defaultColor,
         lineHeight: px(37),
+    },
+    tip: {
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(6),
+        marginHorizontal: px(16),
+        marginTop: px(24),
+        padding: px(16),
     },
 });
 export default TradeRecordDetail;

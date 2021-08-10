@@ -117,18 +117,23 @@ const Index = (props) => {
     );
     useEffect(() => {
         if (userInfo?.pushRoute) {
-            if (userInfo.pushRoute?.indexOf('?') > -1) {
-                props.navigation.navigate(
-                    userInfo.pushRoute.split('?')[0],
-                    parseQuery(userInfo.pushRoute.split('?')[1])
-                );
-                dispatch(updateUserInfo({pushRoute: ''}));
-            } else {
-                props.navigation.navigate(userInfo.pushRoute);
-                dispatch(updateUserInfo({pushRoute: ''}));
-            }
+            http.get(`/common/push/jump/redirect/20210810?url=${encodeURI(userInfo?.pushRoute)}`).then((res) => {
+                if (res.code == '000000') {
+                    jump(res.result?.url);
+                }
+            });
+            // if (userInfo.pushRoute?.indexOf('?') > -1) {
+            //     props.navigation.navigate(
+            //         userInfo.pushRoute.split('?')[0],
+            //         parseQuery(userInfo.pushRoute.split('?')[1])
+            //     );
+            //     dispatch(updateUserInfo({pushRoute: ''}));
+            // } else {
+            //     props.navigation.navigate(userInfo.pushRoute);
+            //     dispatch(updateUserInfo({pushRoute: ''}));
+            // }
         }
-    }, [userInfo, props, dispatch]);
+    }, [userInfo, jump]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
