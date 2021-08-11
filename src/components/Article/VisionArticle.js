@@ -2,11 +2,11 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 16:42:33
+ * @LastEditTime: 2021-08-11 11:00:24
  * @Description:视野文章模块
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -17,6 +17,7 @@ import {useSelector} from 'react-redux';
 import LazyImage from '../LazyImage';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
+    const [is_new, setIsNew] = useState(data.is_new);
     const jump = useJump();
     let numberOfLines = scene == 'recommend' || scene == 'index' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
     return (
@@ -24,6 +25,7 @@ export default function VisionArticle({data = '', style, scene}) {
             style={[styles.card, style]}
             activeOpacity={0.9}
             onPress={debounce(() => {
+                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
@@ -39,20 +41,46 @@ export default function VisionArticle({data = '', style, scene}) {
                         </View>
                     ) : null}
                     {data?.title ? (
-                        <Text
-                            numberOfLines={numberOfLines}
-                            style={[
-                                styles.article_content,
-                                {
-                                    height: px(21) * numberOfLines,
-                                    color:
-                                        visionData?.readList?.includes(data.id) && scene !== 'collect'
-                                            ? Colors.lightBlackColor
-                                            : Colors.defaultColor,
-                                },
-                            ]}>
-                            {data?.title}
-                        </Text>
+                        <View>
+                            {is_new ? (
+                                <>
+                                    <FastImage
+                                        source={require('../../assets/img/article/voiceUpdate.png')}
+                                        style={styles.new_tag}
+                                    />
+                                    <Text
+                                        numberOfLines={2}
+                                        style={[
+                                            styles.article_content,
+                                            {
+                                                height: px(21) * numberOfLines,
+                                                color:
+                                                    visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                                        ? Colors.lightBlackColor
+                                                        : Colors.defaultColor,
+                                            },
+                                        ]}>
+                                        &emsp;&emsp;
+                                        {data?.title}
+                                    </Text>
+                                </>
+                            ) : (
+                                <Text
+                                    numberOfLines={numberOfLines}
+                                    style={[
+                                        styles.article_content,
+                                        {
+                                            height: px(21) * numberOfLines,
+                                            color:
+                                                visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                                    ? Colors.lightBlackColor
+                                                    : Colors.defaultColor,
+                                        },
+                                    ]}>
+                                    {data?.title}
+                                </Text>
+                            )}
+                        </View>
                     ) : (
                         <Text style={{height: px(21) * numberOfLines}} />
                     )}
@@ -126,5 +154,12 @@ const styles = StyleSheet.create({
     zan_img: {
         width: px(12),
         height: px(12),
+    },
+    new_tag: {
+        width: px(23),
+        height: px(18),
+        position: 'absolute',
+        left: 0,
+        top: px(1),
     },
 });

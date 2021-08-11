@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-07-08 15:24:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-11 14:36:58
  * @Description:用户问答卡片
  */
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -13,70 +13,68 @@ import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
 import Praise from '../Praise';
-export default function QuestionCard({data = [], scene}) {
+export default function QuestionCard({data, scene}) {
     const jump = useJump();
+    const [is_new, setIsNew] = useState(data.is_new);
     const visionData = useSelector((store) => store.vision).toJS();
     return (
-        <>
-            {data.map((item, index) => {
-                return (
-                    <TouchableOpacity
-                        key={index}
-                        activeOpacity={0.9}
-                        onPress={debounce(() => {
-                            global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', item.id);
-                            jump(item?.url, scene == 'article' ? 'push' : 'navigate');
-                        }, 300)}
-                        style={[styles.ques_card]}>
-                        <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
-                        <Text style={styles.article_content}>
-                            {item?.phase ? (
-                                <Text style={{color: Colors.defaultColor, fontWeight: 'bold'}}>{item?.phase}：</Text>
-                            ) : null}
-                            {item?.nickname}
-                        </Text>
-                        <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
-                            <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
-                            <Text
-                                numberOfLines={2}
-                                style={[
-                                    styles.article_title,
-                                    {
-                                        color:
-                                            visionData?.readList?.includes(item.id) && scene !== 'collect'
-                                                ? Colors.lightBlackColor
-                                                : Colors.defaultColor,
-                                    },
-                                ]}>
-                                {item?.name}
-                            </Text>
-                        </View>
-                        <View style={styles.content}>
-                            <Text numberOfLines={2} style={[styles.article_content, {fontSize: px(12)}]}>
-                                <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>
-                                    {item.author_name}：
-                                </Text>
-                                {item?.content}
-                            </Text>
-                        </View>
-                        {scene == 'collect' ? null : (
-                            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                                <Text style={styles.light_text}>{item?.view_num}人已阅读</Text>
-                                <Praise
-                                    type={'article'}
-                                    noClick={true}
-                                    comment={{
-                                        favor_status: item?.favor_status,
-                                        favor_num: parseInt(item?.favor_num),
-                                        id: item?.id,
-                                    }}
-                                />
-                            </View>
-                        )}
-                    </TouchableOpacity>
-                );
-            })}
-        </>
+        <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={debounce(() => {
+                setIsNew(false);
+                global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
+                jump(data?.url, scene == 'article' ? 'push' : 'navigate');
+            }, 300)}
+            style={[styles.ques_card]}>
+            <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
+            <View style={Style.flexRow}>
+                {is_new && (
+                    <FastImage source={require('../../assets/img/article/voiceUpdate.png')} style={styles.new_tag} />
+                )}
+                {data?.phase ? (
+                    <Text style={[styles.article_content, {color: Colors.defaultColor, fontWeight: 'bold'}]}>
+                        {data?.phase}：
+                    </Text>
+                ) : null}
+                <Text style={styles.article_content}>{data?.nickname}</Text>
+            </View>
+            <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
+                <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
+                <Text
+                    numberOfLines={2}
+                    style={[
+                        styles.article_title,
+                        {
+                            color:
+                                visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                    ? Colors.lightBlackColor
+                                    : Colors.defaultColor,
+                        },
+                    ]}>
+                    {data?.name}
+                </Text>
+            </View>
+            <View style={styles.content}>
+                <Text numberOfLines={2} style={[styles.article_content, {fontSize: px(12)}]}>
+                    <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>{data.author_name}：</Text>
+                    {data?.content}
+                </Text>
+            </View>
+            {scene == 'collect' ? null : (
+                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                    <Text style={styles.light_text}>{data?.view_num}人已阅读</Text>
+                    <Praise
+                        type={'article'}
+                        noClick={true}
+                        comment={{
+                            favor_status: data?.favor_status,
+                            favor_num: parseInt(data?.favor_num),
+                            id: data?.id,
+                        }}
+                    />
+                </View>
+            )}
+        </TouchableOpacity>
     );
 }
 const styles = StyleSheet.create({
@@ -122,5 +120,13 @@ const styles = StyleSheet.create({
     light_text: {
         color: Colors.lightGrayColor,
         fontSize: px(12),
+    },
+    new_tag: {
+        width: px(23),
+        height: px(18),
+        marginRight: px(6),
+        // position: 'absolute',
+        // left: 0,
+        // top: px(1),
     },
 });

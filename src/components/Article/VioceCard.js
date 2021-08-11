@@ -3,11 +3,11 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 17:21:22
+ * @LastEditTime: 2021-08-11 11:17:31
  * @Description:音频模块
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -22,12 +22,14 @@ import LazyImage from '../LazyImage';
 const VioceCard = ({data, style, scene}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
+    const [is_new, setIsNew] = useState(data.is_new);
     const dispatch = useDispatch();
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             style={[styles.card, style]}
             onPress={debounce(() => {
+                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 if (visionData?.album_update?.includes(data.album_id)) {
                     let arr = [...visionData?.album_update];
@@ -48,9 +50,22 @@ const VioceCard = ({data, style, scene}) => {
                         </View>
                     ) : null}
                     {data.type == 2 || scene == 'collect' ? (
-                        <Text numberOfLines={2} style={styles.title}>
-                            {data.title}
-                        </Text>
+                        is_new ? (
+                            <View>
+                                <FastImage
+                                    source={require('../../assets/img/article/voiceUpdate.png')}
+                                    style={styles.new_tag}
+                                />
+                                <Text numberOfLines={2} style={styles.title}>
+                                    &emsp;&emsp;
+                                    {data?.title}
+                                </Text>
+                            </View>
+                        ) : (
+                            <Text numberOfLines={2} style={styles.title}>
+                                {data.title}
+                            </Text>
+                        )
                     ) : (
                         <>
                             <View style={Style.flexRow}>
@@ -183,5 +198,12 @@ const styles = StyleSheet.create({
         marginLeft: px(8),
         marginTop: px(-12),
         backgroundColor: Colors.red,
+    },
+    new_tag: {
+        width: px(23),
+        height: px(18),
+        position: 'absolute',
+        left: 0,
+        top: px(1),
     },
 });

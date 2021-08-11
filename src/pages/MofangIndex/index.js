@@ -11,12 +11,12 @@ import {
     BackHandler,
     Image,
 } from 'react-native';
-import {px, deviceWidth, formaNum, parseQuery} from '../../utils/appUtil';
+import {px, deviceWidth, formaNum} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {QuestionCard, ArticleCard} from '../../components/Article';
+import {QuestionCard} from '../../components/Article';
 import Swiper from 'react-native-swiper';
 import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -567,14 +567,6 @@ const Index = (props) => {
                                     })}
                                 </View>
                             )}
-                            {/* 魔方问答 */}
-                            {data?.qa_list && (
-                                <View style={{marginBottom: px(9)}}>
-                                    <RenderTitle title={'魔方问答'} />
-                                    <QuestionCard data={data?.qa_list} />
-                                </View>
-                            )}
-
                             {/* 听听魔方用户怎么说 */}
                             <>
                                 <RenderTitle title={'听听魔方用户怎么说'} />

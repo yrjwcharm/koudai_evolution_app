@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 15:51:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-28 16:07:21
+ * @LastEditTime: 2021-08-11 14:27:05
  * @Description:根据type生成对应的内容模块
  */
 import React from 'react';
@@ -31,7 +31,7 @@ const RenderCate = (data, style, scene) => {
             com = <VisionArticle key={data.id} data={data} style={style} scene={scene} />;
             break;
         case 4:
-            com = <QuestionCard data={[data]} key={data.id} style={style} scene={scene} />;
+            com = <QuestionCard data={data} key={data.id} style={style} scene={scene} />;
             break;
         default:
             com = <VisionArticle data={data} key={data.id} style={style} scene={scene} />;

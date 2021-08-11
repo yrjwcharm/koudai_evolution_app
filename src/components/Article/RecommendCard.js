@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 17:19:07
+ * @LastEditTime: 2021-08-11 10:48:25
  * @Description:推荐模块
  */
 import React, {useState, useCallback} from 'react';
@@ -129,6 +129,14 @@ const RecommendCard = ({data, style, onPress}) => {
                     source={{
                         uri: data?.cover,
                     }}>
+                    {data?.tag_image ? (
+                        <FastImage
+                            style={styles.tag_img}
+                            source={{
+                                uri: data?.tag_image,
+                            }}
+                        />
+                    ) : null}
                     {data?.locked && (
                         <LinearGradient
                             start={{x: 0, y: 0}}
@@ -203,7 +211,7 @@ export default RecommendCard;
 
 const styles = StyleSheet.create({
     card: {
-        borderRadius: px(8),
+        borderRadius: px(6),
         overflow: 'hidden',
         backgroundColor: '#fff',
     },
@@ -232,4 +240,5 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     btn: {width: px(80), height: px(28), backgroundColor: '#fff', borderRadius: px(18)},
+    tag_img: {width: px(90), height: px(28), position: 'absolute', top: 0, left: 0},
 });

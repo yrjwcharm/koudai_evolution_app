@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-22 19:32:26
+ * @LastEditTime: 2021-08-11 11:41:52
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -17,6 +17,7 @@ import {QuestionCard, ArticleCard} from '../../components/Article';
 import Http from '../../services';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
+import RenderCate from '../Vision/components/RenderCate';
 const FindDetail = (props) => {
     const [data, setData] = useState({});
     const containerRef = useRef(null);
@@ -129,7 +130,10 @@ const FindDetail = (props) => {
                         {data?.qa_list && (
                             <View style={{marginBottom: px(20)}}>
                                 {renderTitle('魔方问答')}
-                                <QuestionCard data={data?.qa_list} />
+                                {data?.qa_list?.map((item, index) => {
+                                    return RenderCate(item, {marginBottom: px(12)});
+                                })}
+                                {/* <QuestionCard data={data?.qa_list} /> */}
                             </View>
                         )}
                     </View>
