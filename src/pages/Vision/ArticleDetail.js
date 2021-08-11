@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 19:00:19
+ * @LastEditTime: 2021-08-11 15:18:02
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -32,6 +32,12 @@ import Picker from 'react-native-picker';
 import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+const options = {
+    enableVibrateFallback: true,
+    ignoreAndroidSystemSettings: false,
+};
+
 let post_progress = false;
 const ArticleDetail = ({navigation, route}) => {
     const dispatch = useDispatch();
@@ -151,7 +157,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
-
+            !favor_status && ReactNativeHapticFeedback.trigger('soft', options);
             setFavorNum((preNum) => {
                 return favor_status ? --preNum : ++preNum;
             });
@@ -186,6 +192,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
+            !collect_status && ReactNativeHapticFeedback.trigger('soft', options);
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;
             });

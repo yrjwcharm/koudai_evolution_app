@@ -7186,6 +7186,11 @@ react-native-get-channel@^1.0.1:
   resolved "https://registry.npm.taobao.org/react-native-get-channel/download/react-native-get-channel-1.0.1.tgz#25cbf37f063830483a859102f3d4671635499b82"
   integrity sha1-JcvzfwY4MEg6hZEC89RnFjVJm4I=
 
+react-native-haptic-feedback@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.nlark.com/react-native-haptic-feedback/download/react-native-haptic-feedback-1.11.0.tgz#adfd841f3b67046532f912c6ec827aea0037d8ad"
+  integrity sha1-rf2EHztnBGUy+RLG7IJ66gA32K0=
+
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"

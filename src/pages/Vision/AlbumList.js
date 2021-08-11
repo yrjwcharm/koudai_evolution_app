@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-09 17:52:40
+ * @LastEditTime: 2021-08-11 15:47:54
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -42,8 +42,6 @@ const AlbumList = ({navigation, route}) => {
     const [refreshing, setRefreshing] = useState(false);
     const getData = useCallback(
         (type, _page) => {
-            // console.log('object');
-            // type == 'refresh'  && setRefreshing(true);
             http.get('/vision/album/articles/20210524', {page: _page || page, album_id: route?.params?.album_id}).then(
                 (res) => {
                     setRefreshing(false);
@@ -91,17 +89,26 @@ const AlbumList = ({navigation, route}) => {
         },
         [hasMore]
     );
+    //点击去掉新
+    const clickItem = (id, index) => {
+        let newAlbumList = [...visionData.albumList];
+        if (newAlbumList[index]?.is_new) {
+            newAlbumList[index].is_new = false;
+            dispatch(updateVision({albumList: newAlbumList}));
+        }
+    };
     const renderItem = ({item, index}) => {
         return item?.is_latest ? (
             <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.con}
                 onPress={() => {
+                    clickItem(item.id, index);
                     jump(item?.url);
                 }}>
                 <View style={[Style.flexRow, {flex: 1}]}>
                     <View style={{flex: 1}}>
-                        {visionData?.albumListendList?.includes(item.id) ? (
+                        {!item.is_new ? (
                             <Text
                                 numberOfLines={2}
                                 style={[
@@ -181,22 +188,10 @@ const AlbumList = ({navigation, route}) => {
                 activeOpacity={0.9}
                 style={styles.con}
                 onPress={() => {
+                    clickItem(item.id, index);
                     jump(item?.url);
                 }}>
-                {visionData?.albumListendList?.includes(item.id) || index > 2 ? (
-                    <Text
-                        numberOfLines={2}
-                        style={[
-                            styles.title,
-                            {
-                                color: visionData?.albumListendList?.includes(item.id)
-                                    ? Colors.lightBlackColor
-                                    : Colors.defaultColor,
-                            },
-                        ]}>
-                        {item?.title}
-                    </Text>
-                ) : (
+                {item.is_new ? (
                     <>
                         <FastImage
                             source={require('../../assets/img/article/voiceUpdate.png')}
@@ -216,6 +211,19 @@ const AlbumList = ({navigation, route}) => {
                             {item?.title}
                         </Text>
                     </>
+                ) : (
+                    <Text
+                        numberOfLines={2}
+                        style={[
+                            styles.title,
+                            {
+                                color: visionData?.albumListendList?.includes(item.id)
+                                    ? Colors.lightBlackColor
+                                    : Colors.defaultColor,
+                            },
+                        ]}>
+                        {item?.title}
+                    </Text>
                 )}
 
                 <View style={[Style.flexBetween, {marginTop: px(8)}]}>
