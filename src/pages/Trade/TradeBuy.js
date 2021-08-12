@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 11:25:04
+ * @LastEditTime: 2021-08-12 16:13:09
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -631,7 +631,7 @@ class TradeBuy extends Component {
                         ) : null}
                     </View>
                 ) : null}
-                {this.state.data.large_pay_tip && (
+                {this.state.data.large_pay_tip ? (
                     <View style={{backgroundColor: '#fff', paddingBottom: px(19)}}>
                         <View style={styles.large_tip}>
                             <Text style={styles.large_text}>
@@ -643,7 +643,7 @@ class TradeBuy extends Component {
                             </Text>
                         </View>
                     </View>
-                )}
+                ) : null}
             </View>
         );
     }

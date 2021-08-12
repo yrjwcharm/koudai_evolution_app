@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 16:02:42
+ * @LastEditTime: 2021-08-12 11:38:12
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -483,7 +483,13 @@ const ArticleDetail = ({navigation, route}) => {
                                         <View style={{paddingHorizontal: text(16), paddingVertical: text(40)}}>
                                             <RenderTitle title={recommendData?.portfolios?.title} />
                                             {recommendData?.portfolios?.list?.map((item, index) => {
-                                                return <PortfolioCard data={item} style={{marginBottom: text(12)}} />;
+                                                return (
+                                                    <PortfolioCard
+                                                        data={item}
+                                                        key={index}
+                                                        style={{marginBottom: text(12)}}
+                                                    />
+                                                );
                                             })}
                                             <RenderTitle title={recommendData?.articles?.title} />
                                             {recommendData?.articles?.list?.map((item, index) => {
