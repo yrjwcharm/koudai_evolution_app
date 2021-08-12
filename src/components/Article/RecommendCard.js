@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 10:35:05
+ * @LastEditTime: 2021-08-12 11:36:25
  * @Description:推荐模块
  */
 import React, {useState, useCallback} from 'react';
@@ -22,6 +22,7 @@ import LazyImage from '../LazyImage';
 const RecommendCard = ({data, style, onPress}) => {
     const jump = useJump();
     const [reserved, setReserved] = useState(data.reserved);
+    const [is_new, setIsNew] = useState(data.is_new);
     const postReserve = (sucess) => {
         http.post('/vision/recommend/reserve/20210524', {id: data.id}).then((res) => {
             if (res.code === '000000') {
@@ -118,6 +119,7 @@ const RecommendCard = ({data, style, onPress}) => {
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => {
+                    setIsNew(false);
                     onPress && onPress();
                     jump(data?.url);
                 }}
@@ -135,14 +137,14 @@ const RecommendCard = ({data, style, onPress}) => {
                             }}
                         />
                     ) : null}
-                    {data?.recommend_time && (
+                    {data?.recommend_time ? (
                         <LinearGradient
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}
                             style={[styles.bottom_text, Style.flexBetween]}
                             colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
                             <Text style={{color: '#fff', fontSize: px(14), fontFamily: Font.numFontFamily}}>
-                                {data.recommend_time}
+                                {data?.recommend_time}
                             </Text>
                             <TouchableOpacity
                                 style={[styles.btn, Style.flexRowCenter]}
@@ -153,12 +155,25 @@ const RecommendCard = ({data, style, onPress}) => {
                                 </Text>
                             </TouchableOpacity>
                         </LinearGradient>
-                    )}
+                    ) : null}
                 </LazyImage>
                 <View style={{padding: px(16)}}>
-                    <Text style={styles.recommend_title} numberOfLines={2}>
-                        {data?.title}
-                    </Text>
+                    {is_new ? (
+                        <View>
+                            <FastImage
+                                source={require('../../assets/img/article/voiceUpdate.png')}
+                                style={styles.new_tag}
+                            />
+                            <Text style={styles.recommend_title} numberOfLines={2}>
+                                &emsp;&emsp;
+                                {data?.title}
+                            </Text>
+                        </View>
+                    ) : (
+                        <Text style={styles.recommend_title} numberOfLines={2}>
+                            {data?.title}
+                        </Text>
+                    )}
                     <>
                         <View style={[Style.flexRow, {marginTop: px(12)}]}>
                             <FastImage
@@ -239,4 +254,11 @@ const styles = StyleSheet.create({
     },
     btn: {width: px(80), height: px(28), backgroundColor: '#fff', borderRadius: px(18)},
     tag_img: {width: px(90), height: px(28), position: 'absolute', top: 0, left: 0},
+    new_tag: {
+        width: px(23),
+        height: px(18),
+        position: 'absolute',
+        left: 0,
+        top: px(4),
+    },
 });
