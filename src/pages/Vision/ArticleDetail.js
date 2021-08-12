@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 15:18:02
+ * @LastEditTime: 2021-08-11 16:02:42
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -157,7 +157,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
-            !favor_status && ReactNativeHapticFeedback.trigger('soft', options);
+            !favor_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setFavorNum((preNum) => {
                 return favor_status ? --preNum : ++preNum;
             });
@@ -192,7 +192,7 @@ const ArticleDetail = ({navigation, route}) => {
             if (!btnClick.current) {
                 return false;
             }
-            !collect_status && ReactNativeHapticFeedback.trigger('soft', options);
+            !collect_status && ReactNativeHapticFeedback.trigger('impactLight', options);
             setCollectNum((preNum) => {
                 return collect_status ? --preNum : ++preNum;
             });

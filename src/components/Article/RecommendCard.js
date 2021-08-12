@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 10:48:25
+ * @LastEditTime: 2021-08-12 10:35:05
  * @Description:推荐模块
  */
 import React, {useState, useCallback} from 'react';
@@ -118,10 +118,8 @@ const RecommendCard = ({data, style, onPress}) => {
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => {
-                    if (!data?.locked) {
-                        onPress && onPress();
-                        jump(data?.url);
-                    }
+                    onPress && onPress();
+                    jump(data?.url);
                 }}
                 style={[styles.card, style]}>
                 <LazyImage
@@ -137,7 +135,7 @@ const RecommendCard = ({data, style, onPress}) => {
                             }}
                         />
                     ) : null}
-                    {data?.locked && (
+                    {data?.recommend_time && (
                         <LinearGradient
                             start={{x: 0, y: 0}}
                             end={{x: 0, y: 1}}

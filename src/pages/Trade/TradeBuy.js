@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 10:10:14
+ * @LastEditTime: 2021-08-12 11:25:04
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -54,7 +54,7 @@ class TradeBuy extends Component {
             isLargeAmount: false,
             largeAmount: '',
             fixTip: '',
-            largeAmountAB: false,
+            largeTip: '',
         };
     }
     getTab = () => {
@@ -161,10 +161,12 @@ class TradeBuy extends Component {
      * @return {*}
      */
     plan = (amount) => {
+        const {isLargeAmount, largeAmount, bankSelect} = this.state;
         return new Promise((resove, reject) => {
+            let bank = isLargeAmount ? largeAmount : bankSelect || '';
             const params = {
                 amount: amount || this.state.data.buy_info.initial_amount,
-                pay_method: this.state.bankSelect?.pay_method,
+                pay_method: bank.pay_method,
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
             };
@@ -191,18 +193,16 @@ class TradeBuy extends Component {
     timer = null;
     onInput = async (_amount, init) => {
         let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
-
         if (!_amount && this.state.type == 0) {
             await this.plan('');
         }
-        this.setState({errTip: '', fixTip: '', largeAmountAB: false}, async () => {
+        this.setState({errTip: '', fixTip: '', largeTip: ''}, async () => {
             if (this.state.type == 0) {
                 if (_amount > selectCard.left_amount && selectCard.pay_method !== 'wallet') {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
                         errTip: `您当日剩余可用额度为${selectCard.left_amount}元，推荐使用大额极速购`,
-                        largeAmountAB: this.state.data.large_pay_abtest ? true : false,
                         mfbTip: false,
                     });
                 } else if (_amount > selectCard.single_amount) {
@@ -211,6 +211,10 @@ class TradeBuy extends Component {
                             buyBtnCanClick: false,
                             errTip: '魔方宝余额不足,建议',
                             mfbTip: true,
+                            largeTip:
+                                this.state.planData.left_discount_count > 0
+                                    ? `您尚有${this.state.planData.left_discount_count}次大额极速购优惠，去汇款激活使用`
+                                    : '',
                         });
                     } else {
                         this.setState({
@@ -608,19 +612,7 @@ class TradeBuy extends Component {
                                     <Text style={{color: '#101A30', fontSize: px(14), marginBottom: 8}}>
                                         {large_pay_method.bank_name}
                                     </Text>
-                                    {this.state.data.large_pay_abtest ? (
-                                        <View
-                                            style={[
-                                                Style.flexRow,
-                                                {flex: 1, marginRight: px(12), marginBottom: px(4)},
-                                            ]}>
-                                            <FastImage
-                                                source={require('../../assets/img/trade/fire.png')}
-                                                style={[styles.large_icon, {alignSelf: 'flex-start'}]}
-                                            />
-                                            <Text style={styles.large_text}>限时免申购手续费</Text>
-                                        </View>
-                                    ) : null}
+
                                     <Text style={{color: Colors.lightGrayColor, fontSize: px(12)}}>
                                         {large_pay_method.limit_desc}
                                     </Text>
@@ -639,6 +631,19 @@ class TradeBuy extends Component {
                         ) : null}
                     </View>
                 ) : null}
+                {this.state.data.large_pay_tip && (
+                    <View style={{backgroundColor: '#fff', paddingBottom: px(19)}}>
+                        <View style={styles.large_tip}>
+                            <Text style={styles.large_text}>
+                                <FastImage
+                                    source={require('../../assets/img/trade/fire.png')}
+                                    style={styles.large_icon}
+                                />
+                                {this.state.data.large_pay_tip}
+                            </Text>
+                        </View>
+                    </View>
+                )}
             </View>
         );
     }
@@ -711,77 +716,82 @@ class TradeBuy extends Component {
                                 </TouchableOpacity>
                             )}
                         </View>
-
-                        {planData.fee_text && errTip == '' && this.state.type == 0 ? (
+                        {amount ? (
                             <>
-                                <View style={styles.tip}>
-                                    <HTML
-                                        style={{fontSize: px(12), color: Colors.lightGrayColor}}
-                                        html={planData?.fee_text}
-                                    />
-                                </View>
-                                {planData?.score_text ? (
-                                    <View style={styles.tip}>
-                                        <HTML
-                                            style={{fontSize: px(12), color: Colors.lightGrayColor}}
-                                            html={planData?.score_text}
-                                        />
+                                {planData.fee_text && errTip == '' && this.state.type == 0 ? (
+                                    <>
+                                        <View style={styles.tip}>
+                                            <HTML
+                                                style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                                html={planData?.fee_text}
+                                            />
+                                        </View>
+                                        {planData?.large_pay_fee_info?.text ? (
+                                            <View style={[styles.tip, Style.flexRow, {justifyContent: 'flex-start'}]}>
+                                                <HTML
+                                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                                    html={planData?.large_pay_fee_info?.text}
+                                                />
+                                                <View style={styles.red_tag}>
+                                                    <Text style={{color: '#fff', fontSize: px(11)}}>
+                                                        {planData?.large_pay_fee_info?.status == 1 ? '推荐' : '优惠'}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        ) : null}
+                                        {planData?.score_text ? (
+                                            <View style={styles.tip}>
+                                                <HTML
+                                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                                    html={planData?.score_text}
+                                                />
+                                            </View>
+                                        ) : null}
+                                    </>
+                                ) : errTip ? (
+                                    <>
+                                        <View style={styles.tip}>
+                                            <Text style={{color: Colors.red}}>
+                                                {errTip}
+                                                {mfbTip ? (
+                                                    <Text
+                                                        style={{color: Colors.btnColor}}
+                                                        onPress={() => {
+                                                            this.jumpPage('MfbIn', {fr: 'trade_buy'});
+                                                        }}>
+                                                        立即充值
+                                                    </Text>
+                                                ) : null}
+                                            </Text>
+                                        </View>
+                                        {this.state.largeTip ? (
+                                            <View style={[styles.tip, Style.flexRow, {justifyContent: 'flex-start'}]}>
+                                                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                                                    {this.state.largeTip}
+                                                </Text>
+                                                <View style={styles.red_tag}>
+                                                    <Text style={{color: '#fff', fontSize: px(11)}}>推荐</Text>
+                                                </View>
+                                            </View>
+                                        ) : null}
+                                    </>
+                                ) : null}
+                                {errTip == '' && this.state.fixTip ? (
+                                    <View
+                                        style={[
+                                            styles.tip,
+                                            Style.flexBetween,
+                                            {borderTopWidth: 0, height: px(24), marginTop: px(-4), paddingLeft: px(3)},
+                                        ]}>
+                                        <Text style={{fontSize: px(12)}}>
+                                            实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
+                                        </Text>
+                                        <Text style={{color: Colors.btnColor}} onPress={this.showFixModal}>
+                                            计算方式
+                                        </Text>
                                     </View>
                                 ) : null}
                             </>
-                        ) : errTip ? (
-                            <>
-                                <View style={styles.tip}>
-                                    <Text style={{color: Colors.red}}>
-                                        {errTip}
-                                        {mfbTip ? (
-                                            <Text
-                                                style={{color: Colors.btnColor}}
-                                                onPress={() => {
-                                                    this.jumpPage('MfbIn', {fr: 'trade_buy'});
-                                                }}>
-                                                立即充值
-                                            </Text>
-                                        ) : null}
-                                    </Text>
-                                </View>
-                                {this.state.largeAmountAB ? (
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        style={[styles.large_tip, Style.flexBetween]}
-                                        onPress={() => {
-                                            this.jumpPage('LargeAmount');
-                                        }}>
-                                        <View style={[Style.flexRow, {flex: 1, marginRight: px(12)}]}>
-                                            <FastImage
-                                                source={require('../../assets/img/trade/fire.png')}
-                                                style={[styles.large_icon, {alignSelf: 'flex-start'}]}
-                                            />
-                                            <Text style={styles.large_text}>
-                                                使用大额极速购，限时免申购手续费（先购后返）
-                                            </Text>
-                                        </View>
-                                        <Text style={{color: Colors.yellow}}>
-                                            <Icon name={'right'} color size={px(12)} />
-                                        </Text>
-                                    </TouchableOpacity>
-                                ) : null}
-                            </>
-                        ) : null}
-                        {errTip == '' && this.state.fixTip ? (
-                            <View
-                                style={[
-                                    styles.tip,
-                                    Style.flexBetween,
-                                    {borderTopWidth: 0, height: px(24), marginTop: px(-4), paddingLeft: px(3)},
-                                ]}>
-                                <Text style={{fontSize: px(12)}}>
-                                    实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
-                                </Text>
-                                <Text style={{color: Colors.btnColor}} onPress={this.showFixModal}>
-                                    计算方式
-                                </Text>
-                            </View>
                         ) : null}
                     </View>
                 ) : null}
@@ -998,19 +1008,26 @@ const styles = StyleSheet.create({
     large_tip: {
         backgroundColor: '#FFF5E5',
         padding: px(6),
-        marginBottom: px(12),
         borderRadius: px(4),
+        marginHorizontal: px(16),
     },
     large_icon: {
-        width: px(15),
-        height: px(15),
-        marginRight: px(2),
+        width: px(14),
+        height: px(14),
+        marginRight: px(3),
     },
     large_text: {
         fontSize: px(12),
-        lineHeight: px(17),
-        flex: 1,
+        lineHeight: px(18),
         color: Colors.orange,
+    },
+    red_tag: {
+        backgroundColor: Colors.red,
+        borderRadius: px(10),
+        borderBottomLeftRadius: 0,
+        paddingHorizontal: px(5),
+        paddingVertical: px(2),
+        marginLeft: px(4),
     },
 });
 
