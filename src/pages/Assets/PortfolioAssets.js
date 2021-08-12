@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-08-06 19:14:02
+ * @LastEditTime: 2021-08-11 16:32:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -49,7 +49,7 @@ export default function PortfolioAssets(props) {
     const [left, setLeft] = useState('0%');
     const [onRight, setOnRight] = useState(false);
     const [widthD, setWidthD] = useState('0%');
-    const [period, setPeriod] = useState('m1');
+    const [period, setPeriod] = useState('y1');
     const [tip, setTip] = useState({});
     const [tag, setTag] = useState();
     const _textTime = useRef(null);
@@ -532,10 +532,7 @@ export default function PortfolioAssets(props) {
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={() => {
-                                        props.navigation.navigate('IncomeDetail', {
-                                            page: 0,
-                                            poid: props.route?.params?.poid,
-                                        });
+                                        jump(data.jump_url_list?.profit || '');
                                     }}
                                     style={[
                                         Style.flexRow,
@@ -549,10 +546,7 @@ export default function PortfolioAssets(props) {
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={() => {
-                                        props.navigation.navigate('IncomeDetail', {
-                                            page: 1,
-                                            poid: props.route?.params?.poid,
-                                        });
+                                        jump(data.jump_url_list?.profit_acc || '');
                                     }}
                                     style={[Style.flexRow, {alignItems: 'baseline'}]}>
                                     <Text style={styles.profit_text_sty}>累计收益</Text>

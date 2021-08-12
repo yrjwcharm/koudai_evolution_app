@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-28 14:53:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-11 18:57:40
  * @Description:路由表
  */
 import React from 'react';
@@ -145,6 +145,8 @@ import Questionnaire from '../pages/Evaluation/Questionnaire'; // 传统风险�
 import PortfolioMask from '../pages/Portfolio/PortfolioMask'; //详情页蒙层
 import QuestionnaireResult from '../pages/Evaluation/QuestionnaireResult'; // 传统风险评测结果页
 import TopInvestors from '../pages/Assets/TopInvestors'; //牛人信号
+import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 智能组合收益明细
+import IntelligentInvestAnalysis from '../pages/Assets/IntelligentInvestAnalysis'; // 智能组合投资分析
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -561,6 +563,16 @@ export default function AppStack() {
             <Stack.Screen name="PortfolioMask" component={PortfolioMask} options={{title: ''}} />
             <Stack.Screen name="QuestionnaireResult" component={QuestionnaireResult} options={{title: '评测结果'}} />
             <Stack.Screen name="TopInvestors" component={TopInvestors} options={{title: '牛人信号'}} />
+            <Stack.Screen
+                name="IntelligentIncomeDetail"
+                component={IntelligentIncomeDetail}
+                options={{title: '组合收益明细'}}
+            />
+            <Stack.Screen
+                name="IntelligentInvestAnalysis"
+                component={IntelligentInvestAnalysis}
+                options={{title: '投资分析'}}
+            />
         </Stack.Navigator>
     );
 }
