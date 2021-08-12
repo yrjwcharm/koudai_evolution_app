@@ -118,6 +118,7 @@ const Index = (props) => {
     useEffect(() => {
         if (userInfo?.pushRoute) {
             http.get(`/common/push/jump/redirect/20210810?url=${encodeURI(userInfo?.pushRoute)}`).then((res) => {
+                dispatch(updateUserInfo({pushRoute: ''}));
                 if (res.code == '000000') {
                     jump(res.result?.url);
                 }
@@ -133,7 +134,7 @@ const Index = (props) => {
             //     dispatch(updateUserInfo({pushRoute: ''}));
             // }
         }
-    }, [userInfo, jump]);
+    }, [userInfo, jump, dispatch]);
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);

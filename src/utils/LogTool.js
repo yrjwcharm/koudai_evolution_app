@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 10:29:30
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-08 15:34:48
+ * @LastEditTime: 2021-08-12 17:42:49
  * @Description:埋点
  *
  */
@@ -27,6 +27,9 @@ const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
     _params.tag = tag !== undefined ? tag : ''; //特殊标记 abtest
 
     setTimeout(() => {
+        // if (__DEV__) {
+        //     return;
+        // }
         http.get(sUrl, _params);
         global.previousRoutePageId = '';
     }, 200);

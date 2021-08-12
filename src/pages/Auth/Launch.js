@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-06 16:42:17
+ * @LastEditTime: 2021-08-12 17:41:03
  * @Description:
  */
 import React, {useEffect, useState, useRef} from 'react';
@@ -157,7 +157,7 @@ export default function Launch({navigation}) {
         <TouchableOpacity
             activeOpacity={1}
             onPress={() => {
-                if (isNavigating) {
+                if (isNavigating || !adMes?.img) {
                     return;
                 }
                 isNavigating = true;
