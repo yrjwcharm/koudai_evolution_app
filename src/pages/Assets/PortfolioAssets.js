@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-08-11 16:32:18
+ * @LastEditTime: 2021-08-12 15:28:32
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -16,6 +16,7 @@ import {
     TextInput,
     Dimensions,
     RefreshControl,
+    Platform,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -374,8 +375,21 @@ export default function PortfolioAssets(props) {
                                             editable={false}
                                         />
                                         <View style={[Style.flexRow, {alignItems: 'center'}]}>
-                                            <CircleLegend color={['#E8EAEF', '#545968']} />
-                                            <Text style={styles.legend_desc_sty}>{chart?.label[2]?.name}</Text>
+                                            {chart?.label[2]?.name === '底线' ? (
+                                                <Text
+                                                    style={{
+                                                        color: Colors.defaultColor,
+                                                        fontSize: Font.textH3,
+                                                        fontWeight: Platform.select({android: '700', ios: '600'}),
+                                                    }}>
+                                                    --
+                                                </Text>
+                                            ) : (
+                                                <CircleLegend color={['#E8EAEF', '#545968']} />
+                                            )}
+                                            <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
+                                                {chart?.label[2]?.name}
+                                            </Text>
                                             {chart?.tips && (
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
