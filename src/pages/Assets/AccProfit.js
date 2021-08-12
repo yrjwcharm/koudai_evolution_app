@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-05-07 10:03:17
+ * @LastEditTime: 2021-08-11 15:38:03
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -19,7 +19,7 @@ import {Modal} from '../../components/Modal';
 import {Chart} from '../../components/Chart';
 import {areaChart} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
-const AccProfit = ({poid}) => {
+const AccProfit = ({intelligent, poid}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
     const [list, setList] = useState([]);
@@ -150,8 +150,11 @@ const AccProfit = ({poid}) => {
 
             {chartData.chart ? (
                 <View style={[styles.chartContainer, poid ? {minHeight: text(430)} : {}]}>
-                    <View style={[Style.flexRow, {justifyContent: 'center'}]}>
-                        <Text style={styles.subTitle}>{chartData.title}</Text>
+                    <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>
+                        {chartData.profit_acc}
+                    </Text>
+                    <View style={[Style.flexRow, {justifyContent: 'center', marginTop: text(2)}]}>
+                        <Text style={styles.chartTitle}>{chartData.title}</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 global.LogTool('click', 'showTips');
@@ -160,14 +163,11 @@ const AccProfit = ({poid}) => {
                             <AntDesign
                                 style={{marginLeft: text(4)}}
                                 name={'questioncircleo'}
-                                size={16}
+                                size={11}
                                 color={Colors.darkGrayColor}
                             />
                         </TouchableOpacity>
                     </View>
-                    <Text style={[styles.profitAcc, {color: getColor(chartData.profit_acc)}]}>
-                        {chartData.profit_acc}
-                    </Text>
                     <View style={[styles.chart]}>
                         {Object.keys(chartData).length > 0 && (
                             <Chart
@@ -214,7 +214,7 @@ const AccProfit = ({poid}) => {
                         )}
                     </View>
 
-                    <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(30)}]}>
+                    <View style={[Style.flexRowCenter, {paddingTop: text(8), paddingBottom: text(20)}]}>
                         {chartData?.subtabs?.map((tab, index) => {
                             return (
                                 <TouchableOpacity
@@ -245,6 +245,17 @@ const AccProfit = ({poid}) => {
                             );
                         })}
                     </View>
+
+                    {intelligent && (
+                        <View style={[styles.infoBox, {marginBottom: insets.bottom}]}>
+                            <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>
+                                为什么我的净值走势和我的累计收益不一致
+                            </Text>
+                            <Text style={[styles.descContent]}>
+                                净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
+                            </Text>
+                        </View>
+                    )}
                 </View>
             ) : showEmpty ? (
                 <EmptyTip
@@ -348,7 +359,6 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         // fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: text(2),
     },
     chart: {
         height: text(224),
@@ -389,6 +399,29 @@ const styles = StyleSheet.create({
         paddingHorizontal: text(8),
         textAlign: 'justify',
         flex: 1,
+    },
+    chartTitle: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: Colors.descColor,
+    },
+    infoBox: {
+        marginHorizontal: Space.marginAlign,
+        paddingVertical: Space.padding,
+        borderColor: Colors.borderColor,
+        borderTopWidth: Space.borderWidth,
+    },
+    bigTitle: {
+        fontSize: Font.textH2,
+        lineHeight: text(20),
+        color: Colors.defaultColor,
+        fontWeight: '500',
+    },
+    descContent: {
+        fontSize: Font.textH3,
+        lineHeight: text(22),
+        color: Colors.descColor,
+        textAlign: 'justify',
     },
 });
 
