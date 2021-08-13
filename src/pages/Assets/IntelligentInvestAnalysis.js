@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-12 10:23:19
+ * @LastEditTime: 2021-08-13 09:46:24
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -334,7 +334,7 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                             chartData2.chart,
                                             [Colors.red, Colors.lightBlackColor],
                                             deviceWidth,
-                                            [10, 10, 10, 0]
+                                            [10, 24, 10, 0]
                                         )}
                                         data={chartData2.chart}
                                         onChange={onChartChange2}
