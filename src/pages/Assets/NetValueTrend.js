@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-04 12:03:50
+ * @LastEditTime: 2021-08-13 11:20:02
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -34,6 +34,10 @@ const NetValueTrend = ({poid}) => {
     const bottomModal = useRef(null);
 
     const init = useCallback(() => {
+        if (!tabClick.current) {
+            return false;
+        }
+        tabClick.current = false;
         setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
             setShowEmpty(true);
@@ -188,10 +192,6 @@ const NetValueTrend = ({poid}) => {
                                         activeOpacity={0.8}
                                         key={item.val + index}
                                         onPress={() => {
-                                            if (!tabClick.current) {
-                                                return false;
-                                            }
-                                            tabClick.current = false;
                                             global.LogTool('click', item.val);
                                             setPeriod(item.val);
                                         }}
