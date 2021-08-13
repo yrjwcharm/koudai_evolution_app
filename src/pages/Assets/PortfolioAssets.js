@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-08-13 11:42:53
+ * @LastEditTime: 2021-08-13 17:57:27
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -116,11 +116,11 @@ export default function PortfolioAssets(props) {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
-            tabClick.current = true;
-            setChart(res.result);
             setTag(res.result.tag_position);
             setChartData(res.result.chart);
             setShowEmpty(res.result.chart?.length === 0);
+            setChart(res.result);
+            tabClick.current = true;
         });
     };
     const renderLoading = () => {
@@ -160,12 +160,12 @@ export default function PortfolioAssets(props) {
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
-            _textTime.current.setNativeProps({text: items[0]?.title});
-            _textPortfolio.current.setNativeProps({
+            _textTime?.current?.setNativeProps({text: items[0]?.title});
+            _textPortfolio?.current?.setNativeProps({
                 text: items[0]?.value,
                 style: [styles.legend_title_sty, {color: getColor(items[0]?.value)}],
             });
-            _textBenchmark.current.setNativeProps({
+            _textBenchmark?.current?.setNativeProps({
                 text: items[1]?.value,
                 style: [styles.legend_title_sty, {color: getColor(items[1]?.value)}],
             });
@@ -174,15 +174,15 @@ export default function PortfolioAssets(props) {
     );
     // 图表滑动结束
     const onHide = () => {
-        _textTime.current.setNativeProps({text: chart?.label[0].val});
-        _textPortfolio.current.setNativeProps({
+        _textTime?.current?.setNativeProps({text: chart?.label[0].val});
+        _textPortfolio?.current?.setNativeProps({
             text: chart?.label[1].val,
             style: [styles.legend_title_sty, {color: getColor(chart?.label[1].val)}],
         });
-        // _textBenchmark.current.setNativeProps({
-        //     text: chart?.label[2].val,
-        //     style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
-        // });
+        _textBenchmark?.current?.setNativeProps({
+            text: chart?.label[2].val,
+            style: [styles.legend_title_sty, {color: getColor(chart?.label[2].val)}],
+        });
     };
     const getColor = useCallback((t) => {
         if (!t) {
