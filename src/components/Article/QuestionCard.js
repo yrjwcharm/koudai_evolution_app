@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 16:56:08
+ * @LastEditTime: 2021-08-13 11:45:19
  * @Description:用户问答卡片
  */
 import React, {useState} from 'react';
@@ -14,6 +14,7 @@ import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
 import Praise from '../Praise';
 export default function QuestionCard({data, scene}) {
+    console.log(data);
     const jump = useJump();
     const [is_new, setIsNew] = useState(data.is_new);
     const visionData = useSelector((store) => store.vision).toJS();

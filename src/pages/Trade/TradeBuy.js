@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 16:13:09
+ * @LastEditTime: 2021-08-13 14:14:41
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -935,7 +935,8 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     tip: {
-        height: px(33),
+        // height: px(33),
+        paddingVertical: px(8),
         justifyContent: 'center',
         borderTopWidth: 0.5,
         borderColor: Colors.borderColor,
