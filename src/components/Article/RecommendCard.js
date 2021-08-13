@@ -2,10 +2,10 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 15:54:39
+ * @LastEditTime: 2021-08-13 16:14:53
  * @Description:推荐模块
  */
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, AppState} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
@@ -32,6 +32,11 @@ const RecommendCard = ({data, style, onPress}) => {
             }
         });
     };
+    useEffect(() => {
+        setIsNew((pre_new) => {
+            return data.is_new != pre_new ? data.is_new : pre_new;
+        });
+    }, [data.is_new]);
     useFocusEffect(
         useCallback(() => {
             setReserved((pre) => {

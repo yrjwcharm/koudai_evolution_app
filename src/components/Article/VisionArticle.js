@@ -2,11 +2,11 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 11:00:24
+ * @LastEditTime: 2021-08-13 16:15:46
  * @Description:视野文章模块
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -20,6 +20,11 @@ export default function VisionArticle({data = '', style, scene}) {
     const [is_new, setIsNew] = useState(data.is_new);
     const jump = useJump();
     let numberOfLines = scene == 'recommend' || scene == 'index' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
+    useEffect(() => {
+        setIsNew((pre_new) => {
+            return data.is_new != pre_new ? data.is_new : pre_new;
+        });
+    }, [data.is_new]);
     return (
         <TouchableOpacity
             style={[styles.card, style]}

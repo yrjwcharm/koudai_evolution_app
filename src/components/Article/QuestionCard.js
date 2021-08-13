@@ -2,10 +2,10 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 15:51:30
+ * @LastEditTime: 2021-08-13 16:15:09
  * @Description:用户问答卡片
  */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -17,6 +17,11 @@ export default function QuestionCard({data, scene}) {
     const jump = useJump();
     const [is_new, setIsNew] = useState(data.is_new);
     const visionData = useSelector((store) => store.vision).toJS();
+    useEffect(() => {
+        setIsNew((pre_new) => {
+            return data.is_new != pre_new ? data.is_new : pre_new;
+        });
+    }, [data.is_new]);
     return (
         <TouchableOpacity
             activeOpacity={0.9}

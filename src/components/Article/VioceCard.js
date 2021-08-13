@@ -3,11 +3,11 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 11:17:31
+ * @LastEditTime: 2021-08-13 16:15:29
  * @Description:音频模块
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -24,6 +24,11 @@ const VioceCard = ({data, style, scene}) => {
     const jump = useJump();
     const [is_new, setIsNew] = useState(data.is_new);
     const dispatch = useDispatch();
+    useEffect(() => {
+        setIsNew((pre_new) => {
+            return data.is_new != pre_new ? data.is_new : pre_new;
+        });
+    }, [data.is_new]);
     return (
         <TouchableOpacity
             activeOpacity={0.9}
