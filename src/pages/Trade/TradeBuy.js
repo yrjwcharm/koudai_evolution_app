@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 14:14:41
+ * @LastEditTime: 2021-08-13 16:01:51
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -720,12 +720,14 @@ class TradeBuy extends Component {
                             <>
                                 {planData.fee_text && errTip == '' && this.state.type == 0 ? (
                                     <>
-                                        <View style={styles.tip}>
-                                            <HTML
-                                                style={{fontSize: px(12), color: Colors.lightGrayColor}}
-                                                html={planData?.fee_text}
-                                            />
-                                        </View>
+                                        {planData?.large_pay_fee_info?.status == 2 ? null : (
+                                            <View style={styles.tip}>
+                                                <HTML
+                                                    style={{fontSize: px(12), color: Colors.lightGrayColor}}
+                                                    html={planData?.fee_text}
+                                                />
+                                            </View>
+                                        )}
                                         {planData?.large_pay_fee_info?.text ? (
                                             <View style={[styles.tip, Style.flexRow, {justifyContent: 'flex-start'}]}>
                                                 <HTML

@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 11:36:25
+ * @LastEditTime: 2021-08-13 15:54:39
  * @Description:推荐模块
  */
 import React, {useState, useCallback} from 'react';
@@ -20,9 +20,9 @@ import Toast from '../Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import LazyImage from '../LazyImage';
 const RecommendCard = ({data, style, onPress}) => {
-    const jump = useJump();
-    const [reserved, setReserved] = useState(data.reserved);
     const [is_new, setIsNew] = useState(data.is_new);
+    const [reserved, setReserved] = useState(data.reserved);
+    const jump = useJump();
     const postReserve = (sucess) => {
         http.post('/vision/recommend/reserve/20210524', {id: data.id}).then((res) => {
             if (res.code === '000000') {
