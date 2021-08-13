@@ -2,7 +2,7 @@
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-06 11:24:12
+ * @LastEditTime: 2021-08-13 11:32:07
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -545,7 +545,8 @@ export const dodgeColumn = (
     size = 10,
     marginRatio = 0,
     showGuide = false,
-    showTooltip = true
+    showTooltip = true,
+    profitMode = false // 收益模式 根据正负显示红色和绿色
 ) => `
 (function(){
 chart = new F2.Chart({
@@ -559,7 +560,7 @@ chart.source(${JSON.stringify(data)}, {
   value: {
     tickCount: 5,
     formatter: function formatter(val) {
-      return (val * 100).toFixed(1) + '%';
+      return (val * 100).toFixed(2) + '%';
     },
   }
 });
@@ -575,7 +576,7 @@ chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
-    // cfg.text = number.toFixed(0) + "%";
+    cfg.text = number.toFixed(0) + "%";
     cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }
@@ -595,7 +596,13 @@ if (!${showTooltip}) {
 }
 chart.interval()
   .position('date*value')
-  .color('type', ${JSON.stringify(colors)})
+  .color(${JSON.stringify(profitMode)} ? 'type*value' : 'type', ${JSON.stringify(profitMode)} ? (type, value) => {
+    if (parseFloat(value) > 0) {
+      return ${JSON.stringify(colors[0])};
+    } else {
+      return ${JSON.stringify(colors[1])}
+    }
+  } : ${JSON.stringify(colors)})
   .adjust({
     type: 'dodge',
     marginRatio: ${marginRatio}

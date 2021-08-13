@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-13 09:46:24
+ * @LastEditTime: 2021-08-13 11:20:08
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -36,6 +36,10 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
     const bottomModal = useRef(null);
 
     const init = () => {
+        if (!tabClick.current) {
+            return false;
+        }
+        tabClick.current = false;
         setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid: route.params?.poid}).then((res) => {
             setShowEmpty(true);
@@ -215,10 +219,6 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                         activeOpacity={0.8}
                                         key={item.val + index}
                                         onPress={() => {
-                                            if (!tabClick.current) {
-                                                return false;
-                                            }
-                                            tabClick.current = false;
                                             global.LogTool('click', item.val);
                                             setPeriod(item.val);
                                         }}
@@ -332,9 +332,14 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                     <Chart
                                         initScript={dodgeColumn(
                                             chartData2.chart,
-                                            [Colors.red, Colors.lightBlackColor],
+                                            [Colors.red, Colors.green],
                                             deviceWidth,
-                                            [10, 24, 10, 0]
+                                            [10, 24, 10, 0],
+                                            16,
+                                            0,
+                                            false,
+                                            true,
+                                            true
                                         )}
                                         data={chartData2.chart}
                                         onChange={onChartChange2}
