@@ -1,17 +1,16 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 20:21:10
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-13 17:36:59
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
-import {StyleSheet, Platform, View, Text, ActivityIndicator} from 'react-native';
+import {StyleSheet, Platform, View, ActivityIndicator} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
 import * as chartOptions from './chartOptions';
-import {Colors} from '../../common/commonStyle';
-import _ from 'lodash';
-import {px} from '../../utils/appUtil';
+import {Colors, Style} from '../../common/commonStyle';
+import {isEqual} from 'lodash';
 const changeData = (data) => `chart.changeData(${JSON.stringify(data)});`;
 
 const source = Platform.select({
@@ -41,7 +40,7 @@ class Chart extends PureComponent {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         const {data} = this.props;
-        if (!_.isEqual(data, nextProps.data)) {
+        if (!isEqual(data, nextProps.data)) {
             this.update(nextProps.data);
         }
     }
@@ -50,7 +49,7 @@ class Chart extends PureComponent {
         if (this.props.updateScript) {
             this.chart.current.injectJavaScript(this.props.updateScript(data));
         } else {
-            console.log('update');
+            // console.log('update');
             this.chart.current.injectJavaScript(changeData(data));
         }
     };
@@ -78,7 +77,7 @@ class Chart extends PureComponent {
                 style={styles.webView}
                 injectedJavaScript={initScript}
                 renderLoading={() => (
-                    <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: px(40)}}>
+                    <View style={[Style.flexCenter, {position: 'absolute', left: 0, right: 0, bottom: 0, top: 0}]}>
                         <ActivityIndicator color={Colors.brandColor} />
                     </View>
                 )}

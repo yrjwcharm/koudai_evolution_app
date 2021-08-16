@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-05 10:54:38
+ * @LastEditTime: 2021-08-13 18:14:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -296,7 +296,17 @@ function HomeScreen({navigation, route}) {
     /** @name 渲染中控滑块 */
     const renderItem = ({item, index}) => {
         return (
-            <View style={{...styles.contentBox, height: text(164)}} key={item + index}>
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                    if (item.button) {
+                        global.LogTool('assetsConsoleStart', item.type);
+                        http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
+                        jump(item.button.url);
+                    }
+                }}
+                style={{...styles.contentBox, height: text(164)}}
+                key={item + index}>
                 {item.tag ? (
                     <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                         <View style={[styles.contentTag, {backgroundColor: item.color}]}>
@@ -329,13 +339,7 @@ function HomeScreen({navigation, route}) {
                     />
                 </View>
                 {item.button ? (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        onPress={() => {
-                            global.LogTool('assetsConsoleStart', item.type);
-                            http.post('/asset/center_click/20210101', {id: item.id, type: item.type});
-                            jump(item.button.url);
-                        }}
+                    <View
                         style={[
                             Style.flexRowCenter,
                             styles.checkBtn,
@@ -344,9 +348,9 @@ function HomeScreen({navigation, route}) {
                         ]}>
                         <Text style={{...styles.noticeText, marginRight: text(4)}}>{item.button.text}</Text>
                         <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                    </TouchableOpacity>
+                    </View>
                 ) : null}
-            </View>
+            </TouchableOpacity>
         );
     };
 
@@ -684,7 +688,20 @@ function HomeScreen({navigation, route}) {
                             {centerData.length <= 1 &&
                                 centerData.map((item, index) => {
                                     return (
-                                        <View style={styles.contentBox} key={item + index}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                if (item.button) {
+                                                    global.LogTool('assetsConsoleStart', item.type);
+                                                    http.post('/asset/center_click/20210101', {
+                                                        id: item.id,
+                                                        type: item.type,
+                                                    });
+                                                    jump(item.button.url);
+                                                }
+                                            }}
+                                            style={styles.contentBox}
+                                            key={item + index}>
                                             {item.tag ? (
                                                 <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
                                                     <View style={[styles.contentTag, {backgroundColor: item.color}]}>
@@ -709,16 +726,7 @@ function HomeScreen({navigation, route}) {
                                             ) : null}
                                             <HTML html={item.content} style={styles.contentText} />
                                             {item.button ? (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    onPress={() => {
-                                                        global.LogTool('assetsConsoleStart', item.type);
-                                                        http.post('/asset/center_click/20210101', {
-                                                            id: item.id,
-                                                            type: item.type,
-                                                        });
-                                                        jump(item.button.url);
-                                                    }}
+                                                <View
                                                     style={[
                                                         Style.flexRowCenter,
                                                         styles.checkBtn,
@@ -728,9 +736,9 @@ function HomeScreen({navigation, route}) {
                                                         {item.button.text}
                                                     </Text>
                                                     <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                                </TouchableOpacity>
+                                                </View>
                                             ) : null}
-                                        </View>
+                                        </TouchableOpacity>
                                     );
                                 })}
                             {centerData.length > 1 && (
