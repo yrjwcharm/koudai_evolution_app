@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -26,7 +26,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
-
+let risk_chart_min = '';
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
@@ -73,6 +73,12 @@ export default function DetailAccount({route, navigation}) {
                 setLoading(false);
                 if (res.code === '000000') {
                     setData(res.result);
+                    risk_chart_min = Math.min.apply(
+                        null,
+                        res.result.risk_info?.chart.map(function (o) {
+                            return o.val;
+                        })
+                    );
                     navigation.setOptions({
                         title: res.result.title,
                         headerRight: () => {
@@ -410,6 +416,9 @@ export default function DetailAccount({route, navigation}) {
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,
+                                            risk_chart_min > data?.risk_info?.label[2]?.ratio
+                                                ? data?.risk_info?.label[2]?.ratio
+                                                : null,
                                             data?.risk_info?.label[2]?.ratio,
                                             text(160)
                                         )}

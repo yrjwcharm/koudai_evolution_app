@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-08-13 11:20:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-16 15:21:12
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -174,7 +174,7 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                             {chartData?.tips && index === 2 && (
                                                 <TouchableOpacity
                                                     activeOpacity={0.8}
-                                                    style={{position: 'absolute', right: text(-16)}}
+                                                    style={[Style.flexRowCenter, styles.tip_img]}
                                                     onPress={() => showTips(chartData.tips)}>
                                                     <FastImage
                                                         style={{width: text(12), height: text(12)}}
@@ -440,6 +440,7 @@ const styles = StyleSheet.create({
     },
     legendItem: {
         flex: 1,
+        position: 'relative',
         alignItems: 'center',
     },
     legendTitle: {
@@ -482,6 +483,13 @@ const styles = StyleSheet.create({
     },
     monthRatio: {
         marginTop: text(12),
+    },
+    tip_img: {
+        position: 'absolute',
+        right: text(-30),
+        width: text(40),
+        height: text(40),
+        top: text(-12),
     },
 });
 

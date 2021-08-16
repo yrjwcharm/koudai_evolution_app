@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-08-11 15:38:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-16 15:25:47
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -174,7 +174,7 @@ const AccProfit = ({intelligent, poid}) => {
                                 initScript={areaChart(
                                     chartData.chart,
                                     [Colors.red],
-                                    [Colors.red],
+                                    ['l(90) 0:#E74949 1:#fff', 'transparent'],
                                     undefined,
                                     text(224),
                                     {value: '累计收益(元)'},

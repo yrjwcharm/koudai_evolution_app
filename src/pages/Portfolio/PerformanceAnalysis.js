@@ -2,7 +2,7 @@
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 11:49:18
+ * @LastEditTime: 2021-08-16 15:06:00
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -126,7 +126,7 @@ const baseAreaChart = (
         range: [0, 1]
     });
     chart.scale('value', {
-        tickCount: 4,
+        tickCount: 5,
         max: ${JSON.stringify(max)},
         formatter: (value) => {
             return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
@@ -197,7 +197,7 @@ const area = (source, percent = true, tofixed = 2) => `
       tickCount: 3,
     },
     value: {
-      tickCount: 4,
+      tickCount: 5,
       formatter: (value) => {
         return ${percent ? '(value * 100).toFixed(' + tofixed + ') + "%"' : 'value.toFixed(' + tofixed + ')'};
       }

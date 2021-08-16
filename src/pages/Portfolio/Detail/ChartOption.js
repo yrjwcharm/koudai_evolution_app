@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 12:41:56
+ * @LastEditTime: 2021-08-16 14:55:23
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -113,7 +113,7 @@ export const pieChart = (data, map) => `
   chart.render();
 })()
 `;
-export const histogram = (data, min, height) =>
+export const histogram = (data, min, max_drop, height) =>
     `
 (function(){
   const chart = new F2.Chart({
@@ -128,6 +128,7 @@ export const histogram = (data, min, height) =>
   chart.legend(false);
   chart.scale('val', {
     tickCount: 4,
+    min:${min},
   });
   chart.axis('key',false);
   chart.axis('val',{
@@ -176,8 +177,8 @@ export const histogram = (data, min, height) =>
       marginRatio: 0.4// 设置分组间柱子的间距
     });
     chart.guide().line({ // 绘制辅助线
-      start: [ 'min', ${min} ],
-      end: [ 'max',  ${min}],
+      start: [ 'min', ${max_drop} ],
+      end: [ 'max',  ${max_drop}],
       style: {
         stroke: '#4E556C',
         lineDash: [ 2 ]
