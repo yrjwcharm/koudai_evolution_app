@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 16:17:17
+ * @LastEditTime: 2021-08-16 17:23:34
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -389,6 +389,7 @@ export default function PortfolioAssets(props) {
                                             )}
                                             <TouchableOpacity
                                                 activeOpacity={0.8}
+                                                style={Style.flexRow}
                                                 onPress={() => showTips(chart.tips, 'chart')}>
                                                 <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
                                                     {chart?.label[2]?.name}
@@ -398,8 +399,7 @@ export default function PortfolioAssets(props) {
                                                         style={{
                                                             width: text(12),
                                                             height: text(12),
-                                                            position: 'absolute',
-                                                            right: text(-16),
+                                                            marginLeft: text(4),
                                                         }}
                                                         source={require('../../assets/img/tip.png')}
                                                     />

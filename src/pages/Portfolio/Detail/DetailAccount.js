@@ -412,7 +412,7 @@ export default function DetailAccount({route, navigation}) {
                                         <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
                                     </View>
                                 </View>
-                                <View style={{height: text(162)}}>
+                                <View style={{height: text(168)}}>
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,

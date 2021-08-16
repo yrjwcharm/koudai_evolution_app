@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 16:07:33
+ * @LastEditTime: 2021-08-16 17:24:12
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -186,8 +186,7 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                                         style={{
                                                             width: text(12),
                                                             height: text(12),
-                                                            position: 'relative',
-                                                            right: text(-4),
+                                                            marginLeft: text(4),
                                                         }}
                                                         source={require('../../assets/img/tip.png')}
                                                     />
