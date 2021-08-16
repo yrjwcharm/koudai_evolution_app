@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 15:21:12
+ * @LastEditTime: 2021-08-16 16:07:33
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -168,20 +168,31 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                                     --
                                                 </Text>
                                             ) : null}
-                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                                {item.name}
-                                            </Text>
-                                            {chartData?.tips && index === 2 && (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    style={[Style.flexRowCenter, styles.tip_img]}
-                                                    onPress={() => showTips(chartData.tips)}>
+                                            <TouchableOpacity
+                                                style={Style.flexRow}
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    chartData?.tips && index === 2 && showTips(chartData.tips);
+                                                }}>
+                                                <Text
+                                                    style={[
+                                                        styles.legendDesc,
+                                                        index !== 0 ? {marginLeft: text(4)} : {},
+                                                    ]}>
+                                                    {item.name}
+                                                </Text>
+                                                {chartData?.tips && index === 2 && (
                                                     <FastImage
-                                                        style={{width: text(12), height: text(12)}}
+                                                        style={{
+                                                            width: text(12),
+                                                            height: text(12),
+                                                            position: 'relative',
+                                                            right: text(-4),
+                                                        }}
                                                         source={require('../../assets/img/tip.png')}
                                                     />
-                                                </TouchableOpacity>
-                                            )}
+                                                )}
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 );
@@ -293,8 +304,8 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                                     index !== 0 ? {color: getColor(`${item.val}`)} : {},
                                                 ]}
                                             />
-                                            <View style={Style.flexRow}>
-                                                {/* {index !== 0 && (
+                                            {/* <View style={Style.flexRow}> */}
+                                            {/* {index !== 0 && (
                                                     <Dot
                                                         bgColor={
                                                             index === 1
@@ -304,25 +315,12 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                                         color={index === 1 ? Colors.red : Colors.descColor}
                                                     />
                                                 )} */}
-                                                <Text
-                                                    style={[
-                                                        styles.legendDesc,
-                                                        index !== 0 ? {marginLeft: text(4)} : {},
-                                                    ]}>
-                                                    {item.name}
-                                                </Text>
-                                                {chartData2?.tips && index === 2 && (
-                                                    <TouchableOpacity
-                                                        activeOpacity={0.8}
-                                                        style={{position: 'absolute', right: text(-16)}}
-                                                        onPress={() => showTips(chartData2.tips)}>
-                                                        <FastImage
-                                                            style={{width: text(12), height: text(12)}}
-                                                            source={require('../../assets/img/tip.png')}
-                                                        />
-                                                    </TouchableOpacity>
-                                                )}
-                                            </View>
+
+                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
+                                                {item.name}
+                                            </Text>
+
+                                            {/* </View> */}
                                         </View>
                                     );
                                 })}
@@ -483,13 +481,6 @@ const styles = StyleSheet.create({
     },
     monthRatio: {
         marginTop: text(12),
-    },
-    tip_img: {
-        position: 'absolute',
-        right: text(-30),
-        width: text(40),
-        height: text(40),
-        top: text(-12),
     },
 });
 

@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-08-13 11:42:53
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-16 15:44:39
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -387,20 +387,24 @@ export default function PortfolioAssets(props) {
                                             ) : (
                                                 <CircleLegend color={['#E8EAEF', '#545968']} />
                                             )}
-                                            <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
-                                                {chart?.label[2]?.name}
-                                            </Text>
-                                            {chart?.tips && (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    style={{position: 'absolute', right: text(-16)}}
-                                                    onPress={() => showTips(chart.tips, 'chart')}>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => showTips(chart.tips, 'chart')}>
+                                                <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
+                                                    {chart?.label[2]?.name}
+                                                </Text>
+                                                {chart?.tips && (
                                                     <FastImage
-                                                        style={{width: text(12), height: text(12)}}
+                                                        style={{
+                                                            width: text(12),
+                                                            height: text(12),
+                                                            position: 'absolute',
+                                                            right: text(-16),
+                                                        }}
                                                         source={require('../../assets/img/tip.png')}
                                                     />
-                                                </TouchableOpacity>
-                                            )}
+                                                )}
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
                                 )}

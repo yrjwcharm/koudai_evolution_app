@@ -3,9 +3,9 @@
  * @Date: 2021-02-22 16:42:30
  * @Description:私募持仓
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-14 19:18:56
+ * @LastEditTime: 2021-08-16 16:05:47
  */
-import React, {useState, useCallback, useEffect, useRef} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {
     View,
     Text,
@@ -34,6 +34,7 @@ import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Chart} from '../../components/Chart';
 import {useJump} from '../../components/hooks';
+import {useFocusEffect} from '@react-navigation/native';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PrivateAssets({navigation, route}) {
@@ -120,9 +121,11 @@ export default function PrivateAssets({navigation, route}) {
             </View>
         );
     };
-    useEffect(() => {
-        init();
-    }, [init]);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [init])
+    );
     const redeemBtn = () => {
         Modal.show({
             confirm: true,
@@ -545,21 +548,33 @@ export default function PrivateAssets({navigation, route}) {
                                 paddingTop: text(10),
                             },
                         ]}>
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            style={[
-                                styles.button_sty,
-                                {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)},
-                            ]}
-                            onPress={() => redeemBtn()}>
-                            <Text style={{textAlign: 'center', color: '#545968'}}>{data?.buttons[1]?.text}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            style={[styles.button_sty, {backgroundColor: '#D7AF74'}]}
-                            onPress={() => jump(data?.buttons[0].url)}>
-                            <Text style={{textAlign: 'center', color: '#fff'}}>{data?.buttons[0]?.text}</Text>
-                        </TouchableOpacity>
+                        {data?.buttons[1] ? (
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={[
+                                    styles.button_sty,
+                                    {borderColor: '#4E556C', borderWidth: 0.5, marginRight: text(10)},
+                                ]}
+                                onPress={() => {
+                                    data?.buttons[1].avail == 1 && redeemBtn();
+                                }}>
+                                <Text style={{textAlign: 'center', color: '#545968'}}>{data?.buttons[1]?.text}</Text>
+                            </TouchableOpacity>
+                        ) : null}
+
+                        {data?.buttons[0] ? (
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={[
+                                    styles.button_sty,
+                                    {backgroundColor: data?.buttons[0].avail == 1 ? '#D7AF74' : '#ddd'},
+                                ]}
+                                onPress={() => {
+                                    data?.buttons[0].avail == 1 && jump(data?.buttons[0].url);
+                                }}>
+                                <Text style={{textAlign: 'center', color: '#fff'}}>{data?.buttons[0]?.text}</Text>
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
                 </>
             )}
