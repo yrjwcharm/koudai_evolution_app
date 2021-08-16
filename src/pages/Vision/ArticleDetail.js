@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 11:38:12
+ * @LastEditTime: 2021-08-16 18:13:19
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -373,6 +373,8 @@ const ArticleDetail = ({navigation, route}) => {
                         <RNWebView
                             javaScriptEnabled
                             onMessage={onMessage}
+                            allowsFullscreenVideo={false}
+                            allowsInlineMediaPlayback={true}
                             ref={webviewRef}
                             onLoadEnd={() => {
                                 if (data.feedback_status == 1) {
