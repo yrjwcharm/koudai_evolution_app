@@ -418,7 +418,7 @@ export default function DetailAccount({route, navigation}) {
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,
-                                            Math.floor(riskChartMin),
+                                            (Math.floor(riskChartMin / 3) - 1) * 3,
                                             data?.risk_info?.label[2]?.ratio,
                                             text(160)
                                         )}
