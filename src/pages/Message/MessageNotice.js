@@ -3,9 +3,9 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: dx
- * @LastEditTime: 2021-08-05 17:09:08
+ * @LastEditTime: 2021-08-17 17:03:11
  */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX, px, deviceWidth} from '../../utils/appUtil';
@@ -25,6 +25,7 @@ export default function MessageNotice({navigation, route}) {
     const [type, setType] = useState();
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
+    const viewedItems = useRef([]);
 
     useEffect(() => {
         if (page === 1) {
@@ -278,6 +279,17 @@ export default function MessageNotice({navigation, route}) {
         );
     };
 
+    const onViewableItemsChanged = useCallback(({viewableItems}) => {
+        // console.log(viewableItems);
+        viewableItems.forEach((val) => {
+            const hasItem = viewedItems.current.some((item) => item.id === val.item.id);
+            if (!hasItem) {
+                global.LogTool('messageNoticepointStart', val.item.id);
+                viewedItems.current.push(val.item);
+            }
+        });
+    }, []);
+
     return (
         <FlatList
             data={list}
@@ -288,10 +300,15 @@ export default function MessageNotice({navigation, route}) {
             onEndReached={onEndReached}
             onEndReachedThreshold={0.5}
             onRefresh={onRefresh}
+            onViewableItemsChanged={onViewableItemsChanged}
             refreshing={refreshing}
             renderItem={renderItem}
             style={{backgroundColor: Colors.bgColor}}
             extraData={list}
+            viewabilityConfig={{
+                minimumViewTime: 300,
+                itemVisiblePercentThreshold: 50,
+            }}
         />
     );
 }
