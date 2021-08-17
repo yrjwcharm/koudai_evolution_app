@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -26,7 +26,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
-let risk_chart_min = '';
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
@@ -36,6 +35,7 @@ export default function DetailAccount({route, navigation}) {
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
     const tabClick = useRef(true);
+    const [riskChartMin, setRiskChartMin] = useState(0);
     const changeTab = (p, t) => {
         if (!tabClick.current) {
             return false;
@@ -72,13 +72,15 @@ export default function DetailAccount({route, navigation}) {
             .then((res) => {
                 setLoading(false);
                 if (res.code === '000000') {
-                    setData(res.result);
-                    risk_chart_min = Math.min.apply(
-                        null,
-                        res.result.risk_info?.chart.map(function (o) {
-                            return o.val;
-                        })
+                    setRiskChartMin(
+                        Math.min.apply(
+                            res.result.risk_info?.label[2].ratio,
+                            res.result.risk_info?.chart.map(function (o) {
+                                return o.val;
+                            })
+                        )
                     );
+                    setData(res.result);
                     navigation.setOptions({
                         title: res.result.title,
                         headerRight: () => {
@@ -416,9 +418,7 @@ export default function DetailAccount({route, navigation}) {
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,
-                                            risk_chart_min > data?.risk_info?.label[2]?.ratio
-                                                ? data?.risk_info?.label[2]?.ratio
-                                                : null,
+                                            Math.floor(riskChartMin),
                                             data?.risk_info?.label[2]?.ratio,
                                             text(160)
                                         )}

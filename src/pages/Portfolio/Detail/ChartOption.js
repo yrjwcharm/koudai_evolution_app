@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 15:12:36
  * @Description:
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 14:55:23
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-17 10:15:34
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -119,8 +119,8 @@ export const histogram = (data, min, max_drop, height) =>
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
-    appendPadding: [15, 15, 25, 15],
-    padding:[${text(20)},${text(36)},${text(28)}],
+    // appendPadding: [15, 15, 15, 15],
+    padding:[${text(20)},${text(36)},${text(10)}],
     width:${deviceWidth - text(20)},
     height:${height},
   });
