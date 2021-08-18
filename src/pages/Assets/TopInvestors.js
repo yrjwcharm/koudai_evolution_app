@@ -2,11 +2,11 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-18 16:43:54
+ * @LastEditTime: 2021-08-18 17:10:58
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,7 +17,7 @@ import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import {FixedButton} from '../../components/Button';
 import Empty from '../../components/EmptyTip';
 import {useJump} from '../../components/hooks';
-import {deviceWidth, isIphoneX, px, formaNum, deviceHeight} from '../../utils/appUtil';
+import {deviceWidth, isIphoneX, px, deviceHeight} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {baseURL} from '../../services/config';
 import http from '../../services';
