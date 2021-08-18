@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-06 17:47:48
+ * @LastEditTime: 2021-08-18 16:43:54
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -142,17 +142,11 @@ const TopInvestors = ({navigation, route}) => {
                                 <Text style={styles.infoTitle}>{'牛人信号业绩'}</Text>
                             </View>
                             <View style={{marginTop: px(8)}}>
-                                <Text style={styles.contentSty}>
-                                    {'投资以来总收益可增加'}
-                                    <Text style={styles.numSty}>{formaNum(data.diff_profit || 0)}</Text>
-                                    {'元'}
-                                </Text>
+                                <HTML html={data.text?.diff_profit} style={styles.contentSty} />
                             </View>
                             <View style={styles.contentBoxSty}>
                                 <HTML
-                                    html={`魔方认为进行一次性投资，长期来看累计收益最佳。<br />但个人投资者的资金很难进行一次性投资，因此用户很难清晰认知到何时进行加仓，导致于部分魔方用户收益低于智能组合收益，因此魔方根据平台优质用户的加仓点为用户进行推送追加购买时间点。<br />该时间点进行买入，根据历史回测数据，您投资以来的总收益可增加<span style="color: #E74949;font-family: DINAlternate-Bold;fontFamily: DINAlternate-Bold;">${formaNum(
-                                        data.diff_profit || 0
-                                    )}</span>元。`}
+                                    html={data.text?.profit_intro}
                                     style={{...styles.contentSty, lineHeight: px(20)}}
                                 />
                             </View>
@@ -177,23 +171,14 @@ const TopInvestors = ({navigation, route}) => {
                             </View>
                             <View style={styles.contentBoxSty}>
                                 <HTML
-                                    html={
-                                        '理财魔方以牛人买入的热度提供温度计，超过<span style="color: #E74949;font-family: DINAlternate-Bold;fontFamily: DINAlternate-Bold;">80℃</span>时推荐用户进行加仓。'
-                                    }
+                                    html={data.text?.degree_intro}
                                     style={{...styles.contentSty, lineHeight: px(20)}}
                                 />
                             </View>
                         </View>
                         <Text style={styles.title}>{'牛人入选说明'}</Text>
                         <View style={styles.boxSty}>
-                            <HTML
-                                html={`牛人是指资金进出结构操作优秀，能稳定超越同时期组合收益率最高的的<span style="color: #E74949;font-family: DINAlternate-Bold;fontFamily: DINAlternate-Bold;">1%</span>用户。<br /><span style="color: #121D3A;font-weight: ${Platform.select(
-                                    {android: 700, ios: 500}
-                                )};">牛人每日进行更新</span>，保证魔方用户可收到<span style="color: #121D3A;font-weight: ${Platform.select(
-                                    {android: 700, ios: 500}
-                                )};">最优买入点</span>信息。`}
-                                style={styles.suggestionTextSty}
-                            />
+                            <HTML html={data.text?.niuren_intro} style={styles.suggestionTextSty} />
                         </View>
                     </LinearGradient>
                 </ScrollView>
