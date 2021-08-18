@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-18 17:10:58
+ * @LastEditTime: 2021-08-18 17:47:14
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -142,7 +142,10 @@ const TopInvestors = ({navigation, route}) => {
                                 <Text style={styles.infoTitle}>{'牛人信号业绩'}</Text>
                             </View>
                             <View style={{marginTop: px(8)}}>
-                                <HTML html={data.text?.diff_profit} style={styles.contentSty} />
+                                <HTML
+                                    html={data.text?.diff_profit}
+                                    style={{...styles.contentSty, lineHeight: px(18)}}
+                                />
                             </View>
                             <View style={styles.contentBoxSty}>
                                 <HTML
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: px(22),
         color: Colors.defaultColor,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     boxSty: {
         marginTop: px(12),
