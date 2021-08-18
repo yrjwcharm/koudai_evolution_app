@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 17:23:34
+ * @LastEditors: dx
+ * @LastEditTime: 2021-08-18 10:30:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -79,6 +79,9 @@ export default function PortfolioAssets(props) {
         Http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
         }).then((res) => {
+            if (res.result.period) {
+                setPeriod(res.result.period);
+            }
             setData(res.result);
             setRefreshing(false);
             props.navigation.setOptions({
@@ -141,14 +144,6 @@ export default function PortfolioAssets(props) {
             </View>
         );
     };
-    useEffect(() => {
-        getChartInfo();
-    }, [period]);
-    useEffect(() => {
-        if (!loading && chartData && chartData.length > 0) {
-            onHide();
-        }
-    }, [chartData, loading]);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -157,6 +152,14 @@ export default function PortfolioAssets(props) {
             });
         }, [init])
     );
+    useEffect(() => {
+        getChartInfo();
+    }, [period]);
+    useEffect(() => {
+        if (!loading && chartData && chartData.length > 0) {
+            onHide();
+        }
+    }, [chartData, loading]);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
