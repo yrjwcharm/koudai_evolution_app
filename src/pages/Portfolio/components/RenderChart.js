@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-08-04 12:05:22
+ * @LastEditTime: 2021-08-18 15:22:04
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -102,21 +102,21 @@ export default function RenderChart(props) {
         <View style={{height: 260, backgroundColor: '#fff', ...style}}>
             <View style={[Style.flexRow, {justifyContent: 'space-around'}]}>
                 <View style={[styles.legend_sty]}>
-                    {lowLine === 1 && type !== 2 ? (
+                    {/* {lowLine === 1 && type !== 2 ? (
                         <Text style={styles.chartTitle}>{chartData?.yield_info?.title}</Text>
                     ) : (
                         <>
-                            <TextInput
-                                ref={_textTime}
-                                style={[styles.legend_title_sty, {width: text(100)}]}
-                                defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
-                                editable={false}
-                            />
-                            <Text style={styles.legend_desc_sty}>
-                                {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
-                            </Text>
                         </>
-                    )}
+                    )} */}
+                    <TextInput
+                        ref={_textTime}
+                        style={[styles.legend_title_sty, {width: text(100)}]}
+                        defaultValue={chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.val}
+                        editable={false}
+                    />
+                    <Text style={styles.legend_desc_sty}>
+                        {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
+                    </Text>
                 </View>
                 {chartData?.yield_info?.label[1] ? (
                     <View style={[styles.legend_sty]}>
@@ -138,7 +138,7 @@ export default function RenderChart(props) {
                     </View>
                 ) : null}
                 {chartData?.yield_info?.label[2] ? (
-                    <View style={styles.legend_sty}>
+                    <View style={[styles.legend_sty, lowLine === 1 && type !== 2 ? {minWidth: px(100)} : {}]}>
                         <TextInput
                             style={[
                                 styles.legend_title_sty,
