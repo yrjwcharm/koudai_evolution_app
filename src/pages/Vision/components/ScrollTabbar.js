@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:46:01
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-24 14:35:28
+ * @LastEditTime: 2021-08-18 15:41:38
  * @Description:
  */
 
@@ -11,6 +11,7 @@ import {View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView} from '
 import {px} from '../../../utils/appUtil';
 import {Colors} from '../../../common/commonStyle';
 import {connect} from 'react-redux';
+import {updateVision} from '../../../redux/actions/visionData';
 const PhoneWidth = Dimensions.get('window').width;
 const tabHeight = px(42);
 const Button = (props) => {
@@ -41,9 +42,11 @@ class ScrollTabbar extends Component {
         }, 100);
     }
     scrollToIndex = (index) => {
+        if (this.props.vision.toJS().visionTabUpdate == this.props.tabList[index].k) {
+            this.props.dispatch(updateVision({visionTabUpdate: ''}));
+        }
         setTimeout(() => {
             let {width, left} = this.tabsLayouts[index];
-
             let newX = 0;
             //半屏宽度值
             let halfWidth = this.tabsViewportWidth / 2;

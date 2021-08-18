@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-23 18:09:03
+ * @LastEditTime: 2021-08-18 15:43:45
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -117,7 +117,6 @@ const Vision = ({navigation, route}) => {
                                     activeTab = obj.i;
                                     global.LogTool('visionTabIndex', tabs[obj.i].k);
                                     if (visionData.visionTabUpdate == tabs[obj.i].k) {
-                                        dispatch(updateVision({visionTabUpdate: ''}));
                                         dispatch(updateFresh(tabs[obj.i].k));
                                     }
                                 }}
