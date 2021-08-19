@@ -551,7 +551,6 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             )}
-
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>
