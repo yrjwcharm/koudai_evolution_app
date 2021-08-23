@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-08-11 18:57:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-23 15:01:22
  * @Description:路由表
  */
 import React from 'react';
@@ -147,6 +147,7 @@ import QuestionnaireResult from '../pages/Evaluation/QuestionnaireResult'; // �
 import TopInvestors from '../pages/Assets/TopInvestors'; //牛人信号
 import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 智能组合收益明细
 import IntelligentInvestAnalysis from '../pages/Assets/IntelligentInvestAnalysis'; // 智能组合投资分析
+import InsuranceList from '../pages/Find/InsuranceList'; //保险产品列表
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -573,6 +574,7 @@ export default function AppStack() {
                 component={IntelligentInvestAnalysis}
                 options={{title: '投资分析'}}
             />
+            <Stack.Screen name="InsuranceList" options={{headerShown: false}} component={InsuranceList} />
         </Stack.Navigator>
     );
 }

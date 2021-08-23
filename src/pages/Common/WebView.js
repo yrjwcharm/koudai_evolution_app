@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 16:27:50
+ * @LastEditTime: 2021-08-23 15:27:54
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -97,24 +97,24 @@ export default function WebView({route, navigation}) {
                         const {nativeEvent} = syntheticEvent;
                         console.warn('WebView error: ', nativeEvent);
                     }}
-                    // onShouldStartLoadWithRequest={({url}) => {
-                    //     const isAlipay = url && url.startsWith('alipay'); // 支付宝支付链接为 alipay:// 或 alipays:// 开头
-                    //     const isWxPay = url && url.startsWith('weixin'); // 微信支付链接为 weixin:// 开头
-                    //     const isPay = isAlipay || isWxPay;
-                    //     if (isPay) {
-                    //         // 检测客户端是否有安装支付宝或微信 App
-                    //         Linking.canOpenURL(url).then((supported) => {
-                    //             if (supported) {
-                    //                 Linking.openURL(url); // 使用此方式即可拉起相应的支付 App
-                    //             } else {
-                    //                 Toast.show(`请先安装${isAlipay ? '支付宝' : '微信'}客户端`);
-                    //             }
-                    //         });
-                    //         return false; // 这一步很重要
-                    //     } else {
-                    //         return true;
-                    //     }
-                    // }}
+                    onShouldStartLoadWithRequest={({url}) => {
+                        const isAlipay = url && url.startsWith('alipay'); // 支付宝支付链接为 alipay:// 或 alipays:// 开头
+                        const isWxPay = url && url.startsWith('weixin'); // 微信支付链接为 weixin:// 开头
+                        const isPay = isAlipay || isWxPay;
+                        if (isPay) {
+                            // 检测客户端是否有安装支付宝或微信 App
+                            Linking.canOpenURL(url).then((supported) => {
+                                if (supported) {
+                                    Linking.openURL(url); // 使用此方式即可拉起相应的支付 App
+                                } else {
+                                    Toast.show(`请先安装${isAlipay ? '支付宝' : '微信'}客户端`);
+                                }
+                            });
+                            return false; // 这一步很重要
+                        } else {
+                            return true;
+                        }
+                    }}
                     javaScriptEnabled={true}
                     injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onNavigationStateChange={onNavigationStateChange}

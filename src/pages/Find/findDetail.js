@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 11:41:52
+ * @LastEditTime: 2021-08-23 10:19:55
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -80,7 +80,7 @@ const FindDetail = (props) => {
                                 source={{uri: data?.plan_info?.background}}
                             />
                         </View>
-                        <View style={[styles.header, {top: insets.top + px(4)}]}>
+                        <View style={[styles.header, {top: insets.top + px(8)}]}>
                             <Text style={styles.img_desc}>{data?.plan_info?.slogan[0]}</Text>
                             <Text style={styles.img_title}>{data?.plan_info?.slogan[1]}</Text>
                         </View>

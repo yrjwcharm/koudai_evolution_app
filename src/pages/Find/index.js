@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: px(17),
         color: Colors.defaultColor,
-        marginBottom: px(12),
+        marginBottom: px(14),
     },
     major_card: {
         width: px(202),

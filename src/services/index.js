@@ -43,7 +43,7 @@ axios.interceptors.request.use(
             uid,
             utid,
             chn: global.channel,
-            ver: '6.2.1',
+            ver: '6.2.2',
             platform: Platform.OS,
             device: device || '',
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
@@ -74,7 +74,7 @@ axios.interceptors.response.use(
             err.config.url.indexOf('/health/check') <= -1 &&
             err.config.url.indexOf('/common/user_info/20210101') <= -1
         ) {
-            Toast.show('网络异常，请稍后再试~');
+            // Toast.show('网络异常，请稍后再试~');
         }
         Promise.reject(err);
     }
