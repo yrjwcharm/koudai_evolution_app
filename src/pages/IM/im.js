@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-18 15:14:30
+ * @LastEditTime: 2021-08-23 16:35:05
  * @Description:
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -468,6 +468,7 @@ const IM = (props) => {
         params.from = _uid.current;
         params.cmid = cmid || randomMsgId(cmd);
         params.to = 'S';
+        params.entry = props.route?.params?.entry;
         params.data = content;
         return JSON.stringify(params);
     };

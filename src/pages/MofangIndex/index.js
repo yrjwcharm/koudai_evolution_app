@@ -117,7 +117,9 @@ const Index = (props) => {
     );
     useEffect(() => {
         if (userInfo?.pushRoute) {
-            http.get(`/common/push/jump/redirect/20210810?url=${encodeURI(userInfo?.pushRoute)}`).then((res) => {
+            http.get('/common/push/jump/redirect/20210810', {
+                url: encodeURI(userInfo?.pushRoute),
+            }).then((res) => {
                 dispatch(updateUserInfo({pushRoute: ''}));
                 if (res.code == '000000') {
                     jump(res.result?.url);
