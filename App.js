@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 11:52:26
+ * @LastEditTime: 2021-08-25 12:01:26
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -347,6 +347,9 @@ function App(props) {
     };
     const showModal = React.useCallback(
         throttle((modal) => {
+            if (!modal.log_id) {
+                return false;
+            }
             http.post('/common/layer/click/20210801', {log_id: modal.log_id});
             global.LogTool('campaignPopup', navigationRef.current.getCurrentRoute().name, modal.log_id);
             if (modal.type === 'image') {
