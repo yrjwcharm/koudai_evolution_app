@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-17 10:07:03
+ * @LastEditTime: 2021-08-25 10:30:07
  * @Description:
  */
 /**
@@ -26,7 +26,6 @@ export function destroy() {
 }
 export default class Modal extends React.Component {
     static show(options) {
-        destroy();
         rootSibling = new RootSibling(
             (
                 <>

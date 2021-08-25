@@ -2,7 +2,7 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 15:22:24
+ * @LastEditTime: 2021-08-23 18:25:42
  * @Description:
  */
 import React, {useEffect, useState} from 'react';
@@ -81,6 +81,34 @@ const InsuranceList = (props) => {
                     {data?.part3?.list?.map((item, index) => {
                         return RenderCate(item);
                     })}
+                    <Text style={styles.bottom_text}>温馨提示：</Text>
+                    <Text style={styles.bottom_text}>
+                        投保前请您仔细阅读
+                        {data?.agreements?.map((item, index) => (
+                            <Text
+                                key={index}
+                                style={{color: Colors.btnColor}}
+                                onPress={() => {
+                                    jump(item?.url);
+                                }}>
+                                {item.name}
+                                {index == item.length - 1 ? '' : '、'}
+                            </Text>
+                        ))}
+                        等重要内容，请您重点关注产品保险责任、免责条款、犹豫期、等待期、退保等关键信息并确保已完全理解。
+                    </Text>
+                    <Text
+                        style={[
+                            styles.bottom_text,
+                            {
+                                textAlign: 'center',
+                                color: '#BDC2CC',
+                                marginTop: px(80),
+                                marginBottom: px(40),
+                            },
+                        ]}>
+                        本平台涉及的保险产品及服务由玄元保险代理有限公司提供
+                    </Text>
                 </View>
             </ScrollView>
             <TouchableOpacity
@@ -156,5 +184,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.btnColor,
         position: 'absolute',
         right: px(16),
+    },
+    bottom_text: {
+        fontSize: px(11),
+        lineHeight: px(16),
+        color: Colors.darkGrayColor,
     },
 });

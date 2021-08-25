@@ -396,7 +396,6 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 

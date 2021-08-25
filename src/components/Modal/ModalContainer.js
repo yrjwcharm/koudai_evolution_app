@@ -1,4 +1,4 @@
-import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal, Platform} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal} from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -6,6 +6,8 @@ import {deviceWidth as width, deviceHeight as height, px as text, px} from '../.
 import {Colors, Font, Style} from '../../common/commonStyle';
 import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
+import {Button} from '../Button';
+import FastImage from 'react-native-fast-image';
 /**
  * 通用弹出框，包括居中弹出框和底部弹出框
  * @param comfirm 可选 只要有该属性，底部就会两个按钮
@@ -39,19 +41,48 @@ export default class MyModal extends Component {
             imgHeight: props.imgHeight || 0,
             imgWidth: props.imgWidth || text(280),
             showImgClose: false,
+            secondPop: false,
+            subPop: '',
         };
     }
 
     setModalVisiable(state) {
-        this.setState({
-            isVisible: state,
-        });
-        if (state == false) {
-            this.props.destroy();
+        if (this?.props?.data?.type == 'user_guide' && !state && this.props?.data?.close_tip) {
+            //阻止弹窗关闭
+            this.showSubPop();
+        } else {
+            this.setState({
+                isVisible: state,
+            });
+            if (state == false) {
+                this.props.destroy();
+            }
         }
     }
+    showSubPop = () => {
+        this.setState({
+            subPop: {
+                content: this.props?.data?.close_tip,
+                cancelCallBack: () => {
+                    this.setState({
+                        subPop: '',
+                    });
+                },
+                confirmCallBack: () => {
+                    //关闭子弹窗
+                    this.setState({
+                        subPop: '',
+                    });
+                    //关闭父弹窗
+                    this.setState({
+                        isVisible: false,
+                    });
+                    this.props.destroy();
+                },
+            },
+        });
+    };
     componentDidMount() {
-        // console.log(this.props);
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
@@ -62,12 +93,17 @@ export default class MyModal extends Component {
             this.props.cancelCallBack && this.props.cancelCallBack();
         }, 100);
     }
-    confirm() {
-        this.clickClose === false ? '' : this.setModalVisiable(false);
+    confirm = () => {
+        if (this.clickClose !== false) {
+            this.setState({
+                isVisible: false,
+            });
+            this.props.destroy();
+        }
         setTimeout(() => {
             this.props.confirmCallBack && this.props.confirmCallBack();
         }, 500);
-    }
+    };
     //设置图片宽高--android、ios有兼容
     //android
     // setSize = (imgItem) => {
@@ -96,13 +132,193 @@ export default class MyModal extends Component {
             isVisible: nextProps.isVisible,
         });
     }
+    renderImageModal = () => {
+        return (
+            <Animatable.View animation="bounceIn" style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
+                {/* 图片弹窗 */}
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => this.setModalVisiable(false)}
+                    style={[Style.flexCenter, {position: 'relative', paddingTop: text(31), width: width}]}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={(e) => {
+                            e.stopPropagation();
+                            this.confirm();
+                        }}>
+                        <Image
+                            source={{
+                                uri: this.imageUrl,
+                            }}
+                            style={[
+                                styles.modalImage,
+                                {width: this.state.imgWidth, height: this.state.imgHeight},
+                                this.props.imageStyle,
+                            ]}
+                            // onLayout={() => !this.state.imgHeight && this.setSizeIos(this.imageUrl)}
+                            onLoadEnd={() => this.setState({showImgClose: true})}
+                            // onLoadStart={() => !this.state.imgHeight && this.setSize(this.imageUrl)}
+                        />
+                        {this.props.content ? (
+                            <View style={styles.diyContent}>
+                                <Text style={styles.imgTitle}>{this.props.content.title}</Text>
+                                <Text style={styles.imgText}>{this.props.content.text}</Text>
+                                <View style={[Style.flexCenter]}>
+                                    <Octicons
+                                        name={'triangle-up'}
+                                        size={20}
+                                        style={{marginVertical: text(-5)}}
+                                        color={'#FFE9C7'}
+                                    />
+                                    <View style={[Style.flexCenter, styles.imgTipBox]}>
+                                        <Text style={styles.imgTip}>{this.props.content.tip}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        ) : null}
+                    </TouchableOpacity>
+                    {this.state.showImgClose && (
+                        <TouchableOpacity
+                            style={{position: 'absolute', top: 0, right: text(71)}}
+                            activeOpacity={0.8}
+                            onPress={() => this.setModalVisiable(false)}>
+                            <Image source={require('../../assets/img/closeCircle.png')} style={styles.closeCircle} />
+                        </TouchableOpacity>
+                    )}
+                </TouchableOpacity>
+            </Animatable.View>
+        );
+    };
+    renderDefaultModal = () => {
+        return (
+            <View style={[Style.flexCenter, styles.container]}>
+                {/* 是否自定义头部 */}
+                {this.customTitleView ? (
+                    this.customTitleView
+                ) : this.title ? (
+                    <Text style={styles.title}>{this.title}</Text>
+                ) : null}
+                {/* 内容 */}
+                {this.props.content ? (
+                    <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(20)}]}>
+                        <HTML style={styles.contentText} html={this.props.content} />
+                    </View>
+                ) : null}
+                {this.props.children ? this.props.children() : null}
+                {/* 分割线 */}
+                <View style={styles.line} />
+                {/* 底部按钮 */}
+                {this.customBottomView ? (
+                    this.customBottomView
+                ) : this.props.confirm ? (
+                    <View style={styles.centerBottomBtns}>
+                        <TouchableOpacity
+                            style={[styles.centerBtn, Style.flexCenter]}
+                            activeOpacity={1}
+                            onPress={this.cancel.bind(this)}>
+                            <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
+                                {this.cancelText}
+                            </Text>
+                        </TouchableOpacity>
+                        <View style={styles.borderRight} />
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            style={[Style.flexCenter, styles.centerBtn]}
+                            onPress={this.confirm.bind(this)}>
+                            <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>{this.confirmText}</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={[Style.flexCenter, styles.confirmBtn]}
+                        onPress={this.confirm.bind(this)}>
+                        <Text
+                            style={{
+                                color: Colors.btnColor,
+                                fontSize: text(16),
+                            }}>
+                            {this.confirmText}
+                        </Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+        );
+    };
+    renderGuideModal = () => {
+        let {data} = this.props;
+        const {secondPop} = this.state;
+        data = secondPop ? data.sub_pop : data;
+        return (
+            <Animatable.View animation="bounceIn">
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => this.setModalVisiable(false)}
+                    style={[Style.flexCenter, {position: 'relative', paddingTop: text(31)}]}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        style={[styles.container, {overflow: 'hidden'}]}
+                        onPress={(e) => {
+                            e.stopPropagation();
+                        }}>
+                        <FastImage
+                            source={require('../../assets/img/modalBg.png')}
+                            style={{width: px(modalWidth), height: px(166), position: 'absolute', left: 0, top: 0}}
+                        />
+                        <View
+                            style={{
+                                paddingHorizontal: px(20),
+                                paddingVertical: px(40),
+                            }}>
+                            <Text style={styles.guideTitle}>{data.title}</Text>
 
+                            <HTML html={data.content} style={styles.guideContent} />
+
+                            <View style={[styles.wx_info, Style.flexRowCenter]}>
+                                {secondPop ? (
+                                    <Text style={[styles.wx_val, {color: Colors.defaultColor}]}>{data?.code}</Text>
+                                ) : (
+                                    <>
+                                        <Text style={styles.wx_key}>{data?.wx_info?.name}</Text>
+                                        <Text style={styles.wx_val}>{data?.wx_info?.val}</Text>
+                                    </>
+                                )}
+                            </View>
+                            <Button
+                                title={data?.button?.text || '开启通知'}
+                                style={{borderRadius: px(22), marginTop: px(22)}}
+                                onPress={() => {
+                                    if (data.log_id == 'user_guide_pop_a') {
+                                        this.confirm();
+                                    } else {
+                                        if (!this.state.secondPop) {
+                                            this.setState({secondPop: true});
+                                        } else {
+                                            //sub_POp
+                                            this.confirm();
+                                        }
+                                    }
+                                }}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{position: 'absolute', top: 0, right: text(24)}}
+                        activeOpacity={0.8}
+                        onPress={() => this.setModalVisiable(false)}>
+                        <Image source={require('../../assets/img/closeCircle.png')} style={styles.closeCircle} />
+                    </TouchableOpacity>
+                </TouchableOpacity>
+            </Animatable.View>
+        );
+    };
     render() {
+        const {isVisible, subPop} = this.state;
         return (
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={this.state.isVisible}
+                visible={isVisible}
                 onRequestClose={() => {
                     this.isTouchMaskToClose ? this.setModalVisiable(false) : null;
                 }}>
@@ -115,121 +331,44 @@ export default class MyModal extends Component {
                         <View style={styles.mask} />
                     </TouchableWithoutFeedback>
                     {/* 判断弹窗类型 */}
-                    {this.type == 'text' ? (
-                        <View style={[Style.flexCenter, styles.container]}>
-                            {/* 是否自定义头部 */}
-                            {this.customTitleView ? (
-                                this.customTitleView
-                            ) : this.title ? (
-                                <Text style={styles.title}>{this.title}</Text>
-                            ) : null}
-                            {/* 内容 */}
-                            {this.props.content ? (
-                                <View style={[styles.contentCon, {paddingTop: this.title ? px(12) : px(20)}]}>
-                                    <HTML style={styles.contentText} html={this.props.content} />
+                    {this.type == 'text'
+                        ? this.renderDefaultModal()
+                        : this.type == 'user_guide'
+                        ? this.renderGuideModal()
+                        : this.renderImageModal()}
+                    {/* //弹窗里的弹窗 */}
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={subPop ? true : false}
+                        onRequestClose={() => {
+                            this.setState({subPop: ''});
+                        }}>
+                        <View style={[Style.flexCenter, styles.modalContainer]}>
+                            <View style={[styles.mask, {backgroundColor: 'rgba(0,0,0,0.6)'}]} />
+                            <View style={[styles.container, {backgroundColor: '#fff', width: px(300)}]}>
+                                <View style={[styles.contentCon, {paddingTop: px(12)}]}>
+                                    <HTML style={styles.contentText} html={subPop.content} />
                                 </View>
-                            ) : null}
-                            {this.props.children ? this.props.children() : null}
-                            {/* 分割线 */}
-                            <View style={styles.line} />
-                            {/* 底部按钮 */}
-                            {this.customBottomView ? (
-                                this.customBottomView
-                            ) : this.props.confirm ? (
+                                <View style={styles.line} />
                                 <View style={styles.centerBottomBtns}>
                                     <TouchableOpacity
                                         style={[styles.centerBtn, Style.flexCenter]}
                                         activeOpacity={1}
-                                        onPress={this.cancel.bind(this)}>
-                                        <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>
-                                            {this.cancelText}
-                                        </Text>
+                                        onPress={subPop.cancelCallBack}>
+                                        <Text style={[styles.centerBtnText, {color: Colors.lightGrayColor}]}>取消</Text>
                                     </TouchableOpacity>
                                     <View style={styles.borderRight} />
                                     <TouchableOpacity
                                         activeOpacity={1}
                                         style={[Style.flexCenter, styles.centerBtn]}
-                                        onPress={this.confirm.bind(this)}>
-                                        <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>
-                                            {this.confirmText}
-                                        </Text>
+                                        onPress={subPop.confirmCallBack}>
+                                        <Text style={[styles.centerBtnText, {color: Colors.btnColor}]}>确认</Text>
                                     </TouchableOpacity>
                                 </View>
-                            ) : (
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    style={[Style.flexCenter, styles.confirmBtn]}
-                                    onPress={this.confirm.bind(this)}>
-                                    <Text
-                                        style={{
-                                            color: Colors.btnColor,
-                                            fontSize: text(16),
-                                        }}>
-                                        {this.confirmText}
-                                    </Text>
-                                </TouchableOpacity>
-                            )}
+                            </View>
                         </View>
-                    ) : (
-                        <Animatable.View
-                            animation="bounceIn"
-                            style={[{overflow: 'hidden'}, this.props.imageModalStyle]}>
-                            {/* 图片弹窗 */}
-                            <TouchableOpacity
-                                activeOpacity={1}
-                                onPress={() => this.setModalVisiable(false)}
-                                style={[Style.flexCenter, {position: 'relative', paddingTop: text(31), width: width}]}>
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={(e) => {
-                                        e.stopPropagation();
-                                        this.confirm();
-                                    }}>
-                                    <Image
-                                        source={{
-                                            uri: this.imageUrl,
-                                        }}
-                                        style={[
-                                            styles.modalImage,
-                                            {width: this.state.imgWidth, height: this.state.imgHeight},
-                                            this.props.imageStyle,
-                                        ]}
-                                        // onLayout={() => !this.state.imgHeight && this.setSizeIos(this.imageUrl)}
-                                        onLoadEnd={() => this.setState({showImgClose: true})}
-                                        // onLoadStart={() => !this.state.imgHeight && this.setSize(this.imageUrl)}
-                                    />
-                                    {this.props.content ? (
-                                        <View style={styles.diyContent}>
-                                            <Text style={styles.imgTitle}>{this.props.content.title}</Text>
-                                            <Text style={styles.imgText}>{this.props.content.text}</Text>
-                                            <View style={[Style.flexCenter]}>
-                                                <Octicons
-                                                    name={'triangle-up'}
-                                                    size={20}
-                                                    style={{marginVertical: text(-5)}}
-                                                    color={'#FFE9C7'}
-                                                />
-                                                <View style={[Style.flexCenter, styles.imgTipBox]}>
-                                                    <Text style={styles.imgTip}>{this.props.content.tip}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    ) : null}
-                                </TouchableOpacity>
-                                {this.state.showImgClose && (
-                                    <TouchableOpacity
-                                        style={{position: 'absolute', top: 0, right: text(71)}}
-                                        activeOpacity={0.8}
-                                        onPress={() => this.setModalVisiable(false)}>
-                                        <Image
-                                            source={require('../../assets/img/closeCircle.png')}
-                                            style={styles.closeCircle}
-                                        />
-                                    </TouchableOpacity>
-                                )}
-                            </TouchableOpacity>
-                        </Animatable.View>
-                    )}
+                    </Modal>
                 </View>
             </Modal>
         );
@@ -246,9 +385,6 @@ const styles = StyleSheet.create({
         height: height,
     },
     modalImage: {
-        // width: text(280),
-        // height: text(300),
-        // resizeMode: 'contain',
         borderRadius: px(8),
     },
     mask: {
@@ -331,5 +467,37 @@ const styles = StyleSheet.create({
         fontSize: text(13),
         lineHeight: text(18),
         color: '#A17328',
+    },
+    guideTitle: {
+        fontSize: px(18),
+        lineHeight: px(25),
+        color: '#121D3A',
+        fontWeight: '700',
+        marginBottom: px(12),
+    },
+    guideContent: {
+        fontSize: px(14),
+        lineHeight: px(20),
+        color: '#545968',
+    },
+    wx_info: {
+        marginTop: px(20),
+        height: px(40),
+        borderStyle: 'dashed',
+        borderRadius: px(4),
+        borderColor: '#7EAFFF',
+        borderWidth: 0.5,
+    },
+    wx_key: {
+        fontSize: px(14),
+        color: '#121D3A',
+        lineHeight: px(20),
+        marginRight: px(10),
+    },
+    wx_val: {
+        fontSize: px(18),
+        color: Colors.btnColor,
+        lineHeight: px(20),
+        fontFamily: Font.numFontFamily,
     },
 });

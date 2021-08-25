@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 17:06:45
+ * @LastEditTime: 2021-08-25 11:52:26
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -32,6 +32,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
 import {throttle} from 'lodash';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -213,7 +214,7 @@ function App(props) {
                 const next = store.getState().userInfo.toJS();
                 setUserInfo((prev) => {
                     if (!next.hotRefreshData) {
-                        if (!prev.is_login && next.is_login) {
+                        if ((!prev.is_login && next.is_login) || (!prev.has_account && next.has_account)) {
                             getModalData();
                         }
                     }
@@ -436,6 +437,36 @@ function App(props) {
                         tip: modal.tip,
                     },
                 });
+            } else if (modal.type === 'user_guide') {
+                Modal.show({
+                    type: 'user_guide',
+                    isTouchMaskToClose: modal.touch_close,
+                    confirmCallBack: () => {
+                        modal.log_id &&
+                            global.LogTool(
+                                'campaignPopupStart',
+                                navigationRef.current.getCurrentRoute().name,
+                                modal.log_id
+                            );
+                        if (modal?.button?.type == 'add_notify') {
+                            requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+                                // …
+                                if (status !== 'granted') {
+                                    openSettings().catch(() => console.warn('cannot open settings'));
+                                }
+                            });
+                        } else {
+                            Linking.canOpenURL('weixin://').then((supported) => {
+                                if (supported) {
+                                    Linking.openURL('weixin://');
+                                } else {
+                                    Toast.show('请先安装微信');
+                                }
+                            });
+                        }
+                    },
+                    data: modal,
+                });
             }
             setTimeout(() => {
                 setModalObj({});
@@ -443,6 +474,7 @@ function App(props) {
         }, 10000),
         []
     );
+
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
         if (appState.match(/inactive|background/) || nextAppState === 'active') {

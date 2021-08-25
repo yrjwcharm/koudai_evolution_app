@@ -109,6 +109,7 @@ const Index = (props) => {
                                 <Text style={styles.header_title}>推荐</Text>
                             </View>
                             {/* 今日推荐 */}
+
                             <>
                                 <TouchableOpacity
                                     activeOpacity={1}
@@ -173,6 +174,7 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             </>
                         </LinearGradient>
+
                         {/* 专家策略 */}
                         {data?.polaris_info && (
                             <View style={{paddingHorizontal: px(16)}}>

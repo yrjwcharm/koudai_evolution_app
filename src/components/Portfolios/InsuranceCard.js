@@ -2,7 +2,7 @@
  * @Date: 2021-08-20 10:39:20
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 15:23:05
+ * @LastEditTime: 2021-08-24 10:45:59
  * @Description: 保险产品卡片
  */
 import React from 'react';
@@ -54,6 +54,7 @@ const InsuranceCard = ({data, style}) => {
             </View>
             {data?.recommend ? (
                 <View style={styles.tip}>
+                    <FastImage source={require('../../assets/img/find/mark.png')} style={styles.mark} />
                     <Text style={{color: Colors.yellow, fontSize: px(12), lineHeight: px(17)}}>
                         <Text style={{fontWeight: '600'}}>推荐理由：</Text>
                         {data?.recommend}
@@ -81,4 +82,5 @@ const styles = StyleSheet.create({
         paddingVertical: px(6),
         marginTop: px(12),
     },
+    mark: {width: px(12), height: px(10), position: 'absolute', left: 0, top: 0},
 });
