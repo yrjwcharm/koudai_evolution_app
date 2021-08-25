@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 16:15:29
+ * @LastEditTime: 2021-08-25 14:39:36
  * @Description:音频模块
  */
 
@@ -61,13 +61,31 @@ const VioceCard = ({data, style, scene}) => {
                                     source={require('../../assets/img/article/voiceUpdate.png')}
                                     style={styles.new_tag}
                                 />
-                                <Text numberOfLines={2} style={styles.title}>
+                                <Text
+                                    numberOfLines={2}
+                                    style={[
+                                        styles.title,
+                                        {
+                                            color: visionData?.readList?.includes(data.id)
+                                                ? Colors.lightBlackColor
+                                                : Colors.defaultColor,
+                                        },
+                                    ]}>
                                     &emsp;&emsp;
                                     {data?.title}
                                 </Text>
                             </View>
                         ) : (
-                            <Text numberOfLines={2} style={styles.title}>
+                            <Text
+                                numberOfLines={2}
+                                style={[
+                                    styles.title,
+                                    {
+                                        color: visionData?.readList?.includes(data.id)
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
+                                    },
+                                ]}>
                                 {data.title}
                             </Text>
                         )

@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 16:14:53
+ * @LastEditTime: 2021-08-25 14:48:41
  * @Description:推荐模块
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -19,7 +19,9 @@ import http from '../../services';
 import Toast from '../Toast';
 import {useFocusEffect} from '@react-navigation/native';
 import LazyImage from '../LazyImage';
+import {useSelector} from 'react-redux';
 const RecommendCard = ({data, style, onPress}) => {
+    const visionData = useSelector((store) => store.vision).toJS();
     const [is_new, setIsNew] = useState(data.is_new);
     const [reserved, setReserved] = useState(data.reserved);
     const jump = useJump();
@@ -169,13 +171,31 @@ const RecommendCard = ({data, style, onPress}) => {
                                 source={require('../../assets/img/article/voiceUpdate.png')}
                                 style={styles.new_tag}
                             />
-                            <Text style={styles.recommend_title} numberOfLines={2}>
+                            <Text
+                                style={[
+                                    styles.recommend_title,
+                                    {
+                                        color: visionData?.readList?.includes(data.id)
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
+                                    },
+                                ]}
+                                numberOfLines={2}>
                                 &emsp;&emsp;
                                 {data?.title}
                             </Text>
                         </View>
                     ) : (
-                        <Text style={styles.recommend_title} numberOfLines={2}>
+                        <Text
+                            style={[
+                                styles.recommend_title,
+                                {
+                                    color: visionData?.readList?.includes(data.id)
+                                        ? Colors.lightBlackColor
+                                        : Colors.defaultColor,
+                                },
+                            ]}
+                            numberOfLines={2}>
                             {data?.title}
                         </Text>
                     )}

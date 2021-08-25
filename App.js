@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 12:01:26
+ * @LastEditTime: 2021-08-25 17:14:33
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -356,6 +356,7 @@ function App(props) {
                 Modal.show({
                     type: 'image',
                     imageUrl: modal.image,
+                    id: modal.log_id,
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
@@ -372,6 +373,7 @@ function App(props) {
             } else if (modal.type === 'alert_image') {
                 Modal.show({
                     confirm: modal.cancel ? true : false,
+                    id: modal.log_id,
                     confirmCallBack: () => {
                         modal.log_id &&
                             global.LogTool(
@@ -402,6 +404,7 @@ function App(props) {
             } else if (modal.type === 'confirm') {
                 Modal.show({
                     confirm: modal.cancel ? true : false,
+                    id: modal.log_id,
                     confirmCallBack: () => {
                         modal.log_id &&
                             global.LogTool(
@@ -425,6 +428,7 @@ function App(props) {
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
+                    id: modal.log_id,
                     confirmCallBack: () => {
                         modal.log_id &&
                             global.LogTool(
@@ -442,15 +446,11 @@ function App(props) {
                 });
             } else if (modal.type === 'user_guide') {
                 Modal.show({
+                    id: modal.log_id,
                     type: 'user_guide',
                     isTouchMaskToClose: modal.touch_close,
                     confirmCallBack: () => {
-                        modal.log_id &&
-                            global.LogTool(
-                                'campaignPopupStart',
-                                navigationRef.current.getCurrentRoute().name,
-                                modal.log_id
-                            );
+                        global.LogTool('enableNotificationStart');
                         if (modal?.button?.type == 'add_notify') {
                             requestNotifications(['alert', 'sound']).then(({status, settings}) => {
                                 // …
@@ -459,6 +459,7 @@ function App(props) {
                                 }
                             });
                         } else {
+                            global.LogTool('copyBindAccountStart');
                             Linking.canOpenURL('weixin://').then((supported) => {
                                 if (supported) {
                                     Linking.openURL('weixin://');

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-06-10 16:16:25
+ * @LastEditTime: 2021-08-25 14:24:59
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -102,7 +102,7 @@ const TradeProcessing = ({navigation, route}) => {
 
     const onChangeText = useCallback(
         (value) => {
-            if (value.length === 6) {
+            if (value.length >= 6) {
                 http.post('/trade/recharge/verify_code_confirm/20210101', {
                     txn_id: txn_id,
                     code: value,

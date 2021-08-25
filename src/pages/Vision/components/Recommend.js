@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 16:14:45
+ * @LastEditTime: 2021-08-25 14:48:24
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
@@ -72,6 +72,9 @@ const Recommend = React.forwardRef((props, ref) => {
                             }
                         }
                     }
+                }
+                if (res.result.part1?.view_status == 1) {
+                    readList2.push(res.result.part1.id);
                 }
                 dispatch(
                     updateVision({

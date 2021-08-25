@@ -181,7 +181,10 @@ export default class MyModal extends Component {
                         <TouchableOpacity
                             style={{position: 'absolute', top: 0, right: text(71)}}
                             activeOpacity={0.8}
-                            onPress={() => this.setModalVisiable(false)}>
+                            onPress={() => {
+                                global.LogTool('skipCampaignPopupStart', global.currentRoutePageId, this.props.id);
+                                this.setModalVisiable(false);
+                            }}>
                             <Image source={require('../../assets/img/closeCircle.png')} style={styles.closeCircle} />
                         </TouchableOpacity>
                     )}
@@ -273,17 +276,18 @@ export default class MyModal extends Component {
                             <Text style={styles.guideTitle}>{data.title}</Text>
 
                             <HTML html={data.content} style={styles.guideContent} />
-
-                            <View style={[styles.wx_info, Style.flexRowCenter]}>
-                                {secondPop ? (
-                                    <Text style={[styles.wx_val, {color: Colors.defaultColor}]}>{data?.code}</Text>
-                                ) : (
-                                    <>
-                                        <Text style={styles.wx_key}>{data?.wx_info?.name}</Text>
-                                        <Text style={styles.wx_val}>{data?.wx_info?.val}</Text>
-                                    </>
-                                )}
-                            </View>
+                            {data.log_id == 'user_guide_pop_a' ? null : (
+                                <View style={[styles.wx_info, Style.flexRowCenter]}>
+                                    {secondPop ? (
+                                        <Text style={[styles.wx_val, {color: Colors.defaultColor}]}>{data?.code}</Text>
+                                    ) : (
+                                        <>
+                                            <Text style={styles.wx_key}>{data?.wx_info?.name}</Text>
+                                            <Text style={styles.wx_val}>{data?.wx_info?.val}</Text>
+                                        </>
+                                    )}
+                                </View>
+                            )}
                             <Button
                                 title={data?.button?.text || '开启通知'}
                                 style={{borderRadius: px(22), marginTop: px(22)}}
@@ -292,6 +296,7 @@ export default class MyModal extends Component {
                                         this.confirm();
                                     } else {
                                         if (!this.state.secondPop) {
+                                            global.LogTool('copyGoToWechatStart');
                                             this.setState({secondPop: true});
                                         } else {
                                             //sub_POp
@@ -305,7 +310,10 @@ export default class MyModal extends Component {
                     <TouchableOpacity
                         style={{position: 'absolute', top: 0, right: text(24)}}
                         activeOpacity={0.8}
-                        onPress={() => this.setModalVisiable(false)}>
+                        onPress={() => {
+                            global.LogTool('skipCampaignPopupStart', global.currentRoutePageId, this.props.id);
+                            this.setModalVisiable(false);
+                        }}>
                         <Image source={require('../../assets/img/closeCircle.png')} style={styles.closeCircle} />
                     </TouchableOpacity>
                 </TouchableOpacity>

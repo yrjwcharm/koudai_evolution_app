@@ -2,7 +2,7 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 18:25:42
+ * @LastEditTime: 2021-08-25 17:14:40
  * @Description:
  */
 import React, {useEffect, useState} from 'react';
@@ -67,6 +67,7 @@ const InsuranceList = (props) => {
                             textStyle={{fontSize: px(15), fontWeight: '600'}}
                             color="#FF7D41"
                             onPress={() => {
+                                global.LogTool('enableNotificationStart');
                                 jump(data?.part1?.card?.button?.url);
                             }}
                         />

@@ -2,7 +2,7 @@
  * @Date: 2021-08-20 10:39:20
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-24 10:45:59
+ * @LastEditTime: 2021-08-25 17:18:35
  * @Description: 保险产品卡片
  */
 import React from 'react';
@@ -19,6 +19,7 @@ const InsuranceCard = ({data, style}) => {
             activeOpacity={0.9}
             style={[styles.card, style]}
             onPress={() => {
+                global.LogTool('insuranceProductStart', data.plan_id);
                 jump(data?.url);
             }}>
             <View style={Style.flexRow}>
