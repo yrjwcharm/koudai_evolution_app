@@ -26,7 +26,6 @@ const Index = (props) => {
     const [data, SetData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(true);
-
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
@@ -279,7 +278,6 @@ const Index = (props) => {
                             ))}
                         </View>
                         {/* 目标理财 */}
-
                         <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
                             <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
                             {data?.part1?.plans?.map((item, index) => (

@@ -1,4 +1,13 @@
-import {View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text, Modal} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    TouchableWithoutFeedback,
+    TouchableOpacity,
+    Text,
+    Modal,
+    Linking,
+    Clipboard,
+} from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -8,6 +17,7 @@ import HTML from '../RenderHtml';
 import * as Animatable from 'react-native-animatable';
 import {Button} from '../Button';
 import FastImage from 'react-native-fast-image';
+import Toast from '../Toast';
 /**
  * 通用弹出框，包括居中弹出框和底部弹出框
  * @param comfirm 可选 只要有该属性，底部就会两个按钮
@@ -297,9 +307,19 @@ export default class MyModal extends Component {
                                     } else {
                                         if (!this.state.secondPop) {
                                             global.LogTool('copyGoToWechatStart');
-                                            this.setState({secondPop: true});
+                                            Clipboard.setString(data?.wx_info?.val);
+                                            Linking.canOpenURL('weixin://').then((supported) => {
+                                                if (supported) {
+                                                    Linking.openURL('weixin://');
+                                                    setTimeout(() => {
+                                                        this.setState({secondPop: true});
+                                                    }, 500);
+                                                } else {
+                                                    Toast.show('请先安装微信');
+                                                }
+                                            });
                                         } else {
-                                            //sub_POp
+                                            Clipboard.setString(data?.code);
                                             this.confirm();
                                         }
                                     }

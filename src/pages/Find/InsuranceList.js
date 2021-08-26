@@ -2,14 +2,14 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 17:14:40
+ * @LastEditTime: 2021-08-26 15:54:12
  * @Description:
  */
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Colors, Style} from '../../common/commonStyle';
+import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
 import {Button} from '../../components/Button';
@@ -124,6 +124,13 @@ const InsuranceList = (props) => {
                 onPress={() => {
                     jump(data?.service?.url);
                 }}>
+                {data?.service?.un_read > 0 ? (
+                    <View style={styles.point_sty}>
+                        <Text style={styles.tag_text}>
+                            {data?.service?.un_read > 99 ? '99+' : data?.service?.un_read}
+                        </Text>
+                    </View>
+                ) : null}
                 <FastImage
                     source={require('../../assets/img/find/contact.png')}
                     style={{width: px(24), height: px(24)}}
@@ -190,5 +197,32 @@ const styles = StyleSheet.create({
         fontSize: px(11),
         lineHeight: px(16),
         color: Colors.darkGrayColor,
+    },
+    tag: {
+        backgroundColor: Colors.red,
+        width: 8,
+        height: 8,
+        position: 'absolute',
+        right: px(4),
+        top: 0,
+        borderRadius: 4,
+    },
+    point_sty: {
+        position: 'absolute',
+        left: px(28),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(50),
+        paddingVertical: 3,
+        paddingHorizontal: 6,
+        borderWidth: 2,
+        borderColor: '#fff',
+    },
+    tag_text: {
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
+        transform: [{translateY: Platform.select({ios: 0, android: px(0.5)})}],
     },
 });
