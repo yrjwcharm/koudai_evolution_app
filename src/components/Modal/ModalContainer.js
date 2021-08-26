@@ -56,8 +56,8 @@ export default class MyModal extends Component {
         };
     }
 
-    setModalVisiable(state) {
-        if (this?.props?.data?.type == 'user_guide' && !state && this.props?.data?.close_tip) {
+    setModalVisiable(state, prevent) {
+        if (this?.props?.data?.type == 'user_guide' && !state && this.props?.data?.close_tip && !prevent) {
             //阻止弹窗关闭
             this.showSubPop();
         } else {
@@ -315,6 +315,7 @@ export default class MyModal extends Component {
                                                         this.setState({secondPop: true});
                                                     }, 500);
                                                 } else {
+                                                    this.setModalVisiable(false, true);
                                                     Toast.show('请先安装微信');
                                                 }
                                             });
