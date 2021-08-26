@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-08-25 14:24:59
+ * @LastEditTime: 2021-08-26 10:58:48
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -20,7 +20,10 @@ import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast';
 import FastImage from 'react-native-fast-image';
 import Html from '../../components/RenderHtml';
+import {useDispatch} from 'react-redux';
+import {getUserInfo} from '../../redux/actions/userInfo';
 const TradeProcessing = ({navigation, route}) => {
+    const dispatch = useDispatch();
     const {txn_id} = route.params || {};
     const [data, setData] = useState({});
     const [finish, setFinish] = useState(false);
@@ -127,18 +130,20 @@ const TradeProcessing = ({navigation, route}) => {
         init(true);
         return () => clearTimeout(timerRef.current);
     }, [init, timerRef]);
+    const finishClick = () => {
+        dispatch(getUserInfo());
+        if (route?.params?.fr == 'trade_buy') {
+            navigation.pop(2);
+        } else {
+            jump(data.button.url);
+        }
+    };
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <Header
                 title="交易确认"
                 rightText={'完成'}
-                rightPress={() => {
-                    if (route?.params?.fr == 'trade_buy') {
-                        navigation.pop(2);
-                    } else {
-                        jump(data.button.url);
-                    }
-                }}
+                rightPress={finishClick}
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView
@@ -221,13 +226,7 @@ const TradeProcessing = ({navigation, route}) => {
                     <Button
                         title={data.button.text}
                         style={{margin: text(40), marginTop: text(20)}}
-                        onPress={() => {
-                            if (route?.params?.fr == 'trade_buy') {
-                                navigation.pop(2);
-                            } else {
-                                jump(data.button.url);
-                            }
-                        }}
+                        onPress={finishClick}
                     />
                 )}
             </ScrollView>

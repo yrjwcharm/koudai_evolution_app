@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 17:14:33
+ * @LastEditTime: 2021-08-26 10:59:32
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -214,7 +214,11 @@ function App(props) {
                 const next = store.getState().userInfo.toJS();
                 setUserInfo((prev) => {
                     if (!next.hotRefreshData) {
-                        if ((!prev.is_login && next.is_login) || (!prev.has_account && next.has_account)) {
+                        if (
+                            (!prev.is_login && next.is_login) ||
+                            (!prev.has_account && next.has_account) ||
+                            (!prev.buy_status && next.buy_status)
+                        ) {
                             getModalData();
                         }
                     }
