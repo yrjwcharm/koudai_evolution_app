@@ -2,10 +2,10 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-26 15:54:12
+ * @LastEditTime: 2021-08-27 17:17:04
  * @Description:
  */
-import React, {useEffect, useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -16,16 +16,19 @@ import {Button} from '../../components/Button';
 import InsuranceCard from '../../components/Portfolios/InsuranceCard';
 import {useJump} from '../../components/hooks';
 import RenderCate from '../Vision/components/RenderCate';
+import {useFocusEffect} from '@react-navigation/native';
 
 const InsuranceList = (props) => {
     const insets = useSafeAreaInsets();
     const jump = useJump();
     const [data, setData] = useState({});
-    useEffect(() => {
-        http.get('/insurance/list/20210820').then((res) => {
-            setData(res.result);
-        });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/insurance/list/20210820').then((res) => {
+                setData(res.result);
+            });
+        }, [])
+    );
 
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
