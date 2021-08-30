@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 14:48:41
+ * @LastEditTime: 2021-08-30 14:43:51
  * @Description:推荐模块
  */
 import React, {useState, useCallback, useEffect} from 'react';
@@ -175,9 +175,10 @@ const RecommendCard = ({data, style, onPress}) => {
                                 style={[
                                     styles.recommend_title,
                                     {
-                                        color: visionData?.readList?.includes(data.id)
-                                            ? Colors.lightBlackColor
-                                            : Colors.defaultColor,
+                                        color:
+                                            data.view_status == 1 || visionData?.readList?.includes(data.id)
+                                                ? Colors.lightBlackColor
+                                                : Colors.defaultColor,
                                     },
                                 ]}
                                 numberOfLines={2}>
@@ -190,9 +191,10 @@ const RecommendCard = ({data, style, onPress}) => {
                             style={[
                                 styles.recommend_title,
                                 {
-                                    color: visionData?.readList?.includes(data.id)
-                                        ? Colors.lightBlackColor
-                                        : Colors.defaultColor,
+                                    color:
+                                        data.view_status == 1 || visionData?.readList?.includes(data.id)
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
                                 },
                             ]}
                             numberOfLines={2}>

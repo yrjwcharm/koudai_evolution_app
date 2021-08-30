@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 16:15:46
+ * @LastEditTime: 2021-08-30 14:43:35
  * @Description:视野文章模块
  */
 
@@ -25,6 +25,8 @@ export default function VisionArticle({data = '', style, scene}) {
             return data.is_new != pre_new ? data.is_new : pre_new;
         });
     }, [data.is_new]);
+
+    console.log(data.id, (data.view_status == 1 || visionData?.readList?.includes(data.id)) && scene !== 'collect');
     return (
         <TouchableOpacity
             style={[styles.card, style]}
@@ -60,7 +62,9 @@ export default function VisionArticle({data = '', style, scene}) {
                                             {
                                                 height: px(21) * numberOfLines,
                                                 color:
-                                                    visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                                    (data.view_status == 1 ||
+                                                        visionData?.readList?.includes(data.id)) &&
+                                                    scene !== 'collect'
                                                         ? Colors.lightBlackColor
                                                         : Colors.defaultColor,
                                             },
@@ -77,7 +81,8 @@ export default function VisionArticle({data = '', style, scene}) {
                                         {
                                             height: px(21) * numberOfLines,
                                             color:
-                                                visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                                (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
+                                                scene !== 'collect'
                                                     ? Colors.lightBlackColor
                                                     : Colors.defaultColor,
                                         },

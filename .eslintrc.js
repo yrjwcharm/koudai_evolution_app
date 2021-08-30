@@ -1,3 +1,10 @@
+/*
+ * @Date: 2021-04-25 17:43:29
+ * @Author: yhc
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-30 12:38:53
+ * @Description: 
+ */
 
 // .eslintrc.js
 module.exports = {
@@ -9,7 +16,7 @@ module.exports = {
       legacyDecorators: true,
     },
   },
-  extends: '@react-native-community',
+  extends: ['@react-native-community',"prettier",],
   rules: {
     'react-native/no-inline-styles': 0, //关闭内联样式警告
     'no-extend-native': [1, { 'exceptions': ['Date', 'String'] }],

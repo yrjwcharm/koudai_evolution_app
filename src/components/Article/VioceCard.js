@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 14:39:36
+ * @LastEditTime: 2021-08-30 14:44:06
  * @Description:音频模块
  */
 
@@ -66,9 +66,10 @@ const VioceCard = ({data, style, scene}) => {
                                     style={[
                                         styles.title,
                                         {
-                                            color: visionData?.readList?.includes(data.id)
-                                                ? Colors.lightBlackColor
-                                                : Colors.defaultColor,
+                                            color:
+                                                data.view_status == 1 || visionData?.readList?.includes(data.id)
+                                                    ? Colors.lightBlackColor
+                                                    : Colors.defaultColor,
                                         },
                                     ]}>
                                     &emsp;&emsp;
@@ -81,9 +82,10 @@ const VioceCard = ({data, style, scene}) => {
                                 style={[
                                     styles.title,
                                     {
-                                        color: visionData?.readList?.includes(data.id)
-                                            ? Colors.lightBlackColor
-                                            : Colors.defaultColor,
+                                        color:
+                                            data.view_status == 1 || visionData?.readList?.includes(data.id)
+                                                ? Colors.lightBlackColor
+                                                : Colors.defaultColor,
                                     },
                                 ]}>
                                 {data.title}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-20 10:34:40
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-05-20 18:42:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-08-30 12:39:03
  * @Description:用户浏览详情
  */
 import React, {useState, useCallback, useEffect} from 'react';

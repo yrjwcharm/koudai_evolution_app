@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-13 16:15:09
+ * @LastEditTime: 2021-08-30 14:21:00
  * @Description:用户问答卡片
  */
 import React, {useState, useEffect} from 'react';
@@ -51,7 +51,8 @@ export default function QuestionCard({data, scene}) {
                         styles.article_title,
                         {
                             color:
-                                visionData?.readList?.includes(data.id) && scene !== 'collect'
+                                (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
+                                scene !== 'collect'
                                     ? Colors.lightBlackColor
                                     : Colors.defaultColor,
                         },

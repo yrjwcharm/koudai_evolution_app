@@ -2,11 +2,11 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 14:13:06
+ * @LastEditTime: 2021-08-30 14:32:37
  * @Description:tab公共模块
  *
  */
-import React, {useRef, useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {Text, View, FlatList, ActivityIndicator} from 'react-native';
 import http from '../../../services/index.js';
 import {Colors, Style} from '../../../common/commonStyle';
@@ -47,15 +47,6 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
                     page,
                 }).then((res) => {
                     let _data = {...visionData};
-                    let readList = _.reduce(
-                        res?.result?.list,
-                        (result, value) => {
-                            value.view_status == 1 && result.push(value.id);
-                            return result;
-                        },
-                        []
-                    );
-                    _data.readList = _.uniq(_data.readList.concat(readList));
                     _data[_key] = {
                         has_more: res.result.has_more,
                         notice: res.result.notice,
@@ -70,15 +61,6 @@ const CommonView = React.forwardRef(({k, scene, type}, ref) => {
                 }).then((res) => {
                     dispatch(updateVision({refreshing: false}));
                     let _data = {...visionData};
-                    let readList = _.reduce(
-                        res?.result?.list,
-                        (result, value) => {
-                            value.view_status == 1 && result.push(value.id);
-                            return result;
-                        },
-                        []
-                    );
-                    _data.readList = _.uniq(visionData.readList.concat(readList));
                     _data[_key] = res.result;
                     _data[_key].page = page;
                     dispatch(updateVision(_data));

@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 14:48:24
+ * @LastEditTime: 2021-08-30 14:31:38
  * @Description:推荐
  */
 import React, {useState, useCallback, useEffect, useRef} from 'react';
@@ -55,37 +55,15 @@ const Recommend = React.forwardRef((props, ref) => {
                 });
             }
             http.get('/vision/recommend/20210524').then((res) => {
-                let readList1 = _.reduce(
-                    res?.result?.part2,
-                    (result, value) => {
-                        value.view_status == 1 && result.push(value.id);
-                        return result;
-                    },
-                    []
-                );
-                let readList2 = [];
-                for (var i = 0; i < res?.result?.part3?.length; i++) {
-                    if (res?.result?.part3[i]?.list) {
-                        for (var j = 0; j < res?.result?.part3[i]?.list.length; j++) {
-                            if (res?.result?.part3[i].list[j].view_status == 1) {
-                                readList2.push(res?.result?.part3[i].list[j].id);
-                            }
-                        }
-                    }
-                }
-                if (res.result.part1?.view_status == 1) {
-                    readList2.push(res.result.part1.id);
-                }
                 dispatch(
                     updateVision({
                         recommend: res.result,
-                        readList: _.uniq(visionData.readList.concat(readList1).concat(readList2)),
                     })
                 );
                 setRefreshing(false);
             });
         },
-        [dispatch, visionData]
+        [dispatch]
     );
     return Object.keys(recommendData).length > 0 ? (
         <ScrollView
