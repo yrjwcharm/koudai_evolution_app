@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 16:19:39
+ * @LastEditTime: 2021-08-31 19:09:18
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -116,7 +116,8 @@ export default function WebView({route, navigation}) {
                         }
                     }}
                     javaScriptEnabled={true}
-                    injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
+                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
+                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onNavigationStateChange={onNavigationStateChange}
                     // showsVerticalScrollIndicator={false}
                     startInLoadingState={true}
