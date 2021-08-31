@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-10 11:05:52
+ * @LastEditTime: 2021-08-31 11:57:57
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -61,7 +61,6 @@ export default function RemindMessage({navigation}) {
             },
         });
     };
-    console.log(showNotice, hide);
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (

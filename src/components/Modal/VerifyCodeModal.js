@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 22:03:15
+ * @LastEditTime: 2021-08-30 18:51:25
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../../common/commonStyle';
 import {Font, Style} from '../../common/commonStyle';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import {Button} from '../Button';
 const VerifyCodeModal = React.forwardRef((props, ref) => {
     const refRBSheet = useRef();
     const {
@@ -24,6 +25,8 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         modalCancelCallBack = () => {},
         getCode = () => {},
         phone = '',
+        buttonCallBack = null, //
+        validateLength = 6, //校验输入规则
     } = props;
     const [defaultColor, setDefaultColor] = useState('#EF8743');
     const [num, setNum] = useState(0); // 倒计时
@@ -154,6 +157,14 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                             <Text style={{color: '#fff', fontSize: text(12)}}>{num ? num : '重新发送验证码'}</Text>
                         </TouchableOpacity>
                     </View>
+                    <Button
+                        title={props.buttonText}
+                        style={{marginTop: text(24)}}
+                        disable={code.length !== validateLength}
+                        onPress={() => {
+                            buttonCallBack && buttonCallBack(code);
+                        }}
+                    />
                 </View>
             </View>
             <Modal animationType={'fade'} onRequestClose={() => setShowToast(false)} transparent visible={showToast}>

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-26 16:22:47
+ * @LastEditTime: 2021-08-30 15:12:35
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';

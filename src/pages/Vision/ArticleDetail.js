@@ -2,7 +2,7 @@
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 18:13:19
+ * @LastEditTime: 2021-08-31 14:52:22
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -386,6 +386,12 @@ const ArticleDetail = ({navigation, route}) => {
                             scalesPageToFit={Platform.select({ios: true, android: false})}
                             source={{
                                 uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}`,
+                            }}
+                            onError={(err) => {
+                                console.log(err, 'object111');
+                            }}
+                            onHttpError={(err) => {
+                                console.log(err, 'object');
                             }}
                             startInLoadingState
                             style={{height: webviewHeight}}

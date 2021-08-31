@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-08-26 18:24:50
+ * @LastEditTime: 2021-08-30 18:50:42
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -72,6 +72,7 @@ const TradeProcessing = ({navigation, route}) => {
         },
         [heightArr]
     );
+    //获取验证码信息
     const signSendVerify = useCallback(() => {
         http.get('/trade/recharge/verify_code_send/20210101', {
             txn_id: txn_id,
@@ -83,6 +84,12 @@ const TradeProcessing = ({navigation, route}) => {
             }
         });
     }, [txn_id]);
+    //重新发送验证码
+    const signSendAgain = () => {
+        http.get('/trade/recharge/verify_code_again/20210101', {
+            txn_id,
+        });
+    };
     const modalCancelCallBack = useCallback(() => {
         if (bankInfo) {
             let content = bankInfo.back_info.content;
@@ -103,29 +110,23 @@ const TradeProcessing = ({navigation, route}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [bankInfo, isSign]);
 
-    const onChangeText = useCallback(
-        (value) => {
-            if (value.length === 6) {
-                http.post('/trade/recharge/verify_code_confirm/20210101', {
-                    txn_id: txn_id,
-                    code: value,
-                }).then((res) => {
-                    if (res.code === '000000') {
-                        setSign(true);
-                        loopRef.current++;
-                        setTimeout(() => {
-                            init();
-                            verifyCodeModal.current.hide();
-                        }, 300);
-                    } else {
-                        verifyCodeModal.current.toastShow(res.message);
-                    }
-                });
+    const buttonCallBack = (value) => {
+        http.post('/trade/recharge/verify_code_confirm/20210101', {
+            txn_id: txn_id,
+            code: value,
+        }).then((res) => {
+            if (res.code === '000000') {
+                setSign(true);
+                loopRef.current++;
+                setTimeout(() => {
+                    init();
+                    verifyCodeModal.current.hide();
+                }, 300);
+            } else {
+                verifyCodeModal.current.toastShow(res.message);
             }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [txn_id]
-    );
+        });
+    };
     useEffect(() => {
         init(true);
         return () => clearTimeout(timerRef.current);
@@ -234,9 +235,11 @@ const TradeProcessing = ({navigation, route}) => {
                 ref={verifyCodeModal}
                 desc={bankInfo.content ? bankInfo.content : ''}
                 modalCancelCallBack={modalCancelCallBack}
-                onChangeText={onChangeText}
                 isSign={isSign}
-                getCode={signSendVerify}
+                validateLength={6}
+                buttonCallBack={buttonCallBack}
+                buttonText={'立即签约'}
+                getCode={signSendAgain}
             />
         </View>
     );
