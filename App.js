@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-01 15:08:07
+ * @LastEditTime: 2021-09-01 15:13:48
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -454,22 +454,6 @@ function App(props) {
                     type: 'user_guide',
                     isTouchMaskToClose: modal.touch_close,
                     confirmCallBack: () => {
-                        // global.LogTool('enableNotificationStart');
-                        // if (modal?.button?.type == 'add_notify') {
-                        //     checkNotifications().then(({status, settings}) => {
-                        //         if (status == 'denied' || status == 'blocked') {
-                        //             fail();
-                        //         } else {
-                        //             sucess();
-                        //         }
-                        //     });
-                        //     requestNotifications(['alert', 'sound']).then(({status, settings}) => {
-                        //         // …
-                        //         if (status !== 'granted') {
-                        //             openSettings().catch(() => console.warn('cannot open settings'));
-                        //         }
-                        //     });
-                        // } else {
                         global.LogTool('copyBindAccountStart');
                         Linking.canOpenURL('weixin://').then((supported) => {
                             if (supported) {

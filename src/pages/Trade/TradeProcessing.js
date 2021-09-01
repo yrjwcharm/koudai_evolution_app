@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-01 14:37:02
+ * @LastEditTime: 2021-09-01 15:35:05
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -10,7 +10,7 @@ import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, ScrollView, View, Text, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil';
+import {px as text, debounce} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
@@ -241,7 +241,7 @@ const TradeProcessing = ({navigation, route}) => {
                 modalCancelCallBack={modalCancelCallBack}
                 isSign={isSign}
                 validateLength={6}
-                buttonCallBack={buttonCallBack}
+                buttonCallBack={debounce(buttonCallBack, 500)}
                 buttonText={'立即签约'}
                 getCode={signSendAgain}
             />

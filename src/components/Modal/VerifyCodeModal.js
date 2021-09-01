@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-01 14:58:38
+ * @LastEditTime: 2021-09-01 15:39:11
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -21,7 +21,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         desc = '验证码已发送至',
         isSign = true,
         isTouchMaskToClose = false,
-        onChangeText = (value) => console.log(value),
+        onChangeText = () => {},
         modalCancelCallBack = null,
         getCode = () => {},
         phone = '',
@@ -44,34 +44,31 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
             getCode(phone);
         }
     }, [getCode, phone]);
-    const startTimer = useCallback(() => {
-        console.log(scene, num);
-        // setNum(60);
-        scene == 'sign' ? (num == 1 || num == '重新发送验证码' ? setNum(60) : '') : setNum(60);
-        // if (scene == 'sign') {
-        //     if (num == 1 || num == 0 || num == '重新发送验证码') {
-        //         setNum(60);
-        //     }
-        // } else {
-        //     setNum(60);
-        // }
-        setDefaultColor('#999');
-        btnClick.current = false;
-        timerRef.current = setInterval(() => {
-            setNum((n) => {
-                if (n === 1) {
-                    clearInterval(timerRef.current);
-                    timerRef.current = null;
-                    setDefaultColor('#EF8743');
-                    setNum('重新发送验证码');
-                    btnClick.current = true;
-                    return n;
-                }
-                return n - 1;
-            });
-        }, 1000);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const startTimer = useCallback(
+        (reclock, success = true) => {
+            //此处是针对签约做的补丁
+            if (scene == 'sign' && ((num == '重新发送验证码' && reclock == 0) || !success)) return;
+            scene == 'sign' ? (num == 1 || num == '重新发送验证码' ? setNum(60) : '') : setNum(60);
+
+            setDefaultColor('#999');
+            btnClick.current = false;
+            timerRef.current = setInterval(() => {
+                setNum((n) => {
+                    if (n === 1) {
+                        clearInterval(timerRef.current);
+                        timerRef.current = null;
+                        setDefaultColor('#EF8743');
+                        setNum('重新发送验证码');
+                        btnClick.current = true;
+                        return n;
+                    }
+                    return n - 1;
+                });
+            }, 1000);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        },
+        [num, scene]
+    );
     const hide = () => {
         refRBSheet.current.close();
     };
@@ -82,17 +79,10 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
             btnClick.current = true;
         }
         if (timerRef.current === null) {
-            // console.log(scene, reclock, num);
-            // if (scene == 'sign') {
-            //     if (reclock == 1 && num >= 1) {
-            //         startTimer();
-            //     }
-            // } else {
-            // }
-            startTimer();
+            startTimer(reclock, success);
             setTimeout(() => {
-                inputRef.current.focus();
-            }, 100);
+                inputRef.current?.focus();
+            }, 300);
         }
     };
     const toastShow = (t, duration = 2000) => {
@@ -110,18 +100,10 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         timerRef.current !== null && clearInterval(timerRef.current);
         timerRef.current = null;
         setCode('');
-        scene == 'sign' ? '' : setNum(0);
+        scene == 'sign' ? '' : setNum(1);
         setDefaultColor('#EF8743');
         btnClick.current = true;
     };
-    // const onOpen = () => {
-    //     if (timerRef.current === null) {
-    //         startTimer();
-    //         setTimeout(() => {
-    //             inputRef.current.focus();
-    //         }, 100);
-    //     }
-    // };
 
     React.useImperativeHandle(ref, () => {
         return {

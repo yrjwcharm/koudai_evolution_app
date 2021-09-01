@@ -94,7 +94,6 @@ export default class OkGesturePassword extends Component {
             isWarning: nextProps.isWarning,
         });
     }
-
     render() {
         return (
             <View
