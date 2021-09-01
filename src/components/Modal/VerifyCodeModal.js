@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-30 18:51:25
+ * @LastEditTime: 2021-09-01 14:58:38
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -22,14 +22,15 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         isSign = true,
         isTouchMaskToClose = false,
         onChangeText = (value) => console.log(value),
-        modalCancelCallBack = () => {},
+        modalCancelCallBack = null,
         getCode = () => {},
         phone = '',
         buttonCallBack = null, //
         validateLength = 6, //校验输入规则
+        scene = '', //使用场景 sign->银行签约
     } = props;
     const [defaultColor, setDefaultColor] = useState('#EF8743');
-    const [num, setNum] = useState(0); // 倒计时
+    const [num, setNum] = useState(1); // 倒计时
     const timerRef = useRef(null);
     const [code, setCode] = useState('');
     const btnClick = useRef(true);
@@ -44,7 +45,16 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         }
     }, [getCode, phone]);
     const startTimer = useCallback(() => {
-        setNum(60);
+        console.log(scene, num);
+        // setNum(60);
+        scene == 'sign' ? (num == 1 || num == '重新发送验证码' ? setNum(60) : '') : setNum(60);
+        // if (scene == 'sign') {
+        //     if (num == 1 || num == 0 || num == '重新发送验证码') {
+        //         setNum(60);
+        //     }
+        // } else {
+        //     setNum(60);
+        // }
         setDefaultColor('#999');
         btnClick.current = false;
         timerRef.current = setInterval(() => {
@@ -60,15 +70,30 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                 return n - 1;
             });
         }, 1000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const hide = () => {
         refRBSheet.current.close();
-        if (!isSign) {
-            modalCancelCallBack();
-        }
     };
-    const show = () => {
+    // success代表验证码是否发送成功
+    const show = (success = true, reclock = 1) => {
         refRBSheet.current.open();
+        if (!success) {
+            btnClick.current = true;
+        }
+        if (timerRef.current === null) {
+            // console.log(scene, reclock, num);
+            // if (scene == 'sign') {
+            //     if (reclock == 1 && num >= 1) {
+            //         startTimer();
+            //     }
+            // } else {
+            // }
+            startTimer();
+            setTimeout(() => {
+                inputRef.current.focus();
+            }, 100);
+        }
     };
     const toastShow = (t, duration = 2000) => {
         setToastText(t);
@@ -79,21 +104,24 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
         }, duration);
     };
     const onClose = () => {
+        if (!isSign) {
+            modalCancelCallBack && modalCancelCallBack();
+        }
         timerRef.current !== null && clearInterval(timerRef.current);
         timerRef.current = null;
         setCode('');
-        setNum(0);
+        scene == 'sign' ? '' : setNum(0);
         setDefaultColor('#EF8743');
         btnClick.current = true;
     };
-    const onOpen = () => {
-        if (timerRef.current === null) {
-            startTimer();
-            setTimeout(() => {
-                inputRef.current.focus();
-            }, 100);
-        }
-    };
+    // const onOpen = () => {
+    //     if (timerRef.current === null) {
+    //         startTimer();
+    //         setTimeout(() => {
+    //             inputRef.current.focus();
+    //         }, 100);
+    //     }
+    // };
 
     React.useImperativeHandle(ref, () => {
         return {
@@ -113,7 +141,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
             ref={refRBSheet}
             closeOnDragDown={false}
             closeOnPressMask={isTouchMaskToClose}
-            height={px(240)}
+            height={buttonCallBack ? px(280) : px(240)}
             customStyles={{
                 wrapper: {
                     backgroundColor: 'rgba(30, 31, 32, 0.8)',
@@ -127,7 +155,8 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                 },
             }}
             onClose={onClose}
-            onOpen={onOpen}>
+            // onOpen={onOpen}
+        >
             <View style={[styles.container]}>
                 <View style={styles.header}>
                     <TouchableOpacity style={styles.close} onPress={hide}>
@@ -160,7 +189,7 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                     <Button
                         title={props.buttonText}
                         style={{marginTop: text(24)}}
-                        disable={code.length !== validateLength}
+                        disabled={code.length !== validateLength}
                         onPress={() => {
                             buttonCallBack && buttonCallBack(code);
                         }}

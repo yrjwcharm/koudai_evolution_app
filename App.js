@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-30 15:12:35
+ * @LastEditTime: 2021-09-01 15:08:07
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -32,7 +32,7 @@ import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
 import {throttle} from 'lodash';
-import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
+
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -454,24 +454,31 @@ function App(props) {
                     type: 'user_guide',
                     isTouchMaskToClose: modal.touch_close,
                     confirmCallBack: () => {
-                        global.LogTool('enableNotificationStart');
-                        if (modal?.button?.type == 'add_notify') {
-                            requestNotifications(['alert', 'sound']).then(({status, settings}) => {
-                                // …
-                                if (status !== 'granted') {
-                                    openSettings().catch(() => console.warn('cannot open settings'));
-                                }
-                            });
-                        } else {
-                            global.LogTool('copyBindAccountStart');
-                            Linking.canOpenURL('weixin://').then((supported) => {
-                                if (supported) {
-                                    Linking.openURL('weixin://');
-                                } else {
-                                    Toast.show('请先安装微信');
-                                }
-                            });
-                        }
+                        // global.LogTool('enableNotificationStart');
+                        // if (modal?.button?.type == 'add_notify') {
+                        //     checkNotifications().then(({status, settings}) => {
+                        //         if (status == 'denied' || status == 'blocked') {
+                        //             fail();
+                        //         } else {
+                        //             sucess();
+                        //         }
+                        //     });
+                        //     requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+                        //         // …
+                        //         if (status !== 'granted') {
+                        //             openSettings().catch(() => console.warn('cannot open settings'));
+                        //         }
+                        //     });
+                        // } else {
+                        global.LogTool('copyBindAccountStart');
+                        Linking.canOpenURL('weixin://').then((supported) => {
+                            if (supported) {
+                                Linking.openURL('weixin://');
+                            } else {
+                                Toast.show('请先安装微信');
+                            }
+                        });
+                        // }
                     },
                     data: modal,
                 });

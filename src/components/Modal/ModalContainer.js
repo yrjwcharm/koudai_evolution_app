@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import {Button} from '../Button';
 import FastImage from 'react-native-fast-image';
 import Toast from '../Toast';
+import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 /**
  * 通用弹出框，包括居中弹出框和底部弹出框
  * @param comfirm 可选 只要有该属性，底部就会两个按钮
@@ -53,11 +54,18 @@ export default class MyModal extends Component {
             showImgClose: false,
             secondPop: false,
             subPop: '',
+            guide_pop_button: this.props?.data?.button?.text || '开启通知',
         };
     }
 
     setModalVisiable(state, prevent) {
-        if (this?.props?.data?.type == 'user_guide' && !state && this.props?.data?.close_tip && !prevent) {
+        if (
+            this?.props?.data?.type == 'user_guide' &&
+            !state &&
+            this.props?.data?.close_tip &&
+            !prevent &&
+            this.state.guide_pop_button != '已开启'
+        ) {
             //阻止弹窗关闭
             this.showSubPop();
         } else {
@@ -260,7 +268,7 @@ export default class MyModal extends Component {
     };
     renderGuideModal = () => {
         let {data} = this.props;
-        const {secondPop} = this.state;
+        const {secondPop, guide_pop_button} = this.state;
         data = secondPop ? data.sub_pop : data;
         return (
             <Animatable.View animation="bounceIn">
@@ -299,11 +307,27 @@ export default class MyModal extends Component {
                                 </View>
                             )}
                             <Button
-                                title={data?.button?.text || '开启通知'}
+                                title={data.log_id == 'user_guide_pop_a' ? guide_pop_button : data?.button?.text}
                                 style={{borderRadius: px(22), marginTop: px(22)}}
                                 onPress={() => {
                                     if (data.log_id == 'user_guide_pop_a') {
-                                        this.confirm();
+                                        global.LogTool('enableNotificationStart');
+                                        checkNotifications().then(({status, settings}) => {
+                                            if (status == 'denied' || status == 'blocked') {
+                                                requestNotifications(['alert', 'sound']).then(({status, settings}) => {
+                                                    // …
+                                                    if (status !== 'granted') {
+                                                        openSettings().catch(() =>
+                                                            console.warn('cannot open settings')
+                                                        );
+                                                    }
+                                                });
+                                            } else {
+                                                this.setState({
+                                                    guide_pop_button: '已开启',
+                                                });
+                                            }
+                                        });
                                     } else {
                                         if (!this.state.secondPop) {
                                             global.LogTool('copyGoToWechatStart');

@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-08-30 18:50:42
+ * @LastEditTime: 2021-09-01 14:37:02
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -86,8 +86,15 @@ const TradeProcessing = ({navigation, route}) => {
     }, [txn_id]);
     //重新发送验证码
     const signSendAgain = () => {
-        http.get('/trade/recharge/verify_code_again/20210101', {
+        http.post('/trade/recharge/verify_code_again/20210101', {
             txn_id,
+        }).then((res) => {
+            verifyCodeModal.current.toastShow(res.message);
+            if (res.code === '000000') {
+                verifyCodeModal.current.show();
+            } else {
+                verifyCodeModal.current.show(false);
+            }
         });
     };
     const modalCancelCallBack = useCallback(() => {
@@ -96,13 +103,9 @@ const TradeProcessing = ({navigation, route}) => {
             setTimeout(() => {
                 Modal.show({
                     content: content,
-                    confirm: true,
                     confirmText: '立即签约',
-                    cancelCallBack: () => {
-                        navigation.navigate('Home');
-                    },
                     confirmCallBack: () => {
-                        verifyCodeModal.current.show();
+                        verifyCodeModal.current.show(true, 0);
                     },
                 });
             }, 500);
@@ -232,6 +235,7 @@ const TradeProcessing = ({navigation, route}) => {
                 )}
             </ScrollView>
             <VerifyCodeModal
+                scene={'sign'}
                 ref={verifyCodeModal}
                 desc={bankInfo.content ? bankInfo.content : ''}
                 modalCancelCallBack={modalCancelCallBack}
