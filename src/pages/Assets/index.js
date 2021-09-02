@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-08-13 18:14:54
+ * @LastEditTime: 2021-09-02 14:45:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -37,7 +37,7 @@ import storage from '../../utils/storage';
 import http from '../../services/index.js';
 import {useJump, useShowGesture} from '../../components/hooks';
 import {useSelector} from 'react-redux';
-import GesturePassword from './GesturePassword';
+import GesturePassword from '../Settings/GesturePassword';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     input: {
         // letterSpacing: 1,
         color: Colors.defaultColor,
-        fontSize: Font.textH2,
+        fontSize: Font.textH3,
         flex: 1,
         height: '100%',
         paddingLeft: text(10),

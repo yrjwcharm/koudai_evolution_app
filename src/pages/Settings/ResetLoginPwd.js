@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:33:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-02 14:53:29
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -18,6 +18,7 @@ import Toast from '../../components/Toast';
 const ResetLoginPwd = ({navigation}) => {
     const [oldPwd, setOldPwd] = useState('');
     const [newPwd, setNewPwd] = useState('');
+    const [confirmPwd, setConfirmPwd] = useState('');
     const btnClick = useRef(true);
 
     // 完成密码重设
@@ -33,17 +34,22 @@ const ResetLoginPwd = ({navigation}) => {
             },
             {
                 field: newPwd,
-                text: '请输入6-20位数字或字母组合的登录密码',
+                text: '请输入新密码',
+            },
+            {
+                field: confirmPwd,
+                text: '请确认新密码',
             },
         ];
         if (!formCheck(checkData)) {
             return false;
         } else {
-            if (oldPwd.length < 6) {
-                Toast.show('旧密码应该不少于6位');
+            const reg = /(?!\d+$)(?!^[a-zA-Z]+$)(?!^[!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
+            if (!reg.test(newPwd) || newPwd.length > 20) {
+                Toast.show('请输入8-20位包含数字、字母或符号的新密码');
                 return false;
-            } else if (newPwd.length < 6) {
-                Toast.show('请输入6-20位数字或字母组合的登录密码');
+            } else if (newPwd !== confirmPwd) {
+                Toast.show('两次输入的密码不一致');
                 return false;
             } else {
                 btnClick.current = false;
@@ -62,7 +68,7 @@ const ResetLoginPwd = ({navigation}) => {
                 });
             }
         }
-    }, [oldPwd, newPwd, navigation]);
+    }, [oldPwd, newPwd, confirmPwd, navigation]);
     useEffect(() => {
         // if (oldPwd.length >= 6 && newPwd.length >= 6) {
         //     setBtnClick(true);
@@ -87,14 +93,25 @@ const ResetLoginPwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'ascii-capable'}
                 maxLength={20}
-                onChangeText={(pwd) => setNewPwd(pwd)}
-                placeholder={'请输入不少于6位新密码'}
+                onChangeText={(pwd) => setNewPwd(pwd.replace(/ /g, ''))}
+                placeholder={'请输入8-20位包含数字、字母或符号的新密码'}
                 secureTextEntry={true}
                 textContentType={'newPassword'}
                 title={'新密码'}
                 value={newPwd}
             />
-            <Button disabled={!btnClick} onPress={submit} style={styles.btn} title={'完成密码重设'} />
+            <InputView
+                clearButtonMode={'while-editing'}
+                keyboardType={'ascii-capable'}
+                maxLength={20}
+                onChangeText={(pwd) => setConfirmPwd(pwd.replace(/ /g, ''))}
+                placeholder={'请输入相同的新密码'}
+                secureTextEntry={true}
+                textContentType={'newPassword'}
+                title={'确认新密码'}
+                value={confirmPwd}
+            />
+            <Button disabled={!btnClick.current} onPress={submit} style={styles.btn} title={'完成密码重设'} />
         </ScrollView>
     );
 };

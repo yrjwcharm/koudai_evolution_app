@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:25:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-02 14:44:04
  * @Description:路由表
  */
 import React from 'react';
@@ -103,7 +103,7 @@ import TradePwdManagement from '../pages/Settings/TradePwdManagement'; // 交易
 import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码
 import ForgotTradePwd from '../pages/Settings/ForgotTradePwd'; // 找回交易密码
 import ForgotTradePwdNext from '../pages/Settings/ForgotTradePwdNext'; // 找回交易密码下一步
-import AccountRemove from '../pages/Assets/AccountRemove'; // 账号注销
+import AccountRemove from '../pages/Settings/AccountRemove'; // 账号注销
 import BankCardList from '../pages/Settings/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
 import AddBankCard from '../pages/Assets/AddBankCard'; // 添加新银行卡/更换绑定银行卡
@@ -124,7 +124,7 @@ import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智�
 import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
 import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
-import GesturePassword from '../pages/Settings/GesturePassword.js/index.js'; //手势密码
+import GesturePassword from '../pages/Settings/GesturePassword'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
