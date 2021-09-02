@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:46:30
+ * @LastEditTime: 2021-09-02 15:08:29
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -538,6 +538,12 @@ function HomeScreen({navigation, route}) {
                         </View>
                         <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
+                        <Button
+                            title="权限管理"
+                            onPress={() => {
+                                navigation.navigate('AuthorityManage');
+                            }}
+                        />
                         {/* 系统通知 */}
                         {!hideMsg && notice?.system ? (
                             <TouchableOpacity
