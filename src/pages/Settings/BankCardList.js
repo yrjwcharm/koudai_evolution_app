@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-19 19:27:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:37:03
  * @Description: 银行卡管理
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
@@ -25,7 +25,6 @@ const BankCardList = ({navigation}) => {
     useFocusEffect(
         useCallback(() => {
             http.get('/passport/bank_card/manage/20210101').then((res) => {
-                // console.log(res);
                 setShowEmpty(true);
                 if (res.code === '000000') {
                     navigation.setOptions({title: res.result.title || '绑定银行卡'});

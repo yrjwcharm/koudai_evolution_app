@@ -2,11 +2,11 @@
  * @Date: 2021-03-10 15:02:48
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 15:16:50
+ * @LastEditTime: 2021-09-02 14:37:23
  * @Description: 账号注销
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useDispatch} from 'react-redux';
 import {Button} from '../../components/Button';

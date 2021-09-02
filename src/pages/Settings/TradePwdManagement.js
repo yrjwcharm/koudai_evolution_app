@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-03-29 18:40:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:37:43
  * @Description: 交易密码管理
  */
 import React, {useCallback, useState} from 'react';
@@ -10,7 +10,6 @@ import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
 import {Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
 
