@@ -27,7 +27,7 @@ import {
 import {ChatScreen} from '../../components/IM';
 // import {ChatScreen} from 'react-native-easy-chat-ui';
 import {useHeaderHeight} from '@react-navigation/stack';
-import {isIphoneX, px, requestExternalStoragePermission, deviceWidth, deviceHeight} from '../../utils/appUtil';
+import {isIphoneX, px, requestAuth, deviceWidth, deviceHeight} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import HTML from '../../components/RenderHtml';
 import http from '../../services';
@@ -575,13 +575,13 @@ const IM = (props) => {
     const onClickChoosePicture = async () => {
         try {
             if (Platform.OS == 'android') {
-                requestExternalStoragePermission(
+                requestAuth(
                     PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                     openPicker,
                     blockCal
                 );
             } else {
-                requestExternalStoragePermission(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
+                requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
             }
         } catch (err) {
             console.warn(err);

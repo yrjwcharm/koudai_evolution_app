@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 13:53:21
+ * @LastEditTime: 2021-09-02 16:50:02
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -46,7 +46,7 @@ function isIphoneX() {
 /**
  * 判断权限申请
  */
-const requestExternalStoragePermission = async (permission, grantedCallback, blockCallBack) => {
+const requestAuth = async (permission, grantedCallback, blockCallBack) => {
     if (Platform.OS == 'ios') {
         check(permission)
             .then((result) => {
@@ -86,7 +86,6 @@ const requestExternalStoragePermission = async (permission, grantedCallback, blo
     } else {
         try {
             let granted = await PermissionsAndroid.check(permission);
-            console.log(granted);
             if (!granted) {
                 const res = await PermissionsAndroid.request(permission);
                 if (res !== 'granted') {
@@ -272,7 +271,7 @@ export {
     deviceHeight,
     isIphoneX,
     px,
-    requestExternalStoragePermission,
+    requestAuth,
     formaNum,
     handlePhone,
     tagColor,

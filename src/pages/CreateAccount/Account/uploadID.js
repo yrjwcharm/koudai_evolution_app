@@ -17,7 +17,7 @@ import {
     DeviceEventEmitter,
     ScrollView,
 } from 'react-native';
-import {px, deviceWidth, requestExternalStoragePermission} from '../../../utils/appUtil';
+import {px, deviceWidth, requestAuth} from '../../../utils/appUtil';
 import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -147,13 +147,9 @@ export class uploadID extends Component {
     onClickChoosePicture = async () => {
         try {
             if (Platform.OS == 'android') {
-                requestExternalStoragePermission(
-                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                    this.openPicker,
-                    this.blockCal
-                );
+                requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, this.openPicker, this.blockCal);
             } else {
-                requestExternalStoragePermission(PERMISSIONS.IOS.PHOTO_LIBRARY, this.openPicker, this.blockCal);
+                requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, this.openPicker, this.blockCal);
             }
         } catch (err) {
             console.warn(err);
@@ -175,7 +171,7 @@ export class uploadID extends Component {
     takePic = () => {
         try {
             if (Platform.OS == 'android') {
-                requestExternalStoragePermission(
+                requestAuth(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
                     () => {
                         this.props.navigation.navigate('Camera', {index: this.state.clickIndex});
@@ -183,7 +179,7 @@ export class uploadID extends Component {
                     this.blockCal
                 );
             } else {
-                requestExternalStoragePermission(
+                requestAuth(
                     PERMISSIONS.IOS.CAMERA,
                     () => {
                         this.props.navigation.navigate('Camera', {index: this.state.clickIndex});
