@@ -343,31 +343,31 @@ export default class OkGesturePassword extends Component {
     }
 
     _onTouchStart = (e, gestureState) => {
-        // if (this.state.disabledView) {
-        //     return;
-        // }
-        // if (this.props.onStart) {
-        //     this.props.onStart();
-        // }
-        // if (this._timer != null) {
-        //     clearTimeout(this._timer);
-        //     this._timer = null;
-        // }
-        // this._reset();
-        // let location = {
-        //     x: e.nativeEvent.pageX,
-        //     y: e.nativeEvent.pageY,
-        // };
-        // let point = this._getTouchPoint(location);
-        // if (point == null) {
-        //     return;
-        // }
-        // this._addSequence(point.index);
-        // this._setToActive(point);
-        // if (this.props.onMove) {
-        //     this.props.onMove(point.index);
-        // }
-        // this._currentPoint = point;
+        if (this.state.disabledView) {
+            return;
+        }
+        if (this.props.onStart) {
+            this.props.onStart();
+        }
+        if (this._timer != null) {
+            clearTimeout(this._timer);
+            this._timer = null;
+        }
+        this._reset();
+        let location = {
+            x: e.nativeEvent.pageX,
+            y: e.nativeEvent.pageY,
+        };
+        let point = this._getTouchPoint(location);
+        if (point == null) {
+            return;
+        }
+        this._addSequence(point.index);
+        this._setToActive(point);
+        if (this.props.onMove) {
+            this.props.onMove(point.index);
+        }
+        this._currentPoint = point;
     };
 
     _onTouchMove = (e, gestureState) => {
