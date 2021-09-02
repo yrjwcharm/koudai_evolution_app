@@ -2,7 +2,7 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-27 17:17:04
+ * @LastEditTime: 2021-09-02 18:07:40
  * @Description:
  */
 import React, {useState, useCallback} from 'react';
@@ -83,7 +83,7 @@ const InsuranceList = (props) => {
                         <Text style={[styles.large_title, {marginTop: px(8)}]}>{data?.part3?.group_name}</Text>
                     ) : null}
                     {data?.part3?.list?.map((item, index) => {
-                        return RenderCate(item);
+                        return RenderCate(item, null, 'article');
                     })}
                     <Text style={styles.bottom_text}>温馨提示：</Text>
                     <Text style={styles.bottom_text}>
