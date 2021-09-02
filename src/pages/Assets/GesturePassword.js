@@ -15,6 +15,7 @@ export default function GesturePassword({option}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const navigation = useNavigation();
     const route = useRoute();
+    const minimum_length = 4; //最小长度
     const [data, setData] = useState({
         point1: '#FFFFFF', //从0开始
         point2: '#FFFFFF',
@@ -135,8 +136,12 @@ export default function GesturePassword({option}) {
     };
     const refreshPwd = (pwd, _status) => {
         if (!passwordRef.current) {
-            passwordRef.current = pwd;
-            if (!_status) {
+            if (pwd.length < minimum_length) {
+                setIsWarning(true);
+                setTitle('手势密码不能少于四个点，请重新绘制');
+            } else {
+                passwordRef.current = pwd;
+                setIsWarning(false);
                 setTitle('请再次绘制解锁图案');
             }
             // setPassword(pwd);

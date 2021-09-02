@@ -7239,7 +7239,7 @@ react-native-orientation-locker@^1.1.8:
   integrity sha1-RdHJ4AJJa40obsiTLW4+fTQfnIU=
 
 react-native-pdf@^6.2.2:
-  version "6.2.2"
+  version "6.2.3"
   resolved "https://registry.npm.taobao.org/react-native-pdf/download/react-native-pdf-6.2.2.tgz#a4e3fda4c5dc7300297948e862d6f60ebc9eede1"
   integrity sha1-pOP9pMXccwApeUjoYtb2Drye7eE=
   dependencies:
