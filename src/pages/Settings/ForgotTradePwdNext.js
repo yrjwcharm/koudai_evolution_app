@@ -1,17 +1,17 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-21 19:31:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:34:36
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text} from 'react-native';
 import {px as text} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font, Space} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
-import InputView from './components/input';
+import InputView from '../Assets/components/input';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 import {useDispatch} from 'react-redux';

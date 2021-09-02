@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-27 11:42:18
+ * @LastEditTime: 2021-09-02 14:25:21
  * @Description:路由表
  */
 import React from 'react';
@@ -87,8 +87,8 @@ import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
-import Settings from '../pages/Assets/Settings'; // 个人设置
-import Profile from '../pages/Assets/Profile'; // 个人资料
+import Settings from '../pages/Settings/Settings'; // 个人设置
+import Profile from '../pages/Settings/Profile'; // 个人资料
 import ComplaintsAdvices from '../pages/Assets/ComplaintsAdvices'; // 投诉建议
 import MessageBoard from '../pages/MofangIndex/MessageBoard'; //用户留言详情
 import PrivateRedeem from '../pages/PE/PrivateRedeem'; // 私募赎回
@@ -96,15 +96,15 @@ import PrivateApply from '../pages/PE/PrivateApply'; //私募申请
 import DetailPolaris from '../pages/Portfolio/Detail/DetailPolaris'; //马红漫详情页
 import StrategyPolaris from '../pages/Portfolio/StrategyPolaris'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
-import ContactUs from '../pages/Assets/ContactUs'; // 联系我们
+import ContactUs from '../pages/Settings/ContactUs'; // 联系我们
 import PasswordManagement from '../pages/Assets/PasswordManagement'; // 密码管理
-import ResetLoginPwd from '../pages/Assets/ResetLoginPwd'; // 重设登录密码
-import TradePwdManagement from '../pages/Assets/TradePwdManagement'; // 交易密码管理
+import ResetLoginPwd from '../pages/Settings/ResetLoginPwd'; // 重设登录密码
+import TradePwdManagement from '../pages/Settings/TradePwdManagement'; // 交易密码管理
 import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码
-import ForgotTradePwd from '../pages/Assets/ForgotTradePwd'; // 找回交易密码
-import ForgotTradePwdNext from '../pages/Assets/ForgotTradePwdNext'; // 找回交易密码下一步
+import ForgotTradePwd from '../pages/Settings/ForgotTradePwd'; // 找回交易密码
+import ForgotTradePwdNext from '../pages/Settings/ForgotTradePwdNext'; // 找回交易密码下一步
 import AccountRemove from '../pages/Assets/AccountRemove'; // 账号注销
-import BankCardList from '../pages/Assets/BankCardList'; // 银行卡管理
+import BankCardList from '../pages/Settings/BankCardList'; // 银行卡管理
 import BankCard from '../pages/Assets/BankCard'; // 银行卡
 import AddBankCard from '../pages/Assets/AddBankCard'; // 添加新银行卡/更换绑定银行卡
 import ModifyPhoneNum from '../pages/Assets/ModifyPhoneNum'; // 修改预留手机号
@@ -124,7 +124,7 @@ import TransferAccount from '../pages/Trade/TransferAccount'; //一键转投智�
 import ExperienceGoldRule from '../pages/ExperienceGold/Rule'; //体验金规则
 import InviteFriends from '../pages/Assets/InviteFriends'; // 邀请好友注册
 import InviteRecord from '../pages/Assets/InviteRecord'; // 邀请好友记录
-import GesturePassword from '../pages/Assets/GesturePassword.js'; //手势密码
+import GesturePassword from '../pages/Settings/GesturePassword.js/index.js'; //手势密码
 import InviteExperienceGold from '../pages/ExperienceGold/InviteExperienceGold'; // 邀请好友得体验金
 import ForgetLoginPwd from '../pages/Auth/Login/forgetLoginPwd'; //找回登录密码
 import MemberRule from '../pages/Assets/MemberRule'; //会员中心生日劵规则
@@ -148,6 +148,10 @@ import TopInvestors from '../pages/Assets/TopInvestors'; //牛人信号
 import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 智能组合收益明细
 import IntelligentInvestAnalysis from '../pages/Assets/IntelligentInvestAnalysis'; // 智能组合投资分析
 import InsuranceList from '../pages/Find/InsuranceList'; //保险产品列表
+import PrivacySetting from '../pages/Settings/PrivacySetting'; //隐私设置
+import AuthorityManage from '../pages/Settings/AuthorityManage'; //权限管理
+import PersonalizedRecommend from '../pages/Settings/PersonalizedRecommend'; //个性化推荐
+import AboutApp from '../pages/Settings/AboutApp'; //关于APP
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -575,6 +579,14 @@ export default function AppStack() {
                 options={{title: '投资分析'}}
             />
             <Stack.Screen name="InsuranceList" options={{headerShown: false}} component={InsuranceList} />
+            <Stack.Screen name="PrivacySetting" component={PrivacySetting} options={{title: '隐私设置'}} />
+            <Stack.Screen
+                name="PersonalizedRecommend"
+                component={PersonalizedRecommend}
+                options={{title: '个性化推荐设置'}}
+            />
+            <Stack.Screen name="AuthorityManage" component={AuthorityManage} options={{title: '权限管理'}} />
+            <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
         </Stack.Navigator>
     );
 }

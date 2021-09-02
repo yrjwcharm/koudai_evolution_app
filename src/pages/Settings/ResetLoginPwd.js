@@ -1,19 +1,17 @@
 /*
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-11 11:22:52
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:33:35
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {ScrollView, StyleSheet} from 'react-native';
 import {px as text} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Colors, Font} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
-import InputView from './components/input';
+import InputView from '../Assets/components/input';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 

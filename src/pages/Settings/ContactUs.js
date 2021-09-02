@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-02-18 09:56:37
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-10 15:58:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:34:28
  * @Description: 联系我们
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
 import Icon from 'react-native-vector-icons/FontAwesome';

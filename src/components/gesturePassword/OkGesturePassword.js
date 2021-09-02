@@ -77,7 +77,6 @@ export default class OkGesturePassword extends Component {
         this._timer = null;
         this._sequence = [];
     }
-
     componentWillMount() {
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => true,

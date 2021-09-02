@@ -1,21 +1,15 @@
-import React, {
-    Component,
-} from 'react'
-import {
-    StyleSheet,
-    View,
-} from 'react-native'
+import React, {Component} from 'react';
+import {StyleSheet, View} from 'react-native';
 
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
-import Circle from './Circle'
+import Circle from './Circle';
 
 export default class Point extends Component {
-
     static defaultProps = {
         isActive: false,
         isWarning: false,
-    }
+    };
 
     static propTypes = {
         index: PropTypes.number.isRequired,
@@ -31,28 +25,29 @@ export default class Point extends Component {
             left: PropTypes.number.isRequired,
             top: PropTypes.number.isRequired,
         }).isRequired,
-    }
+    };
 
     // 构造
-    constructor (props) {
-        super(props)
+    constructor(props) {
+        super(props);
         // 初始状态
-        this.state = {}
+        this.state = {};
 
-        this._outerCircleRadius = props.radius
-        this._outerCirclePosition = props.position
-        this._innerCircleRadius = this._outerCircleRadius / 3
+        this._outerCircleRadius = props.radius;
+        this._outerCirclePosition = props.position;
+        this._innerCircleRadius = this._outerCircleRadius / 3;
         this._innerCirclePosition = {
             left: this._innerCircleRadius * 2 - props.borderWidth,
             top: this._innerCircleRadius * 2 - props.borderWidth,
-        }
-
+        };
     }
 
-    render () {
-        this._color = this.props.isWarning ?
-            this.props.warningColor :
-            ( this.props.isActive ? this.props.activeColor : this.props.color )
+    render() {
+        this._color = this.props.isWarning
+            ? this.props.warningColor
+            : this.props.isActive
+            ? this.props.activeColor
+            : this.props.color;
 
         return (
             <Circle
@@ -61,7 +56,7 @@ export default class Point extends Component {
                 radius={this.props.radius}
                 borderWidth={this.props.borderWidth}
                 position={this._outerCirclePosition}>
-                { (this.props.isActive || this.props.isWarning) ? (
+                {this.props.isActive || this.props.isWarning ? (
                     <Circle
                         isFill={true}
                         color={this._color}
@@ -71,7 +66,6 @@ export default class Point extends Component {
                     />
                 ) : null}
             </Circle>
-        )
+        );
     }
-
 }
