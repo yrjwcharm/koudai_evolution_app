@@ -2,10 +2,10 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 17:13:49
+ * @LastEditTime: 2021-09-02 19:12:41
  * @Description:
  */
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     Platform,
     StyleSheet,
@@ -20,12 +20,8 @@ import {
     TouchableHighlight,
     Linking,
 } from 'react-native';
-// import { Header, NavigationActions } from 'react-navigation'
-// import {AudioRecorder, AudioUtils} from 'react-native-audio'
-// import RNFS from 'react-native-fs'
-// import Sound from 'react-native-sound'
+
 import {ChatScreen} from '../../components/IM';
-// import {ChatScreen} from 'react-native-easy-chat-ui';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {isIphoneX, px, requestAuth, deviceWidth, deviceHeight} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
@@ -512,6 +508,13 @@ const IM = (props) => {
     const openPicker = () => {
         const options = {
             quality: 0.4,
+            // // selectionLimit: 0,
+            // chooseFromLibraryButtonTitle: '哈哈',
+            // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+            // storageOptions: {
+            //     skipBackup: true,
+            //     path: 'images',
+            // },
             // maxWidth: px(236),
             // maxHeight: px(300),
         };
@@ -540,7 +543,6 @@ const IM = (props) => {
                     setTimeout(() => {
                         _ChatScreen?.current?.closeAll();
                     });
-
                     upload(
                         `${SERVER_URL[global.env].IMApi}/upload/oss`,
                         response,
@@ -575,11 +577,7 @@ const IM = (props) => {
     const onClickChoosePicture = async () => {
         try {
             if (Platform.OS == 'android') {
-                requestAuth(
-                    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                    openPicker,
-                    blockCal
-                );
+                requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, openPicker, blockCal);
             } else {
                 requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, openPicker, blockCal);
             }
