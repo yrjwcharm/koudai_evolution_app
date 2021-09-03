@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-01 15:35:05
+ * @LastEditTime: 2021-09-03 10:47:39
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -241,7 +241,7 @@ const TradeProcessing = ({navigation, route}) => {
                 modalCancelCallBack={modalCancelCallBack}
                 isSign={isSign}
                 validateLength={6}
-                buttonCallBack={debounce(buttonCallBack, 500)}
+                buttonCallBack={debounce(buttonCallBack, 500, false)}
                 buttonText={'立即签约'}
                 getCode={signSendAgain}
             />
