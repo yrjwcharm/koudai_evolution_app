@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-03 14:41:03
+ * @LastEditTime: 2021-09-03 15:18:44
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -23,6 +23,7 @@ import Html from '../../components/RenderHtml';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 let _sign = false;
+let isSign = false;
 const TradeProcessing = ({navigation, route}) => {
     const dispatch = useDispatch();
     const {txn_id} = route.params || {};
@@ -31,7 +32,6 @@ const TradeProcessing = ({navigation, route}) => {
     const [heightArr, setHeightArr] = useState([]);
     const verifyCodeModal = React.useRef(null);
     const [bankInfo, setBankInfo] = useState('');
-    const [isSign, setSign] = useState(false);
     const jump = useJump();
     const loopRef = useRef(0);
     const scrollRef = useRef();
@@ -63,7 +63,7 @@ const TradeProcessing = ({navigation, route}) => {
                 }
             });
         },
-        [loopRef, timerRef, signSendVerify, txn_id, isSign]
+        [loopRef, timerRef, signSendVerify, txn_id]
     );
     const onLayout = useCallback(
         (index, e) => {
@@ -124,7 +124,7 @@ const TradeProcessing = ({navigation, route}) => {
                 _sign = false;
             }, 300);
             if (res.code === '000000') {
-                setSign(true);
+                isSign = true;
                 loopRef.current++;
                 setTimeout(() => {
                     init();
