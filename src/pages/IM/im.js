@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-03 11:22:51
+ * @LastEditTime: 2021-09-03 15:10:28
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -508,61 +508,63 @@ const IM = (props) => {
     const openPicker = () => {
         const options = {
             quality: 0.4,
-            selectionLimit: 0,
-            chooseFromLibraryButtonTitle: '哈哈',
-            customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
+            title: '请选择',
+            // selectionLimit: 3,
+            // chooseFromLibraryButtonTitle: '哈哈',
+            // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+            // storageOptions: {
+            //     skipBackup: false,
+            //     path: 'images',
+            // },
             // maxWidth: px(236),
             // maxHeight: px(300),
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
-                if (response.didCancel) {
-                    console.log('User cancelled image picker');
-                } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
-                } else {
-                    let cmid = randomMsgId('IMR');
-                    handleMessage({
-                        cmd: 'IMR',
-                        cmid,
-                        data: response.uri,
-                        from: uid,
-                        to: 'S',
-                        sendStatus: connect ? 0 : -1,
-                        user_info: {
-                            avatar: userInfo.toJS().avatar,
-                        },
-                        time: `${new Date().getTime()}`,
-                    });
-                    setTimeout(() => {
-                        _ChatScreen?.current?.closeAll();
-                    });
-                    upload(
-                        `${SERVER_URL[global.env].IMApi}/upload/oss`,
-                        response,
-                        [
-                            {name: 'file_key', data: cmid},
-                            {name: 'uid', data: uid},
-                            {name: 'token', data: token.current},
-                        ],
-                        (res) => {
-                            if (res.code === 20000) {
-                                wsSend('IMR', res.result.url, null, cmid);
-                            } else {
-                                checkStatus(cmid, -1);
-                            }
-                        },
-                        () => {
-                            checkStatus(cmid, -1);
-                        }
-                    );
-                }
+                console.log(response);
+                // if (response.didCancel) {
+                //     console.log('User cancelled image picker');
+                // } else if (response.error) {
+                //     console.log('ImagePicker Error: ', response.error);
+                // } else if (response.customButton) {
+                //     console.log('User tapped custom button: ', response.customButton);
+                // } else if(response.assets) {
+                //     let cmid = randomMsgId('IMR');
+                //     handleMessage({
+                //         cmd: 'IMR',
+                //         cmid,
+                //         data: response.uri,
+                //         from: uid,
+                //         to: 'S',
+                //         sendStatus: connect ? 0 : -1,
+                //         user_info: {
+                //             avatar: userInfo.toJS().avatar,
+                //         },
+                //         time: `${new Date().getTime()}`,
+                //     });
+                //     setTimeout(() => {
+                //         _ChatScreen?.current?.closeAll();
+                //     });
+                //     upload(
+                //         `${SERVER_URL[global.env].IMApi}/upload/oss`,
+                //         response,
+                //         [
+                //             {name: 'file_key', data: cmid},
+                //             {name: 'uid', data: uid},
+                //             {name: 'token', data: token.current},
+                //         ],
+                //         (res) => {
+                //             if (res.code === 20000) {
+                //                 wsSend('IMR', res.result.url, null, cmid);
+                //             } else {
+                //                 checkStatus(cmid, -1);
+                //             }
+                //         },
+                //         () => {
+                //             checkStatus(cmid, -1);
+                //         }
+                //     );
+                // }
             });
         }, 100);
     };

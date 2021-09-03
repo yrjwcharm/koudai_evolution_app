@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 18:29:00
+ * @LastEditTime: 2021-09-03 15:07:46
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -67,7 +67,15 @@ const AuthorityManage = () => {
         } else {
             if (index == 2) {
                 if (Platform.OS == 'android') {
-                    requestAuth(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, this.openPicker, this.blockCal);
+                    requestAuth(
+                        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+                        () => {
+                            setCamera(true);
+                        },
+                        () => {
+                            openSettings().catch(() => console.warn('cannot open settings'));
+                        }
+                    );
                 } else {
                     requestAuth(
                         PERMISSIONS.IOS.PHOTO_LIBRARY,
@@ -81,7 +89,15 @@ const AuthorityManage = () => {
                 }
             } else {
                 if (Platform.OS == 'android') {
-                    requestAuth(PERMISSIONS.ANDROID.CAMERA, this.openPicker, this.blockCal);
+                    requestAuth(
+                        PERMISSIONS.ANDROID.CAMERA,
+                        () => {
+                            setCamera(true);
+                        },
+                        () => {
+                            openSettings().catch(() => console.warn('cannot open settings'));
+                        }
+                    );
                 } else {
                     requestAuth(
                         PERMISSIONS.IOS.CAMERA,
