@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-03 13:56:44
+ * @LastEditTime: 2021-09-03 14:41:03
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -120,16 +120,17 @@ const TradeProcessing = ({navigation, route}) => {
             txn_id: txn_id,
             code: value,
         }).then((res) => {
+            setTimeout(() => {
+                _sign = false;
+            }, 300);
             if (res.code === '000000') {
                 setSign(true);
                 loopRef.current++;
-                init();
-                verifyCodeModal.current.hide();
                 setTimeout(() => {
-                    _sign = false;
+                    init();
                 }, 300);
+                verifyCodeModal.current.hide();
             } else {
-                _sign = false;
                 verifyCodeModal.current.toastShow(res.message);
             }
         });
