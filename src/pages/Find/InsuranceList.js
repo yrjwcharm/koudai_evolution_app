@@ -96,7 +96,7 @@ const InsuranceList = (props) => {
                                     jump(item?.url);
                                 }}>
                                 {item.name}
-                                {index == item.length - 1 ? '' : '、'}
+                                {index == data?.agreements?.length - 1 ? '' : '、'}
                             </Text>
                         ))}
                         等重要内容，请您重点关注产品保险责任、免责条款、犹豫期、等待期、退保等关键信息并确保已完全理解。
