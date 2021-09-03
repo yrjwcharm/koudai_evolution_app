@@ -2,7 +2,7 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-03 16:00:56
+ * @LastEditTime: 2021-09-03 16:44:45
  * @Description:
  */
 import React, {useState, useCallback} from 'react';
@@ -64,13 +64,11 @@ const InsuranceList = (props) => {
                 </View>
                 <View style={{marginHorizontal: px(16), marginTop: px(-60)}}>
                     <ImageBackground source={require('../../assets/img/insuranceCardBg.png')} style={styles.card}>
-                        <Text style={{fontSize: px(16), fontWeight: '600', marginBottom: px(14)}}>
+                        <Text style={{fontSize: px(16), lineHeight: px(22), fontWeight: '700', marginBottom: px(9)}}>
                             {data?.part1?.card?.name}
                         </Text>
-                        <Text style={{fontSize: px(22), fontWeight: '600', color: Colors.red, marginBottom: px(10)}}>
-                            {data?.part1?.card?.desc}
-                        </Text>
-                        <Text style={{fontSize: px(12), color: Colors.lightBlackColor}}>
+                        <Text style={styles.card_desc}>{data?.part1?.card?.desc}</Text>
+                        <Text style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightBlackColor}}>
                             {data?.part1?.card?.slogan}
                         </Text>
                         <Button
@@ -170,7 +168,14 @@ const styles = StyleSheet.create({
         paddingTop: px(22),
         alignItems: 'center',
     },
-    button: {width: px(240), height: px(40), backgroundColor: '#FF7D41', borderRadius: px(20), marginTop: px(16)},
+    card_desc: {
+        fontSize: px(22),
+        lineHeight: px(28),
+        fontWeight: '600',
+        color: Colors.red,
+        marginBottom: px(5),
+    },
+    button: {width: px(240), height: px(40), backgroundColor: '#FF7D41', borderRadius: px(20), marginTop: px(14)},
     large_title: {
         fontWeight: '700',
         fontSize: px(17),
