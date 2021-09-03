@@ -2,7 +2,7 @@
  * @Date: 2021-08-20 10:39:20
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 17:18:35
+ * @LastEditTime: 2021-09-03 15:46:47
  * @Description: 保险产品卡片
  */
 import React from 'react';
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(12),
         paddingVertical: px(6),
         marginTop: px(12),
+        borderRadius: px(2),
     },
     mark: {width: px(12), height: px(10), position: 'absolute', left: 0, top: 0},
 });

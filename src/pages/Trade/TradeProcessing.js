@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-03 15:18:44
+ * @LastEditTime: 2021-09-03 15:41:43
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -23,7 +23,6 @@ import Html from '../../components/RenderHtml';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
 let _sign = false;
-let isSign = false;
 const TradeProcessing = ({navigation, route}) => {
     const dispatch = useDispatch();
     const {txn_id} = route.params || {};
@@ -32,19 +31,20 @@ const TradeProcessing = ({navigation, route}) => {
     const [heightArr, setHeightArr] = useState([]);
     const verifyCodeModal = React.useRef(null);
     const [bankInfo, setBankInfo] = useState('');
+    const [isSign, setSign] = useState(false);
     const jump = useJump();
     const loopRef = useRef(0);
     const scrollRef = useRef();
     const timerRef = useRef(null);
     const init = useCallback(
-        (first) => {
+        (sign = false) => {
             http.get('/trade/order/processing/20210101', {
                 txn_id: txn_id,
                 loop: loopRef.current,
             }).then((res) => {
                 setData(res.result);
 
-                if (res.result.need_verify_code && !isSign) {
+                if (res.result.need_verify_code && !sign) {
                     verifyCodeModal.current.show();
                     return signSendVerify();
                 }
@@ -57,7 +57,7 @@ const TradeProcessing = ({navigation, route}) => {
                     timerRef.current = setTimeout(() => {
                         loopRef.current++;
                         if (loopRef.current <= res.result.loop) {
-                            init();
+                            init(sign);
                         }
                     }, 1000);
                 }
@@ -111,8 +111,7 @@ const TradeProcessing = ({navigation, route}) => {
                 });
             }, 500);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [bankInfo, isSign]);
+    }, [bankInfo]);
     const buttonCallBack = (value) => {
         if (_sign) return;
         _sign = true;
@@ -124,10 +123,10 @@ const TradeProcessing = ({navigation, route}) => {
                 _sign = false;
             }, 300);
             if (res.code === '000000') {
-                isSign = true;
+                setSign(true);
                 loopRef.current++;
                 setTimeout(() => {
-                    init();
+                    init(true);
                 }, 300);
                 verifyCodeModal.current.hide();
             } else {
@@ -136,7 +135,7 @@ const TradeProcessing = ({navigation, route}) => {
         });
     };
     useEffect(() => {
-        init(true);
+        init();
         return () => clearTimeout(timerRef.current);
     }, [init, timerRef]);
     const finishClick = () => {
