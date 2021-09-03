@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-03 15:41:43
+ * @LastEditTime: 2021-09-03 16:32:42
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -43,7 +43,6 @@ const TradeProcessing = ({navigation, route}) => {
                 loop: loopRef.current,
             }).then((res) => {
                 setData(res.result);
-
                 if (res.result.need_verify_code && !sign) {
                     verifyCodeModal.current.show();
                     return signSendVerify();
