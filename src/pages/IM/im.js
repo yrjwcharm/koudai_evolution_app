@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 19:12:41
+ * @LastEditTime: 2021-09-03 11:22:51
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -508,13 +508,13 @@ const IM = (props) => {
     const openPicker = () => {
         const options = {
             quality: 0.4,
-            // // selectionLimit: 0,
-            // chooseFromLibraryButtonTitle: '哈哈',
-            // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
-            // storageOptions: {
-            //     skipBackup: true,
-            //     path: 'images',
-            // },
+            selectionLimit: 0,
+            chooseFromLibraryButtonTitle: '哈哈',
+            customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
             // maxWidth: px(236),
             // maxHeight: px(300),
         };
