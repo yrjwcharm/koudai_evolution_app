@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-31 15:15:24
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-02 17:36:19
  * @Description:环境
  */
 const env = 'online'; //默认
@@ -32,6 +32,12 @@ const SERVER_URL = {
         WS: 'wss://kapi-im-ws-kp2.licaimofang.com',
         IMApi: 'https://kapi-im-kp2.licaimofang.com',
         H5: 'https://evolution-h5-kp2.licaimofang.com',
+    },
+    pre3: {
+        HTTP: 'https://kapi-web-kp3.licaimofang.com/',
+        WS: 'wss://kapi-im-ws-kp2.licaimofang.com',
+        IMApi: 'https://kapi-im-kp2.licaimofang.com',
+        H5: 'https://evolution-h5-kp3.licaimofang.com',
     },
     test: {
         HTTP: 'http://kapi-web.yitao.mofanglicai.com.cn:10080/',
