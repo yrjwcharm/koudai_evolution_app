@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-03 11:24:16
+ * @LastEditTime: 2021-09-06 17:00:15
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -60,6 +60,8 @@ const requestAuth = async (permission, grantedCallback, blockCallBack) => {
                                 blockCallBack
                                     ? blockCallBack()
                                     : openSettings().catch(() => console.warn('cannot open settings'));
+                            } else {
+                                grantedCallback();
                             }
                         });
                         console.log('The permission has not been requested / is denied but requestable');

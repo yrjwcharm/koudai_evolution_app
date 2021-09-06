@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-03 15:10:28
+ * @LastEditTime: 2021-09-06 17:49:47
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -508,16 +508,7 @@ const IM = (props) => {
     const openPicker = () => {
         const options = {
             quality: 0.4,
-            title: '请选择',
-            // selectionLimit: 3,
-            // chooseFromLibraryButtonTitle: '哈哈',
-            // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
-            // storageOptions: {
-            //     skipBackup: false,
-            //     path: 'images',
-            // },
-            // maxWidth: px(236),
-            // maxHeight: px(300),
+            // selectionLimit: 0,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
