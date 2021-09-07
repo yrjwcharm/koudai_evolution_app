@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-11 10:31:48
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-02 16:59:34
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -38,6 +38,11 @@ class SetLoginPassword extends Component {
     }
     register = () => {
         const {code, password} = this.state;
+        const reg = /(?!\d+$)(?!^[a-zA-Z]+$)(?!^[!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
+        if (!reg.test(password)) {
+            Toast.show('请输入8-20位包含数字、字母或符号的密码');
+            return false;
+        }
         //找回登录密码
         if (this.fr == 'forget') {
             let toast = Toast.showLoading('正在修改...');
@@ -178,11 +183,11 @@ class SetLoginPassword extends Component {
     onChangeCode = (code) => {
         const {password} = this.state;
         let _code = inputInt(code);
-        this.setState({code: _code, btnClick: !(_code.length >= 6 && password.length >= 6)});
+        this.setState({code: _code, btnClick: !(_code.length >= 6 && password.length >= 8)});
     };
     onChangePassword = (password) => {
         const {code} = this.state;
-        this.setState({password, btnClick: !(code.length >= 6 && password.length >= 6)});
+        this.setState({password: password.replace(/ /g, ''), btnClick: !(code.length >= 6 && password.length >= 8)});
     };
     render() {
         const {code, password, btnClick, verifyText, code_btn_click} = this.state;
@@ -215,7 +220,7 @@ class SetLoginPassword extends Component {
                     title="登录密码"
                     onChangeText={this.onChangePassword}
                     value={password}
-                    placeholder="6-20位 数字或字母组合"
+                    placeholder="请输入8-20位包含数字、字母或符号的密码"
                     maxLength={20}
                     secureTextEntry={true}
                     keyboardType={'ascii-capable'}

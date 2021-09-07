@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-02 14:53:29
+ * @LastEditTime: 2021-09-03 14:18:38
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -95,6 +95,7 @@ const ResetLoginPwd = ({navigation}) => {
                 maxLength={20}
                 onChangeText={(pwd) => setNewPwd(pwd.replace(/ /g, ''))}
                 placeholder={'请输入8-20位包含数字、字母或符号的新密码'}
+                placeholderTextSize={Font.textH3}
                 secureTextEntry={true}
                 textContentType={'newPassword'}
                 title={'新密码'}

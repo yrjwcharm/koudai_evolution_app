@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:08:04
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-03-31 16:13:23
+ * @LastEditTime: 2021-09-02 15:02:54
  * @Description: 密码管理输入框
  */
 import React from 'react';
@@ -33,7 +33,7 @@ export default function input(props) {
                 <TextInput
                     {...leftProps}
                     placeholderTextColor={'#bdc2cc'}
-                    style={styles.input}
+                    style={{...styles.input, fontSize: props.placeholderTextSize || Font.textH2}}
                     underlineColorAndroid="transparent"
                 />
             )}
