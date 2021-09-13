@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-01 15:13:48
+ * @LastEditTime: 2021-09-13 11:13:18
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -27,7 +27,7 @@ import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
-import {px as text, deviceWidth, parseQuery} from './src/utils/appUtil';
+import {px as text, deviceWidth, px} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
@@ -68,6 +68,7 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
+
     React.useEffect(() => {
         JPush.init();
         //连接状态
