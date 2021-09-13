@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-06 11:36:30
+ * @LastEditTime: 2021-09-09 19:37:09
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -46,8 +46,11 @@ export default function WebView({route, navigation}) {
         } else if (navState.url.indexOf('/introduceDetail') > -1) {
             setTitle('保险详情');
         } else {
-            navState.title && setTitle(navState.title);
-            route?.params?.title && setTitle(route?.params?.title);
+            if (route?.params?.title) {
+                setTitle(route?.params?.title);
+            } else if (navState.title) {
+                setTitle(navState.title);
+            }
         }
         setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
@@ -67,11 +70,18 @@ export default function WebView({route, navigation}) {
             <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
             {token && route?.params?.link ? (
                 <RNWebView
+                    bounces={false}
                     ref={webview}
                     onMessage={(event) => {
                         const data = event.nativeEvent.data;
                         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-                        if (data && data.indexOf('https') <= -1) {
+                        if (data?.indexOf('logParams=') > -1) {
+                            const logParams = JSON.parse(data?.split('logParams=')[1] || []);
+                            global.LogTool(...logParams);
+                        } else if (data && data.indexOf('url=') > -1) {
+                            const url = JSON.parse(data.split('url=')[1]);
+                            jump(url);
+                        } else if (data && data.indexOf('https') <= -1) {
                             const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
                             if (url) {
                                 global.LogTool('call');
@@ -121,6 +131,11 @@ export default function WebView({route, navigation}) {
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
+                    onLoadEnd={async () => {
+                        const loginStatus = await Storage.get('loginStatus');
+                        // console.log(loginStatus);
+                        webview.current.postMessage(JSON.stringify(loginStatus));
+                    }}
                     onNavigationStateChange={onNavigationStateChange}
                     // showsVerticalScrollIndicator={false}
                     startInLoadingState={true}

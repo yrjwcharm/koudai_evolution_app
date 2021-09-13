@@ -2,75 +2,43 @@
  * @Date: 2021-09-02 14:24:17
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-06 17:59:39
+ * @LastEditTime: 2021-09-13 10:59:14
  * @Description:关于理财魔方
  */
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
-import {baseURL} from '../../services/config';
+// import {baseURL} from '../../services/config';
+import http from '../../services';
 
 const AboutApp = () => {
     const jump = useJump();
-    const [data, setData] = useState([
-        {
-            text: '去鼓励一下',
-            type: 'encourage',
-            url: {
-                path: 'https://itunes.apple.com/cn/app/li-cai-mo-fang/id975987023?action=write-review',
-                type: 2,
-            },
-        },
-        {
-            desc: '最新版本：6.2.0',
-            text: '版本更新',
-            type: 'update',
-            url: {
-                path: 'https://itunes.apple.com/cn/app/li-cai-mo-fang/id975987023',
-                type: 2,
-            },
-        },
-        {
-            text: '功能介绍',
-            type: 'features',
-            url: {
-                path: 'WebView',
-                params: {link: `${baseURL.H5}/features`},
-                type: 1,
-            },
-        },
-        {
-            text: '第三方软件协议',
-            type: 'protocol',
-            url: {
-                path: 'WebView',
-                params: {link: `${baseURL.H5}/agreement/0`},
-                type: 1,
-            },
-        },
-        {
-            text: '经营证件及执照',
-            type: 'licenses',
-            url: {
-                path: 'WebView',
-                params: {link: `${baseURL.H5}/licenses`},
-                type: 1,
-            },
-        },
-    ]);
+    const [data, setData] = useState({});
+
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/mapi/about/lcmf/20210906').then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            });
+        }, [])
+    );
+
     return (
         <ScrollView style={styles.container}>
             <View style={[Style.flexCenter, {paddingTop: text(50)}]}>
                 <Image source={require('../../assets/img/logo-1024.png')} style={styles.logo} />
             </View>
-            <Text style={styles.appName}>理财魔方</Text>
-            <Text style={styles.version}>v6.1.2</Text>
+            <Text style={styles.appName}>{data?.app_info?.name}</Text>
+            <Text style={styles.version}>{data?.app_info?.ver}</Text>
             <View style={styles.partBox}>
-                {data.map((item, i) => {
+                {data?.items?.map?.((item, i) => {
                     return (
                         <View key={item.text} style={[i === 0 ? {} : styles.borderTop]}>
                             <TouchableOpacity
@@ -102,37 +70,28 @@ const AboutApp = () => {
                 })}
             </View>
             <Text style={styles.protocols}>
-                <Text
-                    onPress={() =>
-                        jump({
-                            path: 'Agreement',
-                            type: 1,
-                            params: {
-                                id: 20,
-                            },
-                        })
-                    }>
-                    《理财魔方用户协议》
-                </Text>
-                {`\n`}
-                <Text
-                    onPress={() =>
-                        jump({
-                            path: 'Agreement',
-                            type: 1,
-                            params: {
-                                id: 32,
-                            },
-                        })
-                    }>
-                    《理财魔方隐私权政策》
-                </Text>
+                {data?.agreement?.map?.((item, index) => {
+                    return (
+                        <Text
+                            key={item.id}
+                            onPress={() =>
+                                jump({
+                                    path: 'Agreement',
+                                    type: 1,
+                                    params: {
+                                        id: item.id,
+                                    },
+                                })
+                            }>
+                            {index !== 0 ? '\n' : ''}
+                            {item.name}
+                        </Text>
+                    );
+                })}
             </Text>
-            <Text
-                style={[
-                    styles.copyright,
-                    {marginBottom: isIphoneX() ? text(20) + 34 : text(20)},
-                ]}>{`理财魔方 版权所有\nCopyright ©2015-2021 Licaimofang. All Rights Reserved.`}</Text>
+            <Text style={[styles.copyright, {marginBottom: isIphoneX() ? text(20) + 34 : text(20)}]}>
+                {data?.app_info?.copyright}
+            </Text>
         </ScrollView>
     );
 };

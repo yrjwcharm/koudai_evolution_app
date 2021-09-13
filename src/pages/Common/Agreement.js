@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 10:31:10
- * @LastEditTime: 2021-04-06 12:16:19
- * @LastEditors: yhc
+ * @LastEditTime: 2021-09-07 16:14:04
+ * @LastEditors: dx
  * @Description: 用户协议(接口返回内容)
  * @FilePath: /koudai_evolution_app/src/pages/Index/Agreement.js
  */
@@ -29,7 +29,7 @@ export class Agreement extends Component {
         return (
             <ScrollView style={styles.container}>
                 <View style={{paddingHorizontal: text(14), marginBottom: isIphoneX() ? 42 : 8}}>
-                    {agreement && <Html html={agreement} style={{fontSize: text(14), lineHeight: text(18)}} />}
+                    {agreement && <Html html={agreement} style={{fontSize: text(14)}} />}
                 </View>
             </ScrollView>
         );

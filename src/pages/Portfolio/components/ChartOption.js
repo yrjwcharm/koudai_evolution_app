@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-05 14:32:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 17:37:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-07 11:18:06
  * @Description: 基金相关图表配置
  */
 // 交互图例
@@ -576,7 +576,7 @@ chart.axis('value', {
   label: function label(text) {
     const number = parseFloat(text);
     const cfg = {};
-    cfg.text = number.toFixed(0) + "%";
+    cfg.text = number.toFixed(2) + "%";
     cfg.fontFamily = 'DINAlternate-Bold';
     return cfg;
   }

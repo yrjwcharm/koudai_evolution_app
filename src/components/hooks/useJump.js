@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-08 11:04:48
+ * @LastEditTime: 2021-09-09 18:41:08
  * @Description: 自定义跳转钩子
  */
 import {useRef} from 'react';
@@ -20,7 +20,11 @@ function useJump() {
                 Linking.canOpenURL(url.path)
                     .then((supported) => {
                         if (!supported) {
-                            return Toast.show('您的设备不支持打开网址');
+                            return Toast.show(
+                                url.path?.indexOf?.('tel:') > -1
+                                    ? `您的设备不支持该功能，请手动拨打 ${url.path?.split?.('tel:')[1]}`
+                                    : '您的设备不支持打开网址'
+                            );
                         }
                         return Linking.openURL(url.path);
                     })
