@@ -2,17 +2,25 @@
  * @Date: 2021-09-02 14:20:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-07 16:57:28
+ * @LastEditTime: 2021-09-13 14:20:34
  * @Description:个性化推荐
  */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, Switch} from 'react-native';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
+import http from '../../services';
 
 const PersonalizedRecommend = () => {
     const [open, setOpen] = useState(false);
-
+    useEffect(() => {
+        http.get('/mapi/personalized/recommend/20210906').then((res) => {
+            setOpen(res?.result?.status == 1 ? true : false);
+        });
+    }, []);
+    const recommend = (value) => {
+        http.post('/mapi/set/per_recommend/20210906', {status: value ? 1 : 0});
+    };
     return (
         <>
             <View style={[styles.partBox, Style.flexBetween]}>
@@ -20,6 +28,7 @@ const PersonalizedRecommend = () => {
                 <Switch
                     ios_backgroundColor={'#CCD0DB'}
                     onValueChange={(value) => {
+                        recommend(value);
                         setOpen(value);
                     }}
                     thumbColor={'#fff'}

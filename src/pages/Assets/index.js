@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-07 19:01:14
+ * @LastEditTime: 2021-09-13 14:22:54
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -547,9 +547,9 @@ function HomeScreen({navigation, route}) {
                             }}
                         />
                         <Button
-                            title="个性化管理"
+                            title="隐私设置"
                             onPress={() => {
-                                navigation.navigate('PersonalizedRecommend');
+                                navigation.navigate('PrivacySetting');
                             }}
                         />
                         {/* 系统通知 */}
