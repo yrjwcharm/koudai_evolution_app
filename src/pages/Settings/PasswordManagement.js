@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-02-18 10:46:19
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-04-12 12:01:31
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-07 16:42:06
  * @Description: 密码管理
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';

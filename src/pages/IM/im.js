@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 17:49:47
+ * @LastEditTime: 2021-09-06 19:27:29
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -33,13 +33,13 @@ import FastImage from 'react-native-fast-image';
 import {BottomModal, Modal} from '../../components/Modal';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import _ from 'lodash';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import upload from '../../services/upload';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {SERVER_URL} from '../../services/config';
 import * as Animatable from 'react-native-animatable';
 import Toast from '../../components/Toast';
+import SyanImagePicker from 'react-native-syan-image-picker';
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
 const _timeout = 4000; //检测消息是否发送成功
 const maxConnectTime = 20 * 60 * 1000; //最大连接时间
@@ -506,57 +506,57 @@ const IM = (props) => {
 
     //打开相册
     const openPicker = () => {
-        const options = {
-            quality: 0.4,
-            // selectionLimit: 0,
-        };
         setTimeout(() => {
-            launchImageLibrary(options, (response) => {
-                console.log(response);
-                // if (response.didCancel) {
-                //     console.log('User cancelled image picker');
-                // } else if (response.error) {
-                //     console.log('ImagePicker Error: ', response.error);
-                // } else if (response.customButton) {
-                //     console.log('User tapped custom button: ', response.customButton);
-                // } else if(response.assets) {
-                //     let cmid = randomMsgId('IMR');
-                //     handleMessage({
-                //         cmd: 'IMR',
-                //         cmid,
-                //         data: response.uri,
-                //         from: uid,
-                //         to: 'S',
-                //         sendStatus: connect ? 0 : -1,
-                //         user_info: {
-                //             avatar: userInfo.toJS().avatar,
-                //         },
-                //         time: `${new Date().getTime()}`,
-                //     });
-                //     setTimeout(() => {
-                //         _ChatScreen?.current?.closeAll();
-                //     });
-                //     upload(
-                //         `${SERVER_URL[global.env].IMApi}/upload/oss`,
-                //         response,
-                //         [
-                //             {name: 'file_key', data: cmid},
-                //             {name: 'uid', data: uid},
-                //             {name: 'token', data: token.current},
-                //         ],
-                //         (res) => {
-                //             if (res.code === 20000) {
-                //                 wsSend('IMR', res.result.url, null, cmid);
-                //             } else {
-                //                 checkStatus(cmid, -1);
-                //             }
-                //         },
-                //         () => {
-                //             checkStatus(cmid, -1);
-                //         }
-                //     );
-                // }
-            });
+            SyanImagePicker.showImagePicker(
+                {
+                    imageCount: 6, // 最大选择图片数目，默认6
+                },
+                (err, selectedPhotos) => {
+                    if (err) {
+                        // 取消选择
+                        return;
+                    } else {
+                        console.log(selectedPhotos);
+                        selectedPhotos.forEach((response) => {
+                            let cmid = randomMsgId('IMR');
+                            handleMessage({
+                                cmd: 'IMR',
+                                cmid,
+                                data: response.uri,
+                                from: uid,
+                                to: 'S',
+                                sendStatus: connect ? 0 : -1,
+                                user_info: {
+                                    avatar: userInfo.toJS().avatar,
+                                },
+                                time: `${new Date().getTime()}`,
+                            });
+                            upload(
+                                `${SERVER_URL[global.env].IMApi}/upload/oss`,
+                                {...response, fileName: `${new Date().getTime()}.jpg`},
+                                [
+                                    {name: 'file_key', data: cmid},
+                                    {name: 'uid', data: uid},
+                                    {name: 'token', data: token.current},
+                                ],
+                                (res) => {
+                                    if (res.code === 20000) {
+                                        wsSend('IMR', res.result.url, null, cmid);
+                                    } else {
+                                        checkStatus(cmid, -1);
+                                    }
+                                },
+                                () => {
+                                    checkStatus(cmid, -1);
+                                }
+                            );
+                        });
+                        setTimeout(() => {
+                            _ChatScreen?.current?.closeAll();
+                        });
+                    }
+                }
+            );
         }, 100);
     };
     //点击查看大图

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:58:49
+ * @LastEditTime: 2021-09-07 16:44:50
  * @Description:路由表
  */
 import React from 'react';
@@ -97,7 +97,7 @@ import DetailPolaris from '../pages/Portfolio/Detail/DetailPolaris'; //马红漫
 import StrategyPolaris from '../pages/Portfolio/StrategyPolaris'; //马红漫策略页
 import PrivateAssets from '../pages/PE/PrivateAssets'; //私募持仓
 import ContactUs from '../pages/Settings/ContactUs'; // 联系我们
-import PasswordManagement from '../pages/Assets/PasswordManagement'; // 密码管理
+import PasswordManagement from '../pages/Settings/PasswordManagement'; // 密码管理
 import ResetLoginPwd from '../pages/Settings/ResetLoginPwd'; // 重设登录密码
 import TradePwdManagement from '../pages/Settings/TradePwdManagement'; // 交易密码管理
 import ModifyTradePwd from '../pages/Assets/ModifyTradePwd'; // 修改交易密码

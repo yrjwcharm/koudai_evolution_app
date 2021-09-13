@@ -2,12 +2,12 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 16:59:22
+ * @LastEditTime: 2021-09-07 16:55:02
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Platform, AppState} from 'react-native';
-import {px as text, isIphoneX, px, requestAuth} from '../../utils/appUtil.js';
+import {px as text, px, requestAuth} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {
@@ -116,35 +116,50 @@ const AuthorityManage = () => {
         <View style={styles.con}>
             <TouchableOpacity
                 activeOpacity={0.8}
-                style={[styles.partBox, Style.flexBetween, {height: text(56)}]}
+                style={[styles.partBox, Style.flexBetween]}
                 onPress={() => {
                     handelRequest(1, notifications);
                 }}>
                 <Text style={[styles.title, {color: Colors.defaultColor}]}>开启消息通知</Text>
-                <Text style={[styles.title, {color: Colors.lightGrayColor}]}>
-                    {notifications ? '已开启' : '去设置'}
-                </Text>
+                <View style={Style.flexRow}>
+                    <Text
+                        style={[styles.title, {color: notifications ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
+                        {notifications ? '已开启' : '去设置'}
+                    </Text>
+                    <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
+                </View>
             </TouchableOpacity>
             <Text style={styles.text}>方便您能及时获得调仓、加仓和其他的信息</Text>
             <TouchableOpacity
                 activeOpacity={0.8}
-                style={[styles.partBox, Style.flexBetween, {height: text(56)}]}
+                style={[styles.partBox, Style.flexBetween]}
                 onPress={() => {
                     handelRequest(2, read);
                 }}>
                 <Text style={[styles.title, {color: Colors.defaultColor}]}>允许访问相册</Text>
-
-                <Text style={[styles.title, {color: Colors.lightGrayColor}]}> {read ? '已开启' : '去设置'}</Text>
+                <View style={Style.flexRow}>
+                    <Text
+                        style={[styles.title, {color: notifications ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
+                        {read ? '已开启' : '去设置'}
+                    </Text>
+                    <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
+                </View>
             </TouchableOpacity>
             <Text style={styles.text}>方便及时获取跳槽潇洒大陆拉大</Text>
             <TouchableOpacity
                 activeOpacity={0.8}
-                style={[styles.partBox, Style.flexBetween, {height: text(56)}]}
+                style={[styles.partBox, Style.flexBetween]}
                 onPress={() => {
                     handelRequest(3, camera);
                 }}>
                 <Text style={[styles.title, {color: Colors.defaultColor}]}>允许访问摄像头</Text>
-                <Text style={[styles.title, {color: Colors.lightGrayColor}]}> {camera ? '已开启' : '去设置'}</Text>
+                <View style={Style.flexRow}>
+                    <Text
+                        style={[styles.title, {color: notifications ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
+                        {camera ? '已开启' : '去设置'}
+                    </Text>
+                    <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
+                </View>
             </TouchableOpacity>
             <Text style={styles.text}>方便及时获取跳槽潇洒大陆拉大</Text>
         </View>
@@ -160,6 +175,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: Space.padding,
         borderRadius: Space.borderRadius,
         backgroundColor: '#fff',
+        height: text(56),
     },
     text: {
         color: Colors.lightGrayColor,

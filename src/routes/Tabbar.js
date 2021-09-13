@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-06 16:27:47
+ * @LastEditTime: 2021-09-07 18:00:26
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -19,6 +19,7 @@ const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
     const vision = useSelector((store) => store.vision);
+    const userInfo = useSelector((store) => store.userInfo);
     return (
         <Tab.Navigator
             initialRouteName="Index"
@@ -121,7 +122,22 @@ export default function Tabbar() {
                 }}
                 component={Vision}
             />
-            <Tab.Screen name="Home" options={{tabBarLabel: '我的'}} component={Home} />
+            <Tab.Screen
+                name="Home"
+                options={{
+                    tabBarLabel: '我的',
+                    tabBarBadge: '',
+                    tabBarBadgeStyle: {
+                        backgroundColor: '#E74949',
+                        width: userInfo?.toJS().version_update == 1 ? 8 : 0,
+                        height: userInfo?.toJS().version_update == 1 ? 8 : 0,
+                        minWidth: 0,
+                        marginLeft: 5,
+                        borderRadius: 4,
+                    },
+                }}
+                component={Home}
+            />
         </Tab.Navigator>
     );
 }

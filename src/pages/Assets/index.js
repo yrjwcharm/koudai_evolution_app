@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 15:08:29
+ * @LastEditTime: 2021-09-07 19:01:14
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -26,7 +26,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text, formaNum} from '../../utils/appUtil.js';
+import {deviceWidth, px as text, formaNum, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -48,6 +48,7 @@ import calm from '../../assets/personal/calm.gif';
 import smile from '../../assets/personal/smile.gif';
 import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
+
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -72,6 +73,7 @@ function HomeScreen({navigation, route}) {
     const [choice, setChoice] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [modalData, setModalData] = useState({});
+    const [showCircle, setShowCircle] = useState(false);
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -544,6 +546,12 @@ function HomeScreen({navigation, route}) {
                                 navigation.navigate('AuthorityManage');
                             }}
                         />
+                        <Button
+                            title="个性化管理"
+                            onPress={() => {
+                                navigation.navigate('PersonalizedRecommend');
+                            }}
+                        />
                         {/* 系统通知 */}
                         {!hideMsg && notice?.system ? (
                             <TouchableOpacity
@@ -885,6 +893,7 @@ function HomeScreen({navigation, route}) {
                                     }}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
+                                    {item.version_update == 1 ? <View style={styles.circle} /> : null}
                                 </TouchableOpacity>
                             );
                         })}
@@ -1271,6 +1280,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: text(12),
         lineHeight: text(17),
+    },
+    circle: {
+        height: px(6),
+        width: px(6),
+        borderRadius: px(6),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        right: text(26),
+        top: px(14),
     },
 });
 export default HomeScreen;

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:20:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-06 19:04:55
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -137,8 +137,8 @@ export class uploadID extends Component {
                     console.log('ImagePicker Error: ', response.error);
                 } else if (response.customButton) {
                     console.log('User tapped custom button: ', response.customButton);
-                } else {
-                    this.uploadImage(response);
+                } else if (response.assets) {
+                    this.uploadImage(response.assets[0]);
                 }
             });
         }, 100);

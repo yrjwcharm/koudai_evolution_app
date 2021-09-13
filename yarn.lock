@@ -7196,10 +7196,10 @@ react-native-image-pan-zoom@^2.1.12:
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"
   integrity sha1-65i/VvtWEDeb2/22MhnMG6ypj9I=
 
-react-native-image-picker@^3.1.3:
-  version "3.8.1"
-  resolved "https://registry.nlark.com/react-native-image-picker/download/react-native-image-picker-3.8.1.tgz#6e830e9b69c882ad5f1160e10592a84963a7f2c9"
-  integrity sha1-boMOm2nIgq1fEWDhBZKoSWOn8sk=
+react-native-image-picker@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.nlark.com/react-native-image-picker/download/react-native-image-picker-4.0.6.tgz#0dfa5bb83bcf6ff58635ebb9201a185c2271e8cc"
+  integrity sha1-DfpbuDvPb/WGNeu5IBoYXCJx6Mw=
 
 react-native-image-zoom-viewer@^3.0.1:
   version "3.0.1"
@@ -7351,6 +7351,11 @@ react-native-swiper@^1.6.0:
   integrity sha1-Wf29+Vrd7kljAxLycHdiLCd3aBk=
   dependencies:
     prop-types "^15.5.10"
+
+react-native-syan-image-picker@^0.4.11:
+  version "0.4.11"
+  resolved "https://registry.npm.taobao.org/react-native-syan-image-picker/download/react-native-syan-image-picker-0.4.11.tgz#1186368fd23a73f38852384943a534d00f41033f"
+  integrity sha1-EYY2j9I6c/OIUjhJQ6U00A9BAz8=
 
 react-native-vector-icons@^7.1.0:
   version "7.1.0"

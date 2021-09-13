@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-01 15:13:48
+ * @LastEditTime: 2021-09-07 11:07:46
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -31,7 +31,7 @@ import {px as text, deviceWidth, parseQuery} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
-import {throttle} from 'lodash';
+import {throttle, debounce} from 'lodash';
 
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -170,13 +170,15 @@ function App(props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     React.useEffect(() => {
-        NetInfo.addEventListener((state) => {
-            if (!state.isConnected) {
-                Toast.show('网络已断开,请检查您的网络');
-            } else {
-                store.dispatch(getUserInfo());
-            }
-        });
+        NetInfo.addEventListener(
+            debounce((state) => {
+                if (!state.isConnected) {
+                    Toast.show('网络已断开,请检查您的网络');
+                } else {
+                    store.dispatch(getUserInfo());
+                }
+            }, 500)
+        );
     }, []);
     React.useEffect(() => {
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
