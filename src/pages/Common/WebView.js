@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-31 19:09:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-06 11:36:30
  * @Description:webview
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -12,6 +12,8 @@ import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {Style} from '../../common/commonStyle';
+import {deviceHeight} from '../../utils/appUtil';
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
@@ -44,7 +46,8 @@ export default function WebView({route, navigation}) {
         } else if (navState.url.indexOf('/introduceDetail') > -1) {
             setTitle('保险详情');
         } else {
-            setTitle(route?.params?.title);
+            navState.title && setTitle(navState.title);
+            route?.params?.title && setTitle(route?.params?.title);
         }
         setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
@@ -127,7 +130,9 @@ export default function WebView({route, navigation}) {
                     }}
                 />
             ) : (
-                <ActivityIndicator color="#999999" />
+                <View style={[Style.flexCenter, {height: deviceHeight}]}>
+                    <ActivityIndicator color="#999999" />
+                </View>
             )}
         </View>
     );

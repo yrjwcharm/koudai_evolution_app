@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 15:50:49
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-03 14:48:22
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,6 +34,10 @@ const Settings = ({navigation}) => {
     const onPress = useCallback(
         (item) => {
             if (item.type === 'about') {
+                jump({
+                    type: 1,
+                    path: 'AboutApp',
+                });
                 return false;
             }
             global.LogTool('click', item.type);
