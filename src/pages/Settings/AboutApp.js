@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-02 14:24:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:55:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-14 17:39:58
  * @Description:关于理财魔方
  */
 import React, {useCallback, useState} from 'react';
@@ -17,6 +17,7 @@ import {baseURL} from '../../services/config';
 import {useSelector} from 'react-redux';
 import Storage from '../../utils/storage';
 import http from '../../services';
+import Toast from '../../components/Toast';
 
 const AboutApp = () => {
     const jump = useJump();
@@ -54,6 +55,10 @@ const AboutApp = () => {
                                 activeOpacity={0.8}
                                 style={[Style.flexBetween, {height: text(56)}]}
                                 onPress={() => {
+                                    if (item.need_update === false) {
+                                        Toast.show('当前为最新版本');
+                                        return false;
+                                    }
                                     jump(item.url);
                                     if (item.type === 'update' && showCircle) {
                                         setShowCircle(false);

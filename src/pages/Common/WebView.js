@@ -2,12 +2,13 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-09 19:37:09
+ * @LastEditTime: 2021-09-14 17:19:29
  * @Description:webview
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-native';
 import {WebView as RNWebView} from 'react-native-webview';
+import {useFocusEffect} from '@react-navigation/native';
 import Storage from '../../utils/storage';
 import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
@@ -38,7 +39,7 @@ export default function WebView({route, navigation}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backButtonEnabled]);
     const onNavigationStateChange = (navState) => {
-        console.log(navState.url);
+        // console.log(navState.url);
         if (navState.url.indexOf('/myInsurance') > -1) {
             setTitle('我的保险');
         } else if (navState.url.indexOf('/expertOpinion') > -1) {
@@ -54,6 +55,12 @@ export default function WebView({route, navigation}) {
         }
         setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+        }, [])
+    );
 
     const onBackAndroid = (e) => {
         if (backButtonEnabled) {
