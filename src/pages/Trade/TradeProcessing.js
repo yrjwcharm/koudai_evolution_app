@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-14 11:58:05
+ * @LastEditTime: 2021-09-14 14:09:43
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -37,10 +37,11 @@ const TradeProcessing = ({navigation, route}) => {
     const scrollRef = useRef();
     const timerRef = useRef(null);
     const init = useCallback(
-        (sign = false) => {
+        (sign = false, refused = 0) => {
             http.get('/trade/order/processing/20210101', {
                 txn_id: txn_id,
                 loop: loopRef.current,
+                refused,
             }).then((res) => {
                 setData(res.result);
                 if (res.result.need_verify_code && !sign) {
@@ -56,7 +57,7 @@ const TradeProcessing = ({navigation, route}) => {
                     timerRef.current = setTimeout(() => {
                         loopRef.current++;
                         if (loopRef.current <= res.result.loop) {
-                            init(sign);
+                            init(sign, refused);
                         }
                     }, 1000);
                 }
@@ -107,10 +108,16 @@ const TradeProcessing = ({navigation, route}) => {
                     confirmCallBack: () => {
                         verifyCodeModal.current.show(true, 0);
                     },
+                    onCloseCallBack: () => {
+                        loopRef.current++;
+                        setTimeout(() => {
+                            init(true, 1);
+                        }, 300);
+                    },
                 });
             }, 500);
         }
-    }, [bankInfo]);
+    }, [bankInfo, init]);
     const buttonCallBack = (value) => {
         if (_sign) return;
         _sign = true;
