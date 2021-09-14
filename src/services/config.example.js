@@ -2,7 +2,7 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:58:01
+ * @LastEditTime: 2021-09-14 15:55:58
  * @Description:环境
  */
 const env = 'develop'; //默认
@@ -84,6 +84,12 @@ const SERVER_URL = {
         HTTP: 'http://kapi-mapi2.yitao2.mofanglicai.com.cn:10080/',
         WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
         IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
+    },
+    lixiaoguang: {
+        HTTP: 'http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/',
+        WS: 'ws://192.168.88.68:39503',
+        IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
         H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
     },
 };
