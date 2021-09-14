@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:14:38
+ * @LastEditTime: 2021-09-14 11:54:44
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,15 +34,14 @@ const Settings = ({navigation}) => {
     const [showCircle, setShowCircle] = useState(false);
     const onPress = useCallback(
         (item) => {
-            if (item.type === 'about') {
-                setShowCircle(false);
-                Storage.save('version' + userInfo.toJS().latest_version + 'setting_page', true);
-                jump({
-                    type: 1,
-                    path: 'AboutApp',
-                });
-                return false;
-            }
+            // if (item.type === 'about') {
+            //     jump({
+            //         type: 1,
+            //         path: 'WebView',
+            //         params: {link: 'http://192.168.88.117:3000/portfolioBabyDetail/15', title: '百万宝贝计划'},
+            //     });
+            //     return false;
+            // }
             global.LogTool('click', item.type);
             if (item.type === 'bind_invitor') {
                 setInviteCode('');
@@ -83,6 +82,14 @@ const Settings = ({navigation}) => {
                     },
                 });
             } else {
+                if (item.type == 'about') {
+                    setShowCircle((prev) => {
+                        if (prev) {
+                            Storage.save('version' + userInfo.toJS().latest_version + 'setting_page', true);
+                            return false;
+                        }
+                    });
+                }
                 jump(item.url);
             }
         },
@@ -201,7 +208,7 @@ const Settings = ({navigation}) => {
                                                         style={[
                                                             styles.title,
                                                             {
-                                                                marginRight: text(8),
+                                                                marginRight: item.url ? text(8) : 0,
                                                                 color: Colors.lightGrayColor,
                                                             },
                                                         ]}>

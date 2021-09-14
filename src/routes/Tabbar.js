@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:12:58
+ * @LastEditTime: 2021-09-14 11:56:25
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -147,8 +147,10 @@ export default function Tabbar() {
                 }}
                 listeners={{
                     tabPress: (e) => {
-                        setShowVersion(false);
-                        Storage.save('version' + userInfo.toJS().latest_version + 'tabBar', true);
+                        if (showVersion) {
+                            setShowVersion(false);
+                            Storage.save('version' + userInfo.toJS().latest_version + 'tabBar', true);
+                        }
                         // Prevent default action
                         // e.preventDefault();
                     },
