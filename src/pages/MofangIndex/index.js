@@ -487,7 +487,7 @@ const Index = (props) => {
                                         />
                                         <View style={[Style.flexRowCenter, {width: '100%'}]}>
                                             <FastImage
-                                                source={require('../../assets/img/index/recommendIcon.png')}
+                                                source={{uri: data?.custom_info?.icon}}
                                                 style={styles.recommendIcon}
                                             />
                                             <Text style={[styles.poName, {marginRight: px(8)}]}>

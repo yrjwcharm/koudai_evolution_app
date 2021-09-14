@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-07 16:55:02
+ * @LastEditTime: 2021-09-14 15:49:34
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -17,7 +17,8 @@ import {
     requestNotifications,
     PERMISSIONS,
 } from 'react-native-permissions';
-const AuthorityManage = () => {
+import {baseURL} from '../../services/config';
+const AuthorityManage = ({navigation}) => {
     const [notifications, setNotifications] = useState(false);
     const [camera, setCamera] = useState(false);
     const [read, setRead] = useState(false);
@@ -145,7 +146,19 @@ const AuthorityManage = () => {
                     <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
                 </View>
             </TouchableOpacity>
-            <Text style={styles.text}>方便及时获取跳槽潇洒大陆拉大</Text>
+            <Text style={styles.text}>
+                方便您上传图片或者视频。关于
+                <Text
+                    style={{color: Colors.btnColor}}
+                    onPress={() => {
+                        navigation.navigate('WebView', {
+                            link: `${baseURL.H5}/agreement/32#album`,
+                            title: '理财魔方隐私权协议',
+                        });
+                    }}>
+                    《相册信息》
+                </Text>
+            </Text>
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={[styles.partBox, Style.flexBetween]}
@@ -161,7 +174,16 @@ const AuthorityManage = () => {
                     <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
                 </View>
             </TouchableOpacity>
-            <Text style={styles.text}>方便及时获取跳槽潇洒大陆拉大</Text>
+            <Text
+                style={styles.text}
+                onPress={() => {
+                    navigation.navigate('WebView', {
+                        link: `${baseURL.H5}/agreement/32#camera`,
+                        title: '理财魔方隐私权协议',
+                    });
+                }}>
+                方便您使用拍摄、刷脸等服务。关于<Text style={{color: Colors.btnColor}}>《访问摄像头》</Text>
+            </Text>
         </View>
     );
 };
