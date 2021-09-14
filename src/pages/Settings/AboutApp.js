@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-02 14:24:17
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-06 17:59:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-14 11:13:39
  * @Description:关于理财魔方
  */
 import React, {useEffect, useState} from 'react';
@@ -13,9 +13,12 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
 import {baseURL} from '../../services/config';
-
+import {useSelector} from 'react-redux';
+import Storage from '../../utils/storage';
 const AboutApp = () => {
     const jump = useJump();
+    const userInfo = useSelector((store) => store.userInfo);
+    const [showCircle, setShowCircle] = useState(false);
     const [data, setData] = useState([
         {
             text: '去鼓励一下',
@@ -62,6 +65,14 @@ const AboutApp = () => {
             },
         },
     ]);
+    useEffect(() => {
+        Storage.get('version' + userInfo.toJS().latest_version + 'about_page').then((res) => {
+            if (!res && global.ver < userInfo.toJS().latest_version) {
+                setShowCircle(true);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <ScrollView style={styles.container}>
             <View style={[Style.flexCenter, {paddingTop: text(50)}]}>
@@ -76,7 +87,13 @@ const AboutApp = () => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 style={[Style.flexBetween, {height: text(56)}]}
-                                onPress={() => jump(item.url)}>
+                                onPress={() => {
+                                    jump(item.url);
+                                    if (item.type === 'update') {
+                                        setShowCircle(false);
+                                        Storage.save('version' + userInfo.toJS().latest_version + 'about_page', true);
+                                    }
+                                }}>
                                 <Text style={styles.title}>{item.text}</Text>
                                 <View style={Style.flexRow}>
                                     {item.desc ? (
@@ -91,7 +108,7 @@ const AboutApp = () => {
                                             {item.desc}
                                         </Text>
                                     ) : null}
-                                    {item.type === 'update' ? <View style={styles.redDot} /> : null}
+                                    {item.type === 'update' && showCircle ? <View style={styles.redDot} /> : null}
                                     {item.url ? (
                                         <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
                                     ) : null}

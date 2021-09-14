@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-13 14:22:54
+ * @LastEditTime: 2021-09-14 11:34:30
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -48,6 +48,7 @@ import calm from '../../assets/personal/calm.gif';
 import smile from '../../assets/personal/smile.gif';
 import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
+import Storage from '../../utils/storage';
 
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
@@ -83,11 +84,7 @@ function HomeScreen({navigation, route}) {
     // 滚动回调
     const onScroll = useCallback((event) => {
         let y = event.nativeEvent.contentOffset.y;
-        // if (y > 50) {
-        //     StatusBar.setBarStyle('dark-content');
-        // } else {
-        //     StatusBar.setBarStyle('light-content');
-        // }
+
         setScrollY(y);
     }, []);
     // 隐藏系统消息
@@ -112,10 +109,7 @@ function HomeScreen({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     }, []);
-    // navigation.addListener('tabPress', e => {
-    //   // Prevent default action
-    //   e.preventDefault()
-    // }
+
     const init = useCallback(
         (refresh) => {
             refresh === 'refresh' && setRefreshing(true);
@@ -358,10 +352,18 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
+            Storage.get('version' + userInfo.toJS().latest_version + 'setting_icon').then((res) => {
+                if (!res && global.ver < userInfo.toJS().latest_version) {
+                    setShowCircle(true);
+                } else {
+                    setShowCircle(false);
+                }
+            });
             hasNet && !showGesture ? init() : setLoading(false);
             storage.get('myAssetsEye').then((res) => {
                 setShowEye(res ? res : 'true');
             });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [hasNet, init, showGesture])
     );
     useFocusEffect(
@@ -540,18 +542,6 @@ function HomeScreen({navigation, route}) {
                         </View>
                         <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
                         <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
-                        <Button
-                            title="权限管理"
-                            onPress={() => {
-                                navigation.navigate('AuthorityManage');
-                            }}
-                        />
-                        <Button
-                            title="隐私设置"
-                            onPress={() => {
-                                navigation.navigate('PrivacySetting');
-                            }}
-                        />
                         {/* 系统通知 */}
                         {!hideMsg && notice?.system ? (
                             <TouchableOpacity
@@ -889,11 +879,17 @@ function HomeScreen({navigation, route}) {
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}
                                     onPress={() => {
                                         global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
+                                        if (index == 3 && showCircle) {
+                                            Storage.save(
+                                                'version' + userInfo.toJS().latest_version + 'setting_icon',
+                                                true
+                                            );
+                                        }
                                         jump(item.url);
                                     }}>
                                     <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                    {item.version_update == 1 ? <View style={styles.circle} /> : null}
+                                    {index == 3 && showCircle ? <View style={styles.circle} /> : null}
                                 </TouchableOpacity>
                             );
                         })}

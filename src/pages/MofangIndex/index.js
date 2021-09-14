@@ -16,7 +16,6 @@ import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {QuestionCard} from '../../components/Article';
 import Swiper from 'react-native-swiper';
 import Praise from '../../components/Praise.js';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -125,16 +124,6 @@ const Index = (props) => {
                     jump(res.result?.url);
                 }
             });
-            // if (userInfo.pushRoute?.indexOf('?') > -1) {
-            //     props.navigation.navigate(
-            //         userInfo.pushRoute.split('?')[0],
-            //         parseQuery(userInfo.pushRoute.split('?')[1])
-            //     );
-            //     dispatch(updateUserInfo({pushRoute: ''}));
-            // } else {
-            //     props.navigation.navigate(userInfo.pushRoute);
-            //     dispatch(updateUserInfo({pushRoute: ''}));
-            // }
         }
     }, [userInfo, jump, dispatch]);
     // 刷新一下
@@ -151,9 +140,6 @@ const Index = (props) => {
     );
 
     useEffect(() => {
-        http.get('/mapi/app/config/20210101').then((res) => {
-            dispatch(updateUserInfo(res.result));
-        });
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
         });

@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-07 11:07:46
+ * @LastEditTime: 2021-09-14 11:32:49
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -27,12 +27,12 @@ import NetInfo from '@react-native-community/netinfo';
 import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
-import {px as text, deviceWidth, parseQuery} from './src/utils/appUtil';
+import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {updateVision} from './src/redux/actions/visionData';
 import {throttle, debounce} from 'lodash';
-
+global.ver = '6.2.3';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -103,6 +103,31 @@ function App(props) {
         });
     }, [props.navigation]);
     React.useEffect(() => {
+        http.get('/mapi/app/config/20210101').then((result) => {
+            //版本更新显示小红点逻辑
+            if (global.ver < result?.result?.latest_version) {
+                Storage.keys().then((_res) => {
+                    if (_res?.length > 0) {
+                        let version_list = _res.filter((_item) => {
+                            return _item.includes('version');
+                        });
+                        //查看是否有较上次未更新 更新的版本
+                        if (
+                            version_list?.length > 0 &&
+                            version_list[0]?.slice(7, 12) < result?.result?.latest_version
+                        ) {
+                            //有更加新的版本 删除本地缓存 显示小红点
+                            _res.forEach((item) => {
+                                if (item?.includes('version')) {
+                                    Storage.delete(item);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+            dispatch(updateUserInfo(res.result));
+        });
         CodePush.checkForUpdate(key)
             .then((update) => {
                 if (!update) {

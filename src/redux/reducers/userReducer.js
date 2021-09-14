@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:36:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-11 16:26:59
+ * @LastEditTime: 2021-09-14 11:10:42
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -13,6 +13,7 @@ const defaultState = fromJS({
     verifyGesture: false,
     show_wx_login_btn: false,
     hotRefreshData: '', //是否有热更新
+    latest_version: '',
 });
 
 export default function userInfo(state = defaultState, action) {

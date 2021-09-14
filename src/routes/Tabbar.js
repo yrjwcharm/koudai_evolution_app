@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-07 18:00:26
+ * @LastEditTime: 2021-09-14 11:12:58
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -15,11 +15,20 @@ import Vision from '../pages/Vision/Vision'; //视野
 import Home from '../pages/Assets/index'; //资产页
 import {Colors} from '../common/commonStyle';
 import {useSelector} from 'react-redux';
+import Storage from '../utils/storage';
 const Tab = createBottomTabNavigator();
 const tabIconSize = px(22);
 export default function Tabbar() {
     const vision = useSelector((store) => store.vision);
     const userInfo = useSelector((store) => store.userInfo);
+    const [showVersion, setShowVersion] = React.useState(false);
+    React.useEffect(() => {
+        Storage.get('version' + userInfo.toJS().latest_version + 'tabBar').then((res) => {
+            if (!res && global.ver < userInfo.toJS().latest_version) {
+                setShowVersion(true);
+            }
+        });
+    }, [userInfo]);
     return (
         <Tab.Navigator
             initialRouteName="Index"
@@ -129,11 +138,19 @@ export default function Tabbar() {
                     tabBarBadge: '',
                     tabBarBadgeStyle: {
                         backgroundColor: '#E74949',
-                        width: userInfo?.toJS().version_update == 1 ? 8 : 0,
-                        height: userInfo?.toJS().version_update == 1 ? 8 : 0,
+                        width: showVersion ? 8 : 0,
+                        height: showVersion ? 8 : 0,
                         minWidth: 0,
                         marginLeft: 5,
                         borderRadius: 4,
+                    },
+                }}
+                listeners={{
+                    tabPress: (e) => {
+                        setShowVersion(false);
+                        Storage.save('version' + userInfo.toJS().latest_version + 'tabBar', true);
+                        // Prevent default action
+                        // e.preventDefault();
                     },
                 }}
                 component={Home}

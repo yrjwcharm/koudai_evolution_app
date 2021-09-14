@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-03 14:48:22
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-14 11:14:38
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,10 +16,11 @@ import {Modal, ShareModal} from '../../components/Modal';
 import Storage from '../../utils/storage';
 import Toast from '../../components/Toast';
 import {InputModal} from '../../components/Modal';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 const Settings = ({navigation}) => {
+    const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
@@ -30,10 +31,12 @@ const Settings = ({navigation}) => {
     const [modalProps, setModalProps] = useState({});
     const [inviteCode, setInviteCode] = useState('');
     const inviteCodeRef = useRef('');
-
+    const [showCircle, setShowCircle] = useState(false);
     const onPress = useCallback(
         (item) => {
             if (item.type === 'about') {
+                setShowCircle(false);
+                Storage.save('version' + userInfo.toJS().latest_version + 'setting_page', true);
                 jump({
                     type: 1,
                     path: 'AboutApp',
@@ -83,6 +86,7 @@ const Settings = ({navigation}) => {
                 jump(item.url);
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [navigation, jump, dispatch, confirmClick]
     );
     const confirmClick = useCallback(() => {
@@ -122,6 +126,11 @@ const Settings = ({navigation}) => {
     }, [dispatch, navigation]);
 
     useEffect(() => {
+        Storage.get('version' + userInfo.toJS().latest_version + 'setting_page').then((res) => {
+            if (!res && global.ver < userInfo.toJS().latest_version) {
+                setShowCircle(true);
+            }
+        });
         Http.get('/mapi/config/20210101').then((res) => {
             if (res.code === '000000') {
                 setData(res.result);
@@ -132,6 +141,7 @@ const Settings = ({navigation}) => {
                 setShareContent(res.result);
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         if (Object.keys(modalProps).length > 0) {
@@ -191,20 +201,18 @@ const Settings = ({navigation}) => {
                                                         style={[
                                                             styles.title,
                                                             {
-                                                                marginRight: item.type !== 'about' ? text(8) : 0,
+                                                                marginRight: text(8),
                                                                 color: Colors.lightGrayColor,
                                                             },
                                                         ]}>
                                                         {item.desc}
                                                     </Text>
                                                 ) : null}
-                                                {item.type !== 'about' && (
-                                                    <Icon
-                                                        name={'angle-right'}
-                                                        size={20}
-                                                        color={Colors.lightGrayColor}
-                                                    />
-                                                )}
+
+                                                {item.type == 'about' && showCircle ? (
+                                                    <View style={styles.circle} />
+                                                ) : null}
+                                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
                                             </View>
                                         </TouchableOpacity>
                                     </View>
@@ -266,6 +274,13 @@ const styles = StyleSheet.create({
         fontSize: text(26),
         lineHeight: text(37),
         color: Colors.placeholderColor,
+    },
+    circle: {
+        height: text(6),
+        width: text(6),
+        borderRadius: text(6),
+        backgroundColor: Colors.red,
+        marginRight: text(8),
     },
 });
 

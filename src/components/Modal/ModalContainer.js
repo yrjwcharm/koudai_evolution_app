@@ -32,6 +32,7 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
  * @param {?JSX} customBottomView 可选，自定义底部样式（包括居中和底部弹框），若该属性有值，会覆盖默认样式，当需要自定义按钮点击功能时可以用这个，
  * @param {Function} confirmCallBack //确认的回掉函数
  * @param {Function} cancelCallBack //取消的回掉函数
+ * @param {Function} onCloseCallBack //弹窗关闭的回掉函数
  */
 const modalWidth = 280;
 export default class MyModal extends Component {
@@ -109,6 +110,7 @@ export default class MyModal extends Component {
         this.setModalVisiable(false);
         setTimeout(() => {
             this.props.cancelCallBack && this.props.cancelCallBack();
+            this.props.onCloseCallBack && this.props.onCloseCallBack();
         }, 100);
     }
     confirm = () => {
@@ -122,29 +124,7 @@ export default class MyModal extends Component {
             this.props.confirmCallBack && this.props.confirmCallBack();
         }, 500);
     };
-    //设置图片宽高--android、ios有兼容
-    //android
-    // setSize = (imgItem) => {
-    //     let showH;
-    //     if (Platform.OS != 'ios') {
-    //         Image.getSize(imgItem, (w, h) => {
-    //             //多张则循环判断处理
-    //             showH = Math.floor(h / (w / this.state.imgWidth));
-    //             this.setState({imgHeight: showH});
-    //         });
-    //     }
-    // };
-    // //ios
-    // setSizeIos = (imgItem) => {
-    //     let showH;
-    //     if (Platform.OS == 'ios') {
-    //         Image.getSize(imgItem, (w, h) => {
-    //             //同安卓
-    //             showH = Math.floor(h / (w / this.state.imgWidth));
-    //             this.setState({imgHeight: showH});
-    //         });
-    //     }
-    // };
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             isVisible: nextProps.isVisible,
@@ -373,13 +353,19 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    this.isTouchMaskToClose ? this.setModalVisiable(false) : null;
+                    if (this.isTouchMaskToClose) {
+                        this.props.onCloseCallBack && this.props.onCloseCallBack();
+                        this.setModalVisiable(false);
+                    }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
                     {/* 弹窗遮罩 */}
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            this.isTouchMaskToClose ? this.setModalVisiable(false) : null;
+                            if (this.isTouchMaskToClose) {
+                                this.props.onCloseCallBack && this.props.onCloseCallBack();
+                                this.setModalVisiable(false);
+                            }
                         }}>
                         <View style={styles.mask} />
                     </TouchableWithoutFeedback>
