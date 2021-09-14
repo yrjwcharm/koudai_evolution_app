@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
- * @LastEditors: dx
- * @LastEditTime: 2021-08-17 17:03:11
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 15:40:23
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -188,9 +188,7 @@ export default function MessageNotice({navigation, route}) {
                             </Text>
                         </View>
                         <View style={[Style.flexBetween, {marginTop: text(12)}]}>
-                            <Text
-                                numberOfLines={6}
-                                style={[styles.content_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}>
+                            <Text style={[styles.content_sty, item?.is_read == 1 ? {color: Colors.darkGrayColor} : {}]}>
                                 {item.content}
                             </Text>
                             {item.jump_url ? <AntDesign name={'right'} size={12} color={'#8F95A7'} /> : null}

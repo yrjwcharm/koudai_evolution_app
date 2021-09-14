@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: xjh
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-01 15:39:11
+ * @LastEditTime: 2021-09-02 15:15:37
  * @Description: 底部弹窗
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -168,14 +168,16 @@ const VerifyCodeModal = React.forwardRef((props, ref) => {
                             <Text style={{color: '#fff', fontSize: text(12)}}>{num ? num : '重新发送验证码'}</Text>
                         </TouchableOpacity>
                     </View>
-                    <Button
-                        title={props.buttonText}
-                        style={{marginTop: text(24)}}
-                        disabled={code.length !== validateLength}
-                        onPress={() => {
-                            buttonCallBack && buttonCallBack(code);
-                        }}
-                    />
+                    {scene == 'sign' ? (
+                        <Button
+                            title={props.buttonText}
+                            style={{marginTop: text(24)}}
+                            disabled={code.length !== validateLength}
+                            onPress={() => {
+                                buttonCallBack && buttonCallBack(code);
+                            }}
+                        />
+                    ) : null}
                 </View>
             </View>
             <Modal animationType={'fade'} onRequestClose={() => setShowToast(false)} transparent visible={showToast}>

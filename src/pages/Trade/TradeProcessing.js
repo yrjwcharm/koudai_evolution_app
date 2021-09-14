@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-14 11:47:03
+ * @LastEditTime: 2021-09-14 11:58:05
  * @LastEditors: yhc
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
@@ -10,7 +10,7 @@ import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, ScrollView, View, Text, Image} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text, debounce} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {VerifyCodeModal, Modal} from '../../components/Modal/';
 import http from '../../services';
@@ -22,6 +22,7 @@ import FastImage from 'react-native-fast-image';
 import Html from '../../components/RenderHtml';
 import {useDispatch} from 'react-redux';
 import {getUserInfo} from '../../redux/actions/userInfo';
+let _sign = false;
 const TradeProcessing = ({navigation, route}) => {
     const dispatch = useDispatch();
     const {txn_id} = route.params || {};
@@ -36,14 +37,13 @@ const TradeProcessing = ({navigation, route}) => {
     const scrollRef = useRef();
     const timerRef = useRef(null);
     const init = useCallback(
-        (first) => {
+        (sign = false) => {
             http.get('/trade/order/processing/20210101', {
                 txn_id: txn_id,
                 loop: loopRef.current,
             }).then((res) => {
                 setData(res.result);
-
-                if (res.result.need_verify_code && !isSign) {
+                if (res.result.need_verify_code && !sign) {
                     verifyCodeModal.current.show();
                     return signSendVerify();
                 }
@@ -56,13 +56,13 @@ const TradeProcessing = ({navigation, route}) => {
                     timerRef.current = setTimeout(() => {
                         loopRef.current++;
                         if (loopRef.current <= res.result.loop) {
-                            init();
+                            init(sign);
                         }
                     }, 1000);
                 }
             });
         },
-        [loopRef, timerRef, signSendVerify, txn_id, isSign]
+        [loopRef, timerRef, signSendVerify, txn_id]
     );
     const onLayout = useCallback(
         (index, e) => {
@@ -110,28 +110,31 @@ const TradeProcessing = ({navigation, route}) => {
                 });
             }, 500);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [bankInfo, isSign]);
-
+    }, [bankInfo]);
     const buttonCallBack = (value) => {
+        if (_sign) return;
+        _sign = true;
         http.post('/trade/recharge/verify_code_confirm/20210101', {
             txn_id: txn_id,
             code: value,
         }).then((res) => {
+            setTimeout(() => {
+                _sign = false;
+            }, 300);
             if (res.code === '000000') {
                 setSign(true);
                 loopRef.current++;
                 setTimeout(() => {
-                    init();
-                    verifyCodeModal.current.hide();
+                    init(true);
                 }, 300);
+                verifyCodeModal.current.hide();
             } else {
                 verifyCodeModal.current.toastShow(res.message);
             }
         });
     };
     useEffect(() => {
-        init(true);
+        init();
         return () => clearTimeout(timerRef.current);
     }, [init, timerRef]);
     const finishClick = () => {
@@ -241,7 +244,7 @@ const TradeProcessing = ({navigation, route}) => {
                 modalCancelCallBack={modalCancelCallBack}
                 isSign={isSign}
                 validateLength={6}
-                buttonCallBack={debounce(buttonCallBack, 500)}
+                buttonCallBack={buttonCallBack}
                 buttonText={'立即签约'}
                 getCode={signSendAgain}
             />

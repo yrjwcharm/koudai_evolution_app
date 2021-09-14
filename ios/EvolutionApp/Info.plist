@@ -44,7 +44,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
+<<<<<<< HEAD
 	<string>62300</string>
+=======
+	<string>62202</string>
+>>>>>>> v6.2.2
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>CodePushServerURL</key>

@@ -2,11 +2,20 @@
  * @Date: 2021-08-19 18:48:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-27 17:17:04
+ * @LastEditTime: 2021-09-03 16:44:45
  * @Description:
  */
 import React, {useState, useCallback} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Platform} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    ActivityIndicator,
+    Platform,
+    ImageBackground,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Colors, Style, Font} from '../../common/commonStyle';
@@ -54,14 +63,12 @@ const InsuranceList = (props) => {
                     <Text style={styles.img_title}>{data?.part1?.slogan}</Text>
                 </View>
                 <View style={{marginHorizontal: px(16), marginTop: px(-60)}}>
-                    <View style={[styles.card, Style.flexCenter]}>
-                        <Text style={{fontSize: px(16), fontWeight: '600', marginBottom: px(16)}}>
+                    <ImageBackground source={require('../../assets/img/insuranceCardBg.png')} style={styles.card}>
+                        <Text style={{fontSize: px(16), lineHeight: px(22), fontWeight: '700', marginBottom: px(9)}}>
                             {data?.part1?.card?.name}
                         </Text>
-                        <Text style={{fontSize: px(22), fontWeight: '600', color: Colors.red, marginBottom: px(12)}}>
-                            {data?.part1?.card?.desc}
-                        </Text>
-                        <Text style={{fontSize: px(12), color: Colors.lightBlackColor}}>
+                        <Text style={styles.card_desc}>{data?.part1?.card?.desc}</Text>
+                        <Text style={{fontSize: px(12), lineHeight: px(17), color: Colors.lightBlackColor}}>
                             {data?.part1?.card?.slogan}
                         </Text>
                         <Button
@@ -74,8 +81,8 @@ const InsuranceList = (props) => {
                                 jump(data?.part1?.card?.button?.url);
                             }}
                         />
-                    </View>
-                    <Text style={styles.large_title}>{data?.part2?.group_name}</Text>
+                    </ImageBackground>
+                    <Text style={[styles.large_title, {marginTop: px(-18)}]}>{data?.part2?.group_name}</Text>
                     {data?.part2?.products?.map((item, index) => (
                         <InsuranceCard data={item} key={index} style={{marginBottom: px(13)}} />
                     ))}
@@ -83,7 +90,7 @@ const InsuranceList = (props) => {
                         <Text style={[styles.large_title, {marginTop: px(8)}]}>{data?.part3?.group_name}</Text>
                     ) : null}
                     {data?.part3?.list?.map((item, index) => {
-                        return RenderCate(item);
+                        return RenderCate(item, null, 'article');
                     })}
                     <Text style={styles.bottom_text}>温馨提示：</Text>
                     <Text style={styles.bottom_text}>
@@ -96,7 +103,7 @@ const InsuranceList = (props) => {
                                     jump(item?.url);
                                 }}>
                                 {item.name}
-                                {index == data?.agreements.length - 1 ? '' : '、'}
+                                {index == data?.agreements?.length - 1 ? '' : '、'}
                             </Text>
                         ))}
                         等重要内容，请您重点关注产品保险责任、免责条款、犹豫期、等待期、退保等关键信息并确保已完全理解。
@@ -156,12 +163,19 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
     },
     card: {
-        backgroundColor: '#fff',
-        borderRadius: px(8),
-        paddingVertical: px(24),
-        marginBottom: px(20),
+        width: px(343),
+        height: px(221),
+        paddingTop: px(22),
+        alignItems: 'center',
     },
-    button: {width: px(240), height: px(40), backgroundColor: '#FF7D41', borderRadius: px(20), marginTop: px(16)},
+    card_desc: {
+        fontSize: px(22),
+        lineHeight: px(28),
+        fontWeight: '600',
+        color: Colors.red,
+        marginBottom: px(5),
+    },
+    button: {width: px(240), height: px(40), backgroundColor: '#FF7D41', borderRadius: px(20), marginTop: px(14)},
     large_title: {
         fontWeight: '700',
         fontSize: px(17),
