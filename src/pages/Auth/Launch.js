@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-13 11:43:27
+ * @LastEditTime: 2021-09-14 18:53:28
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -14,7 +14,7 @@ import http from '../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
+import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
@@ -24,6 +24,10 @@ import {Modal} from '../../components/Modal';
 import RNExitApp from 'react-native-exit-app';
 import {Colors} from '../../common/commonStyle';
 import {useFocusEffect} from '@react-navigation/native';
+import JPush from 'jpush-react-native';
+import {getAppMetaData} from 'react-native-get-channel';
+import * as WeChat from 'react-native-wechat-lib';
+import {updateVision} from '../../redux/actions/visionData';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online1', 'online2'];
@@ -92,6 +96,77 @@ export default function Launch({navigation}) {
             cancelText: '不同意',
         });
     };
+    const initJpush = () => {
+        JPush.init();
+        //连接状态
+        JPush.addConnectEventListener((result) => {
+            console.log('connectListener:' + JSON.stringify(result));
+        });
+        JPush.setBadge({badge: 0, appbadge: '123'});
+        JPush.getRegistrationID((result) => {
+            console.log('registerID:' + JSON.stringify(result));
+        });
+        //通知回调
+        JPush.addNotificationListener((result) => {
+            // alert(JSON.stringify(result));
+            if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                global.LogTool('pushNStart', result.extras.route);
+                if (result.extras.route?.indexOf('CreateAccount') > -1) {
+                    //push开户打点
+                    global.LogTool('PushOpenAccountRecall');
+                }
+                if (result.extras.route?.indexOf('Evalution') > -1) {
+                    global.LogTool('PushOpenEnvolutionRecall');
+                }
+                dispatch(updateUserInfo({pushRoute: result.extras.route}));
+            }
+        });
+        //本地通知回调
+        JPush.addLocalNotificationListener((result) => {
+            console.log('localNotificationListener:' + JSON.stringify(result));
+        });
+        //自定义消息回调
+        JPush.addCustomMessagegListener((result) => {
+            console.log('customMessageListener:' + JSON.stringify(result));
+        });
+    };
+    const postHeartData = (registerID, channel) => {
+        http.post('/common/device/heart_beat/20210101', {
+            channel: channel,
+            jpush_rid: registerID,
+            platform: Platform.OS,
+        }).then((res) => {
+            if (res.code == '000000') {
+                dispatch(
+                    updateVision({
+                        visionUpdate: global.currentRoutePageId?.indexOf('Vision') > -1 ? '' : res.result.vision_update,
+                        visionTabUpdate: res.result.vision_update,
+                        album_update: res.result.album_update,
+                    })
+                );
+            }
+        });
+    };
+    // heartbeat
+    const heartBeat = React.useCallback(() => {
+        JPush.getRegistrationID((result) => {
+            if (Platform.OS == 'android') {
+                getAppMetaData('UMENG_CHANNEL')
+                    .then((data) => {
+                        postHeartData(result.registerID, data);
+                        global.channel = data;
+                    })
+                    .catch(() => {
+                        global.channel = '';
+                        postHeartData(result.registerID, 'android');
+                        console.log('获取渠道失败');
+                    });
+            } else {
+                global.channel = 'ios';
+                postHeartData(result.registerID, 'ios');
+            }
+        });
+    }, []);
     useFocusEffect(
         useCallback(() => {
             global.env = env;
@@ -106,6 +181,13 @@ export default function Launch({navigation}) {
         }, [])
     );
     const init = () => {
+        heartBeat();
+        setInterval(() => {
+            heartBeat();
+        }, 60000);
+        initJpush();
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
+
         //显示引导页的时候不展示广告
         Storage.get('AppGuide').then((AppGuide) => {
             if (AppGuide) {
