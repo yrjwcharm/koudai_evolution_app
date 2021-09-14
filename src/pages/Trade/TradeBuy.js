@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-06 10:07:04
+ * @LastEditTime: 2021-09-13 19:04:54
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -824,18 +824,18 @@ class TradeBuy extends Component {
                     、
                     <Text
                         onPress={() => {
-                            this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
+                            this.jumpPage('Agreement', {id: this.state.data?.agreement[0]?.id});
                         }}
                         style={{color: Colors.btnColor}}>
-                        风险揭示书
+                        {this.state.data?.agreement[0]?.name}
                     </Text>
                     和
                     <Text
                         style={{color: Colors.btnColor}}
                         onPress={() => {
-                            this.jumpPage('TradeAgreements', {fund_codes: planData?.codes, type: this.state.type});
+                            this.jumpPage('Agreement', {id: this.state.data?.agreement[1]?.id});
                         }}>
-                        费用揭示书
+                        {this.state.data?.agreement[1]?.name}
                     </Text>
                     等内容
                 </Text>

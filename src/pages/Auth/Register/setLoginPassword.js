@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-02 16:59:34
+ * @LastEditTime: 2021-09-14 14:58:26
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -38,9 +38,20 @@ class SetLoginPassword extends Component {
     }
     register = () => {
         const {code, password} = this.state;
-        const reg = /(?!\d+$)(?!^[a-zA-Z]+$)(?!^[!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
-        if (!reg.test(password)) {
-            Toast.show('请输入8-20位包含数字、字母或符号的密码');
+        const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
+        if (password.length < 8 || password.length > 20) {
+            Toast.show('密码必须8-20位');
+            return false;
+        } else if (!reg.test(password)) {
+            Toast.show('密码必须包含数字、英文和符号至少两项');
+            return false;
+        }
+        const leftChar = password
+            .replace(/\d/g, '')
+            .replace(/[a-zA-Z]/g, '')
+            .replace(/[_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]/g, '');
+        if (leftChar) {
+            Toast.show('密码含有无效字符');
             return false;
         }
         //找回登录密码
@@ -187,7 +198,7 @@ class SetLoginPassword extends Component {
     };
     onChangePassword = (password) => {
         const {code} = this.state;
-        this.setState({password: password.replace(/ /g, ''), btnClick: !(code.length >= 6 && password.length >= 8)});
+        this.setState({password: password, btnClick: !(code.length >= 6 && password.length >= 8)});
     };
     render() {
         const {code, password, btnClick, verifyText, code_btn_click} = this.state;
@@ -220,7 +231,7 @@ class SetLoginPassword extends Component {
                     title="登录密码"
                     onChangeText={this.onChangePassword}
                     value={password}
-                    placeholder="请输入8-20位包含数字、字母或符号的密码"
+                    placeholder="8-20位，包含数字、英文和符号"
                     maxLength={20}
                     secureTextEntry={true}
                     keyboardType={'ascii-capable'}

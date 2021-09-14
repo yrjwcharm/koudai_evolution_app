@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-08-18 10:30:23
+ * @LastEditTime: 2021-09-14 14:25:44
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -660,77 +660,40 @@ export default function PortfolioAssets(props) {
                     )}
                     {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
-                    {/* <View style={styles.list_card_sty}>
-                        {data?.core_buttons?.map((_item, _index) => {
-                            return (
-                                <TouchableOpacity
-                                    style={{alignItems: 'center'}}
-                                    key={_index + '_item0'}
-                                    onPress={() => jump(_item.url)}>
-                                    <FastImage
-                                        source={{
-                                            uri: _item.icon,
-                                        }}
-                                        resizeMode="contain"
-                                        style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                    />
-                                    <Text style={styles.list_text_sty}>{_item.text}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                    </View> */}
                     <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
-                        {data?.core_buttons?.map((_item, _index) => {
+                        {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {
                             return (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{
                                         alignItems: 'center',
-                                        width: (deviceWidth - px(33)) / 4,
+                                        width: (deviceWidth - px(16) * 2) / 4,
                                         marginBottom: px(26),
                                     }}
                                     key={_index + '_item0'}
                                     onPress={() => {
                                         global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _item.id);
+                                        if (_item.red_point) {
+                                            Http.get('/wechat/report/red_point/20210906');
+                                        }
                                         jump(_item.url);
                                     }}>
-                                    <FastImage
-                                        source={{
-                                            uri: _item.icon,
-                                        }}
-                                        resizeMode="contain"
-                                        style={{width: text(24), height: text(24), marginBottom: text(5)}}
-                                    />
-                                    <Text style={styles.list_text_sty}>{_item.text}</Text>
-                                </TouchableOpacity>
-                            );
-                        })}
-                        {data?.extend_buttons?.map((_e, _index) => {
-                            return (
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    style={{
-                                        alignItems: 'center',
-                                        width: (deviceWidth - px(32)) / 4,
-                                        marginBottom: px(20),
-                                    }}
-                                    key={_index + '_e'}
-                                    onPress={() => {
-                                        global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _e.id);
-                                        jump(_e.url);
-                                    }}>
-                                    <FastImage
-                                        source={{
-                                            uri: _e.icon,
-                                        }}
-                                        resizeMode="contain"
-                                        style={styles.img_sty}
-                                    />
+                                    <View style={{position: 'relative'}}>
+                                        <FastImage
+                                            source={{
+                                                uri: _item.icon,
+                                            }}
+                                            resizeMode="contain"
+                                            style={{width: text(24), height: text(24), marginBottom: text(5)}}
+                                        />
+                                        {_item.red_point ? <View style={styles.redDot} /> : null}
+                                    </View>
                                     <Text
                                         style={[
                                             styles.list_text_sty,
-                                            {color: _index == data?.extend_buttons.length - 1 ? '#BDC2CC' : '#4E556C'},
+                                            {color: _index === arr.length - 1 ? '#BDC2CC' : '#4E556C'},
                                         ]}>
-                                        {_e.text}
+                                        {_item.text}
                                     </Text>
                                 </TouchableOpacity>
                             );
@@ -1040,5 +1003,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: text(-7),
         left: text(36),
+    },
+    redDot: {
+        width: text(8),
+        height: text(8),
+        borderRadius: text(8),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        top: text(-4),
+        right: text(-4),
     },
 });

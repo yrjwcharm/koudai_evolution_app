@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-03 14:18:38
+ * @LastEditTime: 2021-09-14 15:01:28
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -44,12 +44,24 @@ const ResetLoginPwd = ({navigation}) => {
         if (!formCheck(checkData)) {
             return false;
         } else {
-            const reg = /(?!\d+$)(?!^[a-zA-Z]+$)(?!^[!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
-            if (!reg.test(newPwd) || newPwd.length > 20) {
-                Toast.show('请输入8-20位包含数字、字母或符号的新密码');
+            const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]+$).{8,20}/;
+            if (newPwd.length < 8 || newPwd.length > 20) {
+                Toast.show('密码必须8-20位');
                 return false;
-            } else if (newPwd !== confirmPwd) {
-                Toast.show('两次输入的密码不一致');
+            } else if (!reg.test(newPwd)) {
+                Toast.show('密码必须包含数字、英文和符号至少两项');
+                return false;
+            }
+            const leftChar = newPwd
+                .replace(/\d/g, '')
+                .replace(/[a-zA-Z]/g, '')
+                .replace(/[_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]/g, '');
+            if (leftChar) {
+                Toast.show('密码含有无效字符');
+                return false;
+            }
+            if (newPwd !== confirmPwd) {
+                Toast.show('输入的密码不一致');
                 return false;
             } else {
                 btnClick.current = false;
@@ -93,9 +105,9 @@ const ResetLoginPwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'ascii-capable'}
                 maxLength={20}
-                onChangeText={(pwd) => setNewPwd(pwd.replace(/ /g, ''))}
-                placeholder={'请输入8-20位包含数字、字母或符号的新密码'}
-                placeholderTextSize={Font.textH3}
+                onChangeText={(pwd) => setNewPwd(pwd)}
+                placeholder={'8-20位，包含数字、英文和符号'}
+                // placeholderTextSize={Font.textH3}
                 secureTextEntry={true}
                 textContentType={'newPassword'}
                 title={'新密码'}
@@ -105,7 +117,7 @@ const ResetLoginPwd = ({navigation}) => {
                 clearButtonMode={'while-editing'}
                 keyboardType={'ascii-capable'}
                 maxLength={20}
-                onChangeText={(pwd) => setConfirmPwd(pwd.replace(/ /g, ''))}
+                onChangeText={(pwd) => setConfirmPwd(pwd)}
                 placeholder={'请输入相同的新密码'}
                 secureTextEntry={true}
                 textContentType={'newPassword'}

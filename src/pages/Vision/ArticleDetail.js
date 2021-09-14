@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-31 14:52:22
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-14 15:44:33
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -134,7 +134,7 @@ const ArticleDetail = ({navigation, route}) => {
                             http.post('/community/feedback/20210701', {
                                 resource_id: route.params?.article_id,
                                 resource_type: 1,
-                                option: parseInt(pickedIndex) + 1,
+                                option: parseInt(pickedIndex, 10) + 1,
                             }).then((res) => {
                                 Toast.show(res.message);
                                 if (res.code == '000000') {
