@@ -88,10 +88,10 @@ const SERVER_URL = {
     },
     lixiaoguang: {
         HTTP: 'http://kapi-web.lixiaoguang.mofanglicai.com.cn:10080/',
-        WS: 'ws://192.168.88.68:39503',
-        IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
+        WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
+        IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
         H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
-    },
+    }
 };
 const baseURL = SERVER_URL[env];
 export {env, SERVER_URL, baseURL};
