@@ -65,9 +65,9 @@ const SERVER_URL = {
     },
     ll: {
         HTTP: 'http://kapi-web.ll.mofanglicai.com.cn:10080/',
-        WS: 'ws://192.168.88.68:39503',
-        IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
-        H5: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn',
+        WS: 'ws://kapi-im.yitao.mofanglicai.com.cn:39503/',
+        IMApi: 'http://kapi-im.yitao.mofanglicai.com.cn:10080',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
     },
     hjq: {
         HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',
