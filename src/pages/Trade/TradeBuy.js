@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-13 19:04:54
+ * @LastEditTime: 2021-09-15 10:53:17
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -821,22 +821,20 @@ class TradeBuy extends Component {
                         }}>
                         产品概要
                     </Text>
-                    、
-                    <Text
-                        onPress={() => {
-                            this.jumpPage('Agreement', {id: this.state.data?.agreement[0]?.id});
-                        }}
-                        style={{color: Colors.btnColor}}>
-                        {this.state.data?.agreement[0]?.name}
-                    </Text>
-                    和
-                    <Text
-                        style={{color: Colors.btnColor}}
-                        onPress={() => {
-                            this.jumpPage('Agreement', {id: this.state.data?.agreement[1]?.id});
-                        }}>
-                        {this.state.data?.agreement[1]?.name}
-                    </Text>
+                    {this.state.data?.agreement?.map?.((item, index, arr) => {
+                        return (
+                            <Text key={item + index}>
+                                {index === arr.length - 1 ? '和' : '、'}
+                                <Text
+                                    onPress={() => {
+                                        this.jumpPage('Agreement', {id: item?.id});
+                                    }}
+                                    style={{color: Colors.btnColor}}>
+                                    {item?.name}
+                                </Text>
+                            </Text>
+                        );
+                    })}
                     等内容
                 </Text>
 
