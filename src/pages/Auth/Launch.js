@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 18:53:28
+ * @LastEditTime: 2021-09-15 15:13:20
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -18,7 +18,7 @@ import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
-import {env} from '../../services/config';
+import {env, baseURL} from '../../services/config';
 import FastImage from 'react-native-fast-image';
 import {Modal} from '../../components/Modal';
 import RNExitApp from 'react-native-exit-app';
@@ -65,8 +65,9 @@ export default function Launch({navigation}) {
                                 <Text
                                     style={{color: Colors.btnColor}}
                                     onPress={() => {
-                                        jump({
-                                            path: 'LcmfPolicy',
+                                        navigation.navigate('WebView', {
+                                            link: `${baseURL.H5}/privacy`,
+                                            title: '理财魔方隐私权协议',
                                         });
                                         Modal.close();
                                     }}>

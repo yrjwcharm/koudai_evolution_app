@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-27 11:42:18
+ * @LastEditTime: 2021-09-15 15:05:29
  * @Description:路由表
  */
 import React from 'react';
@@ -136,7 +136,6 @@ import ScoreDetail from '../pages/Assets/ScoreDetail'; // 魔分明细
 import LCMF from '../pages/Common/LCMF'; // 关于理财魔方
 import WebView from '../pages/Common/WebView'; //webview
 import DetailInsurance from '../pages/Portfolio/Detail/DetailInsurance'; //保险落地页
-import LcmfPolicy from '../pages/Common/LcmfPolicy'; //隐私政策
 import PerformanceAnalysis from '../pages/Portfolio/PerformanceAnalysis'; //业绩基准
 import VisionCollect from '../pages/Vision/VisionCollect'; //文章收藏
 import AlbumList from '../pages/Vision/AlbumList'; //音频专辑列表
@@ -555,7 +554,6 @@ export default function AppStack() {
             <Stack.Screen name="LCMF" component={LCMF} options={{title: ''}} />
             <Stack.Screen name="WebView" component={WebView} options={{headerShown: false}} />
             <Stack.Screen name="DetailInsurance" component={DetailInsurance} options={{title: '魔方保障计划'}} />
-            <Stack.Screen name="LcmfPolicy" component={LcmfPolicy} options={{title: '理财魔方隐私政策'}} />
             <Stack.Screen name="PerformanceAnalysis" component={PerformanceAnalysis} options={{title: '业绩解析'}} />
             <Stack.Screen name="VisionCollect" component={VisionCollect} options={{headerShown: false}} />
             <Stack.Screen name="AlbumList" component={AlbumList} options={{title: ''}} />
