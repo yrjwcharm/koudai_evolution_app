@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-04-07 15:55:14
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-15 16:24:47
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -13,11 +13,17 @@ import {px} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Image from 'react-native-fast-image';
 import {Colors, Space} from '../common/commonStyle';
+import {baseURL} from '../services/config';
 function Agreements(props) {
     const navigation = useNavigation();
     const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
     const jumpPage = (item) => {
-        navigation.navigate('Agreement', {id: item.id});
+        if (item.id == 32) {
+            //隐私权协议
+            navigation.navigate('WebView', {link: `${baseURL.H5}/privacy`, title: '理财魔方隐私权协议'});
+        } else {
+            navigation.navigate('Agreement', {id: item.id});
+        }
     };
     const [checked, setChecked] = useState(check);
     const toggle = () => {
