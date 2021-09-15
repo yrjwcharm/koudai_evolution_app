@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 21:00:07
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-15 10:31:12
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -38,24 +38,22 @@ class Login extends Component {
                 this.props.getUserInfo();
                 this.props.getVerifyGesture(true);
                 Toast.show('登录成功', {
-                    onHidden: () => {
+                    onHidden: async () => {
                         if (this.props.route.params?.go == 'forgotGesPwd') {
-                            Storage.get('openGesturePwd').then((result) => {
-                                if (res) {
-                                    res[`${userInfo.uid}`] = false;
-                                    Storage.save('openGesturePwd', res);
-                                } else {
-                                    Storage.save('openGesturePwd', {[`${userInfo.uid}`]: false});
-                                }
-                            });
-                            Storage.get('gesturePwd').then((result) => {
-                                if (result) {
-                                    result[`${userInfo.uid}`] = '';
-                                    Storage.save('gesturePwd', result);
-                                } else {
-                                    Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
-                                }
-                            });
+                            let result = await Storage.get('openGesturePwd');
+                            if (result) {
+                                result[`${userInfo.uid}`] = false;
+                                await Storage.save('openGesturePwd', result);
+                            } else {
+                                await Storage.save('openGesturePwd', {[`${userInfo.uid}`]: false});
+                            }
+                            result = await Storage.get('gesturePwd');
+                            if (result) {
+                                result[`${userInfo.uid}`] = '';
+                                await Storage.save('gesturePwd', result);
+                            } else {
+                                await Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
+                            }
                             this.props.navigation.replace('GesturePassword', {
                                 option: 'firstSet',
                                 pass: true,

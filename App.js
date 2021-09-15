@@ -104,6 +104,7 @@ function App(props) {
     }, [props.navigation]);
     React.useEffect(() => {
         http.get('/mapi/app/config/20210101').then((result) => {
+            store.dispatch(updateUserInfo(result.result));
             //版本更新显示小红点逻辑
             if (global.ver < result?.result?.latest_version) {
                 Storage.keys().then((_res) => {
@@ -126,7 +127,6 @@ function App(props) {
                     }
                 });
             }
-            dispatch(updateUserInfo(res.result));
         });
         CodePush.checkForUpdate(key)
             .then((update) => {
