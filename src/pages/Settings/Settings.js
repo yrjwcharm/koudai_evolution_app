@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:54:44
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-15 09:29:13
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -38,7 +38,10 @@ const Settings = ({navigation}) => {
             //     jump({
             //         type: 1,
             //         path: 'WebView',
-            //         params: {link: 'http://192.168.88.117:3000/portfolioBabyDetail/15', title: '百万宝贝计划'},
+            //         params: {
+            //             link: 'http://koudai-evolution-h5.bae.mofanglicai.com.cn:10080/portfolioBabyDetail/15',
+            //             title: '百万宝贝计划',
+            //         },
             //     });
             //     return false;
             // }
