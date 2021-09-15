@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 15:49:34
+ * @LastEditTime: 2021-09-15 15:41:14
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -152,7 +152,7 @@ const AuthorityManage = ({navigation}) => {
                     style={{color: Colors.btnColor}}
                     onPress={() => {
                         navigation.navigate('WebView', {
-                            link: `${baseURL.H5}/agreement/32#album`,
+                            link: `${baseURL.H5}/privacy#album`,
                             title: '理财魔方隐私权协议',
                         });
                     }}>
@@ -178,7 +178,7 @@ const AuthorityManage = ({navigation}) => {
                 style={styles.text}
                 onPress={() => {
                     navigation.navigate('WebView', {
-                        link: `${baseURL.H5}/agreement/32#camera`,
+                        link: `${baseURL.H5}/privacy#camera`,
                         title: '理财魔方隐私权协议',
                     });
                 }}>
