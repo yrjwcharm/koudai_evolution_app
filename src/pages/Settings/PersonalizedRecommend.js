@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:20:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-13 14:20:34
+ * @LastEditTime: 2021-09-16 11:34:59
  * @Description:个性化推荐
  */
 import React, {useState, useEffect} from 'react';
@@ -36,7 +36,7 @@ const PersonalizedRecommend = () => {
                     value={open}
                 />
             </View>
-            <Text style={styles.text}>您收到的内容跟您个人相关性比较弱</Text>
+            <Text style={styles.text}>{open ? '您将收到个性化内容推送' : '您收到的内容跟您个人相关性比较弱'}</Text>
         </>
     );
 };

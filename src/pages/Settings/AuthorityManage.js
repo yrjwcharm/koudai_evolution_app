@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-15 15:41:14
+ * @LastEditTime: 2021-09-16 11:38:46
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -139,8 +139,7 @@ const AuthorityManage = ({navigation}) => {
                 }}>
                 <Text style={[styles.title, {color: Colors.defaultColor}]}>允许访问相册</Text>
                 <View style={Style.flexRow}>
-                    <Text
-                        style={[styles.title, {color: notifications ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
+                    <Text style={[styles.title, {color: read ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
                         {read ? '已开启' : '去设置'}
                     </Text>
                     <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
@@ -167,8 +166,7 @@ const AuthorityManage = ({navigation}) => {
                 }}>
                 <Text style={[styles.title, {color: Colors.defaultColor}]}>允许访问摄像头</Text>
                 <View style={Style.flexRow}>
-                    <Text
-                        style={[styles.title, {color: notifications ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
+                    <Text style={[styles.title, {color: camera ? Colors.lightGrayColor : Colors.lightBlackColor}]}>
                         {camera ? '已开启' : '去设置'}
                     </Text>
                     <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
