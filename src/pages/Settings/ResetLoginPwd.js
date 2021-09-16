@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-14 15:01:28
+ * @LastEditTime: 2021-09-16 17:33:32
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -44,6 +44,10 @@ const ResetLoginPwd = ({navigation}) => {
         if (!formCheck(checkData)) {
             return false;
         } else {
+            if (oldPwd.length < 6) {
+                Toast.show('旧密码错误');
+                return false;
+            }
             const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]+$).{8,20}/;
             if (newPwd.length < 8 || newPwd.length > 20) {
                 Toast.show('密码必须8-20位');

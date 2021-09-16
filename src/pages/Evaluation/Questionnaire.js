@@ -2,7 +2,7 @@
  * @Date: 2021-06-30 10:11:07
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-07-07 17:12:14
+ * @LastEditTime: 2021-09-16 14:38:42
  * @Description: 传统风险测评
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -202,15 +202,16 @@ const Questionnaire = () => {
                                     );
                                 })}
                             {current !== 0 && (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={{marginTop: text(24)}}
-                                    onPress={() => {
-                                        setCurrent((prev) => prev - 1);
-                                        startTimeRef.current = Date.now();
-                                    }}>
-                                    <Text style={styles.preBtn}>{'上一题'}</Text>
-                                </TouchableOpacity>
+                                <View style={{marginTop: text(24)}}>
+                                    <Text
+                                        style={styles.preBtn}
+                                        onPress={() => {
+                                            setCurrent((prev) => prev - 1);
+                                            startTimeRef.current = Date.now();
+                                        }}>
+                                        {'上一题'}
+                                    </Text>
+                                </View>
                             )}
                         </View>
                     </View>
