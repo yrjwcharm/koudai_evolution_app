@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-09-14 14:25:44
+ * @LastEditTime: 2021-09-15 19:42:38
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -50,7 +50,7 @@ export default function PortfolioAssets(props) {
     const [left, setLeft] = useState('0%');
     const [onRight, setOnRight] = useState(false);
     const [widthD, setWidthD] = useState('0%');
-    const [period, setPeriod] = useState('y1');
+    const [period, setPeriod] = useState('');
     const [tip, setTip] = useState({});
     const [tag, setTag] = useState();
     const _textTime = useRef(null);
@@ -153,7 +153,9 @@ export default function PortfolioAssets(props) {
         }, [init])
     );
     useEffect(() => {
-        getChartInfo();
+        if (period) {
+            getChartInfo();
+        }
     }, [period]);
     useEffect(() => {
         if (!loading && chartData && chartData.length > 0) {
