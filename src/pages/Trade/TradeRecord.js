@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 19:10:09
+ * @LastEditTime: 2021-09-16 18:48:48
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -82,11 +82,15 @@ const TradeRecord = ({route, navigation}) => {
             return;
         }
         if (hasMore) {
-            setPage(page + 1);
+            setPage((prev) => {
+                return prev + 1;
+            });
         }
     };
     const onRefresh = () => {
         getData(1, 'toast');
+        setPage(1);
+        // setPage(1);
     };
     const changeTab = (obj) => {
         setData([]);

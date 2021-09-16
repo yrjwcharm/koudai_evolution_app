@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-02 14:24:17
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-14 17:39:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-16 17:50:53
  * @Description:关于理财魔方
  */
 import React, {useCallback, useState} from 'react';
@@ -19,7 +19,7 @@ import Storage from '../../utils/storage';
 import http from '../../services';
 import Toast from '../../components/Toast';
 
-const AboutApp = () => {
+const AboutApp = ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const userInfo = useSelector((store) => store.userInfo);
@@ -94,15 +94,22 @@ const AboutApp = () => {
                     return (
                         <Text
                             key={item.id}
-                            onPress={() =>
-                                jump({
-                                    path: 'Agreement',
-                                    type: 1,
-                                    params: {
-                                        id: item.id,
-                                    },
-                                })
-                            }>
+                            onPress={() => {
+                                if (index == 1) {
+                                    navigation.navigate('WebView', {
+                                        link: `${baseURL.H5}/privacy`,
+                                        title: '理财魔方隐私权协议',
+                                    });
+                                } else {
+                                    jump({
+                                        path: 'Agreement',
+                                        type: 1,
+                                        params: {
+                                            id: item.id,
+                                        },
+                                    });
+                                }
+                            }}>
                             {index !== 0 ? '\n' : ''}
                             {item.name}
                         </Text>
