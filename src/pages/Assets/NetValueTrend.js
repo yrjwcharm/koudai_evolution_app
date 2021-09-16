@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-13 11:20:02
+ * @LastEditTime: 2021-09-16 18:09:18
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -18,6 +18,7 @@ import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
 import {BottomModal} from '../../components/Modal';
+import {throttle} from 'lodash';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
@@ -29,19 +30,13 @@ const NetValueTrend = ({poid}) => {
     const textThisFund = useRef(null);
     const textBenchmark = useRef(null);
     const [showEmpty, setShowEmpty] = useState(false);
-    const tabClick = useRef(true);
     const [tip, setTip] = useState({});
     const bottomModal = useRef(null);
 
     const init = useCallback(() => {
-        if (!tabClick.current) {
-            return false;
-        }
-        tabClick.current = false;
         setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid}).then((res) => {
             setShowEmpty(true);
-            tabClick.current = true;
             if (res.code === '000000') {
                 setRefreshing(false);
                 setChart(res.result);
@@ -117,50 +112,56 @@ const NetValueTrend = ({poid}) => {
             {chartData.chart ? (
                 <>
                     <View style={styles.netValueChart}>
-                        <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
-                            {chartData?.label?.map((item, index) => {
-                                return (
-                                    <View key={item.val + index} style={styles.legendItem}>
-                                        <TextInput
-                                            defaultValue={`${item.val}`}
-                                            editable={false}
-                                            ref={index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark}
-                                            style={[
-                                                styles.legendTitle,
-                                                index !== 0 ? {color: getColor(`${item.val}`)} : {},
-                                            ]}
-                                        />
-                                        <View style={Style.flexRow}>
-                                            {index !== 0 && (
-                                                <Dot
-                                                    bgColor={
-                                                        index === 1
-                                                            ? 'rgba(231, 73, 73, 0.15)'
-                                                            : 'rgba(84, 89, 104, 0.15)'
-                                                    }
-                                                    color={index === 1 ? Colors.red : Colors.descColor}
-                                                />
-                                            )}
-                                            <Text style={[styles.legendDesc, index !== 0 ? {marginLeft: text(4)} : {}]}>
-                                                {item.name}
-                                            </Text>
-                                            {chartData?.tips && index === 2 && (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    style={{position: 'absolute', right: text(-16)}}
-                                                    onPress={() => showTips(chartData.tips)}>
-                                                    <FastImage
-                                                        style={{width: text(12), height: text(12)}}
-                                                        source={require('../../assets/img/tip.png')}
+                        <View style={{minHeight: 270}}>
+                            <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
+                                {chartData?.label?.map((item, index) => {
+                                    return (
+                                        <View key={item.val + index} style={styles.legendItem}>
+                                            <TextInput
+                                                defaultValue={`${item.val}`}
+                                                editable={false}
+                                                ref={
+                                                    index === 0 ? textTime : index === 1 ? textThisFund : textBenchmark
+                                                }
+                                                style={[
+                                                    styles.legendTitle,
+                                                    index !== 0 ? {color: getColor(`${item.val}`)} : {},
+                                                ]}
+                                            />
+                                            <View style={Style.flexRow}>
+                                                {index !== 0 && (
+                                                    <Dot
+                                                        bgColor={
+                                                            index === 1
+                                                                ? 'rgba(231, 73, 73, 0.15)'
+                                                                : 'rgba(84, 89, 104, 0.15)'
+                                                        }
+                                                        color={index === 1 ? Colors.red : Colors.descColor}
                                                     />
-                                                </TouchableOpacity>
-                                            )}
+                                                )}
+                                                <Text
+                                                    style={[
+                                                        styles.legendDesc,
+                                                        index !== 0 ? {marginLeft: text(4)} : {},
+                                                    ]}>
+                                                    {item.name}
+                                                </Text>
+                                                {chartData?.tips && index === 2 && (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        style={{position: 'absolute', right: text(-16)}}
+                                                        onPress={() => showTips(chartData.tips)}>
+                                                        <FastImage
+                                                            style={{width: text(12), height: text(12)}}
+                                                            source={require('../../assets/img/tip.png')}
+                                                        />
+                                                    </TouchableOpacity>
+                                                )}
+                                            </View>
                                         </View>
-                                    </View>
-                                );
-                            })}
-                        </View>
-                        <View style={{height: 220}}>
+                                    );
+                                })}
+                            </View>
                             {chart_data.length > 0 ? (
                                 <Chart
                                     initScript={baseAreaChart(
@@ -191,10 +192,10 @@ const NetValueTrend = ({poid}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         key={item.val + index}
-                                        onPress={() => {
+                                        onPress={throttle(() => {
                                             global.LogTool('click', item.val);
                                             setPeriod(item.val);
-                                        }}
+                                        }, 300)}
                                         style={[
                                             Style.flexCenter,
                                             styles.subtab,

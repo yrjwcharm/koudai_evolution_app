@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-09-15 19:42:38
+ * @LastEditTime: 2021-09-16 18:26:07
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -38,6 +38,7 @@ import CircleLegend from '../../components/CircleLegend';
 import FastImage from 'react-native-fast-image';
 import EmptyTip from '../../components/EmptyTip';
 import GuideTips from '../../components/GuideTips';
+import {throttle} from 'lodash';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -61,20 +62,11 @@ export default function PortfolioAssets(props) {
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
-    const tabClick = useRef(true);
 
-    const changeTab = (p) => {
-        if (!tabClick.current) {
-            return false;
-        }
-        setPeriod((prev) => {
-            if (prev !== p) {
-                tabClick.current = false;
-                global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
-            }
-            return p;
-        });
-    };
+    const changeTab = throttle((p) => {
+        global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
+        setPeriod(p);
+    }, 300);
     const init = useCallback(() => {
         Http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
@@ -120,10 +112,9 @@ export default function PortfolioAssets(props) {
             period: period,
         }).then((res) => {
             setTag(res.result.tag_position);
-            setChartData(res.result.chart);
             setShowEmpty(res.result.chart?.length === 0);
             setChart(res.result);
-            tabClick.current = true;
+            setChartData(res.result.chart);
         });
     };
     const renderLoading = () => {
@@ -418,7 +409,7 @@ export default function PortfolioAssets(props) {
                         {chartData.length > 0 ? (
                             <Chart
                                 initScript={baseAreaChart(
-                                    chart?.chart,
+                                    chartData,
                                     [Colors.red, Colors.lightBlackColor, 'transparent'],
                                     ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
                                     true,

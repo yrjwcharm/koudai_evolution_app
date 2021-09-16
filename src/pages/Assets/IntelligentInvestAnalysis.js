@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 17:42:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-16 18:11:01
  * @Description: 智能组合投资分析
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -18,6 +18,7 @@ import Dot from '../Portfolio/components/Dot';
 import {baseAreaChart, dodgeColumn} from '../Portfolio/components/ChartOption';
 import EmptyTip from '../../components/EmptyTip';
 import {BottomModal} from '../../components/Modal';
+import {throttle} from 'lodash';
 
 const IntelligentInvestAnalysis = ({navigation, route}) => {
     const [period, setPeriod] = useState('y1');
@@ -31,19 +32,13 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
     const textTime2 = useRef(null);
     const textThisFund2 = useRef(null);
     const [showEmpty2, setShowEmpty2] = useState(false);
-    const tabClick = useRef(true);
     const [tip, setTip] = useState({});
     const bottomModal = useRef(null);
 
     const init = () => {
-        if (!tabClick.current) {
-            return false;
-        }
-        tabClick.current = false;
         setChart_data([]);
         http.get('/profit/portfolio_nav/20210101', {period, poid: route.params?.poid}).then((res) => {
             setShowEmpty(true);
-            tabClick.current = true;
             if (res.code === '000000') {
                 setChart(res.result);
                 setChart_data(res.result.chart);
@@ -228,10 +223,10 @@ const IntelligentInvestAnalysis = ({navigation, route}) => {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         key={item.val + index}
-                                        onPress={() => {
+                                        onPress={throttle(() => {
                                             global.LogTool('click', item.val);
                                             setPeriod(item.val);
-                                        }}
+                                        }, 300)}
                                         style={[
                                             Style.flexCenter,
                                             styles.subtab,
