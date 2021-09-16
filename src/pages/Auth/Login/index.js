@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-15 18:38:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-16 15:56:22
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -81,11 +81,11 @@ class Login extends Component {
     onChangeMobile = (mobile) => {
         const {password} = this.state;
         let _mobile = inputInt(mobile);
-        this.setState({mobile: _mobile, btnClick: !(_mobile.length >= 11 && password.length >= 6)});
+        this.setState({mobile: _mobile, btnClick: !(_mobile?.length >= 11 && password?.length >= 6)});
     };
     onChangePassword = (password) => {
         const {mobile} = this.state;
-        this.setState({password, btnClick: !(mobile.length >= 11 && password.length >= 6)});
+        this.setState({password, btnClick: !(mobile?.length >= 11 && password?.length >= 6)});
     };
     weChatLogin = () => {};
     render() {
