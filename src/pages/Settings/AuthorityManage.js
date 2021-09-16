@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 11:38:46
+ * @LastEditTime: 2021-09-16 14:45:07
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -71,7 +71,7 @@ const AuthorityManage = ({navigation}) => {
                     requestAuth(
                         PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
                         () => {
-                            setCamera(true);
+                            setRead(true);
                         },
                         () => {
                             openSettings().catch(() => console.warn('cannot open settings'));
