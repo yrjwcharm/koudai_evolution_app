@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-14 17:19:29
+ * @LastEditTime: 2021-09-16 11:51:01
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -136,7 +136,8 @@ export default function WebView({route, navigation}) {
                         }
                     }}
                     javaScriptEnabled={true}
-                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
+                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');window.localStorage.removeItem('loginStatus');window.localStorage.setItem('loginStatus', ${(async () =>
+                        JSON.stringify(await Storage.get('loginStatus')))()})`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async () => {
                         const loginStatus = await Storage.get('loginStatus');

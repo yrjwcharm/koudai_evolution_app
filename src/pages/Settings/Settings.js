@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-15 09:29:13
+ * @LastEditTime: 2021-09-15 18:38:26
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -64,9 +64,9 @@ const Settings = ({navigation}) => {
                     content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
                     confirm: true,
                     confirmCallBack: () => {
-                        Http.post('/auth/user/logout/20210101').then((res) => {
+                        Http.post('/auth/user/logout/20210101').then(async (res) => {
                             if (res.code === '000000') {
-                                Storage.delete('loginStatus');
+                                await Storage.delete('loginStatus');
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
                                 dispatch(

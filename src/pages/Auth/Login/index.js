@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-15 10:31:12
+ * @LastEditTime: 2021-09-15 18:38:49
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -32,11 +32,12 @@ class Login extends Component {
         const {mobile, password} = this.state;
         const userInfo = this.props.userInfo?.toJS();
         let toast = Toast.showLoading('正在登录...');
-        http.post('/auth/user/login/20210101', {mobile, password}).then((res) => {
+        http.post('/auth/user/login/20210101', {mobile, password}).then(async (res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.getUserInfo();
                 this.props.getVerifyGesture(true);
+                await Storage.save('loginStatus', res.result);
                 Toast.show('登录成功', {
                     onHidden: async () => {
                         if (this.props.route.params?.go == 'forgotGesPwd') {
@@ -69,7 +70,6 @@ class Login extends Component {
                         }
                     },
                 });
-                Storage.save('loginStatus', res.result);
             } else {
                 Toast.show(res.message);
             }
