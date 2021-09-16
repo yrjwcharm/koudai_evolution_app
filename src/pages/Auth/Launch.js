@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-15 16:21:19
+ * @LastEditTime: 2021-09-16 14:45:48
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -94,7 +94,7 @@ export default function Launch({navigation}) {
             },
             title: '隐私保护说明',
             confirmText: '同意',
-            cancelText: '不同意',
+            cancelText: '拒绝',
         });
     };
     const initJpush = () => {
