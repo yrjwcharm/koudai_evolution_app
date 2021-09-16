@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 19:03:29
+ * @LastEditTime: 2021-09-16 19:22:28
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -34,17 +34,17 @@ const Settings = ({navigation}) => {
     const [showCircle, setShowCircle] = useState(false);
     const onPress = useCallback(
         (item) => {
-            if (item.type === 'about') {
-                jump({
-                    type: 1,
-                    path: 'WebView',
-                    params: {
-                        link: 'http://192.168.88.111:3000/portfolioBabyDetail/15',
-                        title: '百万宝贝计划',
-                    },
-                });
-                return false;
-            }
+            // if (item.type === 'about') {
+            //     jump({
+            //         type: 1,
+            //         path: 'WebView',
+            //         params: {
+            //             link: 'http://192.168.88.111:3000/portfolioBabyDetail/15',
+            //             title: '百万宝贝计划',
+            //         },
+            //     });
+            //     return false;
+            // }
             global.LogTool('click', item.type);
             if (item.type === 'bind_invitor') {
                 setInviteCode('');

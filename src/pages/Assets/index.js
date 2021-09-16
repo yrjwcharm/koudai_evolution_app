@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:34:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-16 19:31:35
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -72,6 +72,7 @@ function HomeScreen({navigation, route}) {
     const showGesture = useShowGesture();
     const [loading, setLoading] = useState(true);
     const [choice, setChoice] = useState('');
+    const [notChoose, setNotChoose] = useState('');
     const [isVisible, setIsVisible] = useState(false);
     const [modalData, setModalData] = useState({});
     const [showCircle, setShowCircle] = useState(false);
@@ -429,7 +430,10 @@ function HomeScreen({navigation, route}) {
                                             <TouchableOpacity
                                                 activeOpacity={0.8}
                                                 key={item.key}
-                                                onPress={() => setChoice(item.key)}
+                                                onPress={() => {
+                                                    setChoice(item.key);
+                                                    setNotChoose('');
+                                                }}
                                                 style={[
                                                     Style.flexCenter,
                                                     styles.option,
@@ -447,6 +451,9 @@ function HomeScreen({navigation, route}) {
                                             </TouchableOpacity>
                                         );
                                     })}
+                                    {notChoose ? (
+                                        <Text style={{color: Colors.red, paddingVertical: text(8)}}>{notChoose}</Text>
+                                    ) : null}
                                 </View>
                             )}
                             clickClose={false}
@@ -454,13 +461,20 @@ function HomeScreen({navigation, route}) {
                                 if (choice) {
                                     setIsVisible(false);
                                     reportSurvey(choice);
+                                } else {
+                                    setNotChoose('*请选择一个答案，才能提交');
                                 }
                             }}
                             confirmText={'确认'}
                             destroy={() => {
-                                setIsVisible(false);
-                                reportSurvey('');
+                                if (choice) {
+                                    setIsVisible(false);
+                                    reportSurvey(choice);
+                                } else {
+                                    setNotChoose('*请选择一个答案，才能提交');
+                                }
                             }}
+                            isTouchMaskToClose={false}
                             isVisible={isVisible}
                             title={modalData.title}
                         />
