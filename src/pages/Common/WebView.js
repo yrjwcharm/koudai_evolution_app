@@ -2,11 +2,12 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 11:51:01
+ * @LastEditTime: 2021-09-16 16:34:51
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Platform, BackHandler, Linking, ActivityIndicator} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
 import Storage from '../../utils/storage';
@@ -136,13 +137,14 @@ export default function WebView({route, navigation}) {
                         }
                     }}
                     javaScriptEnabled={true}
-                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');window.localStorage.removeItem('loginStatus');window.localStorage.setItem('loginStatus', ${(async () =>
-                        JSON.stringify(await Storage.get('loginStatus')))()})`}
+                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async () => {
                         const loginStatus = await Storage.get('loginStatus');
                         // console.log(loginStatus);
-                        webview.current.postMessage(JSON.stringify(loginStatus));
+                        webview.current.postMessage(
+                            JSON.stringify({...loginStatus, did: DeviceInfo.getUniqueId(), ver: global.ver})
+                        );
                     }}
                     onNavigationStateChange={onNavigationStateChange}
                     // showsVerticalScrollIndicator={false}
