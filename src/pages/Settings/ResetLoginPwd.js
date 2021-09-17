@@ -2,7 +2,7 @@
  * @Date: 2021-02-18 14:54:52
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 17:33:32
+ * @LastEditTime: 2021-09-17 15:05:47
  * @Description: 重设登录密码
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -65,7 +65,7 @@ const ResetLoginPwd = ({navigation}) => {
                 return false;
             }
             if (newPwd !== confirmPwd) {
-                Toast.show('输入的密码不一致');
+                Toast.show('输入的新密码不一致');
                 return false;
             } else {
                 btnClick.current = false;
@@ -110,7 +110,7 @@ const ResetLoginPwd = ({navigation}) => {
                 keyboardType={'ascii-capable'}
                 maxLength={20}
                 onChangeText={(pwd) => setNewPwd(pwd)}
-                placeholder={'8-20位，包含数字、英文和符号'}
+                placeholder={'8-20位数字、英文或符号'}
                 // placeholderTextSize={Font.textH3}
                 secureTextEntry={true}
                 textContentType={'newPassword'}

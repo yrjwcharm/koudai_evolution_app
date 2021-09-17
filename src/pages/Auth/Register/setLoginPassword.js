@@ -231,7 +231,7 @@ class SetLoginPassword extends Component {
                     title="登录密码"
                     onChangeText={this.onChangePassword}
                     value={password}
-                    placeholder="8-20位，包含数字、英文和符号"
+                    placeholder="8-20位数字、英文或符号"
                     maxLength={20}
                     secureTextEntry={true}
                     keyboardType={'ascii-capable'}
