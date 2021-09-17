@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 16:34:51
+ * @LastEditTime: 2021-09-17 11:16:12
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -22,6 +22,7 @@ export default function WebView({route, navigation}) {
     const [title, setTitle] = useState('');
     const [token, setToken] = useState('');
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
+    const timeStamp = useRef(Date.now());
     useEffect(() => {
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
@@ -59,7 +60,8 @@ export default function WebView({route, navigation}) {
 
     useFocusEffect(
         useCallback(() => {
-            webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+            webview.current && webview.current.reload();
+            // webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
         }, [])
     );
 
@@ -137,13 +139,18 @@ export default function WebView({route, navigation}) {
                         }
                     }}
                     javaScriptEnabled={true}
-                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
+                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');window.localStorage.removeItem('loginStatus');`}
                     // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async () => {
                         const loginStatus = await Storage.get('loginStatus');
                         // console.log(loginStatus);
                         webview.current.postMessage(
-                            JSON.stringify({...loginStatus, did: DeviceInfo.getUniqueId(), ver: global.ver})
+                            JSON.stringify({
+                                ...loginStatus,
+                                did: DeviceInfo.getUniqueId(),
+                                timeStamp: timeStamp.current + '',
+                                ver: global.ver,
+                            })
                         );
                     }}
                     onNavigationStateChange={onNavigationStateChange}
@@ -151,7 +158,7 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        uri: route?.params?.link,
+                        uri: `${route?.params?.link}?timeStamp=${timeStamp.current}`,
                     }}
                 />
             ) : (
