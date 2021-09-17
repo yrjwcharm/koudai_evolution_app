@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-17 11:16:12
+ * @LastEditTime: 2021-09-17 20:09:55
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -60,8 +60,8 @@ export default function WebView({route, navigation}) {
 
     useFocusEffect(
         useCallback(() => {
-            webview.current && webview.current.reload();
-            // webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+            // webview.current && webview.current.reload();
+            webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
         }, [])
     );
 
