@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 19:27:29
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-18 10:46:22
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -40,6 +40,7 @@ import {SERVER_URL} from '../../services/config';
 import * as Animatable from 'react-native-animatable';
 import Toast from '../../components/Toast';
 import SyanImagePicker from 'react-native-syan-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 const interval = 5 * 60 * 1000; //时间显示 隔5分钟显示
 const _timeout = 4000; //检测消息是否发送成功
 const maxConnectTime = 20 * 60 * 1000; //最大连接时间
@@ -507,16 +508,17 @@ const IM = (props) => {
     //打开相册
     const openPicker = () => {
         setTimeout(() => {
-            SyanImagePicker.showImagePicker(
-                {
-                    imageCount: 6, // 最大选择图片数目，默认6
-                },
-                (err, selectedPhotos) => {
-                    if (err) {
-                        // 取消选择
-                        return;
-                    } else {
-                        console.log(selectedPhotos);
+            if (Platform.OS === 'android') {
+                launchImageLibrary({selectionLimit: 0}, (resp) => {
+                    if (resp.didCancel) {
+                        console.log('User cancelled image picker');
+                    } else if (resp.error) {
+                        console.log('ImagePicker Error: ', resp.error);
+                    } else if (resp.customButton) {
+                        console.log('User tapped custom button: ', resp.customButton);
+                    } else if (resp.assets) {
+                        // console.log(resp.assets);
+                        const selectedPhotos = resp.assets;
                         selectedPhotos.forEach((response) => {
                             let cmid = randomMsgId('IMR');
                             handleMessage({
@@ -555,8 +557,59 @@ const IM = (props) => {
                             _ChatScreen?.current?.closeAll();
                         });
                     }
-                }
-            );
+                });
+            } else {
+                SyanImagePicker.showImagePicker(
+                    {
+                        imageCount: 6, // 最大选择图片数目，默认6
+                    },
+                    (err, selectedPhotos) => {
+                        if (err) {
+                            // 取消选择
+                            return;
+                        } else {
+                            console.log(selectedPhotos);
+                            selectedPhotos.forEach((response) => {
+                                let cmid = randomMsgId('IMR');
+                                handleMessage({
+                                    cmd: 'IMR',
+                                    cmid,
+                                    data: response.uri,
+                                    from: uid,
+                                    to: 'S',
+                                    sendStatus: connect ? 0 : -1,
+                                    user_info: {
+                                        avatar: userInfo.toJS().avatar,
+                                    },
+                                    time: `${new Date().getTime()}`,
+                                });
+                                upload(
+                                    `${SERVER_URL[global.env].IMApi}/upload/oss`,
+                                    {...response, fileName: `${new Date().getTime()}.jpg`},
+                                    [
+                                        {name: 'file_key', data: cmid},
+                                        {name: 'uid', data: uid},
+                                        {name: 'token', data: token.current},
+                                    ],
+                                    (res) => {
+                                        if (res.code === 20000) {
+                                            wsSend('IMR', res.result.url, null, cmid);
+                                        } else {
+                                            checkStatus(cmid, -1);
+                                        }
+                                    },
+                                    () => {
+                                        checkStatus(cmid, -1);
+                                    }
+                                );
+                            });
+                            setTimeout(() => {
+                                _ChatScreen?.current?.closeAll();
+                            });
+                        }
+                    }
+                );
+            }
         }, 100);
     };
     //点击查看大图
