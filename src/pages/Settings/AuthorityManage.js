@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 14:45:07
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-18 14:41:37
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -152,7 +152,7 @@ const AuthorityManage = ({navigation}) => {
                     onPress={() => {
                         navigation.navigate('WebView', {
                             link: `${baseURL.H5}/privacy#album`,
-                            title: '理财魔方隐私权协议',
+                            title: '理财魔方隐私权政策',
                         });
                     }}>
                     《相册信息》
@@ -177,7 +177,7 @@ const AuthorityManage = ({navigation}) => {
                 onPress={() => {
                     navigation.navigate('WebView', {
                         link: `${baseURL.H5}/privacy#camera`,
-                        title: '理财魔方隐私权协议',
+                        title: '理财魔方隐私权政策',
                     });
                 }}>
                 方便您使用拍摄、刷脸等服务。关于<Text style={{color: Colors.btnColor}}>《访问摄像头》</Text>
