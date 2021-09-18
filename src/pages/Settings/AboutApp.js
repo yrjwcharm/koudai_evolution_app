@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-02 14:24:17
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 17:50:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-18 14:56:12
  * @Description:关于理财魔方
  */
 import React, {useCallback, useState} from 'react';
@@ -98,7 +98,7 @@ const AboutApp = ({navigation}) => {
                                 if (index == 1) {
                                     navigation.navigate('WebView', {
                                         link: `${baseURL.H5}/privacy`,
-                                        title: '理财魔方隐私权协议',
+                                        title: '理财魔方隐私权政策',
                                     });
                                 } else {
                                     jump({
