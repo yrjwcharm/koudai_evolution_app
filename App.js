@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:32:49
+ * @LastEditTime: 2021-09-18 18:18:35
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -16,23 +16,19 @@ import AppStack from './src/routes';
 import configStore from './src/redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootSiblingParent} from 'react-native-root-siblings';
-import * as WeChat from 'react-native-wechat-lib';
 import './src/common/appConfig';
 import './src/utils/LogTool';
 import Toast from './src/components/Toast';
 import http from './src/services';
 import Storage from './src/utils/storage';
-import {getAppMetaData} from 'react-native-get-channel';
 import NetInfo from '@react-native-community/netinfo';
-import JPush from 'jpush-react-native';
 import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
-import {updateVision} from './src/redux/actions/visionData';
-import {throttle, debounce} from 'lodash';
-global.ver = '6.2.3';
+import {throttle} from 'lodash';
+
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -56,7 +52,6 @@ function App(props) {
     const [userInfo, setUserInfo] = React.useState({});
     const imageH = useRef(0);
     const homeShowModal = useRef(true);
-
     let lastBackPressed = '';
     const onBackAndroid = () => {
         if (lastBackPressed && lastBackPressed + 2000 >= Date.now()) {
@@ -68,40 +63,7 @@ function App(props) {
         Toast.show('再按一次退出应用');
         return true;
     };
-    React.useEffect(() => {
-        JPush.init();
-        //连接状态
-        JPush.addConnectEventListener((result) => {
-            console.log('connectListener:' + JSON.stringify(result));
-        });
-        JPush.setBadge({badge: 0, appbadge: '123'});
-        JPush.getRegistrationID((result) => {
-            console.log('registerID:' + JSON.stringify(result));
-        });
-        //通知回调
-        JPush.addNotificationListener((result) => {
-            // alert(JSON.stringify(result));
-            if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
-                global.LogTool('pushNStart', result.extras.route);
-                if (result.extras.route?.indexOf('CreateAccount') > -1) {
-                    //push开户打点
-                    global.LogTool('PushOpenAccountRecall');
-                }
-                if (result.extras.route?.indexOf('Evalution') > -1) {
-                    global.LogTool('PushOpenEnvolutionRecall');
-                }
-                store.dispatch(updateUserInfo({pushRoute: result.extras.route}));
-            }
-        });
-        //本地通知回调
-        JPush.addLocalNotificationListener((result) => {
-            console.log('localNotificationListener:' + JSON.stringify(result));
-        });
-        //自定义消息回调
-        JPush.addCustomMessagegListener((result) => {
-            console.log('customMessageListener:' + JSON.stringify(result));
-        });
-    }, [props.navigation]);
+
     React.useEffect(() => {
         http.get('/mapi/app/config/20210101').then((result) => {
             store.dispatch(updateUserInfo(result.result));
@@ -138,46 +100,9 @@ function App(props) {
             })
             .catch((res) => {
                 store.dispatch(updateUserInfo({hotRefreshData: ''}));
-                console.log(JSON.stringify(res));
             });
     }, []);
-    const postHeartData = (registerID, channel) => {
-        http.post('/common/device/heart_beat/20210101', {
-            channel: channel,
-            jpush_rid: registerID,
-            platform: Platform.OS,
-        }).then((res) => {
-            if (res.code == '000000') {
-                store.dispatch(
-                    updateVision({
-                        visionUpdate: global.currentRoutePageId?.indexOf('Vision') > -1 ? '' : res.result.vision_update,
-                        visionTabUpdate: res.result.vision_update,
-                        album_update: res.result.album_update,
-                    })
-                );
-            }
-        });
-    };
-    // heartbeat
-    const heartBeat = React.useCallback(() => {
-        JPush.getRegistrationID((result) => {
-            if (Platform.OS == 'android') {
-                getAppMetaData('UMENG_CHANNEL')
-                    .then((data) => {
-                        postHeartData(result.registerID, data);
-                        global.channel = data;
-                    })
-                    .catch(() => {
-                        global.channel = '';
-                        postHeartData(result.registerID, 'android');
-                        console.log('获取渠道失败');
-                    });
-            } else {
-                global.channel = 'ios';
-                postHeartData(result.registerID, 'ios');
-            }
-        });
-    }, []);
+
     global.ErrorUtils.setGlobalHandler((error) => {
         console.log('ErrorUtils发现了语法错误，避免了崩溃，具体报错信息：');
         console.log(error, error.name, error.message);
@@ -188,29 +113,15 @@ function App(props) {
         });
     }, true);
     React.useEffect(() => {
-        heartBeat();
-        setInterval(() => {
-            heartBeat();
-        }, 60000);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        NetInfo.addEventListener((state) => {
+            if (!state.isConnected) {
+                Toast.show('网络已断开,请检查您的网络');
+            } else {
+                store.dispatch(getUserInfo());
+            }
+        });
     }, []);
     React.useEffect(() => {
-        NetInfo.addEventListener(
-            debounce((state) => {
-                if (!state.isConnected) {
-                    Toast.show('网络已断开,请检查您的网络');
-                } else {
-                    store.dispatch(getUserInfo());
-                }
-            }, 500)
-        );
-    }, []);
-    React.useEffect(() => {
-        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
-
-        //热更新
-        // syncImmediate();
-
         //刷新token
         Storage.get('loginStatus').then((res) => {
             if (res && res.refresh_token) {

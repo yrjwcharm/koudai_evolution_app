@@ -3,24 +3,31 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-12 17:41:03
+ * @LastEditTime: 2021-09-16 14:45:48
  * @Description:
  */
-import React, {useEffect, useState, useRef} from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity} from 'react-native';
+import React, {useState, useRef, useCallback} from 'react';
+import {StyleSheet, View, Image, Text, TouchableOpacity, Platform, BackHandler, ScrollView} from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
 import http from '../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useJump} from '../../components/hooks';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
+import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
 import Toast from '../../components/Toast';
 import SplashScreen from 'react-native-splash-screen';
 import _ from 'lodash';
-import {env} from '../../services/config';
+import {env, baseURL} from '../../services/config';
 import FastImage from 'react-native-fast-image';
-
+import {Modal} from '../../components/Modal';
+import RNExitApp from 'react-native-exit-app';
+import {Colors} from '../../common/commonStyle';
+import {useFocusEffect} from '@react-navigation/native';
+import JPush from 'jpush-react-native';
+import {getAppMetaData} from 'react-native-get-channel';
+import * as WeChat from 'react-native-wechat-lib';
+import {updateVision} from '../../redux/actions/visionData';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online1', 'online2'];
@@ -33,6 +40,171 @@ export default function Launch({navigation}) {
     let isNavigating = false; //是否正在跳转
     global.getUserInfo = () => {
         dispatch(getUserInfo());
+    };
+    const showPrivacyPop = () => {
+        Modal.show({
+            confirm: true,
+            isTouchMaskToClose: false,
+            cancelCallBack: () => {
+                if (Platform.OS == 'android') {
+                    BackHandler.exitApp(); //退出整个应用
+                } else {
+                    RNExitApp.exitApp();
+                }
+            },
+            confirmCallBack: () => {
+                init();
+                Storage.save('privacy', 'privacy');
+            },
+            children: () => {
+                return (
+                    <View style={{height: px(300)}}>
+                        <ScrollView style={{paddingHorizontal: px(20), marginVertical: px(20)}}>
+                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                欢迎使用理财魔方！为给您提供优质的服务、控制业务风险、保障信息和资金安全，本应用使用过程中，需要联网，需要在必要范围内收集、使用或共享您的个人信息。我们提供理财、保险、支付等服务。请您在使用前仔细阅读
+                                <Text
+                                    style={{color: Colors.btnColor}}
+                                    onPress={() => {
+                                        navigation.navigate('WebView', {
+                                            link: `${baseURL.H5}/privacy`,
+                                            title: '理财魔方隐私权协议',
+                                        });
+                                        Modal.close();
+                                    }}>
+                                    《隐私政策》
+                                </Text>
+                                条款，同意后开始接受我们的服务。
+                            </Text>
+                            <Text />
+                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                本应用使用期间，我们需要申请获取您的系统权限，我们将在首次调用时逐项询问您是否允许使用该权限。您可以在我们询问时开启相关权限，也可以在设备系统“设置”里管理相关权限：
+                            </Text>
+                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                1.消息通知权限：向您及时推送交易、调仓、阅读推荐等消息，方便您更及时了解您的理财相关数据。
+                            </Text>
+                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                2.读取电话状态权限：正常识别您的本机识别码，以便完成安全风控、进行统计和服务推送。
+                            </Text>
+                            <Text style={{fontSize: px(12), lineHeight: px(18)}}>
+                                3.读写外部存储权限：向您提供头像设置、客服、评论或分享、图像识别、下载打开文件时，您可以通过开启存储权限使用或保存图片、视频或文件。
+                            </Text>
+                        </ScrollView>
+                    </View>
+                );
+            },
+            title: '隐私保护说明',
+            confirmText: '同意',
+            cancelText: '拒绝',
+        });
+    };
+    const initJpush = () => {
+        JPush.init();
+        //连接状态
+        JPush.addConnectEventListener((result) => {
+            console.log('connectListener:' + JSON.stringify(result));
+        });
+        JPush.setBadge({badge: 0, appbadge: '123'});
+        JPush.getRegistrationID((result) => {
+            console.log('registerID:' + JSON.stringify(result));
+        });
+        //通知回调
+        JPush.addNotificationListener((result) => {
+            // alert(JSON.stringify(result));
+            if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
+                global.LogTool('pushNStart', result.extras.route);
+                if (result.extras.route?.indexOf('CreateAccount') > -1) {
+                    //push开户打点
+                    global.LogTool('PushOpenAccountRecall');
+                }
+                if (result.extras.route?.indexOf('Evalution') > -1) {
+                    global.LogTool('PushOpenEnvolutionRecall');
+                }
+                dispatch(updateUserInfo({pushRoute: result.extras.route}));
+            }
+        });
+        //本地通知回调
+        JPush.addLocalNotificationListener((result) => {
+            console.log('localNotificationListener:' + JSON.stringify(result));
+        });
+        //自定义消息回调
+        JPush.addCustomMessagegListener((result) => {
+            console.log('customMessageListener:' + JSON.stringify(result));
+        });
+    };
+    const postHeartData = (registerID, channel) => {
+        http.post('/common/device/heart_beat/20210101', {
+            channel: channel,
+            jpush_rid: registerID,
+            platform: Platform.OS,
+        }).then((res) => {
+            if (res.code == '000000') {
+                dispatch(
+                    updateVision({
+                        visionUpdate: global.currentRoutePageId?.indexOf('Vision') > -1 ? '' : res.result.vision_update,
+                        visionTabUpdate: res.result.vision_update,
+                        album_update: res.result.album_update,
+                    })
+                );
+            }
+        });
+    };
+    // heartbeat
+    const heartBeat = React.useCallback(() => {
+        JPush.getRegistrationID((result) => {
+            if (Platform.OS == 'android') {
+                getAppMetaData('UMENG_CHANNEL')
+                    .then((data) => {
+                        postHeartData(result.registerID, data);
+                        global.channel = data;
+                    })
+                    .catch(() => {
+                        global.channel = '';
+                        postHeartData(result.registerID, 'android');
+                        console.log('获取渠道失败');
+                    });
+            } else {
+                global.channel = 'ios';
+                postHeartData(result.registerID, 'ios');
+            }
+        });
+    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            global.env = env;
+            Storage.get('privacy').then((res) => {
+                if (res) {
+                    init();
+                } else {
+                    SplashScreen.hide();
+                    showPrivacyPop();
+                }
+            });
+        }, [])
+    );
+    const init = () => {
+        heartBeat();
+        setInterval(() => {
+            heartBeat();
+        }, 60000);
+        initJpush();
+        WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
+
+        //显示引导页的时候不展示广告
+        Storage.get('AppGuide').then((AppGuide) => {
+            if (AppGuide) {
+                Storage.get('AD').then((AD) => {
+                    if (AD && AD.img && new Date().getTime() < AD.expired_at * 1000) {
+                        setAdMes(AD);
+                        setTime(AD.skip_time || 3);
+                    } else {
+                        authLoading();
+                    }
+                });
+            } else {
+                authLoading();
+            }
+        });
+        fetchImg();
     };
     // 获取开机广告数据
     const fetchImg = () => {
@@ -120,25 +292,6 @@ export default function Launch({navigation}) {
                 });
         });
     };
-    useEffect(() => {
-        global.env = env;
-        //显示引导页的时候不展示广告
-        Storage.get('AppGuide').then((AppGuide) => {
-            if (AppGuide) {
-                Storage.get('AD').then((AD) => {
-                    if (AD && AD.img && new Date().getTime() < AD.expired_at * 1000) {
-                        setAdMes(AD);
-                        setTime(AD.skip_time || 3);
-                    } else {
-                        authLoading();
-                    }
-                });
-            } else {
-                authLoading();
-            }
-        });
-        fetchImg();
-    }, []);
     const imageLoadEnd = () => {
         SplashScreen.hide();
         timer.current = setInterval(() => {
