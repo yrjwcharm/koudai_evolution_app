@@ -295,6 +295,7 @@ export default class planResult extends Component {
                                                 startInLoadingState
                                                 source={{uri: this.state.h5Chart}}
                                                 scalesPageToFit={false}
+                                                textZoom={100}
                                             />
                                         </View>
                                     ) : (

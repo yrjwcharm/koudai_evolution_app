@@ -64,6 +64,7 @@ const TopInvestors = ({navigation, route}) => {
                                 source={{
                                     uri: `${baseURL.H5}${data.console.canvas}`,
                                 }}
+                                textZoom={100}
                             />
                         ) : null}
                     </TouchableOpacity>

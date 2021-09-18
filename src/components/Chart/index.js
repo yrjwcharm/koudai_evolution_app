@@ -85,6 +85,7 @@ class Chart extends PureComponent {
                 startInLoadingState={true}
                 originWhitelist={['*']}
                 onMessage={this.onMessage}
+                textZoom={100}
                 {...props}
             />
         );

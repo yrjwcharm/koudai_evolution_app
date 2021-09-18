@@ -128,6 +128,7 @@ export default function LCMF({route, navigation}) {
                         }}
                         startInLoadingState={true}
                         style={{flex: 1}}
+                        textZoom={100}
                     />
                     {showLogin && <LoginMask />}
                     <ShareModal

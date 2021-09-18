@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-17 20:09:55
+ * @LastEditTime: 2021-09-18 15:12:31
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -160,6 +160,7 @@ export default function WebView({route, navigation}) {
                     source={{
                         uri: `${route?.params?.link}?timeStamp=${timeStamp.current}`,
                     }}
+                    textZoom={100}
                 />
             ) : (
                 <View style={[Style.flexCenter, {height: deviceHeight}]}>
