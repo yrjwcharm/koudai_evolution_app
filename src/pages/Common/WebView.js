@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-18 15:12:31
+ * @LastEditTime: 2021-09-18 15:51:15
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -158,7 +158,9 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        uri: `${route?.params?.link}?timeStamp=${timeStamp.current}`,
+                        uri: route?.params?.timestamp
+                            ? `${route.params.link}?timeStamp=${timeStamp.current}`
+                            : route?.params?.link,
                     }}
                     textZoom={100}
                 />
