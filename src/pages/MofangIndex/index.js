@@ -313,7 +313,12 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-
+                            <Button
+                                title="新开户"
+                                onPress={() => {
+                                    props.navigation.navigate('IdAuth');
+                                }}
+                            />
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
 
