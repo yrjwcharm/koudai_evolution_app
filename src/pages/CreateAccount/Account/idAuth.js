@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-22 11:55:05
+ * @LastEditTime: 2021-09-22 15:14:04
  * @Description: 开户身份证认证
  */
 
@@ -200,7 +200,33 @@ class IdAuth extends Component {
                                 source={require('../../../assets/img/account/personalMes.png')}
                                 style={{width: px(22), height: px(22), resizeMode: 'contain'}}
                             />
-                            <Text style={styles.card_head_text}>基本信息</Text>
+                            <Text style={styles.card_head_text}>实名认证</Text>
+                        </View>
+                        <View style={[Style.flexBetween, {marginVertical: px(14)}]}>
+                            <Text style={[styles.card_head_text, {color: '#545968'}]}>身份证上传</Text>
+                            <Text style={[styles.card_head_text, {color: Colors.btnColor}]} onPress={() => {}}>
+                                上传要求
+                            </Text>
+                        </View>
+                        <View style={[Style.flexBetween, {marginBottom: px(16)}]}>
+                            <TouchableOpacity style={[styles.idImage, Style.flexCenter]}>
+                                <FastImage
+                                    source={require('../../../assets/img/account/idfront.png')}
+                                    style={{width: px(108), height: px(68)}}
+                                />
+                                <Text style={[styles.card_head_text, {marginTop: px(14), fontSize: px(12)}]}>
+                                    点击拍摄/上传人像面
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.idImage, Style.flexCenter]}>
+                                <FastImage
+                                    source={require('../../../assets/img/account/idback.png')}
+                                    style={{width: px(108), height: px(68)}}
+                                />
+                                <Text style={[styles.card_head_text, {marginTop: px(14), fontSize: px(12)}]}>
+                                    点击拍摄/上传国徽面
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                         <Input
                             label="姓名"
@@ -292,7 +318,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: Colors.borderColor,
         borderBottomWidth: 0.5,
-        paddingVertical: px(10),
+        paddingVertical: px(12),
     },
     card_head_text: {
         fontSize: px(14),
@@ -302,5 +328,11 @@ const styles = StyleSheet.create({
     border: {
         borderColor: Colors.borderColor,
         borderBottomWidth: Space.borderWidth,
+    },
+    idImage: {
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(6),
+        height: px(130),
+        width: px(148),
     },
 });
