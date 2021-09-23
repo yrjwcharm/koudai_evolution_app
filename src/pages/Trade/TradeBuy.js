@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-15 10:53:17
+ * @LastEditTime: 2021-09-22 16:07:00
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -24,6 +24,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
+import {useJump} from '../../components/hooks';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -80,6 +81,18 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
+                if (res.result.anti_pop) {
+                    Modal.show({
+                        title: res.result.anti_pop.title,
+                        content: res.result.anti_pop.content,
+                        confirm: true,
+                        isTouchMaskToClose: false,
+                        cancelCallBack: () => this.props.navigation.goBack(),
+                        confirmCallBack: () => this.props.jump(res.result.anti_pop.confirm_action?.url),
+                        cancelText: res.result.anti_pop.cancel_action?.text,
+                        confirmText: res.result.anti_pop.confirm_action?.text,
+                    });
+                }
                 this.setState(
                     {
                         data: res.result,
@@ -920,8 +933,11 @@ function Focus({init}) {
             init();
         }, [init])
     );
-
     return null;
+}
+function WithHooks(props) {
+    const jump = useJump();
+    return <TradeBuy {...props} jump={jump} />;
 }
 const styles = StyleSheet.create({
     title: {
@@ -1048,4 +1064,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TradeBuy;
+export default WithHooks;
