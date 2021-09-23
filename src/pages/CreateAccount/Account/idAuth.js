@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-23 14:50:48
+ * @LastEditTime: 2021-09-23 16:43:53
  * @Description: 开户身份证认证
  */
 
@@ -62,6 +62,7 @@ class IdAuth extends Component {
     }
 
     componentDidMount() {
+        //页面销毁之前保存信息
         this.props.navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
             this.props.update({
@@ -70,12 +71,19 @@ class IdAuth extends Component {
             });
             this.props.navigation.dispatch(e.data.action);
         });
+        //获取身份证
         http.get('/mapi/identity/upload_info/20210101', {scene: this.fr}).then((res) => {
-            this.setState({
-                frontSource: res.result.identity?.front,
-                behindSource: res.result.identity?.back,
-            });
+            this.setState(
+                {
+                    frontSource: res.result.identity?.front,
+                    behindSource: res.result.identity?.back,
+                },
+                () => {
+                    this.checkData();
+                }
+            );
         });
+        //拍照
         this.subscription = DeviceEventEmitter.addListener(
             'EventType',
             _.debounce((uri) => {
@@ -86,9 +94,9 @@ class IdAuth extends Component {
                 // 刷新界面等
             }, 500)
         );
-        if (this.state.name && this.state.id_no) {
-            this.checkData(this.state.name, this.state.id_no);
-        }
+        // if (this.state.name && this.state.id_no) {
+        //     this.checkData();
+        // }
         http.get('/passport/xy_account/career_list/20210101').then((data) => {
             var career = data.result.career.filter((item) => {
                 return item.code == data.result.default_career;
@@ -103,11 +111,12 @@ class IdAuth extends Component {
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
     };
-    checkData = (name, id_no) => {
+    checkData = () => {
+        const {id_no, name} = this.state;
         this.setState({
-            idErrorMsg: id_no.length > 14 && id_no.length < 18 ? '身份证号位数不正确' : '',
+            idErrorMsg: id_no?.length > 14 && id_no?.length < 18 ? '身份证号位数不正确' : '',
         });
-        if (id_no.length >= 18 && name.length >= 2) {
+        if (id_no?.length >= 18 && name?.length >= 2 && this.state.frontSource && this.state.behindSource) {
             this.setState({
                 btnDisable: false,
             });
@@ -118,17 +127,20 @@ class IdAuth extends Component {
         }
     };
     onChangeIdNo = (id_no) => {
-        const {name} = this.state;
         let _no = id_no;
-        this.setState({
-            id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no.replace(/\W/g, ''),
-        });
-        this.checkData(name, _no);
+        this.setState(
+            {
+                id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no.replace(/\W/g, ''),
+            },
+            () => {
+                this.checkData();
+            }
+        );
     };
     onChangeName = (name) => {
-        const {id_no} = this.state;
-        this.setState({name});
-        this.checkData(name, id_no);
+        this.setState({name}, () => {
+            this.checkData();
+        });
     };
     jumpBank = (nav) => {
         const {name, id_no, rcode, rname} = this.state;
@@ -256,12 +268,18 @@ class IdAuth extends Component {
                     if (res?.code == '000000') {
                         this.showImg(response.uri);
                         Toast.show('上传成功');
-                        console.log(res);
-                        // if (clickIndex == 1) {
-                        //     this.setState({frontStatus: true});
-                        // } else {
-                        //     this.setState({backStatus: true});
-                        // }
+
+                        if (clickIndex == 1) {
+                            this.setState(
+                                {
+                                    name: res.result?.name,
+                                    id_no: res.result?.identity_no,
+                                },
+                                () => {
+                                    this.checkData();
+                                }
+                            );
+                        }
                     } else {
                         Toast.show(res.message);
                     }
@@ -336,7 +354,7 @@ class IdAuth extends Component {
         const {showMask, name, id_no, rname, idErrorMsg, frontSource, behindSource} = this.state;
         return (
             <>
-                <KeyboardAwareScrollView extraScrollHeight={px(90)} style={styles.con}>
+                <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>
                     {showMask && <Mask onClick={this.closePicker} />}
                     <BottomModal ref={(ref) => (this.bottomModal = ref)} title={'上传要求'}>
                         <View style={{padding: px(16)}}>
@@ -429,47 +447,49 @@ class IdAuth extends Component {
                                     )}
                                 </TouchableOpacity>
                             </View>
-                            {/* <>
-                                <Input
-                                    label="姓名"
-                                    placeholder="请输入您的姓名"
-                                    onChangeText={this.onChangeName}
-                                    value={name}
-                                    onBlur={() => {
-                                        global.LogTool('acName');
-                                    }}
-                                    returnKeyType={'next'}
-                                />
-                                <Input
-                                    label="身份证"
-                                    placeholder="请输入您的身份证号"
-                                    onChangeText={this.onChangeIdNo}
-                                    value={id_no}
-                                    onBlur={() => {
-                                        global.LogTool('acIdNo');
-                                    }}
-                                    maxLength={18}
-                                    errorMsg={idErrorMsg}
-                                    returnKeyType={'next'}
-                                />
-
-                                <View style={Style.flexRow}>
+                            {frontSource ? (
+                                <>
                                     <Input
-                                        label="职业信息"
-                                        isUpdate={false}
-                                        placeholder="请选择您的职业"
-                                        value={rname}
-                                        onClick={this._showPosition}
-                                        inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                        label="姓名"
+                                        placeholder="请输入您的姓名"
+                                        onChangeText={this.onChangeName}
+                                        value={name}
+                                        onBlur={() => {
+                                            global.LogTool('acName');
+                                        }}
+                                        returnKeyType={'next'}
                                     />
-                                    <FontAwesome
-                                        name={'angle-right'}
-                                        size={18}
-                                        color={'#999999'}
-                                        style={{marginLeft: -14}}
+                                    <Input
+                                        label="身份证"
+                                        placeholder="请输入您的身份证号"
+                                        onChangeText={this.onChangeIdNo}
+                                        value={id_no}
+                                        onBlur={() => {
+                                            global.LogTool('acIdNo');
+                                        }}
+                                        maxLength={18}
+                                        errorMsg={idErrorMsg}
+                                        returnKeyType={'next'}
                                     />
-                                </View>
-                            </> */}
+
+                                    <View style={Style.flexRow}>
+                                        <Input
+                                            label="职业信息"
+                                            isUpdate={false}
+                                            placeholder="请选择您的职业"
+                                            value={rname}
+                                            onClick={this._showPosition}
+                                            inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                        />
+                                        <FontAwesome
+                                            name={'angle-right'}
+                                            size={18}
+                                            color={'#999999'}
+                                            style={{marginLeft: -14}}
+                                        />
+                                    </View>
+                                </>
+                            ) : null}
                         </View>
                         <BottomDesc />
                     </ScrollView>
