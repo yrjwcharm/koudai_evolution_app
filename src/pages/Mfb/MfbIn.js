@@ -2,12 +2,12 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-22 14:23:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-23 14:59:34
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, BackHandler} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
+import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {Colors, Font, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX, onlyNumber} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -18,6 +18,7 @@ import BottomDesc from '../../components/BottomDesc';
 import {useFocusEffect} from '@react-navigation/native';
 import Agreements from '../../components/Agreements';
 import Toast from '../../components/Toast';
+import {useJump} from '../../components/hooks';
 class MfbIn extends Component {
     constructor(props) {
         super(props);
@@ -35,10 +36,24 @@ class MfbIn extends Component {
 
     init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
-            this.setState({
-                data: data.result,
-                bankSelect: data.result?.pay_methods[0],
-            });
+            if (data.code === '000000') {
+                if (data.result.anti_pop) {
+                    Modal.show({
+                        title: data.result.anti_pop.title,
+                        content: data.result.anti_pop.content,
+                        confirm: true,
+                        isTouchMaskToClose: false,
+                        cancelCallBack: () => this.props.navigation.goBack(),
+                        confirmCallBack: () => this.props.jump(data.result.anti_pop.confirm_action?.url),
+                        cancelText: data.result.anti_pop.cancel_action?.text,
+                        confirmText: data.result.anti_pop.confirm_action?.text,
+                    });
+                }
+                this.setState({
+                    data: data.result,
+                    bankSelect: data.result?.pay_methods[0],
+                });
+            }
         });
     };
 
@@ -283,6 +298,10 @@ function Focus({init}) {
     );
     return null;
 }
+function WithHooks(props) {
+    const jump = useJump();
+    return <MfbIn {...props} jump={jump} />;
+}
 const styles = StyleSheet.create({
     title: {
         fontSize: px(13),
@@ -369,4 +388,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MfbIn;
+export default WithHooks;
