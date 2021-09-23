@@ -4992,10 +4992,10 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jcore-react-native@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.npm.taobao.org/jcore-react-native/download/jcore-react-native-1.9.0.tgz#a0f518377686a3d599ac732d48adf9530891b2ab"
-  integrity sha1-oPUYN3aGo9WZrHMtSK35UwiRsqs=
+jcore-react-native@^1.9.4:
+  version "1.9.4"
+  resolved "https://registry.nlark.com/jcore-react-native/download/jcore-react-native-1.9.4.tgz#d745b1ad73d1787ccd5d2a137e09b943d17b7a82"
+  integrity sha1-10WxrXPReHzNXSoTfgm5Q9F7eoI=
 
 jest-changed-files@^25.5.0:
   version "25.5.0"
@@ -5454,10 +5454,10 @@ jetifier@^1.6.2:
   resolved "https://registry.npm.taobao.org/jetifier/download/jetifier-1.6.6.tgz#fec8bff76121444c12dc38d2dad6767c421dab68"
   integrity sha1-/si/92EhREwS3DjS2tZ2fEIdq2g=
 
-jpush-react-native@^2.8.1:
-  version "2.8.1"
-  resolved "https://registry.npm.taobao.org/jpush-react-native/download/jpush-react-native-2.8.1.tgz#bd3d955c46de5ff34390720f7c3aca4371f82958"
-  integrity sha1-vT2VXEbeX/NDkHIPfDrKQ3H4KVg=
+jpush-react-native@^2.8.7:
+  version "2.8.7"
+  resolved "https://registry.nlark.com/jpush-react-native/download/jpush-react-native-2.8.7.tgz#d43473c1302fedbffb79292db3b9a5e060461986"
+  integrity sha1-1DRzwTAv7b/7eSkts7ml4GBGGYY=
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
