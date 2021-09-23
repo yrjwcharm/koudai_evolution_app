@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-16 19:22:28
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-23 14:50:10
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -19,6 +19,7 @@ import {InputModal} from '../../components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
 import {resetVision} from '../../redux/actions/visionData';
 import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
+import {updateAccount} from '../../redux/actions/accountInfo.js';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -71,12 +72,16 @@ const Settings = ({navigation}) => {
                                 dispatch(getUserInfo());
                                 dispatch(
                                     updateUserInfo({
-                                        name: '',
                                         phone: '',
-                                        id_no: '',
                                         selectBank: '',
                                         bank_no: '',
                                         second: 60,
+                                    })
+                                );
+                                dispatch(
+                                    updateAccount({
+                                        name: '',
+                                        id_no: '',
                                     })
                                 );
                                 navigation.replace('Login');
