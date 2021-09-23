@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-22 14:46:04
+ * @LastEditTime: 2021-09-23 14:57:17
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -27,7 +27,7 @@ import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
-import {throttle} from 'lodash';
+import {throttle, debounce} from 'lodash';
 global.ver = '6.2.4';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -113,13 +113,15 @@ function App(props) {
         });
     }, true);
     React.useEffect(() => {
-        NetInfo.addEventListener((state) => {
-            if (!state.isConnected) {
-                Toast.show('网络已断开,请检查您的网络');
-            } else {
-                store.dispatch(getUserInfo());
-            }
-        });
+        NetInfo.addEventListener(
+            debounce((state) => {
+                if (!state.isConnected) {
+                    Toast.show('网络已断开,请检查您的网络');
+                } else {
+                    store.dispatch(getUserInfo());
+                }
+            }, 500)
+        );
     }, []);
     React.useEffect(() => {
         //刷新token
