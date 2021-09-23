@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 14:45:48
+ * @LastEditTime: 2021-09-22 19:30:14
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -122,14 +122,14 @@ export default function Launch({navigation}) {
                 dispatch(updateUserInfo({pushRoute: result.extras.route}));
             }
         });
-        //本地通知回调
-        JPush.addLocalNotificationListener((result) => {
-            console.log('localNotificationListener:' + JSON.stringify(result));
-        });
-        //自定义消息回调
-        JPush.addCustomMessagegListener((result) => {
-            console.log('customMessageListener:' + JSON.stringify(result));
-        });
+        // //本地通知回调
+        // JPush.addLocalNotificationListener((result) => {
+        //     console.log('localNotificationListener:' + JSON.stringify(result));
+        // });
+        // //自定义消息回调
+        // JPush.addCustomMessagegListener((result) => {
+        //     console.log('customMessageListener:' + JSON.stringify(result));
+        // });
     };
     const postHeartData = (registerID, channel) => {
         http.post('/common/device/heart_beat/20210101', {
