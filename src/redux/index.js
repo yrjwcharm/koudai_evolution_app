@@ -2,7 +2,7 @@
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-02 16:46:48
+ * @LastEditTime: 2021-09-23 11:39:05
  * @Description:
  */
 import {applyMiddleware, createStore, compose} from 'redux';
@@ -11,6 +11,7 @@ import {combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import UserReducer from './reducers/userReducer';
 import VisionReducer from './reducers/visionReducer';
+import AccountReducer from './reducers/accountReducer';
 import AsyncStorage from '@react-native-community/async-storage';
 import immutableTransform from 'redux-persist-transform-immutable';
 const persistConfig = {
@@ -30,6 +31,7 @@ if (__DEV__) {
 const reducer = combineReducers({
     userInfo: UserReducer,
     vision: VisionReducer,
+    accountInfo: AccountReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

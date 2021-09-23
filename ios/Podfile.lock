@@ -75,9 +75,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - JCore (1.9.0):
+  - JCore (1.9.4):
     - React
-  - JPush (2.8.1):
+  - JPush (2.8.7):
     - React
   - JWT (3.0.0-beta.12):
     - Base64 (~> 1.1.2)
@@ -706,8 +706,8 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  JCore: 1cb4afdeb092d8d0830e889012283c19056af8ab
-  JPush: b389c8181b1a5f8978cd06a3811c76fbd848862c
+  JCore: b5c4eadf996070ce05748c52851db9bc70eba33b
+  JPush: a010513626e67900f284aff6db8578b23145a5d9
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
