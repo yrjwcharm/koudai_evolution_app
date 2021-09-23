@@ -2,7 +2,7 @@
  * @Date: 2021-02-27 11:31:53
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 18:59:49
+ * @LastEditTime: 2021-09-23 15:49:31
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
