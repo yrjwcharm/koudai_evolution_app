@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-24 11:33:02
+ * @LastEditTime: 2021-09-24 17:45:17
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -133,7 +133,9 @@ class BankInfo extends Component {
                     onHidden: () => {
                         this.props.navigation.dispatch((state) => {
                             // Remove the home route from the stack
-                            const routes = state.routes.filter((r) => r.name !== 'CreateAccount');
+                            const routes = state.routes.filter(
+                                (r) => r.name !== 'CreateAccount' && r.name !== 'IdAuth'
+                            );
                             return CommonActions.reset({
                                 ...state,
                                 routes,
