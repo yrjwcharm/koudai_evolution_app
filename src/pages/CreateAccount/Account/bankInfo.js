@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-23 11:33:57
+ * @LastEditTime: 2021-09-24 11:33:02
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -165,6 +165,7 @@ class BankInfo extends Component {
      * @return {*}
      */
     sendCode = () => {
+        global.LogTool('BankInfoGetverificationcode');
         const {code_btn_click, phone, selectBank, bank_no} = this.state;
         this.props.update({phone, bank_no, selectBank});
         if (code_btn_click) {
@@ -232,6 +233,7 @@ class BankInfo extends Component {
         }, 1000);
     };
     _showBankCard = () => {
+        global.LogTool('BankInfoChangeBank');
         this.bankCard.show();
     };
     jumpPage = () => {
@@ -321,6 +323,9 @@ class BankInfo extends Component {
                             onBlur={() => {
                                 global.LogTool('acBankNo');
                             }}
+                            onFoucs={() => {
+                                global.LogTool('BankInfoCardnumber');
+                            }}
                             errorMsg={bankErrMes}
                             value={bank_no}
                             onChangeText={this.onChangeBankNo}
@@ -346,6 +351,9 @@ class BankInfo extends Component {
                             onBlur={() => {
                                 global.LogTool('acPhone');
                             }}
+                            onFoucs={() => {
+                                global.LogTool('BankInfoPhonenumber');
+                            }}
                             errorMsg={phoneError}
                             value={phone}
                             onChangeText={this.onChangePhone}
@@ -359,6 +367,9 @@ class BankInfo extends Component {
                                 maxLength={6}
                                 onBlur={() => {
                                     global.LogTool('acCode');
+                                }}
+                                onFoucs={() => {
+                                    global.LogTool('BankInfoEnterverificationcode');
                                 }}
                                 value={code}
                                 onChangeText={(_code) => {
