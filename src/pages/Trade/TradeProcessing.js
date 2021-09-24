@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-14 14:09:43
- * @LastEditors: yhc
+ * @LastEditTime: 2021-09-24 15:45:09
+ * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
@@ -161,6 +161,7 @@ const TradeProcessing = ({navigation, route}) => {
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView
+                bounces={false}
                 style={[styles.container]}
                 ref={scrollRef}
                 onContentSizeChange={() => scrollRef.current.scrollToEnd({animated: true})}>

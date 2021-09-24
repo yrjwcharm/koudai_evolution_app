@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 10:46:04
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-30 10:36:54
  * @Description:路由表
  */
 import React from 'react';
@@ -153,6 +153,10 @@ import PersonalizedRecommend from '../pages/Settings/PersonalizedRecommend'; //�
 import AboutApp from '../pages/Settings/AboutApp'; //关于APP
 import WeChatNotice from '../pages/Assets/WeChatNotice'; // 开启微信通知
 import IdAuth from '../pages/CreateAccount/Account/idAuth'; //开户身份证认证
+import AdvisorPortfolio from '../pages/Portfolio/AdvisorPortfolio'; // 投顾组合超市
+import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
+import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
+import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -589,6 +593,51 @@ export default function AppStack() {
             <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
             <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
             <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
+            <Stack.Screen
+                name="AdvisorPortfolio"
+                component={AdvisorPortfolio}
+                options={{
+                    title: '投顾组合超市',
+                    headerStyle: {
+                        backgroundColor: '#FFF5E5',
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                }}
+            />
+            <Stack.Screen name="InvestStrategy" component={InvestStrategy} options={{title: '投资策略'}} />
+            <Stack.Screen name="FundAlternative" component={FundAlternative} options={{title: '基金备选库'}} />
+            <Stack.Screen
+                name="AdvisorAssets"
+                component={AdvisorAssets}
+                options={{
+                    title: '投顾组合',
+                    headerStyle: {
+                        backgroundColor: Colors.brandColor,
+                        shadowOpacity: 0,
+                        shadowOffset: {
+                            height: 0,
+                        },
+                        elevation: 0,
+                    },
+                    headerTitleStyle: {
+                        color: '#fff',
+                        fontSize: px(18),
+                    },
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
         </Stack.Navigator>
     );
 }

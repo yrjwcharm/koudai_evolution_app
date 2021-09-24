@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 18:07:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-30 10:36:28
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -17,6 +17,7 @@ import {
     Dimensions,
     RefreshControl,
     Platform,
+    StatusBar,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -142,6 +143,16 @@ export default function PortfolioAssets(props) {
                 setShowEye(res ? res : 'true');
             });
         }, [init])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            setTimeout(() => {
+                StatusBar.setBarStyle('light-content');
+            }, 0);
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
     );
     useEffect(() => {
         if (period) {
@@ -530,7 +541,7 @@ export default function PortfolioAssets(props) {
                                     <Text style={styles.profit_text_sty}>
                                         总金额(元){data?.profit_date ? <Text>({data.profit_date})</Text> : null}
                                     </Text>
-                                    <TouchableOpacity onPress={toggleEye}>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                                         <Ionicons
                                             name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
                                             size={16}

@@ -2,18 +2,17 @@
  * @Author: xjh
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 19:38:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-24 10:52:05
  */
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, LayoutAnimation} from 'react-native';
-import {px as text, isIphoneX, px, deviceWidth} from '../../utils/appUtil';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
+import {px as text, px, deviceWidth} from '../../utils/appUtil';
 import FitImage from 'react-native-fit-image';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Font, Style, Colors} from '../../common/commonStyle';
-import http from '../../services';
-const btnHeight = isIphoneX() ? text(90) : text(66);
+
 export default function StrategyPolaris(props) {
     const [data, setData] = useState({});
     useEffect(() => {
@@ -23,7 +22,8 @@ export default function StrategyPolaris(props) {
             });
             setData(res.result);
         });
-    }, [props.route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const jumpTo = (url) => {
         props.navigation.navigate(url.path, url.params);
     };
