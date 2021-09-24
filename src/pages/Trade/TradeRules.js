@@ -1,21 +1,19 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-04-12 10:39:10
+ * @LastEditTime: 2021-09-24 14:14:57
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
 import React, {Component, useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, View, Text, ScrollView, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, StyleSheet, View, Text, ScrollView} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useHeaderHeight} from '@react-navigation/stack';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../components/TabBar';
-// import TabBar from '../../components/ScrollTab';
 import http from '../../services';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Html from '../../components/RenderHtml';
