@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-23 16:43:53
+ * @LastEditTime: 2021-09-24 16:42:49
  * @Description: 开户身份证认证
  */
 
@@ -44,13 +44,12 @@ class IdAuth extends Component {
         this.typeArr = ['从相册中获取', '拍照'];
         this.state = {
             name: this.props?.accountInfo?.name || '', //姓名
-            id_no: this.props?.accountInfo?.id_no || '', //身份证号
+            id_no: '', //身份证号
             rname: '', //职业名称
             rcode: '', //职业代码
             showMask: false,
             careerList: [],
             btnDisable: true,
-            idErrorMsg: '',
             showTypePop: false,
             frontSource: '',
             behindSource: '',
@@ -67,7 +66,6 @@ class IdAuth extends Component {
             e.preventDefault();
             this.props.update({
                 name: this.state.name,
-                id_no: this.state.id_no,
             });
             this.props.navigation.dispatch(e.data.action);
         });
@@ -77,6 +75,7 @@ class IdAuth extends Component {
                 {
                     frontSource: res.result.identity?.front,
                     behindSource: res.result.identity?.back,
+                    id_no: res.result.id_no,
                 },
                 () => {
                     this.checkData();
@@ -112,11 +111,9 @@ class IdAuth extends Component {
         this.props.navigation.navigate(nav);
     };
     checkData = () => {
-        const {id_no, name} = this.state;
-        this.setState({
-            idErrorMsg: id_no?.length > 14 && id_no?.length < 18 ? '身份证号位数不正确' : '',
-        });
-        if (id_no?.length >= 18 && name?.length >= 2 && this.state.frontSource && this.state.behindSource) {
+        const {name} = this.state;
+
+        if (name?.length >= 2 && this.state.frontSource && this.state.behindSource) {
             this.setState({
                 btnDisable: false,
             });
@@ -126,23 +123,14 @@ class IdAuth extends Component {
             });
         }
     };
-    onChangeIdNo = (id_no) => {
-        let _no = id_no;
-        this.setState(
-            {
-                id_no: _no.length <= 17 ? _no.replace(/[^\d]/g, '') : _no.replace(/\W/g, ''),
-            },
-            () => {
-                this.checkData();
-            }
-        );
-    };
+
     onChangeName = (name) => {
         this.setState({name}, () => {
             this.checkData();
         });
     };
     jumpBank = (nav) => {
+        global.LogTool('CreateAccountNextStep');
         const {name, id_no, rcode, rname} = this.state;
         var checkData = [
             {
@@ -190,6 +178,7 @@ class IdAuth extends Component {
     };
     //底部选择弹窗
     showSelect = (index) => {
+        global.LogTool('CreateAccountCamera');
         this.clickIndex = index;
         this.setState({showTypePop: true});
     };
@@ -255,6 +244,7 @@ class IdAuth extends Component {
     };
     //图片上传
     uploadImage = (response) => {
+        console.log(response);
         const {clickIndex} = this;
         this.toast = Toast.showLoading('正在上传');
         upload(
@@ -268,7 +258,7 @@ class IdAuth extends Component {
                     if (res?.code == '000000') {
                         this.showImg(response.uri);
                         Toast.show('上传成功');
-
+                        global.LogTool('CreateAccountUploadSuccess');
                         if (clickIndex == 1) {
                             this.setState(
                                 {
@@ -279,13 +269,17 @@ class IdAuth extends Component {
                                     this.checkData();
                                 }
                             );
+                        } else {
+                            this.checkData();
                         }
                     } else {
+                        global.LogTool('CreateAccountUploadFail');
                         Toast.show(res.message);
                     }
                 }
             },
             () => {
+                global.LogTool('CreateAccountUploadFail');
                 Toast.hide(this.toast);
                 Toast.show('上传失败');
             }
@@ -294,8 +288,7 @@ class IdAuth extends Component {
     //打开相册
     openPicker = () => {
         const options = {
-            width: px(300),
-            height: px(190),
+            quality: 0.5,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
@@ -351,7 +344,7 @@ class IdAuth extends Component {
         this.setState({showMask: false});
     };
     render() {
-        const {showMask, name, id_no, rname, idErrorMsg, frontSource, behindSource} = this.state;
+        const {showMask, name, id_no, rname, frontSource, behindSource} = this.state;
         return (
             <>
                 <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>
@@ -454,6 +447,9 @@ class IdAuth extends Component {
                                         placeholder="请输入您的姓名"
                                         onChangeText={this.onChangeName}
                                         value={name}
+                                        onFocus={() => {
+                                            global.LogTool('CreateAccountName');
+                                        }}
                                         onBlur={() => {
                                             global.LogTool('acName');
                                         }}
@@ -462,13 +458,9 @@ class IdAuth extends Component {
                                     <Input
                                         label="身份证"
                                         placeholder="请输入您的身份证号"
-                                        onChangeText={this.onChangeIdNo}
+                                        isUpdate={false}
                                         value={id_no}
-                                        onBlur={() => {
-                                            global.LogTool('acIdNo');
-                                        }}
                                         maxLength={18}
-                                        errorMsg={idErrorMsg}
                                         returnKeyType={'next'}
                                     />
 
