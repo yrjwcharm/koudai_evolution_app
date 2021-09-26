@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-22 16:07:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-26 16:44:31
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -25,6 +25,7 @@ import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
+import _ from 'lodash';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -61,18 +62,20 @@ class TradeBuy extends Component {
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
-            this.setState({
-                type: data.result.active,
-                has_tab: data.result.has_tab,
-            });
-            if (data.result.active == 1 && data.result.has_tab) {
-                this.init(data.result.active);
-            }
+            this.setState(
+                {
+                    type: data.result.active,
+                    has_tab: data.result.has_tab,
+                },
+                () => {
+                    if (data.result.active == 1 && data.result.has_tab) {
+                        this.init(data.result.active);
+                    }
+                }
+            );
         });
     };
-    componentDidMount() {
-        this.getTab();
-    }
+
     init = (_type) => {
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
@@ -882,7 +885,7 @@ class TradeBuy extends Component {
         const {button} = data;
         return (
             <>
-                <Focus init={this.init} />
+                <Focus init={this.getTab} />
                 {data ? (
                     <View
                         style={{
