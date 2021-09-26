@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 19:04:55
+ * @LastEditTime: 2021-09-26 14:51:46
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -126,8 +126,7 @@ export class uploadID extends Component {
     //打开相册
     openPicker = () => {
         const options = {
-            width: px(300),
-            height: px(190),
+            quality: 0.5,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
