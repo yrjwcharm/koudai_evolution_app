@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 14:51:46
+ * @LastEditTime: 2021-09-26 15:03:44
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -83,6 +83,7 @@ export class uploadID extends Component {
         }
     };
     uploadImage = (response) => {
+        console.log(response);
         const {clickIndex} = this.state;
         this.toast = Toast.showLoading('正在上传');
         upload(
@@ -126,7 +127,7 @@ export class uploadID extends Component {
     //打开相册
     openPicker = () => {
         const options = {
-            quality: 0.5,
+            quality: 0.4,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {

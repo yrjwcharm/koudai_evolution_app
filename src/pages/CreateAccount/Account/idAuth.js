@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 14:50:09
+ * @LastEditTime: 2021-09-26 15:04:10
  * @Description: 开户身份证认证
  */
 
@@ -244,7 +244,6 @@ class IdAuth extends Component {
     };
     //图片上传
     uploadImage = (response) => {
-        console.log(response);
         const {clickIndex} = this;
         this.toast = Toast.showLoading('正在上传');
         upload(
@@ -288,7 +287,7 @@ class IdAuth extends Component {
     //打开相册
     openPicker = () => {
         const options = {
-            quality: 0.5,
+            quality: 0.4,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
