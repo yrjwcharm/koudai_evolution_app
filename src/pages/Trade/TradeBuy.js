@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 16:44:31
+ * @LastEditTime: 2021-09-26 17:43:27
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -25,7 +25,6 @@ import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
-import _ from 'lodash';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -68,9 +67,7 @@ class TradeBuy extends Component {
                     has_tab: data.result.has_tab,
                 },
                 () => {
-                    if (data.result.active == 1 && data.result.has_tab) {
-                        this.init(data.result.active);
-                    }
+                    this.init(data.result.active);
                 }
             );
         });
@@ -395,7 +392,7 @@ class TradeBuy extends Component {
         );
     };
     changeBuyStatus = (obj) => {
-        if (obj.from == 0 && obj.i == 0) {
+        if ((obj.from == 0 && obj.i == 0) || (obj.from == 1 && obj.i == 1)) {
             return;
         }
         this.setState({type: obj.i, errTip: ''}, () => {
