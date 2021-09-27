@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 15:03:44
+ * @LastEditTime: 2021-09-27 11:57:09
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -83,7 +83,6 @@ export class uploadID extends Component {
         }
     };
     uploadImage = (response) => {
-        console.log(response);
         const {clickIndex} = this.state;
         this.toast = Toast.showLoading('正在上传');
         upload(
@@ -95,6 +94,7 @@ export class uploadID extends Component {
                 if (res) {
                     this.uri = '';
                     if (res?.code == '000000') {
+                        this.showImg(response.uri);
                         Toast.show('上传成功');
                         if (clickIndex == 1) {
                             DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
@@ -103,26 +103,16 @@ export class uploadID extends Component {
                             this.setState({backStatus: true});
                         }
                     } else {
-                        if (clickIndex == 1) {
-                            this.setState({frontSource: ''});
-                        } else {
-                            this.setState({behindSource: ''});
-                        }
                         Toast.show(res.message);
                     }
                 }
             },
             () => {
                 Toast.hide(this.toast);
-                if (clickIndex == 1) {
-                    this.setState({frontSource: ''});
-                } else {
-                    this.setState({behindSource: ''});
-                }
+
                 Toast.show('上传失败');
             }
         );
-        this.showImg(response.uri);
     };
     //打开相册
     openPicker = () => {
