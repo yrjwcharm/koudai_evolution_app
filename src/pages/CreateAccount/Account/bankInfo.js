@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-24 17:45:17
+ * @LastEditTime: 2021-09-27 19:08:35
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -251,11 +251,16 @@ class BankInfo extends Component {
         const {phone, code, selectBank} = this.state;
         if (value && value.length > 11) {
             http.get('/passport/match/bank_card_info/20210101', {
-                bank_no: this.state.bank_no.replace(/ /g, ''),
+                bank_no: value.replace(/ /g, ''),
             }).then((res) => {
-                this.setState({
-                    selectBank: res.result,
-                });
+                this.setState(
+                    {
+                        selectBank: res.result,
+                    },
+                    () => {
+                        this.checkData(phone, code, this.state.selectBank, value);
+                    }
+                );
             });
         }
         this.setState(
