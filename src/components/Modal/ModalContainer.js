@@ -56,6 +56,7 @@ export default class MyModal extends Component {
             secondPop: false,
             subPop: '',
             guide_pop_button: this.props?.data?.button?.text || '开启通知',
+            countdown: this.props.countdown || 0,
         };
     }
 
@@ -105,6 +106,20 @@ export default class MyModal extends Component {
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
+        if (this.state.countdown) {
+            const timer = setInterval(() => {
+                this.setState((prev) => {
+                    return {
+                        ...prev,
+                        countdown: prev.countdown - 1,
+                    };
+                });
+            }, 1000);
+            setTimeout(() => {
+                clearInterval(timer);
+                this.setState({countdown: 0});
+            }, this.state.countdown * 1000);
+        }
     }
     cancel() {
         this.setModalVisiable(false);
@@ -114,6 +129,9 @@ export default class MyModal extends Component {
         }, 100);
     }
     confirm = () => {
+        if (this.state.countdown) {
+            return false;
+        }
         if (this.clickClose !== false) {
             this.setState({
                 isVisible: false,
@@ -239,7 +257,13 @@ export default class MyModal extends Component {
                                 color: Colors.btnColor,
                                 fontSize: text(16),
                             }}>
-                            {this.confirmText}
+                            {this.state.countdown ? (
+                                <Text>
+                                    {this.state.countdown}s<Text style={{color: Colors.defaultColor}}>后关闭</Text>
+                                </Text>
+                            ) : (
+                                this.confirmText
+                            )}
                         </Text>
                     </TouchableOpacity>
                 )}

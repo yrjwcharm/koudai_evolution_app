@@ -2,10 +2,10 @@
  * @Date: 2021-09-22 17:59:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-24 18:27:24
+ * @LastEditTime: 2021-09-27 10:19:54
  * @Description: 投顾组合超市
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,6 +14,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
+import Loading from './components/PageLoading';
 
 const AdvisorPortfolio = ({navigation}) => {
     const jump = useJump();
@@ -35,7 +36,7 @@ const AdvisorPortfolio = ({navigation}) => {
                 end={{x: 0, y: 1}}
                 style={styles.topBg}
             />
-            {Object.keys(data || {}).length > 0 && (
+            {Object.keys(data || {}).length > 0 ? (
                 <>
                     <View style={styles.introContainer}>
                         <Image
@@ -109,6 +110,8 @@ const AdvisorPortfolio = ({navigation}) => {
                         })}
                     </View>
                 </>
+            ) : (
+                <Loading />
             )}
         </ScrollView>
     );

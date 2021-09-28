@@ -393,11 +393,6 @@ const Index = (props) => {
                             ))}
                         </View>
                     </View>
-                    <Button
-                        title="投顾组合总资产页"
-                        onPress={() => jump({type: 1, path: 'AdvisorAssets'})}
-                        style={{height: px(44), marginHorizontal: px(20)}}
-                    />
                     <BottomDesc />
                 </ScrollView>
             </>

@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-08-18 15:22:04
+ * @LastEditTime: 2021-09-26 17:37:46
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -204,14 +204,14 @@ export default function RenderChart(props) {
             {chartData?.yield_info?.tips ? (
                 <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
                     <View style={[{padding: text(16)}]}>
-                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>
-                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                            {chartData?.yield_info?.tips?.content[0]?.val}
-                        </Text>
-                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[1]?.key}:</Text>
-                        <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                            {chartData?.yield_info?.tips?.content[1]?.val}
-                        </Text>
+                        {chartData?.yield_info?.tips?.content?.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
+                                    <Text style={styles.tipTitle}>{item.key}:</Text>
+                                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>{item.val}</Text>
+                                </View>
+                            );
+                        })}
                     </View>
                 </BottomModal>
             ) : null}

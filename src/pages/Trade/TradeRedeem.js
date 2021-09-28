@@ -2,14 +2,14 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-29 16:06:10
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-28 14:24:16
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text, isIphoneX, onlyNumber} from '../../utils/appUtil';
-import {Space, Style, Colors, Font} from '../../common/commonStyle';
+import {Style, Colors, Font} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -22,7 +22,6 @@ import Mask from '../../components/Mask';
 import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
 const btnHeight = isIphoneX() ? text(90) : text(66);
-var inputValue = 0;
 let timer = null;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -46,6 +45,7 @@ export default class TradeRedeem extends Component {
             notice: '', //不足7天的基金弹窗
         };
         this.notice = '';
+        this.inputValue = 0;
     }
     componentDidMount() {
         Http.get('/trade/redeem/info/20210101', {
@@ -118,7 +118,7 @@ export default class TradeRedeem extends Component {
         );
     }
     pressChange(percent) {
-        inputValue = percent * 100;
+        this.inputValue = percent * 100;
         this.setState(
             {
                 inputValue: (percent * 100).toString(),
@@ -147,7 +147,7 @@ export default class TradeRedeem extends Component {
         Http.post('/trade/redeem/do/20210101', {
             redeem_id: redeem_id || this.state.redeem_id,
             password,
-            percent: inputValue / 100,
+            percent: this.inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route?.params?.poid,
         }).then((res) => {
@@ -163,13 +163,13 @@ export default class TradeRedeem extends Component {
     };
 
     onChange = (_text) => {
-        let text = onlyNumber(_text);
-        if (text && text != 0) {
-            if (text > 100) {
-                text = '100';
+        _text = onlyNumber(_text);
+        if (_text && _text != 0) {
+            if (_text > 100) {
+                _text = '100';
             }
-            inputValue = text;
-            this.setState({btnClick: true, inputValue: text, init: 0}, () => {
+            this.inputValue = _text;
+            this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
                 timer && clearTimeout(timer);
                 timer = setTimeout(() => {
                     this.getPlanInfo();
@@ -311,7 +311,7 @@ export default class TradeRedeem extends Component {
                                     placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
                                     placeholderTextColor={Colors.placeholderColor}
                                     value={this.state.inputValue}
-                                    onChangeText={(text) => this.onChange(text)}
+                                    onChangeText={(val) => this.onChange(val)}
                                 />
                                 <Text style={styles.percent_symbol}>%</Text>
                             </View>

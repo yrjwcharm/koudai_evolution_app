@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:36:28
+ * @LastEditTime: 2021-09-28 10:54:05
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -520,8 +520,9 @@ export default function PortfolioAssets(props) {
     return loading ? (
         renderLoading()
     ) : (
-        <View style={{backgroundColor: Colors.bgColor}}>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <ScrollView
+                style={{flex: 1}}
                 scrollIndicatorInsets={{right: 1}}
                 refreshControl={
                     <RefreshControl
@@ -533,7 +534,7 @@ export default function PortfolioAssets(props) {
                     />
                 }>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
-                <View style={styles.assets_card_sty}>
+                <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
                             <View>
@@ -639,7 +640,7 @@ export default function PortfolioAssets(props) {
                 )}
 
                 <View style={styles.padding_sty}>
-                    {Object.keys(card).length > 0 && renderBtn() /* 按钮 */}
+                    {Object.keys(card || {}).length > 0 && data.scene !== 'adviser' && renderBtn() /* 按钮 */}
                     {/* 反洗钱上传 */}
                     {data?.notice_info && (
                         <View style={[Style.flexRow, styles.upload_card_sty]}>
@@ -787,6 +788,41 @@ export default function PortfolioAssets(props) {
                     data={data?.notice_bar}
                     style={{position: 'absolute', bottom: isIphoneX() ? px(90) : px(56)}}
                 />
+            ) : null}
+            {data?.trade_buttons ? (
+                <View style={[Style.flexRow, styles.fixedBtns]}>
+                    {data.trade_buttons.map?.((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={item + index}
+                                style={[
+                                    Style.flexCenter,
+                                    styles.bottomBtn,
+                                    index === 0
+                                        ? {marginLeft: 0, backgroundColor: '#fff', borderColor: Colors.descColor}
+                                        : {},
+                                    item.avail
+                                        ? {}
+                                        : index === 0
+                                        ? {borderColor: '#c2d5f0'}
+                                        : {backgroundColor: '#c2d5f0'},
+                                ]}
+                                onPress={() => {
+                                    global.LogTool(item.action, props.route?.params?.poid);
+                                    item.avail && accountJump(item.url, item.action);
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: px(15),
+                                        color: index === 0 ? (item.avail ? Colors.descColor : '#c2d5f0') : '#fff',
+                                    }}>
+                                    {item.text}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
             ) : null}
         </View>
     );
@@ -1016,5 +1052,20 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: text(-4),
         right: text(-4),
+    },
+    fixedBtns: {
+        paddingVertical: text(8),
+        paddingHorizontal: Space.padding,
+        paddingBottom: isIphoneX() ? 34 + text(8) : text(8),
+        backgroundColor: '#fff',
+    },
+    bottomBtn: {
+        flex: 1,
+        height: px(44),
+        marginLeft: px(12),
+        borderWidth: Space.borderWidth,
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.brandColor,
+        borderColor: Colors.brandColor,
     },
 });
