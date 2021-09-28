@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 15:04:10
+ * @LastEditTime: 2021-09-28 14:23:25
  * @Description: 开户身份证认证
  */
 
@@ -64,10 +64,14 @@ class IdAuth extends Component {
         //页面销毁之前保存信息
         this.props.navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
-            this.props.update({
-                name: this.state.name,
-            });
-            this.props.navigation.dispatch(e.data.action);
+            if (this.state.showMask) {
+                this.closePicker();
+            } else {
+                this.props.update({
+                    name: this.state.name,
+                });
+                this.props.navigation.dispatch(e.data.action);
+            }
         });
         //获取身份证
         http.get('/mapi/identity/upload_info/20210101', {scene: this.fr}).then((res) => {
@@ -255,7 +259,7 @@ class IdAuth extends Component {
                 if (res) {
                     this.uri = '';
                     if (res?.code == '000000') {
-                        this.showImg(response.uri);
+                        this.showImg(res.result.origin_url || response.uri);
                         Toast.show('上传成功');
                         global.LogTool('CreateAccountUploadSuccess');
                         if (clickIndex == 1) {
@@ -287,7 +291,9 @@ class IdAuth extends Component {
     //打开相册
     openPicker = () => {
         const options = {
-            quality: 0.4,
+            // maxWidth: px(128),
+            // maxHeight: px(83),
+            quality: 0.5,
         };
         setTimeout(() => {
             launchImageLibrary(options, (response) => {
