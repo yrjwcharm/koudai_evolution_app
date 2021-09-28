@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-08 16:43:17
+ * @LastEditTime: 2021-09-28 10:58:01
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -43,32 +43,31 @@ const HoldingFund = ({navigation, route}) => {
     const [list2, setList2] = useState([]);
     const [loading, setLoading] = useState(false);
     const urlRef = useRef('');
+    const [emptyTip, setEmptyTip] = useState('');
 
-    const init = useCallback(
-        (first) => {
-            setLoading(true);
-            http.get(
-                curTab === 0 ? '/portfolio/funds/user_holding/20210101' : '/portfolio/funds/user_confirming/20210101',
-                {
-                    poid: route.params?.poid || 'X00F000003',
-                }
-            ).then((res) => {
-                if (res.code === '000000') {
-                    first && navigation.setOptions({title: res.result.title || '持有基金'});
-                    first && setTabs(res.result.tabs);
-                    curTab === 0 ? setList1(res.result.list || []) : setList2(res.result.list || []);
-                    urlRef.current = res.result.url;
-                }
-                setLoading(false);
-                setRefreshing(false);
-            });
-        },
-        [navigation, route, curTab]
-    );
-    const onChangeTab = useCallback((i) => {
+    const init = (first) => {
+        http.get(
+            curTab === 0 ? '/portfolio/funds/user_holding/20210101' : '/portfolio/funds/user_confirming/20210101',
+            {
+                poid: route.params?.poid || 'X00F000003',
+            }
+        ).then((res) => {
+            if (res.code === '000000') {
+                first && navigation.setOptions({title: res.result.title || '持有基金'});
+                first && setTabs(res.result.tabs);
+                setEmptyTip(res.result.tip || '');
+                curTab === 0 ? setList1(res.result.list || []) : setList2(res.result.list || []);
+                urlRef.current = res.result.url;
+            }
+            setLoading(false);
+            setRefreshing(false);
+        });
+    };
+    const onChangeTab = (i) => {
         setCurTab(i);
+        setLoading(true);
         // setRefreshing(true);
-    }, []);
+    };
     const getColor = useCallback((t) => {
         if (!t) {
             return Colors.defaultColor;
@@ -83,7 +82,8 @@ const HoldingFund = ({navigation, route}) => {
     }, []);
     const onRefresh = useCallback(() => {
         init();
-    }, [init]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const renderContent = useCallback(() => {
         return (
@@ -218,8 +218,9 @@ const HoldingFund = ({navigation, route}) => {
                             </View>
                         );
                     })}
-                    {list1?.length === 0 && curTab === 0 && <Empty text={'暂无持有中基金'} />}
-                    {list2?.length === 0 && curTab === 1 && <Empty text={'暂无确认中基金'} />}
+                    {/* {list1?.length === 0 && curTab === 0 && <Empty text={'暂无持有中基金'} />}
+                    {list2?.length === 0 && curTab === 1 && <Empty text={'暂无确认中基金'} />} */}
+                    {emptyTip ? <Empty text={emptyTip} /> : null}
                     {curTab === 0 && (
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -235,7 +236,7 @@ const HoldingFund = ({navigation, route}) => {
                 </View>
             </>
         );
-    }, [curTab, list1, list2, getColor, navigation, jump, loading, headerHeight]);
+    }, [curTab, list1, list2, getColor, navigation, jump, loading, headerHeight, emptyTip]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -253,7 +254,24 @@ const HoldingFund = ({navigation, route}) => {
             ),
         });
         init(true);
-    }, [init, navigation, route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        init();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [curTab]);
+
+    useEffect(() => {
+        if (list1?.length === 0 && curTab === 0) {
+            setEmptyTip((prev) => (prev === '' ? '暂无持有中基金' : prev));
+        } else if (list2?.length === 0 && curTab === 1) {
+            setEmptyTip((prev) => (prev === '' ? '暂无确认中基金' : prev));
+        } else {
+            setEmptyTip('');
+        }
+    }, [curTab, list1, list2]);
+
     return tabs?.length > 0 ? (
         <ScrollableTabView
             style={[styles.container]}

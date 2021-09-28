@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-08-17 10:15:34
+ * @LastEditTime: 2021-09-26 18:01:33
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -55,7 +55,7 @@ export const baseChart = (data) => `(function(){
 })()
 `;
 
-export const pieChart = (data, map) => `
+export const pieChart = (data, map, title) => `
 (function(){
   const chart = new F2.Chart({
     id: 'chart',
@@ -108,7 +108,7 @@ export const pieChart = (data, map) => `
   });
   chart.guide().html({
     position: [ '50%', '50%' ],
-    html: '<div style="width: 250px;text-align: center;font-size:10px">'+'全球资产配置'+'</div>'
+    html: '<div style="width: 250px;text-align: center;font-size:10px">'+'${title || '全球资产配置'}'+'</div>'
   });
   chart.render();
 })()

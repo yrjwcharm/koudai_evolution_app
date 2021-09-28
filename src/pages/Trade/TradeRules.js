@@ -1,20 +1,20 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-09-24 14:14:57
+ * @LastEditTime: 2021-09-27 13:53:42
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
 import React, {Component, useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, View, Text, ScrollView} from 'react-native';
+import {ActivityIndicator, Platform, StyleSheet, View, Text, ScrollView} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {useRoute} from '@react-navigation/native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Tab from '../../components/TabBar';
 import http from '../../services';
-import {px as text, deviceHeight, deviceWidth} from '../../utils/appUtil';
+import {px as text, deviceHeight, deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Html from '../../components/RenderHtml';
 import BottomDesc from '../../components/BottomDesc';
@@ -24,79 +24,151 @@ const Part1 = () => {
     const route = useRoute();
     const [data, setData] = useState({});
     useEffect(() => {
-        const {upid, poid, allocation_id, risk} = route.params || {};
-        http.get('/portfolio/mustknow/20210101', {
-            upid,
-            type: 'trade_rate',
-            poid,
-            allocation_id,
-            risk,
-        }).then((res) => {
-            if (res.code == '000000') {
-                setData(res.result.data || {});
-            }
-        });
+        const {upid, poid, allocation_id, risk, scene} = route.params || {};
+        if (scene === 'adviser') {
+            http.get('/adviser/tran/rules/20210923', {poid, type: 'buy_rule'}).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result.data || {});
+                }
+            });
+        } else {
+            http.get('/portfolio/mustknow/20210101', {
+                upid,
+                type: 'trade_rate',
+                poid,
+                allocation_id,
+                risk,
+            }).then((res) => {
+                if (res.code == '000000') {
+                    setData(res.result.data || {});
+                }
+            });
+        }
     }, [route]);
     return Object.keys(data).length > 0 ? (
         <View>
-            <Text style={[styles.title]}>赎回费率</Text>
-            <View style={[styles.feeHeadTitle, Style.flexBetween]}>
-                <Text style={[styles.feeHeadTitleText]}>{data.th && data.th[0]}</Text>
-                <Text style={[styles.feeHeadTitleText]}>{data.th && data.th[1]}</Text>
-            </View>
-            {data.tr_list?.map((item, index) => {
-                return (
-                    <View
-                        key={`fee${index}`}
-                        style={[
-                            styles.feeTableItem,
-                            Style.flexBetween,
-                            {
-                                backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor,
-                                borderBottomWidth: index === data.tr_list?.length - 1 ? Space.borderWidth : 0,
-                            },
-                        ]}>
-                        <Text style={[styles.feeTableLeftText]}>{item[0]}</Text>
-                        <Text style={[styles.feeTableRightText]}>{item[1]}</Text>
-                    </View>
-                );
-            })}
-            <View style={[styles.feeDescBox]}>
-                <View style={{marginBottom: text(12)}}>
-                    <Html
-                        style={styles.feeDesc}
-                        html={
-                            '基金卖出时一般按照先进先出规则, 部分基金卖出按照后进后出规则. 基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.'
-                        }
-                    />
-                </View>
-                <View style={{marginBottom: text(20)}}>
-                    <Html
-                        style={styles.feeDesc}
-                        html={
-                            '赎回计算公式：\n赎回总额=赎回数量xT日基金单位净值\n赎回费用=赎回总额x赎回费率\n赎回到账金额=赎回总额-赎回费用'
-                        }
-                    />
-                </View>
-                <Html
-                    style={{...styles.feeDesc, lineHeight: text(20)}}
-                    html={'基金费率等信息以基金公司最新披露的基金信息为准'}
-                />
-            </View>
-            <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>调仓费率</Text>
-            <View style={[styles.feeDescBox, {paddingTop: 0}]}>
-                <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
-            </View>
-            {data?.manage ? (
+            {route.params.scene === 'adviser' ? (
                 <>
+                    <Text style={[styles.title, {paddingVertical: Space.padding}]}>{data.confirm_time?.title}</Text>
+                    <View style={{paddingHorizontal: Space.padding, backgroundColor: '#fff'}}>
+                        <Image
+                            resizeMode={Image.resizeMode.contain}
+                            source={require('../../assets/img/line.png')}
+                            style={[styles.line]}
+                        />
+                        <View style={[styles.buyComfirmTime, {marginBottom: px(4), borderBottomWidth: 0}]}>
+                            {data.confirm_time?.steps?.map?.((step, idx, arr) => {
+                                return (
+                                    <View
+                                        key={`confirm_step${idx}`}
+                                        style={{
+                                            flex: 1,
+                                            alignItems:
+                                                idx === 0
+                                                    ? 'flex-start'
+                                                    : idx === arr.length - 1
+                                                    ? 'flex-end'
+                                                    : 'center',
+                                        }}>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <Text style={styles.buyNotice}>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    'T日：交易日，15:00(含)之前为T日，15:00之后为T+1日。周末和法定节假日属于非交易日，以支付成功时间为准。\n'
+                                }
+                            </Text>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    'T+n日：指T日后的第n个工作日。\n以上时间点仅供参考，具体时间以各基金公司实际确认为准。'
+                                }
+                            </Text>
+                        </Text>
+                    </View>
                     <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
-                        {data?.manage?.title}
+                        {data.rate?.title}
                     </Text>
                     <View style={[styles.feeDescBox, {paddingTop: 0}]}>
-                        <Html html={data?.manage?.content} style={{...styles.feeDesc, color: Colors.descColor}} />
+                        <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data.rate?.tip}</Text>
+                    </View>
+                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
+                        {data.service_rate?.title}
+                    </Text>
+                    <View style={[styles.feeDescBox, {paddingTop: 0}]}>
+                        <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data.service_rate?.tip}</Text>
                     </View>
                 </>
-            ) : null}
+            ) : (
+                <>
+                    <Text style={styles.title}>赎回费率</Text>
+                    <View style={[styles.feeHeadTitle, Style.flexBetween]}>
+                        <Text style={[styles.feeHeadTitleText]}>{data.th && data.th[0]}</Text>
+                        <Text style={[styles.feeHeadTitleText]}>{data.th && data.th[1]}</Text>
+                    </View>
+                    {data.tr_list?.map?.((item, index, arr) => {
+                        return (
+                            <View
+                                key={`fee${index}`}
+                                style={[
+                                    styles.feeTableItem,
+                                    Style.flexBetween,
+                                    {
+                                        backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor,
+                                        borderBottomWidth: index === arr?.length - 1 ? Space.borderWidth : 0,
+                                    },
+                                ]}>
+                                <Text style={[styles.feeTableLeftText]}>{item[0]}</Text>
+                                <Text style={[styles.feeTableRightText]}>{item[1]}</Text>
+                            </View>
+                        );
+                    })}
+                    <View style={[styles.feeDescBox]}>
+                        <View style={{marginBottom: text(12)}}>
+                            <Html
+                                style={styles.feeDesc}
+                                html={
+                                    '基金卖出时一般按照先进先出规则, 部分基金卖出按照后进后出规则. 基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.'
+                                }
+                            />
+                        </View>
+                        <View style={{marginBottom: text(20)}}>
+                            <Html
+                                style={styles.feeDesc}
+                                html={
+                                    '赎回计算公式：\n赎回总额=赎回数量xT日基金单位净值\n赎回费用=赎回总额x赎回费率\n赎回到账金额=赎回总额-赎回费用'
+                                }
+                            />
+                        </View>
+                        <Html
+                            style={{...styles.feeDesc, lineHeight: text(20)}}
+                            html={'基金费率等信息以基金公司最新披露的基金信息为准'}
+                        />
+                    </View>
+                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>调仓费率</Text>
+                    <View style={[styles.feeDescBox, {paddingTop: 0}]}>
+                        <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
+                    </View>
+                    {data?.manage ? (
+                        <>
+                            <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
+                                {data?.manage?.title}
+                            </Text>
+                            <View style={[styles.feeDescBox, {paddingTop: 0}]}>
+                                <Html
+                                    html={data?.manage?.content}
+                                    style={{...styles.feeDesc, color: Colors.descColor}}
+                                />
+                            </View>
+                        </>
+                    ) : null}
+                </>
+            )}
         </View>
     ) : (
         <ActivityIndicator
@@ -111,157 +183,249 @@ const Part2 = () => {
     const route = useRoute();
     const [data, setData] = useState({});
     useEffect(() => {
-        const {upid, poid, allocation_id} = route.params || {};
-        http.get('/portfolio/mustknow/20210101', {
-            upid,
-            type: 'confirm_time',
-            poid,
-            allocation_id,
-        }).then((res) => {
-            if (res.code == '000000') {
-                setData(res.result.data);
-            }
-        });
+        const {upid, poid, allocation_id, scene} = route.params || {};
+        if (scene === 'adviser') {
+            http.get('/adviser/tran/rules/20210923', {poid, type: 'redeem_rule'}).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result.data || {});
+                }
+            });
+        } else {
+            http.get('/portfolio/mustknow/20210101', {
+                upid,
+                type: 'confirm_time',
+                poid,
+                allocation_id,
+            }).then((res) => {
+                if (res.code == '000000') {
+                    setData(res.result.data);
+                }
+            });
+        }
     }, [route]);
     return Object.keys(data).length > 0 ? (
         <View>
-            <View style={styles.productInfoWrap}>
-                <Text style={styles.productInfoTitle}>{data[0]?.title}</Text>
-                <Image
-                    resizeMode={Image.resizeMode.contain}
-                    source={require('../../assets/img/line.png')}
-                    style={[styles.line]}
-                />
-                <View style={styles.buyComfirmTime}>
-                    {data[0]?.steps?.map((step, idx, arr) => {
+            {route.params.scene === 'adviser' ? (
+                <>
+                    <Text style={[styles.title, {paddingVertical: Space.padding}]}>{data.confirm_time?.title}</Text>
+                    <View style={{paddingHorizontal: Space.padding, backgroundColor: '#fff'}}>
+                        <Image
+                            resizeMode={Image.resizeMode.contain}
+                            source={require('../../assets/img/line.png')}
+                            style={[styles.line]}
+                        />
+                        <View style={[styles.buyComfirmTime, {marginBottom: px(4), borderBottomWidth: 0}]}>
+                            {data.confirm_time?.steps?.map?.((step, idx, arr) => {
+                                return (
+                                    <View
+                                        key={`confirm_step${idx}`}
+                                        style={{
+                                            flex: 1,
+                                            alignItems:
+                                                idx === 0
+                                                    ? 'flex-start'
+                                                    : idx === arr.length - 1
+                                                    ? 'flex-end'
+                                                    : 'center',
+                                        }}>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <Text style={styles.buyNotice}>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    'T日：交易日，15:00(含)之前为T日，15:00之后为T+1日。周末和法定节假日属于非交易日，以支付成功时间为准。\n'
+                                }
+                            </Text>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    'T+n日：指T日后的第n个工作日。\n以上时间点仅供参考，具体时间以各基金公司实际确认为准。'
+                                }
+                            </Text>
+                        </Text>
+                    </View>
+                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
+                        {data.rate?.title}
+                    </Text>
+                    <View style={[styles.feeHeadTitle, Style.flexBetween]}>
+                        <Text style={[styles.feeHeadTitleText]}>{data.rate?.table?.th && data.rate?.table?.th[0]}</Text>
+                        <Text style={[styles.feeHeadTitleText]}>{data.rate?.table?.th && data.rate?.table?.th[1]}</Text>
+                    </View>
+                    {data.rate?.table?.tr_list?.map?.((item, index, arr) => {
                         return (
                             <View
-                                key={`confirm_step${idx}`}
-                                style={{
-                                    flex: 1,
-                                    alignItems:
-                                        idx === 0 ? 'flex-start' : idx === arr.length - 1 ? 'flex-end' : 'center',
-                                }}>
-                                <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
-                                <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
+                                key={`fee${index}`}
+                                style={[
+                                    styles.feeTableItem,
+                                    Style.flexBetween,
+                                    {
+                                        backgroundColor: index % 2 === 0 ? '#fff' : Colors.bgColor,
+                                        borderBottomWidth: index === arr?.length - 1 ? Space.borderWidth : 0,
+                                    },
+                                ]}>
+                                <Text style={[styles.feeTableLeftText]}>{item[0]}</Text>
+                                <Text style={[styles.feeTableRightText]}>{item[1]}</Text>
                             </View>
                         );
                     })}
-                </View>
-                <Text style={styles.buyNotice}>
-                    <Text style={styles.blueCircle}>•&nbsp;</Text>
-                    <Text style={[styles.buyNoticeText]}>
-                        {
-                            'T日：交易日15:00前购买/赎回则当日为T日，15:00后购买/赎回则下一个交易日为T日，购买/赎回净值均按T日基金单位净值确认。周末和法定节假日不属于交易日。'
-                        }
-                    </Text>
-                </Text>
-                <View style={styles.buyTableWrap}>
-                    <View style={styles.buyTableHead}>
-                        <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[0]}</Text>
-                        </View>
-                        <View style={[styles.buyTableCell]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[1]}</Text>
-                        </View>
-                        <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[2]}</Text>
-                        </View>
+                    <View style={[styles.feeDescBox]}>
+                        <Html style={styles.feeDesc} html={data.rate?.table?.adjust_content} />
                     </View>
-                    {data[0]?.table?.tr_list?.map((item, index) => {
-                        return (
-                            <View
-                                style={[
-                                    styles.buyTableBody,
-                                    {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
-                                ]}
-                                key={`confirm_row${index}`}>
+                </>
+            ) : (
+                <>
+                    <View style={styles.productInfoWrap}>
+                        <Text style={styles.productInfoTitle}>{data[0]?.title}</Text>
+                        <Image
+                            resizeMode={Image.resizeMode.contain}
+                            source={require('../../assets/img/line.png')}
+                            style={[styles.line]}
+                        />
+                        <View style={styles.buyComfirmTime}>
+                            {data[0]?.steps?.map?.((step, idx, arr) => {
+                                return (
+                                    <View
+                                        key={`confirm_step${idx}`}
+                                        style={{
+                                            flex: 1,
+                                            alignItems:
+                                                idx === 0
+                                                    ? 'flex-start'
+                                                    : idx === arr.length - 1
+                                                    ? 'flex-end'
+                                                    : 'center',
+                                        }}>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        <Text style={styles.buyNotice}>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    'T日：交易日15:00前购买/赎回则当日为T日，15:00后购买/赎回则下一个交易日为T日，购买/赎回净值均按T日基金单位净值确认。周末和法定节假日不属于交易日。'
+                                }
+                            </Text>
+                        </Text>
+                        <View style={styles.buyTableWrap}>
+                            <View style={styles.buyTableHead}>
                                 <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                    <Html html={item[0]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[0]}</Text>
                                 </View>
                                 <View style={[styles.buyTableCell]}>
-                                    <Html html={item[1]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[1]}</Text>
                                 </View>
                                 <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                    <Html html={item[2]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[0]?.table?.th[2]}</Text>
                                 </View>
                             </View>
-                        );
-                    })}
-                </View>
-            </View>
-            <View style={[styles.productInfoWrap]}>
-                <Text style={styles.productInfoTitle}>{data[1]?.title}</Text>
-                <Image
-                    resizeMode={Image.resizeMode.contain}
-                    source={require('../../assets/img/line.png')}
-                    style={[styles.line]}
-                />
-                <View style={[styles.buyComfirmTime, {borderBottomWidth: 0, marginBottom: 0}]}>
-                    {data[1]?.steps?.map((step, idx, arr) => {
-                        return (
-                            <View
-                                key={`confirm_step${idx}`}
-                                style={{
-                                    flex: 1,
-                                    alignItems:
-                                        idx === 0 ? 'flex-start' : idx === arr.length - 1 ? 'flex-end' : 'center',
-                                }}>
-                                <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
-                                <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-                {/* <Text style={styles.buyNotice}>
-                        <Text style={styles.blueCircle}>• </Text>
-                        <Text style={[styles.buyNoticeText]}>{''}</Text>
-                    </Text> */}
-                <View style={[styles.buyTableWrap]}>
-                    <View style={styles.buyTableHead}>
-                        <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[0]}</Text>
-                        </View>
-                        <View style={[styles.buyTableCell]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[1]}</Text>
-                        </View>
-                        <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                            <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[2]}</Text>
+                            {data[0]?.table?.tr_list?.map((item, index) => {
+                                return (
+                                    <View
+                                        style={[
+                                            styles.buyTableBody,
+                                            {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
+                                        ]}
+                                        key={`confirm_row${index}`}>
+                                        <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                            <Html html={item[0]} style={styles.buyTableItem} />
+                                        </View>
+                                        <View style={[styles.buyTableCell]}>
+                                            <Html html={item[1]} style={styles.buyTableItem} />
+                                        </View>
+                                        <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                            <Html html={item[2]} style={styles.buyTableItem} />
+                                        </View>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
-                    {data[1]?.table?.tr_list?.map((item, index) => {
-                        return (
-                            <View
-                                style={[
-                                    styles.buyTableBody,
-                                    {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
-                                ]}
-                                key={`confirm_row${index}`}>
+                    <View style={[styles.productInfoWrap]}>
+                        <Text style={styles.productInfoTitle}>{data[1]?.title}</Text>
+                        <Image
+                            resizeMode={Image.resizeMode.contain}
+                            source={require('../../assets/img/line.png')}
+                            style={[styles.line]}
+                        />
+                        <View style={[styles.buyComfirmTime, {borderBottomWidth: 0, marginBottom: 0}]}>
+                            {data[1]?.steps?.map((step, idx, arr) => {
+                                return (
+                                    <View
+                                        key={`confirm_step${idx}`}
+                                        style={{
+                                            flex: 1,
+                                            alignItems:
+                                                idx === 0
+                                                    ? 'flex-start'
+                                                    : idx === arr.length - 1
+                                                    ? 'flex-end'
+                                                    : 'center',
+                                        }}>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.key}</Text>
+                                        <Text style={[styles.buyComfirmTimeText]}>{step.value}</Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                        {/* <Text style={styles.buyNotice}>
+                                <Text style={styles.blueCircle}>• </Text>
+                                <Text style={[styles.buyNoticeText]}>{''}</Text>
+                            </Text> */}
+                        <View style={[styles.buyTableWrap]}>
+                            <View style={styles.buyTableHead}>
                                 <View style={[styles.buyTableCell, {flex: 1.5}]}>
-                                    <Html html={item[0]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[0]}</Text>
                                 </View>
                                 <View style={[styles.buyTableCell]}>
-                                    <Html html={item[1]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[1]}</Text>
                                 </View>
                                 <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
-                                    <Html html={item[2]} style={styles.buyTableItem} />
+                                    <Text style={[styles.buyTableItem, styles.fontColor]}>{data[1]?.table?.th[2]}</Text>
                                 </View>
                             </View>
-                        );
-                    })}
-                </View>
-            </View>
-            <View style={[styles.productInfoWrap, {marginBottom: 0}]}>
-                <Text style={styles.productInfoTitle}>{'调仓 确认时间'}</Text>
-                <Text style={[styles.buyNotice, {paddingTop: 0}]}>
-                    <Text style={styles.blueCircle}>•&nbsp;</Text>
-                    <Text style={[styles.buyNoticeText]}>
-                        {
-                            '调仓确认时间是由赎回时间+购买时间组成，调仓赎回的资金是分别到账的，每到账一笔，都会按比例购买需要调入的基金。一般情况将在T+2日完成调仓，如遇QDII基金赎回，这部分资金将在T+7日完成调仓。'
-                        }
-                    </Text>
-                </Text>
-            </View>
+                            {data[1]?.table?.tr_list?.map((item, index) => {
+                                return (
+                                    <View
+                                        style={[
+                                            styles.buyTableBody,
+                                            {backgroundColor: index % 2 === 1 ? Colors.bgColor : '#fff'},
+                                        ]}
+                                        key={`confirm_row${index}`}>
+                                        <View style={[styles.buyTableCell, {flex: 1.5}]}>
+                                            <Html html={item[0]} style={styles.buyTableItem} />
+                                        </View>
+                                        <View style={[styles.buyTableCell]}>
+                                            <Html html={item[1]} style={styles.buyTableItem} />
+                                        </View>
+                                        <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
+                                            <Html html={item[2]} style={styles.buyTableItem} />
+                                        </View>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    </View>
+                    <View style={[styles.productInfoWrap, {marginBottom: 0}]}>
+                        <Text style={styles.productInfoTitle}>{'调仓 确认时间'}</Text>
+                        <Text style={[styles.buyNotice, {paddingTop: 0}]}>
+                            <Text style={styles.blueCircle}>•&nbsp;</Text>
+                            <Text style={[styles.buyNoticeText]}>
+                                {
+                                    '调仓确认时间是由赎回时间+购买时间组成，调仓赎回的资金是分别到账的，每到账一笔，都会按比例购买需要调入的基金。一般情况将在T+2日完成调仓，如遇QDII基金赎回，这部分资金将在T+7日完成调仓。'
+                                }
+                            </Text>
+                        </Text>
+                    </View>
+                </>
+            )}
         </View>
     ) : (
         <ActivityIndicator
@@ -416,20 +580,30 @@ class TradeRules extends Component {
         super(props);
         this.state = {
             curIndex: 0,
-            head: [
-                {
-                    title: '交易费率',
-                },
-                {
-                    title: '确认时间',
-                },
-                {
-                    title: '交易金额',
-                },
-                {
-                    title: '银行卡限额',
-                },
-            ],
+            head:
+                props.route.params.scene === 'adviser'
+                    ? [
+                          {
+                              title: '购买规则',
+                          },
+                          {
+                              title: '赎回规则',
+                          },
+                      ]
+                    : [
+                          {
+                              title: '交易费率',
+                          },
+                          {
+                              title: '确认时间',
+                          },
+                          {
+                              title: '交易金额',
+                          },
+                          {
+                              title: '银行卡限额',
+                          },
+                      ],
         };
     }
     componentDidMount() {}
@@ -449,6 +623,7 @@ class TradeRules extends Component {
                 {head.map((item, index) => {
                     return (
                         <ScrollView
+                            bounces={false}
                             style={{transform: [{translateY: text(-1.5)}]}}
                             tabLabel={item.title}
                             key={index + 'head'}>
@@ -535,7 +710,7 @@ const styles = StyleSheet.create({
         marginTop: text(10),
     },
     blueCircle: {
-        fontSize: text(17),
+        fontSize: text(18),
         lineHeight: text(22),
         color: Colors.brandColor,
     },
@@ -625,7 +800,7 @@ const styles = StyleSheet.create({
         fontSize: text(15),
         lineHeight: text(21),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     feeHeadTitle: {
         height: text(36),

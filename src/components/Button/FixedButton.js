@@ -1,16 +1,19 @@
 /*
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-01-19 21:13:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-27 16:08:33
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
-import {StyleSheet, Keyboard, Animated} from 'react-native';
+import {StyleSheet, Keyboard, Animated, View} from 'react-native';
 import Button from './Button';
+import Agreements from '../Agreements';
 import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
+import {Space} from '../../common/commonStyle';
 export default class FixedButton extends Component {
     state = {
+        check: true,
         keyboardHeight: new Animated.Value(0),
     };
 
@@ -39,10 +42,22 @@ export default class FixedButton extends Component {
         Keyboard.removeListener('keyboardWillHide', this.keyboardWillHide);
     }
     render() {
-        const {keyboardHeight} = this.state;
+        const {check, keyboardHeight} = this.state;
+        const {agreement, disabled, heightChange} = this.props;
         return (
             <Animated.View style={[styles.bottom, {bottom: keyboardHeight}]}>
-                <Button {...this.props} />
+                {agreement ? (
+                    <View
+                        style={{paddingTop: px(4), paddingBottom: Space.padding}}
+                        onLayout={(e) => heightChange && heightChange(e.nativeEvent.layout.height)}>
+                        <Agreements
+                            check={check}
+                            data={agreement}
+                            onChange={(checkStatus) => this.setState({check: checkStatus})}
+                        />
+                    </View>
+                ) : null}
+                <Button {...this.props} disabled={!check || disabled} />
             </Animated.View>
         );
     }
