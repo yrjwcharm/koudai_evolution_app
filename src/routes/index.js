@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-27 18:51:49
+ * @LastEditTime: 2021-09-28 10:46:04
  * @Description:路由表
  */
 import React from 'react';
@@ -179,7 +179,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="BankInfo"
+            initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
