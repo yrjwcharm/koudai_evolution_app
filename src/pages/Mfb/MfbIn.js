@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
  * @LastEditors: dx
- * @LastEditTime: 2021-09-23 14:59:34
+ * @LastEditTime: 2021-09-28 16:49:32
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -49,10 +49,17 @@ class MfbIn extends Component {
                         confirmText: data.result.anti_pop.confirm_action?.text,
                     });
                 }
-                this.setState({
-                    data: data.result,
-                    bankSelect: data.result?.pay_methods[0],
-                });
+                this.setState(
+                    {
+                        data: data.result,
+                        bankSelect: data.result?.pay_methods[0],
+                    },
+                    () => {
+                        if (!data.result.anti_pop) {
+                            this.textInput.focus();
+                        }
+                    }
+                );
             }
         });
     };
@@ -214,7 +221,7 @@ class MfbIn extends Component {
                                     this.setState({amount: Number(this.state.amount).toFixed(2)});
                                 }
                             }}
-                            autoFocus={true}
+                            // autoFocus={true}
                             value={amount.toString()}
                         />
                         {amount.length > 0 && (
