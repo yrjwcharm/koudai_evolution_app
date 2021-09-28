@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 14:23:25
+ * @LastEditTime: 2021-09-28 16:43:31
  * @Description: 开户身份证认证
  */
 
@@ -259,7 +259,7 @@ class IdAuth extends Component {
                 if (res) {
                     this.uri = '';
                     if (res?.code == '000000') {
-                        this.showImg(res.result.origin_url || response.uri);
+                        this.showImg(response.uri);
                         Toast.show('上传成功');
                         global.LogTool('CreateAccountUploadSuccess');
                         if (clickIndex == 1) {

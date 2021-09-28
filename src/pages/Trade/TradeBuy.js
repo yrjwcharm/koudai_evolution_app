@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 17:43:27
+ * @LastEditTime: 2021-09-28 18:59:19
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -25,6 +25,7 @@ import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -81,18 +82,6 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
-                if (res.result.anti_pop) {
-                    Modal.show({
-                        title: res.result.anti_pop.title,
-                        content: res.result.anti_pop.content,
-                        confirm: true,
-                        isTouchMaskToClose: false,
-                        cancelCallBack: () => this.props.navigation.goBack(),
-                        confirmCallBack: () => this.props.jump(res.result.anti_pop.confirm_action?.url),
-                        cancelText: res.result.anti_pop.cancel_action?.text,
-                        confirmText: res.result.anti_pop.confirm_action?.text,
-                    });
-                }
                 this.setState(
                     {
                         data: res.result,
@@ -937,6 +926,25 @@ function Focus({init}) {
 }
 function WithHooks(props) {
     const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo);
+    useFocusEffect(
+        React.useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => props.navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
     return <TradeBuy {...props} jump={jump} />;
 }
 const styles = StyleSheet.create({
