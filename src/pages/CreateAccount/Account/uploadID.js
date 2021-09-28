@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-27 11:57:09
+ * @LastEditTime: 2021-09-28 11:56:26
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -34,8 +34,6 @@ export class uploadID extends Component {
         behindSource: '',
         showTypePop: false,
         clickIndex: '',
-        frontStatus: false,
-        backStatus: false,
         desc: '',
     };
     toast = '';
@@ -98,9 +96,6 @@ export class uploadID extends Component {
                         Toast.show('上传成功');
                         if (clickIndex == 1) {
                             DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
-                            this.setState({frontStatus: true});
-                        } else {
-                            this.setState({backStatus: true});
                         }
                     } else {
                         Toast.show(res.message);
@@ -182,7 +177,7 @@ export class uploadID extends Component {
         }
     };
     render() {
-        const {frontStatus, backStatus, showTypePop, frontSource, behindSource, desc} = this.state;
+        const {showTypePop, frontSource, behindSource, desc} = this.state;
         return (
             <>
                 <ScrollView style={styles.con}>
@@ -237,7 +232,7 @@ export class uploadID extends Component {
                     <Text style={styles.title}>上传要求</Text>
                     <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
                 </ScrollView>
-                <FixedButton title={'确认上传'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
+                <FixedButton title={'确认上传'} disabled={!(frontSource && behindSource)} onPress={this.handleBack} />
             </>
         );
     }
