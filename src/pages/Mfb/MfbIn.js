@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: dx
- * @LastEditTime: 2021-09-28 16:49:32
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 18:56:33
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -19,6 +19,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Agreements from '../../components/Agreements';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 class MfbIn extends Component {
     constructor(props) {
         super(props);
@@ -37,29 +38,10 @@ class MfbIn extends Component {
     init = () => {
         http.get('/wallet/recharge/info/20210101', {code: this.state.code}).then((data) => {
             if (data.code === '000000') {
-                if (data.result.anti_pop) {
-                    Modal.show({
-                        title: data.result.anti_pop.title,
-                        content: data.result.anti_pop.content,
-                        confirm: true,
-                        isTouchMaskToClose: false,
-                        cancelCallBack: () => this.props.navigation.goBack(),
-                        confirmCallBack: () => this.props.jump(data.result.anti_pop.confirm_action?.url),
-                        cancelText: data.result.anti_pop.cancel_action?.text,
-                        confirmText: data.result.anti_pop.confirm_action?.text,
-                    });
-                }
-                this.setState(
-                    {
-                        data: data.result,
-                        bankSelect: data.result?.pay_methods[0],
-                    },
-                    () => {
-                        if (!data.result.anti_pop) {
-                            this.textInput.focus();
-                        }
-                    }
-                );
+                this.setState({
+                    data: data.result,
+                    bankSelect: data.result?.pay_methods[0],
+                });
             }
         });
     };
@@ -221,7 +203,7 @@ class MfbIn extends Component {
                                     this.setState({amount: Number(this.state.amount).toFixed(2)});
                                 }
                             }}
-                            // autoFocus={true}
+                            autoFocus={true}
                             value={amount.toString()}
                         />
                         {amount.length > 0 && (
@@ -307,6 +289,25 @@ function Focus({init}) {
 }
 function WithHooks(props) {
     const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo);
+    useFocusEffect(
+        React.useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => props.navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
     return <MfbIn {...props} jump={jump} />;
 }
 const styles = StyleSheet.create({

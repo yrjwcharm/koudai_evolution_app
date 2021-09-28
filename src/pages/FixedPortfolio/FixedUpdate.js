@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: dx
- * @LastEditTime: 2021-09-22 15:47:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 18:53:50
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
@@ -22,6 +22,7 @@ import Mask from '../../components/Mask';
 import {BankCardModal, InputModal} from '../../components/Modal';
 import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
+import {useSelector} from 'react-redux';
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -42,6 +43,8 @@ export default function FixedUpdate({navigation, route}) {
     const bankCardModal = useRef(null);
     const initAmount = useRef('');
     const [loading, setLoading] = useState(true);
+    const userInfo = useSelector((state) => state.userInfo);
+
     const addNum = () => {
         setNum((prev) => {
             if (prev + intervalRef.current > payMethod.day_limit) {
@@ -58,7 +61,24 @@ export default function FixedUpdate({navigation, route}) {
             return prev - intervalRef.current < initAmount.current ? initAmount.current : prev - intervalRef.current;
         });
     };
-
+    useFocusEffect(
+        useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
     useFocusEffect(
         useCallback(() => {
             Http.get('/trade/update/invest_plan/info/20210101', {
@@ -66,18 +86,6 @@ export default function FixedUpdate({navigation, route}) {
             })
                 .then((res) => {
                     if (res.code === '000000') {
-                        if (res.result.anti_pop) {
-                            Modal.show({
-                                title: res.result.anti_pop.title,
-                                content: res.result.anti_pop.content,
-                                confirm: true,
-                                isTouchMaskToClose: false,
-                                cancelCallBack: () => navigation.goBack(),
-                                confirmCallBack: () => jump(res.result.anti_pop.confirm_action?.url),
-                                cancelText: res.result.anti_pop.cancel_action?.text,
-                                confirmText: res.result.anti_pop.confirm_action?.text,
-                            });
-                        }
                         intervalRef.current = res.result.target_info.invest.incr;
                         initAmount.current = res.result.target_info.invest.init_amount;
                         setData(res.result);

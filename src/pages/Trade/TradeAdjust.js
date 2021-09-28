@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: dx
- * @LastEditTime: 2021-09-22 16:06:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 18:58:30
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -20,6 +20,7 @@ import {Modal} from '../../components/Modal';
 import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 class TradeAdjust extends Component {
     constructor(props) {
@@ -38,18 +39,6 @@ class TradeAdjust extends Component {
             mode: this.state.mode,
         }).then((res) => {
             if (res.code === '000000') {
-                if (res.result.anti_pop) {
-                    Modal.show({
-                        title: res.result.anti_pop.title,
-                        content: res.result.anti_pop.content,
-                        confirm: true,
-                        isTouchMaskToClose: false,
-                        cancelCallBack: () => this.props.navigation.goBack(),
-                        confirmCallBack: () => this.props.jump(res.result.anti_pop.confirm_action?.url),
-                        cancelText: res.result.anti_pop.cancel_action?.text,
-                        confirmText: res.result.anti_pop.confirm_action?.text,
-                    });
-                }
                 this.setState({
                     data: res.result,
                 });
@@ -317,6 +306,25 @@ function Focus({init}) {
 }
 function WithHooks(props) {
     const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo);
+    useFocusEffect(
+        React.useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => props.navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
     return <TradeAdjust {...props} jump={jump} />;
 }
 const styles = StyleSheet.create({

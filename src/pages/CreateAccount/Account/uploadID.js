@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 11:56:26
+ * @LastEditTime: 2021-09-28 17:05:54
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -27,8 +27,10 @@ import upload from '../../../services/upload';
 import Toast from '../../../components/Toast';
 import _ from 'lodash';
 import http from '../../../services';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+import {connect} from 'react-redux';
 const typeArr = ['从相册中获取', '拍照'];
-export class uploadID extends Component {
+class UploadID extends Component {
     state = {
         frontSource: '',
         behindSource: '',
@@ -78,6 +80,11 @@ export class uploadID extends Component {
             this.setState({
                 behindSource: uri,
             });
+        }
+        if (this.state.behindSource && this.state.frontSource) {
+            setTimeout(() => {
+                this.props.getUserInfo();
+            }, 10);
         }
     };
     uploadImage = (response) => {
@@ -232,7 +239,11 @@ export class uploadID extends Component {
                     <Text style={styles.title}>上传要求</Text>
                     <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
                 </ScrollView>
-                <FixedButton title={'确认上传'} disabled={!(frontSource && behindSource)} onPress={this.handleBack} />
+                <FixedButton
+                    title={'确认上传'}
+                    disabled={!(frontSource && behindSource)}
+                    onPress={_.debounce(this.handleBack, 300)}
+                />
             </>
         );
     }
@@ -270,4 +281,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
 });
-export default uploadID;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getUserInfo: () => {
+            dispatch(getUserInfo());
+        },
+    };
+};
+export default connect(null, mapDispatchToProps)(UploadID);
