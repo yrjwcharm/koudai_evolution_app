@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 16:43:31
+ * @LastEditTime: 2021-09-29 16:43:59
  * @Description: 开户身份证认证
  */
 
@@ -34,10 +34,10 @@ import BottomDesc from '../../../components/BottomDesc';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import {launchImageLibrary} from 'react-native-image-picker';
 import upload from '../../../services/upload';
 import {updateAccount} from '../../../redux/actions/accountInfo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import SyanImagePicker from 'react-native-syan-image-picker';
 class IdAuth extends Component {
     constructor(props) {
         super(props);
@@ -250,6 +250,7 @@ class IdAuth extends Component {
     uploadImage = (response) => {
         const {clickIndex} = this;
         this.toast = Toast.showLoading('正在上传');
+
         upload(
             'mapi/identity/upload/20210101',
             response,
@@ -290,24 +291,19 @@ class IdAuth extends Component {
     };
     //打开相册
     openPicker = () => {
-        const options = {
-            // maxWidth: px(128),
-            // maxHeight: px(83),
-            quality: 0.5,
-        };
-        setTimeout(() => {
-            launchImageLibrary(options, (response) => {
-                if (response.didCancel) {
-                    console.log('User cancelled image picker');
-                } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
-                } else if (response.assets) {
-                    this.uploadImage(response.assets[0]);
+        SyanImagePicker.showImagePicker(
+            {
+                imageCount: 1, // 最大选择图片数目，默认6
+            },
+            (err, selectedPhotos) => {
+                if (err) {
+                    // 取消选择
+                    return;
+                } else {
+                    this.uploadImage(selectedPhotos[0]);
                 }
-            });
-        }, 100);
+            }
+        );
     };
     //职业信息format
     careertData() {

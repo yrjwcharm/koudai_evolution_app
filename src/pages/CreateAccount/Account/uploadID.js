@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 17:05:54
+ * @LastEditTime: 2021-09-29 15:22:56
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -20,7 +20,6 @@ import {
 import {px, deviceWidth, requestAuth} from '../../../utils/appUtil';
 import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import upload from '../../../services/upload';
@@ -30,6 +29,7 @@ import http from '../../../services';
 import {getUserInfo} from '../../../redux/actions/userInfo';
 import {connect} from 'react-redux';
 const typeArr = ['从相册中获取', '拍照'];
+import SyanImagePicker from 'react-native-syan-image-picker';
 class UploadID extends Component {
     state = {
         frontSource: '',
@@ -118,22 +118,19 @@ class UploadID extends Component {
     };
     //打开相册
     openPicker = () => {
-        const options = {
-            quality: 0.4,
-        };
-        setTimeout(() => {
-            launchImageLibrary(options, (response) => {
-                if (response.didCancel) {
-                    console.log('User cancelled image picker');
-                } else if (response.error) {
-                    console.log('ImagePicker Error: ', response.error);
-                } else if (response.customButton) {
-                    console.log('User tapped custom button: ', response.customButton);
-                } else if (response.assets) {
-                    this.uploadImage(response.assets[0]);
+        SyanImagePicker.showImagePicker(
+            {
+                imageCount: 1, // 最大选择图片数目，默认6
+            },
+            (err, selectedPhotos) => {
+                if (err) {
+                    // 取消选择
+                    return;
+                } else {
+                    this.uploadImage(selectedPhotos[0]);
                 }
-            });
-        }, 100);
+            }
+        );
     };
     // 选择图片或相册
     onClickChoosePicture = async () => {

@@ -2,20 +2,20 @@
  * @Date: 2021-01-18 20:37:31
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-03-25 16:39:16
+ * @LastEditTime: 2021-09-29 15:19:45
  * @Description: 相机扫描
  */
 import React, {Component} from 'react';
 import {Text, View, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {RNCamera} from 'react-native-camera';
-import {deviceWidth as width, deviceHeight as height, px} from '../../../utils/appUtil';
+import {deviceWidth as width, px} from '../../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
 import _ from 'lodash';
 const color = '#61A8FF';
 export default class camera extends Component {
     takePicture = async () => {
         if (this.camera) {
-            const options = {quality: 0.5};
+            const options = {quality: 0.6};
             const data = await this.camera.takePictureAsync(options);
             DeviceEventEmitter.emit('EventType', data.uri);
             this.props.navigation.goBack();
