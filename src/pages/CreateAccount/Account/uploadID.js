@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-29 15:22:56
+ * @LastEditTime: 2021-09-29 18:44:21
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -28,8 +28,8 @@ import _ from 'lodash';
 import http from '../../../services';
 import {getUserInfo} from '../../../redux/actions/userInfo';
 import {connect} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
 const typeArr = ['从相册中获取', '拍照'];
-import SyanImagePicker from 'react-native-syan-image-picker';
 class UploadID extends Component {
     state = {
         frontSource: '',
@@ -118,19 +118,19 @@ class UploadID extends Component {
     };
     //打开相册
     openPicker = () => {
-        SyanImagePicker.showImagePicker(
-            {
-                imageCount: 1, // 最大选择图片数目，默认6
-            },
-            (err, selectedPhotos) => {
-                if (err) {
-                    // 取消选择
-                    return;
-                } else {
-                    this.uploadImage(selectedPhotos[0]);
+        setTimeout(() => {
+            launchImageLibrary({quality: 0.5}, (response) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else if (response.assets) {
+                    this.uploadImage(response.assets[0]);
                 }
-            }
-        );
+            });
+        }, 100);
     };
     // 选择图片或相册
     onClickChoosePicture = async () => {
@@ -182,6 +182,7 @@ class UploadID extends Component {
     };
     render() {
         const {showTypePop, frontSource, behindSource, desc} = this.state;
+        console.log(frontSource);
         return (
             <>
                 <ScrollView style={styles.con}>

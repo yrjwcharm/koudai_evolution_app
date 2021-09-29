@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-29 16:43:59
+ * @LastEditTime: 2021-09-29 18:44:51
  * @Description: 开户身份证认证
  */
 
@@ -37,7 +37,7 @@ import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import upload from '../../../services/upload';
 import {updateAccount} from '../../../redux/actions/accountInfo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import SyanImagePicker from 'react-native-syan-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 class IdAuth extends Component {
     constructor(props) {
         super(props);
@@ -291,19 +291,19 @@ class IdAuth extends Component {
     };
     //打开相册
     openPicker = () => {
-        SyanImagePicker.showImagePicker(
-            {
-                imageCount: 1, // 最大选择图片数目，默认6
-            },
-            (err, selectedPhotos) => {
-                if (err) {
-                    // 取消选择
-                    return;
-                } else {
-                    this.uploadImage(selectedPhotos[0]);
+        setTimeout(() => {
+            launchImageLibrary({quality: 0.5}, (response) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else if (response.customButton) {
+                    console.log('User tapped custom button: ', response.customButton);
+                } else if (response.assets) {
+                    this.uploadImage(response.assets[0]);
                 }
-            }
-        );
+            });
+        }, 100);
     };
     //职业信息format
     careertData() {
