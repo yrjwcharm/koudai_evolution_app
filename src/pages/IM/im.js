@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-18 10:46:22
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-29 16:30:21
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -517,7 +517,6 @@ const IM = (props) => {
                     } else if (resp.customButton) {
                         console.log('User tapped custom button: ', resp.customButton);
                     } else if (resp.assets) {
-                        // console.log(resp.assets);
                         const selectedPhotos = resp.assets;
                         selectedPhotos.forEach((response) => {
                             let cmid = randomMsgId('IMR');
@@ -568,7 +567,6 @@ const IM = (props) => {
                             // 取消选择
                             return;
                         } else {
-                            console.log(selectedPhotos);
                             selectedPhotos.forEach((response) => {
                                 let cmid = randomMsgId('IMR');
                                 handleMessage({
