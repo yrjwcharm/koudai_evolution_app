@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-09-26 17:37:46
+ * @LastEditTime: 2021-09-29 16:51:39
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -118,7 +118,7 @@ export default function RenderChart(props) {
                         {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
                     </Text>
                 </View>
-                {chartData?.yield_info?.label[1] ? (
+                {chartData?.yield_info?.label && chartData?.yield_info?.label[1] ? (
                     <View style={[styles.legend_sty]}>
                         <TextInput
                             style={[
@@ -137,7 +137,7 @@ export default function RenderChart(props) {
                         </View>
                     </View>
                 ) : null}
-                {chartData?.yield_info?.label[2] ? (
+                {chartData?.yield_info?.label && chartData?.yield_info?.label[2] ? (
                     <View style={[styles.legend_sty, lowLine === 1 && type !== 2 ? {minWidth: px(100)} : {}]}>
                         <TextInput
                             style={[

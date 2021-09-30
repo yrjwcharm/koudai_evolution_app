@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-09-26 18:01:33
+ * @LastEditTime: 2021-09-29 17:12:12
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -55,14 +55,14 @@ export const baseChart = (data) => `(function(){
 })()
 `;
 
-export const pieChart = (data, map, title) => `
+export const pieChart = (data, map, title, height = text(140)) => `
 (function(){
   const chart = new F2.Chart({
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     padding: [0, 'auto' ],
     width:${deviceWidth - text(50)},
-    height:${text(140)},
+    height:${height},
   });
   chart.source(${JSON.stringify(data)},{
     ratio: {
@@ -86,7 +86,7 @@ export const pieChart = (data, map, title) => `
     radius: 0.85
   });
   chart.axis(false);
-  chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#F04864', '#8543E0']).adjust('stack').style({
+  chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#e4c084', '#8543E0']).adjust('stack').style({
     lineWidth: 0.5,
     stroke: '#fff',
     lineJoin: 'round',

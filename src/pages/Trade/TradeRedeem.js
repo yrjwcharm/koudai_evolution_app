@@ -3,13 +3,13 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: dx
- * @LastEditTime: 2021-09-28 14:24:16
+ * @LastEditTime: 2021-09-29 19:00:37
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text, isIphoneX, onlyNumber} from '../../utils/appUtil';
-import {Style, Colors, Font} from '../../common/commonStyle';
+import {Style, Colors, Font, Space} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -51,19 +51,22 @@ export default class TradeRedeem extends Component {
         Http.get('/trade/redeem/info/20210101', {
             poid: this.props.route?.params?.poid,
         }).then((res) => {
-            this.getPlanInfo();
-            if (res.result.pay_methods.default === 1) {
+            if (res.code === '000000') {
+                this.getPlanInfo();
+                if (res.result.pay_methods.default === 1) {
+                    this.setState({
+                        check: [false, true],
+                    });
+                } else {
+                    this.setState({
+                        check: [true, false],
+                    });
+                }
                 this.setState({
-                    check: [false, true],
-                });
-            } else {
-                this.setState({
-                    check: [true, false],
+                    data: res.result,
+                    tips: res.result.redeem_info?.tip || '',
                 });
             }
-            this.setState({
-                data: res.result,
-            });
         });
     }
     componentWillUnmount() {
@@ -79,16 +82,16 @@ export default class TradeRedeem extends Component {
                 init,
             }).then((res) => {
                 if (res.code === '000000') {
-                    tableData.head = res.result.header;
-                    tableData.body = res.result.body;
+                    tableData.head = res.result.header || {};
+                    tableData.body = res.result.body || [];
 
                     this.notice = res.result.notice;
                     if (init != 1) {
-                        this.setState({
+                        this.setState((prev) => ({
                             tableData,
                             redeem_id: res.result.redeem_id,
-                            tips: res.result.amount_desc,
-                        });
+                            tips: res.result.amount_desc || prev.tips,
+                        }));
                     }
                     resolve(res.result.redeem_id);
                 } else {
@@ -163,10 +166,16 @@ export default class TradeRedeem extends Component {
     };
 
     onChange = (_text) => {
+        const {data} = this.state;
         _text = onlyNumber(_text);
         if (_text && _text != 0) {
             if (_text > 100) {
                 _text = '100';
+            }
+            if (data.min_ratio) {
+                if (_text < data.min_ratio) {
+                    _text = `${data.min_ratio}`;
+                }
             }
             this.inputValue = _text;
             this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
@@ -324,15 +333,20 @@ export default class TradeRedeem extends Component {
                                 </View>
                             ) : null}
                         </View>
-                        <TouchableOpacity
-                            style={[Style.flexRow, {marginTop: text(12), backgroundColor: '#fff', padding: text(16)}]}
-                            onPress={() => this.toggleFund()}
-                            activeOpacity={1}>
-                            <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
-                                {data?.redeem_info?.redeem_text}
-                            </Text>
-                            <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
-                        </TouchableOpacity>
+                        {data.scene !== 'adviser' && (
+                            <TouchableOpacity
+                                style={[
+                                    Style.flexRow,
+                                    {marginTop: text(12), backgroundColor: '#fff', padding: text(16)},
+                                ]}
+                                onPress={() => this.toggleFund()}
+                                activeOpacity={1}>
+                                <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
+                                    {data?.redeem_info?.redeem_text}
+                                </Text>
+                                <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                            </TouchableOpacity>
+                        )}
                         {toggleList && Object.keys(tableData).length > 0 && tableData?.body.length > 0 && (
                             <View
                                 style={{
@@ -371,6 +385,11 @@ export default class TradeRedeem extends Component {
                                 </View>
                             </View>
                         )}
+                        {data.reminder ? (
+                            <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
+                                <Html style={styles.reminderSty} html={data.reminder} />
+                            </View>
+                        ) : null}
                         <PasswordModal
                             ref={(ref) => {
                                 this.passwordModal = ref;
@@ -444,5 +463,10 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         textAlign: 'right',
         width: text(80),
+    },
+    reminderSty: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.lightGrayColor,
     },
 });
