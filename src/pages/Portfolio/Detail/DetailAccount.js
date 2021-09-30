@@ -5,8 +5,8 @@
  * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
@@ -383,12 +383,13 @@ export default function DetailAccount({route, navigation}) {
                                 ctrl={'global'}
                                 oid={1}
                             />
-                            <View style={{height: text(140)}}>
+                            <View style={{height: Platform.select({android: text(150), ios: text(140)})}}>
                                 <Chart
                                     initScript={pieChart(
                                         data?.asset_deploy?.items,
                                         data?.asset_deploy?.chart,
-                                        route.params.scene === 'adviser' ? '资产配置' : ''
+                                        route.params.scene === 'adviser' ? '资产配置' : '',
+                                        Platform.select({android: text(150), ios: text(140)})
                                     )}
                                 />
                             </View>

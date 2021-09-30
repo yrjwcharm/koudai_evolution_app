@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:37:34
+ * @LastEditTime: 2021-09-30 10:39:14
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -83,6 +83,22 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
+                const showRishPop = () => {
+                    Modal.show({
+                        cancelCallBack: () => this.props.navigation.goBack(),
+                        cancelText: res.result.risk_pop.cancel.text,
+                        confirm: true,
+                        confirmCallBack: () => {
+                            if (res.result.risk_pop.confirm.url) {
+                                this.props.jump(res.result.risk_pop.confirm.url);
+                            }
+                        },
+                        confirmText: res.result.risk_pop.confirm.text,
+                        content: res.result.risk_pop.content,
+                        isTouchMaskToClose: false,
+                        title: res.result.risk_pop.title,
+                    });
+                };
                 if (res.result.risk_disclosure) {
                     Modal.show({
                         children: () => {
@@ -114,19 +130,7 @@ class TradeBuy extends Component {
                         },
                         confirmCallBack: () => {
                             if (res.result.risk_pop) {
-                                Modal.show({
-                                    cancelCallBack: () => this.props.navigation.goBack(),
-                                    cancelText: res.result.risk_pop.cancel.text,
-                                    confirm: true,
-                                    confirmCallBack: () => {
-                                        if (res.result.risk_pop.confirm.url) {
-                                            this.props.jump(res.result.risk_pop.confirm.url);
-                                        }
-                                    },
-                                    confirmText: res.result.risk_pop.confirm.text,
-                                    content: res.result.risk_pop.content,
-                                    title: res.result.risk_pop.title,
-                                });
+                                showRishPop();
                             }
                         },
                         confirmText: '关闭',
@@ -134,6 +138,8 @@ class TradeBuy extends Component {
                         isTouchMaskToClose: false,
                         title: res.result.risk_disclosure.title,
                     });
+                } else if (res.result.risk_pop) {
+                    showRishPop();
                 }
                 this.setState(
                     {

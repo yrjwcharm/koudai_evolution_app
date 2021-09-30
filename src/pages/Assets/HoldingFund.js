@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-28 10:58:01
+ * @LastEditTime: 2021-09-29 11:19:23
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,6 +16,7 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import Empty from '../../components/EmptyTip';
 import {useJump} from '../../components/hooks';
+import Notice from '../../components/Notice';
 
 const RatioColor = [
     '#E1645C',
@@ -44,8 +45,9 @@ const HoldingFund = ({navigation, route}) => {
     const [loading, setLoading] = useState(false);
     const urlRef = useRef('');
     const [emptyTip, setEmptyTip] = useState('');
+    const [tradeTip, setTradeTip] = useState('');
 
-    const init = (first) => {
+    const init = () => {
         http.get(
             curTab === 0 ? '/portfolio/funds/user_holding/20210101' : '/portfolio/funds/user_confirming/20210101',
             {
@@ -53,9 +55,10 @@ const HoldingFund = ({navigation, route}) => {
             }
         ).then((res) => {
             if (res.code === '000000') {
-                first && navigation.setOptions({title: res.result.title || '持有基金'});
-                first && setTabs(res.result.tabs);
+                navigation.setOptions({title: res.result.title || '持有基金'});
+                setTabs((prev) => (prev.length > 0 ? prev : res.result.tabs));
                 setEmptyTip(res.result.tip || '');
+                setTradeTip(res.result.processing_info || '');
                 curTab === 0 ? setList1(res.result.list || []) : setList2(res.result.list || []);
                 urlRef.current = res.result.url;
             }
@@ -83,7 +86,7 @@ const HoldingFund = ({navigation, route}) => {
     const onRefresh = useCallback(() => {
         init();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [curTab]);
 
     const renderContent = useCallback(() => {
         return (
@@ -94,6 +97,7 @@ const HoldingFund = ({navigation, route}) => {
                         style={{width: deviceWidth, height: deviceHeight - headerHeight - text(42)}}
                     />
                 )}
+                {tradeTip ? <Notice content={tradeTip} /> : null}
                 <View style={styles.subContainer}>
                     {(curTab === 0 ? list1 : list2)?.map((item, index) => {
                         return (
@@ -236,7 +240,7 @@ const HoldingFund = ({navigation, route}) => {
                 </View>
             </>
         );
-    }, [curTab, list1, list2, getColor, navigation, jump, loading, headerHeight, emptyTip]);
+    }, [curTab, list1, list2, getColor, navigation, jump, loading, headerHeight, emptyTip, tradeTip]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -253,7 +257,6 @@ const HoldingFund = ({navigation, route}) => {
                 </>
             ),
         });
-        init(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
