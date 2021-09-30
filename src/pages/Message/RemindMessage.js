@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-31 11:57:57
+ * @LastEditTime: 2021-09-28 19:01:36
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -65,7 +65,16 @@ export default function RemindMessage({navigation}) {
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {Object.keys(data).length > 0 && (
                 <>
-                    {!hide && showNotice ? (
+                    {data?.notice?.text ? (
+                        <Notice
+                            content={{
+                                log_id: data?.notice?.log_id,
+                                content: data?.notice?.text,
+                                url: data?.notice?.button?.url,
+                                button: data?.notice?.button,
+                            }}
+                        />
+                    ) : !hide && showNotice ? (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
                             <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
                             <TouchableOpacity
@@ -86,15 +95,6 @@ export default function RemindMessage({navigation}) {
                                 <AntDesign name={'close'} size={12} color={'#EB7121'} />
                             </TouchableOpacity>
                         </View>
-                    ) : data?.notice?.text ? (
-                        <Notice
-                            content={{
-                                log_id: data?.notice?.log_id,
-                                content: data?.notice?.text,
-                                url: data?.notice?.button?.url,
-                                button: data?.notice?.button,
-                            }}
-                        />
                     ) : null}
 
                     <ScrollView style={{flex: 1, padding: text(16)}}>

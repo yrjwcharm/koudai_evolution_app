@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: dx
- * @LastEditTime: 2021-04-22 21:33:10
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 18:53:50
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
@@ -21,6 +21,8 @@ import {PasswordModal} from '../../components/Password';
 import Mask from '../../components/Mask';
 import {BankCardModal, InputModal} from '../../components/Modal';
 import BottomDesc from '../../components/BottomDesc';
+import {Modal} from '../../components/Modal';
+import {useSelector} from 'react-redux';
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -41,6 +43,8 @@ export default function FixedUpdate({navigation, route}) {
     const bankCardModal = useRef(null);
     const initAmount = useRef('');
     const [loading, setLoading] = useState(true);
+    const userInfo = useSelector((state) => state.userInfo);
+
     const addNum = () => {
         setNum((prev) => {
             if (prev + intervalRef.current > payMethod.day_limit) {
@@ -57,28 +61,48 @@ export default function FixedUpdate({navigation, route}) {
             return prev - intervalRef.current < initAmount.current ? initAmount.current : prev - intervalRef.current;
         });
     };
-
+    useFocusEffect(
+        useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
     useFocusEffect(
         useCallback(() => {
             Http.get('/trade/update/invest_plan/info/20210101', {
                 invest_id: route.params.invest_id,
             })
                 .then((res) => {
-                    intervalRef.current = res.result.target_info.invest.incr;
-                    initAmount.current = res.result.target_info.invest.init_amount;
-                    setData(res.result);
-                    setPayMethod(res.result.pay_methods[0] || {});
-                    setNum(parseFloat(res.result.target_info.invest.amount));
-                    const _date = res.result.target_info.fix_period.current_date;
-                    setCycle(_date);
-                    cycleRef.current = _date.split(' ')[0];
-                    timingRef.current = _date.split(' ')[1];
-                    setLoading(false);
+                    if (res.code === '000000') {
+                        intervalRef.current = res.result.target_info.invest.incr;
+                        initAmount.current = res.result.target_info.invest.init_amount;
+                        setData(res.result);
+                        setPayMethod(res.result.pay_methods[0] || {});
+                        setNum(parseFloat(res.result.target_info.invest.amount));
+                        const _date = res.result.target_info.fix_period.current_date;
+                        setCycle(_date);
+                        cycleRef.current = _date.split(' ')[0];
+                        timingRef.current = _date.split(' ')[1];
+                        setLoading(false);
+                    }
                 })
                 .catch(() => {
                     setLoading(false);
                 });
-        }, [route.params.invest_id])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
     );
     const selectTime = () => {
         Picker.init({

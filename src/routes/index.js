@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-18 18:18:29
+ * @LastEditTime: 2021-09-28 10:46:04
  * @Description:路由表
  */
 import React from 'react';
@@ -152,6 +152,7 @@ import AuthorityManage from '../pages/Settings/AuthorityManage'; //权限管理
 import PersonalizedRecommend from '../pages/Settings/PersonalizedRecommend'; //个性化推荐
 import AboutApp from '../pages/Settings/AboutApp'; //关于APP
 import WeChatNotice from '../pages/Assets/WeChatNotice'; // 开启微信通知
+import IdAuth from '../pages/CreateAccount/Account/idAuth'; //开户身份证认证
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -587,6 +588,7 @@ export default function AppStack() {
             <Stack.Screen name="AuthorityManage" component={AuthorityManage} options={{title: '权限管理'}} />
             <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
             <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
+            <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
         </Stack.Navigator>
     );
 }

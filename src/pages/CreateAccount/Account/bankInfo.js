@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-23 11:33:57
+ * @LastEditTime: 2021-09-27 19:08:35
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -133,7 +133,9 @@ class BankInfo extends Component {
                     onHidden: () => {
                         this.props.navigation.dispatch((state) => {
                             // Remove the home route from the stack
-                            const routes = state.routes.filter((r) => r.name !== 'CreateAccount');
+                            const routes = state.routes.filter(
+                                (r) => r.name !== 'CreateAccount' && r.name !== 'IdAuth'
+                            );
                             return CommonActions.reset({
                                 ...state,
                                 routes,
@@ -165,6 +167,7 @@ class BankInfo extends Component {
      * @return {*}
      */
     sendCode = () => {
+        global.LogTool('BankInfoGetverificationcode');
         const {code_btn_click, phone, selectBank, bank_no} = this.state;
         this.props.update({phone, bank_no, selectBank});
         if (code_btn_click) {
@@ -232,6 +235,7 @@ class BankInfo extends Component {
         }, 1000);
     };
     _showBankCard = () => {
+        global.LogTool('BankInfoChangeBank');
         this.bankCard.show();
     };
     jumpPage = () => {
@@ -247,11 +251,16 @@ class BankInfo extends Component {
         const {phone, code, selectBank} = this.state;
         if (value && value.length > 11) {
             http.get('/passport/match/bank_card_info/20210101', {
-                bank_no: this.state.bank_no.replace(/ /g, ''),
+                bank_no: value.replace(/ /g, ''),
             }).then((res) => {
-                this.setState({
-                    selectBank: res.result,
-                });
+                this.setState(
+                    {
+                        selectBank: res.result,
+                    },
+                    () => {
+                        this.checkData(phone, code, this.state.selectBank, value);
+                    }
+                );
             });
         }
         this.setState(
@@ -321,6 +330,9 @@ class BankInfo extends Component {
                             onBlur={() => {
                                 global.LogTool('acBankNo');
                             }}
+                            onFoucs={() => {
+                                global.LogTool('BankInfoCardnumber');
+                            }}
                             errorMsg={bankErrMes}
                             value={bank_no}
                             onChangeText={this.onChangeBankNo}
@@ -346,6 +358,9 @@ class BankInfo extends Component {
                             onBlur={() => {
                                 global.LogTool('acPhone');
                             }}
+                            onFoucs={() => {
+                                global.LogTool('BankInfoPhonenumber');
+                            }}
                             errorMsg={phoneError}
                             value={phone}
                             onChangeText={this.onChangePhone}
@@ -359,6 +374,9 @@ class BankInfo extends Component {
                                 maxLength={6}
                                 onBlur={() => {
                                     global.LogTool('acCode');
+                                }}
+                                onFoucs={() => {
+                                    global.LogTool('BankInfoEnterverificationcode');
                                 }}
                                 value={code}
                                 onChangeText={(_code) => {

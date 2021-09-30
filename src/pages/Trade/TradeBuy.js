@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-15 10:53:17
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 18:59:19
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -24,6 +24,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
+import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -60,18 +62,18 @@ class TradeBuy extends Component {
     getTab = () => {
         const {poid} = this.state;
         http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
-            this.setState({
-                type: data.result.active,
-                has_tab: data.result.has_tab,
-            });
-            if (data.result.active == 1 && data.result.has_tab) {
-                this.init(data.result.active);
-            }
+            this.setState(
+                {
+                    type: data.result.active,
+                    has_tab: data.result.has_tab,
+                },
+                () => {
+                    this.init(data.result.active);
+                }
+            );
         });
     };
-    componentDidMount() {
-        this.getTab();
-    }
+
     init = (_type) => {
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
@@ -379,7 +381,7 @@ class TradeBuy extends Component {
         );
     };
     changeBuyStatus = (obj) => {
-        if (obj.from == 0 && obj.i == 0) {
+        if ((obj.from == 0 && obj.i == 0) || (obj.from == 1 && obj.i == 1)) {
             return;
         }
         this.setState({type: obj.i, errTip: ''}, () => {
@@ -869,7 +871,7 @@ class TradeBuy extends Component {
         const {button} = data;
         return (
             <>
-                <Focus init={this.init} />
+                <Focus init={this.getTab} />
                 {data ? (
                     <View
                         style={{
@@ -920,8 +922,30 @@ function Focus({init}) {
             init();
         }, [init])
     );
-
     return null;
+}
+function WithHooks(props) {
+    const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo);
+    useFocusEffect(
+        React.useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => props.navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
+    return <TradeBuy {...props} jump={jump} />;
 }
 const styles = StyleSheet.create({
     title: {
@@ -1048,4 +1072,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TradeBuy;
+export default WithHooks;

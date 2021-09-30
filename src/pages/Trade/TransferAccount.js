@@ -2,15 +2,17 @@
  * @Author: xjh
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
- * @LastEditors: dx
- * @LastEditTime: 2021-04-09 18:26:42
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-28 19:00:06
  */
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView, TextInput, Image} from 'react-native';
-import {Colors, Font, Space, Style} from '../../common//commonStyle';
+import React, {useCallback, useState, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {Colors, Font, Style} from '../../common/commonStyle';
 import {px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/';
+import {Modal} from '../../components/Modal';
 import Http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -18,22 +20,47 @@ import {PasswordModal} from '../../components/Password';
 import Icon from 'react-native-vector-icons/AntDesign';
 import BottomDesc from '../../components/BottomDesc';
 import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 const btnHeight = isIphoneX() ? text(90) : text(66);
 export default function TransferAccount({navigation, route}) {
     const jump = useJump();
     const [data, setData] = useState({});
     const [show, setShow] = useState(false);
     const passwordModal = useRef(null);
+    const userInfo = useSelector((state) => state.userInfo);
     const toggle = () => {
         setShow(!show);
     };
-    useEffect(() => {
-        Http.get('trade/price/transfer/20210101', {
-            poid: route.params.poid,
-        }).then((res) => {
-            setData(res.result);
-        });
-    }, [navigation, route]);
+    useFocusEffect(
+        useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => navigation.goBack(),
+                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            Http.get('/trade/price/transfer/20210101', {
+                poid: route.params.poid,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result);
+                }
+            });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [])
+    );
     const passwordInput = () => {
         if (data.button.url) {
             jump(data.button.url);

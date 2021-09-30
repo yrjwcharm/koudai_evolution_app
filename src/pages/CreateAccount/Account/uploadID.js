@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 19:04:55
+ * @LastEditTime: 2021-09-29 18:44:21
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -20,22 +20,22 @@ import {
 import {px, deviceWidth, requestAuth} from '../../../utils/appUtil';
 import {Colors, Font} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {Modal, SelectModal} from '../../../components/Modal';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import upload from '../../../services/upload';
 import Toast from '../../../components/Toast';
 import _ from 'lodash';
 import http from '../../../services';
+import {getUserInfo} from '../../../redux/actions/userInfo';
+import {connect} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
 const typeArr = ['从相册中获取', '拍照'];
-export class uploadID extends Component {
+class UploadID extends Component {
     state = {
         frontSource: '',
         behindSource: '',
         showTypePop: false,
         clickIndex: '',
-        frontStatus: false,
-        backStatus: false,
         desc: '',
     };
     toast = '';
@@ -81,6 +81,11 @@ export class uploadID extends Component {
                 behindSource: uri,
             });
         }
+        if (this.state.behindSource && this.state.frontSource) {
+            setTimeout(() => {
+                this.props.getUserInfo();
+            }, 10);
+        }
     };
     uploadImage = (response) => {
         const {clickIndex} = this.state;
@@ -94,43 +99,27 @@ export class uploadID extends Component {
                 if (res) {
                     this.uri = '';
                     if (res?.code == '000000') {
+                        this.showImg(response.uri);
                         Toast.show('上传成功');
                         if (clickIndex == 1) {
                             DeviceEventEmitter.emit('upload', {name: res.result.name, id_no: res.result.identity_no});
-                            this.setState({frontStatus: true});
-                        } else {
-                            this.setState({backStatus: true});
                         }
                     } else {
-                        if (clickIndex == 1) {
-                            this.setState({frontSource: ''});
-                        } else {
-                            this.setState({behindSource: ''});
-                        }
                         Toast.show(res.message);
                     }
                 }
             },
             () => {
                 Toast.hide(this.toast);
-                if (clickIndex == 1) {
-                    this.setState({frontSource: ''});
-                } else {
-                    this.setState({behindSource: ''});
-                }
+
                 Toast.show('上传失败');
             }
         );
-        this.showImg(response.uri);
     };
     //打开相册
     openPicker = () => {
-        const options = {
-            width: px(300),
-            height: px(190),
-        };
         setTimeout(() => {
-            launchImageLibrary(options, (response) => {
+            launchImageLibrary({quality: 0.5}, (response) => {
                 if (response.didCancel) {
                     console.log('User cancelled image picker');
                 } else if (response.error) {
@@ -192,7 +181,8 @@ export class uploadID extends Component {
         }
     };
     render() {
-        const {frontStatus, backStatus, showTypePop, frontSource, behindSource, desc} = this.state;
+        const {showTypePop, frontSource, behindSource, desc} = this.state;
+        console.log(frontSource);
         return (
             <>
                 <ScrollView style={styles.con}>
@@ -247,7 +237,11 @@ export class uploadID extends Component {
                     <Text style={styles.title}>上传要求</Text>
                     <Image style={styles.tip_img} source={require('../../../assets/img/account/uploadExample.png')} />
                 </ScrollView>
-                <FixedButton title={'确认上传'} disabled={!(frontStatus && backStatus)} onPress={this.handleBack} />
+                <FixedButton
+                    title={'确认上传'}
+                    disabled={!(frontSource && behindSource)}
+                    onPress={_.debounce(this.handleBack, 300)}
+                />
             </>
         );
     }
@@ -285,4 +279,12 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
 });
-export default uploadID;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getUserInfo: () => {
+            dispatch(getUserInfo());
+        },
+    };
+};
+export default connect(null, mapDispatchToProps)(UploadID);
