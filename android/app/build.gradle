@@ -102,7 +102,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -155,7 +155,7 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 62400
+        versionCode 62401
         versionName '6.2.4'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
@@ -212,7 +212,6 @@ packagingOptions {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds //混淆
-            shrinkResources true // 移除无用的resource文件
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
              android.applicationVariants.all { variant ->
                 variant.outputs.all {
@@ -223,21 +222,21 @@ packagingOptions {
         }
     }
  productFlavors {
-        QQ {}
-        _360 {}
+        // QQ {}
+        // _360 {}
         XIAOMI {}
-        WANGDOUJIA {}
-        BAIDU {}
-        _91 {}
-        ANZHUO {}
+        // WANGDOUJIA {}
+        // BAIDU {}
+        // _91 {}
+        // ANZHUO {}
         ZHIXING {}
-        CESHI {}
+        // CESHI {}
         WWW {}
         VIVO {}
         OPPO {}
         MEIZU {}
-        huanliang {}
-        yingyongbaocpd {}
+        // huanliang {}
+        // yingyongbaocpd {}
         sanxing {}
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
