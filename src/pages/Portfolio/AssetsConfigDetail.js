@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-09-27 10:25:08
+ * @LastEditTime: 2021-10-08 15:27:14
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -48,11 +48,14 @@ export class AssetsConfigDetail extends Component {
         super(props);
         this.state = {
             amount: props.route?.params?.amount || '2000',
-            activeSections: [],
+            activeSections: props.route.params.scene === 'adviser' ? [0] : [],
             data: {},
         };
     }
     componentDidMount() {
+        if (this.props.route.params.scene === 'adviser') {
+            this.props.navigation.setOptions({title: '持仓分布页'});
+        }
         this.init();
     }
     init = () => {
@@ -129,7 +132,7 @@ export class AssetsConfigDetail extends Component {
         return (
             <View style={[styles.assets_l1, Style.flexBetween, {borderTopWidth: index === 0 ? 0 : Space.borderWidth}]}>
                 <View style={[styles.leftPart, Style.flexRow]}>
-                    <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
+                    <View style={[styles.circle, {backgroundColor: section.color || RatioColor[index]}]} />
                     <Text style={[styles.assets_l1_name]}>{section.name}</Text>
                 </View>
                 <View style={[styles.rightPart, Style.flexRow]}>
