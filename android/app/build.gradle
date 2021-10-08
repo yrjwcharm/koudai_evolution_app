@@ -212,6 +212,7 @@ packagingOptions {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds //混淆
+            shrinkResources true // 移除无用的resource文件
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
              android.applicationVariants.all { variant ->
                 variant.outputs.all {
