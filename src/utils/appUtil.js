@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-06 17:00:15
+ * @LastEditors: dx
+ * @LastEditTime: 2021-10-09 10:54:16
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -156,6 +156,11 @@ const tagColor = (type) => {
         return {
             text_color: '#0051CC',
             bg_color: '#EFF5FF',
+        };
+    } else if (type == 100) {
+        return {
+            text_color: '#FF7D41',
+            bg_color: '#FFF5E5',
         };
     } else {
         return {

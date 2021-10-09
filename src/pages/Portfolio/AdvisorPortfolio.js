@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 17:59:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-27 10:19:54
+ * @LastEditTime: 2021-10-09 17:07:06
  * @Description: 投顾组合超市
  */
 import React, {useEffect, useState} from 'react';
@@ -48,13 +48,10 @@ const AdvisorPortfolio = ({navigation}) => {
                         <View style={Style.flexRowCenter}>
                             <View style={{position: 'relative'}}>
                                 <View style={styles.underline} />
-                                <Text style={styles.introTitle}>{'投顾管家是什么'}</Text>
+                                <Text style={styles.introTitle}>{data.introduce?.title}</Text>
                             </View>
                         </View>
                         <View style={{marginTop: px(12), position: 'relative'}}>
-                            {/* <View style={styles.tagContainer}>
-                                <Text style={styles.tagText}>{'投顾管家'}</Text>
-                            </View> */}
                             <Image source={{uri: data.introduce?.img}} style={styles.tagImage} />
                             <HTML html={data.introduce?.content} style={styles.introContent} />
                         </View>
