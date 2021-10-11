@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:39:14
+ * @LastEditTime: 2021-10-11 17:30:19
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -844,9 +844,9 @@ class TradeBuy extends Component {
                                         style={[
                                             styles.tip,
                                             Style.flexBetween,
-                                            {borderTopWidth: 0, height: px(24), marginTop: px(-4), paddingLeft: px(3)},
+                                            {borderTopWidth: 0, height: px(32), marginTop: px(-4), paddingLeft: px(3)},
                                         ]}>
-                                        <Text style={{fontSize: px(12)}}>
+                                        <Text style={{fontSize: px(12), flexShrink: 1}} numberOfLines={1}>
                                             实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
                                         </Text>
                                         <Text style={{color: Colors.btnColor}} onPress={this.showFixModal}>
