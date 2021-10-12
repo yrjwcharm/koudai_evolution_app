@@ -1,13 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-27 16:16:01
+ * @LastEditTime: 2021-10-12 11:26:15
  * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, ScrollView, View, Text, Image} from 'react-native';
+import {StyleSheet, ScrollView, View, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';

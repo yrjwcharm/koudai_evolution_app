@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-11 17:30:19
+ * @LastEditTime: 2021-10-12 11:58:15
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -20,7 +20,7 @@ import http from '../../services';
 import Picker from 'react-native-picker';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
@@ -96,10 +96,11 @@ class TradeBuy extends Component {
                         confirmText: res.result.risk_pop.confirm.text,
                         content: res.result.risk_pop.content,
                         isTouchMaskToClose: false,
+                        onCloseCallBack: () => this.props.navigation.goBack(),
                         title: res.result.risk_pop.title,
                     });
                 };
-                if (res.result.risk_disclosure) {
+                if (this.props.isFocused && res.result.risk_disclosure) {
                     Modal.show({
                         children: () => {
                             return (
@@ -129,16 +130,17 @@ class TradeBuy extends Component {
                             );
                         },
                         confirmCallBack: () => {
-                            if (res.result.risk_pop) {
+                            if (this.props.isFocused && res.result.risk_pop) {
                                 showRishPop();
                             }
                         },
                         confirmText: '关闭',
                         countdown: res.result.risk_disclosure.countdown,
                         isTouchMaskToClose: false,
+                        onCloseCallBack: () => this.props.navigation.goBack(),
                         title: res.result.risk_disclosure.title,
                     });
-                } else if (res.result.risk_pop) {
+                } else if (this.props.isFocused && res.result.risk_pop) {
                     showRishPop();
                 }
                 this.setState(
@@ -1013,6 +1015,7 @@ function Focus({init}) {
 function WithHooks(props) {
     const jump = useJump();
     const userInfo = useSelector((state) => state.userInfo);
+    const isFocused = useIsFocused();
     useFocusEffect(
         React.useCallback(() => {
             const {anti_pop} = userInfo.toJS();
@@ -1031,7 +1034,7 @@ function WithHooks(props) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
-    return <TradeBuy {...props} jump={jump} />;
+    return <TradeBuy {...props} isFocused={isFocused} jump={jump} />;
 }
 const styles = StyleSheet.create({
     title: {

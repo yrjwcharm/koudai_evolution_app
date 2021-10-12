@@ -46,6 +46,7 @@ export default class MyModal extends Component {
         this.customTitleView = props.customTitleView ? props.customTitleView : false;
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
+        this.backButtonClose = props.backButtonClose || true; // 点击返回键或手势返回是否关闭弹窗
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.state = {
@@ -377,7 +378,7 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    if (this.isTouchMaskToClose) {
+                    if (this.backButtonClose) {
                         this.props.onCloseCallBack && this.props.onCloseCallBack();
                         this.setModalVisiable(false);
                     }
