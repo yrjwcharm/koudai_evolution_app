@@ -1,4 +1,19 @@
 PODS:
+  - AFNetworking (4.0.1):
+    - AFNetworking/NSURLSession (= 4.0.1)
+    - AFNetworking/Reachability (= 4.0.1)
+    - AFNetworking/Security (= 4.0.1)
+    - AFNetworking/Serialization (= 4.0.1)
+    - AFNetworking/UIKit (= 4.0.1)
+  - AFNetworking/NSURLSession (4.0.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (4.0.1)
+  - AFNetworking/Security (4.0.1)
+  - AFNetworking/Serialization (4.0.1)
+  - AFNetworking/UIKit (4.0.1):
+    - AFNetworking/NSURLSession
   - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
@@ -408,6 +423,9 @@ PODS:
     - React-Core
   - RNScreens (2.16.1):
     - React-Core
+  - RNSslPinning (1.5.4):
+    - AFNetworking (~> 4.0)
+    - React
   - RNSVG (12.1.0):
     - React
   - RNSyanImagePicker (0.4.11):
@@ -516,6 +534,7 @@ DEPENDENCIES:
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSslPinning (from `../node_modules/react-native-ssl-pinning/ios`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNSyanImagePicker (from `../node_modules/react-native-syan-image-picker`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -523,6 +542,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AFNetworking
     - Base64
     - boost-for-react-native
     - CocoaAsyncSocket
@@ -678,6 +698,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSslPinning:
+    :path: "../node_modules/react-native-ssl-pinning/ios"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNSyanImagePicker:
@@ -688,6 +710,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
@@ -769,6 +792,7 @@ SPEC CHECKSUMS:
   RNReactNativeHapticFeedback: 653a8c126a0f5e88ce15ffe280b3ff37e1fbb285
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
+  RNSslPinning: ff07fbbcb047c672cf9cb846e3c075eaafed3609
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNSyanImagePicker: 8599c74c349b199bae111d6b0a48c8f6279bb01b
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59

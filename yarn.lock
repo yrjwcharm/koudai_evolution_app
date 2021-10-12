@@ -7015,6 +7015,11 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.npm.taobao.org/punycode/download/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha1-tYsBCsQMIsVldhbI0sLALHv0eew=
 
+q@^1.4.1:
+  version "1.5.1"
+  resolved "https://registry.nlark.com/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+  integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
+
 qs@^6.7.0, qs@^6.9.4:
   version "6.9.6"
   resolved "https://registry.npm.taobao.org/qs/download/qs-6.9.6.tgz?cache=0&sync_timestamp=1610598229410&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fqs%2Fdownload%2Fqs-6.9.6.tgz#26ed3c8243a431b2924aca84cc90471f35d5a0ee"
@@ -7336,6 +7341,13 @@ react-native-splash-screen@^3.2.0:
   version "3.2.0"
   resolved "https://registry.npm.taobao.org/react-native-splash-screen/download/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha1-1H7IVXsbqYjuPqmNAUYwgbYP/0U=
+
+react-native-ssl-pinning@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.npmmirror.com/react-native-ssl-pinning/download/react-native-ssl-pinning-1.5.4.tgz#e5b07c6c01e6c03c325dc097580bd9a1c2037f6a"
+  integrity sha1-5bB8bAHmwDwyXcCXWAvZocIDf2o=
+  dependencies:
+    q "^1.4.1"
 
 react-native-svg@^12.1.0:
   version "12.1.0"
