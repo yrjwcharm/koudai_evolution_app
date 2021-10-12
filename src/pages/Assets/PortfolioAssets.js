@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-09-28 10:54:05
+ * @LastEditTime: 2021-10-12 14:08:13
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -394,24 +394,25 @@ export default function PortfolioAssets(props) {
                                             ) : (
                                                 <CircleLegend color={['#E8EAEF', '#545968']} />
                                             )}
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={Style.flexRow}
-                                                onPress={() => showTips(chart.tips, 'chart')}>
+                                            <View style={Style.flexRow}>
                                                 <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
                                                     {chart?.label[2]?.name}
                                                 </Text>
                                                 {chart?.tips && (
-                                                    <FastImage
-                                                        style={{
-                                                            width: text(12),
-                                                            height: text(12),
-                                                            marginLeft: text(4),
-                                                        }}
-                                                        source={require('../../assets/img/tip.png')}
-                                                    />
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() => showTips(chart.tips, 'chart')}>
+                                                        <FastImage
+                                                            style={{
+                                                                width: text(12),
+                                                                height: text(12),
+                                                                marginLeft: text(4),
+                                                            }}
+                                                            source={require('../../assets/img/tip.png')}
+                                                        />
+                                                    </TouchableOpacity>
                                                 )}
-                                            </TouchableOpacity>
+                                            </View>
                                         </View>
                                     </View>
                                 )}

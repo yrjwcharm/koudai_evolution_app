@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-12 11:58:15
+ * @LastEditTime: 2021-10-12 18:20:00
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -70,6 +70,9 @@ class TradeBuy extends Component {
                 },
                 () => {
                     this.init(data.result.active);
+                    if (this.tabView) {
+                        this.tabView.goToPage(data.result.active);
+                    }
                 }
             );
         });
@@ -970,6 +973,7 @@ class TradeBuy extends Component {
                             <ScrollableTabView
                                 onChangeTab={this.changeBuyStatus}
                                 initialPage={type}
+                                ref={(tabView) => (this.tabView = tabView)}
                                 renderTabBar={() => <TabBar />}>
                                 <View tabLabel="购买" style={{flex: 1}}>
                                     {this.render_buy()}
