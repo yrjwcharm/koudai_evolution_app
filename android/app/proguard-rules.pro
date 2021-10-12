@@ -9,3 +9,4 @@
 
 # Add any project specific keep options here:
 -keep class cn.jiguang.imui.** { *; }
+-keep class com.tencent.mm.opensdk.** { *; }
