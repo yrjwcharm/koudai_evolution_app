@@ -10,6 +10,7 @@ import {
     Platform,
     Image,
 } from 'react-native';
+import  { fetch }  from  'react-native-ssl-pinning' ; 
 import {px, deviceWidth, formaNum} from '../../utils/appUtil';
 import {Colors, Style, Space, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
@@ -206,6 +207,31 @@ const Index = (props) => {
             </View>
         );
     };
+    const handlerClick1 = () => {
+        console.log('123111123')
+        let formData = new FormData()
+        formData.append('username', 'Chris');
+        fetch('https://www.kapi-web-ssl.ll.mofanglicai.com.cn:39503/slbhb', {
+            method: "POST" ,
+            timeoutInterval: 20000, // milliseconds
+            // your certificates array (needed only in android) ios will pick it automatically
+            sslPinning: {
+                certs: ["server"] // your certificates name (without extension), for example cert1.cer, cert2.cer
+            },
+            body:{
+                formData
+            },
+            headers: {
+                Accept: "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", "e_platform": "mobile",
+            }
+        })
+        .then(response => {
+            console.log(`response received ${JSON.stringify(response)}`)
+        })
+        .catch(err => {
+            console.log(`error: ${JSON.stringify(err)}`)
+        })
+    }
     return hasNet ? (
         <>
             {loading ? (
@@ -214,6 +240,7 @@ const Index = (props) => {
                 <>
                     <View style={[styles.header, {paddingTop: inset.top}]}>
                         <View style={[Style.flexBetween, {alignItems: 'center'}]}>
+                            <Button onPress={handlerClick1} title="123"/>
                             <FastImage
                                 style={styles.logo}
                                 resizeMode={FastImage.resizeMode.contain}
