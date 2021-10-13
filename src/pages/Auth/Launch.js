@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-22 19:30:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-10-13 10:42:08
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -44,6 +44,7 @@ export default function Launch({navigation}) {
     const showPrivacyPop = () => {
         Modal.show({
             confirm: true,
+            backButtonClose: false,
             isTouchMaskToClose: false,
             cancelCallBack: () => {
                 if (Platform.OS == 'android') {

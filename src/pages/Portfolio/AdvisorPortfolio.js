@@ -2,7 +2,7 @@
  * @Date: 2021-09-22 17:59:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-10-09 17:07:06
+ * @LastEditTime: 2021-10-13 11:00:20
  * @Description: 投顾组合超市
  */
 import React, {useEffect, useState} from 'react';
@@ -15,6 +15,7 @@ import http from '../../services';
 import {useJump} from '../../components/hooks';
 import HTML from '../../components/RenderHtml';
 import Loading from './components/PageLoading';
+import NumText from '../../components/NumText';
 
 const AdvisorPortfolio = ({navigation}) => {
     const jump = useJump();
@@ -91,7 +92,10 @@ const AdvisorPortfolio = ({navigation}) => {
                                                 </View>
                                                 <View style={[Style.flexRow, {marginTop: px(16)}]}>
                                                     <View style={{flex: 1.3}}>
-                                                        <Text style={styles.profitSty}>{portfolio.yield?.ratio}</Text>
+                                                        <NumText
+                                                            style={styles.profitSty}
+                                                            text={portfolio.yield?.ratio}
+                                                        />
                                                         <Text style={styles.keySty}>{portfolio.yield?.title}</Text>
                                                     </View>
                                                     <View style={{flex: 1}}>

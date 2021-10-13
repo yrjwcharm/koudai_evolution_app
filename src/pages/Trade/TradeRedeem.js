@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: dx
- * @LastEditTime: 2021-09-29 19:00:37
+ * @LastEditTime: 2021-10-13 16:32:51
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard} from 'react-native';
@@ -62,6 +62,7 @@ export default class TradeRedeem extends Component {
                         check: [true, false],
                     });
                 }
+                this.redeemTip = res.result.redeem_info?.tip || '';
                 this.setState({
                     data: res.result,
                     tips: res.result.redeem_info?.tip || '',
@@ -166,16 +167,10 @@ export default class TradeRedeem extends Component {
     };
 
     onChange = (_text) => {
-        const {data} = this.state;
         _text = onlyNumber(_text);
         if (_text && _text != 0) {
             if (_text > 100) {
                 _text = '100';
-            }
-            if (data.min_ratio) {
-                if (_text < data.min_ratio) {
-                    _text = `${data.min_ratio}`;
-                }
             }
             this.inputValue = _text;
             this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
@@ -185,10 +180,10 @@ export default class TradeRedeem extends Component {
                 }, 300);
             });
         } else {
-            this.setState({btnClick: false, inputValue: '', tips: '', init: 1});
+            this.setState({btnClick: false, inputValue: '', tips: this.redeemTip, init: 1});
         }
     };
-    redmeeClick = () => {
+    redeemClick = () => {
         global.LogTool('confirmRedeemEnd', this.props.route?.params?.poid);
         console.log(this.notice);
         if (this.notice) {
@@ -199,14 +194,14 @@ export default class TradeRedeem extends Component {
                 cancelText: '继续赎回',
                 confirm: true,
                 cancelCallBack: () => {
-                    this.redmeeReason();
+                    this.redeemReason();
                 },
             });
         } else {
-            this.redmeeReason();
+            this.redeemReason();
         }
     };
-    redmeeReason = () => {
+    redeemReason = () => {
         setTimeout(() => {
             const option = [];
             var _id;
@@ -316,10 +311,26 @@ export default class TradeRedeem extends Component {
                                     {marginTop: text(12), borderBottomWidth: 0.5, borderColor: Colors.borderColor},
                                 ]}>
                                 <TextInput
+                                    keyboardType="numeric"
                                     style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
                                     placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
                                     placeholderTextColor={Colors.placeholderColor}
                                     value={this.state.inputValue}
+                                    onBlur={() => {
+                                        let _text = this.state.inputValue;
+                                        if (_text && data.min_ratio) {
+                                            if (_text < data.min_ratio) {
+                                                _text = `${data.min_ratio}`;
+                                                this.inputValue = _text;
+                                                this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
+                                                    timer && clearTimeout(timer);
+                                                    timer = setTimeout(() => {
+                                                        this.getPlanInfo();
+                                                    }, 300);
+                                                });
+                                            }
+                                        }
+                                    }}
                                     onChangeText={(val) => this.onChange(val)}
                                 />
                                 <Text style={styles.percent_symbol}>%</Text>
@@ -411,7 +422,7 @@ export default class TradeRedeem extends Component {
                     <FixedButton
                         title={data?.button?.text}
                         disabled={data?.button?.avail == 0 || btnClick == false}
-                        onPress={this.redmeeClick}
+                        onPress={this.redeemClick}
                     />
                 )}
             </View>

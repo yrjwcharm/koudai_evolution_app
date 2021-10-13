@@ -25,6 +25,7 @@ import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
+import NumText from '../../../components/NumText';
 import {throttle} from 'lodash';
 
 export default function DetailAccount({route, navigation}) {
@@ -174,7 +175,7 @@ export default function DetailAccount({route, navigation}) {
                     ) : null}
                     <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
-                            <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
+                            <NumText style={styles.amount_sty} text={data.ratio_info.ratio_val} />
                             <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                         </View>
                         {data.line_drawback && data.low_line === 1 && (
@@ -193,22 +194,14 @@ export default function DetailAccount({route, navigation}) {
                         )}
                         {data.rise_info && (
                             <View style={[Style.flexCenter, styles.container_sty]}>
-                                <Text
-                                    style={[
-                                        styles.amount_sty,
-                                        {
-                                            fontSize: text(26),
-                                            lineHeight: text(30),
-                                            color:
-                                                parseFloat(data.rise_info.ratio_val) > 0
-                                                    ? Colors.red
-                                                    : parseFloat(data.rise_info.ratio_val) < 0
-                                                    ? Colors.green
-                                                    : Colors.defaultColor,
-                                        },
-                                    ]}>
-                                    {data.rise_info.ratio_val}
-                                </Text>
+                                <NumText
+                                    style={{
+                                        ...styles.amount_sty,
+                                        fontSize: text(26),
+                                        lineHeight: text(30),
+                                    }}
+                                    text={data.rise_info.ratio_val}
+                                />
                                 <Text style={[styles.radio_sty, {marginTop: text(6)}]}>
                                     {data.rise_info.ratio_desc}
                                 </Text>

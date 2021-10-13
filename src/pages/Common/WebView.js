@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-18 15:51:15
+ * @LastEditTime: 2021-10-13 16:00:14
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -48,6 +48,12 @@ export default function WebView({route, navigation}) {
             setTitle('家庭保险方案建议');
         } else if (navState.url.indexOf('/introduceDetail') > -1) {
             setTitle('保险详情');
+        } else if (navState.url.indexOf('/insuranceAssist') > -1) {
+            setTitle('协助投保');
+        } else if (navState.url.indexOf('/insuranceProgress') > -1) {
+            setTitle('保险进度');
+        } else if (navState.url.indexOf('/complaintFeedback') > -1) {
+            setTitle('投诉反馈');
         } else {
             if (route?.params?.title) {
                 setTitle(route?.params?.title);
