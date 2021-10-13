@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-10-09 11:06:19
+ * @LastEditTime: 2021-10-13 16:55:59
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -106,12 +106,18 @@ const HoldingFund = ({navigation, route}) => {
                             return (
                                 <View key={`type${index}`} style={{marginBottom: text(8)}}>
                                     <View style={[styles.titleContainer, Style.flexRow]}>
-                                        <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
-                                        <Text style={[styles.name, {color: RatioColor[index], fontWeight: '500'}]}>
+                                        <View
+                                            style={[styles.circle, {backgroundColor: item.color || RatioColor[index]}]}
+                                        />
+                                        <Text
+                                            style={[
+                                                styles.name,
+                                                {color: item.color || RatioColor[index], fontWeight: '500'},
+                                            ]}>
                                             {item.name}
                                         </Text>
                                         {current === 0 && (
-                                            <Text style={[styles.numStyle, {color: RatioColor[index]}]}>
+                                            <Text style={[styles.numStyle, {color: item.color || RatioColor[index]}]}>
                                                 {item.percent < 0.01 ? '<0.01' : item.percent}%
                                             </Text>
                                         )}

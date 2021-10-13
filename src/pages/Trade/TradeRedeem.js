@@ -3,10 +3,10 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: dx
- * @LastEditTime: 2021-10-13 16:32:51
+ * @LastEditTime: 2021-10-13 17:51:22
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text, isIphoneX, onlyNumber} from '../../utils/appUtil';
 import {Style, Colors, Font, Space} from '../../common/commonStyle';
@@ -312,7 +312,13 @@ export default class TradeRedeem extends Component {
                                 ]}>
                                 <TextInput
                                     keyboardType="numeric"
-                                    style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
+                                    style={{
+                                        height: text(50),
+                                        fontSize: text(26),
+                                        flex: 1,
+                                        textAlign: Platform.select({android: 'left', ios: 'center'}),
+                                        paddingLeft: Platform.select({android: '25%', ios: 0}),
+                                    }}
                                     placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
                                     placeholderTextColor={Colors.placeholderColor}
                                     value={this.state.inputValue}
