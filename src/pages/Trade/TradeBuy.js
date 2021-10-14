@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-12 18:20:00
+ * @LastEditTime: 2021-10-14 14:18:59
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -99,7 +99,6 @@ class TradeBuy extends Component {
                         confirmText: res.result.risk_pop.confirm.text,
                         content: res.result.risk_pop.content,
                         isTouchMaskToClose: false,
-                        onCloseCallBack: () => this.props.navigation.goBack(),
                         title: res.result.risk_pop.title,
                     });
                 };

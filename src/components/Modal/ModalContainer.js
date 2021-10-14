@@ -379,8 +379,7 @@ export default class MyModal extends Component {
                 visible={isVisible}
                 onRequestClose={() => {
                     if (this.backButtonClose) {
-                        this.props.onCloseCallBack && this.props.onCloseCallBack();
-                        this.setModalVisiable(false);
+                        this.cancel();
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
