@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-10-08 16:13:31
- * @LastEditors: dx
+ * @LastEditTime: 2021-10-20 18:00:34
+ * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
@@ -48,7 +48,7 @@ export class AssetsConfigDetail extends Component {
         super(props);
         this.state = {
             amount: props.route?.params?.amount || '2000',
-            activeSections: props.route.params.scene === 'adviser' ? [0] : [],
+            activeSections: [],
             data: {},
         };
     }
