@@ -145,7 +145,7 @@ class TradeBuy extends Component {
                         onCloseCallBack: () => this.props.navigation.goBack(),
                         title: res.result.risk_disclosure.title,
                     });
-                } else if (this.props.isFocused && res.result.risk_pop) {
+                } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
                     showRishPop();
                 }
                 this.setState(
