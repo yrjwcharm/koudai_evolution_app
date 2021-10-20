@@ -54,10 +54,20 @@ const upload = async (url, file, otherParams, succ, failed) => {
     }
 };
 
-const androidUpload = async (url, file, otherParams = {}, succ, failed) => {
+const androidUpload = async (url, file, otherParams = [], succ, failed) => {
     try {
+        let params = otherParams.reduce((memo,cur)=>{
+            memo[cur.name] = cur.data
+            return memo
+        },{})
+
         url = url.indexOf('http') > -1 ? url : `${SERVER_URL[global.env].HTTP}${url}`
+        url = url 
+        + (url.includes('?') ? '&' : '?')
+        + new URLSearchParams(params).toString()
+       
         const loginStatus = await Storage.get('loginStatus')
+
         let formData = new FormData()
         formData.append('file',{
             name: 'file',
@@ -65,11 +75,11 @@ const androidUpload = async (url, file, otherParams = {}, succ, failed) => {
             type: file.type,
             uri: file.uri,
         })
-        for(let key in otherParams){
-          if(otherParams[key]) formData.append(key, JSON.stringify(otherParams[key]))
+        for(let key in params){
+          if(params[key]) formData.append(key, JSON.stringify(params[key]))
         }
-        console.log(loginStatus?.access_token)
-        fetch(url, {
+
+        let resp = await fetch(url, {
                 method:'POST',
                 body:formData,
                 timeoutInterval: 30000,
@@ -78,18 +88,11 @@ const androidUpload = async (url, file, otherParams = {}, succ, failed) => {
                     Authorization: loginStatus?.access_token
                 }
             }
-        ).then((resp) => {
-            console.log('------',resp)
-            resp.json().then(res=>{
-                if (res.status == 200) {
-                    succ && succ(JSON.parse(res.data));
-                } else {
-                    failed && failed();
-                }
-            })
-        }).catch((err) => {
-            failed && failed();
-        });
+        )
+
+        let res = await resp.json()
+        succ && succ(res);
+        
     } catch (error) {
         failed && failed();
     }
