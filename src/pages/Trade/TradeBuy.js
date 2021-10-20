@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 15:48:00
+ * @LastEditTime: 2021-10-20 16:12:17
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -104,6 +104,7 @@ class TradeBuy extends Component {
                         title: res.result.risk_pop.title,
                     });
                 };
+                // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
                 if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
                     Modal.show({
                         children: () => {
