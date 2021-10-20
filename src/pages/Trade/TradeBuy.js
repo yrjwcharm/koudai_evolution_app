@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-10-14 14:18:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-20 15:48:00
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -26,6 +26,7 @@ import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -86,6 +87,7 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
+                console.log(_modalRef);
                 const showRishPop = () => {
                     Modal.show({
                         cancelCallBack: () => this.props.navigation.goBack(),
@@ -102,7 +104,7 @@ class TradeBuy extends Component {
                         title: res.result.risk_pop.title,
                     });
                 };
-                if (this.props.isFocused && res.result.risk_disclosure) {
+                if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
                     Modal.show({
                         children: () => {
                             return (
@@ -1022,14 +1024,21 @@ function WithHooks(props) {
     useFocusEffect(
         React.useCallback(() => {
             const {anti_pop} = userInfo.toJS();
+            _modalRef = '';
             if (anti_pop) {
-                Modal.show({
+                _modalRef = Modal.show({
                     title: anti_pop.title,
                     content: anti_pop.content,
                     confirm: true,
                     isTouchMaskToClose: false,
-                    cancelCallBack: () => props.navigation.goBack(),
-                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelCallBack: () => {
+                        _modalRef = '';
+                        props.navigation.goBack();
+                    },
+                    confirmCallBack: () => {
+                        _modalRef = '';
+                        jump(anti_pop.confirm_action?.url);
+                    },
                     cancelText: anti_pop.cancel_action?.text,
                     confirmText: anti_pop.confirm_action?.text,
                 });
