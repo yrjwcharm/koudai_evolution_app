@@ -81,7 +81,7 @@ axios.interceptors.response.use(
     }
 );
 export default class http {
-    static adapter = Platform.OS === 'IOS' ? axios : androidHttp;
+    static adapter = Platform.OS === 'ios' ? axios : androidHttp;
     // static adapter = axios
 
     static async get(url, params, config, showLoading = true) {
