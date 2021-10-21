@@ -2,7 +2,7 @@
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-21 10:41:28
+ * @LastEditTime: 2021-10-21 11:32:22
  * @Description: 验证码登陆
  */
 /*
@@ -25,6 +25,7 @@ import {connect} from 'react-redux';
 import {Style} from '../../../common/commonStyle';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
 import _ from 'lodash';
+import {CommonActions} from '@react-navigation/native';
 class VerifyLogin extends Component {
     constructor(props) {
         super(props);
@@ -34,13 +35,14 @@ class VerifyLogin extends Component {
             code_btn_click: true,
             code: '',
             verifyText: '获取验证码',
+            second: 60,
         };
     }
     login = () => {
         const {mobile, code} = this.state;
         const userInfo = this.props.userInfo?.toJS();
         let toast = Toast.showLoading('正在登录...');
-        http.post('/auth/user/login/20210101', {mobile, code}).then(async (res) => {
+        http.post('/auth/user/login_by_verify_code/20210101', {mobile, verify_code: code}).then(async (res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
                 this.props.getUserInfo();
@@ -63,6 +65,17 @@ class VerifyLogin extends Component {
                             } else {
                                 await Storage.save('gesturePwd', {[`${userInfo.uid}`]: ''});
                             }
+                            this.props.navigation.dispatch((state) => {
+                                // Remove the home route from the stack
+                                const routes = state.routes.filter((r) => {
+                                    return r.name !== 'Login';
+                                });
+                                return CommonActions.reset({
+                                    ...state,
+                                    routes,
+                                    index: routes.length - 1,
+                                });
+                            });
                             this.props.navigation.replace('GesturePassword', {
                                 option: 'firstSet',
                                 pass: true,
@@ -72,9 +85,9 @@ class VerifyLogin extends Component {
                             this.props.route?.params?.fr == 'register' ||
                             this.props.route?.params?.fr == 'login'
                         ) {
-                            this.props.navigation.pop(2);
+                            this.props.navigation.pop(3);
                         } else {
-                            this.props.navigation.goBack();
+                            this.props.navigation.pop(2);
                         }
                     },
                 });
@@ -84,10 +97,10 @@ class VerifyLogin extends Component {
         });
     };
     sendCode = () => {
-        const {code_btn_click} = this.state;
+        const {code_btn_click, mobile} = this.state;
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
-                mobile: this.props.route?.params?.mobile,
+                mobile,
                 operation: 'passport_login',
             }).then((res) => {
                 if (res.code == '000000') {
@@ -131,9 +144,9 @@ class VerifyLogin extends Component {
         this.props.navigation.navigate(nav);
     };
     onChangeMobile = (mobile) => {
-        const {password} = this.state;
+        const {code} = this.state;
         let _mobile = inputInt(mobile);
-        this.setState({mobile: _mobile, btnClick: !(_mobile?.length >= 11 && password?.length >= 6)});
+        this.setState({mobile: _mobile, btnClick: !(_mobile?.length >= 11 && code?.length >= 6)});
     };
     onChangeCode = (code) => {
         const {mobile} = this.state;
@@ -156,9 +169,9 @@ class VerifyLogin extends Component {
                     value={mobile}
                     placeholder="请输入您的手机号"
                     maxLength={11}
+                    autoFocus={true}
                     textContentType="telephoneNumber"
                     keyboardType={'number-pad'}
-                    autoFocus={true}
                     clearButtonMode="while-editing"
                 />
                 <View style={[Style.flexRowCenter, styles.code_view]}>
@@ -169,7 +182,6 @@ class VerifyLogin extends Component {
                         placeholder="请输入验证码"
                         maxLength={6}
                         keyboardType={'number-pad'}
-                        autoFocus={true}
                         clearButtonMode="while-editing"
                         style={styles.code_input}
                     />
