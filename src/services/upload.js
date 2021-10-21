@@ -6,7 +6,7 @@
  * @Description:
  */
 import RNFetchBlob from 'rn-fetch-blob';
-import {fetch} from 'react-native-ssl-pinning';
+import {fetch} from 'react-native-ssl-request';
 import {Platform} from 'react-native';
 import {SERVER_URL} from './config';
 import Storage from '../utils/storage';

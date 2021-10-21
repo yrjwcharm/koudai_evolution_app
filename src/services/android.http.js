@@ -1,4 +1,4 @@
-import  { fetch }  from  'react-native-ssl-pinning' ; 
+import  { fetch }  from  'react-native-ssl-request' ; 
 import qs from 'qs';
 import { SERVER_URL, env } from './config';
 import Storage from '../utils/storage';
