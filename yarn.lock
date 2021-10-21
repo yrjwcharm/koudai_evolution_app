@@ -7402,10 +7402,10 @@ react-native-splash-screen@^3.2.0:
   resolved "https://registry.npm.taobao.org/react-native-splash-screen/download/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha1-1H7IVXsbqYjuPqmNAUYwgbYP/0U=
 
-react-native-ssl-request@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.npmmirror.com/react-native-ssl-request/download/react-native-ssl-request-1.0.5.tgz?cache=0&sync_timestamp=1634798787771&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Freact-native-ssl-request%2Fdownload%2Freact-native-ssl-request-1.0.5.tgz#5bdc5dc201341ab7e6bed3456fea11deff4490e2"
-  integrity sha1-W9xdwgE0GrfmvtNFb+oR3v9EkOI=
+react-native-ssl-request@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-ssl-request/-/react-native-ssl-request-1.0.7.tgz#217103fc6d6d9c5bf6f42c0e7b2ef164dcab9abf"
+  integrity sha512-zu+jo4JI/cl+aMQAHei5D6RyUA3HyElN2u9S02z47Uq8vZbb0MGuiQDZ/hRFxWD6PJ5xGE0ne1ZMApHHjP8Rdg==
   dependencies:
     q "^1.4.1"
 
