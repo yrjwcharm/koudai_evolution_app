@@ -94,4 +94,4 @@ const androidUpload = async (url, file, otherParams = [], succ, failed) => {
     }
 };
 
-export default Platform.OS === 'IOS' ? upload : androidUpload;
+export default Platform.OS === 'ios' ? upload : androidUpload;
