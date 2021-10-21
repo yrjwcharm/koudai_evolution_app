@@ -85,9 +85,7 @@ const Part1 = () => {
                             </Text>
                             <Text style={styles.blueCircle}>•&nbsp;</Text>
                             <Text style={[styles.buyNoticeText]}>
-                                {
-                                    'T+n日：指T日后的第n个工作日。\n以上时间点仅供参考，具体时间以各基金公司实际确认为准。'
-                                }
+                                {'以上时间点仅供参考，具体时间以各基金公司实际确认为准。'}
                             </Text>
                         </Text>
                     </View>
@@ -243,9 +241,7 @@ const Part2 = () => {
                             </Text>
                             <Text style={styles.blueCircle}>•&nbsp;</Text>
                             <Text style={[styles.buyNoticeText]}>
-                                {
-                                    'T+n日：指T日后的第n个工作日。\n以上时间点仅供参考，具体时间以各基金公司实际确认为准。'
-                                }
+                                {'以上时间点仅供参考，具体时间以各基金公司实际确认为准。'}
                             </Text>
                         </Text>
                     </View>
