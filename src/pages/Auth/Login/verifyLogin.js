@@ -2,7 +2,7 @@
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 14:32:42
+ * @LastEditTime: 2021-10-21 10:41:28
  * @Description: 验证码登陆
  */
 /*
@@ -88,7 +88,7 @@ class VerifyLogin extends Component {
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile: this.props.route?.params?.mobile,
-                operation: this.fr == 'forget' ? 'password_reset' : this.union_id ? 'bind_mobile' : 'passport_create',
+                operation: 'passport_login',
             }).then((res) => {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');

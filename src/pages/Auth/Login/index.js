@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 15:56:22
+ * @LastEditTime: 2021-10-21 10:43:20
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -34,6 +34,7 @@ class Login extends Component {
         let toast = Toast.showLoading('正在登录...');
         http.post('/auth/user/login/20210101', {mobile, password}).then(async (res) => {
             Toast.hide(toast);
+            console.log(res);
             if (res.code === '000000') {
                 this.props.getUserInfo();
                 this.props.getVerifyGesture(true);
