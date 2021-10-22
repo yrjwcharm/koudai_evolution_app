@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: dx
- * @LastEditTime: 2021-10-13 17:51:22
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-22 16:14:47
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
@@ -43,6 +43,8 @@ export default class TradeRedeem extends Component {
             tips: '',
             init: 1,
             notice: '', //不足7天的基金弹窗
+            short_cut_options: [],
+            min_ratio: '',
         };
         this.notice = '';
         this.inputValue = 0;
@@ -52,7 +54,7 @@ export default class TradeRedeem extends Component {
             poid: this.props.route?.params?.poid,
         }).then((res) => {
             if (res.code === '000000') {
-                this.getPlanInfo();
+                this.getPlanInfo(res.result?.scene);
                 if (res.result.pay_methods.default === 1) {
                     this.setState({
                         check: [false, true],
@@ -62,10 +64,9 @@ export default class TradeRedeem extends Component {
                         check: [true, false],
                     });
                 }
-                this.redeemTip = res.result.redeem_info?.tip || '';
                 this.setState({
                     data: res.result,
-                    tips: res.result.redeem_info?.tip || '',
+                    short_cut_options: res?.result?.redeem_info?.options,
                 });
             }
         });
@@ -73,7 +74,7 @@ export default class TradeRedeem extends Component {
     componentWillUnmount() {
         Picker.hide();
     }
-    getPlanInfo() {
+    getPlanInfo(scene) {
         return new Promise((resolve, reject) => {
             const {tableData, init, inputValue} = this.state;
             Http.get('/trade/redeem/plan/20210101', {
@@ -85,8 +86,23 @@ export default class TradeRedeem extends Component {
                 if (res.code === '000000') {
                     tableData.head = res.result.header || {};
                     tableData.body = res.result.body || [];
-
                     this.notice = res.result.notice;
+                    if (scene == 'adviser' && init == 1) {
+                        this.setState((prev) => ({
+                            tips: res.result.amount_desc || prev.tips,
+                            short_cut_options: res?.result?.options || [],
+                            min_ratio: res?.result?.min_percent?.key,
+                        }));
+                        // if (res.result?.options) {
+                        //     this.setState({
+                        //         short_cut_options: res?.result?.options||[],
+                        //     });
+                        // } else {
+                        //     this.setState({
+                        //         short_cut_options: [],
+                        //     });
+                        // }
+                    }
                     if (init != 1) {
                         this.setState((prev) => ({
                             tableData,
@@ -185,7 +201,6 @@ export default class TradeRedeem extends Component {
     };
     redeemClick = () => {
         global.LogTool('confirmRedeemEnd', this.props.route?.params?.poid);
-        console.log(this.notice);
         if (this.notice) {
             Modal.show({
                 title: '赎回确认',
@@ -241,7 +256,7 @@ export default class TradeRedeem extends Component {
         }, 250);
     };
     render() {
-        const {data, tableData, toggleList, btnClick, redeemTo, tips} = this.state;
+        const {data, tableData, toggleList, btnClick, redeemTo, tips, short_cut_options, min_ratio} = this.state;
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
@@ -293,7 +308,7 @@ export default class TradeRedeem extends Component {
                                     {data?.redeem_info?.title}
                                 </Text>
                                 <View style={Style.flexRow}>
-                                    {data?.redeem_info?.options.map((_i, _d) => {
+                                    {short_cut_options?.map((_i, _d) => {
                                         return (
                                             <TouchableOpacity
                                                 style={styles.btn_percent}
@@ -324,9 +339,9 @@ export default class TradeRedeem extends Component {
                                     value={this.state.inputValue}
                                     onBlur={() => {
                                         let _text = this.state.inputValue;
-                                        if (_text && data.min_ratio) {
-                                            if (_text < data.min_ratio) {
-                                                _text = `${data.min_ratio}`;
+                                        if (_text && min_ratio) {
+                                            if (_text < min_ratio * 100) {
+                                                _text = `${min_ratio * 100}`;
                                                 this.inputValue = _text;
                                                 this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
                                                     timer && clearTimeout(timer);

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-24 14:15:43
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-27 10:39:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-22 15:51:07
  * @Description: 基金备选库
  */
 import React, {useEffect, useState} from 'react';
@@ -49,7 +49,7 @@ const FundAlternative = ({route}) => {
                                 <Html html={item[0]} style={styles.buyTableItem} />
                             </View>
                             <View style={[styles.buyTableCell, {flex: 2}]}>
-                                <Html html={item[1]} style={styles.buyTableItem} />
+                                <Text style={styles.buyTableItem}>{item[1]}</Text>
                             </View>
                             <View style={[styles.buyTableCell, {borderRightWidth: 0}]}>
                                 <Html html={item[2]} style={styles.buyTableItem} />

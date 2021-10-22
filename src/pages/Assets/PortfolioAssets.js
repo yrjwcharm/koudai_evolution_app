@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-10-12 14:08:13
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-22 15:37:31
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -668,7 +668,7 @@ export default function PortfolioAssets(props) {
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
                         {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {
-                            return (
+                            return _index % 4 == 0 && _index === arr.length - 1 ? null : (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     style={{
