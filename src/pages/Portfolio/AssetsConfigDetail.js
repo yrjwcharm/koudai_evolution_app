@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-10-20 18:00:34
+ * @LastEditTime: 2021-10-22 11:48:55
  * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -53,9 +53,6 @@ export class AssetsConfigDetail extends Component {
         };
     }
     componentDidMount() {
-        if (this.props.route.params.scene === 'adviser') {
-            this.props.navigation.setOptions({title: '持仓分布页'});
-        }
         this.init();
     }
     init = () => {
@@ -69,7 +66,11 @@ export class AssetsConfigDetail extends Component {
         }).then((res) => {
             if (res.code === '000000') {
                 this.setState({data: res.result});
-                this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
+                if (this.props.route.params.scene === 'adviser') {
+                    this.props.navigation.setOptions({title: '持仓分布页'});
+                } else {
+                    this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
+                }
             }
         });
         // http.get('/portfolio/asset_deploy/20210101', {

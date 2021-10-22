@@ -354,7 +354,7 @@ export default function AppStack() {
                     title: '调仓',
                 }}
             />
-            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: '资产配置详情'}} />
+            <Stack.Screen name="AssetsConfigDetail" component={AssetsConfigDetail} options={{title: ''}} />
             <Stack.Screen name="Agreement" component={Agreement} options={{title: ''}} />
             <Stack.Screen name="TradeAgreements" component={TradeAgreements} options={{title: '基金组合协议'}} />
             <Stack.Screen name="OpenPdf" component={OpenPdf} options={{title: ''}} />
