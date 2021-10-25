@@ -2,8 +2,8 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-22 16:14:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-10-25 15:54:22
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
@@ -210,6 +210,9 @@ export default class TradeRedeem extends Component {
                 confirm: true,
                 cancelCallBack: () => {
                     this.redeemReason();
+                },
+                confirmCallBack: () => {
+                    this.props.navigation.goBack();
                 },
             });
         } else {

@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     },
     buyNotice: {
         paddingBottom: Space.padding,
-        textAlign: 'justify',
+        // textAlign: 'justify',
     },
     buyNoticeText: {
         fontSize: text(13),
