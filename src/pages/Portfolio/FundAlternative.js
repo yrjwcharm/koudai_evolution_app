@@ -2,7 +2,7 @@
  * @Date: 2021-09-24 14:15:43
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-22 15:51:07
+ * @LastEditTime: 2021-10-25 16:35:18
  * @Description: 基金备选库
  */
 import React, {useEffect, useState} from 'react';
@@ -69,6 +69,8 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: Space.padding,
+        borderColor: '#fff',
+        borderWidth: 0.5,
     },
     textSty: {
         fontSize: px(13),
