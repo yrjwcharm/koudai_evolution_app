@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-21 11:31:11
+ * @LastEditTime: 2021-10-25 18:57:47
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -43,13 +43,16 @@ class Login extends Component {
                         content: res?.result?.pop?.content,
                         title: res?.result?.pop?.title,
                         confirm: true,
-                        confirmText: '验证码登录',
-                        cancelText: '忘记密码',
+                        confirmText: '忘记密码',
+                        cancelText: '验证码登录',
                         confirmCallBack: () => {
-                            this.props.navigation.navigate('VerifyLogin', {fr: this.props.route?.params?.fr});
+                            this.jumpPage('ForgetLoginPwd');
                         },
                         cancelCallBack: () => {
-                            this.jumpPage('ForgetLoginPwd');
+                            this.props.navigation.navigate('VerifyLogin', {
+                                fr: this.props.route?.params?.fr,
+                                mobile: mobile,
+                            });
                         },
                     });
                     return;

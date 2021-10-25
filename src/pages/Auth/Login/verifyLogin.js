@@ -2,7 +2,7 @@
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-21 11:32:22
+ * @LastEditTime: 2021-10-25 18:59:19
  * @Description: 验证码登陆
  */
 /*
@@ -34,7 +34,7 @@ class VerifyLogin extends Component {
             btnClick: true,
             code_btn_click: true,
             code: '',
-            verifyText: '获取验证码',
+            verifyText: '重新发送验证码',
             second: 60,
         };
     }
@@ -96,6 +96,9 @@ class VerifyLogin extends Component {
             }
         });
     };
+    componentDidMount() {
+        this.sendCode();
+    }
     sendCode = () => {
         const {code_btn_click, mobile} = this.state;
         if (code_btn_click) {
@@ -143,11 +146,6 @@ class VerifyLogin extends Component {
     jumpPage = (nav) => {
         this.props.navigation.navigate(nav);
     };
-    onChangeMobile = (mobile) => {
-        const {code} = this.state;
-        let _mobile = inputInt(mobile);
-        this.setState({mobile: _mobile, btnClick: !(_mobile?.length >= 11 && code?.length >= 6)});
-    };
     onChangeCode = (code) => {
         const {mobile} = this.state;
         this.setState({code, btnClick: !(mobile?.length >= 11 && code?.length >= 6)});
@@ -165,11 +163,10 @@ class VerifyLogin extends Component {
 
                 <InputView
                     title="手机号"
-                    onChangeText={this.onChangeMobile}
                     value={mobile}
                     placeholder="请输入您的手机号"
                     maxLength={11}
-                    autoFocus={true}
+                    editable={false}
                     textContentType="telephoneNumber"
                     keyboardType={'number-pad'}
                     clearButtonMode="while-editing"
@@ -181,6 +178,7 @@ class VerifyLogin extends Component {
                         value={code}
                         placeholder="请输入验证码"
                         maxLength={6}
+                        autoFocus={true}
                         keyboardType={'number-pad'}
                         clearButtonMode="while-editing"
                         style={styles.code_input}
