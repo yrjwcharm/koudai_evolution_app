@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-26 16:14:52
+ * @LastEditTime: 2021-10-26 17:16:05
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -86,7 +86,7 @@ class SetLoginPassword extends Component {
                     Toast.show('绑定成功');
                     http.post('/auth/user/login/20210101', {
                         mobile: this.props.route?.params?.mobile,
-                        password,
+                        password: base64.encode(password),
                     }).then((data) => {
                         this.props.getUserInfo();
                         this.props.getVerifyGesture(true);
