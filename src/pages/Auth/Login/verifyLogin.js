@@ -2,7 +2,7 @@
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-25 18:59:19
+ * @LastEditTime: 2021-10-26 17:20:20
  * @Description: 验证码登陆
  */
 /*
@@ -34,7 +34,7 @@ class VerifyLogin extends Component {
             btnClick: true,
             code_btn_click: true,
             code: '',
-            verifyText: '重新发送验证码',
+            verifyText: '获取验证码',
             second: 60,
         };
     }
@@ -148,9 +148,9 @@ class VerifyLogin extends Component {
     };
     onChangeCode = (code) => {
         const {mobile} = this.state;
-        this.setState({code, btnClick: !(mobile?.length >= 11 && code?.length >= 6)});
+        let _code = inputInt(code);
+        this.setState({code: _code, btnClick: !(mobile?.length >= 11 && code?.length >= 6)});
     };
-    weChatLogin = () => {};
     render() {
         const {mobile, code, btnClick, verifyText, code_btn_click} = this.state;
         return (
