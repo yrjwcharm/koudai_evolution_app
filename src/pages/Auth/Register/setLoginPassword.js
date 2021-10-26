@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-26 16:13:23
+ * @LastEditTime: 2021-10-26 16:14:52
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -60,7 +60,7 @@ class SetLoginPassword extends Component {
             http.post('passport/find_login_password/20210101', {
                 mobile: this.props.route?.params?.mobile,
                 verify_code: code,
-                password: base64.encode(password),
+                password,
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
@@ -114,7 +114,7 @@ class SetLoginPassword extends Component {
                     Toast.show('注册成功');
                     http.post('/auth/user/login/20210101', {
                         mobile: this.props.route?.params?.mobile,
-                        password,
+                        password: base64.encode(password),
                     }).then((data) => {
                         this.props.getUserInfo();
                         this.props.getVerifyGesture(true);
