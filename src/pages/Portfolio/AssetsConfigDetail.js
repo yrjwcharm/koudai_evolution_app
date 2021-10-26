@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-10-22 11:48:55
+ * @LastEditTime: 2021-10-26 10:59:31
  * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -67,7 +67,7 @@ export class AssetsConfigDetail extends Component {
             if (res.code === '000000') {
                 this.setState({data: res.result});
                 if (this.props.route.params.scene === 'adviser') {
-                    this.props.navigation.setOptions({title: '持仓分布页'});
+                    this.props.navigation.setOptions({title: '组合资产配置'});
                 } else {
                     this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
                 }

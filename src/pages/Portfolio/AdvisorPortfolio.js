@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-22 17:59:58
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-10-13 11:00:20
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-26 11:45:57
  * @Description: 投顾组合超市
  */
 import React, {useEffect, useState} from 'react';
@@ -93,8 +93,15 @@ const AdvisorPortfolio = ({navigation}) => {
                                                 <View style={[Style.flexRow, {marginTop: px(16)}]}>
                                                     <View style={{flex: 1.3}}>
                                                         <NumText
-                                                            style={styles.profitSty}
+                                                            style={[
+                                                                styles.profitSty,
+                                                                {
+                                                                    fontSize:
+                                                                        portfolio.yield?.type == 1 ? px(22) : px(18),
+                                                                },
+                                                            ]}
                                                             text={portfolio.yield?.ratio}
+                                                            type={portfolio.yield?.type}
                                                         />
                                                         <Text style={styles.keySty}>{portfolio.yield?.title}</Text>
                                                     </View>
@@ -211,7 +218,6 @@ const styles = StyleSheet.create({
         color: '#FF7D41',
     },
     profitSty: {
-        fontSize: px(22),
         lineHeight: px(26),
         color: Colors.red,
         fontFamily: Font.numFontFamily,

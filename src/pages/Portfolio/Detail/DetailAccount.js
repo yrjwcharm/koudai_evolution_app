@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -175,7 +175,16 @@ export default function DetailAccount({route, navigation}) {
                     ) : null}
                     <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
-                            <NumText style={styles.amount_sty} text={data.ratio_info.ratio_val} />
+                            <NumText
+                                style={[
+                                    styles.amount_sty,
+                                    {
+                                        fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
+                                    },
+                                ]}
+                                text={data.ratio_info.ratio_val}
+                                type={data.ratio_info?.type}
+                            />
                             <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                         </View>
                         {data.line_drawback && data.low_line === 1 && (
