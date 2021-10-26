@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-09-29 17:12:12
+ * @LastEditTime: 2021-10-25 16:08:56
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -86,7 +86,7 @@ export const pieChart = (data, map, title, height = text(140)) => `
     radius: 0.85
   });
   chart.axis(false);
-  chart.interval().position('1*ratio').color('name', ['#E1645C','#ECB351 ','#5687EB','#967DF2', '#e4c084', '#8543E0']).adjust('stack').style({
+  chart.interval().position('1*ratio').color('name', ['#E1645C', '#ECB351', '#5687EB', '#967DF2', '#5DC162', '#8543E0']).adjust('stack').style({
     lineWidth: 0.5,
     stroke: '#fff',
     lineJoin: 'round',

@@ -37,24 +37,29 @@ export default function DetailAccount({route, navigation}) {
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
     const [riskChartMin, setRiskChartMin] = useState(0);
-    const changeTab = throttle((p, t) => {
-        setPeriod(p);
-        setType(t);
-        if (p !== period) {
-            global.LogTool('portfolioDetailChartSwitch', p);
-            setChart([]);
-            Http.get('/portfolio/yield_chart/20210101', {
-                allocation_id: data.allocation_id,
-                benchmark_id: data.benchmark_id,
-                poid: data.poid,
-                period: p,
-                type: t,
-            }).then((resp) => {
-                setChartData(resp.result);
-                setChart(resp.result.yield_info.chart);
+    const changeTab = useCallback(
+        throttle((p, t) => {
+            setPeriod((prev) => {
+                if (p !== prev) {
+                    global.LogTool('portfolioDetailChartSwitch', p);
+                    setChart([]);
+                    Http.get('/portfolio/yield_chart/20210101', {
+                        allocation_id: data.allocation_id,
+                        benchmark_id: data.benchmark_id,
+                        poid: data.poid,
+                        period: p,
+                        type: t,
+                    }).then((resp) => {
+                        setChartData(resp.result);
+                        setChart(resp.result.yield_info.chart);
+                    });
+                }
+                return p;
             });
-        }
-    });
+            setType(t);
+        }, 500),
+        []
+    );
     const rightPress = useCallback(() => {
         global.LogTool('portfolioDetailInstruction');
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});

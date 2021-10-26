@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-09-29 16:51:39
+ * @LastEditTime: 2021-10-25 16:57:12
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -196,7 +196,7 @@ export default function RenderChart(props) {
                         type == 2 && !showFutureArea ? false : true
                     )}
                     onChange={onChartChange}
-                    data={chart}
+                    // data={chart}
                     onHide={onHide}
                     style={{width: '100%'}}
                 />

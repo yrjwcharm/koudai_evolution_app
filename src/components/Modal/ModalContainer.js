@@ -110,16 +110,15 @@ export default class MyModal extends Component {
         if (this.state.countdown) {
             const timer = setInterval(() => {
                 this.setState((prev) => {
+                    if (prev.countdown === 1) {
+                        clearInterval(timer);
+                    }
                     return {
                         ...prev,
                         countdown: prev.countdown - 1,
                     };
                 });
             }, 1000);
-            setTimeout(() => {
-                clearInterval(timer);
-                this.setState({countdown: 0});
-            }, this.state.countdown * 1000);
         }
     }
     cancel() {
