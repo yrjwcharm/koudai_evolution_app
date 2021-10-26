@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-14 14:58:26
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-26 16:13:23
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
 import _ from 'lodash';
 import {CommonActions} from '@react-navigation/native';
-
+import base64 from '../../../utils/base64';
 class SetLoginPassword extends Component {
     state = {
         code: '',
@@ -60,7 +60,7 @@ class SetLoginPassword extends Component {
             http.post('passport/find_login_password/20210101', {
                 mobile: this.props.route?.params?.mobile,
                 verify_code: code,
-                password,
+                password: base64.encode(password),
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
