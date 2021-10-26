@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-13 16:00:14
+ * @LastEditTime: 2021-10-26 16:04:01
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -54,6 +54,8 @@ export default function WebView({route, navigation}) {
             setTitle('保险进度');
         } else if (navState.url.indexOf('/complaintFeedback') > -1) {
             setTitle('投诉反馈');
+        } else if (navState.url.indexOf('/recommendations') > -1) {
+            setTitle('专家意见书');
         } else {
             if (route?.params?.title) {
                 setTitle(route?.params?.title);
