@@ -86,7 +86,7 @@ export const pieChart = (data, map, title, height = text(140)) => `
     radius: 0.85
   });
   chart.axis(false);
-  chart.interval().position('1*ratio').color('name', ['#E1645C', '#ECB351', '#5687EB', '#967DF2', '#e4c084', '#8543E0']).adjust('stack').style({
+  chart.interval().position('1*ratio').color('name', ['#E1645C', '#ECB351', '#5687EB', '#967DF2', '#5DC162', '#8543E0']).adjust('stack').style({
     lineWidth: 0.5,
     stroke: '#fff',
     lineJoin: 'round',

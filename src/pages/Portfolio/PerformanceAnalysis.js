@@ -96,7 +96,7 @@ const baseAreaChart = (
         '#5687EB',
         '#ECB351',
         '#CC8FDD',
-        '#E4C084',
+        '#5DC162',
         '#5DC162',
         '#DE79AE',
         '#967DF2',
