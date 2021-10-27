@@ -6,7 +6,11 @@ import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native';
 
 const transformPostData = (data = {}) => {
-  return new URLSearchParams(data).toString()
+  let ret = '';
+  for (let it in data) {
+      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+  }
+  return ret;
 }
 
 const HTTP = async (method, url, body = {}) => {
