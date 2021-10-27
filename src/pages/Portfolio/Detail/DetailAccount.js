@@ -58,7 +58,7 @@ export default function DetailAccount({route, navigation}) {
             });
             setType(t);
         }, 500),
-        []
+        [data]
     );
     const rightPress = useCallback(() => {
         global.LogTool('portfolioDetailInstruction');
