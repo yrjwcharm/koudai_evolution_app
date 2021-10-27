@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-10-26 10:59:31
+ * @LastEditTime: 2021-10-27 11:05:42
  * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     assets_l1_ratio: {
         textAlign: 'right',
         marginRight: text(12),
-        width: text(48),
+        width: text(58),
     },
     assets_l2: {
         flexDirection: 'row',
