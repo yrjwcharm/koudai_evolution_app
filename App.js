@@ -28,7 +28,7 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce} from 'lodash';
-global.ver = '6.2.5';
+global.ver = '6.2.6';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',

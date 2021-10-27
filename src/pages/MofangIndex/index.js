@@ -295,7 +295,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-                            <Text>{global.env}</Text>
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
