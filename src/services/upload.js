@@ -62,7 +62,6 @@ const androidUpload = async (url, file, otherParams = [], succ, failed) => {
         }, {});
 
         url = url.indexOf('http') > -1 ? url : `${SERVER_URL[global.env].HTTP}${url}`;
-        url = url + (url.includes('?') ? '&' : '?') + new URLSearchParams(params).toString();
 
         const loginStatus = await Storage.get('loginStatus');
 
@@ -74,7 +73,7 @@ const androidUpload = async (url, file, otherParams = [], succ, failed) => {
             uri: file.uri,
         });
         for (let key in params) {
-            if (params[key]) formData.append(key, JSON.stringify(params[key]));
+            if (params[key]) formData.append(key, params[key]);
         }
 
         let resp = await fetch(url, {

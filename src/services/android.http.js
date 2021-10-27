@@ -5,14 +5,6 @@ import Storage from '../utils/storage';
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from 'react-native';
 
-const transformPostData = (data = {}) => {
-  let ret = '';
-  for (let it in data) {
-      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
-  }
-  return ret;
-}
-
 const HTTP = async (method, url, body = {}) => {
 
   const loginStatus = await Storage.get('loginStatus')
@@ -21,7 +13,6 @@ const HTTP = async (method, url, body = {}) => {
   url = (url.slice(0, 8).includes('//') ? '' : SERVER_URL[env].HTTP) + url
   url = url 
     + (url.includes('?') ? '&' : '?')
-    + transformPostData(body)
     + qs.stringify({
       app: '4000',
       ts: new Date().getTime(),
