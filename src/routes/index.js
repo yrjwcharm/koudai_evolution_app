@@ -83,6 +83,7 @@ import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
@@ -514,6 +515,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
+            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{title:'低位买入信号'}}/>
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
