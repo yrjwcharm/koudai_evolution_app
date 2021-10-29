@@ -1,13 +1,13 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2021-09-14 14:09:43
- * @LastEditors: yhc
+ * @LastEditTime: 2021-10-12 11:26:15
+ * @LastEditors: dx
  * @Description: 交易确认页
  * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, ScrollView, View, Text, Image} from 'react-native';
+import {StyleSheet, ScrollView, View, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {px as text} from '../../utils/appUtil';
@@ -161,6 +161,7 @@ const TradeProcessing = ({navigation, route}) => {
                 rightTextStyle={{marginRight: text(6)}}
             />
             <ScrollView
+                bounces={false}
                 style={[styles.container]}
                 ref={scrollRef}
                 onContentSizeChange={() => scrollRef.current.scrollToEnd({animated: true})}>
@@ -175,10 +176,10 @@ const TradeProcessing = ({navigation, route}) => {
                     </View>
                 )}
 
-                {Object.keys(data).length > 0 && <Text style={[styles.title]}>{data?.desc}</Text>}
+                {data?.desc ? <Text style={[styles.title]}>{data?.desc}</Text> : null}
                 <View style={[styles.processContainer]}>
                     {Object.keys(data).length > 0 &&
-                        data.items.map((item, index) => {
+                        data.items?.map?.((item, index) => {
                             return (
                                 <View key={index} style={[styles.processItem]} onLayout={(e) => onLayout(index, e)}>
                                     <View style={[styles.icon, Style.flexCenter]}>

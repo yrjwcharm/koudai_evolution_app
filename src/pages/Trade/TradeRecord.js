@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 18:48:48
+ * @LastEditTime: 2021-10-25 16:57:20
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -95,8 +95,11 @@ const TradeRecord = ({route, navigation}) => {
     const changeTab = (obj) => {
         setData([]);
         setHasMore(false);
+        setActiveTab((active) => {
+            if (active == obj.i && page == 1) getData(1);
+            return obj.i;
+        });
         setPage(1);
-        setActiveTab(obj.i);
     };
 
     const tradeStuatusColor = (status) => {

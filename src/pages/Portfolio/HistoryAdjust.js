@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-05-10 10:47:12
+ * @LastEditTime: 2021-10-25 16:09:10
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -18,10 +18,10 @@ import {basicPieChart} from './components/ChartOption';
 
 const RatioColor = [
     '#E1645C',
-    '#5687EB',
     '#ECB351',
-    '#CC8FDD',
-    '#E4C084',
+    '#5687EB',
+    '#967DF2',
+    '#5DC162',
     '#5DC162',
     '#DE79AE',
     '#967DF2',

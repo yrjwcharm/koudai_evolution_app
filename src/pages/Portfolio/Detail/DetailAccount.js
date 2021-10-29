@@ -2,11 +2,11 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
-import React, {useState, useCallback, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform} from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {px as text, px} from '../../../utils/appUtil';
@@ -24,8 +24,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FixedBtn from '../components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
-import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+import NumText from '../../../components/NumText';
+import {throttle} from 'lodash';
+
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
     const [chartData, setChartData] = useState();
@@ -34,63 +36,42 @@ export default function DetailAccount({route, navigation}) {
     const [chart, setChart] = useState([]);
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
-    const tabClick = useRef(true);
     const [riskChartMin, setRiskChartMin] = useState(0);
-    const changeTab = (p, t) => {
-        if (!tabClick.current) {
-            return false;
-        }
-        setPeriod(p);
-        setType(t);
-        if (p !== period) {
-            global.LogTool('portfolioDetailChartSwitch', p);
-            tabClick.current = false;
-            setChart([]);
-            Http.get('/portfolio/yield_chart/20210101', {
-                allocation_id: data.allocation_id,
-                benchmark_id: data.benchmark_id,
-                poid: data.poid,
-                period: p,
-                type: t,
-            }).then((resp) => {
-                tabClick.current = true;
-                setChartData(resp.result);
-                setChart(resp.result.yield_info.chart);
+    const changeTab = useCallback(
+        throttle((p, t) => {
+            setPeriod((prev) => {
+                if (p !== prev) {
+                    global.LogTool('portfolioDetailChartSwitch', p);
+                    setChart([]);
+                    Http.get('/portfolio/yield_chart/20210101', {
+                        allocation_id: data.allocation_id,
+                        benchmark_id: data.benchmark_id,
+                        poid: data.poid,
+                        period: p,
+                        type: t,
+                    }).then((resp) => {
+                        setChartData(resp.result);
+                        setChart(resp.result.yield_info.chart);
+                    });
+                }
+                return p;
             });
-        }
-    };
+            setType(t);
+        }, 500),
+        [data]
+    );
     const rightPress = useCallback(() => {
         global.LogTool('portfolioDetailInstruction');
         navigation.navigate('ProductIntro', {upid: route?.params?.upid});
     }, [navigation, route]);
     const init = useCallback(() => {
-        Http.get('/portfolio/detail/20210101', {
-            upid: route?.params?.upid,
-            fr: route.params?.fr,
-            amount: route?.params?.amount,
-        })
-            .then((res) => {
-                setLoading(false);
-                if (res.code === '000000') {
-                    setRiskChartMin(
-                        Math.min.apply(
-                            res.result.risk_info?.label[2].ratio,
-                            res.result.risk_info?.chart.map(function (o) {
-                                return o.val;
-                            })
-                        )
-                    );
-                    setData(res.result);
-                    navigation.setOptions({
-                        title: res.result.title,
-                        headerRight: () => {
-                            return (
-                                <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                                    <Text style={styles.right_sty}>{'产品说明书'}</Text>
-                                </TouchableOpacity>
-                            );
-                        },
-                    });
+        if (route.params.scene === 'adviser') {
+            Http.get('/adviser/detail/20210923', {poid: route.params.poid})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        navigation.setOptions({title: res.result.title});
+                        setData(res.result);
+                    }
                     setPeriod(res.result.period);
                     setChart([]);
                     Http.get('/portfolio/yield_chart/20210101', {
@@ -100,14 +81,62 @@ export default function DetailAccount({route, navigation}) {
                         period: res.result.period,
                         type: 1,
                     }).then((resp) => {
-                        setChartData(resp.result);
-                        setChart(resp.result.yield_info.chart);
+                        if (resp.code === '000000') {
+                            setChartData(resp.result);
+                            setChart(resp.result.yield_info.chart || []);
+                        }
                     });
-                }
+                    setLoading(false);
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+        } else {
+            Http.get('/portfolio/detail/20210101', {
+                upid: route?.params?.upid,
+                fr: route.params?.fr,
+                amount: route?.params?.amount,
             })
-            .catch(() => {
-                setLoading(false);
-            });
+                .then((res) => {
+                    setLoading(false);
+                    if (res.code === '000000') {
+                        setRiskChartMin(
+                            Math.min.apply(
+                                res.result.risk_info?.label[2].ratio,
+                                res.result.risk_info?.chart.map(function (o) {
+                                    return o.val;
+                                })
+                            )
+                        );
+                        setData(res.result);
+                        navigation.setOptions({
+                            title: res.result.title,
+                            headerRight: () => {
+                                return (
+                                    <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                                        <Text style={styles.right_sty}>{'产品说明书'}</Text>
+                                    </TouchableOpacity>
+                                );
+                            },
+                        });
+                        setPeriod(res.result.period);
+                        setChart([]);
+                        Http.get('/portfolio/yield_chart/20210101', {
+                            allocation_id: res.result.allocation_id,
+                            benchmark_id: res.result.benchmark_id,
+                            poid: res.result.poid,
+                            period: res.result.period,
+                            type: 1,
+                        }).then((resp) => {
+                            setChartData(resp.result);
+                            setChart(resp.result.yield_info.chart);
+                        });
+                    }
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+        }
     }, [navigation, rightPress, route.params]);
     const renderLoading = () => {
         return (
@@ -140,11 +169,27 @@ export default function DetailAccount({route, navigation}) {
     ) : (
         <>
             {Object.keys(data).length > 0 ? (
-                <ScrollView nestedScrollEnabled={true} style={{flex: 1, backgroundColor: Colors.bgColor}}>
-                    {data?.processing_info && <Notice content={data?.processing_info} />}
+                <ScrollView
+                    bounces={false}
+                    nestedScrollEnabled={true}
+                    style={{flex: 1, backgroundColor: Colors.bgColor}}>
+                    {data.secondary_title ? (
+                        <View style={{backgroundColor: '#fff', paddingBottom: px(4)}}>
+                            <Text style={styles.secondaryTitle}>{data.secondary_title}</Text>
+                        </View>
+                    ) : null}
                     <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
-                            <Text style={styles.amount_sty}>{data.ratio_info.ratio_val}</Text>
+                            <NumText
+                                style={[
+                                    styles.amount_sty,
+                                    {
+                                        fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
+                                    },
+                                ]}
+                                text={data.ratio_info.ratio_val}
+                                type={data.ratio_info?.type}
+                            />
                             <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
                         </View>
                         {data.line_drawback && data.low_line === 1 && (
@@ -158,6 +203,21 @@ export default function DetailAccount({route, navigation}) {
                                 </Text>
                                 <Text style={[styles.radio_sty, {marginTop: text(6)}]}>
                                     {data.line_drawback.ratio_desc}
+                                </Text>
+                            </View>
+                        )}
+                        {data.rise_info && (
+                            <View style={[Style.flexCenter, styles.container_sty]}>
+                                <NumText
+                                    style={{
+                                        ...styles.amount_sty,
+                                        fontSize: text(26),
+                                        lineHeight: text(30),
+                                    }}
+                                    text={data.rise_info.ratio_val}
+                                />
+                                <Text style={[styles.radio_sty, {marginTop: text(6)}]}>
+                                    {data.rise_info.ratio_desc}
                                 </Text>
                             </View>
                         )}
@@ -326,13 +386,31 @@ export default function DetailAccount({route, navigation}) {
                         <View style={styles.card_sty}>
                             <ListHeader
                                 data={data?.asset_deploy?.header}
-                                color={Colors.brandColor}
+                                color={route.params.scene === 'adviser' ? Colors.descColor : Colors.brandColor}
                                 ctrl={'global'}
                                 oid={1}
                             />
-                            <View style={{height: text(140)}}>
-                                <Chart initScript={pieChart(data?.asset_deploy?.items, data?.asset_deploy?.chart)} />
+                            <View style={{height: Platform.select({android: text(150), ios: text(140)})}}>
+                                <Chart
+                                    initScript={pieChart(
+                                        data?.asset_deploy?.items,
+                                        data?.asset_deploy?.chart,
+                                        route.params.scene === 'adviser' ? '资产配置' : '',
+                                        Platform.select({android: text(150), ios: text(140)})
+                                    )}
+                                />
                             </View>
+                            {data.asset_deploy.item_tip ? (
+                                <Text
+                                    style={{
+                                        fontSize: Font.textH3,
+                                        lineHeight: px(19),
+                                        color: Colors.lightGrayColor,
+                                        marginTop: Space.marginVertical,
+                                    }}>
+                                    {data.asset_deploy.item_tip}
+                                </Text>
+                            ) : null}
                         </View>
                     ) : null}
                     {/* 组合策略 */}
@@ -482,16 +560,9 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-                    <Text
-                        style={{
-                            color: '#B8C1D3',
-                            paddingHorizontal: text(16),
-                            lineHeight: text(18),
-                            fontSize: text(11),
-                            marginTop: text(12),
-                        }}>
-                        {data.tip}
-                    </Text>
+                    <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
+                        <Html style={styles.bottomTip} html={data.tip} />
+                    </View>
                     <BottomDesc style={{marginTop: text(80)}} />
                 </ScrollView>
             ) : null}
@@ -511,6 +582,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         flex: 1,
         height: '100%',
+    },
+    secondaryTitle: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.lightGrayColor,
+        textAlign: 'center',
     },
     amount_sty: {
         color: Colors.red,
@@ -630,5 +707,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: -px(30),
         top: -px(8),
+    },
+    bottomTip: {
+        fontSize: Font.textSm,
+        lineHeight: text(18),
+        color: '#B8C1D3',
     },
 });

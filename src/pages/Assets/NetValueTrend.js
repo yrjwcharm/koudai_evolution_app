@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 17:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 18:09:18
+ * @LastEditTime: 2021-09-28 14:36:27
  * @Description: 净值走势
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -10,7 +10,8 @@ import {RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacit
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {px as text, deviceWidth} from '../../utils/appUtil';
+import {useRoute} from '@react-navigation/native';
+import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {Chart} from '../../components/Chart';
@@ -22,8 +23,9 @@ import {throttle} from 'lodash';
 
 const NetValueTrend = ({poid}) => {
     const insets = useSafeAreaInsets();
+    const route = useRoute();
     const [refreshing, setRefreshing] = useState(false);
-    const [period, setPeriod] = useState('m1');
+    const [period, setPeriod] = useState(route.params.period || 'm1');
     const [chartData, setChart] = useState({});
     const [chart_data, setChart_data] = useState([]);
     const textTime = useRef(null);
@@ -112,7 +114,7 @@ const NetValueTrend = ({poid}) => {
             {chartData.chart ? (
                 <>
                     <View style={styles.netValueChart}>
-                        <View style={{minHeight: 270}}>
+                        <View style={{minHeight: 276}}>
                             <View style={[Style.flexRow, {paddingTop: Space.padding, paddingHorizontal: text(24)}]}>
                                 {chartData?.label?.map((item, index) => {
                                     return (
@@ -262,14 +264,15 @@ const NetValueTrend = ({poid}) => {
             ) : showEmpty ? (
                 <EmptyTip style={{paddingVertical: text(40)}} text={'暂无净值走势数据'} type={'part'} />
             ) : null}
-            <View style={{padding: Space.padding, marginBottom: insets.bottom}}>
+            <View style={{padding: Space.padding, marginBottom: isIphoneX() ? 34 : 0}}>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>{'什么是净值'}</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
                     每份基金单位的净资产价值，等于基金的总资产减去总负债后的余额再除以基金全部发行的单位份额总数。
                 </Text>
                 <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>为什么我的净值走势和我的累计收益不一致</Text>
                 <Text style={[styles.descContent, {marginBottom: text(14)}]}>
-                    净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
+                    净值走势代表您购买的{chartData.po_name}
+                    产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
                 </Text>
             </View>
             <BottomModal ref={bottomModal} title={tip?.title}>

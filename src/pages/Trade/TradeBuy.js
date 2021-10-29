@@ -2,14 +2,14 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 18:59:19
+ * @LastEditTime: 2021-10-20 16:12:17
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
-import {Colors, Font, Style} from '../../common/commonStyle.js';
+import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
 import {px, isIphoneX, onlyNumber, deviceWidth} from '../../utils/appUtil.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -20,12 +20,13 @@ import http from '../../services';
 import Picker from 'react-native-picker';
 import HTML from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import BottomDesc from '../../components/BottomDesc';
 import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
         super(props);
@@ -57,6 +58,7 @@ class TradeBuy extends Component {
             largeAmount: '',
             fixTip: '',
             largeTip: '',
+            deltaHeight: 0,
         };
     }
     getTab = () => {
@@ -69,6 +71,9 @@ class TradeBuy extends Component {
                 },
                 () => {
                     this.init(data.result.active);
+                    if (this.tabView) {
+                        this.tabView.goToPage(data.result.active);
+                    }
                 }
             );
         });
@@ -82,6 +87,67 @@ class TradeBuy extends Component {
             poid,
         }).then((res) => {
             if (res.code === '000000') {
+                console.log(_modalRef);
+                const showRishPop = () => {
+                    Modal.show({
+                        cancelCallBack: () => this.props.navigation.goBack(),
+                        cancelText: res.result.risk_pop.cancel.text,
+                        confirm: true,
+                        confirmCallBack: () => {
+                            if (res.result.risk_pop.confirm.url) {
+                                this.props.jump(res.result.risk_pop.confirm.url);
+                            }
+                        },
+                        confirmText: res.result.risk_pop.confirm.text,
+                        content: res.result.risk_pop.content,
+                        isTouchMaskToClose: false,
+                        title: res.result.risk_pop.title,
+                    });
+                };
+                // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
+                if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
+                    Modal.show({
+                        children: () => {
+                            return (
+                                <View>
+                                    <Text
+                                        style={{
+                                            marginTop: px(2),
+                                            fontSize: Font.textH2,
+                                            lineHeight: px(20),
+                                            color: Colors.red,
+                                            textAlign: 'center',
+                                        }}>
+                                        {res.result.risk_disclosure.sub_title}
+                                    </Text>
+                                    <ScrollView
+                                        bounces={false}
+                                        style={{
+                                            marginVertical: Space.marginVertical,
+                                            paddingHorizontal: px(20),
+                                            maxHeight: px(352),
+                                        }}>
+                                        <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
+                                            {res.result.risk_disclosure.content}
+                                        </Text>
+                                    </ScrollView>
+                                </View>
+                            );
+                        },
+                        confirmCallBack: () => {
+                            if (this.props.isFocused && res.result.risk_pop) {
+                                showRishPop();
+                            }
+                        },
+                        confirmText: '关闭',
+                        countdown: res.result.risk_disclosure.countdown,
+                        isTouchMaskToClose: false,
+                        onCloseCallBack: () => this.props.navigation.goBack(),
+                        title: res.result.risk_disclosure.title,
+                    });
+                } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
+                    showRishPop();
+                }
                 this.setState(
                     {
                         data: res.result,
@@ -108,7 +174,7 @@ class TradeBuy extends Component {
      * @param {*}
      * @return {*}
      */
-    submit = (password) => {
+    submit = async (password) => {
         global.LogTool('tpwd');
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
         let toast = Toast.showLoading();
@@ -117,7 +183,7 @@ class TradeBuy extends Component {
             this.plan(this.state.amount).then((buy_id) => {
                 http.post('/trade/buy/do/20210101', {
                     poid,
-                    buy_id: buy_id || this.state.planData.buy_id,
+                    buy_id: buy_id || this.state.planData.buy_id || '',
                     amount: this.state.amount,
                     password,
                     trade_method: bank?.pay_type,
@@ -785,9 +851,9 @@ class TradeBuy extends Component {
                                         style={[
                                             styles.tip,
                                             Style.flexBetween,
-                                            {borderTopWidth: 0, height: px(24), marginTop: px(-4), paddingLeft: px(3)},
+                                            {borderTopWidth: 0, height: px(32), marginTop: px(-4), paddingLeft: px(3)},
                                         ]}>
-                                        <Text style={{fontSize: px(12)}}>
+                                        <Text style={{fontSize: px(12), flexShrink: 1}} numberOfLines={1}>
                                             实际定投金额:<Text style={{color: Colors.yellow}}>{this.state.fixTip}</Text>
                                         </Text>
                                         <Text style={{color: Colors.btnColor}} onPress={this.showFixModal}>
@@ -797,48 +863,73 @@ class TradeBuy extends Component {
                                 ) : null}
                             </>
                         ) : null}
+                        {errTip === '' && data.buy_info?.tip ? (
+                            <View style={styles.tip}>
+                                <HTML
+                                    html={data.buy_info?.tip}
+                                    style={{
+                                        fontSize: Font.textH3,
+                                        lineHeight: px(17),
+                                        color: Colors.lightGrayColor,
+                                    }}
+                                />
+                            </View>
+                        ) : null}
                     </View>
                 ) : null}
                 {/* 银行卡 */}
                 {this.render_bank()}
                 {/* 买入明细 */}
-                {type == 0 && this.render_config()}
+                {type == 0 && data.scene !== 'adviser' && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
 
-                <Text style={[styles.aggrement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                    购买即代表您已知悉该基金组合的
-                    <Text
-                        onPress={() => {
-                            this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
-                        }}
-                        style={{color: Colors.btnColor}}>
-                        基金组合协议
-                    </Text>
-                    、
-                    <Text
-                        style={{color: Colors.btnColor}}
-                        onPress={() => {
-                            this.jumpPage('TradeAgreements', {fund_codes: planData?.codes, type: this.state.type});
-                        }}>
-                        产品概要
-                    </Text>
-                    {this.state.data?.agreement?.map?.((item, index, arr) => {
-                        return (
-                            <Text key={item + index}>
-                                {index === arr.length - 1 ? '和' : '、'}
-                                <Text
-                                    onPress={() => {
-                                        this.jumpPage('Agreement', {id: item?.id});
-                                    }}
-                                    style={{color: Colors.btnColor}}>
-                                    {item?.name}
+                {data.scene !== 'adviser' && (
+                    <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
+                        购买即代表您已知悉该基金组合的
+                        <Text
+                            onPress={() => {
+                                this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
+                            }}
+                            style={{color: Colors.btnColor}}>
+                            基金组合协议
+                        </Text>
+                        、
+                        <Text
+                            style={{color: Colors.btnColor}}
+                            onPress={() => {
+                                this.jumpPage('TradeAgreements', {fund_codes: planData?.codes, type: this.state.type});
+                            }}>
+                            产品概要
+                        </Text>
+                        {this.state.data?.agreement?.map?.((item, index, arr) => {
+                            return (
+                                <Text key={item + index}>
+                                    {index === arr.length - 1 ? '和' : '、'}
+                                    <Text
+                                        onPress={() => {
+                                            this.jumpPage('Agreement', {id: item?.id});
+                                        }}
+                                        style={{color: Colors.btnColor}}>
+                                        {item?.name}
+                                    </Text>
                                 </Text>
-                            </Text>
-                        );
-                    })}
-                    等内容
-                </Text>
+                            );
+                        })}
+                        等内容
+                    </Text>
+                )}
+                {data.tips ? (
+                    <View style={{padding: Space.padding, paddingTop: px(6)}}>
+                        {data.tips.map?.((item, index) => {
+                            return (
+                                <View key={item + index}>
+                                    <Text style={styles.agreement}>{item}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+                ) : null}
 
                 <BottomDesc />
                 <BottomModal ref={(ref) => (this.bottomModal = ref)} title="低估值定投计算方式">
@@ -867,7 +958,7 @@ class TradeBuy extends Component {
     }
 
     render() {
-        const {showMask, data, type, buyBtnCanClick} = this.state;
+        const {showMask, data, type, buyBtnCanClick, deltaHeight} = this.state;
         const {button} = data;
         return (
             <>
@@ -876,7 +967,7 @@ class TradeBuy extends Component {
                     <View
                         style={{
                             flex: 1,
-                            paddingBottom: isIphoneX() ? px(85) : px(51),
+                            paddingBottom: (isIphoneX() ? px(85) : px(51)) + deltaHeight,
                             backgroundColor: Colors.bgColor,
                             paddingTop: 1,
                         }}>
@@ -884,6 +975,7 @@ class TradeBuy extends Component {
                             <ScrollableTabView
                                 onChangeTab={this.changeBuyStatus}
                                 initialPage={type}
+                                ref={(tabView) => (this.tabView = tabView)}
                                 renderTabBar={() => <TabBar />}>
                                 <View tabLabel="购买" style={{flex: 1}}>
                                     {this.render_buy()}
@@ -897,9 +989,11 @@ class TradeBuy extends Component {
                         )}
                         {button && (
                             <FixedButton
+                                agreement={data.scene === 'adviser' ? data.agreement : undefined}
                                 title={button.text}
                                 disabled={button.avail == 0 || !buyBtnCanClick}
                                 onPress={this.buyClick}
+                                heightChange={(height) => this.setState({deltaHeight: height})}
                             />
                         )}
                         {showMask && (
@@ -927,17 +1021,25 @@ function Focus({init}) {
 function WithHooks(props) {
     const jump = useJump();
     const userInfo = useSelector((state) => state.userInfo);
+    const isFocused = useIsFocused();
     useFocusEffect(
         React.useCallback(() => {
             const {anti_pop} = userInfo.toJS();
+            _modalRef = '';
             if (anti_pop) {
-                Modal.show({
+                _modalRef = Modal.show({
                     title: anti_pop.title,
                     content: anti_pop.content,
                     confirm: true,
                     isTouchMaskToClose: false,
-                    cancelCallBack: () => props.navigation.goBack(),
-                    confirmCallBack: () => jump(anti_pop.confirm_action?.url),
+                    cancelCallBack: () => {
+                        _modalRef = '';
+                        props.navigation.goBack();
+                    },
+                    confirmCallBack: () => {
+                        _modalRef = '';
+                        jump(anti_pop.confirm_action?.url);
+                    },
                     cancelText: anti_pop.cancel_action?.text,
                     confirmText: anti_pop.confirm_action?.text,
                 });
@@ -945,7 +1047,7 @@ function WithHooks(props) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
-    return <TradeBuy {...props} jump={jump} />;
+    return <TradeBuy {...props} isFocused={isFocused} jump={jump} />;
 }
 const styles = StyleSheet.create({
     title: {
@@ -1041,7 +1143,7 @@ const styles = StyleSheet.create({
         borderRadius: px(4),
         textAlign: 'center',
     },
-    aggrement: {
+    agreement: {
         color: Colors.darkGrayColor,
         fontSize: px(12),
         lineHeight: px(17),

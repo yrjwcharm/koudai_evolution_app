@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-26 18:07:51
+ * @LastEditTime: 2021-10-22 15:37:31
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -17,6 +17,7 @@ import {
     Dimensions,
     RefreshControl,
     Platform,
+    StatusBar,
 } from 'react-native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -142,6 +143,16 @@ export default function PortfolioAssets(props) {
                 setShowEye(res ? res : 'true');
             });
         }, [init])
+    );
+    useFocusEffect(
+        useCallback(() => {
+            setTimeout(() => {
+                StatusBar.setBarStyle('light-content');
+            }, 0);
+            return () => {
+                StatusBar.setBarStyle('dark-content');
+            };
+        }, [])
     );
     useEffect(() => {
         if (period) {
@@ -383,24 +394,25 @@ export default function PortfolioAssets(props) {
                                             ) : (
                                                 <CircleLegend color={['#E8EAEF', '#545968']} />
                                             )}
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={Style.flexRow}
-                                                onPress={() => showTips(chart.tips, 'chart')}>
+                                            <View style={Style.flexRow}>
                                                 <Text style={{...styles.legend_desc_sty, marginLeft: text(4)}}>
                                                     {chart?.label[2]?.name}
                                                 </Text>
                                                 {chart?.tips && (
-                                                    <FastImage
-                                                        style={{
-                                                            width: text(12),
-                                                            height: text(12),
-                                                            marginLeft: text(4),
-                                                        }}
-                                                        source={require('../../assets/img/tip.png')}
-                                                    />
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        onPress={() => showTips(chart.tips, 'chart')}>
+                                                        <FastImage
+                                                            style={{
+                                                                width: text(12),
+                                                                height: text(12),
+                                                                marginLeft: text(4),
+                                                            }}
+                                                            source={require('../../assets/img/tip.png')}
+                                                        />
+                                                    </TouchableOpacity>
                                                 )}
-                                            </TouchableOpacity>
+                                            </View>
                                         </View>
                                     </View>
                                 )}
@@ -509,8 +521,9 @@ export default function PortfolioAssets(props) {
     return loading ? (
         renderLoading()
     ) : (
-        <View style={{backgroundColor: Colors.bgColor}}>
+        <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             <ScrollView
+                style={{flex: 1}}
                 scrollIndicatorInsets={{right: 1}}
                 refreshControl={
                     <RefreshControl
@@ -522,7 +535,7 @@ export default function PortfolioAssets(props) {
                     />
                 }>
                 {data?.processing_info && <Notice content={data?.processing_info} />}
-                <View style={styles.assets_card_sty}>
+                <View style={[styles.assets_card_sty, data.scene === 'adviser' ? {paddingBottom: px(24)} : {}]}>
                     {Object.keys(data).length > 0 && (
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline'}}>
                             <View>
@@ -530,7 +543,7 @@ export default function PortfolioAssets(props) {
                                     <Text style={styles.profit_text_sty}>
                                         总金额(元){data?.profit_date ? <Text>({data.profit_date})</Text> : null}
                                     </Text>
-                                    <TouchableOpacity onPress={toggleEye}>
+                                    <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
                                         <Ionicons
                                             name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
                                             size={16}
@@ -628,7 +641,7 @@ export default function PortfolioAssets(props) {
                 )}
 
                 <View style={styles.padding_sty}>
-                    {Object.keys(card).length > 0 && renderBtn() /* 按钮 */}
+                    {Object.keys(card || {}).length > 0 && data.scene !== 'adviser' && renderBtn() /* 按钮 */}
                     {/* 反洗钱上传 */}
                     {data?.notice_info && (
                         <View style={[Style.flexRow, styles.upload_card_sty]}>
@@ -655,7 +668,7 @@ export default function PortfolioAssets(props) {
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
                         {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {
-                            return (
+                            return _index % 4 == 0 && _index === arr.length - 1 ? null : (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     style={{
@@ -776,6 +789,41 @@ export default function PortfolioAssets(props) {
                     data={data?.notice_bar}
                     style={{position: 'absolute', bottom: isIphoneX() ? px(90) : px(56)}}
                 />
+            ) : null}
+            {data?.trade_buttons ? (
+                <View style={[Style.flexRow, styles.fixedBtns]}>
+                    {data.trade_buttons.map?.((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={item + index}
+                                style={[
+                                    Style.flexCenter,
+                                    styles.bottomBtn,
+                                    index === 0
+                                        ? {marginLeft: 0, backgroundColor: '#fff', borderColor: Colors.descColor}
+                                        : {},
+                                    item.avail
+                                        ? {}
+                                        : index === 0
+                                        ? {borderColor: '#c2d5f0'}
+                                        : {backgroundColor: '#c2d5f0'},
+                                ]}
+                                onPress={() => {
+                                    global.LogTool(item.action, props.route?.params?.poid);
+                                    item.avail && accountJump(item.url, item.action);
+                                }}>
+                                <Text
+                                    style={{
+                                        fontSize: px(15),
+                                        color: index === 0 ? (item.avail ? Colors.descColor : '#c2d5f0') : '#fff',
+                                    }}>
+                                    {item.text}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
             ) : null}
         </View>
     );
@@ -1005,5 +1053,20 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: text(-4),
         right: text(-4),
+    },
+    fixedBtns: {
+        paddingVertical: text(8),
+        paddingHorizontal: Space.padding,
+        paddingBottom: isIphoneX() ? 34 + text(8) : text(8),
+        backgroundColor: '#fff',
+    },
+    bottomBtn: {
+        flex: 1,
+        height: px(44),
+        marginLeft: px(12),
+        borderWidth: Space.borderWidth,
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.brandColor,
+        borderColor: Colors.brandColor,
     },
 });
