@@ -46,6 +46,7 @@ export default class MyModal extends Component {
         this.customTitleView = props.customTitleView ? props.customTitleView : false;
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
+        this.backButtonClose = props.backButtonClose !== undefined ? props.backButtonClose : true; // 点击返回键或手势返回是否关闭弹窗
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.state = {
@@ -56,6 +57,7 @@ export default class MyModal extends Component {
             secondPop: false,
             subPop: '',
             guide_pop_button: this.props?.data?.button?.text || '开启通知',
+            countdown: this.props.countdown || 0,
         };
     }
 
@@ -105,6 +107,19 @@ export default class MyModal extends Component {
         if (this.props.isVisible == false) {
             this.props.destroy();
         }
+        if (this.state.countdown) {
+            const timer = setInterval(() => {
+                this.setState((prev) => {
+                    if (prev.countdown === 1) {
+                        clearInterval(timer);
+                    }
+                    return {
+                        ...prev,
+                        countdown: prev.countdown - 1,
+                    };
+                });
+            }, 1000);
+        }
     }
     cancel() {
         this.setModalVisiable(false);
@@ -114,6 +129,9 @@ export default class MyModal extends Component {
         }, 100);
     }
     confirm = () => {
+        if (this.state.countdown) {
+            return false;
+        }
         if (this.clickClose !== false) {
             this.setState({
                 isVisible: false,
@@ -239,7 +257,13 @@ export default class MyModal extends Component {
                                 color: Colors.btnColor,
                                 fontSize: text(16),
                             }}>
-                            {this.confirmText}
+                            {this.state.countdown ? (
+                                <Text>
+                                    {this.state.countdown}s<Text style={{color: Colors.defaultColor}}>后关闭</Text>
+                                </Text>
+                            ) : (
+                                this.confirmText
+                            )}
                         </Text>
                     </TouchableOpacity>
                 )}
@@ -353,9 +377,8 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    if (this.isTouchMaskToClose) {
-                        this.props.onCloseCallBack && this.props.onCloseCallBack();
-                        this.setModalVisiable(false);
+                    if (this.backButtonClose) {
+                        this.cancel();
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>

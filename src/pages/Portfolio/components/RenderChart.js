@@ -3,7 +3,7 @@
  * @Date: 2021-03-17 17:35:25
  * @Description:详情页图表
  * @LastEditors: dx
- * @LastEditTime: 2021-08-18 15:22:04
+ * @LastEditTime: 2021-10-25 16:57:12
  */
 import React, {useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -118,7 +118,7 @@ export default function RenderChart(props) {
                         {chartData?.yield_info?.label && chartData?.yield_info?.label[0]?.key}
                     </Text>
                 </View>
-                {chartData?.yield_info?.label[1] ? (
+                {chartData?.yield_info?.label && chartData?.yield_info?.label[1] ? (
                     <View style={[styles.legend_sty]}>
                         <TextInput
                             style={[
@@ -137,7 +137,7 @@ export default function RenderChart(props) {
                         </View>
                     </View>
                 ) : null}
-                {chartData?.yield_info?.label[2] ? (
+                {chartData?.yield_info?.label && chartData?.yield_info?.label[2] ? (
                     <View style={[styles.legend_sty, lowLine === 1 && type !== 2 ? {minWidth: px(100)} : {}]}>
                         <TextInput
                             style={[
@@ -196,7 +196,7 @@ export default function RenderChart(props) {
                         type == 2 && !showFutureArea ? false : true
                     )}
                     onChange={onChartChange}
-                    data={chart}
+                    // data={chart}
                     onHide={onHide}
                     style={{width: '100%'}}
                 />
@@ -204,14 +204,14 @@ export default function RenderChart(props) {
             {chartData?.yield_info?.tips ? (
                 <BottomModal ref={bottomModal} title={chartData?.yield_info?.tips?.title}>
                     <View style={[{padding: text(16)}]}>
-                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[0]?.key}:</Text>
-                        <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                            {chartData?.yield_info?.tips?.content[0]?.val}
-                        </Text>
-                        <Text style={styles.tipTitle}>{chartData?.yield_info?.tips?.content[1]?.key}:</Text>
-                        <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                            {chartData?.yield_info?.tips?.content[1]?.val}
-                        </Text>
+                        {chartData?.yield_info?.tips?.content?.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
+                                    <Text style={styles.tipTitle}>{item.key}:</Text>
+                                    <Text style={{lineHeight: text(18), fontSize: text(13)}}>{item.val}</Text>
+                                </View>
+                            );
+                        })}
                     </View>
                 </BottomModal>
             ) : null}

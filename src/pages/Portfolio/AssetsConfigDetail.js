@@ -1,22 +1,21 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-05-07 17:19:04
- * @LastEditors: dx
+ * @LastEditTime: 2021-10-27 11:05:42
+ * @LastEditors: yhc
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
 import React, {Component} from 'react';
 import {StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput as Input} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {connect} from 'react-redux';
 import Http from '../../services';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import {Style, Colors, Space, Font} from '../../common/commonStyle';
 import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
+import Loading from './components/PageLoading';
 import {useFocusEffect} from '@react-navigation/native';
 
 const RatioColor = [
@@ -24,7 +23,7 @@ const RatioColor = [
     '#5687EB',
     '#ECB351',
     '#CC8FDD',
-    '#E4C084',
+    '#5DC162',
     '#5DC162',
     '#DE79AE',
     '#967DF2',
@@ -58,16 +57,20 @@ export class AssetsConfigDetail extends Component {
     }
     init = () => {
         const {amount} = this.state;
-        const {poid, upid} = this.props.route.params || {};
+        const {poid, upid, scene} = this.props.route.params || {};
 
-        Http.get('/portfolio/asset_deploy/20210101', {
+        Http.get(scene === 'adviser' ? '/adviser/asset_deploy/20210923' : '/portfolio/asset_deploy/20210101', {
             amount,
             poid,
             upid,
         }).then((res) => {
             if (res.code === '000000') {
                 this.setState({data: res.result});
-                this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
+                if (this.props.route.params.scene === 'adviser') {
+                    this.props.navigation.setOptions({title: '组合资产配置'});
+                } else {
+                    this.props.navigation.setOptions({title: res.result.title || '资产配置详情'});
+                }
             }
         });
         // http.get('/portfolio/asset_deploy/20210101', {
@@ -110,9 +113,11 @@ export class AssetsConfigDetail extends Component {
                                     <Text style={[styles.assets_l2_code]}>{item.code}</Text>
                                 </View>
                                 <View style={[styles.assets_l2_right, {flexDirection: 'row'}]}>
-                                    <Text style={[styles.assets_l2_amount, styles.assets_l2_right]}>
-                                        {item.amount.toFixed(2)}
-                                    </Text>
+                                    {item.amount ? (
+                                        <Text style={[styles.assets_l2_amount, styles.assets_l2_right]}>
+                                            {item.amount.toFixed(2)}
+                                        </Text>
+                                    ) : null}
                                     <Text style={[styles.assets_l2_ratio, styles.assets_l2_right]}>{`${(
                                         item.ratio * 100
                                     ).toFixed(2)}%`}</Text>
@@ -128,11 +133,13 @@ export class AssetsConfigDetail extends Component {
         return (
             <View style={[styles.assets_l1, Style.flexBetween, {borderTopWidth: index === 0 ? 0 : Space.borderWidth}]}>
                 <View style={[styles.leftPart, Style.flexRow]}>
-                    <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
+                    <View style={[styles.circle, {backgroundColor: section.color || RatioColor[index]}]} />
                     <Text style={[styles.assets_l1_name]}>{section.name}</Text>
                 </View>
                 <View style={[styles.rightPart, Style.flexRow]}>
-                    <Text style={[styles.assets_l1_amount, styles.rightPart]}>{section.amount.toFixed(2)}</Text>
+                    {section.amount ? (
+                        <Text style={[styles.assets_l1_amount, styles.rightPart]}>{section.amount.toFixed(2)}</Text>
+                    ) : null}
                     <Text style={[styles.assets_l1_ratio, styles.rightPart]}>
                         {`${(section.ratio * 100).toFixed(2)}%`}
                     </Text>
@@ -146,65 +153,67 @@ export class AssetsConfigDetail extends Component {
         const {invest_form, deploy_title, deploy_content, deploy_detail, btns} = data;
         return (
             <>
-                {Object.keys(data).length > 0 && (
+                {Object.keys(data).length > 0 ? (
                     <ScrollView style={styles.container}>
                         <Focus init={this.init} />
-                        <View style={styles.topPart}>
-                            <View style={[Style.flexBetween, {flexDirection: 'row'}]}>
-                                <Text style={[styles.lableTitle]}>{invest_form.title}</Text>
-                                <View style={[Style.flexRow]}>
-                                    {invest_form.label.map((item, index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                key={item.title}
-                                                style={[styles.lable]}
-                                                onPress={() => this.onLable(`${item.val}`)}>
-                                                <Text style={[styles.lableText]}>{item.title}</Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
+                        {this.props.route.params.scene !== 'adviser' ? (
+                            <View style={styles.topPart}>
+                                <View style={[Style.flexBetween, {flexDirection: 'row'}]}>
+                                    <Text style={[styles.lableTitle]}>{invest_form.title}</Text>
+                                    <View style={[Style.flexRow]}>
+                                        {invest_form.label.map((item, index) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    key={item.title}
+                                                    style={[styles.lable]}
+                                                    onPress={() => this.onLable(`${item.val}`)}>
+                                                    <Text style={[styles.lableText]}>{item.title}</Text>
+                                                </TouchableOpacity>
+                                            );
+                                        })}
+                                    </View>
                                 </View>
-                            </View>
-                            <View style={{position: 'relative'}}>
-                                <Input
-                                    keyboardType="numeric"
-                                    value={amount}
-                                    // placeholder={invest_form.placeholder}
-                                    // placeholderTextColor={Colors.placeholderColor}
-                                    onChangeText={this.onChange}
-                                    ref={(ref) => (this.inputRef = ref)}
-                                    style={[styles.input]}
-                                />
-                                {`${amount}`.length === 0 && (
-                                    <TouchableOpacity
-                                        style={{position: 'absolute', left: text(18), top: text(28)}}
-                                        activeOpacity={1}
-                                        onPress={() => this.inputRef.focus()}>
-                                        <Text style={styles.placeholder}>{invest_form.placeholder}</Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            <View style={[styles.percent_bar, Style.flexRow]}>
-                                {deploy_detail.map((item, index) => (
-                                    <View
-                                        key={item.type}
-                                        style={[
-                                            styles.barPart,
-                                            {
-                                                backgroundColor: RatioColor[index],
-                                                width: `${(item.ratio * 100).toFixed(2)}%`,
-                                            },
-                                        ]}
+                                <View style={{position: 'relative'}}>
+                                    <Input
+                                        keyboardType="numeric"
+                                        value={amount}
+                                        // placeholder={invest_form.placeholder}
+                                        // placeholderTextColor={Colors.placeholderColor}
+                                        onChangeText={this.onChange}
+                                        ref={(ref) => (this.inputRef = ref)}
+                                        style={[styles.input]}
                                     />
-                                ))}
+                                    {`${amount}`.length === 0 && (
+                                        <TouchableOpacity
+                                            style={{position: 'absolute', left: text(18), top: text(28)}}
+                                            activeOpacity={1}
+                                            onPress={() => this.inputRef.focus()}>
+                                            <Text style={styles.placeholder}>{invest_form.placeholder}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                                <View style={[styles.percent_bar, Style.flexRow]}>
+                                    {deploy_detail.map((item, index) => (
+                                        <View
+                                            key={item.type}
+                                            style={[
+                                                styles.barPart,
+                                                {
+                                                    backgroundColor: RatioColor[index],
+                                                    width: `${(item.ratio * 100).toFixed(2)}%`,
+                                                },
+                                            ]}
+                                        />
+                                    ))}
+                                </View>
+                                {deploy_title && deploy_content ? (
+                                    <Text style={[styles.deploy_text]}>
+                                        <Text style={[styles.deploy_title]}>{deploy_title}</Text>
+                                        <Text style={[styles.deploy_content]}>{deploy_content}</Text>
+                                    </Text>
+                                ) : null}
                             </View>
-                            {deploy_title && deploy_content ? (
-                                <Text style={[styles.deploy_text]}>
-                                    <Text style={[styles.deploy_title]}>{deploy_title}</Text>
-                                    <Text style={[styles.deploy_content]}>{deploy_content}</Text>
-                                </Text>
-                            ) : null}
-                        </View>
+                        ) : null}
                         <View style={[styles.deploy_detail]}>
                             <Accordion
                                 activeSections={activeSections}
@@ -219,6 +228,8 @@ export class AssetsConfigDetail extends Component {
                         </View>
                         <BottomDesc />
                     </ScrollView>
+                ) : (
+                    <Loading />
                 )}
                 {Object.keys(data).length > 0 && btns && <FixedBtn btns={btns} />}
             </>
@@ -324,7 +335,7 @@ const styles = StyleSheet.create({
     assets_l1_ratio: {
         textAlign: 'right',
         marginRight: text(12),
-        width: text(48),
+        width: text(58),
     },
     assets_l2: {
         flexDirection: 'row',

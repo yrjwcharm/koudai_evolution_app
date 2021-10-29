@@ -2,14 +2,14 @@
  * @Description:赎回
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-29 16:06:10
+ * @LastEditors: dx
+ * @LastEditTime: 2021-10-25 15:54:22
  */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Dimensions, Keyboard} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {px as text, isIphoneX, onlyNumber} from '../../utils/appUtil';
-import {Space, Style, Colors, Font} from '../../common/commonStyle';
+import {Style, Colors, Font, Space} from '../../common/commonStyle';
 import Radio from '../../components/Radio';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {FixedButton} from '../../components/Button';
@@ -22,7 +22,6 @@ import Mask from '../../components/Mask';
 import Html from '../../components/RenderHtml';
 import Toast from '../../components/Toast/Toast.js';
 const btnHeight = isIphoneX() ? text(90) : text(66);
-var inputValue = 0;
 let timer = null;
 export default class TradeRedeem extends Component {
     constructor(props) {
@@ -44,32 +43,38 @@ export default class TradeRedeem extends Component {
             tips: '',
             init: 1,
             notice: '', //不足7天的基金弹窗
+            short_cut_options: [],
+            min_ratio: '',
         };
         this.notice = '';
+        this.inputValue = 0;
     }
     componentDidMount() {
         Http.get('/trade/redeem/info/20210101', {
             poid: this.props.route?.params?.poid,
         }).then((res) => {
-            this.getPlanInfo();
-            if (res.result.pay_methods.default === 1) {
+            if (res.code === '000000') {
+                this.getPlanInfo(res.result?.scene);
+                if (res.result.pay_methods.default === 1) {
+                    this.setState({
+                        check: [false, true],
+                    });
+                } else {
+                    this.setState({
+                        check: [true, false],
+                    });
+                }
                 this.setState({
-                    check: [false, true],
-                });
-            } else {
-                this.setState({
-                    check: [true, false],
+                    data: res.result,
+                    short_cut_options: res?.result?.redeem_info?.options,
                 });
             }
-            this.setState({
-                data: res.result,
-            });
         });
     }
     componentWillUnmount() {
         Picker.hide();
     }
-    getPlanInfo() {
+    getPlanInfo(scene) {
         return new Promise((resolve, reject) => {
             const {tableData, init, inputValue} = this.state;
             Http.get('/trade/redeem/plan/20210101', {
@@ -79,16 +84,31 @@ export default class TradeRedeem extends Component {
                 init,
             }).then((res) => {
                 if (res.code === '000000') {
-                    tableData.head = res.result.header;
-                    tableData.body = res.result.body;
-
+                    tableData.head = res.result.header || {};
+                    tableData.body = res.result.body || [];
                     this.notice = res.result.notice;
+                    if (scene == 'adviser' && init == 1) {
+                        this.setState((prev) => ({
+                            tips: res.result.amount_desc || prev.tips,
+                            short_cut_options: res?.result?.options || [],
+                            min_ratio: res?.result?.min_percent?.key,
+                        }));
+                        // if (res.result?.options) {
+                        //     this.setState({
+                        //         short_cut_options: res?.result?.options||[],
+                        //     });
+                        // } else {
+                        //     this.setState({
+                        //         short_cut_options: [],
+                        //     });
+                        // }
+                    }
                     if (init != 1) {
-                        this.setState({
+                        this.setState((prev) => ({
                             tableData,
                             redeem_id: res.result.redeem_id,
-                            tips: res.result.amount_desc,
-                        });
+                            tips: res.result.amount_desc || prev.tips,
+                        }));
                     }
                     resolve(res.result.redeem_id);
                 } else {
@@ -118,7 +138,7 @@ export default class TradeRedeem extends Component {
         );
     }
     pressChange(percent) {
-        inputValue = percent * 100;
+        this.inputValue = percent * 100;
         this.setState(
             {
                 inputValue: (percent * 100).toString(),
@@ -147,7 +167,7 @@ export default class TradeRedeem extends Component {
         Http.post('/trade/redeem/do/20210101', {
             redeem_id: redeem_id || this.state.redeem_id,
             password,
-            percent: inputValue / 100,
+            percent: this.inputValue / 100,
             trade_method: this.state.trade_method,
             poid: this.props.route?.params?.poid,
         }).then((res) => {
@@ -163,25 +183,24 @@ export default class TradeRedeem extends Component {
     };
 
     onChange = (_text) => {
-        let text = onlyNumber(_text);
-        if (text && text != 0) {
-            if (text > 100) {
-                text = '100';
+        _text = onlyNumber(_text);
+        if (_text && _text != 0) {
+            if (_text > 100) {
+                _text = '100';
             }
-            inputValue = text;
-            this.setState({btnClick: true, inputValue: text, init: 0}, () => {
+            this.inputValue = _text;
+            this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
                 timer && clearTimeout(timer);
                 timer = setTimeout(() => {
                     this.getPlanInfo();
                 }, 300);
             });
         } else {
-            this.setState({btnClick: false, inputValue: '', tips: '', init: 1});
+            this.setState({btnClick: false, inputValue: '', tips: this.redeemTip, init: 1});
         }
     };
-    redmeeClick = () => {
+    redeemClick = () => {
         global.LogTool('confirmRedeemEnd', this.props.route?.params?.poid);
-        console.log(this.notice);
         if (this.notice) {
             Modal.show({
                 title: '赎回确认',
@@ -190,14 +209,17 @@ export default class TradeRedeem extends Component {
                 cancelText: '继续赎回',
                 confirm: true,
                 cancelCallBack: () => {
-                    this.redmeeReason();
+                    this.redeemReason();
+                },
+                confirmCallBack: () => {
+                    this.props.navigation.goBack();
                 },
             });
         } else {
-            this.redmeeReason();
+            this.redeemReason();
         }
     };
-    redmeeReason = () => {
+    redeemReason = () => {
         setTimeout(() => {
             const option = [];
             var _id;
@@ -237,7 +259,7 @@ export default class TradeRedeem extends Component {
         }, 250);
     };
     render() {
-        const {data, tableData, toggleList, btnClick, redeemTo, tips} = this.state;
+        const {data, tableData, toggleList, btnClick, redeemTo, tips, short_cut_options, min_ratio} = this.state;
         return (
             <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
                 {!!data && (
@@ -289,7 +311,7 @@ export default class TradeRedeem extends Component {
                                     {data?.redeem_info?.title}
                                 </Text>
                                 <View style={Style.flexRow}>
-                                    {data?.redeem_info?.options.map((_i, _d) => {
+                                    {short_cut_options?.map((_i, _d) => {
                                         return (
                                             <TouchableOpacity
                                                 style={styles.btn_percent}
@@ -307,11 +329,33 @@ export default class TradeRedeem extends Component {
                                     {marginTop: text(12), borderBottomWidth: 0.5, borderColor: Colors.borderColor},
                                 ]}>
                                 <TextInput
-                                    style={{height: text(50), fontSize: text(26), flex: 1, textAlign: 'center'}}
+                                    keyboardType="numeric"
+                                    style={{
+                                        height: text(50),
+                                        fontSize: text(26),
+                                        flex: 1,
+                                        textAlign: Platform.select({android: 'left', ios: 'center'}),
+                                        paddingLeft: Platform.select({android: '25%', ios: 0}),
+                                    }}
                                     placeholder={this.state.inputValue ? '' : data?.redeem_info?.hidden_text}
                                     placeholderTextColor={Colors.placeholderColor}
                                     value={this.state.inputValue}
-                                    onChangeText={(text) => this.onChange(text)}
+                                    onBlur={() => {
+                                        let _text = this.state.inputValue;
+                                        if (_text && min_ratio) {
+                                            if (_text < min_ratio * 100) {
+                                                _text = `${min_ratio * 100}`;
+                                                this.inputValue = _text;
+                                                this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
+                                                    timer && clearTimeout(timer);
+                                                    timer = setTimeout(() => {
+                                                        this.getPlanInfo();
+                                                    }, 300);
+                                                });
+                                            }
+                                        }
+                                    }}
+                                    onChangeText={(val) => this.onChange(val)}
                                 />
                                 <Text style={styles.percent_symbol}>%</Text>
                             </View>
@@ -324,15 +368,20 @@ export default class TradeRedeem extends Component {
                                 </View>
                             ) : null}
                         </View>
-                        <TouchableOpacity
-                            style={[Style.flexRow, {marginTop: text(12), backgroundColor: '#fff', padding: text(16)}]}
-                            onPress={() => this.toggleFund()}
-                            activeOpacity={1}>
-                            <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
-                                {data?.redeem_info?.redeem_text}
-                            </Text>
-                            <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
-                        </TouchableOpacity>
+                        {data.scene !== 'adviser' && (
+                            <TouchableOpacity
+                                style={[
+                                    Style.flexRow,
+                                    {marginTop: text(12), backgroundColor: '#fff', padding: text(16)},
+                                ]}
+                                onPress={() => this.toggleFund()}
+                                activeOpacity={1}>
+                                <Text style={{color: '#1F2432', fontSize: Font.textH2, flex: 1}}>
+                                    {data?.redeem_info?.redeem_text}
+                                </Text>
+                                <AntDesign name={toggleList ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                            </TouchableOpacity>
+                        )}
                         {toggleList && Object.keys(tableData).length > 0 && tableData?.body.length > 0 && (
                             <View
                                 style={{
@@ -371,6 +420,11 @@ export default class TradeRedeem extends Component {
                                 </View>
                             </View>
                         )}
+                        {data.reminder ? (
+                            <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
+                                <Html style={styles.reminderSty} html={data.reminder} />
+                            </View>
+                        ) : null}
                         <PasswordModal
                             ref={(ref) => {
                                 this.passwordModal = ref;
@@ -392,7 +446,7 @@ export default class TradeRedeem extends Component {
                     <FixedButton
                         title={data?.button?.text}
                         disabled={data?.button?.avail == 0 || btnClick == false}
-                        onPress={this.redmeeClick}
+                        onPress={this.redeemClick}
                     />
                 )}
             </View>
@@ -444,5 +498,10 @@ const styles = StyleSheet.create({
         fontSize: text(12),
         textAlign: 'right',
         width: text(80),
+    },
+    reminderSty: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.lightGrayColor,
     },
 });

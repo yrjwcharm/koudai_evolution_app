@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-07-08 11:42:56
+ * @LastEditTime: 2021-09-24 10:37:48
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
@@ -64,8 +64,8 @@ export default function ListHeader(props) {
 const styles = StyleSheet.create({
     desc_sty: {
         color: '#4E556C',
-        fontSize: text(12),
+        fontSize: text(13),
+        lineHeight: text(18),
         marginLeft: text(8),
-        fontWeight: 'normal',
     },
 });

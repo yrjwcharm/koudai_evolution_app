@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-22 19:30:14
+ * @LastEditTime: 2021-10-29 15:43:11
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -44,6 +44,7 @@ export default function Launch({navigation}) {
     const showPrivacyPop = () => {
         Modal.show({
             confirm: true,
+            backButtonClose: false,
             isTouchMaskToClose: false,
             cancelCallBack: () => {
                 if (Platform.OS == 'android') {
@@ -109,7 +110,6 @@ export default function Launch({navigation}) {
         });
         //通知回调
         JPush.addNotificationListener((result) => {
-            // alert(JSON.stringify(result));
             if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
                 global.LogTool('pushNStart', result.extras.route);
                 if (result.extras.route?.indexOf('CreateAccount') > -1) {

@@ -2,15 +2,16 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-05-27 17:56:27
+ * @LastEditTime: 2021-10-11 17:39:12
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, StatusBar, Platform} from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import {WebView as RNWebView} from 'react-native-webview';
-import {Colors, Style, Font} from '../../common/commonStyle';
+import {Colors, Style} from '../../common/commonStyle';
 import {px as text} from '../../utils/appUtil';
 import Feather from 'react-native-vector-icons/Feather';
 import {ShareModal} from '../../components/Modal';
@@ -21,6 +22,8 @@ import {useJump} from '../../components/hooks';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useSelector} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
+import Storage from '../../utils/storage';
+
 export default function LCMF({route, navigation}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const netInfo = useNetInfo();
@@ -29,6 +32,8 @@ export default function LCMF({route, navigation}) {
     const shareModal = useRef(null);
     const [data, setData] = useState({});
     const [showLogin, setShowLogin] = useState(false);
+    const webview = useRef(null);
+    const timeStamp = useRef(Date.now());
 
     const onMessage = (event) => {
         const eventData = JSON.parse(event.nativeEvent.data);
@@ -114,6 +119,13 @@ export default function LCMF({route, navigation}) {
         }, [route, userInfo])
     );
 
+    useFocusEffect(
+        useCallback(() => {
+            // webview.current && webview.current.reload();
+            webview.current && webview.current.postMessage(JSON.stringify({action: 'reload'}));
+        }, [])
+    );
+
     return (
         <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
             {hasNet ? (
@@ -121,10 +133,27 @@ export default function LCMF({route, navigation}) {
                     <RNWebView
                         bounces={false}
                         javaScriptEnabled
+                        injectedJavaScript={`window.localStorage.removeItem('loginStatus');`}
+                        onLoadEnd={async () => {
+                            const loginStatus = await Storage.get('loginStatus');
+                            // console.log(loginStatus);
+                            webview.current.postMessage(
+                                JSON.stringify({
+                                    ...loginStatus,
+                                    did: DeviceInfo.getUniqueId(),
+                                    timeStamp: timeStamp.current + '',
+                                    ver: global.ver,
+                                })
+                            );
+                        }}
                         onMessage={onMessage}
                         originWhitelist={['*']}
+                        ref={webview}
                         source={{
-                            uri: route?.params?.link,
+                            uri:
+                                route.params?.scene === 'know_lcmf'
+                                    ? `${route.params.link}?timeStamp=${timeStamp.current}`
+                                    : route?.params?.link,
                         }}
                         startInLoadingState={true}
                         style={{flex: 1}}

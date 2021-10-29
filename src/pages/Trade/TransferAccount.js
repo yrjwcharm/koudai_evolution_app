@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-03-02 12:12:27
  * @Description:一键转投智能组合
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 19:00:06
+ * @LastEditors: dx
+ * @LastEditTime: 2021-10-08 16:13:36
  */
 import React, {useCallback, useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView, Image} from 'react-native';

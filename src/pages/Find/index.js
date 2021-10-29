@@ -155,7 +155,7 @@ const Index = (props) => {
                                         <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                             <Text
                                                 style={[
-                                                    styles.radio,
+                                                    styles.ratio,
                                                     {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
                                                 ]}>
                                                 {data?.recommend?.yield?.ratio}
@@ -260,7 +260,7 @@ const Index = (props) => {
                                                 />
                                             ) : null}
                                         </View>
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={[styles.ratio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
                                     </View>
                                     {item?.yield?.chart && (
@@ -315,7 +315,7 @@ const Index = (props) => {
                                                 />
                                             ) : null}
                                         </View>
-                                        <Text style={[styles.radio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
+                                        <Text style={[styles.ratio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
                                         <Text style={styles.light_text}>{item?.yield?.title}</Text>
                                     </View>
                                     <FastImage
@@ -365,8 +365,19 @@ const Index = (props) => {
                                                 />
                                             ) : null}
                                         </View>
-                                        <Text style={styles.large_text}>{item?.desc}</Text>
-                                        <Text style={styles.light_text}>{item?.slogan}</Text>
+                                        {item.yield ? (
+                                            <>
+                                                <Text style={[styles.ratio, {marginTop: px(16)}]}>
+                                                    {item.yield?.ratio}
+                                                </Text>
+                                                <Text style={styles.light_text}>{item.yield?.title}</Text>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Text style={styles.large_text}>{item?.desc}</Text>
+                                                <Text style={styles.light_text}>{item?.slogan}</Text>
+                                            </>
+                                        )}
                                     </View>
                                     <FastImage
                                         style={[styles.img_icon, {width: px(78), height: px(70)}]}
@@ -437,7 +448,7 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
         color: Colors.darkGrayColor,
     },
-    radio: {
+    ratio: {
         color: Colors.red,
         fontFamily: Font.numFontFamily,
         fontSize: px(22),

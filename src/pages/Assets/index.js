@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-16 19:31:35
+ * @LastEditTime: 2021-09-26 19:10:03
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -793,7 +793,7 @@ function HomeScreen({navigation, route}) {
                                     activeOpacity={0.8}
                                     style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
                                     onPress={() => {
-                                        global.LogTool('assetsProductStart', item?.portfolios[0].poid);
+                                        global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
                                         jump(item?.portfolios[0].url);
                                     }}>
                                     {renderTitle(item?.portfolios[0])}

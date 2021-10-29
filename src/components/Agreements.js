@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-15 16:24:47
+ * @LastEditors: dx
+ * @LastEditTime: 2021-09-27 15:34:36
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -10,14 +10,19 @@ import PropTypes from 'prop-types';
 import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
 import {px} from '../utils/appUtil';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Image from 'react-native-fast-image';
 import {Colors, Space} from '../common/commonStyle';
 import {baseURL} from '../services/config';
+import {useJump} from './hooks';
+
 function Agreements(props) {
+    const jump = useJump();
     const navigation = useNavigation();
     const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
     const jumpPage = (item) => {
+        if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
+            return jump(item.url);
+        }
         if (item.id == 32) {
             //隐私权协议
             navigation.navigate('WebView', {link: `${baseURL.H5}/privacy`, title: '理财魔方隐私权协议'});
@@ -55,7 +60,7 @@ function Agreements(props) {
                     {container}
                 </TouchableHighlight>
             )}
-            <Text style={styles.aggrement_text}>
+            <Text style={styles.agreement_text}>
                 <Text style={styles.text}>{title}</Text>
                 {data && data.length > 0
                     ? data.map((item, index) => {
@@ -87,7 +92,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         fontSize: px(12),
     },
-    aggrement_text: {
+    agreement_text: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
