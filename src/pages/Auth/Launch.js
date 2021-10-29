@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-10-13 10:42:08
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-29 15:43:11
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -110,7 +110,6 @@ export default function Launch({navigation}) {
         });
         //通知回调
         JPush.addNotificationListener((result) => {
-            // alert(JSON.stringify(result));
             if (JSON.stringify(result.extras.route) && result.notificationEventType == 'notificationOpened') {
                 global.LogTool('pushNStart', result.extras.route);
                 if (result.extras.route?.indexOf('CreateAccount') > -1) {

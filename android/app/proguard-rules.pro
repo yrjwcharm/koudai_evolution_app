@@ -10,3 +10,12 @@
 # Add any project specific keep options here:
 -keep class cn.jiguang.imui.** { *; }
 -keep class com.tencent.mm.opensdk.** { *; }
+-dontoptimize
+-dontpreverify
+
+-dontwarn cn.jpush.**
+-keep class cn.jpush.** { *; }
+-keep class * extends cn.jpush.android.helpers.JPushMessageReceiver { *; }
+
+-dontwarn cn.jiguang.**
+-keep class cn.jiguang.** { *; }
