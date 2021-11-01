@@ -2,7 +2,7 @@
  * @Date: tabIconSizetabIconSize-11-04 11:56:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-14 11:56:25
+ * @LastEditTime: 2021-10-29 18:22:57
  * @Description: 底部Tab路由
  */
 import * as React from 'react';
@@ -114,23 +114,27 @@ export default function Tabbar() {
                 style: {height: isIphoneX() ? px(90) : px(56), paddingTop: isIphoneX() ? 0 : px(4)},
             }}>
             <Tab.Screen name="Index" options={{tabBarLabel: '魔方'}} component={Index} />
-            <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
-            <Tab.Screen
-                name="Vision"
-                options={{
-                    tabBarLabel: '视野',
-                    tabBarBadge: '',
-                    tabBarBadgeStyle: {
-                        backgroundColor: '#E74949',
-                        width: vision.toJS().visionUpdate ? 8 : 0,
-                        height: vision.toJS().visionUpdate ? 8 : 0,
-                        minWidth: 0,
-                        marginLeft: 5,
-                        borderRadius: 4,
-                    },
-                }}
-                component={Vision}
-            />
+            {userInfo?.toJS()?.show_find_tab ? (
+                <Tab.Screen name="Find" options={{tabBarLabel: '发现'}} component={Find} />
+            ) : null}
+            {userInfo?.toJS()?.show_vision_tab ? (
+                <Tab.Screen
+                    name="Vision"
+                    options={{
+                        tabBarLabel: '视野',
+                        tabBarBadge: '',
+                        tabBarBadgeStyle: {
+                            backgroundColor: '#E74949',
+                            width: vision.toJS().visionUpdate ? 8 : 0,
+                            height: vision.toJS().visionUpdate ? 8 : 0,
+                            minWidth: 0,
+                            marginLeft: 5,
+                            borderRadius: 4,
+                        },
+                    }}
+                    component={Vision}
+                />
+            ) : null}
             <Tab.Screen
                 name="Home"
                 options={{

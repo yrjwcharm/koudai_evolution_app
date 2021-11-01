@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:36:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-29 18:27:30
  * @Description:路由表
  */
 import React from 'react';
@@ -184,7 +184,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="Launch"
+            initialRouteName="LowBuySignal"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
@@ -519,7 +519,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
-            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{title:'低位买入信号'}}/>
+            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{title: '低位买入信号'}} />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />

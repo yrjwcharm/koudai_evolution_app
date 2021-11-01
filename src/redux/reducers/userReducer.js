@@ -2,7 +2,7 @@
  * @Date: 2020-11-26 18:36:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 18:46:45
+ * @LastEditTime: 2021-10-29 18:22:17
  * @Description:
  */
 import actionTypes from '../actionTypes';
@@ -15,6 +15,8 @@ const defaultState = fromJS({
     hotRefreshData: '', //是否有热更新
     latest_version: '',
     anti_pop: '', //上传身份证弹窗
+    show_vision_tab: true,
+    show_find_tab: true,
 });
 
 export default function userInfo(state = defaultState, action) {
