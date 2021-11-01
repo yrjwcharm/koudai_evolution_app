@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-25 18:57:47
+ * @LastEditTime: 2021-11-01 15:06:11
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -36,7 +36,6 @@ class Login extends Component {
         let toast = Toast.showLoading('正在登录...');
         http.post('/auth/user/login/20210101', {mobile, password: base64.encode(password)}).then(async (res) => {
             Toast.hide(toast);
-            console.log(res);
             if (res.code === '000000') {
                 if (res.result?.pop) {
                     Modal.show({
