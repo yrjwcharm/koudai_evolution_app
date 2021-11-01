@@ -29,6 +29,7 @@ const SERVER_URL = {
     },
     pre2: {
         HTTP: 'https://kapi-web-kp2.licaimofang.com/',
+        //安卓 HTTP: 'https://kweb2mtls.licaimofang.com/',
         WS: 'wss://kapi-im-ws-kp2.licaimofang.com',
         IMApi: 'https://kapi-im-kp2.licaimofang.com',
         H5: 'https://evolution-h5-kp2.licaimofang.com',
