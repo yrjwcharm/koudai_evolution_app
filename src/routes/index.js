@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-29 18:27:30
+ * @LastEditTime: 2021-11-01 14:15:44
  * @Description:路由表
  */
 import React from 'react';
@@ -184,7 +184,7 @@ export default function AppStack() {
     }, [keyboardDidShow, keyboardDidHide]);
     return (
         <Stack.Navigator
-            initialRouteName="LowBuySignal"
+            initialRouteName="Launch"
             headerMode="screen"
             screenOptions={{
                 ...TransitionPresets.SlideFromRightIOS,
