@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-26 19:10:03
+ * @LastEditTime: 2021-11-01 16:44:59
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -149,7 +149,7 @@ function HomeScreen({navigation, route}) {
                         if (res.result.options) {
                             setChoice('');
                             setModalData(res.result);
-                            setIsVisible(true);
+                            isFocused && setIsVisible(true);
                         }
                     }
                 });
@@ -160,7 +160,7 @@ function HomeScreen({navigation, route}) {
                 });
             }
         },
-        [readInterface, userInfo]
+        [isFocused, readInterface, userInfo]
     );
     const reportSurvey = (answer) => {
         http.post('/common/survey/report/20210521', {survey_id: 1, answer});

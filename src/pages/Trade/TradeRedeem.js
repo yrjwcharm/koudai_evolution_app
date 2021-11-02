@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 15:56:47
  * @LastEditors: dx
- * @LastEditTime: 2021-10-25 15:54:22
+ * @LastEditTime: 2021-11-01 11:26:01
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Keyboard, Platform} from 'react-native';
@@ -343,8 +343,8 @@ export default class TradeRedeem extends Component {
                                     onBlur={() => {
                                         let _text = this.state.inputValue;
                                         if (_text && min_ratio) {
-                                            if (_text < min_ratio * 100) {
-                                                _text = `${min_ratio * 100}`;
+                                            if (_text < (min_ratio * 100).toFixed(2)) {
+                                                _text = `${(min_ratio * 100).toFixed(2)}`;
                                                 this.inputValue = _text;
                                                 this.setState({btnClick: true, inputValue: _text, init: 0}, () => {
                                                     timer && clearTimeout(timer);

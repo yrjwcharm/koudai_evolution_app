@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-25 10:57:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-23 11:37:54
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-01 15:00:06
  * @Description:
  */
 export default {
@@ -10,4 +10,6 @@ export default {
     Vision: 'Vision',
     ResetVision: 'ResetVision',
     Account: 'Account',
+    Modal: 'Modal',
+    DeleteModal: 'DeleteModal',
 };

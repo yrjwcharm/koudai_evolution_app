@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:38:45
+ * @LastEditTime: 2021-11-01 17:07:29
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -23,11 +23,12 @@ import http from './src/services';
 import Storage from './src/utils/storage';
 import NetInfo from '@react-native-community/netinfo';
 import {updateVerifyGesture, getUserInfo, updateUserInfo} from './src/redux/actions/userInfo';
+import {deleteModal, updateModal} from './src/redux/actions/modalInfo';
 import {Modal} from './src/components/Modal';
 import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
-import {throttle, debounce} from 'lodash';
+import {throttle, debounce, cloneDeep} from 'lodash';
 global.ver = '6.3.0';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -48,8 +49,7 @@ const {store, persistor} = configStore();
 function App(props) {
     const navigationRef = useRef();
     const routeNameRef = useRef();
-    const [modalObj, setModalObj] = React.useState({});
-    const [userInfo, setUserInfo] = React.useState({});
+    const userInfoRef = useRef({});
     const imageH = useRef(0);
     const homeShowModal = useRef(true);
     let lastBackPressed = '';
@@ -152,75 +152,75 @@ function App(props) {
         setTimeout(() => {
             listener = store.subscribe(() => {
                 const next = store.getState().userInfo.toJS();
-                setUserInfo((prev) => {
-                    if (!next.hotRefreshData) {
-                        if (
-                            (!prev.is_login && next.is_login) ||
-                            (!prev.has_account && next.has_account) ||
-                            (!prev.buy_status && next.buy_status)
-                        ) {
-                            getModalData();
+                const prev = userInfoRef.current;
+                if (!next.hotRefreshData) {
+                    if (
+                        (!prev.is_login && next.is_login) ||
+                        (!prev.has_account && next.has_account) ||
+                        (!prev.buy_status && next.buy_status)
+                    ) {
+                        getModalData();
+                    }
+                }
+                if (prev.is_login) {
+                    showGesture(next).then((res) => {
+                        if (!res) {
+                            homeShowModal.current = true;
+                            onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
+                        } else {
+                            homeShowModal.current = false;
                         }
-                    }
-                    if (prev.is_login) {
-                        showGesture(next).then((res) => {
-                            if (!res) {
-                                homeShowModal.current = true;
-                                onStateChange(navigationRef?.current?.getCurrentRoute()?.name, true);
-                            } else {
-                                homeShowModal.current = false;
-                            }
-                        });
-                    }
-                    return next;
-                });
+                    });
+                }
+                userInfoRef.current = cloneDeep(next);
             });
         }, 100);
         return () => listener && listener();
-    }, [getModalData, modalObj, onStateChange, showGesture]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const showGesture = React.useCallback((userinfo) => {
-        return (async function () {
-            const res = await Storage.get('gesturePwd');
-            if (res && res[`${userinfo.uid}`]) {
-                const result = await Storage.get('openGesturePwd');
-                if (result && result[`${userinfo.uid}`]) {
-                    if (userinfo.is_login && !userinfo.verifyGesture) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+    const showGesture = async (userinfo) => {
+        const res = await Storage.get('gesturePwd');
+        if (res && res[`${userinfo.uid}`]) {
+            const result = await Storage.get('openGesturePwd');
+            if (result && result[`${userinfo.uid}`]) {
+                if (userinfo.is_login && !userinfo.verifyGesture) {
+                    return true;
                 } else {
                     return false;
                 }
             } else {
                 return false;
             }
-        })();
-    }, []);
+        } else {
+            return false;
+        }
+    };
     const onStateChange = React.useCallback(
         (currentRouteName, show) => {
-            if (Object.keys(modalObj).length > 0) {
-                if (modalObj.page) {
-                    if (modalObj.page?.includes(currentRouteName)) {
+            const modalInfo = store.getState().modalInfo.toJS();
+            if (Object.keys(modalInfo).length > 0) {
+                if (modalInfo.page) {
+                    if (modalInfo.page?.includes(currentRouteName)) {
                         if (currentRouteName === 'Home') {
                             if (show) {
-                                showModal(modalObj);
+                                showModal(modalInfo);
                             }
                         } else {
-                            showModal(modalObj);
+                            showModal(modalInfo);
                         }
                     }
                 } else {
                     if (currentRouteName === 'Index') {
-                        showModal(modalObj);
+                        showModal(modalInfo);
                     }
                 }
             }
         },
-        [modalObj, showModal]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
     );
-    const getModalData = React.useCallback(() => {
+    const getModalData = () => {
         http.get('/common/layer/20210101').then((res) => {
             if (res.code === '000000') {
                 if (res.result.image) {
@@ -231,13 +231,13 @@ function App(props) {
                             if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
                                 showModal(res.result);
                             } else {
-                                setModalObj(res.result);
+                                store.dispatch(updateModal(res.result));
                             }
                         } else {
                             if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
                                 showModal(res.result);
                             } else {
-                                setModalObj(res.result);
+                                store.dispatch(updateModal(res.result));
                             }
                         }
                     });
@@ -246,19 +246,19 @@ function App(props) {
                         if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
                             showModal(res.result);
                         } else {
-                            setModalObj(res.result);
+                            store.dispatch(updateModal(res.result));
                         }
                     } else {
                         if (navigationRef?.current?.getCurrentRoute()?.name === 'Index') {
                             showModal(res.result);
                         } else {
-                            setModalObj(res.result);
+                            store.dispatch(updateModal(res.result));
                         }
                     }
                 }
             }
         });
-    }, [showModal]);
+    };
     const jump = (navigation, url, type = 'navigate') => {
         if (url) {
             if (url.type === 2) {
@@ -289,130 +289,124 @@ function App(props) {
             }
         }
     };
-    const showModal = React.useCallback(
-        throttle((modal) => {
-            // if (!modal.log_id) {
-            //     return false;
-            // }
-            http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-            global.LogTool('campaignPopup', navigationRef.current.getCurrentRoute().name, modal.log_id);
-            if (modal.type === 'image') {
-                Modal.show({
-                    type: 'image',
-                    imageUrl: modal.image,
-                    id: modal.log_id,
-                    imgWidth: modal.device_width ? deviceWidth : 0,
-                    imgHeight: imageH.current,
-                    isTouchMaskToClose: modal.touch_close,
-                    confirmCallBack: () => {
-                        modal.log_id &&
-                            global.LogTool(
-                                'campaignPopupStart',
-                                navigationRef.current.getCurrentRoute().name,
-                                modal.log_id
-                            );
-                        jump(navigationRef.current, modal.url);
-                    },
-                });
-            } else if (modal.type === 'alert_image') {
-                Modal.show({
-                    confirm: modal.cancel ? true : false,
-                    id: modal.log_id,
-                    confirmCallBack: () => {
-                        modal.log_id &&
-                            global.LogTool(
-                                'campaignPopupStart',
-                                navigationRef.current.getCurrentRoute().name,
-                                modal.log_id
-                            );
-                        jump(navigationRef.current, modal.confirm.url || '');
-                    },
-                    clickClose: false,
-                    confirmText: modal.confirm.text || '',
-                    cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
-                    cancelText: modal.cancel?.text || '',
-                    content: modal.content || '',
-                    customTitleView: (
-                        <Image
-                            source={{uri: modal.image}}
-                            style={{
-                                width: text(280),
-                                height: imageH.current,
-                                borderTopRightRadius: 8,
-                                borderTopLeftRadius: 8,
-                            }}
-                        />
-                    ),
-                    isTouchMaskToClose: modal.touch_close,
-                });
-            } else if (modal.type === 'confirm') {
-                Modal.show({
-                    confirm: modal.cancel ? true : false,
-                    id: modal.log_id,
-                    confirmCallBack: () => {
-                        modal.log_id &&
-                            global.LogTool(
-                                'campaignPopupStart',
-                                navigationRef.current.getCurrentRoute().name,
-                                modal.log_id
-                            );
-                        jump(navigationRef.current, modal.confirm.url || '');
-                    },
-                    confirmText: modal.confirm.text || '',
-                    cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
-                    cancelText: modal.cancel?.text || '',
-                    content: modal.content || '',
-                    isTouchMaskToClose: modal.touch_close,
-                    title: modal.title || '',
-                });
-            } else if (modal.type === 'diy_image') {
-                Modal.show({
-                    type: 'image',
-                    imageUrl: modal.image,
-                    imgWidth: modal.device_width ? deviceWidth : 0,
-                    imgHeight: imageH.current,
-                    isTouchMaskToClose: modal.touch_close,
-                    id: modal.log_id,
-                    confirmCallBack: () => {
-                        modal.log_id &&
-                            global.LogTool(
-                                'campaignPopupStart',
-                                navigationRef.current.getCurrentRoute().name,
-                                modal.log_id
-                            );
-                        jump(navigationRef.current, modal.url);
-                    },
-                    content: {
-                        title: modal.title,
-                        text: modal.content,
-                        tip: modal.tip,
-                    },
-                });
-            } else if (modal.type === 'user_guide') {
-                Modal.show({
-                    id: modal.log_id,
-                    type: 'user_guide',
-                    isTouchMaskToClose: modal.touch_close,
-                    confirmCallBack: () => {
-                        global.LogTool('copyBindAccountStart');
-                        Linking.canOpenURL('weixin://').then((supported) => {
-                            if (supported) {
-                                Linking.openURL('weixin://');
-                            } else {
-                                Toast.show('请先安装微信');
-                            }
-                        });
-                        // }
-                    },
-                    data: modal,
-                });
-            }
-            setTimeout(() => {
-                setModalObj({});
-            }, 500);
-        }, 10000),
-        []
-    );
+    const showModal = throttle((modal) => {
+        // if (!modal.log_id) {
+        //     return false;
+        // }
+        http.post('/common/layer/click/20210801', {log_id: modal.log_id});
+        global.LogTool('campaignPopup', navigationRef.current.getCurrentRoute().name, modal.log_id);
+        if (modal.type === 'image') {
+            Modal.show({
+                type: 'image',
+                imageUrl: modal.image,
+                id: modal.log_id,
+                imgWidth: modal.device_width ? deviceWidth : 0,
+                imgHeight: imageH.current,
+                isTouchMaskToClose: modal.touch_close,
+                confirmCallBack: () => {
+                    modal.log_id &&
+                        global.LogTool(
+                            'campaignPopupStart',
+                            navigationRef.current.getCurrentRoute().name,
+                            modal.log_id
+                        );
+                    jump(navigationRef.current, modal.url);
+                },
+            });
+        } else if (modal.type === 'alert_image') {
+            Modal.show({
+                confirm: modal.cancel ? true : false,
+                id: modal.log_id,
+                confirmCallBack: () => {
+                    modal.log_id &&
+                        global.LogTool(
+                            'campaignPopupStart',
+                            navigationRef.current.getCurrentRoute().name,
+                            modal.log_id
+                        );
+                    jump(navigationRef.current, modal.confirm.url || '');
+                },
+                clickClose: false,
+                confirmText: modal.confirm.text || '',
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+                customTitleView: (
+                    <Image
+                        source={{uri: modal.image}}
+                        style={{
+                            width: text(280),
+                            height: imageH.current,
+                            borderTopRightRadius: 8,
+                            borderTopLeftRadius: 8,
+                        }}
+                    />
+                ),
+                isTouchMaskToClose: modal.touch_close,
+            });
+        } else if (modal.type === 'confirm') {
+            Modal.show({
+                confirm: modal.cancel ? true : false,
+                id: modal.log_id,
+                confirmCallBack: () => {
+                    modal.log_id &&
+                        global.LogTool(
+                            'campaignPopupStart',
+                            navigationRef.current.getCurrentRoute().name,
+                            modal.log_id
+                        );
+                    jump(navigationRef.current, modal.confirm.url || '');
+                },
+                confirmText: modal.confirm.text || '',
+                cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
+                cancelText: modal.cancel?.text || '',
+                content: modal.content || '',
+                isTouchMaskToClose: modal.touch_close,
+                title: modal.title || '',
+            });
+        } else if (modal.type === 'diy_image') {
+            Modal.show({
+                type: 'image',
+                imageUrl: modal.image,
+                imgWidth: modal.device_width ? deviceWidth : 0,
+                imgHeight: imageH.current,
+                isTouchMaskToClose: modal.touch_close,
+                id: modal.log_id,
+                confirmCallBack: () => {
+                    modal.log_id &&
+                        global.LogTool(
+                            'campaignPopupStart',
+                            navigationRef.current.getCurrentRoute().name,
+                            modal.log_id
+                        );
+                    jump(navigationRef.current, modal.url);
+                },
+                content: {
+                    title: modal.title,
+                    text: modal.content,
+                    tip: modal.tip,
+                },
+            });
+        } else if (modal.type === 'user_guide') {
+            Modal.show({
+                id: modal.log_id,
+                type: 'user_guide',
+                isTouchMaskToClose: modal.touch_close,
+                confirmCallBack: () => {
+                    global.LogTool('copyBindAccountStart');
+                    Linking.canOpenURL('weixin://').then((supported) => {
+                        if (supported) {
+                            Linking.openURL('weixin://');
+                        } else {
+                            Toast.show('请先安装微信');
+                        }
+                    });
+                },
+                data: modal,
+            });
+        }
+        store.dispatch(deleteModal());
+    }, 10000);
 
     const _handleAppStateChange = (nextAppState) => {
         const appState = AppState.currentState;
