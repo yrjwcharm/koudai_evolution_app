@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-08-18 17:47:14
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-03 15:28:28
  * @Description:牛人信号
  */
 import React, {useEffect, useState} from 'react';
@@ -140,7 +140,7 @@ const TopInvestors = ({navigation, route}) => {
                                     source={require('../../assets/personal/achievement.png')}
                                     style={styles.iconSty}
                                 />
-                                <Text style={styles.infoTitle}>{'牛人信号业绩'}</Text>
+                                <Text style={styles.infoTitle}>{'牛人信号释义'}</Text>
                             </View>
                             <View style={{marginTop: px(8)}}>
                                 <HTML
