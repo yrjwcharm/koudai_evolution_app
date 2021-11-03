@@ -236,12 +236,6 @@ const Index = (props) => {
                                         global.LogTool('indexNotificationCenter');
                                         jump({path: 'RemindMessage'});
                                     }}>
-                                    <View style={{width: px(40), height: px(40)}}>
-                                        <FastImage
-                                            style={{width: px(20), height: px(20)}}
-                                            source={require('../../assets/img/index/message.png')}
-                                        />
-                                    </View>
                                     {allMsg ? (
                                         <View style={styles.point_sty}>
                                             <Text
@@ -255,6 +249,10 @@ const Index = (props) => {
                                             </Text>
                                         </View>
                                     ) : null}
+                                    <FastImage
+                                        style={{width: px(32), height: px(32)}}
+                                        source={require('../../assets/img/index/message.png')}
+                                    />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -860,16 +858,13 @@ const styles = StyleSheet.create({
     },
     point_sty: {
         position: 'absolute',
-        left: px(0),
+        left: px(15),
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
         paddingVertical: 3,
         paddingHorizontal: 6,
-        borderWidth: 2,
-        borderColor: '#fff',
-        // width: text(20),
-        // height: text(20),
+        zIndex: 10,
     },
     large_num: {
         fontSize: px(28),
