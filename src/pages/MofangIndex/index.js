@@ -501,69 +501,75 @@ const Index = (props) => {
                                 </View>
                             )}
                             {/* 听听魔方用户怎么说 */}
-                            <>
-                                <RenderTitle title={'听听魔方用户怎么说'} />
-                                <ScrollView
-                                    style={{paddingLeft: px(16), width: deviceWidth, marginLeft: px(-16)}}
-                                    showsPagination={false}
-                                    horizontal={true}
-                                    height={px(188)}
-                                    ref={snapScroll}
-                                    onScrollEndDrag={() => {
-                                        var interval = Platform.OS == 'android' ? px(295) : px(293.5); // WIDTH OF 1 CHILD COMPONENT
-                                        var snapTo = scrollingRight
-                                            ? Math.ceil(lastx / interval)
-                                            : Math.floor(lastx / interval);
-                                        var scrollTo = snapTo * interval;
-                                        global.LogTool('indexUserReviewSlide', data?.comment_list[snapTo].id);
-                                        snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
-                                    }}
-                                    scrollEventThrottle={100}
-                                    onScroll={(event) => {
-                                        var nextx = event.nativeEvent.contentOffset.x;
-                                        scrollingRight = nextx > lastx;
-                                        lastx = nextx;
-                                    }}
-                                    showsHorizontalScrollIndicator={false}>
-                                    {data?.comment_list?.map((comment, index) => (
-                                        <TouchableOpacity
-                                            key={comment.id}
-                                            style={[
-                                                styles.about_our,
-                                                styles.common_card,
-                                                {
-                                                    marginRight:
-                                                        index == data?.comment_list?.length - 1 ? px(28) : px(12),
-                                                },
-                                            ]}
-                                            activeOpacity={0.8}
-                                            onPress={() => {
-                                                global.LogTool('indexUserReviewDetail', comment.id);
-                                                jump({path: 'MessageBoard', params: {id: comment.id}});
-                                            }}>
-                                            <View style={Style.flexRow}>
-                                                <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
-                                                <View style={{flex: 1}}>
-                                                    <Text numberOfLines={1} style={styles.avatar_name}>
-                                                        {comment.name}
-                                                    </Text>
-                                                    <Text
-                                                        style={{
-                                                            fontSize: px(12),
-                                                            color: Colors.darkGrayColor,
-                                                        }}>
-                                                        {comment.time + comment.from}
-                                                    </Text>
+                            {data?.comment_list ? (
+                                <>
+                                    <RenderTitle title={'听听魔方用户怎么说'} />
+                                    <ScrollView
+                                        style={{paddingLeft: px(16), width: deviceWidth, marginLeft: px(-16)}}
+                                        showsPagination={false}
+                                        horizontal={true}
+                                        height={px(188)}
+                                        ref={snapScroll}
+                                        onScrollEndDrag={() => {
+                                            var interval = Platform.OS == 'android' ? px(295) : px(293.5); // WIDTH OF 1 CHILD COMPONENT
+                                            var snapTo = scrollingRight
+                                                ? Math.ceil(lastx / interval)
+                                                : Math.floor(lastx / interval);
+                                            var scrollTo = snapTo * interval;
+                                            global.LogTool('indexUserReviewSlide', data?.comment_list[snapTo].id);
+                                            snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
+                                        }}
+                                        scrollEventThrottle={100}
+                                        onScroll={(event) => {
+                                            var nextx = event.nativeEvent.contentOffset.x;
+                                            scrollingRight = nextx > lastx;
+                                            lastx = nextx;
+                                        }}
+                                        showsHorizontalScrollIndicator={false}>
+                                        {data?.comment_list?.map((comment, index) => (
+                                            <TouchableOpacity
+                                                key={comment.id}
+                                                style={[
+                                                    styles.about_our,
+                                                    styles.common_card,
+                                                    {
+                                                        marginRight:
+                                                            index == data?.comment_list?.length - 1 ? px(28) : px(12),
+                                                    },
+                                                ]}
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    global.LogTool('indexUserReviewDetail', comment.id);
+                                                    jump({path: 'MessageBoard', params: {id: comment.id}});
+                                                }}>
+                                                <View style={Style.flexRow}>
+                                                    <FastImage source={{uri: comment.avatar}} style={styles.avatar} />
+                                                    <View style={{flex: 1}}>
+                                                        <Text numberOfLines={1} style={styles.avatar_name}>
+                                                            {comment.name}
+                                                        </Text>
+                                                        <Text
+                                                            style={{
+                                                                fontSize: px(12),
+                                                                color: Colors.darkGrayColor,
+                                                            }}>
+                                                            {comment.time + comment.from}
+                                                        </Text>
+                                                    </View>
                                                 </View>
-                                            </View>
-                                            <Text style={styles.about_text} numberOfLines={3}>
-                                                {comment.content}
-                                            </Text>
-                                            <Praise comment={comment} style={styles.zan} log={'indexUserReviewLike'} />
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            </>
+                                                <Text style={styles.about_text} numberOfLines={3}>
+                                                    {comment.content}
+                                                </Text>
+                                                <Praise
+                                                    comment={comment}
+                                                    style={styles.zan}
+                                                    log={'indexUserReviewLike'}
+                                                />
+                                            </TouchableOpacity>
+                                        ))}
+                                    </ScrollView>
+                                </>
+                            ) : null}
                             <>
                                 <RenderTitle title={'关于理财魔方'} />
                                 {/* 安全保障 */}
