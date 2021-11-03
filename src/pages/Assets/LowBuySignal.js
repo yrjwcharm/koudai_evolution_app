@@ -1,21 +1,24 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, isIphoneX} from '../../utils/appUtil';
+import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
 import FastImage from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/core';
+import Html from '../../components/RenderHtml';
 export default (props) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({});
+    const jump = useJump();
     const init = useCallback(() => {
         setLoading(true);
         Http.get('/position/signal_detail/20211026?poid=X00F000003', {
             poid: props.route?.params?.poid,
         }).then((res) => {
             setLoading(false);
+            setData(res.result);
         });
     }, [props]);
 
@@ -47,79 +50,90 @@ export default (props) => {
     return loading ? (
         <LoadingComponent />
     ) : (
-        <View style={styles.container}>
-            <ScrollView scrollIndicatorInsets={{right: 1}}>
+        <>
+            <ScrollView
+                scrollIndicatorInsets={{right: 1}}
+                style={[
+                    styles.container,
+                    {
+                        marginBottom: isIphoneX() ? text(85) : text(51),
+                    },
+                ]}>
                 <View style={styles.lowBuyInfo}>
                     <View style={[styles.lowBuyInfoRatio, Style.flexCenter]}>
-                        <Text style={{color: data.ratio > 1 ? Colors.red : Colors.green, ...styles.lowBuyInfoRatioNum}}>
-                            {data.ratio}
-                        </Text>
-                        <Text style={styles.lowBuyInfoRatioDesc}>{data.desc}</Text>
-                    </View>
-                    <View>
-                        <Text style={[styles.lowBuyInfoText, Space.marginVertical]}>{data.lowBuyInfoText}</Text>
-                    </View>
-                    <View>
-                        <TouchableOpacity style={[styles.lowBuyInfoAddBuyBtn, Style.flexCenter]}>
-                            <Text style={styles.lowBuyInfoAddBuyBtnText}>追加购买</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.blockStyle}>
-                    <Text style={styles.blockTitle}>低位买入信号释义</Text>
-                    <Text style={styles.blockDesc}>
-                        模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。
-                    </Text>
-                    {/* <FastImage
-                        style={{
-                            width: text(243),
-                            height: text(95),
-                            alignSelf: 'center',
-                        }}
-                        source={require('')}
-                        resizeMode={FastImage.resizeMode.contain}
-                    /> */}
-                </View>
-                <View style={styles.blockStyle}>
-                    <Text style={styles.blockTitle}>信号案例</Text>
-                    <Text style={styles.blockDesc}>
-                        模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。
-                    </Text>
-                    {/* <FastImage
-                        style={{
-                            width: text(243),
-                            height: text(95),
-                            alignSelf: 'center',
-                        }}
-                        source={require('')}
-                        resizeMode={FastImage.resizeMode.contain}
-                    /> */}
-                </View>
-                <View style={styles.blockStyle}>
-                    <Text style={styles.blockTitle}>地位信号提醒</Text>
-                    <View style={styles.positionCost}>
-                        <Text style={styles.positionCostText}>持仓成本</Text>
                         <Text
                             style={{
-                                color: data.ratio > 1 ? Colors.red : Colors.green,
-                                ...styles.positionCostRatio,
+                                color: data?.notice_info?.yield_incr > 1 ? Colors.red : Colors.green,
+                                ...styles.lowBuyInfoRatioNum,
                             }}>
-                            {`>=${data.ratio}`}
+                            {data?.notice_info?.yield_incr}
                         </Text>
+                        <Text style={styles.lowBuyInfoRatioDesc}>{data?.notice_info?.explain}</Text>
                     </View>
-                    <Text style={[styles.blockDesc, styles.hintContent]}>
-                        模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。模仿认为，投资时一种概率性行为。
-                    </Text>
+                    <View
+                        style={{
+                            paddingTop: text(20),
+                        }}>
+                        <Html html={data?.notice_info?.content} style={styles.lowBuyInfoText} />
+                    </View>
+                </View>
+                <View style={styles.blockStyle}>
+                    <Text style={styles.blockTitle}>{data?.percentage?.title}</Text>
+                    <Html html={data?.percentage?.explain} style={styles.blockDesc} />
+
+                    <FastImage
+                        style={{
+                            width: text(243),
+                            height: text(95),
+                            marginTop: text(12),
+                            alignSelf: 'center',
+                        }}
+                        source={{uri: data?.percentage?.img}}
+                        resizeMode={FastImage.resizeMode.contain}
+                    />
+                </View>
+                <View style={styles.blockStyle}>
+                    <Text style={styles.blockTitle}>{data?.signal_case?.title}</Text>
+                    <Html html={data?.signal_case?.explain} style={styles.blockDesc} />
+                    {data?.signal_case?.img ? (
+                        <FastImage
+                            style={{
+                                width: deviceWidth - text(64),
+                                height: text(460),
+                                marginTop: text(12),
+                            }}
+                            source={{uri: data?.signal_case?.img}}
+                        />
+                    ) : null}
+                </View>
+                <View style={[styles.blockStyle, {marginBottom: text(20)}]}>
+                    <Text style={styles.blockTitle}>{data?.remind_img?.title}</Text>
+                    <View style={styles.positionCost}>
+                        <Text style={styles.positionCostText}>持仓成本</Text>
+                        <Html
+                            html={data?.remind_img?.sub_title}
+                            style={{fontSize: text(18), fontFamily: Font.numMedium}}
+                        />
+                    </View>
+                    <View style={styles.hintContent}>
+                        <Html html={data?.remind_img?.explain} style={styles.blockDesc} />
+                    </View>
                 </View>
             </ScrollView>
-            <FixedButton title={'追加购买'} onPress={() => {}} />
-        </View>
+            <FixedButton
+                title={data?.button?.text}
+                onPress={() => {
+                    jump(data?.button?.url);
+                }}
+            />
+        </>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        paddingBottom: text(100),
+        flex: 1,
+        backgroundColor: Colors.bgColor,
     },
     lowBuyInfo: {
         backgroundColor: '#FFF',
@@ -145,18 +159,10 @@ const styles = StyleSheet.create({
     },
     lowBuyInfoText: {
         fontSize: Font.textH1,
+        lineHeight: text(24),
         color: '#545968',
-        paddingVertical: text(20),
     },
-    lowBuyInfoAddBuyBtn: {
-        backgroundColor: Colors.btnColor,
-        borderRadius: text(22),
-        paddingVertical: text(12),
-    },
-    lowBuyInfoAddBuyBtnText: {
-        color: '#fff',
-        fontSize: text(15),
-    },
+
     blockStyle: {
         margin: text(16),
         marginBottom: 0,
@@ -168,25 +174,24 @@ const styles = StyleSheet.create({
         color: '#1F2432',
         fontSize: Font.textH1,
         fontWeight: 'bold',
+        lineHeight: text(23),
+        marginBottom: text(10),
     },
     blockDesc: {
         fontSize: text(13),
         color: '#545968',
-        paddingVertical: text(12),
+        lineHeight: text(21),
     },
     positionCost: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: text(11),
+        paddingBottom: text(11),
     },
     positionCostText: {
         fontSize: text(12),
         color: '#121D3A',
         paddingTop: text(3),
         marginRight: text(6),
-    },
-    positionCostRatio: {
-        fontSize: text(18),
     },
     hintContent: {
         padding: text(16),
