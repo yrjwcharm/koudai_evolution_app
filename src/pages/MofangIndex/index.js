@@ -865,6 +865,8 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         paddingHorizontal: 6,
         zIndex: 10,
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     large_num: {
         fontSize: px(28),
