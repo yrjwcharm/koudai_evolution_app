@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-29 15:50:22
+ * @LastEditTime: 2021-11-03 18:50:02
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -30,7 +30,7 @@ import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
-    const envList = ['online1', 'online2'];
+    const envList = ['online', 'online1', 'online2'];
     const timer = useRef();
     const jump = useJump();
     const inset = useSafeAreaInsets();
@@ -229,7 +229,7 @@ export default function Launch({navigation}) {
                         if (result.result?.env) {
                             global.env = result.result.env;
                         } else {
-                            global.env = 'online';
+                            global.env = 'onlinessl';
                         }
                     } else {
                         global.env = env;
@@ -288,7 +288,7 @@ export default function Launch({navigation}) {
                                 }
                             });
                     };
-                    getHealthEnv(0, 2);
+                    getHealthEnv(0, 3);
                 });
         });
     };

@@ -2,11 +2,18 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-27 14:22:26
+ * @LastEditTime: 2021-11-03 19:10:59
  * @Description:环境
  */
 const env = 'online'; //默认
 const SERVER_URL = {
+    onlinessl: {
+        // 正式环境
+        HTTP: 'https://kapi-websi.licaimofang.cn/',
+        WS: 'wss://kapi-im-ws.licaimofang.com/',
+        IMApi: 'https://kapi-imsi.licaimofang.cn',
+        H5: 'https://evolution-h5.licaimofang.com',
+    },
     online: {
         // 正式环境
         HTTP: 'https://kapi-web.licaimofang.com/',

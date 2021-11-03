@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-29 16:30:21
+ * @LastEditTime: 2021-11-03 19:06:22
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -138,18 +138,16 @@ const IM = (props) => {
                         setMessages([]);
                         // handelSystemMes({content: '连接成功'});
                     }
-                    setUid(data.result.uid);
-                    _uid.current = data.result.uid;
-                    token.current = data.result.token;
+                    setUid(data?.result?.uid);
+                    _uid.current = data?.result?.uid;
+                    token.current = data?.result?.token;
                     WS.current.send(handleMsgParams('LIR', 'loign'));
-
                     connect = true;
                 })
                 .catch((err) => {
                     console.log(err, 'err');
                     handelSystemMes({content: '网络异常连接断开,', button: '立即重新连接'});
                 });
-            console.log('WebSocket:', 'connect to server');
         };
         //客户端接收服务端数据时触发
         WS.current.onmessage = function (evt) {
