@@ -66,7 +66,7 @@ export default (props) => {
                                 color: data?.notice_info?.yield_incr > 1 ? Colors.red : Colors.green,
                                 ...styles.lowBuyInfoRatioNum,
                             }}>
-                            {data?.notice_info?.yield_incr}
+                            {data?.notice_info?.yield_incr}%
                         </Text>
                         <Text style={styles.lowBuyInfoRatioDesc}>{data?.notice_info?.explain}</Text>
                     </View>

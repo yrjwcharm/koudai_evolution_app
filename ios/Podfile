@@ -42,7 +42,6 @@ target 'EvolutionApp-tvOS' do
   end
 end
 
-
 def find_and_replace(dir, findstr, replacestr)
   Dir[dir].each do |name|
       text = File.read(name)
