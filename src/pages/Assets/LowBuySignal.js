@@ -110,10 +110,10 @@ export default (props) => {
                     <Text style={styles.blockTitle}>{data?.remind_img?.title}</Text>
                     <View style={styles.positionCost}>
                         <Text style={styles.positionCostText}>持仓成本</Text>
-                        <Html
-                            html={data?.remind_img?.sub_title}
-                            style={{fontSize: text(18), fontFamily: Font.numMedium}}
-                        />
+                        <Text style={{fontSize: text(18), color: Colors.green}}> ≤ </Text>
+                        <Text style={{fontSize: text(18), fontFamily: Font.numMedium, color: Colors.green}}>
+                            {data?.remind_img?.sub_title}
+                        </Text>
                     </View>
                     <View style={styles.hintContent}>
                         <Html html={data?.remind_img?.explain} style={styles.blockDesc} />
