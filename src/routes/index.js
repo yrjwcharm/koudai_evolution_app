@@ -65,6 +65,7 @@ import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
+import AssetHealthScore from '../pages/Assets/AssetHealthScore'; // 资产健康分
 import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
 import SetTarget from '../pages/FixedPortfolio/SetTarget'; //低估值设置目标
@@ -410,6 +411,7 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
+            <Stack.Screen name="AssetHealthScore" component={AssetHealthScore} options={{title: '资产健康分', headerTransparent:true}} />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
