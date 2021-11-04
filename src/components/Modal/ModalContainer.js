@@ -33,6 +33,7 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
  * @param {Function} confirmCallBack //确认的回掉函数
  * @param {Function} cancelCallBack //取消的回掉函数
  * @param {Function} onCloseCallBack //弹窗关闭的回掉函数
+ * @param {boolean} backCloseCallbackExecute //返回键是否执行cancleCallBack 默认执行
  */
 const modalWidth = 280;
 export default class MyModal extends Component {
@@ -47,6 +48,8 @@ export default class MyModal extends Component {
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
         this.backButtonClose = props.backButtonClose !== undefined ? props.backButtonClose : true; // 点击返回键或手势返回是否关闭弹窗
+        this.backCloseCallbackExecute =
+            props.backCloseCallbackExecute !== undefined ? props.backCloseCallbackExecute : true; //返回键是否执行cancleCallBack 默认执行
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.state = {
@@ -124,13 +127,7 @@ export default class MyModal extends Component {
     cancel() {
         this.setModalVisiable(false);
         setTimeout(() => {
-            this.props.cancelCallBack && this.props.cancelCallBack();
-        }, 100);
-    }
-    //安卓返回关闭
-    close() {
-        this.setModalVisiable(false);
-        setTimeout(() => {
+            this.backCloseCallbackExecute && this.props.cancelCallBack && this.props.cancelCallBack();
             this.props.onCloseCallBack && this.props.onCloseCallBack();
         }, 100);
     }
@@ -384,7 +381,7 @@ export default class MyModal extends Component {
                 visible={isVisible}
                 onRequestClose={() => {
                     if (this.backButtonClose) {
-                        this.close();
+                        this.cancel();
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
@@ -392,7 +389,8 @@ export default class MyModal extends Component {
                     <TouchableWithoutFeedback
                         onPress={() => {
                             if (this.isTouchMaskToClose) {
-                                this.close();
+                                this.props.onCloseCallBack && this.props.onCloseCallBack();
+                                this.setModalVisiable(false);
                             }
                         }}>
                         <View style={styles.mask} />
