@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-10-27 11:05:42
- * @LastEditors: yhc
+ * @LastEditTime: 2021-11-04 10:19:01
+ * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
  */
@@ -20,17 +20,17 @@ import {useFocusEffect} from '@react-navigation/native';
 
 const RatioColor = [
     '#E1645C',
-    '#5687EB',
-    '#ECB351',
+    '#6694F3',
+    '#F8A840',
     '#CC8FDD',
     '#5DC162',
-    '#5DC162',
-    '#DE79AE',
-    '#967DF2',
-    '#62B4C7',
-    '#B8D27E',
-    '#F18D60',
-    '#5E71E8',
+    '#C7AC6B',
+    '#62C4C7',
+    '#E97FAD',
+    '#C2E07F',
+    '#B1B4C5',
+    '#E78B61',
+    '#8683C9',
     '#EBDD69',
 ];
 

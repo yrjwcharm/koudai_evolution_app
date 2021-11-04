@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-10-25 16:09:10
+ * @LastEditTime: 2021-11-03 19:33:54
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -18,17 +18,17 @@ import {basicPieChart} from './components/ChartOption';
 
 const RatioColor = [
     '#E1645C',
-    '#ECB351',
-    '#5687EB',
-    '#967DF2',
+    '#6694F3',
+    '#F8A840',
+    '#CC8FDD',
     '#5DC162',
-    '#5DC162',
-    '#DE79AE',
-    '#967DF2',
-    '#62B4C7',
-    '#B8D27E',
-    '#F18D60',
-    '#5E71E8',
+    '#C7AC6B',
+    '#62C4C7',
+    '#E97FAD',
+    '#C2E07F',
+    '#B1B4C5',
+    '#E78B61',
+    '#8683C9',
     '#EBDD69',
 ];
 
@@ -149,7 +149,7 @@ const HistoryAdjust = ({navigation, route}) => {
                                 return (
                                     <View
                                         style={[Style.flexRow, {width: '50%', marginBottom: text(8)}]}
-                                        key={RatioColor[index]}>
+                                        key={item + index}>
                                         <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
                                         <Text style={styles.legendName}>{item.name}</Text>
                                         <Text style={styles.legendVal}>{item.percent}%</Text>

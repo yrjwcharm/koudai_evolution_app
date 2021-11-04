@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 18:11:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-10-13 16:55:59
+ * @LastEditTime: 2021-11-03 19:33:27
  * @Description: 持有基金
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,17 +20,17 @@ import Notice from '../../components/Notice';
 
 const RatioColor = [
     '#E1645C',
-    '#5687EB',
-    '#ECB351',
+    '#6694F3',
+    '#F8A840',
     '#CC8FDD',
     '#5DC162',
-    '#5DC162',
-    '#DE79AE',
-    '#967DF2',
-    '#62B4C7',
-    '#B8D27E',
-    '#F18D60',
-    '#5E71E8',
+    '#C7AC6B',
+    '#62C4C7',
+    '#E97FAD',
+    '#C2E07F',
+    '#B1B4C5',
+    '#E78B61',
+    '#8683C9',
     '#EBDD69',
 ];
 
