@@ -156,7 +156,7 @@ packagingOptions {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 62500
-        versionName '6.2.5'
+        versionName '6.2.7'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
