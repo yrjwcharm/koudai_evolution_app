@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:38:45
+ * @LastEditTime: 2021-11-04 14:08:44
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -28,7 +28,7 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce} from 'lodash';
-global.ver = '6.2.5';
+global.ver = '6.2.6';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -304,6 +304,7 @@ function App(props) {
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     confirmCallBack: () => {
                         modal.log_id &&
                             global.LogTool(
@@ -344,6 +345,7 @@ function App(props) {
                         />
                     ),
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                 });
             } else if (modal.type === 'confirm') {
                 Modal.show({
@@ -363,6 +365,7 @@ function App(props) {
                     cancelText: modal.cancel?.text || '',
                     content: modal.content || '',
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     title: modal.title || '',
                 });
             } else if (modal.type === 'diy_image') {
@@ -372,6 +375,7 @@ function App(props) {
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     id: modal.log_id,
                     confirmCallBack: () => {
                         modal.log_id &&
@@ -393,6 +397,7 @@ function App(props) {
                     id: modal.log_id,
                     type: 'user_guide',
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     confirmCallBack: () => {
                         global.LogTool('copyBindAccountStart');
                         Linking.canOpenURL('weixin://').then((supported) => {

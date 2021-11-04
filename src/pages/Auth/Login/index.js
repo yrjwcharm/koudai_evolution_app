@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-16 15:56:22
+ * @LastEditTime: 2021-11-04 14:17:53
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -17,7 +17,8 @@ import Storage from '../../../utils/storage';
 import Toast from '../../../components/Toast';
 import {connect} from 'react-redux';
 import {getUserInfo, getVerifyGesture} from '../../../redux/actions/userInfo';
-
+import {Modal} from '../../../components/Modal';
+import base64 from '../../../utils/base64';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -28,13 +29,34 @@ class Login extends Component {
             btnClick: true,
         };
     }
+
     login = () => {
         const {mobile, password} = this.state;
         const userInfo = this.props.userInfo?.toJS();
         let toast = Toast.showLoading('正在登录...');
-        http.post('/auth/user/login/20210101', {mobile, password}).then(async (res) => {
+        http.post('/auth/user/login/20210101', {mobile, password: base64.encode(password)}).then(async (res) => {
             Toast.hide(toast);
             if (res.code === '000000') {
+                if (res.result?.pop) {
+                    Modal.show({
+                        content: res?.result?.pop?.content,
+                        title: res?.result?.pop?.title,
+                        confirm: true,
+                        confirmText: '忘记密码',
+                        cancelText: '验证码登录',
+                        confirmCallBack: () => {
+                            this.jumpPage('ForgetLoginPwd');
+                        },
+                        backCloseCallbackExecute: false,
+                        cancelCallBack: () => {
+                            this.props.navigation.navigate('VerifyLogin', {
+                                fr: this.props.route?.params?.fr,
+                                mobile: mobile,
+                            });
+                        },
+                    });
+                    return;
+                }
                 this.props.getUserInfo();
                 this.props.getVerifyGesture(true);
                 await Storage.save('loginStatus', res.result);

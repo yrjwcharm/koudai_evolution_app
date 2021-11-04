@@ -1,4 +1,5 @@
 import axios from 'axios';
+import androidHttp from './android.http';
 import qs from 'qs';
 import {SERVER_URL, env} from './config';
 import Storage from '../utils/storage';
@@ -36,7 +37,6 @@ axios.interceptors.request.use(
         }
         config.headers.Authorization = token;
         config.params = {
-            ...config.data,
             app: '4000',
             ts: new Date().getTime(),
             did: DeviceInfo.getUniqueId(),
@@ -80,14 +80,17 @@ axios.interceptors.response.use(
     }
 );
 export default class http {
+    static adapter = Platform.OS === 'ios' ? axios : androidHttp;
+    // static adapter = axios;
+
     static async get(url, params, config, showLoading = true) {
         try {
             let query = await qs.stringify(params);
             let res = null;
             if (!params) {
-                res = await axios.get(url);
+                res = await this.adapter.get(url);
             } else {
-                res = await axios.get(url + '?' + query);
+                res = await this.adapter.get(url + '?' + query);
             }
             return res;
         } catch (error) {
@@ -102,7 +105,7 @@ export default class http {
             if (showLoading) {
                 toast = Toast.showLoading(showLoading);
             }
-            let res = await axios.post(url, params);
+            let res = await this.adapter.post(url, params);
             toast && Toast.hide(toast);
             return res;
         } catch (error) {

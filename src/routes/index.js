@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-30 10:36:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-10-29 15:50:31
  * @Description:路由表
  */
 import React from 'react';
@@ -153,6 +153,7 @@ import PersonalizedRecommend from '../pages/Settings/PersonalizedRecommend'; //�
 import AboutApp from '../pages/Settings/AboutApp'; //关于APP
 import WeChatNotice from '../pages/Assets/WeChatNotice'; // 开启微信通知
 import IdAuth from '../pages/CreateAccount/Account/idAuth'; //开户身份证认证
+import VerifyLogin from '../pages/Auth/Login/verifyLogin'; //验证码登陆
 import AdvisorPortfolio from '../pages/Portfolio/AdvisorPortfolio'; // 投顾组合超市
 import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
 import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
@@ -593,6 +594,7 @@ export default function AppStack() {
             <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
             <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
             <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
+            <Stack.Screen name="VerifyLogin" component={VerifyLogin} options={{title: ''}} />
             <Stack.Screen
                 name="AdvisorPortfolio"
                 component={AdvisorPortfolio}
