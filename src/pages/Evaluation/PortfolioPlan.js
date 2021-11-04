@@ -2,66 +2,102 @@
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 12:21:12
+ * @LastEditTime: 2021-11-04 15:26:37
  * @Description:定制理财计划
  */
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
-import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
-import Header from '../../components/NavBar';
-import Icon from 'react-native-vector-icons/AntDesign';
+import {px, deviceWidth} from '../../utils/appUtil';
+import {Chart} from '../../components/Chart';
+import {baseAreaChart} from './components/chartOptions';
+import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
 import http from '../../services';
-import LinearGradient from 'react-native-linear-gradient';
-import {Chart, chartOptions} from '../../components/Chart';
 import NumText from '../../components/NumText';
-import FastImage from 'react-native-fast-image';
-import _ from 'lodash';
-import {BoxShadow} from 'react-native-shadow';
-import {Modal} from '../../components/Modal';
+import FixedBtn from '../Portfolio/components/FixedBtn';
 
 const PortfolioPlan = () => {
+    const [active, setActive] = useState(0);
+    const [chartData, setChartData] = useState(null);
+    const [data, setData] = useState(null);
+    useEffect(() => {
+        http.get('/questionnaire/chart/20211101?upid=170814&summary_id=312044').then((res) => {
+            setChartData(res?.result?.charts);
+            setData(res?.result);
+        });
+    }, []);
     return (
-        <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
-            <View style={[Style.flexRow, {alignItems: 'flex-end', height: px(94)}]}>
-                <View style={[Style.flexCenter, styles.container_sty]}>
-                    <NumText
-                        style={{
-                            ...styles.amount_sty,
-                            fontSize: px(34),
-                        }}
-                        text={'12%'}
-                    />
-                    <Text style={styles.radio_sty}>年华</Text>
-                </View>
+        <>
+            <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+                <View style={[Style.flexRow, {alignItems: 'flex-end', height: px(94)}]}>
+                    <View style={[Style.flexCenter, styles.container_sty]}>
+                        <NumText
+                            style={{
+                                ...styles.amount_sty,
+                                fontSize: px(34),
+                            }}
+                            text={'12%'}
+                        />
+                        <Text style={styles.radio_sty}>年华</Text>
+                    </View>
 
-                <View style={[Style.flexCenter, styles.container_sty]}>
-                    <Text
-                        style={[styles.amount_sty, {fontSize: px(26), lineHeight: px(30), color: Colors.defaultColor}]}>
-                        -12.1%
-                    </Text>
-                    <Text style={[styles.radio_sty, {marginTop: px(6)}]}>嘿嘿</Text>
-                </View>
-            </View>
-            <View style={{paddingHorizontal: px(16)}}>
-                <Text style={styles.card_title}>智能工具</Text>
-                <View style={Style.flexBetween}>
-                    <View style={styles.card}>
-                        <Text style={styles.card_subtitle}>底线预估</Text>
-                        <Text style={styles.card_desc}>底线预估底线预估</Text>
-                    </View>
-                    <View style={styles.card}>
-                        <Text>底线预估</Text>
-                        <Text>底线预估底线预估</Text>
-                    </View>
-                    <View style={styles.card}>
-                        <Text>底线预估</Text>
-                        <Text>底线预估底线预估</Text>
+                    <View style={[Style.flexCenter, styles.container_sty]}>
+                        <Text
+                            style={[
+                                styles.amount_sty,
+                                {fontSize: px(26), lineHeight: px(30), color: Colors.defaultColor},
+                            ]}>
+                            -12.1%
+                        </Text>
+                        <Text style={[styles.radio_sty, {marginTop: px(6)}]}>嘿嘿</Text>
                     </View>
                 </View>
-            </View>
-        </ScrollView>
+                <View
+                    style={{
+                        height: 260,
+                    }}>
+                    <Chart
+                        initScript={baseAreaChart(
+                            chartData,
+                            [Colors.red, Colors.lightBlackColor, 'transparent'],
+                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
+                            true,
+                            2,
+                            deviceWidth - px(40),
+                            10,
+                            null,
+                            220
+                        )}
+                        style={{width: '100%'}}
+                    />
+                </View>
+                <View style={{paddingHorizontal: px(16)}}>
+                    <Text style={styles.card_title}>智能工具</Text>
+                    <View style={Style.flexBetween}>
+                        <View style={styles.card}>
+                            <Text style={styles.card_subtitle}>底线预估</Text>
+                            <Text style={styles.card_desc}>底线预估底线预估</Text>
+                            <Icon
+                                name="checkmark-circle"
+                                size={px(18)}
+                                color={Colors.brandColor}
+                                style={styles.check}
+                            />
+                        </View>
+                        <View style={styles.card}>
+                            <Text>底线预估</Text>
+                            <Text>底线预估底线预估</Text>
+                        </View>
+                        <View style={styles.card}>
+                            <Text>底线预估</Text>
+                            <Text>底线预估底线预估</Text>
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
+            {data?.button_list && <FixedBtn btns={data.button_list} />}
+        </>
     );
 };
 
@@ -96,6 +132,7 @@ const styles = StyleSheet.create({
         marginBottom: px(12),
     },
     card: {
+        height: px(134),
         width: px(102),
         borderRadius: px(8),
         borderColor: '#DDDDDD',
@@ -114,4 +151,5 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         textAlign: 'center',
     },
+    check: {position: 'absolute', right: px(-6), bottom: px(-6)},
 });
