@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-04 21:08:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-04 21:46:14
  * @Description:定制理财计划
  */
 import React, {useState, useCallback} from 'react';
@@ -20,7 +20,7 @@ import {useFocusEffect} from '@react-navigation/core';
 import FastImage from 'react-native-fast-image';
 let timer_one = null;
 let timer_two = null;
-const PortfolioPlan = () => {
+const PortfolioPlan = ({navigation}) => {
     const [active, setActive] = useState(0);
     const [chartData, setChartData] = useState([]);
     const [data, setData] = useState(null);
@@ -29,7 +29,9 @@ const PortfolioPlan = () => {
         useCallback(() => {
             http.get('/questionnaire/chart/20211101?upid=170814&summary_id=312044').then((res) => {
                 setData(res?.result);
+                navigation.setOptions({title: res.result?.title});
             });
+
             return () => {
                 timer_one && clearTimeout(timer_one);
                 timer_two && clearTimeout(timer_two);
