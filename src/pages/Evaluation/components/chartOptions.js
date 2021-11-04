@@ -2,38 +2,21 @@
  * @Date: 2021-11-04 15:08:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 15:08:19
+ * @LastEditTime: 2021-11-04 17:45:40
  * @Description:
  */
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
+const colors = ['#545968', '#E74949', '#545968'];
 export const baseAreaChart = (
     data,
-    colors = [
-        '#E1645C',
-        '#6694F3',
-        '#F8A840',
-        '#CC8FDD',
-        '#5DC162',
-        '#C7AC6B',
-        '#62C4C7',
-        '#E97FAD',
-        '#C2E07F',
-        '#B1B4C5',
-        '#E78B61',
-        '#8683C9',
-        '#EBDD69',
-    ],
-    areaColors,
     percent = false,
     tofixed = 2,
     width = deviceWidth - 10,
     appendPadding = 10,
     tag_position = {},
     height = 220,
-    max = null,
-    showArea = true,
-    showDate = false
+    max = null
 ) => `
 (function(){
   chart = new F2.Chart({
@@ -46,9 +29,10 @@ export const baseAreaChart = (
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
     type: 'timeCat',
-    tickCount: 3,
+    tickCount: 5,
     range: [0, 1]
   });
+  chart.tooltip(false);
   chart.scale('value', {
     tickCount: 5,
     // range: [ 0, 1 ],
@@ -78,36 +62,6 @@ export const baseAreaChart = (
     }
   });
   chart.legend(false);
-  chart.tooltip({
-    crosshairsStyle: ${JSON.stringify(showDate)} ? {
-      stroke: ${JSON.stringify(colors[0])},
-      lineWidth: 0.5,
-      lineDash: [2],
-    } : {},
-    crosshairsType: 'y',
-    custom: true,
-    onChange: function(obj) {
-      window.ReactNativeWebView.postMessage(stringify({obj, type: 'onChange'}));
-    },
-    onHide: function(obj) {
-      window.ReactNativeWebView.postMessage(stringify({obj, type: 'onHide'}));
-    },
-    showCrosshairs: true,
-    showXTip: ${JSON.stringify(showDate)},
-    // showYTip: true,
-    // snap: true,
-    tooltipMarkerStyle: {
-      radius: 1
-    },
-    // triggerOn: ['touchstart', 'touchmove'],
-    // triggerOff: 'touchend',
-    // xTipBackground: {
-    //   fill: '#E74949',
-    // },
-    // yTipBackground: {
-    //   fill: '#E74949',
-    // },
-  });
     if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
       chart.guide().tag({
         position: ${JSON.stringify(tag_position?.buy?.position)},
@@ -161,52 +115,31 @@ export const baseAreaChart = (
       });
     };
 
-    if(${JSON.stringify(showArea)}){
-      chart.area({startOnZero: false})
-        .position('date*value')
-        .shape('smooth')
-        .color('type', ${JSON.stringify(areaColors)})
-        .animate({
-          appear: {
-            animation: 'groupWaveIn',
-            duration: 500
-          }
-        });
-    }
+    
 
   chart.line()
     .position('date*value')
     .shape('smooth')
     .color('type', ${JSON.stringify(colors)})
-   
     .animate({
       appear: {
+        delay:1000,
         animation: 'groupWaveIn',
-        duration: 500
+        duration: 1000
+      },
+      update: {
+        animation: 'groupWaveIn',
+        duration: 1000
       }
     })
     .style('type', {
       lineWidth: 1,
       lineDash(val) {
-        if (val === '底线') return [4, 4, 4];
+        if (val === 'risk') return [4, 4, 4];
         else return [];
       }
     });
-    chart.point().position('date*value').size('tag', function(val) {
-      return val ? 3 : 0;
-    }).style('tag', {
-      fill: function fill(val) {
-        if (val === 2) {
-          return '#4BA471';
-        } else if (val === 1) {
-          return '#E74949';
-        }else if (val === 3) {
-            return '#0051CC';
-         }
-      },
-      stroke: '#fff',
-      lineWidth: 1
-    });
+   
   chart.render();
 })();
 `;
