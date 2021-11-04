@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-11-04 15:08:18
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 17:45:40
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-04 21:08:55
  * @Description:
  */
 import {Dimensions} from 'react-native';

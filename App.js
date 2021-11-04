@@ -304,6 +304,7 @@ function App(props) {
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     confirmCallBack: () => {
                         modal.log_id &&
                             global.LogTool(
@@ -344,6 +345,7 @@ function App(props) {
                         />
                     ),
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                 });
             } else if (modal.type === 'confirm') {
                 Modal.show({
@@ -363,6 +365,7 @@ function App(props) {
                     cancelText: modal.cancel?.text || '',
                     content: modal.content || '',
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     title: modal.title || '',
                 });
             } else if (modal.type === 'diy_image') {
@@ -372,6 +375,7 @@ function App(props) {
                     imgWidth: modal.device_width ? deviceWidth : 0,
                     imgHeight: imageH.current,
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     id: modal.log_id,
                     confirmCallBack: () => {
                         modal.log_id &&
@@ -393,6 +397,7 @@ function App(props) {
                     id: modal.log_id,
                     type: 'user_guide',
                     isTouchMaskToClose: modal.touch_close,
+                    backButtonClose: modal.back_close,
                     confirmCallBack: () => {
                         global.LogTool('copyBindAccountStart');
                         Linking.canOpenURL('weixin://').then((supported) => {

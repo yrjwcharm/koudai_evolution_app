@@ -109,6 +109,7 @@ const Index = (props) => {
         },
         [isFocused, readInterface]
     );
+
     useEffect(() => {
         if (userInfo?.pushRoute) {
             http.get('/common/push/jump/redirect/20210810', {
