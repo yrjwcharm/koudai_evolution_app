@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-25 16:57:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-04 20:55:34
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -11,11 +11,12 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import http from '../../services/index.js';
 import EmptyTip from '../../components/EmptyTip';
-import {Colors, Style, Font} from '../../common/commonStyle.js';
+import {Colors, Style, Font, Space} from '../../common/commonStyle.js';
 import {px, tagColor} from '../../utils/appUtil.js';
 import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
@@ -139,7 +140,7 @@ const TradeRecord = ({route, navigation}) => {
                         setRefresh(false);
                         jump(item.url);
                     }}>
-                    <>
+                    <View style={{paddingHorizontal: Space.padding}}>
                         <View style={Style.flexBetween}>
                             <View style={Style.flexRow}>
                                 <View
@@ -194,7 +195,15 @@ const TradeRecord = ({route, navigation}) => {
                                 <Text style={styles.notice_text}>{item.notice}</Text>
                             </View>
                         ) : null}
-                    </>
+                    </View>
+                    {item.error_msg ? (
+                        <View style={styles.errorMsgBox}>
+                            <Text style={styles.errorMsg}>
+                                {item.error_msg}
+                                <Icon name={'angle-right'} size={16} color={Colors.red} />
+                            </Text>
+                        </View>
+                    ) : null}
                 </TouchableOpacity>
             )
         );
@@ -267,12 +276,12 @@ export default TradeRecord;
 const styles = StyleSheet.create({
     container: {backgroundColor: Colors.bgColor, flex: 1, paddingBottom: px(10)},
     card: {
-        paddingHorizontal: px(16),
         backgroundColor: '#fff',
         marginTop: px(12),
         paddingTop: px(16),
-        borderRadius: 8,
+        borderRadius: Space.borderRadius,
         marginHorizontal: px(16),
+        overflow: 'hidden',
     },
     date: {
         fontSize: px(12),
@@ -298,5 +307,15 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
         height: px(36),
         lineHeight: px(36),
+    },
+    errorMsgBox: {
+        paddingVertical: px(12),
+        paddingHorizontal: Space.padding,
+        backgroundColor: 'rgba(231, 73, 73, 0.1)',
+    },
+    errorMsg: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.red,
     },
 });
