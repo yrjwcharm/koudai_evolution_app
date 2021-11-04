@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-28 17:56:12
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-08-13 17:36:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-04 18:17:47
  * @Description:
  */
 import React, {PureComponent, createRef} from 'react';
@@ -31,6 +31,7 @@ class Chart extends PureComponent {
         initScript: '',
         data: [],
         webView: RNWebView,
+        onLoadEnd: () => {},
     };
 
     constructor(props) {
@@ -81,6 +82,7 @@ class Chart extends PureComponent {
                         <ActivityIndicator color={Colors.brandColor} />
                     </View>
                 )}
+                onLoadEnd={this.props.onLoadEnd}
                 source={source}
                 startInLoadingState={true}
                 originWhitelist={['*']}
