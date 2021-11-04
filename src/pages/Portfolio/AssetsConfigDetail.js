@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2021-11-04 10:19:01
+ * @LastEditTime: 2021-11-04 10:48:11
  * @LastEditors: dx
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -133,7 +133,7 @@ export class AssetsConfigDetail extends Component {
         return (
             <View style={[styles.assets_l1, Style.flexBetween, {borderTopWidth: index === 0 ? 0 : Space.borderWidth}]}>
                 <View style={[styles.leftPart, Style.flexRow]}>
-                    <View style={[styles.circle, {backgroundColor: section.color || RatioColor[index]}]} />
+                    <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
                     <Text style={[styles.assets_l1_name]}>{section.name}</Text>
                 </View>
                 <View style={[styles.rightPart, Style.flexRow]}>

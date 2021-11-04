@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-04 17:42:14
+ * @LastEditTime: 2021-11-04 17:44:33
  * @Description:路由表
  */
 import React from 'react';
@@ -160,6 +160,8 @@ import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
 import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
 import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
 import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财计划
+import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
+import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -648,6 +650,8 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: '全球配置'}} />
+            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: '挑选基金'}} />
         </Stack.Navigator>
     );
 }
