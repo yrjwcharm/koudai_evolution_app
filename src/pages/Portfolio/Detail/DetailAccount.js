@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -181,12 +181,10 @@ export default function DetailAccount({route, navigation}) {
                     <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
-                                style={[
-                                    styles.amount_sty,
-                                    {
-                                        fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
-                                    },
-                                ]}
+                                style={{
+                                    ...styles.amount_sty,
+                                    fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
+                                }}
                                 text={data.ratio_info.ratio_val}
                                 type={data.ratio_info?.type}
                             />
@@ -339,7 +337,7 @@ export default function DetailAccount({route, navigation}) {
                     {/* 底线 */}
                     {data.low_line === 1 && type === 1 && (
                         <View style={styles.line_con}>
-                            <View style={styles.lowLineBox}>
+                            {/* <View style={styles.lowLineBox}>
                                 <Text
                                     style={[
                                         {
@@ -377,7 +375,12 @@ export default function DetailAccount({route, navigation}) {
                                 <Text style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
                                     {data.line_info?.button?.text}
                                 </Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
+                            <View style={styles.line_tip}>
+                                <Text style={styles.line_tip_text}>
+                                    该数据为使用智能工具的大类资产配置的历史回测数据，不构成投资建议。
+                                </Text>
+                            </View>
                         </View>
                     )}
 
@@ -712,5 +715,17 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(18),
         color: '#B8C1D3',
+    },
+    line_tip: {
+        marginTop: text(6),
+        marginBottom: Space.marginVertical,
+        padding: text(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.bgColor,
+    },
+    line_tip_text: {
+        fontSize: Font.textH3,
+        lineHeight: text(19),
+        color: Colors.descColor,
     },
 });

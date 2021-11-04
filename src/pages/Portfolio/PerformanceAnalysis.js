@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-04-26 14:10:24
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-08-16 15:06:00
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-03 19:34:04
  * @Description: 业绩解析
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -93,17 +93,17 @@ const baseAreaChart = (
     data,
     colors = [
         '#E1645C',
-        '#5687EB',
-        '#ECB351',
+        '#6694F3',
+        '#F8A840',
         '#CC8FDD',
         '#5DC162',
-        '#5DC162',
-        '#DE79AE',
-        '#967DF2',
-        '#62B4C7',
-        '#B8D27E',
-        '#F18D60',
-        '#5E71E8',
+        '#C7AC6B',
+        '#62C4C7',
+        '#E97FAD',
+        '#C2E07F',
+        '#B1B4C5',
+        '#E78B61',
+        '#8683C9',
         '#EBDD69',
     ],
     areaColors = [Colors.red, Colors.lightBlackColor],
