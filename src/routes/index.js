@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-29 15:50:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-04 17:42:14
  * @Description:路由表
  */
 import React from 'react';
@@ -159,6 +159,7 @@ import AdvisorPortfolio from '../pages/Portfolio/AdvisorPortfolio'; // 投顾组
 import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
 import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
 import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
+import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财计划
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -411,7 +412,11 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
-            <Stack.Screen name="AssetHealthScore" component={AssetHealthScore} options={{title: '资产健康分', headerTransparent:true}} />
+            <Stack.Screen
+                name="AssetHealthScore"
+                component={AssetHealthScore}
+                options={{title: '资产健康分', headerTransparent: true}}
+            />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
@@ -642,6 +647,7 @@ export default function AppStack() {
                     },
                 }}
             />
+            <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
