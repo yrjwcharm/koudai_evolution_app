@@ -2,10 +2,10 @@
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 10:38:48
+ * @LastEditTime: 2021-11-04 14:31:31
  * @Description:环境
  */
-const env = 'online'; //默认
+const env = 'onlinessl'; //默认
 const SERVER_URL = {
     onlinessl: {
         // 正式环境
@@ -35,9 +35,14 @@ const SERVER_URL = {
         IMApi: 'https://47.97.249.88:30151',
         H5: 'https://47.97.249.88:30181',
     },
+    pre2ssl: {
+        HTTP: 'https://kweb2mtls.licaimofang.com/',
+        WS: 'wss://kapi-im-ws-kp2.licaimofang.com',
+        IMApi: 'https://kim2mtls.licaimofang.com',
+        H5: 'https://evolution-h5-kp2.licaimofang.com',
+    },
     pre2: {
         HTTP: 'https://kapi-web-kp2.licaimofang.com/',
-        //安卓 HTTP: 'https://kweb2mtls.licaimofang.com/',
         WS: 'wss://kapi-im-ws-kp2.licaimofang.com',
         IMApi: 'https://kapi-im-kp2.licaimofang.com',
         H5: 'https://evolution-h5-kp2.licaimofang.com',
