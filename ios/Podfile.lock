@@ -90,9 +90,9 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - lottie-ios (3.1.8)
-  - lottie-react-native (4.0.2):
-    - lottie-ios (~> 3.1.8)
+  - lottie-ios (3.2.3)
+  - lottie-react-native (4.1.0):
+    - lottie-ios (~> 3.2.3)
     - React-Core
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
@@ -709,9 +709,9 @@ SPEC CHECKSUMS:
   JCore: b5c4eadf996070ce05748c52851db9bc70eba33b
   JPush: a010513626e67900f284aff6db8578b23145a5d9
   JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
-  libwebp: 04242ef451672185c1fe41b285a034d2fbda483c
-  lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
-  lottie-react-native: 4dff8fe8d10ddef9e7880e770080f4a56121397e
+  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
+  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
+  lottie-react-native: 9c11659dfd571028a2233fa53e332110651c4b25
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   Permission-Camera: 119b01de97a5b3edb637999e38476b68143b9d17
   Permission-Notifications: 5c69bf2f6c1e30345af4f25e2981dc1c8dafbc22
@@ -779,6 +779,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 591b19964e7c7557930ffdb5c987c445296c8fe7
+PODFILE CHECKSUM: 93146f0377298af21bc2d3b436ed801ba03fff14
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.2
