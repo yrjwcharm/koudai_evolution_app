@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-23 10:19:55
+ * @LastEditTime: 2021-11-04 10:49:15
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 import * as Animatable from 'react-native-animatable';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {QuestionCard, ArticleCard} from '../../components/Article';
+import {ArticleCard} from '../../components/Article';
 import Http from '../../services';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
