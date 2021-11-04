@@ -17,6 +17,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
+import PortfolioCard from '../../components/Portfolios/PortfolioCard';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -140,7 +141,7 @@ const Index = (props) => {
                                             <Text style={[styles.card_title, {fontSize: px(16)}]}>
                                                 {data?.recommend?.name}
                                             </Text>
-                                            {data?.recommend?.labels && (
+                                            {/* {data?.recommend?.labels && (
                                                 <Text style={styles.card_title_dexc}>
                                                     {data?.recommend?.labels.map((item, index) =>
                                                         index == 0 ? (
@@ -150,7 +151,7 @@ const Index = (props) => {
                                                         )
                                                     )}
                                                 </Text>
-                                            )}
+                                            )} */}
                                         </View>
                                         <View style={[Style.flexBetween, {marginTop: px(8)}]}>
                                             <Text
@@ -173,7 +174,6 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             </>
                         </LinearGradient>
-
                         {/* 专家策略 */}
                         {data?.polaris_info && (
                             <View style={{paddingHorizontal: px(16)}}>
@@ -222,8 +222,18 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             </View>
                         )}
+                        {data?.group_list?.map((item, index) => {
+                            return (
+                                <View key={index}>
+                                    <Text style={[styles.large_title]}>{item?.group_name}</Text>
+                                    {item?.plans?.map((_item, _index) => (
+                                        <PortfolioCard data={_item} key={index} />
+                                    ))}
+                                </View>
+                            );
+                        })}
                         {/* 专业理财 */}
-                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                        {/* <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
                             <Text style={[styles.large_title]}>{data?.part2?.group_name}</Text>
                             {data?.part2?.plans?.map((item, index) => (
                                 <TouchableOpacity
@@ -278,7 +288,7 @@ const Index = (props) => {
                             ))}
                         </View>
                         {/* 目标理财 */}
-                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
+                        {/* <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
                             <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
                             {data?.part1?.plans?.map((item, index) => (
                                 <TouchableOpacity
@@ -331,9 +341,8 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             ))}
                         </View>
-
                         {/* 增值服务 */}
-                        <View style={{marginBottom: data?.polaris_info ? px(8) : 0, paddingHorizontal: px(16)}}>
+                        {/* <View style={{marginBottom: data?.polaris_info ? px(8) : 0, paddingHorizontal: px(16)}}>
                             <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
                             {data?.part3?.plans?.map((item, index) => (
                                 <TouchableOpacity
@@ -391,7 +400,7 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             ))}
-                        </View>
+                        </View> */}
                     </View>
                     <BottomDesc />
                 </ScrollView>
