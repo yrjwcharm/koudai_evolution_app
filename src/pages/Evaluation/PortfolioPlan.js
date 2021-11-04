@@ -1,12 +1,12 @@
 /*
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 15:26:37
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-04 21:08:27
  * @Description:定制理财计划
  */
-import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
 import {Chart} from '../../components/Chart';
@@ -16,17 +16,42 @@ import * as Animatable from 'react-native-animatable';
 import http from '../../services';
 import NumText from '../../components/NumText';
 import FixedBtn from '../Portfolio/components/FixedBtn';
-
+import {useFocusEffect} from '@react-navigation/core';
+import FastImage from 'react-native-fast-image';
+let timer_one = null;
+let timer_two = null;
 const PortfolioPlan = () => {
     const [active, setActive] = useState(0);
-    const [chartData, setChartData] = useState(null);
+    const [chartData, setChartData] = useState([]);
     const [data, setData] = useState(null);
-    useEffect(() => {
-        http.get('/questionnaire/chart/20211101?upid=170814&summary_id=312044').then((res) => {
-            setChartData(res?.result?.charts);
-            setData(res?.result);
-        });
-    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/questionnaire/chart/20211101?upid=170814&summary_id=312044').then((res) => {
+                setData(res?.result);
+            });
+            return () => {
+                timer_one && clearTimeout(timer_one);
+                timer_two && clearTimeout(timer_two);
+            };
+        }, [])
+    );
+    const onload = () => {
+        if (!data) return;
+        setChartData(data?.chart?.benchmark_lines);
+        timer_one = setTimeout(() => {
+            setActive(1);
+            setChartData((prev) => {
+                return prev.concat(data?.chart?.portfolio_lines);
+            });
+        }, 3000);
+        timer_two = setTimeout(() => {
+            setActive(2);
+            setChartData((prev) => {
+                return prev.concat(data?.chart?.risk_lines);
+            });
+        }, 5000);
+    };
     return (
         <>
             <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -37,9 +62,9 @@ const PortfolioPlan = () => {
                                 ...styles.amount_sty,
                                 fontSize: px(34),
                             }}
-                            text={'12%'}
+                            text={data?.yield_info?.val}
                         />
-                        <Text style={styles.radio_sty}>年华</Text>
+                        <Text style={styles.radio_sty}>{data?.yield_info?.title}</Text>
                     </View>
 
                     <View style={[Style.flexCenter, styles.container_sty]}>
@@ -48,51 +73,54 @@ const PortfolioPlan = () => {
                                 styles.amount_sty,
                                 {fontSize: px(26), lineHeight: px(30), color: Colors.defaultColor},
                             ]}>
-                            -12.1%
+                            {data?.drawdown_info?.val}
                         </Text>
-                        <Text style={[styles.radio_sty, {marginTop: px(6)}]}>嘿嘿</Text>
+                        <Text style={[styles.radio_sty, {marginTop: px(6)}]}>{data?.drawdown_info?.title}</Text>
                     </View>
                 </View>
-                <View
-                    style={{
-                        height: 260,
-                    }}>
-                    <Chart
-                        initScript={baseAreaChart(
-                            chartData,
-                            [Colors.red, Colors.lightBlackColor, 'transparent'],
-                            ['l(90) 0:#E74949 1:#fff', 'transparent', '#50D88A'],
-                            true,
-                            2,
-                            deviceWidth - px(40),
-                            10,
-                            null,
-                            220
-                        )}
-                        style={{width: '100%'}}
+                {data ? (
+                    <View
+                        style={{
+                            height: 240,
+                            paddingHorizontal: px(16),
+                        }}>
+                        <Chart
+                            initScript={baseAreaChart(chartData, true, 2, deviceWidth - px(40), 10, {}, 220)}
+                            data={chartData}
+                            style={{width: '100%'}}
+                            onLoadEnd={onload}
+                        />
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            height: 240,
+                        }}
                     />
-                </View>
+                )}
                 <View style={{paddingHorizontal: px(16)}}>
-                    <Text style={styles.card_title}>智能工具</Text>
+                    <Text style={styles.card_title}>{data?.tab_info?.title}</Text>
                     <View style={Style.flexBetween}>
-                        <View style={styles.card}>
-                            <Text style={styles.card_subtitle}>底线预估</Text>
-                            <Text style={styles.card_desc}>底线预估底线预估</Text>
-                            <Icon
-                                name="checkmark-circle"
-                                size={px(18)}
-                                color={Colors.brandColor}
-                                style={styles.check}
-                            />
-                        </View>
-                        <View style={styles.card}>
-                            <Text>底线预估</Text>
-                            <Text>底线预估底线预估</Text>
-                        </View>
-                        <View style={styles.card}>
-                            <Text>底线预估</Text>
-                            <Text>底线预估底线预估</Text>
-                        </View>
+                        {data?.tab_info?.items.map((item, index) => {
+                            return (
+                                <View style={styles.card} key={index}>
+                                    <FastImage
+                                        source={{uri: item.icon}}
+                                        style={{width: px(32), height: px(32), marginBottom: px(6)}}
+                                    />
+                                    <Text style={styles.card_subtitle}>{item.title}</Text>
+                                    <Text style={styles.card_desc}>{item.desc}</Text>
+                                    {index <= active ? (
+                                        <Icon
+                                            name="checkmark-circle"
+                                            size={px(18)}
+                                            color={Colors.brandColor}
+                                            style={styles.check}
+                                        />
+                                    ) : null}
+                                </View>
+                            );
+                        })}
                     </View>
                 </View>
             </ScrollView>
