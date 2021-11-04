@@ -125,6 +125,12 @@ export default class MyModal extends Component {
         this.setModalVisiable(false);
         setTimeout(() => {
             this.props.cancelCallBack && this.props.cancelCallBack();
+        }, 100);
+    }
+    //安卓返回关闭
+    close() {
+        this.setModalVisiable(false);
+        setTimeout(() => {
             this.props.onCloseCallBack && this.props.onCloseCallBack();
         }, 100);
     }
@@ -378,7 +384,7 @@ export default class MyModal extends Component {
                 visible={isVisible}
                 onRequestClose={() => {
                     if (this.backButtonClose) {
-                        this.cancel();
+                        this.close();
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
@@ -386,8 +392,7 @@ export default class MyModal extends Component {
                     <TouchableWithoutFeedback
                         onPress={() => {
                             if (this.isTouchMaskToClose) {
-                                this.props.onCloseCallBack && this.props.onCloseCallBack();
-                                this.setModalVisiable(false);
+                                this.close();
                             }
                         }}>
                         <View style={styles.mask} />
