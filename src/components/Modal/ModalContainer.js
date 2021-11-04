@@ -127,7 +127,7 @@ export default class MyModal extends Component {
     cancel() {
         this.setModalVisiable(false);
         setTimeout(() => {
-            this.backCloseCallbackExecute && this.props.cancelCallBack && this.props.cancelCallBack();
+            this.props.cancelCallBack && this.props.cancelCallBack();
             this.props.onCloseCallBack && this.props.onCloseCallBack();
         }, 100);
     }
@@ -380,8 +380,10 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    if (this.backButtonClose) {
+                    if (this.backButtonClose && this.backCloseCallbackExecute) {
                         this.cancel();
+                    } else {
+                        this.setModalVisiable(false);
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>
