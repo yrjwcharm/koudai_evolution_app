@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-22 15:37:31
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-05 10:36:03
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -78,6 +78,16 @@ export default function PortfolioAssets(props) {
             setData(res.result);
             setRefreshing(false);
             props.navigation.setOptions({
+                headerRight: () => (
+                    <>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[Style.flexCenter, styles.topRightBtn]}
+                            onPress={() => {}}>
+                            <FastImage source={require('../../assets/personal/edit.png')} style={styles.editImg} />
+                        </TouchableOpacity>
+                    </>
+                ),
                 title: res.result.title,
             });
             if (res.result?.progress_bar) {
@@ -830,6 +840,15 @@ export default function PortfolioAssets(props) {
 }
 
 const styles = StyleSheet.create({
+    topRightBtn: {
+        flex: 1,
+        width: text(24),
+        marginRight: text(14),
+    },
+    editImg: {
+        width: text(24),
+        height: text(24),
+    },
     assets_card_sty: {
         backgroundColor: '#0052CD',
         paddingHorizontal: text(20),

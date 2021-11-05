@@ -2,12 +2,12 @@
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-04-07 15:56:15
+ * @LastEditTime: 2021-11-05 15:20:05
  * @Description:
  */
 import React from 'react';
 import {TouchableHighlight, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import PropTypes from 'prop-types';
 import {px as text} from '../utils/appUtil';
 import Image from 'react-native-fast-image';
 import {Colors, Space} from '../common/commonStyle';
@@ -18,6 +18,12 @@ class CheckBox extends React.Component {
         onChange: () => {},
         color: '#0052CD',
         style: {},
+        control: false, // 是否受控
+    };
+    static propTypes = {
+        checked: PropTypes.bool,
+        onChange: PropTypes.func,
+        control: PropTypes.bool,
     };
 
     constructor(props) {
@@ -31,14 +37,14 @@ class CheckBox extends React.Component {
         this.props.onChange(!this.state.checked);
     }
     render() {
-        const {color} = this.props;
+        const {control} = this.props;
         // var source = 'checkbox-blank-circle-outline';
         // if (this.state.checked) {
         //     source = 'checkbox-marked-circle';
         // }
         // var container = <Icon name={source} size={text(18)} color={color ? color : '#0052CD'} />;
         const imgStyle = {width: text(15), height: text(15)};
-        const container = this.state.checked ? (
+        const container = (control ? this.state.checked : this.props.checked) ? (
             <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
         ) : (
             <View

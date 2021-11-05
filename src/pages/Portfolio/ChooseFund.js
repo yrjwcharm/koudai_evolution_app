@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 15:53:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-04 17:03:44
+ * @LastEditTime: 2021-11-05 16:38:16
  * @Description: 挑选基金
  */
 import React, {useState, useEffect} from 'react';
@@ -30,7 +30,7 @@ const RatioColor = [
     '#EBDD69',
 ];
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
     const [data, setData] = useState({
         title: '挑选基金',
         desc: '理财魔方已优选市场业绩领先的基金，请您按照大类资产配置进行挑选，默认为平均分配。',
@@ -395,6 +395,11 @@ export default ({navigation}) => {
             },
         ],
     });
+
+    useEffect(() => {
+        console.log('route.params----', route.params);
+    }, [route]);
+
     return (
         <>
             {Object.keys(data).length > 0 ? (
@@ -429,7 +434,14 @@ export default ({navigation}) => {
                                                 {asset.name} {asset.percent}
                                             </Text>
                                         </View>
-                                        <TouchableOpacity activeOpacity={0.8}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() =>
+                                                navigation.navigate('FundAdjust', {
+                                                    color: RatioColor[index],
+                                                    name: asset.name,
+                                                })
+                                            }>
                                             <Text style={styles.updateSty}>调整比例</Text>
                                         </TouchableOpacity>
                                     </View>
