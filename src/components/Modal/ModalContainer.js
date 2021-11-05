@@ -33,6 +33,7 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
  * @param {Function} confirmCallBack //确认的回掉函数
  * @param {Function} cancelCallBack //取消的回掉函数
  * @param {Function} onCloseCallBack //弹窗关闭的回掉函数
+ * @param {boolean} backCloseCallbackExecute //返回键是否执行cancleCallBack 默认执行
  */
 const modalWidth = 280;
 export default class MyModal extends Component {
@@ -47,6 +48,8 @@ export default class MyModal extends Component {
         this.customBottomView = props.customBottomView ? props.customBottomView : false;
         this.isTouchMaskToClose = JSON.stringify(props.isTouchMaskToClose) ? this.props.isTouchMaskToClose : true;
         this.backButtonClose = props.backButtonClose !== undefined ? props.backButtonClose : true; // 点击返回键或手势返回是否关闭弹窗
+        this.backCloseCallbackExecute =
+            props.backCloseCallbackExecute !== undefined ? props.backCloseCallbackExecute : true; //返回键是否执行cancleCallBack 默认执行
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
         this.state = {
@@ -377,8 +380,10 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    if (this.backButtonClose) {
+                    if (this.backButtonClose && this.backCloseCallbackExecute) {
                         this.cancel();
+                    } else {
+                        this.setModalVisiable(false);
                     }
                 }}>
                 <View style={[Style.flexCenter, styles.modalContainer]}>

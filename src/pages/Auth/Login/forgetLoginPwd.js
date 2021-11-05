@@ -2,7 +2,7 @@
  * @Date: 2021-03-09 16:20:24
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 21:14:37
+ * @LastEditTime: 2021-10-27 10:25:40
  * @Description:找回登录密码
  */
 /*
@@ -14,7 +14,7 @@
  */
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
-import {px as text} from '../../../utils/appUtil';
+import {px as text, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
 import WechatView from '../wechatView';
@@ -44,7 +44,7 @@ export default class index extends Component {
         });
     };
     onChangeMobile = (mobile) => {
-        this.setState({mobile, btnClick: !(mobile.length >= 11)});
+        this.setState({mobile: inputInt(mobile), btnClick: !(mobile.length >= 11)});
     };
     jumpPage = (nav) => {
         global.LogTool();

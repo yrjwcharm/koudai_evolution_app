@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
-import {px} from '../../utils/appUtil';
+import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Space, Style, Font} from '../../common/commonStyle';
 import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
@@ -8,7 +8,6 @@ import BottomDesc from '../../components/BottomDesc';
 import LoginMask from '../../components/LoginMask';
 import http from '../../services';
 import {useJump} from '../../components/hooks';
-import {Chart, chartOptions} from '../../components/Chart';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {useSelector} from 'react-redux';
 import {useIsFocused, useFocusEffect} from '@react-navigation/native';
@@ -17,6 +16,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import LazyImage from '../../components/LazyImage';
+import PortfolioCard from '../../components/Portfolios/PortfolioCard';
 const Index = (props) => {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -153,13 +153,23 @@ const Index = (props) => {
                                             )}
                                         </View>
                                         <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                                            <Text
-                                                style={[
-                                                    styles.ratio,
-                                                    {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
-                                                ]}>
-                                                {data?.recommend?.yield?.ratio}
-                                            </Text>
+                                            {data?.recommend?.yield?.ratio ? (
+                                                <Text
+                                                    style={[
+                                                        styles.ratio,
+                                                        {fontSize: px(26), lineHeight: px(30), marginTop: px(6)},
+                                                    ]}>
+                                                    {data?.recommend?.yield?.ratio}
+                                                </Text>
+                                            ) : (
+                                                <Text
+                                                    style={[
+                                                        styles.ratio,
+                                                        {fontSize: px(22), lineHeight: px(30), marginTop: px(6)},
+                                                    ]}>
+                                                    {data?.recommend?.name}
+                                                </Text>
+                                            )}
                                             <LinearGradient
                                                 start={{x: 0, y: 0.25}}
                                                 end={{x: 0, y: 0.8}}
@@ -168,12 +178,15 @@ const Index = (props) => {
                                                 <Text style={styles.btn_text}>{data?.recommend?.button?.text}</Text>
                                             </LinearGradient>
                                         </View>
-                                        <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
+                                        {data?.recommend?.yield ? (
+                                            <Text style={styles.light_text}>{data?.recommend?.yield?.title}</Text>
+                                        ) : (
+                                            <Text style={styles.light_text}>{data?.recommend?.desc}</Text>
+                                        )}
                                     </View>
                                 </TouchableOpacity>
                             </>
                         </LinearGradient>
-
                         {/* 专家策略 */}
                         {data?.polaris_info && (
                             <View style={{paddingHorizontal: px(16)}}>
@@ -222,176 +235,23 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             </View>
                         )}
-                        {/* 专业理财 */}
-                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
-                            <Text style={[styles.large_title]}>{data?.part2?.group_name}</Text>
-                            {data?.part2?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        global.LogTool('findProduct', item.plan_id);
-                                        jump(item?.url);
-                                    }}
-                                    key={index}
-                                    style={[
-                                        styles.card,
-                                        {borderRadius: 8},
-                                        Style.flexRow,
-                                        {marginTop: index != 0 ? px(12) : 0},
-                                    ]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                            {item?.tags?.includes('new') ? (
-                                                <FastImage
-                                                    source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
-                                                />
-                                            ) : null}
-                                        </View>
-                                        <Text style={[styles.ratio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                    </View>
-                                    {item?.yield?.chart && (
-                                        <View
-                                            style={{
-                                                height: px(60),
-                                                width: px(80),
-                                                marginTop: px(14),
-                                                marginRight: px(16),
-                                            }}>
-                                            <Chart initScript={chartOptions.smChart(item?.yield?.chart)} />
-                                        </View>
+                        {data?.group_list?.map((item, index) => {
+                            return (
+                                <View style={{paddingHorizontal: px(16)}} key={index}>
+                                    <Text style={[styles.large_title]}>{item?.group_name}</Text>
+                                    {item?.img ? (
+                                        <FastImage
+                                            source={{uri: item?.img}}
+                                            style={{width: deviceWidth - px(32), height: px(276)}}
+                                        />
+                                    ) : (
+                                        item?.plans?.map((_item, _index) => (
+                                            <PortfolioCard data={_item} key={index} style={{marginBottom: px(12)}} />
+                                        ))
                                     )}
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                        {/* 目标理财 */}
-                        <View style={{marginBottom: px(20), paddingHorizontal: px(16)}}>
-                            <Text style={styles.large_title}>{data?.part1?.group_name}</Text>
-                            {data?.part1?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        global.LogTool('findTargetProductStart', item.plan_id);
-                                        jump(item?.url);
-                                    }}
-                                    key={index}
-                                    style={[
-                                        styles.card,
-                                        {borderRadius: 8},
-                                        Style.flexRow,
-                                        {marginTop: index != 0 ? px(12) : 0},
-                                    ]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                            {item?.tags?.includes('new') ? (
-                                                <FastImage
-                                                    source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
-                                                />
-                                            ) : null}
-                                        </View>
-                                        <Text style={[styles.ratio, {marginTop: px(16)}]}>{item?.yield?.ratio}</Text>
-                                        <Text style={styles.light_text}>{item?.yield?.title}</Text>
-                                    </View>
-                                    <FastImage
-                                        style={styles.img_icon}
-                                        resizeMode={FastImage.resizeMode.contain}
-                                        source={{
-                                            uri: item?.background,
-                                        }}
-                                    />
-                                    <View style={{position: 'absolute', right: px(16)}}>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-
-                        {/* 增值服务 */}
-                        <View style={{marginBottom: data?.polaris_info ? px(8) : 0, paddingHorizontal: px(16)}}>
-                            <Text style={styles.large_title}>{data?.part3?.group_name}</Text>
-                            {data?.part3?.plans?.map((item, index) => (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        global.LogTool('findExtraProductStart', item.plan_id);
-                                        jump(item?.url);
-                                    }}
-                                    key={index}
-                                    style={[styles.card, {borderRadius: 8, marginBottom: px(12)}, Style.flexRow]}>
-                                    <View style={{padding: Space.cardPadding, flex: 1}}>
-                                        <View style={Style.flexRow}>
-                                            <Text style={styles.card_title}>{item?.name}</Text>
-                                            {item?.labels && (
-                                                <Text style={styles.card_title_dexc}>
-                                                    {item?.labels.map((_item, _index) =>
-                                                        _index == 0 ? (
-                                                            <Text key={_index}>{_item}</Text>
-                                                        ) : (
-                                                            <Text key={_index}>｜{_item}</Text>
-                                                        )
-                                                    )}
-                                                </Text>
-                                            )}
-                                            {item?.tags?.includes('new') ? (
-                                                <FastImage
-                                                    source={require('../../assets/img/article/voiceUpdate.png')}
-                                                    style={{marginLeft: px(8), width: px(23), height: px(18)}}
-                                                />
-                                            ) : null}
-                                        </View>
-                                        {item.yield ? (
-                                            <>
-                                                <Text style={[styles.ratio, {marginTop: px(16)}]}>
-                                                    {item.yield?.ratio}
-                                                </Text>
-                                                <Text style={styles.light_text}>{item.yield?.title}</Text>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Text style={styles.large_text}>{item?.desc}</Text>
-                                                <Text style={styles.light_text}>{item?.slogan}</Text>
-                                            </>
-                                        )}
-                                    </View>
-                                    <FastImage
-                                        style={[styles.img_icon, {width: px(78), height: px(70)}]}
-                                        resizeMode={FastImage.resizeMode.contain}
-                                        source={{
-                                            uri: item?.background,
-                                        }}
-                                    />
-                                    <View style={{position: 'absolute', right: px(16)}}>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#9095A5'} />
-                                    </View>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
+                                </View>
+                            );
+                        })}
                     </View>
                     <BottomDesc />
                 </ScrollView>
@@ -477,11 +337,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         marginBottom: px(14),
     },
-    major_card: {
-        width: px(202),
-        borderRadius: 8,
-        padding: Space.cardPadding,
-    },
+
     img_title: {
         color: '#fff',
         fontSize: px(26),
@@ -493,13 +349,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: Colors.defaultColor,
     },
-    large_text: {
-        marginTop: px(16),
-        marginBottom: px(2),
-        fontSize: px(18),
-        color: Colors.red,
-        lineHeight: px(25),
-    },
+
     V_card: {
         paddingHorizontal: px(16),
         height: px(75),

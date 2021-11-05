@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 11:26:01
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-04 21:07:13
  * @Description:路由表
  */
 import React from 'react';
@@ -154,11 +154,14 @@ import PersonalizedRecommend from '../pages/Settings/PersonalizedRecommend'; //�
 import AboutApp from '../pages/Settings/AboutApp'; //关于APP
 import WeChatNotice from '../pages/Assets/WeChatNotice'; // 开启微信通知
 import IdAuth from '../pages/CreateAccount/Account/idAuth'; //开户身份证认证
+import VerifyLogin from '../pages/Auth/Login/verifyLogin'; //验证码登陆
 import AdvisorPortfolio from '../pages/Portfolio/AdvisorPortfolio'; // 投顾组合超市
 import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
 import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
 import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
 import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财计划
+import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
+import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -612,6 +615,7 @@ export default function AppStack() {
             <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
             <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
             <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
+            <Stack.Screen name="VerifyLogin" component={VerifyLogin} options={{title: ''}} />
             <Stack.Screen
                 name="AdvisorPortfolio"
                 component={AdvisorPortfolio}
@@ -658,6 +662,8 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: '全球配置'}} />
+            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: '挑选基金'}} />
         </Stack.Navigator>
     );
 }

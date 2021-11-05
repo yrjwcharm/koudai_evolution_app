@@ -649,7 +649,8 @@ export const basicPieChart = (
         '#E78B61',
         '#8683C9',
         '#EBDD69',
-    ]
+    ],
+    height = text(220)
 ) => `
 (function(){
   const map = {};
@@ -660,7 +661,7 @@ export const basicPieChart = (
     id: 'chart',
     pixelRatio: window.devicePixelRatio,
     width:${deviceWidth - 50},
-    height: ${text(220)},
+    height: ${height},
     appendPadding: [5, 15, 15, 30]
   });
   chart.source(${JSON.stringify(data)});
