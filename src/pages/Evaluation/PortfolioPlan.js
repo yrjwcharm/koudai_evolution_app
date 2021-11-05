@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 21:46:14
+ * @LastEditTime: 2021-11-05 10:46:40
  * @Description:定制理财计划
  */
 import React, {useState, useCallback} from 'react';
@@ -36,7 +36,7 @@ const PortfolioPlan = ({navigation}) => {
                 timer_one && clearTimeout(timer_one);
                 timer_two && clearTimeout(timer_two);
             };
-        }, [])
+        }, [navigation])
     );
     const onload = () => {
         if (!data) return;
