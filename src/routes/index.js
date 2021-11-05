@@ -411,7 +411,23 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
-            <Stack.Screen name="AssetHealthScore" component={AssetHealthScore} options={{title: '资产健康分', headerTransparent:true}} />
+            <Stack.Screen name="AssetHealthScore" 
+                component={AssetHealthScore} 
+                options={{
+                    title: '', 
+                    headerTransparent: true, 
+                    headerTitleStyle: {color: '#fff'},
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }} />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />

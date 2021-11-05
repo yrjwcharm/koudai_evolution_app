@@ -291,7 +291,14 @@ export default function PortfolioAssets(props) {
                                 key={_index + '_button'}
                                 onPress={() => {
                                     global.LogTool(_button.action, props.route?.params?.poid);
-                                    accountJump(_button.url, _button.action);
+                                    // accountJump(_button.url, _button.action);
+                                    jump({
+                                        "path": "AssetHealthScore",
+                                        "type": 4,
+                                        params:{
+                                            poid: 'X00F448768'
+                                        }
+                                    });
                                 }}
                                 disabled={_button.avail == 0}
                                 activeOpacity={1}
