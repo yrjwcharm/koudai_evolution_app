@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-04 14:08:44
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-05 11:21:17
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -28,7 +28,7 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce} from 'lodash';
-global.ver = '6.2.6';
+global.ver = '6.2.7';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
