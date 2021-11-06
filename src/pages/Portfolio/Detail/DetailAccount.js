@@ -337,50 +337,61 @@ export default function DetailAccount({route, navigation}) {
                     {/* 底线 */}
                     {data.low_line === 1 && type === 1 && (
                         <View style={styles.line_con}>
-                            {/* <View style={styles.lowLineBox}>
-                                <Text
-                                    style={[
-                                        {
-                                            fontSize: Font.textH3,
-                                            lineHeight: text(17),
-                                            color: Colors.defaultColor,
-                                            fontWeight: '500',
-                                        },
-                                        {paddingTop: text(12), paddingBottom: text(4)},
-                                    ]}>
-                                    {data.line_info?.line_desc?.title}
-                                </Text>
-                                <Html
-                                    style={{
-                                        fontSize: Font.textH3,
-                                        lineHeight: text(19),
-                                        color: Colors.descColor,
-                                        textAlign: 'justify',
-                                    }}
-                                    html={data.line_info?.line_desc?.desc}
-                                />
-                            </View>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
-                                    data.line_info?.button?.avail && jump(data.line_info?.button?.url);
-                                }}
-                                style={styles.line_btn}>
-                                {data.line_info?.tip ? (
-                                    <View style={styles.line_flag}>
-                                        <Text style={{color: '#fff', fontSize: px(11)}}>{data.line_info?.tip}</Text>
+                            {data.line_info ? (
+                                <>
+                                    <View style={styles.lowLineBox}>
+                                        <Text
+                                            style={[
+                                                {
+                                                    fontSize: Font.textH3,
+                                                    lineHeight: text(17),
+                                                    color: Colors.defaultColor,
+                                                    fontWeight: '500',
+                                                },
+                                                {paddingTop: text(12), paddingBottom: text(4)},
+                                            ]}>
+                                            {data.line_info?.line_desc?.title}
+                                        </Text>
+                                        <Html
+                                            style={{
+                                                fontSize: Font.textH3,
+                                                lineHeight: text(19),
+                                                color: Colors.descColor,
+                                                textAlign: 'justify',
+                                            }}
+                                            html={data.line_info?.line_desc?.desc}
+                                        />
                                     </View>
-                                ) : null}
-                                <Text style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
-                                    {data.line_info?.button?.text}
-                                </Text>
-                            </TouchableOpacity> */}
-                            <View style={styles.line_tip}>
-                                <Text style={styles.line_tip_text}>
-                                    该数据为使用智能工具的大类资产配置的历史回测数据，不构成投资建议。
-                                </Text>
-                            </View>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
+                                            data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                        }}
+                                        style={styles.line_btn}>
+                                        {data.line_info?.tip ? (
+                                            <View style={styles.line_flag}>
+                                                <Text style={{color: '#fff', fontSize: px(11)}}>
+                                                    {data.line_info?.tip}
+                                                </Text>
+                                            </View>
+                                        ) : null}
+                                        <Text
+                                            style={{
+                                                fontSize: Font.textH3,
+                                                lineHeight: text(17),
+                                                color: Colors.brandColor,
+                                            }}>
+                                            {data.line_info?.button?.text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                            ) : null}
+                            {data.line_desc ? (
+                                <View style={styles.line_tip}>
+                                    <Text style={styles.line_tip_text}>{data.line_desc.desc}</Text>
+                                </View>
+                            ) : null}
                         </View>
                     )}
 
