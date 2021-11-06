@@ -295,12 +295,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-                            <Button
-                                title="定制"
-                                onPress={() => {
-                                    props.navigation.navigate('PortfolioPlan');
-                                }}
-                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
