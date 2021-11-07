@@ -31,7 +31,15 @@ const AddedBuy = ({navigation, route}) => {
     const [configLoading, setConfigLoading] = useState(true);
 
     const [data, setData] = useState({});
-    const [configData, setConfigData] = useState({});
+
+    const initConfigData = useMemo(() => {
+        return {
+            plan_id: null,
+            notice: '',
+            fund_list_dst: [],
+        };
+    }, []);
+    const [configData, setConfigData] = useState(initConfigData);
 
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
@@ -97,6 +105,7 @@ const AddedBuy = ({navigation, route}) => {
 
             if (+val < data.buy_info.initial_amount) {
                 setErrTip('起购金额为' + data.buy_info.initial_amount);
+                setConfigData(initConfigData);
                 return;
             } else {
                 setErrTip('');
@@ -104,14 +113,25 @@ const AddedBuy = ({navigation, route}) => {
             // 获得新的资产配比
             getNewConfig(val);
         },
-        [data, getNewConfig]
+        [data, getNewConfig, initConfigData]
     );
 
     //清空输入框
     const clearInput = useCallback(() => {
         setAmount('');
         setErrTip('');
-    }, []);
+        setConfigData(initConfigData);
+    }, [initConfigData]);
+
+    const btnOption = useMemo(() => {
+        let option = [];
+        if (data.btns) {
+            option = JSON.parse(JSON.stringify(data.btns));
+            option[1].url.params.amount = amount;
+            option[1].url.params.plan_id = configData.plan_id;
+        }
+        return option;
+    }, [data.btns, amount, configData.plan_id]);
 
     return pageLoading ? (
         <PageLoading />
@@ -262,7 +282,7 @@ const AddedBuy = ({navigation, route}) => {
                 <BottomDesc />
             </ScrollView>
             {/* 处理路由参数 */}
-            <FixedBtn btns={data.btns} disabled={!showDetail} />
+            <FixedBtn btns={btnOption} disabled={!showDetail || configLoading || !configData.plan_id} />
         </View>
     );
 };
