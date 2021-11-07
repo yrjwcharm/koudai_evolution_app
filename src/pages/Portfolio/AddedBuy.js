@@ -180,7 +180,7 @@ const AddedBuy = ({navigation, route}) => {
                                 <View
                                     style={{
                                         backgroundColor: item.color,
-                                        width: item.ratio.toFixed(4) * 100 + '%',
+                                        width: item.ratio?.toFixed(4) * 100 + '%',
                                         height: px(24),
                                     }}
                                     key={idx}
@@ -200,7 +200,7 @@ const AddedBuy = ({navigation, route}) => {
                     {/* 追加后配比图 */}
                     {showDetail ? (
                         configLoading ? (
-                            <ActivityIndicator />
+                            <ActivityIndicator color="#999" size="small" />
                         ) : (
                             <View>
                                 <Text style={styles.matchRateText}>追加购买后</Text>
@@ -209,7 +209,7 @@ const AddedBuy = ({navigation, route}) => {
                                         <View
                                             style={{
                                                 backgroundColor: item.color,
-                                                width: item.ratio.toFixed(4) * 100 + '%',
+                                                width: item.ratio?.toFixed(4) * 100 + '%',
                                                 height: px(24),
                                             }}
                                             key={idx}
@@ -230,7 +230,7 @@ const AddedBuy = ({navigation, route}) => {
                 {/* 详细资产 */}
                 {showDetail ? (
                     configLoading ? (
-                        <ActivityIndicator />
+                        <ActivityIndicator color="#999" size="small" />
                     ) : (
                         <View>
                             {configData?.fund_list_dst?.map?.((asset, index) => {
