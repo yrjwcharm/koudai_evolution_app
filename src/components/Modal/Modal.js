@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 18:04:50
+ * @LastEditTime: 2021-11-07 18:39:15
  * @Description:
  */
 /**
@@ -22,6 +22,7 @@ global.rootSibling = null;
 export function destroy() {
     if (global.rootSibling) {
         global.rootSibling.destroy();
+        global.rootSibling = null;
     }
 }
 export default class Modal extends React.Component {
