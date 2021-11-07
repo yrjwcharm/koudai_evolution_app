@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-05 12:34:08
+ * @LastEditTime: 2021-11-07 11:19:34
  * @Description:路由表
  */
 import React from 'react';
@@ -164,6 +164,7 @@ import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财�
 import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
 import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
+import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -416,11 +417,12 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
-            <Stack.Screen name="AssetHealthScore" 
-                component={AssetHealthScore} 
+            <Stack.Screen
+                name="AssetHealthScore"
+                component={AssetHealthScore}
                 options={{
-                    title: '', 
-                    headerTransparent: true, 
+                    title: '',
+                    headerTransparent: true,
                     headerTitleStyle: {color: '#fff'},
                     headerBackImage: () => {
                         return (
@@ -432,7 +434,8 @@ export default function AppStack() {
                             />
                         );
                     },
-                }} />
+                }}
+            />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
@@ -665,9 +668,10 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
-            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: '全球配置'}} />
-            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: '挑选基金'}} />
+            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
+            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
+            <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
         </Stack.Navigator>
     );
 }

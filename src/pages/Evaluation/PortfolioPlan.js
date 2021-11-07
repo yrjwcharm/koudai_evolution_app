@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-05 10:46:40
+ * @LastEditTime: 2021-11-06 17:16:59
  * @Description:定制理财计划
  */
 import React, {useState, useCallback} from 'react';
@@ -15,44 +15,38 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
 import http from '../../services';
 import NumText from '../../components/NumText';
-import FixedBtn from '../Portfolio/components/FixedBtn';
 import {useFocusEffect} from '@react-navigation/core';
 import FastImage from 'react-native-fast-image';
+import { FixedButton } from '../../components/Button';
+import { useJump } from '../../components/hooks';
 let timer_one = null;
-let timer_two = null;
-const PortfolioPlan = ({navigation}) => {
-    const [active, setActive] = useState(0);
+const PortfolioPlan = ({navigation,route}) => {
     const [chartData, setChartData] = useState([]);
     const [data, setData] = useState(null);
-
+    const [loading,setLoading]=useState(false)
+    const jump= useJump()
     useFocusEffect(
         useCallback(() => {
-            http.get('/questionnaire/chart/20211101?upid=170814&summary_id=312044').then((res) => {
+            http.get('/questionnaire/chart/20211101',{upid:route?.params?.upid,summary_id:route?.params?.summary_id}).then((res) => {
                 setData(res?.result);
                 navigation.setOptions({title: res.result?.title});
             });
 
             return () => {
                 timer_one && clearTimeout(timer_one);
-                timer_two && clearTimeout(timer_two);
             };
         }, [navigation])
     );
     const onload = () => {
         if (!data) return;
-        setChartData(data?.chart?.benchmark_lines);
+        setLoading(true)
+        setChartData(data?.chart?.portfolio_lines);
         timer_one = setTimeout(() => {
-            setActive(1);
-            setChartData((prev) => {
-                return prev.concat(data?.chart?.portfolio_lines);
-            });
-        }, 3000);
-        timer_two = setTimeout(() => {
-            setActive(2);
             setChartData((prev) => {
                 return prev.concat(data?.chart?.risk_lines);
             });
-        }, 5000);
+        }, 2000);
+       
     };
     return (
         <>
@@ -81,18 +75,19 @@ const PortfolioPlan = ({navigation}) => {
                     </View>
                 </View>
                 {data ? (
-                    <View
+                    <Animatable.View
+                    animation='fadeIn'
                         style={{
                             height: 240,
                             paddingHorizontal: px(16),
                         }}>
                         <Chart
-                            initScript={baseAreaChart(chartData, true, 2, deviceWidth - px(40), 10, {}, 220)}
+                            initScript={baseAreaChart(chartData, true, 2, deviceWidth - px(40), 10, data?.tag_position?.risk_line, 220)}
                             data={chartData}
                             style={{width: '100%'}}
                             onLoadEnd={onload}
                         />
-                    </View>
+                    </Animatable.View>
                 ) : (
                     <View
                         style={{
@@ -100,33 +95,36 @@ const PortfolioPlan = ({navigation}) => {
                         }}
                     />
                 )}
-                <View style={{paddingHorizontal: px(16)}}>
+                {
+                    loading&&
+                <Animatable.View animation='fadeInUp' style={{paddingHorizontal: px(16)}}>
                     <Text style={styles.card_title}>{data?.tab_info?.title}</Text>
                     <View style={Style.flexBetween}>
                         {data?.tab_info?.items.map((item, index) => {
                             return (
                                 <View style={styles.card} key={index}>
                                     <FastImage
-                                        source={{uri: item.icon}}
+                                        source={{uri: item.icon_selected}}
                                         style={{width: px(32), height: px(32), marginBottom: px(6)}}
                                     />
                                     <Text style={styles.card_subtitle}>{item.title}</Text>
                                     <Text style={styles.card_desc}>{item.desc}</Text>
-                                    {index <= active ? (
                                         <Icon
                                             name="checkmark-circle"
                                             size={px(18)}
                                             color={Colors.brandColor}
                                             style={styles.check}
                                         />
-                                    ) : null}
                                 </View>
                             );
                         })}
                     </View>
-                </View>
+                </Animatable.View>
+                }
             </ScrollView>
-            {data?.button_list && <FixedBtn btns={data.button_list} />}
+            {data?.button&&loading && <FixedButton title={data?.button?.title} onPress={()=>{
+                jump(data?.button?.url,'replace')
+            }}/>}
         </>
     );
 };
@@ -165,7 +163,7 @@ const styles = StyleSheet.create({
         height: px(134),
         width: px(102),
         borderRadius: px(8),
-        borderColor: '#DDDDDD',
+        borderColor: Colors.brandColor,
         borderWidth: px(0.5),
         paddingHorizontal: px(12),
         paddingVertical: px(16),
@@ -175,11 +173,14 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         lineHeight: px(20),
         marginBottom: px(8),
+        fontWeight:'700',
+        color:Colors.brandColor,
     },
     card_desc: {
         fontSize: px(12),
         lineHeight: px(17),
         textAlign: 'center',
+        color:Colors.brandColor,
     },
     check: {position: 'absolute', right: px(-6), bottom: px(-6)},
 });

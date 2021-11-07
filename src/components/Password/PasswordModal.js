@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-01-05 16:10:12
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-03-13 11:14:07
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-06 16:57:01
  * @Description: 底部弹窗式密码
  */
-import React from 'react';
+import React, {useRef} from 'react';
 import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import InputView from './InputView';
 import Keyboard from './Keyboard';
@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import Mask from '../Mask';
 const PasswordModal = React.forwardRef((props, ref) => {
     const navigation = useNavigation();
+    const modal_id = useRef(null);
     const {
         onDone, //输入完成回调
         clear = true,
@@ -45,7 +46,7 @@ const PasswordModal = React.forwardRef((props, ref) => {
         if (nextPassword.length <= len) {
             setPassword(nextPassword);
             if (nextPassword.length === len) {
-                onDone && onDone(nextPassword);
+                onDone && onDone(nextPassword, modal_id.current);
                 hide();
             }
         }
@@ -55,10 +56,11 @@ const PasswordModal = React.forwardRef((props, ref) => {
         setPassword(password.substring(0, password.length - 1));
     };
 
-    const show = () => {
+    const show = (id) => {
         if (clear && password) {
             setPassword('');
         }
+        modal_id.current = id;
         setVisible(true);
     };
 

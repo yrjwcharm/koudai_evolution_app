@@ -487,6 +487,17 @@ export default function DetailAccount({route, navigation}) {
                             />
                         </View>
                     ) : null}
+                    {data?.estimate ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.estimate?.header} ctrl={'estimate'} oid={5} hide />
+                            <FitImage
+                                resizeMode="contain"
+                                source={{uri: data?.estimate?.img}}
+                                style={{marginVertical: text(12)}}
+                            />
+                            <Text style={styles.estimateDesc}>{data?.estimate?.desc}</Text>
+                        </View>
+                    ) : null}
                     {/* 风险控制 */}
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
@@ -738,5 +749,10 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(19),
         color: Colors.descColor,
+    },
+    estimateDesc: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
     },
 });

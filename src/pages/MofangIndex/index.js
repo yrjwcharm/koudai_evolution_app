@@ -295,12 +295,6 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
-                            <Button
-                                title="定制"
-                                onPress={() => {
-                                    props.navigation.navigate('PortfolioPlan');
-                                }}
-                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity
@@ -581,7 +575,6 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             ) : null}
-                            <Button title="全球配置" onPress={() => jump({type: 1, path: 'GlobalConfig'})} />
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>

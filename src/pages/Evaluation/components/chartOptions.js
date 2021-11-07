@@ -1,13 +1,13 @@
 /*
  * @Date: 2021-11-04 15:08:18
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-04 21:08:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-06 16:37:35
  * @Description:
  */
 import {Dimensions} from 'react-native';
 const deviceWidth = Dimensions.get('window').width;
-const colors = ['#545968', '#E74949', '#545968'];
+const colors = ['#E74949', '#545968'];
 export const baseAreaChart = (
     data,
     percent = false,
@@ -62,60 +62,26 @@ export const baseAreaChart = (
     }
   });
   chart.legend(false);
-    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.buy)}){
+  setTimeout(function(){
+    if(${JSON.stringify(tag_position)}){
       chart.guide().tag({
-        position: ${JSON.stringify(tag_position?.buy?.position)},
-        content: ${JSON.stringify(tag_position?.buy?.name)},
+        position: ${JSON.stringify(tag_position?.position)},
+        content: ${JSON.stringify(tag_position?.name)},
         limitInPlot:true,
         offsetY: -5,
         background: {
-          fill: '#E74949',
+          fill: '#545968',
           padding: 2,
         },
         pointStyle: {
-          fill: '#E74949'
+          fill: '#545968'
         },
         textStyle: {
           fontSize: 10, // 字体大小
         }
       });
     };
-    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.redeem)}){
-      chart.guide().tag({
-        position: ${JSON.stringify(tag_position?.redeem?.position)},
-        content: ${JSON.stringify(tag_position?.redeem?.name)},
-        limitInPlot:true,
-        background: {
-          fill: '#4BA471',
-          padding: 2,
-        },
-        pointStyle: {
-          fill: '#4BA471'
-        },
-        textStyle: {
-          fontSize: 10, // 字体大小
-        }
-      });
-    };
-    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position?.adjust)}){
-      chart.guide().tag({
-        position: ${JSON.stringify(tag_position?.adjust?.position)},
-        content: ${JSON.stringify(tag_position?.adjust?.name)},
-        limitInPlot:true,
-        background: {
-          fill: '#0051CC',
-          padding: 2,
-        },
-        pointStyle: {
-          fill: '#0051CC'
-        },
-        textStyle: {
-          fontSize: 10, // 字体大小
-        }
-      });
-    };
-
-    
+  },1000)
 
   chart.line()
     .position('date*value')
