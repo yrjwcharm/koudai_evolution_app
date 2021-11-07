@@ -285,6 +285,7 @@ const AssetHealthScore = ({navigation, route}) => {
     <View style={styles.container}>
       <ScrollView
         style={{flex: 1}}
+        bounces={false}
         scrollIndicatorInsets={{right: 1}}>
         <LinearGradient 
             colors={[colorTop, colorBottom]} 
@@ -303,10 +304,9 @@ const AssetHealthScore = ({navigation, route}) => {
         </LinearGradient>
         {/* 计算项目 */}
         <View style={styles.calcWrap}>
-          {/* 全球配置 */}
           {
-            data.items.map((item,idx) => (
-              <View style={styles.calcItem} key={idx}>
+            data.items.map((item,idx,arr) => (
+              <View style={{...styles.calcItem, borderBottomWidth: arr.length - 1 === idx ? 0 : px(0.5)}} key={idx}>
                   <FastImage style={styles.calcItemIcon} source={{
                     uri: item.icon
                   }}/>
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bgColor,
-    paddingBottom: px(110)
+    paddingBottom: px((isIphoneX() ? 34 : 8) + 44 + 12)
   },
   scorePanel: {
     width: '100%',
@@ -438,7 +438,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomColor: '#e9eaef',
-    borderBottomWidth: px(0.5)
   },
   calcItemIcon: {
     width: px(30),
@@ -469,12 +468,12 @@ const styles = StyleSheet.create({
     paddingTop: px(12),
     bottom: 0,
     width: Dimensions.get('window').width,
+    paddingTop: px(12),
     paddingBottom: isIphoneX() ? 34 : px(8),
   },
   bottomMain: {
     backgroundColor:'#fff',
     borderRadius: px(6),
-    paddingVertical: px(12),
     paddingHorizontal: px(16),
     height: px(44),
     flexDirection:'row',

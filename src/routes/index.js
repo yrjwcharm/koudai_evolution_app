@@ -85,6 +85,7 @@ import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计�
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
+import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
@@ -482,6 +483,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
+            <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
