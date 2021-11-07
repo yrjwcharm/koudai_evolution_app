@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-05 15:20:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-07 15:09:37
  * @Description:
  */
 import React from 'react';
@@ -33,8 +33,14 @@ class CheckBox extends React.Component {
         };
     }
     toggle() {
-        this.setState({checked: !this.state.checked});
-        this.props.onChange(!this.state.checked);
+        this.setState({checked: !this.state.checked}, () => {
+            this.props.onChange(this.state.checked);
+        });
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.checked != this.state.checked) {
+            this.setState({checked: nextProps.checked});
+        }
     }
     render() {
         const {control} = this.props;
