@@ -2,7 +2,7 @@
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-08-17 16:51:48
+ * @LastEditTime: 2021-11-07 19:24:59
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -249,11 +249,9 @@ const AccProfit = ({intelligent, poid}) => {
                     {intelligent && (
                         <View style={[styles.infoBox, {marginBottom: insets.bottom}]}>
                             <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>
-                                为什么我的净值走势和我的累计收益不一致
+                                {chartData?.why_diff_desc?.title}
                             </Text>
-                            <Text style={[styles.descContent]}>
-                                净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
-                            </Text>
+                            <Text style={[styles.descContent]}>{chartData?.why_diff_desc?.desc}</Text>
                         </View>
                     )}
                 </View>

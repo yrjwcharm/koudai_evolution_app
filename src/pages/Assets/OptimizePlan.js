@@ -2,7 +2,7 @@
  * @Date: 2021-11-07 10:27:15
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 11:02:18
+ * @LastEditTime: 2021-11-07 11:53:10
  * @Description: 优化计划
  */
 import React, {useState, useEffect} from 'react';
@@ -31,27 +31,27 @@ const RatioColor = [
     '#EBDD69',
 ];
 
-export default () => {
+export default ({navigation, route}) => {
     const [data, setData] = useState({});
 
-    // useEffect(() => {
-    //     http.get('/position/optimize_plan_view/20210101', {
-    //         poid: route.params?.poid,
-    //     }).then((res) => {
-    //         if (res.code === '000000') {
-    //             navigation.setOptions({title: res.result.title});
-    //             setData({
-    //                 ...res.result,
-    //                 chart: res.result.deploy_list?.map((item) => ({
-    //                     a: '1',
-    //                     name: item.name,
-    //                     percent: (item.ratio * 100).toFixed(2) * 1,
-    //                     color: item.color,
-    //                 })),
-    //             });
-    //         }
-    //     });
-    // }, [navigation, route]);
+    useEffect(() => {
+        http.get('/position/optimize_plan_view/20210101', {
+            poid: route.params?.poid,
+        }).then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title});
+                // setData({
+                //     ...res.result,
+                //     chart: res.result.deploy_list?.map((item) => ({
+                //         a: '1',
+                //         name: item.name,
+                //         percent: (item.ratio * 100).toFixed(2) * 1,
+                //         color: item.color,
+                //     })),
+                // });
+            }
+        });
+    }, [navigation, route]);
 
     return (
         <>
