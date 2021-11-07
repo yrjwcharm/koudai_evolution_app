@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 14:46:30
+ * @LastEditTime: 2021-11-07 15:36:33
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -26,7 +26,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text, formaNum, px, handlePhone} from '../../utils/appUtil.js';
+import {deviceWidth, px as text, formaNum, px} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -504,7 +504,10 @@ function HomeScreen({navigation, route}) {
                                                     style={[styles.light_text, {color: Colors.btnColor}]}
                                                     key={index}
                                                     onPress={() => {
-                                                        jump(item?.url);
+                                                        if (item?.url) {
+                                                            jump(item?.url);
+                                                            bottomModal.current.hide();
+                                                        }
                                                     }}>
                                                     {item.text}
                                                 </Text>
@@ -521,7 +524,7 @@ function HomeScreen({navigation, route}) {
                                         }}
                                     />
                                     <Text style={{fontSize: px(14), fontWeight: '700'}}>
-                                        全选(0/{signData?.plan_list?.length})
+                                        全选({signSelectData?.length}/{signData?.plan_list?.length})
                                     </Text>
                                 </View>
                                 {signData?.plan_list?.map((item, index) => {
@@ -556,7 +559,10 @@ function HomeScreen({navigation, route}) {
                                                             style={{color: Colors.btnColor}}
                                                             key={_index}
                                                             onPress={() => {
-                                                                jump(link?.url);
+                                                                if (link?.url) {
+                                                                    jump(link?.url);
+                                                                    bottomModal.current.hide();
+                                                                }
                                                             }}>
                                                             {link?.text}
                                                         </Text>
