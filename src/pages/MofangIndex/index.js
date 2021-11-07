@@ -317,7 +317,17 @@ const Index = (props) => {
 
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
-
+                            <Button title="追加购买" onPress={() => {
+                                jump({
+                                    "path": "AddedBuy",
+                                    // "path": "AssetHealthScore",
+                                    "type": 4,
+                                    params:{
+                                        poid: 'X00F001594'
+                                        // poid: 'X00F448768'
+                                    }
+                                });
+                            }} />
                             {/* 推荐 */}
                             {data?.custom_info ? (
                                 !data.show_recommend ? (
@@ -565,7 +575,6 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             ) : null}
-                            <Button title="全球配置" onPress={() => jump({type: 1, path: 'GlobalConfig'})} />
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-05 12:34:08
+ * @LastEditTime: 2021-11-07 11:19:34
  * @Description:路由表
  */
 import React from 'react';
@@ -85,6 +85,7 @@ import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计�
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
+import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
@@ -163,6 +164,7 @@ import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财�
 import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
 import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
+import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -415,11 +417,12 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
-            <Stack.Screen name="AssetHealthScore" 
-                component={AssetHealthScore} 
+            <Stack.Screen
+                name="AssetHealthScore"
+                component={AssetHealthScore}
                 options={{
-                    title: '', 
-                    headerTransparent: true, 
+                    title: '',
+                    headerTransparent: true,
                     headerTitleStyle: {color: '#fff'},
                     headerBackImage: () => {
                         return (
@@ -431,7 +434,8 @@ export default function AppStack() {
                             />
                         );
                     },
-                }} />
+                }}
+            />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
@@ -482,6 +486,7 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
+            <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
@@ -663,9 +668,10 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
-            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: '全球配置'}} />
-            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: '挑选基金'}} />
+            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
+            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
+            <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
         </Stack.Navigator>
     );
 }

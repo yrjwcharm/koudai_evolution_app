@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-11-05 10:36:03
+ * @LastEditTime: 2021-11-06 17:01:07
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -78,16 +78,16 @@ export default function PortfolioAssets(props) {
             setData(res.result);
             setRefreshing(false);
             props.navigation.setOptions({
-                headerRight: () => (
-                    <>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={[Style.flexCenter, styles.topRightBtn]}
-                            onPress={() => {}}>
-                            <FastImage source={require('../../assets/personal/edit.png')} style={styles.editImg} />
-                        </TouchableOpacity>
-                    </>
-                ),
+                // headerRight: () => (
+                //     <>
+                //         <TouchableOpacity
+                //             activeOpacity={0.8}
+                //             style={[Style.flexCenter, styles.topRightBtn]}
+                //             onPress={() => {}}>
+                //             <FastImage source={require('../../assets/personal/edit.png')} style={styles.editImg} />
+                //         </TouchableOpacity>
+                //     </>
+                // ),
                 title: res.result.title,
             });
             if (res.result?.progress_bar) {
@@ -262,16 +262,33 @@ export default function PortfolioAssets(props) {
         return (
             <View style={styles.plan_card_sty}>
                 <View style={Style.flexBetween}>
-                    <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
-                    {card?.title_info?.popup ? (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
-                            <FastImage
-                                style={{width: text(16), height: text(16)}}
-                                source={require('../../assets/img/tip.png')}
-                            />
+                    <View style={card.is_plan ? Style.flexRow : [Style.flexBetween, {width: '100%'}]}>
+                        <View style={{marginRight: text(8)}}>
+                            <Html style={styles.plan_title_sty} html={card?.title_info?.content} />
+                        </View>
+                        {card?.title_info?.popup ? (
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => showTips(card?.title_info?.popup)}>
+                                <FastImage
+                                    style={{width: text(16), height: text(16)}}
+                                    source={require('../../assets/img/tip.png')}
+                                />
+                            </TouchableOpacity>
+                        ) : null}
+                    </View>
+                    {card.is_plan && card.update_button ? (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => jump(card.update_button.url)}
+                            style={[Style.flexCenter, styles.updateBtn, {borderColor: card.update_button.color}]}>
+                            <Text style={[styles.updateText, {color: card.update_button.color}]}>
+                                {card.update_button.text}
+                            </Text>
                         </TouchableOpacity>
                     ) : null}
                 </View>
+                {card.is_plan && card.score_update_time ? (
+                    <Text style={styles.updateTime}>{card.score_update_time}</Text>
+                ) : null}
                 {card?.desc ? (
                     <View style={{marginVertical: px(12)}}>
                         <Html style={styles.plan_desc_sty} html={card?.desc} />
@@ -718,18 +735,18 @@ export default function PortfolioAssets(props) {
                 </View>
                 <BottomModal
                     ref={scoreModal}
-                    title={tip?.show_point == 1 ? '组合状态评分' : '资产状态'}
+                    title={tip?.show_point == 1 ? '资产健康分' : '资产状态'}
                     style={{height: text(400)}}>
                     <View style={{padding: text(16)}}>
                         <>
                             <Text style={styles.tipTitle}>
-                                什么是{tip?.show_point == 1 ? '组合状态评分' : '资产状态'}:
+                                什么是{tip?.show_point == 1 ? '资产健康分' : '资产状态'}:
                             </Text>
                             <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                组合{tip?.show_point == 1 ? '状态评分' : '资产状态'}
-                                代表您的持仓比例与系统给出的最优配置比例的偏离度，偏离度越大，评分越低。
+                                {tip?.show_point == 1 ? '资产健康分' : '资产状态'}
+                                代表您的持仓大类资产比例与系统给出的最优计划比例的偏离度，偏离度越大，评分越低。
                             </Text>
-                            <Text style={styles.tipTitle}>资产状态的含义:</Text>
+                            <Text style={styles.tipTitle}>资产健康分的含义:</Text>
                             <View style={Style.flexRow}>
                                 <View style={{flex: 1, alignItems: 'center', marginRight: text(12)}}>
                                     <Text
@@ -742,7 +759,7 @@ export default function PortfolioAssets(props) {
                                         {tip?.show_point == 1 ? ' 评分 ≥ 90' : '健康'}
                                     </Text>
                                     <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                        您的持仓比例与系统的最优配置比例基本一致。您可以选择追加购买，不需要进行调仓。
+                                        您的持仓大类资产比例与系统的最优计划比例基本一致。您可以选择追加购买，不需要进行优化计划。
                                     </Text>
                                 </View>
                                 <View style={{flex: 1, alignItems: 'center'}}>
@@ -756,13 +773,13 @@ export default function PortfolioAssets(props) {
                                         {tip?.show_point == 1 ? ' 评分 < 90' : '需调仓'}
                                     </Text>
                                     <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                        您的持仓与系统的最优配置比例配置较大，系统建议您给需调仓的组合进行调仓或追加购买降低偏离值。
+                                        您的持仓大类资产比例与系统的最优计划比例偏离较大，系统建议您进行优化计划或进行追加购买降低偏离度。
                                     </Text>
                                 </View>
                             </View>
-                            <Text style={styles.tipTitle}>什么是系统最优配置:</Text>
+                            <Text style={styles.tipTitle}>什么是系统最优计划:</Text>
                             <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                                理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化及调整配置比例，自动计算并给出一个当天持有的最佳配置比例。
+                                理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化及调整配置比例，自动计算并给出一个当天持有的最佳资产比例。
                             </Text>
                         </>
                     </View>
@@ -1087,5 +1104,21 @@ const styles = StyleSheet.create({
         borderRadius: Space.borderRadius,
         backgroundColor: Colors.brandColor,
         borderColor: Colors.brandColor,
+    },
+    updateBtn: {
+        borderRadius: px(4),
+        borderWidth: Space.borderWidth,
+        width: px(56),
+        height: px(24),
+    },
+    updateText: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+    },
+    updateTime: {
+        marginTop: px(2),
+        fontSize: Font.textSm,
+        lineHeight: px(21),
+        color: Colors.lightGrayColor,
     },
 });

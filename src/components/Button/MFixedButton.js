@@ -10,16 +10,16 @@ import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {Alert, Linking, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Image from 'react-native-fast-image';
-import {px as text, isIphoneX} from '../../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {Button} from '../../../components/Button';
+import {px as text, isIphoneX} from '../../utils/appUtil';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import {Button} from '.';
 import {useNavigation} from '@react-navigation/native';
-import {BottomModal} from '../../../components/Modal';
-import Toast from '../../../components/Toast';
-import {useJump} from '../../../components/hooks';
+import {BottomModal} from '../Modal';
+import Toast from '../Toast';
+import {useJump} from '../hooks';
 
 const FixedBtn = (props) => {
-    const {btns, style} = props;
+    const {btns, disabled, style} = props;
     const navigation = useNavigation();
     const bottomModal = useRef(null);
     const jump = useJump();
@@ -97,6 +97,7 @@ const FixedBtn = (props) => {
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}
+                        disabled={disabled}
                         onPress={async () => {
                             global.LogTool('detailBuy', btns[1]?.title);
                             props.onPress && (await props.onPress());

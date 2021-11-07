@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 14:44:56
+ * @LastEditTime: 2021-11-07 14:46:30
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -166,7 +166,7 @@ function HomeScreen({navigation, route}) {
                         if (res.result.options) {
                             setChoice('');
                             setModalData(res.result);
-                            setIsVisible(true);
+                            isFocused && setIsVisible(true);
                         }
                     }
                 });
@@ -177,7 +177,7 @@ function HomeScreen({navigation, route}) {
                 });
             }
         },
-        [readInterface, userInfo]
+        [isFocused, readInterface, userInfo]
     );
     //checkBox 选中
     const checkBoxClick = (check, poid) => {
