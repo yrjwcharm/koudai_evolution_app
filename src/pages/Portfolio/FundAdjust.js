@@ -2,11 +2,11 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-05 18:34:02
+ * @LastEditTime: 2021-11-07 11:16:47
  * @Description: 基金调整
  */
-import React, {useCallback, useEffect, useReducer, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useReducer, useRef, useState} from 'react';
+import {Platform, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import CheckBox from '../../components/CheckBox';
@@ -27,42 +27,24 @@ function reducer(state, action) {
 }
 
 export default ({navigation, route}) => {
-    const [data, dispatch] = useReducer(reducer, {
-        head: {
-            ratio: 0.6018,
-            ratio_desc: '大盘股票 总占比：60.18%',
-            desc: '基金比例默认为平均分配，不构成投资建议',
-        },
-        items: [
-            {
-                name: '鹏华空天军工指数(LOF)A',
-                percent: '30.09',
-                ratio: 50,
-                select: true,
-            },
-            {
-                name: '华安易富黄金ETF联接C',
-                percent: '30.09',
-                ratio: 50,
-                select: true,
-            },
-            {
-                name: '长城久源灵活配置混合',
-                percent: 0,
-                ratio: 0,
-                select: false,
-            },
-            {
-                name: '前海开源中航军工',
-                percent: 0,
-                ratio: 0,
-                select: false,
-            },
-        ],
-    });
+    const [data, dispatch] = useReducer(reducer, route.params?.asset || {});
     const [changed, setChanged] = useState(false); // 是否已经调整过
     const selectedNum = useRef(0); // 选中基金的数量
 
+    /**
+     * 选中/取消选中基金
+     * @param {number} index 最后一只有比例的基金下标
+     * @param {any[]} items 基金数组
+     */
+    const calcLastHasRatioPercent = (index, items) => {
+        let percent = 0;
+        items.forEach((item, idx) => {
+            if (item.select && idx !== index) {
+                percent += (item.percent * 1).toFixed(2) * 1;
+            }
+        });
+        return ((data?.ratio * 100).toFixed(2) - percent).toFixed(2);
+    };
     /**
      * 选中/取消选中基金
      * @param {number} index 基金在数组中的下标
@@ -75,7 +57,7 @@ export default ({navigation, route}) => {
             return false;
         }
         if (changed) {
-            const items = cloneDeep(data.items);
+            const items = cloneDeep(data?.items);
             if (select) {
                 items[index].percent = 0;
                 items[index].ratio = 0;
@@ -85,7 +67,7 @@ export default ({navigation, route}) => {
                 items[index].select = false;
                 const lastSelectedIndex = findLastIndex(items, ['select', true]);
                 items[lastSelectedIndex].ratio = items[lastSelectedIndex].ratio * 1 + items[index].ratio * 1;
-                items[lastSelectedIndex].percent = data?.head?.ratio * items[lastSelectedIndex].ratio;
+                items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
                 items[index].percent = 0;
                 items[index].ratio = 0;
                 dispatch({type: 'select', payload: items});
@@ -98,14 +80,14 @@ export default ({navigation, route}) => {
             items.forEach((item) => {
                 if (item.select) {
                     item.ratio = ratio;
-                    item.percent = data?.head?.ratio * ratio;
+                    item.percent = data?.ratio * ratio;
                 } else {
                     item.ratio = 0;
                     item.percent = 0;
                 }
             });
             items[lastSelectedIndex].ratio = 100 - (selectedNum.current - 1) * ratio;
-            items[lastSelectedIndex].percent = data?.head?.ratio * items[lastSelectedIndex].ratio;
+            items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
             dispatch({type: 'select', payload: items});
         }
     };
@@ -119,22 +101,22 @@ export default ({navigation, route}) => {
         setChanged(true);
         const items = cloneDeep(data.items);
         const lastSelectedIndex = findLastIndex(items, ['select', true]);
-        let max = 0;
+        let maxRatio = 0;
         items.forEach((item, idx) => {
-            max += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
+            maxRatio += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
         });
-        max = 100 - max;
-        if (value > max) {
+        maxRatio = 100 - maxRatio;
+        if (value > maxRatio) {
             items[index].error = true;
         } else {
             if (items[index].error) {
                 delete items[index].error;
             }
-            items[lastSelectedIndex].ratio = max - value;
-            items[lastSelectedIndex].percent = data?.head?.ratio * items[lastSelectedIndex].ratio;
+            items[lastSelectedIndex].ratio = maxRatio - value;
+            items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
         }
-        items[index].ratio = value;
-        items[index].percent = data?.head?.ratio * value;
+        items[index].ratio = value !== '' ? value * 1 : value;
+        items[index].percent = data?.ratio * value;
         dispatch({type: 'select', payload: items});
     };
 
@@ -151,7 +133,7 @@ export default ({navigation, route}) => {
             });
             max = 100 - max;
             items[index].ratio = max;
-            items[index].percent = data?.head?.ratio * max;
+            items[index].percent = data?.ratio * max;
             delete items[index].error;
             dispatch({type: 'select', payload: items});
         }
@@ -164,9 +146,14 @@ export default ({navigation, route}) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: `${route.params?.name || ''}基金调整`,
+            title: `${data.name || ''}基金调整`,
         });
-    }, [navigation, route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        console.log(data.items);
+    }, [data.items]);
 
     return (
         <View style={styles.container}>
@@ -174,17 +161,20 @@ export default ({navigation, route}) => {
                 <View style={{paddingHorizontal: Space.padding}}>
                     <View style={styles.assetPool}>
                         <View style={Style.flexRow}>
-                            <View
-                                style={[styles.circle, {backgroundColor: route.params?.color || Colors.defaultColor}]}
-                            />
-                            <Text style={styles.poolName}>{data?.head?.ratio_desc}</Text>
+                            <View style={[styles.circle, {backgroundColor: data?.color || Colors.defaultColor}]} />
+                            <Text style={styles.poolName}>
+                                {data?.name} 总占比：{(data?.ratio * 100).toFixed(2)}%
+                            </Text>
                         </View>
                         <View style={{paddingTop: px(4), paddingHorizontal: px(8)}}>
-                            <Text style={styles.tips}>{data?.head?.desc}</Text>
+                            <Text style={styles.tips}>{data?.desc}</Text>
                         </View>
                     </View>
                     {data?.items?.map?.((fund, index, arr) => {
+                        // 最后一只选中的基金下标
                         const lastSelectedIndex = findLastIndex(arr, ['select', true]);
+                        // 最后一只有比例的基金下标
+                        const lastHasRatioIndex = findLastIndex(arr, (item) => item.ratio != 0);
                         return (
                             <View
                                 key={fund + index}
@@ -196,14 +186,19 @@ export default ({navigation, route}) => {
                                             checked={fund.select}
                                             onChange={(checked) => toggleSelect(index, checked)}
                                         />
-                                        <TouchableOpacity activeOpacity={0.8} style={{marginLeft: px(12)}}>
+                                        <View style={{marginLeft: px(12)}}>
                                             <Text style={styles.fundName}>{fund.name}</Text>
                                             {fund.select ? (
                                                 <Text style={styles.fundPercent}>
-                                                    占总配置的{(fund.percent * 1).toFixed(2)}%
+                                                    {lastHasRatioIndex === index && lastHasRatioIndex !== 0 ? '约' : ''}
+                                                    占总配置的
+                                                    {lastHasRatioIndex === index && lastHasRatioIndex !== 0
+                                                        ? calcLastHasRatioPercent(lastHasRatioIndex, arr)
+                                                        : (fund.percent * 1).toFixed(2)}
+                                                    %
                                                 </Text>
                                             ) : null}
-                                        </TouchableOpacity>
+                                        </View>
                                     </View>
                                     {fund.select ? (
                                         <View style={Style.flexRow}>
@@ -243,7 +238,7 @@ export default ({navigation, route}) => {
                     })}
                 </View>
             </ScrollView>
-            <FixedButton title={'确认调整'} />
+            <FixedButton title={'确认调整'} onPress={() => navigation.navigate(route.params.ref, {asset: data})} />
         </View>
     );
 };

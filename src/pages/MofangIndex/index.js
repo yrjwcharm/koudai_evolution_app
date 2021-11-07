@@ -565,7 +565,6 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             ) : null}
-                            <Button title="全球配置" onPress={() => jump({type: 1, path: 'GlobalConfig'})} />
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>

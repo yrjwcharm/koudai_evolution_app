@@ -1,9 +1,9 @@
 /*
- * @Date: 2021-01-23 10:29:49
+ * @Date: 2021-11-07 10:27:15
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 10:40:13
- * @Description: 全球配置
+ * @LastEditTime: 2021-11-07 11:02:18
+ * @Description: 优化计划
  */
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, ScrollView, View, Text} from 'react-native';
@@ -11,10 +11,9 @@ import http from '../../services';
 import {px as text} from '../../utils/appUtil';
 import {Style, Colors, Space, Font} from '../../common/commonStyle';
 import {Chart} from '../../components/Chart';
-import {basicPieChart} from './components/ChartOption';
-import BottomDesc from '../../components/BottomDesc';
-import FixedBtn from './components/FixedBtn';
-import Loading from './components/PageLoading';
+import {basicPieChart} from '../Portfolio/components/ChartOption';
+import {FixedButton} from '../../components/Button';
+import Loading from '../Portfolio/components/PageLoading';
 
 const RatioColor = [
     '#E1645C',
@@ -32,27 +31,27 @@ const RatioColor = [
     '#EBDD69',
 ];
 
-const GlobalConfig = ({navigation, route}) => {
+export default () => {
     const [data, setData] = useState({});
 
-    useEffect(() => {
-        http.get('/portfolio/asset_deploy_detail/20211101', {
-            upid: route.params?.upid,
-        }).then((res) => {
-            if (res.code === '000000') {
-                navigation.setOptions({title: res.result.title || '全球配置'});
-                setData({
-                    ...res.result,
-                    chart: res.result.deploy_list?.map((item) => ({
-                        a: '1',
-                        name: item.name,
-                        percent: (item.ratio * 100).toFixed(2) * 1,
-                        color: item.color,
-                    })),
-                });
-            }
-        });
-    }, [navigation, route]);
+    // useEffect(() => {
+    //     http.get('/position/optimize_plan_view/20210101', {
+    //         poid: route.params?.poid,
+    //     }).then((res) => {
+    //         if (res.code === '000000') {
+    //             navigation.setOptions({title: res.result.title});
+    //             setData({
+    //                 ...res.result,
+    //                 chart: res.result.deploy_list?.map((item) => ({
+    //                     a: '1',
+    //                     name: item.name,
+    //                     percent: (item.ratio * 100).toFixed(2) * 1,
+    //                     color: item.color,
+    //                 })),
+    //             });
+    //         }
+    //     });
+    // }, [navigation, route]);
 
     return (
         <>
@@ -90,46 +89,12 @@ const GlobalConfig = ({navigation, route}) => {
                                 );
                             })}
                         </View>
-                        {data?.deploy_title && data?.deploy_content ? (
-                            <View style={styles.introContainer}>
-                                <Text style={styles.intro_content}>
-                                    {data?.deploy_title}
-                                    {data?.deploy_content}
-                                </Text>
-                            </View>
-                        ) : null}
                     </View>
-                    {data?.deploy_list?.map?.((item, index) => {
-                        return (
-                            <View key={item + index} style={styles.assetBox}>
-                                <View style={Style.flexBetween}>
-                                    <View style={Style.flexRow}>
-                                        <View
-                                            style={[styles.circle, {backgroundColor: item.color || RatioColor[index]}]}
-                                        />
-                                        <Text style={styles.assetName}>{item.name}</Text>
-                                    </View>
-                                    <Text style={styles.ratioSty}>
-                                        <Text style={{fontFamily: Font.numFontFamily}}>
-                                            {(item.ratio * 100).toFixed(2)}
-                                        </Text>
-                                        %
-                                    </Text>
-                                </View>
-                                <View style={styles.divider} />
-                                <Text style={[styles.intro_content, {fontSize: Font.textH3}]}>
-                                    {item.title}
-                                    {item.content}
-                                </Text>
-                            </View>
-                        );
-                    })}
-                    <BottomDesc />
                 </ScrollView>
             ) : (
                 <Loading />
             )}
-            {Object.keys(data).length > 0 && data.btns && <FixedBtn btns={data.btns} />}
+            {Object.keys(data).length > 0 ? <FixedButton title="确认优化" /> : null}
         </>
     );
 };
@@ -197,5 +162,3 @@ const styles = StyleSheet.create({
         borderColor: Colors.borderColor,
     },
 });
-
-export default GlobalConfig;
