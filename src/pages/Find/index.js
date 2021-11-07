@@ -246,7 +246,7 @@ const Index = (props) => {
                                         />
                                     ) : (
                                         item?.plans?.map((_item, _index) => (
-                                            <PortfolioCard data={_item} key={index} style={{marginBottom: px(12)}} />
+                                            <PortfolioCard data={_item} key={_index} style={{marginBottom: px(12)}} />
                                         ))
                                     )}
                                 </View>

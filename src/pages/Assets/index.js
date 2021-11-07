@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 15:36:33
+ * @LastEditTime: 2021-11-07 15:45:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -125,7 +125,7 @@ function HomeScreen({navigation, route}) {
                 }
             });
             setSignOpen(sign_open);
-            bottomModal.current.show();
+            isFocused && bottomModal.current.show();
         });
     };
     const init = useCallback(
@@ -177,6 +177,7 @@ function HomeScreen({navigation, route}) {
                 });
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [isFocused, readInterface, userInfo]
     );
     //checkBox 选中
@@ -573,8 +574,9 @@ function HomeScreen({navigation, route}) {
                                 })}
                                 {signData?.button ? (
                                     <Button
+                                        disabled={!signSelectData?.length > 0}
                                         style={{marginTop: px(20)}}
-                                        onPress={handleSign}
+                                        onPress={_.debounce(handleSign, 500)}
                                         title={signData?.button?.text}
                                     />
                                 ) : null}
