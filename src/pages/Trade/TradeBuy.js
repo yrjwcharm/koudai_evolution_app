@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 16:12:17
+ * @LastEditTime: 2021-11-07 15:52:32
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -350,7 +350,36 @@ class TradeBuy extends Component {
         const {type, data} = this.state;
         global.LogTool('buy');
         Keyboard.dismiss();
-        if (type == 1 && data.fix_info.first_order) {
+        if (data?.buy_do_pop) {
+            Modal.show({
+                title: data?.buy_do_pop?.title,
+                confirm: true,
+                content: data?.buy_do_pop?.content,
+                confirmText: data?.buy_do_pop?.confirm_text,
+                cancelText: data?.buy_do_pop?.cancel_text,
+                confirmCallBack: () => {
+                    if (data?.buy_do_pop?.url) {
+                        this.props.jump(data?.buy_do_pop?.url);
+                    } else {
+                        Modal.show({
+                            title: data.fix_modal.title,
+                            confirm: true,
+                            content: data.fix_modal.content,
+                            confirmText: data.fix_modal.confirm_text,
+                            cancelText: data.fix_modal.cancel_text,
+                            confirmCallBack: () => {
+                                this.passwordModal.show();
+                                this.need_buy = true;
+                            },
+                            cancelCallBack: () => {
+                                this.passwordModal.show();
+                                this.need_buy = false;
+                            },
+                        });
+                    }
+                },
+            });
+        } else if (type == 1 && data?.fix_info?.first_order) {
             Modal.show({
                 title: data.fix_modal.title,
                 confirm: true,
