@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-06 11:36:12
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-07 14:46:30
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -26,7 +26,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {deviceWidth, px as text, formaNum, px} from '../../utils/appUtil.js';
+import {deviceWidth, px as text, formaNum, px, handlePhone} from '../../utils/appUtil.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import Header from '../../components/NavBar';
 import NumText from '../../components/NumText';
@@ -42,6 +42,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/ModalContainer';
+import {BottomModal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
@@ -49,7 +50,8 @@ import smile from '../../assets/personal/smile.gif';
 import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
-
+import CheckBox from '../../components/CheckBox';
+import _ from 'lodash';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -76,6 +78,10 @@ function HomeScreen({navigation, route}) {
     const [isVisible, setIsVisible] = useState(false);
     const [modalData, setModalData] = useState({});
     const [showCircle, setShowCircle] = useState(false);
+    const [signData, setSignData] = useState(null);
+    const bottomModal = useRef(null);
+    const [signSelectData, setSignSelectData] = useState([]);
+    const [signOpen, setSignOpen] = useState([]);
     const moodEnumRef = useRef({
         1: calm,
         2: smile,
@@ -110,7 +116,18 @@ function HomeScreen({navigation, route}) {
             return show === 'true' ? 'false' : 'true';
         });
     }, []);
-
+    const getSignData = () => {
+        http.get('adviser/get_need_sign_list/20210923').then((data) => {
+            setSignData(data.result);
+            let sign_open = data?.result?.plan_list?.map((item) => {
+                if (item?.is_open == 1) {
+                    return item?.poid;
+                }
+            });
+            setSignOpen(sign_open);
+            bottomModal.current.show();
+        });
+    };
     const init = useCallback(
         (refresh) => {
             refresh === 'refresh' && setRefreshing(true);
@@ -120,14 +137,14 @@ function HomeScreen({navigation, route}) {
             }).then((res) => {
                 if (res.code === '000000') {
                     setHoldingData(res.result);
+                    if (res.result?.is_need_sign == 1) {
+                        getSignData();
+                    }
                 }
             });
             readInterface();
-            http.get('/asset/common/20210101', {
-                // uid: '1000000001',
-            }).then((res) => {
+            http.get('/asset/common/20210101').then((res) => {
                 if (res.code === '000000') {
-                    // StatusBar.setBarStyle('light-content');
                     setUserBasicInfo(res.result);
                 }
                 !userInfo.toJS()?.is_login && setLoading(false);
@@ -162,6 +179,58 @@ function HomeScreen({navigation, route}) {
         },
         [isFocused, readInterface, userInfo]
     );
+    //checkBox 选中
+    const checkBoxClick = (check, poid) => {
+        //选中
+        if (check) {
+            if (poid) {
+                setSignSelectData((prev) => {
+                    return [...prev, poid];
+                });
+            } else {
+                setSignSelectData((prev) => {
+                    let poids = signData?.plan_list?.map((item) => {
+                        return item.poid;
+                    });
+                    return [...new Set([...prev, ...poids])];
+                });
+            }
+        } else {
+            //非选中
+            if (poid) {
+                setSignSelectData((prev) => {
+                    let data = [...prev];
+                    _.remove(data, function (_poid) {
+                        return _poid === poid;
+                    });
+                    return data;
+                });
+            } else {
+                setSignSelectData([]);
+            }
+        }
+    };
+    //点击签约协议展开
+    const handleSignOpen = (poid) => {
+        setSignOpen((prev) => {
+            return [...prev, poid];
+        });
+    };
+    //签约
+    const handleSign = () => {
+        http.post('adviser/sign/20210923', {poids: signSelectData}).then((res) => {
+            bottomModal.current.toastShow(res.message);
+            if (res.code === '000000') {
+                if (signSelectData?.length == signData?.plan_list?.length) {
+                    setTimeout(() => {
+                        bottomModal.current.hide();
+                    }, 1000);
+                } else {
+                    getSignData();
+                }
+            }
+        });
+    };
     const reportSurvey = (answer) => {
         http.post('/common/survey/report/20210521', {survey_id: 1, answer});
     };
@@ -413,6 +482,100 @@ function HomeScreen({navigation, route}) {
             renderLoading()
         ) : !showGesture ? (
             <View style={styles.container}>
+                <BottomModal
+                    style={{height: px(600), backgroundColor: '#fff'}}
+                    ref={bottomModal}
+                    title={signData?.title}
+                    sub_title={signData?.title_tip}>
+                    <View style={{flex: 1}}>
+                        <ScrollView
+                            style={{
+                                paddingHorizontal: px(16),
+                                paddingTop: px(22),
+                                paddingBottom: px(20),
+                            }}>
+                            <TouchableOpacity activeOpacity={1}>
+                                {signData?.desc ? (
+                                    <>
+                                        <HTML html={signData?.desc} style={styles.light_text} />
+                                        <Text>
+                                            {signData?.desc_link_list?.map((item, index) => (
+                                                <Text
+                                                    style={[styles.light_text, {color: Colors.btnColor}]}
+                                                    key={index}
+                                                    onPress={() => {
+                                                        jump(item?.url);
+                                                    }}>
+                                                    {item.text}
+                                                </Text>
+                                            ))}
+                                        </Text>
+                                    </>
+                                ) : null}
+                                <View style={[Style.flexRow, {marginTop: px(12)}, styles.border_bottom]}>
+                                    <CheckBox
+                                        checked={signSelectData?.length == signData?.plan_list?.length}
+                                        style={{marginRight: px(6)}}
+                                        onChange={(value) => {
+                                            checkBoxClick(value);
+                                        }}
+                                    />
+                                    <Text style={{fontSize: px(14), fontWeight: '700'}}>
+                                        全选(0/{signData?.plan_list?.length})
+                                    </Text>
+                                </View>
+                                {signData?.plan_list?.map((item, index) => {
+                                    return (
+                                        <View key={index} style={styles.border_bottom}>
+                                            <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <CheckBox
+                                                    checked={signSelectData?.includes(item?.poid)}
+                                                    style={{marginRight: px(6)}}
+                                                    onChange={(value) => {
+                                                        checkBoxClick(value, item.poid);
+                                                    }}
+                                                />
+                                                <Text style={styles.light_text}>{item?.name}</Text>
+                                            </View>
+                                            <Text style={styles.light_text}>
+                                                {item?.desc}
+                                                <Text
+                                                    style={{
+                                                        color: signOpen?.includes(item?.poid)
+                                                            ? Colors.defaultColor
+                                                            : Colors.btnColor,
+                                                    }}
+                                                    onPress={() => {
+                                                        handleSignOpen(item?.poid);
+                                                    }}>
+                                                    {item?.link_name}
+                                                </Text>
+                                                {signOpen?.includes(item?.poid) &&
+                                                    item?.link_list?.map((link, _index) => (
+                                                        <Text
+                                                            style={{color: Colors.btnColor}}
+                                                            key={_index}
+                                                            onPress={() => {
+                                                                jump(link?.url);
+                                                            }}>
+                                                            {link?.text}
+                                                        </Text>
+                                                    ))}
+                                            </Text>
+                                        </View>
+                                    );
+                                })}
+                                {signData?.button ? (
+                                    <Button
+                                        style={{marginTop: px(20)}}
+                                        onPress={handleSign}
+                                        title={signData?.button?.text}
+                                    />
+                                ) : null}
+                            </TouchableOpacity>
+                        </ScrollView>
+                    </View>
+                </BottomModal>
                 {/* 登录注册蒙层 */}
                 {!userInfo.toJS().is_login && <LoginMask />}
                 {isVisible && (
@@ -1299,6 +1462,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: text(26),
         top: px(14),
+    },
+    light_text: {fontSize: px(13), lineHeight: px(17)},
+    border_bottom: {
+        borderColor: Colors.lineColor,
+        borderBottomWidth: 0.5,
+        paddingVertical: px(12),
     },
 });
 export default HomeScreen;
