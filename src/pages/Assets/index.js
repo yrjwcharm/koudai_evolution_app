@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 16:12:23
+ * @LastEditTime: 2021-11-07 18:07:36
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -42,7 +42,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/ModalContainer';
-import {BottomModal} from '../../components/Modal';
+import {BottomModal, Modal as _Modal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
@@ -589,7 +589,7 @@ function HomeScreen({navigation, route}) {
                     {!userInfo.toJS().is_login && <LoginMask />}
                     {isVisible && (
                         <>
-                            <Mask />
+                            {!global.rootSibling && <Mask />}
                             <Modal
                                 children={() => (
                                     <View

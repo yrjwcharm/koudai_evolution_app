@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 11:19:34
+ * @LastEditTime: 2021-11-07 19:01:44
  * @Description:路由表
  */
 import React from 'react';
@@ -488,7 +488,7 @@ export default function AppStack() {
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
-            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
+            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />

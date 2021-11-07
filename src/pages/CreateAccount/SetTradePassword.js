@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 14:18:09
+ * @LastEditTime: 2021-11-07 17:59:09
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -76,7 +76,6 @@ const SetTradePassword = ({navigation, route}) => {
                                     });
                                     return false;
                                 } else if (route.params?.fr === 'add_bank_card') {
-                                    console.log(route.params?.url);
                                     Modal.show({
                                         confirmCallBack: () => jump(route.params?.url, 'replace'),
                                         confirmText: '立即跳转',
