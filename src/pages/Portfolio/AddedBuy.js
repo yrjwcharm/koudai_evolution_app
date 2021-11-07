@@ -36,6 +36,13 @@ const AddedBuy = ({navigation, route}) => {
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
 
+    useEffect(() => {
+        if (route.params.refreshConfig) {
+            getNewConfig(amount);
+            navigation.setParams({refreshConfig: null});
+        }
+    }, [route.params.refreshConfig, getNewConfig, amount, navigation]);
+
     const showDetail = useMemo(() => {
         return !errTip && amount;
     }, [errTip, amount]);
@@ -196,7 +203,7 @@ const AddedBuy = ({navigation, route}) => {
                 {/* hint */}
                 {showDetail ? (
                     <View style={styles.hint}>
-                        <Text>{'追加购买金额按照您当前计划的哥哥打雷资产'}</Text>
+                        <Text style={styles.hintText}>{configData.notice}</Text>
                     </View>
                 ) : null}
 
@@ -323,10 +330,14 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     hint: {
-        paddingTop: px(8),
-        paddingBottom: px(8),
+        // paddingBottom: px(8),
         paddingHorizontal: px(16),
         backgroundColor: '#fff',
+    },
+    hintText: {
+        lineHeight: px(18),
+        fontSize: px(13),
+        color: Colors.orange,
     },
     asset_box: {
         paddingHorizontal: Space.padding,
