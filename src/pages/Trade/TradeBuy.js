@@ -85,6 +85,7 @@ class TradeBuy extends Component {
         http.get('/trade/buy/info/20210101', {
             type: _type || type,
             poid,
+            amount: this.state.amount,
         }).then((res) => {
             if (res.code === '000000') {
                 console.log(_modalRef);
