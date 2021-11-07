@@ -25,6 +25,7 @@ import Toast from '../../components/Toast/Toast.js';
 import BottomDesc from '../../components/BottomDesc';
 import FastImage from 'react-native-fast-image';
 import PageLoading from './components/PageLoading.js';
+import {useFocusEffect} from '@react-navigation/native';
 
 const AddedBuy = ({navigation, route}) => {
     const [pageLoading, setPageLoading] = useState(true);
@@ -44,12 +45,13 @@ const AddedBuy = ({navigation, route}) => {
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
 
-    useEffect(() => {
-        if (route.params.refreshConfig) {
-            getNewConfig(amount);
-            navigation.setParams({refreshConfig: null});
-        }
-    }, [route.params.refreshConfig, getNewConfig, amount, navigation]);
+    useFocusEffect(
+        useCallback(() => {
+            if (showDetail) {
+                getNewConfig(amount);
+            }
+        }, [getNewConfig, amount, showDetail])
+    );
 
     const showDetail = useMemo(() => {
         return !errTip && amount;
@@ -248,7 +250,17 @@ const AddedBuy = ({navigation, route}) => {
                                                     {asset.name} ¥{formaNum(asset.amount)}
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity activeOpacity={0.8}>
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() =>
+                                                    navigation.navigate('FundAdjust', {
+                                                        asset: {
+                                                            ...asset,
+                                                            desc: configData.notice,
+                                                        },
+                                                        ref: 'AddedBuy',
+                                                    })
+                                                }>
                                                 <Text style={styles.updateSty}>修改</Text>
                                             </TouchableOpacity>
                                         </View>
@@ -267,7 +279,7 @@ const AddedBuy = ({navigation, route}) => {
                                                         <Text style={styles.fundName}>{fund.name}</Text>
                                                         <Text style={styles.fundCode}>{fund.code}</Text>
                                                     </View>
-                                                    <Text style={styles.fundPercent}>¥{formaNum(asset.amount)}</Text>
+                                                    <Text style={styles.fundPercent}>¥{formaNum(fund.amount)}</Text>
                                                 </TouchableOpacity>
                                             );
                                         })}
