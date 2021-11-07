@@ -281,7 +281,7 @@ const AssetHealthScore = ({navigation, route}) => {
                         <>
                             {genPastTimeText(true)}
                             <Text style={styles.updatingHint}>{updatedData.score_info.score_desc}</Text>
-                            {updatedData.score_info.needOptimization ? (
+                            {updatedData.score_info.need_optimize ? (
                                 <Button
                                     title={updatedData.button.text}
                                     type="minor"
