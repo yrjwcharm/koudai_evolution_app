@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 17:01:06
+ * @LastEditTime: 2021-11-08 17:13:57
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -153,6 +153,14 @@ export default ({navigation, route}) => {
         }
         if (value > (route.params.ref === 'ChooseFund' ? maxRatio : maxAmount)) {
             items[index].error = true;
+            if (route.params.ref === 'ChooseFund') {
+                items[index].ratio = 100;
+                items[index].percent = data?.ratio * 100;
+            } else {
+                items[index].amount = data?.amount;
+            }
+            dispatch({type: 'select', payload: items});
+            return false;
         } else if (route.params.ref === 'AddedBuy' && value != 0 && value < parseFloat(items[index].min_limit)) {
             items[index].error = true;
         } else {
