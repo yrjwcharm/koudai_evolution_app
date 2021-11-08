@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 18:37:11
+ * @LastEditTime: 2021-11-08 10:41:42
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
@@ -59,7 +59,6 @@ const BottomModal = React.forwardRef((props, ref) => {
             toastShow: toastShow,
         };
     });
-    console.log(global.rootSibling);
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             {backdrop && !global.rootSibling && <Mask />}
