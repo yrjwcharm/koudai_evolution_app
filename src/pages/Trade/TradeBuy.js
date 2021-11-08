@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 19:26:02
+ * @LastEditTime: 2021-11-08 19:55:30
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -920,13 +920,13 @@ class TradeBuy extends Component {
 
                 {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                        购买即代表您已知悉该基金组合的
+                        购买即代表您已知悉该{data?.is_plan ? '理财计划' : '基金组合'}的
                         <Text
                             onPress={() => {
                                 this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
                             }}
                             style={{color: Colors.btnColor}}>
-                            基金组合协议
+                            {data?.is_plan ? '理财计划' : '基金组合'}协议
                         </Text>
                         、
                         <Text
