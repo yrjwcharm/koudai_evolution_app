@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 17:13:57
+ * @LastEditTime: 2021-11-08 17:54:16
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -117,9 +117,12 @@ export default ({navigation, route}) => {
      * @param {string} value 基金比例(100以内的整数)/基金金额
      */
     const changeRatio = (index, value) => {
-        setChanged(true);
         const items = cloneDeep(data.items);
         const lastSelectedIndex = findLastIndex(items, ['select', true]);
+        if (index === lastSelectedIndex) {
+            return false;
+        }
+        setChanged(true);
         let maxRatio = 0;
         let maxAmount = 0;
         items.forEach((item, idx) => {
@@ -264,13 +267,15 @@ export default ({navigation, route}) => {
     useEffect(() => {
         selectedNum.current = data?.items?.filter((item) => item.select).length;
         const {items} = data;
-        if (selectedNum.current > 1) {
+        if (selectedNum.current > 2) {
             // 除了最后一个其他基金比例都相等表示没改过
             const isChanged = items
                 ?.filter((item) => item.select)
                 ?.slice?.(0, -1)
                 ?.every?.((item) => item.ratio === items[0].ratio);
             setChanged(!isChanged);
+        } else if (selectedNum.current === 2) {
+            setChanged(!(items[0].ratio == items[1].ratio));
         } else {
             setChanged(false);
         }
@@ -379,7 +384,7 @@ export default ({navigation, route}) => {
                                                     fund.error ? {borderColor: Colors.red} : {},
                                                 ]}>
                                                 <TextInput
-                                                    editable={lastSelectedIndex !== index || lastSelectedIndex === 0}
+                                                    editable={lastSelectedIndex !== index}
                                                     keyboardType={
                                                         route.params.ref === 'ChooseFund' ? 'number-pad' : 'numeric'
                                                     }
@@ -398,7 +403,7 @@ export default ({navigation, route}) => {
                                                     }}
                                                     style={{
                                                         color:
-                                                            lastSelectedIndex !== index || lastSelectedIndex === 0
+                                                            lastSelectedIndex !== index
                                                                 ? Colors.defaultColor
                                                                 : '#BDC2CC',
                                                     }}
