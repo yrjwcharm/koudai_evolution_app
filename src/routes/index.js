@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 14:51:31
+ * @LastEditTime: 2021-11-08 18:44:18
  * @Description:路由表
  */
 import React from 'react';
@@ -569,7 +569,7 @@ export default function AppStack() {
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
             {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
             <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '', headerShown: false}} />
-            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
+            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: ''}} />
             <Stack.Screen
                 name="MyScore"
                 component={MyScore}

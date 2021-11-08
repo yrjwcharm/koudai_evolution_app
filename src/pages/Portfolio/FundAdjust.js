@@ -2,14 +2,14 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 17:54:16
+ * @LastEditTime: 2021-11-08 20:54:14
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Keyboard, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
-import CheckBox from '../../components/CheckBox';
+import CheckBox from './components/CheckBox';
 import {px, onlyNumber} from '../../utils/appUtil';
 import http from '../../services';
 import {cloneDeep, findLastIndex} from 'lodash';
@@ -32,6 +32,7 @@ export default ({navigation, route}) => {
     const [changed, setChanged] = useState(false); // 是否已经调整过
     const selectedNum = useRef(0); // 选中基金的数量
     const [maxInitAmountIndex, setMaxInitAmountIndex] = useState(-1); // 导致最大起购金额基金下标 -1表示没有超过初始起购金额的
+    const inputRef = useRef();
 
     /**
      * 计算最后一只有比例的基金占总配置的百分比
@@ -54,6 +55,7 @@ export default ({navigation, route}) => {
      */
     const toggleSelect = (index, select) => {
         selectedNum.current += select ? 1 : -1;
+        console.log(index, select, selectedNum.current);
         if (selectedNum.current === 0) {
             selectedNum.current += 1;
             return false;
@@ -248,19 +250,28 @@ export default ({navigation, route}) => {
         //         ? data.items[maxInitAmountIndex].min_limit / (data.items[maxInitAmountIndex].percent / 100)
         //         : data.init_amount;
         // const items = data.items.sort((a, b) => b.percent - a.percent);
+        const existError = data?.items?.some((item) => item.error);
         if (route.params.ref === 'ChooseFund') {
-            navigation.navigate(route.params.ref, {asset: data});
+            if (!existError) {
+                navigation.navigate(route.params.ref, {asset: data});
+            } else {
+                Keyboard.dismiss();
+            }
         } else {
-            http.post('/trade/batch/buy/modify/20211101', {
-                poid: data.poid,
-                plan_id: data.plan_id,
-                list: JSON.stringify(data),
-            }).then((res) => {
-                if (res.code === '000000') {
-                    Toast.show('保存成功');
-                    navigation.goBack();
-                }
-            });
+            if (!existError) {
+                http.post('/trade/batch/buy/modify/20211101', {
+                    poid: data.poid,
+                    plan_id: data.plan_id,
+                    list: JSON.stringify(data),
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        Toast.show('保存成功');
+                        navigation.goBack();
+                    }
+                });
+            } else {
+                Keyboard.dismiss();
+            }
         }
     };
 
@@ -352,7 +363,10 @@ export default ({navigation, route}) => {
                                 key={fund + index}
                                 style={[styles.fundItem, fund.select ? {} : {paddingTop: 0, justifyContent: 'center'}]}>
                                 <View style={Style.flexBetween}>
-                                    <View style={Style.flexRow}>
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        onPress={() => toggleSelect(index, !fund.select)}
+                                        style={Style.flexRow}>
                                         <CheckBox
                                             control
                                             checked={fund.select}
@@ -371,13 +385,22 @@ export default ({navigation, route}) => {
                                                 </Text>
                                             ) : null}
                                         </View>
-                                    </View>
+                                    </TouchableOpacity>
                                     {fund.select ? (
                                         <View style={Style.flexRow}>
                                             {route.params.ref === 'AddedBuy' ? (
                                                 <Text style={styles.unit}>￥</Text>
                                             ) : null}
-                                            <View
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    const isFocused = inputRef.current.isFocused();
+                                                    if (!isFocused) {
+                                                        setTimeout(() => {
+                                                            inputRef.current.focus();
+                                                        }, 300);
+                                                    }
+                                                }}
                                                 style={[
                                                     Style.flexCenter,
                                                     styles.inputBox,
@@ -401,6 +424,7 @@ export default ({navigation, route}) => {
                                                             changeRatio(index, value);
                                                         }
                                                     }}
+                                                    ref={inputRef}
                                                     style={{
                                                         color:
                                                             lastSelectedIndex !== index
@@ -408,7 +432,7 @@ export default ({navigation, route}) => {
                                                                 : '#BDC2CC',
                                                     }}
                                                 />
-                                            </View>
+                                            </TouchableOpacity>
                                             {route.params.ref === 'ChooseFund' ? (
                                                 <Text style={styles.unit}>%</Text>
                                             ) : null}

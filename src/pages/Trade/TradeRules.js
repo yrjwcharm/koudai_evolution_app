@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-09-27 13:53:42
+ * @LastEditTime: 2021-11-08 19:00:55
  * @LastEditors: dx
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
@@ -148,7 +148,9 @@ const Part1 = () => {
                             html={'基金费率等信息以基金公司最新披露的基金信息为准'}
                         />
                     </View>
-                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>调仓费率</Text>
+                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
+                        {data.is_plan ? '优化计划' : '调仓'}费率
+                    </Text>
                     <View style={[styles.feeDescBox, {paddingTop: 0}]}>
                         <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
                     </View>
@@ -410,13 +412,15 @@ const Part2 = () => {
                         </View>
                     </View>
                     <View style={[styles.productInfoWrap, {marginBottom: 0}]}>
-                        <Text style={styles.productInfoTitle}>{'调仓 确认时间'}</Text>
+                        <Text style={styles.productInfoTitle}>{`${data.is_plan ? '优化计划' : '调仓'} 确认时间`}</Text>
                         <Text style={[styles.buyNotice, {paddingTop: 0}]}>
                             <Text style={styles.blueCircle}>•&nbsp;</Text>
                             <Text style={[styles.buyNoticeText]}>
-                                {
-                                    '调仓确认时间是由赎回时间+购买时间组成，调仓赎回的资金是分别到账的，每到账一笔，都会按比例购买需要调入的基金。一般情况将在T+2日完成调仓，如遇QDII基金赎回，这部分资金将在T+7日完成调仓。'
-                                }
+                                {`${data.is_plan ? '优化计划' : '调仓'}确认时间是由赎回时间+购买时间组成，${
+                                    data.is_plan ? '优化计划' : '调仓'
+                                }赎回的资金是分别到账的，每到账一笔，都会按比例购买需要调入的基金。一般情况将在T+2日完成${
+                                    data.is_plan ? '优化计划' : '调仓'
+                                }，如遇QDII基金赎回，这部分资金将在T+7日完成${data.is_plan ? '优化计划' : '调仓'}。`}
                             </Text>
                         </Text>
                     </View>
