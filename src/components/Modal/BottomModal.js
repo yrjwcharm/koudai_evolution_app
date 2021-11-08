@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 10:41:42
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 14:29:59
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
@@ -74,7 +74,7 @@ const BottomModal = React.forwardRef((props, ref) => {
                             </TouchableOpacity>
                             <View style={{alignItems: 'center'}}>
                                 <Text style={styles.title}>{title}</Text>
-                                <Text style={styles.sub_title}>{sub_title}</Text>
+                                {sub_title ? <Text style={styles.sub_title}>{sub_title}</Text> : null}
                             </View>
                             {confirmText ? (
                                 <TouchableOpacity style={[styles.confirm]} onPress={confirmClick}>

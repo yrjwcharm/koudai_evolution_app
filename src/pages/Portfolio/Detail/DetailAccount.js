@@ -302,7 +302,7 @@ export default function DetailAccount({route, navigation}) {
                                     }}
                                 />
                             )}
-                            {data.low_line === 1 && (
+                            {data.low_line === 1 && data.line_info ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -330,7 +330,7 @@ export default function DetailAccount({route, navigation}) {
                                         style={{marginLeft: text(4)}}
                                     />
                                 </TouchableOpacity>
-                            )}
+                            ) : null}
                         </View>
                     )}
 

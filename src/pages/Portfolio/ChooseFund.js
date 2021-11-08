@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 15:53:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 11:13:37
+ * @LastEditTime: 2021-11-08 13:36:07
  * @Description: 挑选基金
  */
 import React, {useState, useEffect} from 'react';
@@ -34,12 +34,12 @@ const RatioColor = [
 export default ({navigation, route}) => {
     const [data, setData] = useState({});
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         const {deploy_detail} = data;
         deploy_detail?.forEach?.((asset, index) => {
             asset.items = asset?.items?.filter((item) => item.ratio != 0);
         });
-        http.post('/portfolio/update_fund/20211101', {
+        await http.post('/portfolio/update_fund/20211101', {
             upid: route.params?.upid,
             deploy_detail: JSON.stringify(data.deploy_detail),
         });
