@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 12:40:15
+ * @LastEditTime: 2021-11-08 16:49:17
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -131,7 +131,20 @@ export default ({navigation, route}) => {
         });
         maxRatio = 100 - maxRatio;
         maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
-        console.log(maxAmount);
+        // console.log(maxAmount);
+        if (isNaN(value * 1)) {
+            if (route.params.ref === 'ChooseFund') {
+                items[index].ratio = 0;
+                items[index].percent = 0;
+                items[lastSelectedIndex].ratio = maxRatio;
+                items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
+            } else {
+                items[index].amount = 0;
+                items[lastSelectedIndex].amount = maxAmount;
+            }
+            dispatch({type: 'select', payload: items});
+            return false;
+        }
         if (value > (route.params.ref === 'ChooseFund' ? maxRatio : maxAmount)) {
             items[index].error = true;
         } else if (route.params.ref === 'AddedBuy' && value != 0 && value < parseFloat(items[index].min_limit)) {
@@ -150,6 +163,8 @@ export default ({navigation, route}) => {
                     items[lastSelectedIndex].amount < parseFloat(items[lastSelectedIndex].min_limit)
                 ) {
                     items[lastSelectedIndex].error = true;
+                } else {
+                    delete items[lastSelectedIndex].error;
                 }
             }
         }
@@ -202,6 +217,8 @@ export default ({navigation, route}) => {
             items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
             items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
             delete items[lastSelectedIndex].error;
+        } else {
+            items[index].amount = parseFloat(items[index].amount);
         }
         dispatch({type: 'select', payload: items});
     };
@@ -384,7 +401,7 @@ export default ({navigation, route}) => {
                                             {route.params.ref === 'ChooseFund'
                                                 ? `由于该基金配置比例过低，因此您的起投金额需要达到
                                             ${(initAmount * 1).toFixed(2)}元。`
-                                                : `该基金最低起购金额${parseFloat(fund.min_limit)}`}
+                                                : `该基金最低起购金额${parseFloat(fund.min_limit).toFixed(2)}元`}
                                         </Text>
                                     </View>
                                 ) : null}
