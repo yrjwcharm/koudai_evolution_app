@@ -2,7 +2,7 @@
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 10:46:25
+ * @LastEditTime: 2021-11-05 11:18:23
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -132,12 +132,7 @@ const IM = (props) => {
     const initWsEvent = (type) => {
         //建立WebSocket连接
         WS.current.onopen = function () {
-            http.get(
-                Platform.OS == 'android' && SERVER_URL[global.env].IMApiSsl
-                    ? `${SERVER_URL[global.env].IMApiSsl}/im/token`
-                    : `${SERVER_URL[global.env].IMApi}/im/token`,
-                {entry: props.route.params?.entry}
-            )
+            http.get(`${SERVER_URL[global.env].IMApi}/im/token`, {entry: props.route.params?.entry})
                 .then((data) => {
                     if (type == 'reconnect') {
                         setMessages([]);
