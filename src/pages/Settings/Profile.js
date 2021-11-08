@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 11:39:29
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:33:08
+ * @LastEditTime: 2021-11-08 18:50:49
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -28,6 +28,7 @@ const Profile = ({navigation}) => {
     const dispatch = useDispatch();
     const jump = useJump();
     const [data, setData] = useState([]);
+    const [tip, setTip] = useState('');
     const [showMask, setShowMask] = useState(false);
     const inputModal = useRef(null);
     const inputRef = useRef(null);
@@ -39,6 +40,7 @@ const Profile = ({navigation}) => {
         http.get('/mapi/person/center/20210101', {}).then((res) => {
             if (res.code === '000000') {
                 setData(res.result.menus || []);
+                setTip(res.result.tip);
                 navigation.setOptions({title: res.result.title || '个人资料'});
             }
         });
@@ -290,10 +292,8 @@ const Profile = ({navigation}) => {
                         </View>
                     );
                 })}
-                {data.length > 0 ? (
-                    <Text style={[styles.bottom_text, {marginBottom: isIphoneX() ? 44 : text(20)}]}>
-                        理财魔方将会根据您的实际情况定制您的基金组合，请您保持这些数据的准确性，以免影响您的基金组合的准确性
-                    </Text>
+                {tip ? (
+                    <Text style={[styles.bottom_text, {marginBottom: isIphoneX() ? 44 : text(20)}]}>{tip}</Text>
                 ) : null}
             </ScrollView>
         </View>

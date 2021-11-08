@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝充值
- * @LastEditors: dx
- * @LastEditTime: 2021-10-08 16:13:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-08 19:20:52
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image} from 'react-native';
@@ -173,7 +173,7 @@ class MfbIn extends Component {
     //购买
     render_buy() {
         const {amount, data, tips, bankSelect} = this.state;
-        const {recharge_info, pay_methods, remit_pay} = data;
+        const {recharge_info, pay_methods, remit_pay, agreement} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
@@ -236,16 +236,7 @@ class MfbIn extends Component {
                     }}
                     title="我已阅读并同意"
                     style={{marginHorizontal: px(16)}}
-                    data={[
-                        {
-                            title: '《基金组合协议》',
-                            id: 18,
-                        },
-                        {
-                            title: '《魔方宝服务协议》',
-                            id: 21,
-                        },
-                    ]}
+                    data={agreement}
                 />
 
                 <BottomDesc />

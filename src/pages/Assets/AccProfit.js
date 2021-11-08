@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-07 19:24:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-08 19:19:15
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -264,10 +264,13 @@ const AccProfit = ({intelligent, poid}) => {
                 />
             ) : null}
 
-            {list.length > 0 && (
+            {list.length > 0 && chartData?.header?.length > 0 && (
                 <View style={[styles.poHeader, Style.flexBetween]}>
-                    <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>{'组合名称'}</Text>
-                    <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>{'累计收益'}</Text>
+                    {chartData?.header?.map((item, index) => (
+                        <Text key={index} style={[styles.subTitle, {color: Colors.darkGrayColor}]}>
+                            {item}
+                        </Text>
+                    ))}
                 </View>
             )}
             {list.map((item, index) => {

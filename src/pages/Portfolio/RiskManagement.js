@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-20 10:40:43
- * @LastEditTime: 2021-08-04 12:05:13
- * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 19:24:04
+ * @LastEditors: yhc
  * @Description: 风险控制
  * @FilePath: /koudai_evolution_app/src/pages/Detail/RiskManagement.js
  */
@@ -235,17 +235,14 @@ class RiskManagement extends Component {
                         })}
                     </View>
                 </View>
-                <View style={[styles.riskNoticeWrap]}>
-                    <View style={[styles.noticeTitleBox]}>
-                        <Text style={[styles.noticeTitle]}>风险控制手段与通知</Text>
+                {data?.intro && (
+                    <View style={[styles.riskNoticeWrap]}>
+                        <View style={[styles.noticeTitleBox]}>
+                            <Text style={[styles.noticeTitle]}>{data?.intro?.title}</Text>
+                        </View>
+                        <Html style={styles.noticeContent} html={data?.intro?.content} />
                     </View>
-                    <Html
-                        style={styles.noticeContent}
-                        html={
-                            '理财魔方智能投资管理系统全天候监控：\n\n1）全市场的系统性风险；\n2）各类资产的市场风险；\n3）单只基金具体的风险。\n\n理财魔方对投资组合的风险控制通过“极限安全配置”与“调仓”操作实现。\n\n首先，理财魔方智能组合根据历史最极端情况下各类资产的损失，以此为基础设定基础比例，确保整个组合在历史最极端环境下的基础牢固、不破底线，这就是“极限安全配置”。\n\n在此基础上，当出现如下风险/潜在风险事件时，系统将在基础比例之上进行调整，并给出调仓建议：\n\n1) 在某类资产预期走势变强/变弱时买入/卖出该类资产；\n2) 当某类资产/基金的风险积聚/释放时逐渐降低/调高某类资产/基金的配置比重；\n3) 在市场性风险突然来临时，对某些资产进行止损操作。\n\n请您密切关注理财魔方智能投资管理系统给出的调仓信号。调仓信号不构成投资建议，您需要自行承担调仓或继续持有的风险。\n'
-                        }
-                    />
-                </View>
+                )}
                 <BottomDesc />
             </ScrollView>
         );

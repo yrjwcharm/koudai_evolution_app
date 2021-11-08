@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 18:08:25
+ * @LastEditTime: 2021-11-08 19:26:02
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -918,7 +918,7 @@ class TradeBuy extends Component {
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
 
-                {this.state.data?.agreement && (
+                {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
                         购买即代表您已知悉该基金组合的
                         <Text
