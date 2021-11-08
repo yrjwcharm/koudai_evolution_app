@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 15:52:32
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 14:51:54
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -88,6 +88,7 @@ class TradeBuy extends Component {
             amount: this.state.amount,
         }).then((res) => {
             if (res.code === '000000') {
+                this.props.navigation.setOptions({title: res.result.title || '买入'});
                 console.log(_modalRef);
                 const showRishPop = () => {
                     Modal.show({
@@ -238,6 +239,7 @@ class TradeBuy extends Component {
                 pay_method: bank.pay_method,
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
+                plan_id: this.props.route?.params?.plan_id || '',
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {

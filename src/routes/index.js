@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 19:01:44
+ * @LastEditTime: 2021-11-08 14:51:31
  * @Description:路由表
  */
 import React from 'react';
@@ -237,7 +237,7 @@ export default function AppStack() {
                 name="TradeBuy"
                 component={TradeBuy}
                 options={{
-                    title: '买入',
+                    title: '',
                 }}
             />
             <Stack.Screen

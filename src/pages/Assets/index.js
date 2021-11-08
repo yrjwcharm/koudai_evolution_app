@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 18:07:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 13:33:08
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -178,7 +178,7 @@ function HomeScreen({navigation, route}) {
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isFocused, readInterface, userInfo]
+        [isFocused]
     );
     //checkBox 选中
     const checkBoxClick = (check, poid) => {
@@ -435,7 +435,7 @@ function HomeScreen({navigation, route}) {
                 setShowEye(res ? res : 'true');
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [hasNet, init, showGesture])
+        }, [hasNet, showGesture])
     );
     useFocusEffect(
         useCallback(() => {

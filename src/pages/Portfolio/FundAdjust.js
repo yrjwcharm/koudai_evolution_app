@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 19:15:14
+ * @LastEditTime: 2021-11-08 12:40:15
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -13,6 +13,7 @@ import CheckBox from '../../components/CheckBox';
 import {px, onlyNumber} from '../../utils/appUtil';
 import http from '../../services';
 import {cloneDeep, findLastIndex} from 'lodash';
+import Toast from '../../components/Toast';
 
 function reducer(state, action) {
     switch (action.type) {
@@ -33,7 +34,7 @@ export default ({navigation, route}) => {
     const [maxInitAmountIndex, setMaxInitAmountIndex] = useState(-1); // 导致最大起购金额基金下标 -1表示没有超过初始起购金额的
 
     /**
-     * 选中/取消选中基金
+     * 计算最后一只有比例的基金占总配置的百分比
      * @param {number} index 最后一只有比例的基金下标
      * @param {any[]} items 基金数组
      */
@@ -71,12 +72,9 @@ export default ({navigation, route}) => {
                 if (route.params.ref === 'ChooseFund') {
                     items[lastSelectedIndex].ratio = items[lastSelectedIndex].ratio * 1 + items[index].ratio * 1;
                     items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
-                    items[lastSelectedIndex].amount = data?.amount * (items[lastSelectedIndex].ratio / 100);
                 } else {
-                    items[lastSelectedIndex].amount = items[lastSelectedIndex].amount * 1 + items[index].amount * 1;
-                    items[lastSelectedIndex].percent =
-                        data?.ratio * (items[lastSelectedIndex].amount / data?.amount) * 100;
-                    items[lastSelectedIndex].ratio = Math.round((items[lastSelectedIndex].amount / data?.amount) * 100);
+                    items[lastSelectedIndex].amount =
+                        ((items[lastSelectedIndex].amount + items[index].amount) * 1).toFixed(12) * 1;
                 }
                 items[index].amount = 0;
                 items[index].percent = 0;
@@ -87,18 +85,15 @@ export default ({navigation, route}) => {
             const items = cloneDeep(data.items);
             items[index].select = select;
             const ratio = Math.round(100 / selectedNum.current);
-            const amount = data?.amount / selectedNum.current;
+            const amount = (data?.amount / selectedNum.current).toFixed(2) * 1;
             const lastSelectedIndex = findLastIndex(items, ['select', true]);
             items.forEach((item) => {
                 if (item.select) {
                     if (route.params.ref === 'ChooseFund') {
                         item.ratio = ratio;
                         item.percent = data?.ratio * ratio;
-                        item.amount = data?.amount * (item.ratio / 100);
                     } else {
                         item.amount = amount;
-                        item.percent = data?.ratio * (item.amount / data?.amount) * 100;
-                        item.ratio = Math.round((item.amount / data?.amount) * 100);
                     }
                 } else {
                     item.amount = 0;
@@ -109,11 +104,8 @@ export default ({navigation, route}) => {
             if (route.params.ref === 'ChooseFund') {
                 items[lastSelectedIndex].ratio = 100 - (selectedNum.current - 1) * ratio;
                 items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
-                items[lastSelectedIndex].amount = data?.amount * (items[lastSelectedIndex].ratio / 100);
             } else {
-                items[lastSelectedIndex].amount = data?.amount - (selectedNum.current - 1) * amount;
-                items[lastSelectedIndex].percent = data?.ratio * (items[lastSelectedIndex].amount / data?.amount) * 100;
-                items[lastSelectedIndex].ratio = Math.round((items[lastSelectedIndex].amount / data?.amount) * 100);
+                items[lastSelectedIndex].amount = (data?.amount - (selectedNum.current - 1) * amount).toFixed(12) * 1;
             }
             dispatch({type: 'select', payload: items});
         }
@@ -122,7 +114,7 @@ export default ({navigation, route}) => {
     /**
      * 改变基金比例
      * @param {number} index 基金在数组中的下标
-     * @param {string} value 基金比例(100以内的整数)
+     * @param {string} value 基金比例(100以内的整数)/基金金额
      */
     const changeRatio = (index, value) => {
         setChanged(true);
@@ -132,10 +124,14 @@ export default ({navigation, route}) => {
         let maxAmount = 0;
         items.forEach((item, idx) => {
             maxRatio += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
-            maxAmount += idx !== index && idx !== lastSelectedIndex ? item.amount * 1 : 0;
+            maxAmount =
+                idx !== index && idx !== lastSelectedIndex
+                    ? ((maxAmount + item.amount) * 1).toFixed(12) * 1
+                    : maxAmount;
         });
         maxRatio = 100 - maxRatio;
-        maxAmount = data?.amount - maxAmount;
+        maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
+        console.log(maxAmount);
         if (value > (route.params.ref === 'ChooseFund' ? maxRatio : maxAmount)) {
             items[index].error = true;
         } else if (route.params.ref === 'AddedBuy' && value != 0 && value < parseFloat(items[index].min_limit)) {
@@ -147,21 +143,21 @@ export default ({navigation, route}) => {
             if (route.params.ref === 'ChooseFund') {
                 items[lastSelectedIndex].ratio = maxRatio - value;
                 items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
-                items[lastSelectedIndex].amount = data?.amount * (items[lastSelectedIndex].ratio / 100);
             } else {
-                items[lastSelectedIndex].amount = maxAmount - value;
-                items[lastSelectedIndex].percent = data?.ratio * (items[lastSelectedIndex].amount / data?.amount) * 100;
-                items[lastSelectedIndex].ratio = Math.round((items[lastSelectedIndex].amount / data?.amount) * 100);
+                items[lastSelectedIndex].amount = (maxAmount - value).toFixed(12) * 1;
+                if (
+                    items[lastSelectedIndex].amount != 0 &&
+                    items[lastSelectedIndex].amount < parseFloat(items[lastSelectedIndex].min_limit)
+                ) {
+                    items[lastSelectedIndex].error = true;
+                }
             }
         }
         if (route.params.ref === 'ChooseFund') {
             items[index].ratio = value !== '' ? value * 1 : value;
             items[index].percent = data?.ratio * value;
-            items[index].amount = data?.amount * (items[index].ratio / 100);
         } else {
             items[index].amount = value;
-            items[index].percent = data?.ratio * (items[index].amount / data?.amount) * 100;
-            items[index].ratio = Math.round((items[index].amount / data?.amount) * 100);
         }
         dispatch({type: 'select', payload: items});
     };
@@ -173,36 +169,41 @@ export default ({navigation, route}) => {
     const onBlur = (index) => {
         const items = cloneDeep(data.items);
         const lastSelectedIndex = findLastIndex(items, ['select', true]);
+        let maxRatio = 0;
+        let maxAmount = 0;
         if (items[index].error) {
-            let maxRatio = 0;
-            let maxAmount = 0;
             items.forEach((item, idx) => {
-                maxRatio += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
-                maxAmount += idx !== index && idx !== lastSelectedIndex ? item.amount * 1 : 0;
+                maxRatio += idx !== index ? item.ratio * 1 : 0;
+                maxAmount = idx !== index ? ((maxAmount + item.amount) * 1).toFixed(12) * 1 : maxAmount;
             });
             maxRatio = 100 - maxRatio;
-            maxAmount = data?.amount - maxAmount;
+            maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
             if (route.params.ref === 'ChooseFund') {
                 items[index].ratio = maxRatio;
                 items[index].percent = data?.ratio * maxRatio;
-                items[index].amount = data?.amount * (items[index].ratio / 100);
             } else {
                 if (items[index].amount > maxAmount) {
                     items[index].amount = maxAmount;
                 }
                 if (items[index].amount < parseFloat(items[index].min_limit)) {
                     items[index].amount = parseFloat(items[index].min_limit);
-                    items[lastSelectedIndex].amount = maxAmount - items[index].amount;
-                    items[lastSelectedIndex].percent =
-                        data?.ratio * (items[lastSelectedIndex].amount / data?.amount) * 100;
-                    items[lastSelectedIndex].ratio = Math.round((items[lastSelectedIndex].amount / data?.amount) * 100);
+                    items[lastSelectedIndex].amount = (maxAmount - items[index].amount).toFixed(12) * 1;
                 }
-                items[index].percent = data?.ratio * (items[index].amount / data?.amount) * 100;
-                items[index].ratio = Math.round((items[index].amount / data?.amount) * 100);
             }
             delete items[index].error;
-            dispatch({type: 'select', payload: items});
+        } else if (items[lastSelectedIndex].error) {
+            items.forEach((item, idx) => {
+                maxAmount =
+                    idx !== index && idx !== lastSelectedIndex
+                        ? ((maxAmount + item.amount) * 1).toFixed(12) * 1
+                        : maxAmount;
+            });
+            maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
+            items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
+            items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
+            delete items[lastSelectedIndex].error;
         }
+        dispatch({type: 'select', payload: items});
     };
 
     /** @name 确认调整 */
@@ -212,7 +213,20 @@ export default ({navigation, route}) => {
         //         ? data.items[maxInitAmountIndex].min_limit / (data.items[maxInitAmountIndex].percent / 100)
         //         : data.init_amount;
         // const items = data.items.sort((a, b) => b.percent - a.percent);
-        navigation.navigate(route.params.ref, {asset: data});
+        if (route.params.ref === 'ChooseFund') {
+            navigation.navigate(route.params.ref, {asset: data});
+        } else {
+            http.post('/trade/batch/buy/modify/20211101', {
+                poid: data.poid,
+                plan_id: data.plan_id,
+                list: JSON.stringify(data),
+            }).then((res) => {
+                if (res.code === '000000') {
+                    Toast.show('保存成功');
+                    navigation.goBack();
+                }
+            });
+        }
     };
 
     useEffect(() => {
@@ -227,6 +241,9 @@ export default ({navigation, route}) => {
             setChanged(!isChanged);
         } else {
             setChanged(false);
+        }
+        if (route.params.ref === 'AddedBuy') {
+            setChanged(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -291,7 +308,8 @@ export default ({navigation, route}) => {
                         // 最后一只有比例的基金下标
                         const lastHasRatioIndex = findLastIndex(arr, (item) => item.ratio != 0);
                         // 计划起购金额
-                        const initAmount = fund.ratio ? fund.min_limit / (fund.percent / 100) : 0;
+                        const initAmount =
+                            route.params.ref === 'ChooseFund' && fund.ratio ? fund.min_limit / (fund.percent / 100) : 0;
                         return (
                             <View
                                 key={fund + index}
@@ -330,15 +348,13 @@ export default ({navigation, route}) => {
                                                 ]}>
                                                 <TextInput
                                                     editable={lastSelectedIndex !== index || lastSelectedIndex === 0}
-                                                    keyboardType="numeric"
+                                                    keyboardType={
+                                                        route.params.ref === 'ChooseFund' ? 'number-pad' : 'numeric'
+                                                    }
                                                     value={
                                                         route.params.ref === 'ChooseFund'
                                                             ? `${fund.ratio}`
-                                                            : `${
-                                                                  lastHasRatioIndex === index && lastHasRatioIndex !== 0
-                                                                      ? (fund.amount * 1).toFixed(2)
-                                                                      : fund.amount
-                                                              }`
+                                                            : `${fund.amount}`
                                                     }
                                                     onBlur={() => onBlur(index)}
                                                     onChangeText={(value) => {
@@ -368,7 +384,7 @@ export default ({navigation, route}) => {
                                             {route.params.ref === 'ChooseFund'
                                                 ? `由于该基金配置比例过低，因此您的起投金额需要达到
                                             ${(initAmount * 1).toFixed(2)}元。`
-                                                : `该基金最低起购金额${fund.min_limit}`}
+                                                : `该基金最低起购金额${parseFloat(fund.min_limit)}`}
                                         </Text>
                                     </View>
                                 ) : null}
