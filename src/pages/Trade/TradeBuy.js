@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 13:53:02
+ * @LastEditTime: 2021-11-08 14:51:54
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -88,6 +88,7 @@ class TradeBuy extends Component {
             amount: this.state.amount,
         }).then((res) => {
             if (res.code === '000000') {
+                this.props.navigation.setOptions({title: res.result.title || '买入'});
                 console.log(_modalRef);
                 const showRishPop = () => {
                     Modal.show({
