@@ -2,10 +2,10 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 12:11:08
+ * @LastEditTime: 2021-11-08 13:39:39
  * @Description: 购买定投
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     View,
     Text,
@@ -44,6 +44,7 @@ const AddedBuy = ({navigation, route}) => {
 
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
+    const planId = useRef(route.params.plan_id || '');
 
     useFocusEffect(
         useCallback(() => {
@@ -60,6 +61,10 @@ const AddedBuy = ({navigation, route}) => {
     useEffect(() => {
         init();
     }, [init]);
+
+    useEffect(() => {
+        planId.current = '';
+    }, [amount]);
 
     const init = useCallback(() => {
         setPageLoading(true);
@@ -83,10 +88,12 @@ const AddedBuy = ({navigation, route}) => {
             (val) => {
                 setConfigLoading(true);
                 http.get('trade/repurchase/buy/plan/20211101', {
+                    plan_id: planId.current,
                     poid: route?.params?.poid,
                     amount: val,
                 }).then((res) => {
                     if (res.code === '000000') {
+                        planId.current = res.result.plan_id;
                         setConfigData(res.result);
                         setConfigLoading(false);
                     } else {
@@ -134,6 +141,13 @@ const AddedBuy = ({navigation, route}) => {
         }
         return option;
     }, [data.btns, amount, configData.plan_id]);
+
+    const handleBuy = async () => {
+        await http.get('/trade/sync/user/ratio/20211101', {
+            plan_id: planId.current,
+            poid: route?.params?.poid,
+        });
+    };
 
     return pageLoading ? (
         <PageLoading />
@@ -257,6 +271,8 @@ const AddedBuy = ({navigation, route}) => {
                                                         asset: {
                                                             ...asset,
                                                             desc: configData.notice,
+                                                            poid: route?.params?.poid,
+                                                            plan_id: configData.plan_id,
                                                         },
                                                         ref: 'AddedBuy',
                                                     })
@@ -264,25 +280,27 @@ const AddedBuy = ({navigation, route}) => {
                                                 <Text style={styles.updateSty}>修改</Text>
                                             </TouchableOpacity>
                                         </View>
-                                        {asset.items?.map?.((fund, idx) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    key={fund + idx}
-                                                    onPress={() =>
-                                                        navigation.navigate('FundDetail', {
-                                                            code: fund.code || fund.fund_code,
-                                                        })
-                                                    }
-                                                    style={[Style.flexBetween, styles.fund_box]}>
-                                                    <View>
-                                                        <Text style={styles.fundName}>{fund.name}</Text>
-                                                        <Text style={styles.fundCode}>{fund.code}</Text>
-                                                    </View>
-                                                    <Text style={styles.fundPercent}>¥{formaNum(fund.amount)}</Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
+                                        {asset.items
+                                            ?.filter?.((item) => item.amount != 0)
+                                            ?.map?.((fund, idx) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        activeOpacity={0.8}
+                                                        key={fund + idx}
+                                                        onPress={() =>
+                                                            navigation.navigate('FundDetail', {
+                                                                code: fund.code || fund.fund_code,
+                                                            })
+                                                        }
+                                                        style={[Style.flexBetween, styles.fund_box]}>
+                                                        <View>
+                                                            <Text style={styles.fundName}>{fund.name}</Text>
+                                                            <Text style={styles.fundCode}>{fund.code}</Text>
+                                                        </View>
+                                                        <Text style={styles.fundPercent}>¥{formaNum(fund.amount)}</Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
                                     </View>
                                 );
                             })}
@@ -294,7 +312,11 @@ const AddedBuy = ({navigation, route}) => {
                 <BottomDesc />
             </ScrollView>
             {/* 处理路由参数 */}
-            <FixedBtn btns={btnOption} disabled={!showDetail || configLoading || !configData.plan_id} />
+            <FixedBtn
+                btns={btnOption}
+                disabled={!showDetail || configLoading || !configData.plan_id}
+                onPress={handleBuy}
+            />
         </View>
     );
 };

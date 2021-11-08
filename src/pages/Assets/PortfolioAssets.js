@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: dx
- * @LastEditTime: 2021-11-06 17:01:07
+ * @LastEditTime: 2021-11-08 14:26:15
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -733,57 +733,110 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-                <BottomModal
-                    ref={scoreModal}
-                    title={tip?.show_point == 1 ? '资产健康分' : '资产状态'}
-                    style={{height: text(400)}}>
-                    <View style={{padding: text(16)}}>
-                        <>
-                            <Text style={styles.tipTitle}>
-                                什么是{tip?.show_point == 1 ? '资产健康分' : '资产状态'}:
-                            </Text>
-                            <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                {tip?.show_point == 1 ? '资产健康分' : '资产状态'}
-                                代表您的持仓大类资产比例与系统给出的最优计划比例的偏离度，偏离度越大，评分越低。
-                            </Text>
-                            <Text style={styles.tipTitle}>资产健康分的含义:</Text>
-                            <View style={Style.flexRow}>
-                                <View style={{flex: 1, alignItems: 'center', marginRight: text(12)}}>
-                                    <Text
-                                        style={{
-                                            color: Colors.green,
-                                            fontSize: text(24),
-                                            fontWeight: 'bold',
-                                            marginBottom: text(6),
-                                        }}>
-                                        {tip?.show_point == 1 ? ' 评分 ≥ 90' : '健康'}
-                                    </Text>
-                                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                        您的持仓大类资产比例与系统的最优计划比例基本一致。您可以选择追加购买，不需要进行优化计划。
-                                    </Text>
+                {card.is_plan ? (
+                    <BottomModal ref={scoreModal} title={'资产健康分'} style={{height: text(400)}}>
+                        <View style={{padding: text(16)}}>
+                            <>
+                                <Text style={styles.tipTitle}>什么是{'资产健康分'}:</Text>
+                                <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                    {'资产健康分'}
+                                    代表您的持仓大类资产比例与系统给出的最优计划比例的偏离度，偏离度越大，评分越低。
+                                </Text>
+                                <Text style={styles.tipTitle}>资产健康分的含义:</Text>
+                                <View style={Style.flexRow}>
+                                    <View style={{flex: 1, alignItems: 'center', marginRight: text(12)}}>
+                                        <Text
+                                            style={{
+                                                color: Colors.green,
+                                                fontSize: text(24),
+                                                fontWeight: 'bold',
+                                                marginBottom: text(6),
+                                            }}>
+                                            {' 评分 ≥ 90'}
+                                        </Text>
+                                        <Text
+                                            style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                            您的持仓大类资产比例与系统的最优计划比例基本一致。您可以选择追加购买，不需要进行优化计划。
+                                        </Text>
+                                    </View>
+                                    <View style={{flex: 1, alignItems: 'center'}}>
+                                        <Text
+                                            style={{
+                                                color: Colors.yellow,
+                                                fontSize: text(24),
+                                                fontWeight: 'bold',
+                                                marginBottom: text(6),
+                                            }}>
+                                            {' 评分 < 90'}
+                                        </Text>
+                                        <Text
+                                            style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                            您的持仓大类资产比例与系统的最优计划比例偏离较大，系统建议您进行优化计划或进行追加购买降低偏离度。
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={{flex: 1, alignItems: 'center'}}>
-                                    <Text
-                                        style={{
-                                            color: Colors.yellow,
-                                            fontSize: text(24),
-                                            fontWeight: 'bold',
-                                            marginBottom: text(6),
-                                        }}>
-                                        {tip?.show_point == 1 ? ' 评分 < 90' : '需调仓'}
-                                    </Text>
-                                    <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
-                                        您的持仓大类资产比例与系统的最优计划比例偏离较大，系统建议您进行优化计划或进行追加购买降低偏离度。
-                                    </Text>
+                                <Text style={styles.tipTitle}>什么是系统最优计划:</Text>
+                                <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                                    理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化，自动计算并给出一个当天持有的最佳大类资产比例。
+                                </Text>
+                            </>
+                        </View>
+                    </BottomModal>
+                ) : (
+                    <BottomModal
+                        ref={scoreModal}
+                        title={tip?.show_point == 1 ? '组合状态评分' : '资产状态'}
+                        style={{height: text(400)}}>
+                        <View style={{padding: text(16)}}>
+                            <>
+                                <Text style={styles.tipTitle}>
+                                    什么是{tip?.show_point == 1 ? '组合状态评分' : '资产状态'}:
+                                </Text>
+                                <Text style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                    组合{tip?.show_point == 1 ? '状态评分' : '资产状态'}
+                                    代表您的持仓比例与系统给出的最优配置比例的偏离度，偏离度越大，评分越低。
+                                </Text>
+                                <Text style={styles.tipTitle}>资产状态的含义:</Text>
+                                <View style={Style.flexRow}>
+                                    <View style={{flex: 1, alignItems: 'center', marginRight: text(12)}}>
+                                        <Text
+                                            style={{
+                                                color: Colors.green,
+                                                fontSize: text(24),
+                                                fontWeight: 'bold',
+                                                marginBottom: text(6),
+                                            }}>
+                                            {tip?.show_point == 1 ? ' 评分 ≥ 90' : '健康'}
+                                        </Text>
+                                        <Text
+                                            style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                            您的持仓比例与系统的最优配置比例基本一致。您可以选择追加购买，不需要进行调仓。
+                                        </Text>
+                                    </View>
+                                    <View style={{flex: 1, alignItems: 'center'}}>
+                                        <Text
+                                            style={{
+                                                color: Colors.yellow,
+                                                fontSize: text(24),
+                                                fontWeight: 'bold',
+                                                marginBottom: text(6),
+                                            }}>
+                                            {tip?.show_point == 1 ? ' 评分 < 90' : '需调仓'}
+                                        </Text>
+                                        <Text
+                                            style={{lineHeight: text(18), fontSize: text(13), marginBottom: text(16)}}>
+                                            您的持仓与系统的最优配置比例配置较大，系统建议您给需调仓的组合进行调仓或追加购买降低偏离值。
+                                        </Text>
+                                    </View>
                                 </View>
-                            </View>
-                            <Text style={styles.tipTitle}>什么是系统最优计划:</Text>
-                            <Text style={{lineHeight: text(18), fontSize: text(13)}}>
-                                理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化及调整配置比例，自动计算并给出一个当天持有的最佳资产比例。
-                            </Text>
-                        </>
-                    </View>
-                </BottomModal>
+                                <Text style={styles.tipTitle}>什么是系统最优配置:</Text>
+                                <Text style={{lineHeight: text(18), fontSize: text(13)}}>
+                                    理财魔方每天会根据您持有的风险等级、持仓金额及全球各大类资产走势情况等多方面因素进行优化及调整配置比例，自动计算并给出一个当天持有的最佳配置比例。
+                                </Text>
+                            </>
+                        </View>
+                    </BottomModal>
+                )}
                 <BottomModal ref={bottomModal} title={tip?.title}>
                     <View style={{padding: text(16)}}>
                         {tip?.img ? (
