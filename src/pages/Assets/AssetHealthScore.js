@@ -32,11 +32,9 @@ const AssetHealthScore = ({navigation, route}) => {
         return {
             high: ['#5ACB8A', '#45AD72'],
             low: ['#F46E6E', '#E74949'],
+            computing: ['#FF915E', '#FF7D41'],
         };
     }, []);
-
-    const [colorTop, setColorTop] = useState(linearColorType.high[0]);
-    const [colorBottom, setColorBottom] = useState(linearColorType.high[1]);
 
     const [data, setData] = useState({
         desc: '',
@@ -69,14 +67,11 @@ const AssetHealthScore = ({navigation, route}) => {
                 setData(result);
                 setScore(result.score);
                 setSwitchState(!!result.calc_button.status);
-                let colorArr = linearColorType[+result.score >= 90 ? 'high' : 'low'];
-                setColorTop(colorArr[0]);
-                setColorBottom(colorArr[1]);
             } else {
                 Toast(res.message);
             }
         });
-    }, [linearColorType, navigation, route.params.poid]);
+    }, [navigation, route.params.poid]);
 
     useEffect(() => {
         init();
@@ -118,84 +113,73 @@ const AssetHealthScore = ({navigation, route}) => {
         }
     }, [updateType]);
 
+    const bgLinearColors = useMemo(() => {
+        return updateType === 'updating'
+            ? linearColorType.computing
+            : score >= 90
+            ? linearColorType.high
+            : linearColorType.low;
+    }, [linearColorType.computing, linearColorType.high, linearColorType.low, score, updateType]);
+
     // 更新分数/颜色/选中
-    const updateAllView = useCallback(
-        (Timer) => {
-            // 生成随机间隔和步进
-            const random = () => {
-                let spaceArr = [30, 40, 50];
-                let stepArr = [1, 1.1, 1.2];
-                return [spaceArr[Date.now() % 3], stepArr[Date.now() % 3]];
-            };
+    const updateAllView = useCallback((Timer) => {
+        // 生成随机间隔和步进
+        const random = () => {
+            let spaceArr = [30, 40, 50];
+            let stepArr = [1, 1.1, 1.2];
+            return [spaceArr[Date.now() % 3], stepArr[Date.now() % 3]];
+        };
 
-            // 时间记录
-            let timeRecord = 0;
-            // 节流时间记录
-            let last = Date.now();
+        // 时间记录
+        let timeRecord = 0;
+        // 节流时间记录
+        let last = Date.now();
 
-            let [space, step] = random();
+        let [space, step] = random();
 
-            Timer.timer = setInterval(() => {
-                timeRecord += 20;
+        Timer.timer = setInterval(() => {
+            timeRecord += 20;
 
-                let now = Date.now();
-                if (now - last >= space) {
-                    last = now;
-                    // 改变间隔
-                    space = Math.round(space * 1.03) + 1;
+            let now = Date.now();
+            if (now - last >= space) {
+                last = now;
+                // 改变间隔
+                space = Math.round(space * 1.03) + 1;
 
-                    setScore((val) => {
-                        if (val == 29) {
-                            setCheckScale([true, false, false]);
-                            // 重新生成随机数组
-                            let randomArr = random();
-                            space = randomArr[0];
-                            step = randomArr[1];
-                        } else if (val == 59) {
-                            setCheckScale([true, true, false]);
-                            if (Timer.score) {
-                                // 计算剩余时间完成更新
-                                let resetTime = 8800 - timeRecord;
-                                let resetScore = Timer.score - 59;
-                                let limit = Math.round(resetTime / resetScore);
-                                space = limit / parseInt(Math.pow(1.03, Math.round(limit / 2)), 10);
-                                step = 1;
-                            } else {
-                                Timer.cancel();
-                                Toast.show('网络超时，请重新再试');
-                                setUpdateType('beforeUpdate');
-                            }
-                        } else if (Timer.score && val == Timer.score) {
-                            // 完成
+                setScore((val) => {
+                    if (val == 29) {
+                        setCheckScale([true, false, false]);
+                        // 重新生成随机数组
+                        let randomArr = random();
+                        space = randomArr[0];
+                        step = randomArr[1];
+                    } else if (val == 59) {
+                        setCheckScale([true, true, false]);
+                        if (Timer.score) {
+                            // 计算剩余时间完成更新
+                            let resetTime = 8800 - timeRecord;
+                            let resetScore = Timer.score - 59;
+                            let limit = Math.round(resetTime / resetScore);
+                            space = limit / parseInt(Math.pow(1.03, Math.round(limit / 2)), 10);
+                            step = 1;
+                        } else {
                             Timer.cancel();
-                            setCheckScale([true, true, true]);
-                            setUpdateType('updated');
-                            return val;
+                            Toast.show('网络超时，请重新再试');
+                            setUpdateType('beforeUpdate');
                         }
-                        let newScore = Math.round(val + step);
-                        newScore % 3 > 0 && growColor(parseInt(step, 10), newScore);
-                        return newScore;
-                    });
-                }
-            }, 20);
-
-            const growColor = (_step, _score) => {
-                const incrementColor = (color) => {
-                    const intColor = parseInt(color.substr(1), 16);
-                    const newIntColor = (intColor - 1).toString(16);
-                    return `#${'0'.repeat(6 - newIntColor.length)}${newIntColor}`;
-                };
-
-                setColorTop((val) => {
-                    return _score < 90 ? incrementColor(val, _step, 100687) : linearColorType.high[0];
+                    } else if (Timer.score && val == Timer.score) {
+                        // 完成
+                        Timer.cancel();
+                        setCheckScale([true, true, true]);
+                        setUpdateType('updated');
+                        return val;
+                    }
+                    let newScore = Math.round(val + step);
+                    return newScore;
                 });
-                setColorBottom((val) => {
-                    return _score < 90 ? incrementColor(val, _step, 100687) : linearColorType.high[1];
-                });
-            };
-        },
-        [linearColorType.high]
-    );
+            }
+        }, 20);
+    }, []);
 
     const handlerRecalculate = useCallback(() => {
         let Timer = {
@@ -210,8 +194,6 @@ const AssetHealthScore = ({navigation, route}) => {
         setUpdateType('updating');
         // 清空分数和颜色
         setScore(0);
-        setColorTop(linearColorType.low[0]);
-        setColorBottom(linearColorType.low[1]);
         // 清空check
         setCheckScale([false, false, false]);
         // 发送接口
@@ -230,7 +212,7 @@ const AssetHealthScore = ({navigation, route}) => {
         });
         // 更新分数/颜色/选中
         updateAllView(Timer);
-    }, [linearColorType.low, route.params.poid, updateAllView]);
+    }, [route.params.poid, updateAllView]);
     const genPastTimeText = useCallback(
         (isUpdated) => {
             return (
@@ -241,7 +223,10 @@ const AssetHealthScore = ({navigation, route}) => {
                         <Button
                             type="minor"
                             title="重新计算"
-                            textStyle={{color: colorBottom, ...styles.againButtonTitle}}
+                            textStyle={{
+                                color: bgLinearColors[1],
+                                ...styles.againButtonTitle,
+                            }}
                             style={styles.againButton}
                             onPress={handlerRecalculate}
                         />
@@ -249,7 +234,7 @@ const AssetHealthScore = ({navigation, route}) => {
                 </View>
             );
         },
-        [data.desc, colorBottom, handlerRecalculate]
+        [data.desc, handlerRecalculate, bgLinearColors]
     );
 
     const genScoreSubChild = useCallback(
@@ -263,7 +248,7 @@ const AssetHealthScore = ({navigation, route}) => {
                                 <Button
                                     title={data.button.text}
                                     type="minor"
-                                    textStyle={{color: colorBottom}}
+                                    textStyle={{color: bgLinearColors[1]}}
                                     style={styles.scoreButton}
                                     onPress={handlerRecalculate}
                                 />
@@ -286,7 +271,7 @@ const AssetHealthScore = ({navigation, route}) => {
                                 <Button
                                     title={updatedData.button.text}
                                     type="minor"
-                                    textStyle={{color: colorBottom}}
+                                    textStyle={{color: bgLinearColors[1]}}
                                     style={styles.scoreButton}
                                     onPress={() => {
                                         jump(updatedData?.button?.url);
@@ -305,7 +290,7 @@ const AssetHealthScore = ({navigation, route}) => {
     return (
         <View style={styles.container}>
             <ScrollView style={{flex: 1}} bounces={false} scrollIndicatorInsets={{right: 1}}>
-                <LinearGradient colors={[colorTop, colorBottom]} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
+                <LinearGradient colors={bgLinearColors} start={{x: 0, y: 0}} end={{x: 0, y: 1}}>
                     <View style={{height: px(topHeight)}} />
                     <View style={{...styles.scorePanel, minHeight: px(464 - topHeight)}}>
                         <View style={styles.scoreWrap}>
