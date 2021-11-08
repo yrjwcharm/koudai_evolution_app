@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-08 14:51:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-08 18:08:25
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -491,119 +491,121 @@ class TradeBuy extends Component {
         const {planData, configExpand} = this.state;
         const {header, body} = planData;
         return (
-            <View style={{marginBottom: px(12)}}>
-                <TouchableOpacity
-                    style={styles.config}
-                    activeOpacity={0.9}
-                    onPress={() => {
-                        this.setState({configExpand: !configExpand});
-                    }}>
-                    <View style={Style.flexRowCenter}>
-                        <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
-                            买入明细
-                        </Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                Modal.show({
-                                    title: '购买明细',
-                                    content:
-                                        '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
-                                });
-                            }}>
-                            <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
-                    </View>
-                    {configExpand ? (
-                        <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />
-                    ) : (
-                        <Icon name={'down'} size={px(14)} color={Colors.lightGrayColor} />
-                    )}
-                </TouchableOpacity>
-                {configExpand && (
-                    <>
-                        <View style={styles.line} />
-                        <View style={styles.config_desc}>
-                            {body &&
-                                body.map((item, index) => {
-                                    return (
-                                        <View key={index}>
-                                            <View style={[Style.flexRow, {marginBottom: px(14)}]}>
-                                                <View style={[Style.flexRow, {width: px(200)}]}>
-                                                    <View style={[styles.circle, {backgroundColor: item.color}]} />
-                                                    <Text style={styles.config_title}>{item.title}</Text>
-                                                </View>
-                                                {index == 0 && (
-                                                    <>
-                                                        <Text
-                                                            style={[
-                                                                styles.config_title,
-                                                                {
-                                                                    width: px(60),
-                                                                    textAlign: 'center',
-                                                                },
-                                                            ]}>
-                                                            {header.percent}
-                                                        </Text>
-                                                        <Text
-                                                            style={[
-                                                                styles.config_title,
-                                                                {flex: 1, textAlign: 'right'},
-                                                            ]}>
-                                                            {header.amount}
-                                                        </Text>
-                                                    </>
-                                                )}
-                                            </View>
-                                            {item.funds &&
-                                                item.funds.map((fund, _index) => {
-                                                    return (
-                                                        <View
-                                                            key={fund.name}
-                                                            style={[Style.flexRow, {marginBottom: px(14)}]}>
-                                                            <View style={[{width: px(200)}]}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.config_title_desc,
-                                                                        {fontSize: px(12)},
-                                                                    ]}>
-                                                                    {fund.name}
-                                                                </Text>
-                                                            </View>
-
+            header && (
+                <View style={{marginBottom: px(12)}}>
+                    <TouchableOpacity
+                        style={styles.config}
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            this.setState({configExpand: !configExpand});
+                        }}>
+                        <View style={Style.flexRowCenter}>
+                            <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
+                                买入明细
+                            </Text>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    Modal.show({
+                                        title: '购买明细',
+                                        content:
+                                            '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
+                                    });
+                                }}>
+                                <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
+                            </TouchableOpacity>
+                        </View>
+                        {configExpand ? (
+                            <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />
+                        ) : (
+                            <Icon name={'down'} size={px(14)} color={Colors.lightGrayColor} />
+                        )}
+                    </TouchableOpacity>
+                    {configExpand && (
+                        <>
+                            <View style={styles.line} />
+                            <View style={styles.config_desc}>
+                                {body &&
+                                    body.map((item, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                    <View style={[Style.flexRow, {width: px(200)}]}>
+                                                        <View style={[styles.circle, {backgroundColor: item.color}]} />
+                                                        <Text style={styles.config_title}>{item.title}</Text>
+                                                    </View>
+                                                    {index == 0 && (
+                                                        <>
                                                             <Text
                                                                 style={[
-                                                                    styles.config_title_desc,
+                                                                    styles.config_title,
                                                                     {
                                                                         width: px(60),
-                                                                        fontFamily: Font.numMedium,
                                                                         textAlign: 'center',
                                                                     },
                                                                 ]}>
-                                                                {Number(fund.percent * 100).toFixed(2)}%
+                                                                {header.percent}
                                                             </Text>
                                                             <Text
                                                                 style={[
-                                                                    styles.config_title_desc,
-                                                                    {
-                                                                        fontFamily: Font.numMedium,
-                                                                        flex: 1,
-                                                                        textAlign: 'right',
-                                                                    },
+                                                                    styles.config_title,
+                                                                    {flex: 1, textAlign: 'right'},
                                                                 ]}>
-                                                                {fund.amount == '--'
-                                                                    ? '--'
-                                                                    : Number(fund.amount).toFixed(2)}
+                                                                {header.amount}
                                                             </Text>
-                                                        </View>
-                                                    );
-                                                })}
-                                        </View>
-                                    );
-                                })}
-                        </View>
-                    </>
-                )}
-            </View>
+                                                        </>
+                                                    )}
+                                                </View>
+                                                {item.funds &&
+                                                    item.funds.map((fund, _index) => {
+                                                        return (
+                                                            <View
+                                                                key={fund.name}
+                                                                style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                                <View style={[{width: px(200)}]}>
+                                                                    <Text
+                                                                        style={[
+                                                                            styles.config_title_desc,
+                                                                            {fontSize: px(12)},
+                                                                        ]}>
+                                                                        {fund.name}
+                                                                    </Text>
+                                                                </View>
+
+                                                                <Text
+                                                                    style={[
+                                                                        styles.config_title_desc,
+                                                                        {
+                                                                            width: px(60),
+                                                                            fontFamily: Font.numMedium,
+                                                                            textAlign: 'center',
+                                                                        },
+                                                                    ]}>
+                                                                    {Number(fund.percent * 100).toFixed(2)}%
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.config_title_desc,
+                                                                        {
+                                                                            fontFamily: Font.numMedium,
+                                                                            flex: 1,
+                                                                            textAlign: 'right',
+                                                                        },
+                                                                    ]}>
+                                                                    {fund.amount == '--'
+                                                                        ? '--'
+                                                                        : Number(fund.amount).toFixed(2)}
+                                                                </Text>
+                                                            </View>
+                                                        );
+                                                    })}
+                                            </View>
+                                        );
+                                    })}
+                            </View>
+                        </>
+                    )}
+                </View>
+            )
         );
     }
     render_bank() {
@@ -912,11 +914,11 @@ class TradeBuy extends Component {
                 {/* 银行卡 */}
                 {this.render_bank()}
                 {/* 买入明细 */}
-                {type == 0 && data.scene !== 'adviser' && this.render_config()}
+                {type == 0 && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
 
-                {data.scene !== 'adviser' && (
+                {this.state.data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
                         购买即代表您已知悉该基金组合的
                         <Text
@@ -1021,7 +1023,7 @@ class TradeBuy extends Component {
                         )}
                         {button && (
                             <FixedButton
-                                agreement={data.scene === 'adviser' ? data.agreement : undefined}
+                                agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                                 title={button.text}
                                 disabled={button.avail == 0 || !buyBtnCanClick}
                                 onPress={this.buyClick}
