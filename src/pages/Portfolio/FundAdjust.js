@@ -264,13 +264,15 @@ export default ({navigation, route}) => {
     useEffect(() => {
         selectedNum.current = data?.items?.filter((item) => item.select).length;
         const {items} = data;
-        if (selectedNum.current > 1) {
+        if (selectedNum.current > 2) {
             // 除了最后一个其他基金比例都相等表示没改过
             const isChanged = items
                 ?.filter((item) => item.select)
                 ?.slice?.(0, -1)
                 ?.every?.((item) => item.ratio === items[0].ratio);
             setChanged(!isChanged);
+        } else if (selectedNum.current === 2) {
+            setChanged(!(items[0].ratio == items[1].ratio));
         } else {
             setChanged(false);
         }
