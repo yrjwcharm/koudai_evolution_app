@@ -85,26 +85,28 @@ const AssetHealthScore = ({navigation, route}) => {
     const updateSwitchState = useCallback(
         (state) => {
             if (!state) {
-                return setSwitchState(state);
+                submit();
+            } else {
+                Modal.show({
+                    title: '开启自动计算',
+                    content: '开启后，每天会定时帮您计算资产的健康分。',
+                    confirm: true,
+                    confirmCallBack: submit,
+                });
             }
-            Modal.show({
-                title: '开启自动计算',
-                content: '开启后，每天会定时帮您计算资产的健康分。',
-                confirm: true,
-                confirmCallBack: () => {
-                    // 确定
-                    http.post('/position/change_health_auto/20210101', {
-                        poid: route.params?.poid,
-                        status: +state,
-                    }).then((res) => {
-                        if (res.code === '000000') {
-                            setSwitchState(state);
-                        } else {
-                            Toast.show(res.message);
-                        }
-                    });
-                },
-            });
+
+            const submit = () => {
+                http.post('/position/change_health_auto/20210101', {
+                    poid: route.params?.poid,
+                    status: +state, // 转换成0/1
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        setSwitchState(state);
+                    } else {
+                        Toast.show(res.message);
+                    }
+                });
+            };
         },
         [route.params.poid]
     );
