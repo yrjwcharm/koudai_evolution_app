@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 16:49:17
+ * @LastEditTime: 2021-11-08 17:01:06
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -142,6 +142,12 @@ export default ({navigation, route}) => {
                 items[index].amount = 0;
                 items[lastSelectedIndex].amount = maxAmount;
             }
+            if (items[index].error) {
+                delete items[index].error;
+            }
+            if (items[lastSelectedIndex].error) {
+                delete items[lastSelectedIndex].error;
+            }
             dispatch({type: 'select', payload: items});
             return false;
         }
@@ -157,7 +163,7 @@ export default ({navigation, route}) => {
                 items[lastSelectedIndex].ratio = maxRatio - value;
                 items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
             } else {
-                items[lastSelectedIndex].amount = (maxAmount - value).toFixed(12) * 1;
+                items[lastSelectedIndex].amount = (maxAmount - value < 0 ? 0 : maxAmount - value).toFixed(12) * 1;
                 if (
                     items[lastSelectedIndex].amount != 0 &&
                     items[lastSelectedIndex].amount < parseFloat(items[lastSelectedIndex].min_limit)
@@ -202,7 +208,8 @@ export default ({navigation, route}) => {
                 }
                 if (items[index].amount < parseFloat(items[index].min_limit)) {
                     items[index].amount = parseFloat(items[index].min_limit);
-                    items[lastSelectedIndex].amount = (maxAmount - items[index].amount).toFixed(12) * 1;
+                    items[lastSelectedIndex].amount =
+                        (maxAmount - items[index].amount < 0 ? 0 : maxAmount - items[index].amount).toFixed(12) * 1;
                 }
             }
             delete items[index].error;
