@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-11-04 14:48:57
  * @Description: 资产健康分
  */
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState, useRef} from 'react';
 import {ScrollView, StyleSheet, Text, View, Dimensions, Switch} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {px, isIphoneX} from '../../utils/appUtil.js';
@@ -55,6 +55,8 @@ const AssetHealthScore = ({navigation, route}) => {
 
     const [switchState, setSwitchState] = useState(false);
 
+    let timer = useRef(null);
+
     const init = useCallback(() => {
         http.get('/position/get_health_score/20210101', {
             poid: route.params?.poid,
@@ -73,12 +75,18 @@ const AssetHealthScore = ({navigation, route}) => {
     }, [navigation, route.params.poid]);
 
     useEffect(() => {
-        setScore(route.params.poin);
-    }, [route.params.poin]);
+        setScore(route.params.point);
+    }, [route.params.point]);
 
     useEffect(() => {
         init();
     }, [init]);
+
+    useEffect(() => {
+        return () => {
+            clearInterval(timer.current);
+        };
+    }, []);
 
     const updateSwitchState = useCallback(
         (state) => {
@@ -126,70 +134,55 @@ const AssetHealthScore = ({navigation, route}) => {
 
     // 更新分数/颜色/选中
     const updateAllView = useCallback((Timer) => {
-        // 生成随机间隔和步进
-        const random = () => {
-            let spaceArr = [30, 40, 50];
-            let stepArr = [1, 1.1, 1.2];
-            return [spaceArr[Date.now() % 3], stepArr[Date.now() % 3]];
-        };
-
         // 时间记录
-        let timeRecord = 0;
         // 节流时间记录
         let last = Date.now();
+        let space = 80;
+        Timer.setTimer(
+            setInterval(() => {
+                let now = Date.now();
+                if (now - last >= space) {
+                    last = now;
+                    // 改变间隔
 
-        let [space, step] = random();
-
-        Timer.timer = setInterval(() => {
-            timeRecord += 20;
-
-            let now = Date.now();
-            if (now - last >= space) {
-                last = now;
-                // 改变间隔
-                space = Math.round(space * 1.03) + 1;
-
-                setScore((val) => {
-                    if (val == 29) {
-                        setCheckScale([true, false, false]);
-                        // 重新生成随机数组
-                        let randomArr = random();
-                        space = randomArr[0];
-                        step = randomArr[1];
-                    } else if (val == 59) {
-                        setCheckScale([true, true, false]);
-                        if (Timer.score) {
-                            // 计算剩余时间完成更新
-                            let resetTime = 8800 - timeRecord;
-                            let resetScore = Timer.score - 59;
-                            let limit = Math.round(resetTime / resetScore);
-                            space = limit / parseInt(Math.pow(1.03, Math.round(limit / 2)), 10);
-                            step = 1;
-                        } else {
+                    setScore((val) => {
+                        space = space - 1.8;
+                        if (val == 29) {
+                            space = 80;
+                            setCheckScale([true, false, false]);
+                        } else if (val == 59) {
+                            space = 80;
+                            setCheckScale([true, true, false]);
+                        } else if (val == 89) {
+                            space = 80;
+                            setCheckScale([true, true, true]);
+                            if (!Timer.score) {
+                                Timer.cancel();
+                                Toast.show('网络超时，请重新再试');
+                                setUpdateType('beforeUpdate');
+                            }
+                        } else if (Timer.score && val == Timer.score) {
+                            // 完成
                             Timer.cancel();
-                            Toast.show('网络超时，请重新再试');
-                            setUpdateType('beforeUpdate');
+                            setUpdateType('updated');
+                            return val;
                         }
-                    } else if (Timer.score && val == Timer.score) {
-                        // 完成
-                        Timer.cancel();
-                        setCheckScale([true, true, true]);
-                        setUpdateType('updated');
-                        return val;
-                    }
-                    let newScore = Math.round(val + step);
-                    return newScore;
-                });
-            }
-        }, 20);
+                        let newScore = Math.round(val + 1);
+                        return newScore;
+                    });
+                }
+            }, 3)
+        );
     }, []);
 
     const handlerRecalculate = useCallback(() => {
         let Timer = {
-            timer: null,
-            cancel: function () {
-                clearTimeout(this.timer);
-                this.timer = null;
+            setTimer: (_timer) => {
+                timer.current = _timer;
+            },
+            cancel: () => {
+                clearInterval(timer.current);
+                timer.current = null;
             },
             score: null,
         };
