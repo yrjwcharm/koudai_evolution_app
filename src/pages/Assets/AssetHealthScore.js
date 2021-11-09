@@ -20,6 +20,11 @@ import * as Animatable from 'react-native-animatable';
 import Modal from '../../components/Modal/Modal.js';
 import {useJump} from '../../components/hooks';
 
+const linearColorType = {
+    high: ['#5ACB8A', '#45AD72'],
+    low: ['#F46E6E', '#E74949'],
+    computing: ['#FF915E', '#FF7D41'],
+};
 const AssetHealthScore = ({navigation, route}) => {
     const jump = useJump();
     const [updateType, setUpdateType] = useState('beforeUpdate');
@@ -28,13 +33,6 @@ const AssetHealthScore = ({navigation, route}) => {
     const topHeight = 44 + useSafeAreaInsets().top;
 
     const [checkScales, setCheckScale] = useState([false, false, false]);
-    const linearColorType = useMemo(() => {
-        return {
-            high: ['#5ACB8A', '#45AD72'],
-            low: ['#F46E6E', '#E74949'],
-            computing: ['#FF915E', '#FF7D41'],
-        };
-    }, []);
 
     const [data, setData] = useState({
         desc: '',
@@ -130,7 +128,7 @@ const AssetHealthScore = ({navigation, route}) => {
             : score >= 90
             ? linearColorType.high
             : linearColorType.low;
-    }, [linearColorType.computing, linearColorType.high, linearColorType.low, score, updateType]);
+    }, [score, updateType]);
 
     // 更新分数/颜色/选中
     const updateAllView = useCallback((Timer) => {
