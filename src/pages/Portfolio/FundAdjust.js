@@ -2,14 +2,14 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 17:54:16
+ * @LastEditTime: 2021-11-09 10:40:25
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Keyboard, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
-import CheckBox from '../../components/CheckBox';
+import CheckBox from './components/CheckBox';
 import {px, onlyNumber} from '../../utils/appUtil';
 import http from '../../services';
 import {cloneDeep, findLastIndex} from 'lodash';
@@ -32,6 +32,7 @@ export default ({navigation, route}) => {
     const [changed, setChanged] = useState(false); // 是否已经调整过
     const selectedNum = useRef(0); // 选中基金的数量
     const [maxInitAmountIndex, setMaxInitAmountIndex] = useState(-1); // 导致最大起购金额基金下标 -1表示没有超过初始起购金额的
+    const inputRef = useRef([]);
 
     /**
      * 计算最后一只有比例的基金占总配置的百分比
@@ -248,19 +249,28 @@ export default ({navigation, route}) => {
         //         ? data.items[maxInitAmountIndex].min_limit / (data.items[maxInitAmountIndex].percent / 100)
         //         : data.init_amount;
         // const items = data.items.sort((a, b) => b.percent - a.percent);
+        const existError = data?.items?.some((item) => item.error);
         if (route.params.ref === 'ChooseFund') {
-            navigation.navigate(route.params.ref, {asset: data});
+            if (!existError) {
+                navigation.navigate(route.params.ref, {asset: data});
+            } else {
+                Keyboard.dismiss();
+            }
         } else {
-            http.post('/trade/batch/buy/modify/20211101', {
-                poid: data.poid,
-                plan_id: data.plan_id,
-                list: JSON.stringify(data),
-            }).then((res) => {
-                if (res.code === '000000') {
-                    Toast.show('保存成功');
-                    navigation.goBack();
-                }
-            });
+            if (!existError) {
+                http.post('/trade/batch/buy/modify/20211101', {
+                    poid: data.poid,
+                    plan_id: data.plan_id,
+                    list: JSON.stringify(data),
+                }).then((res) => {
+                    if (res.code === '000000') {
+                        Toast.show('保存成功');
+                        navigation.goBack();
+                    }
+                });
+            } else {
+                Keyboard.dismiss();
+            }
         }
     };
 
@@ -348,19 +358,26 @@ export default ({navigation, route}) => {
                         const initAmount =
                             route.params.ref === 'ChooseFund' && fund.ratio ? fund.min_limit / (fund.percent / 100) : 0;
                         return (
-                            <View
-                                key={fund + index}
-                                style={[styles.fundItem, fund.select ? {} : {paddingTop: 0, justifyContent: 'center'}]}>
+                            <View key={fund + index} style={[styles.fundItem]}>
                                 <View style={Style.flexBetween}>
-                                    <View style={Style.flexRow}>
-                                        <CheckBox
-                                            control
-                                            checked={fund.select}
-                                            onChange={(checked) => toggleSelect(index, checked)}
-                                        />
-                                        <View style={{marginLeft: px(12)}}>
-                                            <Text style={styles.fundName}>{fund.name}</Text>
-                                            {fund.select && route.params.ref === 'ChooseFund' ? (
+                                    <TouchableOpacity
+                                        activeOpacity={1}
+                                        onPress={() => toggleSelect(index, !fund.select)}>
+                                        <View style={Style.flexRow}>
+                                            <CheckBox
+                                                control
+                                                checked={fund.select}
+                                                onChange={(checked) => toggleSelect(index, checked)}
+                                            />
+                                            <View style={{marginLeft: px(8)}}>
+                                                <Text style={styles.fundName}>{fund.name}</Text>
+                                                <Text style={[styles.fundName, {fontFamily: Font.numFontFamily}]}>
+                                                    {fund.code}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        {fund.select && route.params.ref === 'ChooseFund' ? (
+                                            <View style={{marginTop: px(4), paddingLeft: px(24)}}>
                                                 <Text style={styles.fundPercent}>
                                                     {lastHasRatioIndex === index && lastHasRatioIndex !== 0 ? '约' : ''}
                                                     占总配置的
@@ -369,15 +386,24 @@ export default ({navigation, route}) => {
                                                         : (fund.percent * 1).toFixed(2)}
                                                     %
                                                 </Text>
-                                            ) : null}
-                                        </View>
-                                    </View>
+                                            </View>
+                                        ) : null}
+                                    </TouchableOpacity>
                                     {fund.select ? (
                                         <View style={Style.flexRow}>
                                             {route.params.ref === 'AddedBuy' ? (
                                                 <Text style={styles.unit}>￥</Text>
                                             ) : null}
-                                            <View
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                onPress={() => {
+                                                    const isFocused = inputRef.current[index]?.isFocused?.();
+                                                    if (!isFocused) {
+                                                        inputRef.current[index]?.focus?.();
+                                                        // setTimeout(() => {
+                                                        // }, 300);
+                                                    }
+                                                }}
                                                 style={[
                                                     Style.flexCenter,
                                                     styles.inputBox,
@@ -401,6 +427,11 @@ export default ({navigation, route}) => {
                                                             changeRatio(index, value);
                                                         }
                                                     }}
+                                                    ref={(ref) => {
+                                                        if (ref) {
+                                                            inputRef.current[index] = ref;
+                                                        }
+                                                    }}
                                                     style={{
                                                         color:
                                                             lastSelectedIndex !== index
@@ -408,7 +439,7 @@ export default ({navigation, route}) => {
                                                                 : '#BDC2CC',
                                                     }}
                                                 />
-                                            </View>
+                                            </TouchableOpacity>
                                             {route.params.ref === 'ChooseFund' ? (
                                                 <Text style={styles.unit}>%</Text>
                                             ) : null}
@@ -463,10 +494,10 @@ const styles = StyleSheet.create({
         color: '#EB7121',
     },
     fundItem: {
-        paddingTop: Space.padding,
+        paddingVertical: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
-        minHeight: px(70),
+        // minHeight: px(60),
     },
     fundName: {
         fontSize: px(13),
@@ -474,7 +505,6 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     fundPercent: {
-        marginTop: px(4),
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.lightGrayColor,

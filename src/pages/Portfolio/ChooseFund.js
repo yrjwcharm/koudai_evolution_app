@@ -2,10 +2,10 @@
  * @Date: 2021-11-04 15:53:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 14:50:19
+ * @LastEditTime: 2021-11-08 19:11:17
  * @Description: 挑选基金
  */
-import React, {useState, useEffect} from 'react';
+import React, {useCallback, useState} from 'react';
 import {StyleSheet, ScrollView, View, Text, Platform, TouchableOpacity} from 'react-native';
 import http from '../../services';
 import {px, px as text} from '../../utils/appUtil';
@@ -14,6 +14,7 @@ import BottomDesc from '../../components/BottomDesc';
 import FixedBtn from './components/FixedBtn';
 import Loading from './components/PageLoading';
 import {cloneDeep, findLastIndex} from 'lodash';
+import {useFocusEffect} from '@react-navigation/core';
 
 const RatioColor = [
     '#E1645C',
@@ -44,24 +45,26 @@ export default ({navigation, route}) => {
             deploy_detail: JSON.stringify(deploy_detail),
         });
     };
-    useEffect(() => {
-        const {asset} = route.params;
-        if (asset) {
-            setData((prev) => {
-                const next = cloneDeep(prev);
-                const index = findLastIndex(next.deploy_detail, ['type', asset.type]);
-                next.deploy_detail[index] = asset;
-                return next;
-            });
-        } else {
-            http.get('/portfolio/choose_fund/20211101', {upid: route.params?.upid}).then((res) => {
-                if (res.code === '000000') {
-                    navigation.setOptions({title: res.result.title || '挑选基金'});
-                    setData(res.result);
-                }
-            });
-        }
-    }, [navigation, route]);
+    useFocusEffect(
+        useCallback(() => {
+            const {asset} = route.params;
+            if (asset) {
+                setData((prev) => {
+                    const next = cloneDeep(prev);
+                    const index = findLastIndex(next.deploy_detail, ['type', asset.type]);
+                    next.deploy_detail[index] = asset;
+                    return next;
+                });
+            } else {
+                http.get('/portfolio/choose_fund/20211101', {upid: route.params?.upid}).then((res) => {
+                    if (res.code === '000000') {
+                        navigation.setOptions({title: res.result.title || '挑选基金'});
+                        setData(res.result);
+                    }
+                });
+            }
+        }, [navigation, route])
+    );
 
     return (
         <>

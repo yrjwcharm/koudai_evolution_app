@@ -2,7 +2,7 @@
  * @Date: 2021-09-02 14:18:46
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-09-18 14:41:37
+ * @LastEditTime: 2021-11-08 18:16:54
  * @Description:权限管理
  */
 import React, {useEffect, useState} from 'react';
@@ -130,7 +130,7 @@ const AuthorityManage = ({navigation}) => {
                     <Icon name={'angle-right'} size={20} style={{marginLeft: px(10)}} color={Colors.lightGrayColor} />
                 </View>
             </TouchableOpacity>
-            <Text style={styles.text}>方便您能及时获得调仓、加仓和其他的信息</Text>
+            <Text style={styles.text}>方便您能及时获得交易通知和其他的信息</Text>
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={[styles.partBox, Style.flexBetween]}

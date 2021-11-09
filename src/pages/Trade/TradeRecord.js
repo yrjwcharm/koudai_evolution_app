@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-04 20:55:34
+ * @LastEditTime: 2021-11-08 18:52:46
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -256,7 +256,7 @@ const TradeRecord = ({route, navigation}) => {
                     <View tabLabel="定投" style={styles.container}>
                         {renderContent()}
                     </View>
-                    <View tabLabel="调仓" style={styles.container}>
+                    <View tabLabel={route.params?.adjust_name || '调仓'} style={styles.container}>
                         {renderContent()}
                     </View>
                     <View tabLabel="赎回" style={styles.container}>

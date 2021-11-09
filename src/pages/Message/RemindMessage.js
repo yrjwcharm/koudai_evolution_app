@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 19:01:36
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 18:12:19
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -53,7 +53,7 @@ export default function RemindMessage({navigation}) {
     const blockCal = () => {
         Modal.show({
             title: '权限申请',
-            content: '避免错过调仓加仓消息，请打开通知权限',
+            content: '避免错过交易通知消息，请打开通知权限',
             confirm: true,
             confirmText: '前往',
             confirmCallBack: () => {
@@ -76,7 +76,7 @@ export default function RemindMessage({navigation}) {
                         />
                     ) : !hide && showNotice ? (
                         <View style={[Style.flexRow, styles.yellow_wrap_sty]}>
-                            <Text style={styles.yellow_sty}>开启消息通知，避免错过调仓加仓消息</Text>
+                            <Text style={styles.yellow_sty}>开启消息通知，避免错过交易通知消息</Text>
                             <TouchableOpacity
                                 activeOpacity={1}
                                 style={{backgroundColor: '#EB7121', borderRadius: text(15), marginRight: text(10)}}

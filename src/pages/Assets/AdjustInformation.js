@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 10:00:26
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 19:07:33
+ * @LastEditTime: 2021-11-08 18:43:23
  * @Description: 调仓信息
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -106,7 +106,9 @@ const AdjustInformation = ({navigation, route}) => {
                             <Text style={styles.date}>{item.notice_time}</Text>
                         </View>
                         <View style={[Style.flexRow, {flex: 1}]}>
-                            <Text style={[styles.subTitle, {marginRight: text(10)}]}>{'调仓时间'}</Text>
+                            <Text style={[styles.subTitle, {marginRight: text(10)}]}>
+                                {item.adjust_time_key || '调仓时间'}
+                            </Text>
                             <Text style={styles.date}>{item.adjust_time}</Text>
                         </View>
                     </View>
