@@ -38,13 +38,14 @@ const AddedBuy = ({navigation, route}) => {
             plan_id: null,
             notice: '',
             fund_list_dst: [],
+            fund_list: [],
         };
     }, []);
     const [configData, setConfigData] = useState(initConfigData);
 
     const [amount, setAmount] = useState('');
     const [errTip, setErrTip] = useState('');
-    const planId = useRef(route.params.plan_id || '');
+    const planId = useRef(''); // 单独维护planId fixBtn里不用这个
 
     useFocusEffect(
         useCallback(() => {
@@ -78,7 +79,7 @@ const AddedBuy = ({navigation, route}) => {
                 setData(res.result);
                 setPageLoading(false);
             } else {
-                Toast(res.message);
+                Toast.show(res.message);
             }
         });
     }, [navigation, route.params.poid]);
@@ -95,10 +96,11 @@ const AddedBuy = ({navigation, route}) => {
                     if (res.code === '000000') {
                         planId.current = res.result.plan_id;
                         setConfigData(res.result);
-                        setConfigLoading(false);
                     } else {
-                        Toast(res.message);
+                        setConfigData(initConfigData);
+                        Toast.show(res.message);
                     }
+                    setConfigLoading(false);
                 });
             },
             800,
@@ -111,18 +113,20 @@ const AddedBuy = ({navigation, route}) => {
         (val) => {
             val = onlyNumber(val + '');
             setAmount(val);
-
             if (+val < data.buy_info.initial_amount) {
                 setErrTip('起购金额为' + data.buy_info.initial_amount);
                 setConfigData(initConfigData);
                 return;
-            } else {
-                setErrTip('');
+            } else if (+val >= 100000000) {
+                setErrTip('金额需小于1亿');
+                setConfigData(initConfigData);
+                return;
             }
+            setErrTip('');
             // 获得新的资产配比
             getNewConfig(val);
         },
-        [data, getNewConfig, initConfigData]
+        [data.buy_info, getNewConfig, initConfigData]
     );
 
     //清空输入框
@@ -137,7 +141,7 @@ const AddedBuy = ({navigation, route}) => {
         if (data.btns) {
             option = JSON.parse(JSON.stringify(data.btns));
             option[1].url.params.amount = amount;
-            option[1].url.params.plan_id = configData.plan_id;
+            option[1].url.params.plan_id = configData.plan_id; // 如果取ref的planId不会更新
         }
         return option;
     }, [data.btns, amount, configData.plan_id]);
@@ -166,6 +170,8 @@ const AddedBuy = ({navigation, route}) => {
                             onBlur={(_) => {
                                 if (amount && amount < data.buy_info.initial_amount) {
                                     handlerMoneyChange(data.buy_info.initial_amount);
+                                } else if (amount && amount >= 100000000) {
+                                    handlerMoneyChange(99999999.99);
                                 }
                                 // global.LogTool('buy_input');
                             }}
@@ -221,7 +227,7 @@ const AddedBuy = ({navigation, route}) => {
                             <View>
                                 <Text style={styles.matchRateText}>追加购买后</Text>
                                 <View style={styles.matchRateChart}>
-                                    {configData.fund_list_dst.map((item, idx) => (
+                                    {configData.fund_list.map((item, idx) => (
                                         <View
                                             style={{
                                                 backgroundColor: item.color,
@@ -272,7 +278,7 @@ const AddedBuy = ({navigation, route}) => {
                                                             ...asset,
                                                             desc: configData.notice,
                                                             poid: route?.params?.poid,
-                                                            plan_id: configData.plan_id,
+                                                            plan_id: planId.current,
                                                         },
                                                         ref: 'AddedBuy',
                                                     })

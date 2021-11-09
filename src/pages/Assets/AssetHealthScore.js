@@ -65,13 +65,16 @@ const AssetHealthScore = ({navigation, route}) => {
             if (res.code === '000000') {
                 let result = res.result;
                 setData(result);
-                setScore(result.score);
                 setSwitchState(!!result.calc_button.status);
             } else {
                 Toast(res.message);
             }
         });
     }, [navigation, route.params.poid]);
+
+    useEffect(() => {
+        setScore(route.params.poin);
+    }, [route.params.poin]);
 
     useEffect(() => {
         init();
