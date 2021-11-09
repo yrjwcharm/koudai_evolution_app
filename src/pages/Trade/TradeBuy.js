@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 14:36:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-09 16:15:55
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -372,11 +372,11 @@ class TradeBuy extends Component {
                     }
                 },
                 content: data?.buy_do_pop?.content,
-                confirmText: data?.buy_do_pop?.confirm_text,
-                cancelText: data?.buy_do_pop?.cancel_text,
+                confirmText: data?.buy_do_pop?.confirm?.text,
+                cancelText: data?.buy_do_pop?.cancel?.text,
                 confirmCallBack: () => {
-                    if (data?.buy_do_pop?.url) {
-                        this.props.jump(data?.buy_do_pop?.url);
+                    if (data?.buy_do_pop?.confirm?.url) {
+                        this.props.jump(data?.buy_do_pop?.confirm?.url);
                     } else {
                         Modal.show({
                             title: data.fix_modal.title,
