@@ -380,7 +380,8 @@ export default class MyModal extends Component {
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
-                    if (this.backButtonClose && this.backCloseCallbackExecute) {
+                    if (!this.backButtonClose) return;
+                    if (this.backCloseCallbackExecute) {
                         this.cancel();
                     } else {
                         this.setModalVisiable(false);
