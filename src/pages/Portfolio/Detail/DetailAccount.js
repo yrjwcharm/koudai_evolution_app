@@ -111,13 +111,13 @@ export default function DetailAccount({route, navigation}) {
                         setData(res.result);
                         navigation.setOptions({
                             title: res.result.title,
-                            headerRight: () => {
-                                return (
-                                    <TouchableOpacity onPress={rightPress} activeOpacity={1}>
-                                        <Text style={styles.right_sty}>{'产品说明书'}</Text>
-                                    </TouchableOpacity>
-                                );
-                            },
+                            // headerRight: () => {
+                            //     return (
+                            //         <TouchableOpacity onPress={rightPress} activeOpacity={1}>
+                            //             <Text style={styles.right_sty}>{'产品说明书'}</Text>
+                            //         </TouchableOpacity>
+                            //     );
+                            // },
                         });
                         setPeriod(res.result.period);
                         setChart([]);
