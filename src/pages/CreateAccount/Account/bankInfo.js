@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 16:00:57
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 17:01:15
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -425,8 +425,8 @@ class BankInfo extends Component {
                             },
                         ]}
                     />
-                    <BottomDesc />
                 </KeyboardAwareScrollView>
+                <BottomDesc />
                 <FixedButton
                     title={'立即开户'}
                     disabled={this.state.btnDisable}

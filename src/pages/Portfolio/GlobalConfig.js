@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-07 10:40:13
+ * @LastEditTime: 2021-11-09 16:22:37
  * @Description: 全球配置
  */
 import React, {useState, useEffect} from 'react';
@@ -85,7 +85,7 @@ const GlobalConfig = ({navigation, route}) => {
                                             style={[styles.circle, {backgroundColor: item.color || RatioColor[index]}]}
                                         />
                                         <Text style={styles.legendName}>{item.name}</Text>
-                                        <Text style={styles.legendVal}>{item.percent}%</Text>
+                                        <Text style={styles.legendVal}>{(item.percent * 1).toFixed(2)}%</Text>
                                     </View>
                                 );
                             })}

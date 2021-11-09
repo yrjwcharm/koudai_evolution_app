@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 11:50:04
+ * @LastEditTime: 2021-11-09 15:04:37
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -159,7 +159,7 @@ const HistoryAdjust = ({navigation, route}) => {
                                         key={item + index}>
                                         <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
                                         <Text style={styles.legendName}>{item.name}</Text>
-                                        <Text style={styles.legendVal}>{item.percent}%</Text>
+                                        <Text style={styles.legendVal}>{(item.percent * 1).toFixed(2)}%</Text>
                                     </View>
                                 );
                             })}
