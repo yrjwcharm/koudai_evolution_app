@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 16:12:17
+ * @LastEditTime: 2021-11-09 21:37:43
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -880,11 +880,11 @@ class TradeBuy extends Component {
                 {/* 银行卡 */}
                 {this.render_bank()}
                 {/* 买入明细 */}
-                {type == 0 && data.scene !== 'adviser' && this.render_config()}
+                {type == 0 && planData?.header && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
 
-                {data.scene !== 'adviser' && (
+                {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
                         购买即代表您已知悉该基金组合的
                         <Text
