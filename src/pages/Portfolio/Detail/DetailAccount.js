@@ -479,18 +479,12 @@ export default function DetailAccount({route, navigation}) {
                             <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} oid={4} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
-                                    <View style={{flex: 1, position: 'relative'}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>
-                                    </View>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[1]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[1]?.val}</Text>
-                                    </View>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[2]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
-                                    </View>
+                                    {data?.risk_info?.sub_tab?.map((item, index) => (
+                                        <View style={{flex: 1}} key={index}>
+                                            <Text style={styles.row_title_sty}>{item?.title}</Text>
+                                            <Text style={styles.row_desc_sty}>{item?.val}</Text>
+                                        </View>
+                                    ))}
                                 </View>
                                 <View style={{height: text(168)}}>
                                     <Chart
