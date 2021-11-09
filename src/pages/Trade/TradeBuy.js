@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 16:15:55
+ * @LastEditTime: 2021-11-09 17:30:13
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -377,7 +377,7 @@ class TradeBuy extends Component {
                 confirmCallBack: () => {
                     if (data?.buy_do_pop?.confirm?.url) {
                         this.props.jump(data?.buy_do_pop?.confirm?.url);
-                    } else {
+                    } else if (type == 1 && data?.fix_info?.first_order) {
                         Modal.show({
                             title: data.fix_modal.title,
                             confirm: true,
@@ -393,6 +393,8 @@ class TradeBuy extends Component {
                                 this.need_buy = false;
                             },
                         });
+                    } else {
+                        this.passwordModal.show();
                     }
                 },
             });
