@@ -410,7 +410,8 @@ export default function DetailAccount({route, navigation}) {
                                         data?.asset_deploy?.items,
                                         data?.asset_deploy?.chart,
                                         route.params.scene === 'adviser' ? '资产配置' : '',
-                                        Platform.select({android: text(150), ios: text(140)})
+                                        Platform.select({android: text(150), ios: text(140)}),
+                                        data?.asset_deploy?.items?.map?.((item) => item.color)
                                     )}
                                 />
                             </View>
