@@ -309,7 +309,7 @@ const AssetHealthScore = ({navigation, route}) => {
                             <FastImage
                                 style={styles.calcItemIcon}
                                 source={{
-                                    uri: item.icon,
+                                    uri: checkScales[idx] ? item.icon : item.icon_hui,
                                 }}
                             />
                             <View style={styles.calcItemContent}>
