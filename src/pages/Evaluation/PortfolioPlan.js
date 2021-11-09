@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 11:19:55
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-06 17:16:59
+ * @LastEditTime: 2021-11-09 15:02:21
  * @Description:定制理财计划
  */
 import React, {useState, useCallback} from 'react';
@@ -17,17 +17,20 @@ import http from '../../services';
 import NumText from '../../components/NumText';
 import {useFocusEffect} from '@react-navigation/core';
 import FastImage from 'react-native-fast-image';
-import { FixedButton } from '../../components/Button';
-import { useJump } from '../../components/hooks';
+import {FixedButton} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 let timer_one = null;
-const PortfolioPlan = ({navigation,route}) => {
+const PortfolioPlan = ({navigation, route}) => {
     const [chartData, setChartData] = useState([]);
     const [data, setData] = useState(null);
-    const [loading,setLoading]=useState(false)
-    const jump= useJump()
+    const [loading, setLoading] = useState(false);
+    const jump = useJump();
     useFocusEffect(
         useCallback(() => {
-            http.get('/questionnaire/chart/20211101',{upid:route?.params?.upid,summary_id:route?.params?.summary_id}).then((res) => {
+            http.get('/questionnaire/chart/20211101', {
+                upid: route?.params?.upid,
+                summary_id: route?.params?.summary_id,
+            }).then((res) => {
                 setData(res?.result);
                 navigation.setOptions({title: res.result?.title});
             });
@@ -35,22 +38,22 @@ const PortfolioPlan = ({navigation,route}) => {
             return () => {
                 timer_one && clearTimeout(timer_one);
             };
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [navigation])
     );
     const onload = () => {
         if (!data) return;
-        setLoading(true)
+        setLoading(true);
         setChartData(data?.chart?.portfolio_lines);
         timer_one = setTimeout(() => {
             setChartData((prev) => {
                 return prev.concat(data?.chart?.risk_lines);
             });
         }, 2000);
-       
     };
     return (
         <>
-            <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+            <View style={{backgroundColor: '#fff', flex: 1}}>
                 <View style={[Style.flexRow, {alignItems: 'flex-end', height: px(94)}]}>
                     <View style={[Style.flexCenter, styles.container_sty]}>
                         <NumText
@@ -76,13 +79,21 @@ const PortfolioPlan = ({navigation,route}) => {
                 </View>
                 {data ? (
                     <Animatable.View
-                    animation='fadeIn'
+                        animation="fadeIn"
                         style={{
                             height: 240,
                             paddingHorizontal: px(16),
                         }}>
                         <Chart
-                            initScript={baseAreaChart(chartData, true, 2, deviceWidth - px(40), 10, data?.tag_position?.risk_line, 220)}
+                            initScript={baseAreaChart(
+                                chartData,
+                                true,
+                                2,
+                                deviceWidth - px(40),
+                                10,
+                                data?.tag_position?.risk_line,
+                                220
+                            )}
                             data={chartData}
                             style={{width: '100%'}}
                             onLoadEnd={onload}
@@ -95,36 +106,40 @@ const PortfolioPlan = ({navigation,route}) => {
                         }}
                     />
                 )}
-                {
-                    loading&&
-                <Animatable.View animation='fadeInUp' style={{paddingHorizontal: px(16)}}>
-                    <Text style={styles.card_title}>{data?.tab_info?.title}</Text>
-                    <View style={Style.flexBetween}>
-                        {data?.tab_info?.items.map((item, index) => {
-                            return (
-                                <View style={styles.card} key={index}>
-                                    <FastImage
-                                        source={{uri: item.icon_selected}}
-                                        style={{width: px(32), height: px(32), marginBottom: px(6)}}
-                                    />
-                                    <Text style={styles.card_subtitle}>{item.title}</Text>
-                                    <Text style={styles.card_desc}>{item.desc}</Text>
+                {loading && (
+                    <Animatable.View animation="fadeInUp" style={{paddingHorizontal: px(16)}}>
+                        <Text style={styles.card_title}>{data?.tab_info?.title}</Text>
+                        <View style={Style.flexBetween}>
+                            {data?.tab_info?.items.map((item, index) => {
+                                return (
+                                    <View style={styles.card} key={index}>
+                                        <FastImage
+                                            source={{uri: item.icon_selected}}
+                                            style={{width: px(32), height: px(32), marginBottom: px(6)}}
+                                        />
+                                        <Text style={styles.card_subtitle}>{item.title}</Text>
+                                        <Text style={styles.card_desc}>{item.desc}</Text>
                                         <Icon
                                             name="checkmark-circle"
                                             size={px(18)}
                                             color={Colors.brandColor}
                                             style={styles.check}
                                         />
-                                </View>
-                            );
-                        })}
-                    </View>
-                </Animatable.View>
-                }
-            </ScrollView>
-            {data?.button&&loading && <FixedButton title={data?.button?.title} onPress={()=>{
-                jump(data?.button?.url,'replace')
-            }}/>}
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    </Animatable.View>
+                )}
+            </View>
+            {data?.button && loading && (
+                <FixedButton
+                    title={data?.button?.title}
+                    onPress={() => {
+                        jump(data?.button?.url, 'replace');
+                    }}
+                />
+            )}
         </>
     );
 };
@@ -173,14 +188,14 @@ const styles = StyleSheet.create({
         fontSize: px(14),
         lineHeight: px(20),
         marginBottom: px(8),
-        fontWeight:'700',
-        color:Colors.brandColor,
+        fontWeight: '700',
+        color: Colors.brandColor,
     },
     card_desc: {
         fontSize: px(12),
         lineHeight: px(17),
         textAlign: 'center',
-        color:Colors.brandColor,
+        color: Colors.brandColor,
     },
     check: {position: 'absolute', right: px(-6), bottom: px(-6)},
 });

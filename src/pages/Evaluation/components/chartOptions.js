@@ -2,7 +2,7 @@
  * @Date: 2021-11-04 15:08:18
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-06 16:37:35
+ * @LastEditTime: 2021-11-09 14:37:17
  * @Description:
  */
 import {Dimensions} from 'react-native';
@@ -29,7 +29,7 @@ export const baseAreaChart = (
   chart.source(${JSON.stringify(data)});
   chart.scale('date', {
     type: 'timeCat',
-    tickCount: 5,
+    tickCount: 3,
     range: [0, 1]
   });
   chart.tooltip(false);
