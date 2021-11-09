@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-03 19:33:54
+ * @LastEditTime: 2021-11-09 11:50:04
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -47,10 +47,11 @@ const HistoryAdjust = ({navigation, route}) => {
             setChart(
                 res.result.deploy_detail
                     ?.filter((item) => item.ratio !== 0)
-                    .map((item) => ({
+                    .map((item, index) => ({
                         a: '1',
                         name: item.name,
                         percent: (item.ratio * 100).toFixed(2) * 1,
+                        color: item.color || RatioColor[index],
                     }))
             );
         });
@@ -97,7 +98,7 @@ const HistoryAdjust = ({navigation, route}) => {
                         {borderTopWidth: index === 0 ? 0 : Space.borderWidth},
                     ]}>
                     <View style={[styles.leftPart, Style.flexRow]}>
-                        <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
+                        <View style={[styles.circle, {backgroundColor: section.color || RatioColor[index]}]} />
                         <Text style={[styles.assets_l1_name]}>{section.name}</Text>
                     </View>
                     <View style={[styles.rightPart, Style.flexRow]}>
@@ -137,7 +138,13 @@ const HistoryAdjust = ({navigation, route}) => {
                         </View> */}
                         {chart.length > 0 && (
                             <View style={{height: text(220)}}>
-                                <Chart initScript={basicPieChart(chart)} data={chart} />
+                                <Chart
+                                    initScript={basicPieChart(
+                                        chart,
+                                        chart.map((item) => item.color)
+                                    )}
+                                    data={chart}
+                                />
                             </View>
                         )}
                         <View

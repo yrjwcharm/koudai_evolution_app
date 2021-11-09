@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 14:24:45
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 14:36:43
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -60,6 +60,7 @@ class TradeBuy extends Component {
             largeTip: '',
             deltaHeight: 0,
         };
+        this.plan_id = this.props.route?.params?.plan_id || '';
     }
     getTab = () => {
         const {poid} = this.state;
@@ -244,7 +245,7 @@ class TradeBuy extends Component {
                 pay_method: bank.pay_method,
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
-                plan_id: this.props.route?.params?.plan_id || '',
+                plan_id: this.plan_id,
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -268,6 +269,7 @@ class TradeBuy extends Component {
      */
     timer = null;
     onInput = async (_amount, init) => {
+        this.plan_id = '';
         let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
         if (!_amount && this.state.type == 0) {
             await this.plan('');
@@ -500,7 +502,7 @@ class TradeBuy extends Component {
     };
     //买入明细
     render_config() {
-        const {planData, configExpand} = this.state;
+        const {planData, configExpand, data} = this.state;
         const {header, body} = planData;
         return (
             header && (
@@ -515,16 +517,18 @@ class TradeBuy extends Component {
                             <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
                                 买入明细
                             </Text>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    Modal.show({
-                                        title: '购买明细',
-                                        content:
-                                            '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
-                                    });
-                                }}>
-                                <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
-                            </TouchableOpacity>
+                            {data.is_plan ? null : (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Modal.show({
+                                            title: '购买明细',
+                                            content:
+                                                '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
+                                        });
+                                    }}>
+                                    <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
+                                </TouchableOpacity>
+                            )}
                         </View>
                         {configExpand ? (
                             <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />

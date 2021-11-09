@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 10:40:25
+ * @LastEditTime: 2021-11-09 14:15:21
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -157,15 +157,19 @@ export default ({navigation, route}) => {
         }
         if (value > (route.params.ref === 'ChooseFund' ? maxRatio : maxAmount)) {
             items[index].error = true;
-            if (route.params.ref === 'ChooseFund') {
-                items[index].ratio = 100;
-                items[index].percent = data?.ratio * 100;
-            } else {
-                items[index].amount = data?.amount;
+            if (value > (route.params.ref === 'ChooseFund' ? 100 : data?.amount)) {
+                if (route.params.ref === 'ChooseFund') {
+                    items[index].ratio = 100;
+                    items[index].percent = data?.ratio * 100;
+                } else {
+                    items[index].amount = data?.amount;
+                }
+                dispatch({type: 'select', payload: items});
+                return false;
             }
-            dispatch({type: 'select', payload: items});
-            return false;
         } else if (route.params.ref === 'AddedBuy' && value != 0 && value < parseFloat(items[index].min_limit)) {
+            items[index].error = true;
+        } else if (route.params.ref === 'AddedBuy' && value != 0 && value.split('.')[1]?.length > 2) {
             items[index].error = true;
         } else {
             if (items[index].error) {
@@ -222,6 +226,10 @@ export default ({navigation, route}) => {
                     items[index].amount = parseFloat(items[index].min_limit);
                     items[lastSelectedIndex].amount =
                         (maxAmount - items[index].amount < 0 ? 0 : maxAmount - items[index].amount).toFixed(12) * 1;
+                }
+                const amount = `${items[index].amount}`;
+                if (amount.split('.')[1]?.length > 2) {
+                    items[index].amount = (amount.slice(0, amount.indexOf('.') + 3) * 1).toFixed(12) * 1;
                 }
             }
             delete items[index].error;
