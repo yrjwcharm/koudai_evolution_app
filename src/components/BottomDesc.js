@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-11-09 19:45:24
+ * @LastEditTime: 2021-11-09 20:19:17
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -71,7 +71,7 @@ const BottomDesc = (props) => {
 
     return (
         <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
-            {props?.fix_img && (
+            {props?.fix_img ? (
                 <View style={styles.item}>
                     <FastImage
                         resizeMode={FastImage.resizeMode.contain}
@@ -79,7 +79,7 @@ const BottomDesc = (props) => {
                         style={[{height: text(30), width: text(166), marginBottom: text(8)}]}
                     />
                 </View>
-            )}
+            ) : null}
             <View style={styles.item}>
                 <FastImage
                     resizeMode={FastImage.resizeMode.contain}
