@@ -507,14 +507,14 @@ export default function DetailAccount({route, navigation}) {
                                 <View
                                     style={{
                                         flexDirection: 'row',
-                                        justifyContent: 'space-around',
+                                        justifyContent: 'space-between',
                                         paddingHorizontal: px(6),
                                     }}>
-                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                    <View style={[{fontSize: text(12)}, Style.flexRow]}>
                                         <Ionicons name={'square'} color={'#E74949'} size={10} />
                                         <Text> {data.risk_info?.label[0]?.key}</Text>
                                     </View>
-                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                    <View style={[{fontSize: text(12)}, Style.flexRow]}>
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
