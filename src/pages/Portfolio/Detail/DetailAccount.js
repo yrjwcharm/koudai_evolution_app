@@ -137,7 +137,7 @@ export default function DetailAccount({route, navigation}) {
                     setLoading(false);
                 });
         }
-    }, [navigation, rightPress, route.params]);
+    }, [navigation, route.params]);
     const renderLoading = () => {
         return (
             <View
