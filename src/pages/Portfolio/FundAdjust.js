@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 20:54:14
+ * @LastEditTime: 2021-11-09 10:40:25
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -32,7 +32,7 @@ export default ({navigation, route}) => {
     const [changed, setChanged] = useState(false); // 是否已经调整过
     const selectedNum = useRef(0); // 选中基金的数量
     const [maxInitAmountIndex, setMaxInitAmountIndex] = useState(-1); // 导致最大起购金额基金下标 -1表示没有超过初始起购金额的
-    const inputRef = useRef();
+    const inputRef = useRef([]);
 
     /**
      * 计算最后一只有比例的基金占总配置的百分比
@@ -55,7 +55,6 @@ export default ({navigation, route}) => {
      */
     const toggleSelect = (index, select) => {
         selectedNum.current += select ? 1 : -1;
-        console.log(index, select, selectedNum.current);
         if (selectedNum.current === 0) {
             selectedNum.current += 1;
             return false;
@@ -359,22 +358,26 @@ export default ({navigation, route}) => {
                         const initAmount =
                             route.params.ref === 'ChooseFund' && fund.ratio ? fund.min_limit / (fund.percent / 100) : 0;
                         return (
-                            <View
-                                key={fund + index}
-                                style={[styles.fundItem, fund.select ? {} : {paddingTop: 0, justifyContent: 'center'}]}>
+                            <View key={fund + index} style={[styles.fundItem]}>
                                 <View style={Style.flexBetween}>
                                     <TouchableOpacity
                                         activeOpacity={1}
-                                        onPress={() => toggleSelect(index, !fund.select)}
-                                        style={Style.flexRow}>
-                                        <CheckBox
-                                            control
-                                            checked={fund.select}
-                                            onChange={(checked) => toggleSelect(index, checked)}
-                                        />
-                                        <View style={{marginLeft: px(12)}}>
-                                            <Text style={styles.fundName}>{fund.name}</Text>
-                                            {fund.select && route.params.ref === 'ChooseFund' ? (
+                                        onPress={() => toggleSelect(index, !fund.select)}>
+                                        <View style={Style.flexRow}>
+                                            <CheckBox
+                                                control
+                                                checked={fund.select}
+                                                onChange={(checked) => toggleSelect(index, checked)}
+                                            />
+                                            <View style={{marginLeft: px(8)}}>
+                                                <Text style={styles.fundName}>{fund.name}</Text>
+                                                <Text style={[styles.fundName, {fontFamily: Font.numFontFamily}]}>
+                                                    {fund.code}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        {fund.select && route.params.ref === 'ChooseFund' ? (
+                                            <View style={{marginTop: px(4), paddingLeft: px(24)}}>
                                                 <Text style={styles.fundPercent}>
                                                     {lastHasRatioIndex === index && lastHasRatioIndex !== 0 ? '约' : ''}
                                                     占总配置的
@@ -383,8 +386,8 @@ export default ({navigation, route}) => {
                                                         : (fund.percent * 1).toFixed(2)}
                                                     %
                                                 </Text>
-                                            ) : null}
-                                        </View>
+                                            </View>
+                                        ) : null}
                                     </TouchableOpacity>
                                     {fund.select ? (
                                         <View style={Style.flexRow}>
@@ -392,13 +395,13 @@ export default ({navigation, route}) => {
                                                 <Text style={styles.unit}>￥</Text>
                                             ) : null}
                                             <TouchableOpacity
-                                                activeOpacity={0.8}
+                                                activeOpacity={1}
                                                 onPress={() => {
-                                                    const isFocused = inputRef.current.isFocused();
+                                                    const isFocused = inputRef.current[index]?.isFocused?.();
                                                     if (!isFocused) {
-                                                        setTimeout(() => {
-                                                            inputRef.current.focus();
-                                                        }, 300);
+                                                        inputRef.current[index]?.focus?.();
+                                                        // setTimeout(() => {
+                                                        // }, 300);
                                                     }
                                                 }}
                                                 style={[
@@ -424,7 +427,11 @@ export default ({navigation, route}) => {
                                                             changeRatio(index, value);
                                                         }
                                                     }}
-                                                    ref={inputRef}
+                                                    ref={(ref) => {
+                                                        if (ref) {
+                                                            inputRef.current[index] = ref;
+                                                        }
+                                                    }}
                                                     style={{
                                                         color:
                                                             lastSelectedIndex !== index
@@ -487,10 +494,10 @@ const styles = StyleSheet.create({
         color: '#EB7121',
     },
     fundItem: {
-        paddingTop: Space.padding,
+        paddingVertical: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
-        minHeight: px(70),
+        // minHeight: px(60),
     },
     fundName: {
         fontSize: px(13),
@@ -498,7 +505,6 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     fundPercent: {
-        marginTop: px(4),
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.lightGrayColor,
