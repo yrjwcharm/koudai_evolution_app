@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-09-22 11:55:04
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-29 18:44:51
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 16:27:05
  * @Description: 开户身份证认证
  */
 
@@ -484,8 +484,8 @@ class IdAuth extends Component {
                                 </>
                             ) : null}
                         </View>
-                        <BottomDesc />
                     </ScrollView>
+                    <BottomDesc />
                 </KeyboardAwareScrollView>
                 <FixedButton
                     title={'下一步'}

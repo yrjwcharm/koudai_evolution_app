@@ -102,7 +102,9 @@ export default function DetailAccount({route, navigation}) {
                     if (res.code === '000000') {
                         setRiskChartMin(
                             Math.min.apply(
-                                res.result.risk_info?.label[2].ratio,
+                                res.result?.risk_info?.label && res.result?.risk_info?.label[2]
+                                    ? res.result.risk_info?.label[2].ratio
+                                    : 0,
                                 res.result.risk_info?.chart.map(function (o) {
                                     return o.val;
                                 })
@@ -112,11 +114,11 @@ export default function DetailAccount({route, navigation}) {
                         navigation.setOptions({
                             title: res.result.title,
                             headerRight: () => {
-                                return (
+                                return res.result.show_toolkit ? (
                                     <TouchableOpacity onPress={rightPress} activeOpacity={1}>
                                         <Text style={styles.right_sty}>{'产品说明书'}</Text>
                                     </TouchableOpacity>
-                                );
+                                ) : null;
                             },
                         });
                         setPeriod(res.result.period);
@@ -523,7 +525,9 @@ export default function DetailAccount({route, navigation}) {
                                         initScript={histogram(
                                             data?.risk_info.chart,
                                             (Math.floor(riskChartMin / 3) - 1) * 3,
-                                            data?.risk_info?.label[2]?.ratio,
+                                            data?.risk_info?.label && data?.risk_info?.label[2]
+                                                ? data?.risk_info?.label[2]?.ratio
+                                                : undefined,
                                             text(160)
                                         )}
                                         style={{marginTop: text(-6), zIndex: 9}}
@@ -540,24 +544,35 @@ export default function DetailAccount({route, navigation}) {
                                         <Ionicons name={'square'} color={'#E74949'} size={10} />
                                         <Text> {data.risk_info?.label[0]?.key}</Text>
                                     </View>
-                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                    <View
+                                        style={[
+                                            {
+                                                flex: data?.risk_info?.label && data?.risk_info?.label[2] ? 1 : 1.5,
+                                                fontSize: text(12),
+                                            },
+                                            Style.flexRow,
+                                        ]}>
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
-                                    <View
-                                        style={{
-                                            fontSize: text(12),
-                                            marginBottom: px(-16),
-                                        }}>
-                                        <Text style={{fontSize: text(12)}}>--- {data?.risk_info?.label[2]?.key}</Text>
-                                        <Text
+                                    {data?.risk_info?.label && data?.risk_info?.label[2] ? (
+                                        <View
                                             style={{
-                                                fontSize: text(10),
+                                                fontSize: text(12),
+                                                marginBottom: px(-16),
                                             }}>
-                                            {'       '}
-                                            {data?.risk_info?.label[2]?.val}
-                                        </Text>
-                                    </View>
+                                            <Text style={{fontSize: text(12)}}>
+                                                --- {data?.risk_info?.label[2]?.key}
+                                            </Text>
+                                            <Text
+                                                style={{
+                                                    fontSize: text(10),
+                                                }}>
+                                                {'       '}
+                                                {data?.risk_info?.label[2]?.val}
+                                            </Text>
+                                        </View>
+                                    ) : null}
                                 </View>
                             </View>
                         </View>

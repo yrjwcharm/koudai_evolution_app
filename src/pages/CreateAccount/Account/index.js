@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-07-27 16:08:09
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 16:27:15
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -244,8 +244,8 @@ class Index extends Component {
                             <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
                         </View>
                     </View>
-                    <BottomDesc />
                 </ScrollView>
+                <BottomDesc />
                 <FixedButton
                     title={'下一步'}
                     disabled={this.state.btnDisable}

@@ -738,8 +738,8 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             </>
-                            <BottomDesc />
                         </LinearGradient>
+                        <BottomDesc />
                         <UpdateCom />
                     </ScrollView>
                     {data?.guide_tip ? (

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 11:30:35
+ * @LastEditTime: 2021-11-09 16:55:37
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -182,14 +182,16 @@ export const histogram = (data, min, max_drop, height) =>
       type: 'dodge',
       marginRatio: 0.4// 设置分组间柱子的间距
     });
-    chart.guide().line({ // 绘制辅助线
-      start: [ 'min', ${max_drop} ],
-      end: [ 'max',  ${max_drop}],
-      style: {
-        stroke: '#4E556C',
-        lineDash: [ 2 ]
-      }
-    })
+    if (${max_drop} !== undefined) {
+      chart.guide().line({ // 绘制辅助线
+        start: [ 'min', ${max_drop} ],
+        end: [ 'max',  ${max_drop}],
+        style: {
+          stroke: '#4E556C',
+          lineDash: [ 2 ]
+        }
+      })
+    }
     
   chart.render();
   })()

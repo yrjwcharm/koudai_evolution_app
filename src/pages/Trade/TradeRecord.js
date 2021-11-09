@@ -2,7 +2,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 18:52:46
+ * @LastEditTime: 2021-11-09 15:41:55
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -200,7 +200,7 @@ const TradeRecord = ({route, navigation}) => {
                         <View style={styles.errorMsgBox}>
                             <Text style={styles.errorMsg}>
                                 {item.error_msg}
-                                <Icon name={'angle-right'} size={16} color={Colors.red} />
+                                <Icon name={'angle-right'} size={16} color={Colors.red} style={{marginLeft: px(2)}} />
                             </Text>
                         </View>
                     ) : null}

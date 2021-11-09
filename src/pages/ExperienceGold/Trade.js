@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-25 16:34:18
  * @Description:体验金购买
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-25 14:42:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 16:21:21
  */
 import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image, ScrollView} from 'react-native';
@@ -46,7 +46,8 @@ export default function Trade({navigation, route}) {
                 setList(resp.result);
             });
         });
-    }, [route]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const submitData = (password) => {
         http.post('/freefund/do_buy/20210101', {
             amount: data.buy_info.amount,

@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-11-05 17:16:46
- * @LastEditors: yhc
+ * @LastEditTime: 2021-11-09 16:23:42
+ * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -60,6 +60,7 @@ const BottomDesc = (props) => {
 const styles = StyleSheet.create({
     con: {
         marginVertical: text(40),
+        paddingHorizontal: Space.padding,
     },
     img: {
         width: deviceWidth - text(40),
