@@ -2,15 +2,16 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 14:15:21
+ * @LastEditTime: 2021-11-09 18:29:07
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
-import {Keyboard, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Keyboard, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import CheckBox from './components/CheckBox';
-import {px, onlyNumber} from '../../utils/appUtil';
+import {px, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
 import {cloneDeep, findLastIndex} from 'lodash';
 import Toast from '../../components/Toast';
@@ -245,7 +246,7 @@ export default ({navigation, route}) => {
             items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
             delete items[lastSelectedIndex].error;
         } else {
-            items[index].amount = parseFloat(items[index].amount);
+            items[index].amount = items[index].amount != 0 ? parseFloat(items[index].amount) : items[index].amount;
         }
         dispatch({type: 'select', payload: items});
     };
@@ -341,8 +342,12 @@ export default ({navigation, route}) => {
     }, [data.init_amount, data.items]);
 
     return (
-        <View style={styles.container}>
-            <ScrollView bounces={false} style={{flex: 1}} scrollIndicatorInsets={{right: 1}}>
+        <View style={[styles.container, {paddingBottom: isIphoneX() ? px(45) + px(8) + 34 : px(45) + px(8) + px(8)}]}>
+            <KeyboardAwareScrollView
+                bounces={false}
+                extraScrollHeight={px(28)}
+                style={{flex: 1}}
+                scrollIndicatorInsets={{right: 1}}>
                 <View style={{paddingHorizontal: Space.padding}}>
                     <View style={styles.assetPool}>
                         <View style={Style.flexRow}>
@@ -370,7 +375,8 @@ export default ({navigation, route}) => {
                                 <View style={Style.flexBetween}>
                                     <TouchableOpacity
                                         activeOpacity={1}
-                                        onPress={() => toggleSelect(index, !fund.select)}>
+                                        onPress={() => toggleSelect(index, !fund.select)}
+                                        style={{marginTop: px(12)}}>
                                         <View style={Style.flexRow}>
                                             <CheckBox
                                                 control
@@ -385,7 +391,12 @@ export default ({navigation, route}) => {
                                             </View>
                                         </View>
                                         {fund.select && route.params.ref === 'ChooseFund' ? (
-                                            <View style={{marginTop: px(4), paddingLeft: px(24)}}>
+                                            <View
+                                                style={{
+                                                    marginTop: px(4),
+                                                    paddingLeft: px(24),
+                                                    marginBottom: fund.recommend ? 0 : px(12),
+                                                }}>
                                                 <Text style={styles.fundPercent}>
                                                     {lastHasRatioIndex === index && lastHasRatioIndex !== 0 ? '约' : ''}
                                                     占总配置的
@@ -394,6 +405,11 @@ export default ({navigation, route}) => {
                                                         : (fund.percent * 1).toFixed(2)}
                                                     %
                                                 </Text>
+                                            </View>
+                                        ) : null}
+                                        {fund.recommend ? (
+                                            <View style={styles.recommendBox}>
+                                                <Text style={styles.recommendText}>{fund.recommend}</Text>
                                             </View>
                                         ) : null}
                                     </TouchableOpacity>
@@ -455,11 +471,12 @@ export default ({navigation, route}) => {
                                     ) : null}
                                 </View>
                                 {fund.select && index === maxInitAmountIndex ? (
-                                    <View style={styles.tipsBox}>
-                                        <Text style={styles.tips}>
+                                    <View style={[styles.tipsBox, fund.recommend ? {marginTop: 0} : {}]}>
+                                        <Text style={[styles.tips, {color: Colors.red}]}>
                                             {route.params.ref === 'ChooseFund'
-                                                ? `由于该基金配置比例过低，因此您的起投金额需要达到
-                                            ${(initAmount * 1).toFixed(2)}元。`
+                                                ? `由于该基金配置比例过低，因此您的起投金额需要达到${(
+                                                      initAmount * 1
+                                                  ).toFixed(2)}元。`
                                                 : `该基金最低起购金额${parseFloat(fund.min_limit).toFixed(2)}元`}
                                         </Text>
                                     </View>
@@ -468,7 +485,7 @@ export default ({navigation, route}) => {
                         );
                     })}
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
             <FixedButton title={'确认调整'} onPress={onSubmit} />
         </View>
     );
@@ -502,10 +519,9 @@ const styles = StyleSheet.create({
         color: '#EB7121',
     },
     fundItem: {
-        paddingVertical: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
-        // minHeight: px(60),
+        minHeight: px(60),
     },
     fundName: {
         fontSize: px(13),
@@ -532,8 +548,21 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     tipsBox: {
-        marginTop: px(8),
+        marginTop: px(12),
         padding: px(8),
+        backgroundColor: 'rgba(231, 73, 73, 0.1)',
+    },
+    recommendBox: {
+        marginTop: px(4),
+        marginBottom: px(12),
+        marginLeft: px(24),
+        paddingVertical: px(4),
+        paddingHorizontal: px(8),
         backgroundColor: '#FFF5E5',
+    },
+    recommendText: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: '#EB7121',
     },
 });
