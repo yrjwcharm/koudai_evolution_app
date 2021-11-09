@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 17:57:47
+ * @LastEditTime: 2021-11-09 16:00:57
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -68,7 +68,15 @@ class BankInfo extends Component {
         this.time && clearInterval(this.time);
     }
     checkData = (phone, code, selectBank, bank_no) => {
-        if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 19) {
+        const {phoneError, bankErrMes} = this.state;
+        if (
+            !bankErrMes &&
+            !phoneError &&
+            phone.length >= 11 &&
+            code.length >= 6 &&
+            selectBank.bank_code &&
+            bank_no.length >= 19
+        ) {
             this.setState({btnDisable: false});
         } else {
             this.setState({btnDisable: true});
@@ -282,10 +290,14 @@ class BankInfo extends Component {
         const {bank_no, selectBank, code} = this.state;
         this.setState({phone: inputInt(_phone)}, () => {
             var phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-            this.setState({
-                phoneError: phoneReg.test(this.state.phone) ? '' : '请输入正确的手机号',
-            });
-            this.checkData(this.state.phone, code, selectBank, bank_no);
+            this.setState(
+                {
+                    phoneError: phoneReg.test(this.state.phone) ? '' : '请输入正确的手机号',
+                },
+                () => {
+                    this.checkData(this.state.phone, code, selectBank, bank_no);
+                }
+            );
         });
     };
     render() {
