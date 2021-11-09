@@ -97,8 +97,8 @@ const AddedBuy = ({navigation, route}) => {
                         planId.current = res.result.plan_id;
                         setConfigData(res.result);
                     } else {
+                        setErrTip(res.message);
                         setConfigData(initConfigData);
-                        Toast.show(res.message);
                     }
                     setConfigLoading(false);
                 });
@@ -252,7 +252,9 @@ const AddedBuy = ({navigation, route}) => {
                 {/* 详细资产 */}
                 {showDetail ? (
                     configLoading ? (
-                        <ActivityIndicator color="#999" size="small" />
+                        <View style={{backgroundColor: '#fff', paddingVertical: px(10)}}>
+                            <ActivityIndicator color="#999" size="small" />
+                        </View>
                     ) : (
                         <View>
                             {configData?.fund_list_dst?.map?.((asset, index) => {
