@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 14:35:48
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-20 11:17:19
+ * @LastEditTime: 2021-11-09 20:54:49
  * @Description: 在APP里阅读PDF
  */
 import React, {Component} from 'react';
@@ -62,7 +62,7 @@ export default class OpenPdf extends Component {
                             // console.log(`current page: ${page}`);
                         }}
                         onError={(error) => {
-                            Toast.show(error);
+                            Toast.show(`${error}`);
                         }}
                         onPressLink={(uri) => {
                             // console.log(`Link presse: ${uri}`);

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 16:12:17
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 20:45:27
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -989,7 +989,7 @@ class TradeBuy extends Component {
                         )}
                         {button && (
                             <FixedButton
-                                agreement={data.scene === 'adviser' ? data.agreement : undefined}
+                                agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                                 title={button.text}
                                 disabled={button.avail == 0 || !buyBtnCanClick}
                                 onPress={this.buyClick}

@@ -2,7 +2,7 @@
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 19:22:53
+ * @LastEditTime: 2021-11-09 20:47:27
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -51,8 +51,8 @@ export default class FixedButton extends Component {
                         style={{paddingTop: px(4), paddingBottom: Space.padding}}
                         onLayout={(e) => heightChange && heightChange(e.nativeEvent.layout.height)}>
                         <Agreements
-                            check={check}
-                            data={agreement}
+                            check={agreement?.default_agree}
+                            data={agreement?.list}
                             onChange={(checkStatus) => this.setState({check: checkStatus})}
                         />
                     </View>

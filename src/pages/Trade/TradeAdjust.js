@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 20:01:11
+ * @LastEditTime: 2021-11-09 20:49:56
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -296,7 +296,7 @@ class TradeAdjust extends Component {
                             <BottomDesc />
                         </ScrollView>
                         <FixedButton
-                            agreement={data?.agreement}
+                            agreement={data?.agreement_bottom}
                             title="确认调仓"
                             onPress={this.confirmBtn}
                             heightChange={(height) => this.setState({deltaHeight: height})}
