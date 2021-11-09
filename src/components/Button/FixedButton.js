@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 17:18:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 19:15:12
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -13,7 +13,7 @@ import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import {Space} from '../../common/commonStyle';
 export default class FixedButton extends Component {
     state = {
-        check: true,
+        check: this.props.agreement?.default_agree !== undefined ? this.props.agreement?.default_agree : true,
         keyboardHeight: new Animated.Value(0),
     };
 
