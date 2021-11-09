@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 18:39:15
+ * @LastEditTime: 2021-11-10 00:37:19
  * @Description:
  */
 /**
@@ -27,14 +27,23 @@ export function destroy() {
 }
 export default class Modal extends React.Component {
     static show(options) {
-        global.rootSibling = new RootSibling(
-            (
+        if (global.rootSibling) {
+            global.rootSibling.update(
                 <>
-                    <Mask />
+                    {<Mask />}
                     <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
                 </>
-            )
-        );
+            );
+        } else {
+            global.rootSibling = new RootSibling(
+                (
+                    <>
+                        {<Mask />}
+                        <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
+                    </>
+                )
+            );
+        }
         return global.rootSibling;
     }
     static close(options) {
