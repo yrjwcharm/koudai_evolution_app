@@ -620,7 +620,7 @@ export default function DetailRetiredPlan({navigation, route}) {
                         }}>
                         {data.tip}
                     </Text>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             ) : null}
             {showMask && (

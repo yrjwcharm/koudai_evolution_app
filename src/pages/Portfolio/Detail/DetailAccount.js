@@ -563,7 +563,7 @@ export default function DetailAccount({route, navigation}) {
                     <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
                         <Html style={styles.bottomTip} html={data.tip} />
                     </View>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}

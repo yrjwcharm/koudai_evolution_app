@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-10-22 15:37:31
+ * @LastEditTime: 2021-11-09 19:40:35
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -782,7 +782,7 @@ export default function PortfolioAssets(props) {
                         )}
                     </View>
                 </BottomModal>
-                <BottomDesc />
+                <BottomDesc fix_img={data?.advisor_footer_img} />
             </ScrollView>
             {data?.notice_bar ? (
                 <GuideTips
