@@ -167,7 +167,7 @@ const Index = (props) => {
                                                         styles.ratio,
                                                         {fontSize: px(22), lineHeight: px(30), marginTop: px(6)},
                                                     ]}>
-                                                    {data?.recommend?.name}
+                                                    {data?.recommend?.title}
                                                 </Text>
                                             )}
                                             <LinearGradient

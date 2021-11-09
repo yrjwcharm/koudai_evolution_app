@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 19:55:30
+ * @LastEditTime: 2021-11-09 14:24:45
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -89,10 +89,15 @@ class TradeBuy extends Component {
         }).then((res) => {
             if (res.code === '000000') {
                 this.props.navigation.setOptions({title: res.result.title || '买入'});
-                console.log(_modalRef);
                 const showRishPop = () => {
                     Modal.show({
-                        cancelCallBack: () => this.props.navigation.goBack(),
+                        cancelCallBack: () => {
+                            if (res.result.risk_pop.cancel?.act == 'back') {
+                                this.props.navigation.goBack();
+                            } else if (res.result.risk_pop.cancel?.act == 'jump') {
+                                this.props.jump(res.result.risk_pop.cancel?.url);
+                            }
+                        },
                         cancelText: res.result.risk_pop.cancel.text,
                         confirm: true,
                         confirmCallBack: () => {
@@ -357,6 +362,13 @@ class TradeBuy extends Component {
             Modal.show({
                 title: data?.buy_do_pop?.title,
                 confirm: true,
+                cancelCallBack: () => {
+                    if (data?.buy_do_pop?.cancel?.act == 'back') {
+                        this.props.navigation.goBack();
+                    } else if (data?.buy_do_pop?.cancel?.act == 'jump') {
+                        this.props.jump(data?.buy_do_pop?.cancel?.url);
+                    }
+                },
                 content: data?.buy_do_pop?.content,
                 confirmText: data?.buy_do_pop?.confirm_text,
                 cancelText: data?.buy_do_pop?.cancel_text,

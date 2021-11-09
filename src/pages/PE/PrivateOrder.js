@@ -1,9 +1,9 @@
 /*
  * @Autor: xjh
  * @Date: 2021-01-20 11:43:47
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @Desc:私募预约
- * @LastEditTime: 2021-04-16 20:49:37
+ * @LastEditTime: 2021-11-09 11:10:19
  */
 import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
@@ -16,6 +16,7 @@ import Http from '../../services';
 import Toast from '../../components/Toast';
 import {Modal} from '../../components/Modal';
 import Mask from '../../components/Mask';
+import _ from 'lodash';
 export default class PrivateOrder extends Component {
     constructor(props) {
         super(props);
@@ -213,7 +214,7 @@ export default class PrivateOrder extends Component {
                     <FixedButton
                         title={data.button.text}
                         style={{backgroundColor: '#CEA26B'}}
-                        onPress={this.submitOrder}
+                        onPress={_.debounce(this.submitOrder, 500)}
                         color={'#CEA26B'}
                     />
                 )}
