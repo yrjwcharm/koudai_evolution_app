@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
- * @LastEditors: dx
- * @LastEditTime: 2021-07-01 19:06:33
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-09 19:37:42
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -266,7 +266,7 @@ export default function DetailAccount({route, navigation}) {
                         }}>
                         {data.tip}
                     </Text>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             )}
             {Object.keys(data).length > 0 && <FixedBtn btns={data.btns} activeOpacity={1} />}

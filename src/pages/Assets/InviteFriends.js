@@ -2,7 +2,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 11:36:21
+ * @LastEditTime: 2021-11-11 10:44:25
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';

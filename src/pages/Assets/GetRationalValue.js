@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-27 14:40:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-02-27 15:18:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-09 19:49:33
  * @Description: 信任值获取方法
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';

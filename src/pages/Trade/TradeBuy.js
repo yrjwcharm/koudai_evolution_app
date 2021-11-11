@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 17:30:13
+ * @LastEditTime: 2021-11-11 10:53:16
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -79,102 +79,106 @@ class TradeBuy extends Component {
             );
         });
     };
-
+    init_timer = null;
     init = (_type) => {
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
-        http.get('/trade/buy/info/20210101', {
-            type: _type || type,
-            poid,
-            amount: this.state.amount,
-        }).then((res) => {
-            if (res.code === '000000') {
-                this.props.navigation.setOptions({title: res.result.title || '买入'});
-                const showRishPop = () => {
-                    Modal.show({
-                        cancelCallBack: () => {
-                            if (res.result.risk_pop.cancel?.act == 'back') {
-                                this.props.navigation.goBack();
-                            } else if (res.result.risk_pop.cancel?.act == 'jump') {
-                                this.props.jump(res.result.risk_pop.cancel?.url);
-                            }
-                        },
-                        cancelText: res.result.risk_pop.cancel.text,
-                        confirm: true,
-                        confirmCallBack: () => {
-                            if (res.result.risk_pop.confirm.url) {
-                                this.props.jump(res.result.risk_pop.confirm.url);
-                            }
-                        },
-                        confirmText: res.result.risk_pop.confirm.text,
-                        content: res.result.risk_pop.content,
-                        isTouchMaskToClose: false,
-                        title: res.result.risk_pop.title,
-                    });
-                };
-                // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
-                if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
-                    Modal.show({
-                        children: () => {
-                            return (
-                                <View>
-                                    <Text
-                                        style={{
-                                            marginTop: px(2),
-                                            fontSize: Font.textH2,
-                                            lineHeight: px(20),
-                                            color: Colors.red,
-                                            textAlign: 'center',
-                                        }}>
-                                        {res.result.risk_disclosure.sub_title}
-                                    </Text>
-                                    <ScrollView
-                                        bounces={false}
-                                        style={{
-                                            marginVertical: Space.marginVertical,
-                                            paddingHorizontal: px(20),
-                                            maxHeight: px(352),
-                                        }}>
-                                        <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
-                                            {res.result.risk_disclosure.content}
+        if (this.init_timer) clearTimeout(this.init_timer);
+        this.init_timer = setTimeout(() => {
+            http.get('/trade/buy/info/20210101', {
+                type: _type || type,
+                poid,
+                amount: this.state.amount,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    this.props.navigation.setOptions({title: res.result.title || '买入'});
+                    const showRishPop = () => {
+                        Modal.show({
+                            cancelCallBack: () => {
+                                if (res.result.risk_pop.cancel?.act == 'back') {
+                                    this.props.navigation.goBack();
+                                } else if (res.result.risk_pop.cancel?.act == 'jump') {
+                                    this.props.jump(res.result.risk_pop.cancel?.url);
+                                }
+                            },
+                            cancelText: res.result.risk_pop.cancel.text,
+                            confirm: true,
+                            confirmCallBack: () => {
+                                if (res.result.risk_pop.confirm.url) {
+                                    this.props.jump(res.result.risk_pop.confirm.url);
+                                }
+                            },
+                            confirmText: res.result.risk_pop.confirm.text,
+                            content: res.result.risk_pop.content,
+                            isTouchMaskToClose: false,
+                            title: res.result.risk_pop.title,
+                        });
+                    };
+                    // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
+                    if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
+                        Modal.show({
+                            children: () => {
+                                return (
+                                    <View>
+                                        <Text
+                                            style={{
+                                                marginTop: px(2),
+                                                fontSize: Font.textH2,
+                                                lineHeight: px(20),
+                                                color: Colors.red,
+                                                textAlign: 'center',
+                                            }}>
+                                            {res.result.risk_disclosure.sub_title}
                                         </Text>
-                                    </ScrollView>
-                                </View>
-                            );
-                        },
-                        confirmCallBack: () => {
-                            if (this.props.isFocused && res.result.risk_pop) {
-                                showRishPop();
-                            }
-                        },
-                        confirmText: '关闭',
-                        countdown: res.result.risk_disclosure.countdown,
-                        isTouchMaskToClose: false,
-                        onCloseCallBack: () => this.props.navigation.goBack(),
-                        title: res.result.risk_disclosure.title,
-                    });
-                } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
-                    showRishPop();
-                }
-                this.setState(
-                    {
-                        data: res.result,
-                        bankSelect: res.result?.pay_methods[0],
-                        currentDate: res.result?.period_info?.current_date,
-                        nextday: res.result?.period_info?.nextday,
-                    },
-                    () => {
-                        let amount = this.state.amount;
-                        if (this.state.type == 0) {
-                            this.plan(amount);
-                        }
-                        if (amount) {
-                            this.onInput(amount, 'init');
-                        }
+                                        <ScrollView
+                                            bounces={false}
+                                            style={{
+                                                marginVertical: Space.marginVertical,
+                                                paddingHorizontal: px(20),
+                                                maxHeight: px(352),
+                                            }}>
+                                            <Text
+                                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
+                                                {res.result.risk_disclosure.content}
+                                            </Text>
+                                        </ScrollView>
+                                    </View>
+                                );
+                            },
+                            confirmCallBack: () => {
+                                if (this.props.isFocused && res.result.risk_pop) {
+                                    showRishPop();
+                                }
+                            },
+                            confirmText: '关闭',
+                            countdown: res.result.risk_disclosure.countdown,
+                            isTouchMaskToClose: false,
+                            onCloseCallBack: () => this.props.navigation.goBack(),
+                            title: res.result.risk_disclosure.title,
+                        });
+                    } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
+                        showRishPop();
                     }
-                );
-            }
-        });
+                    this.setState(
+                        {
+                            data: res.result,
+                            bankSelect: res.result?.pay_methods[0],
+                            currentDate: res.result?.period_info?.current_date,
+                            nextday: res.result?.period_info?.nextday,
+                        },
+                        () => {
+                            let amount = this.state.amount;
+                            if (this.state.type == 0) {
+                                this.plan(amount);
+                            }
+                            if (amount) {
+                                this.onInput(amount, 'init');
+                            }
+                        }
+                    );
+                }
+            });
+        }, 300);
     };
 
     /**

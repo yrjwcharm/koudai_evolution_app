@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 17:01:15
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-11 10:44:40
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -313,6 +313,7 @@ class BankInfo extends Component {
                     <BankCardModal
                         title="请选择银行卡"
                         data={bankList}
+                        type={'hidden'}
                         style={{height: px(500)}}
                         onDone={(data) => {
                             this.setState({selectBank: data}, () => {

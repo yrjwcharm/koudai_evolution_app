@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 15:32:01
+ * @LastEditTime: 2021-11-11 10:52:17
  * @Description:路由表
  */
 import React from 'react';
@@ -146,7 +146,7 @@ import Questionnaire from '../pages/Evaluation/Questionnaire'; // 传统风险�
 import PortfolioMask from '../pages/Portfolio/PortfolioMask'; //详情页蒙层
 import QuestionnaireResult from '../pages/Evaluation/QuestionnaireResult'; // 传统风险评测结果页
 import TopInvestors from '../pages/Assets/TopInvestors'; //牛人信号
-import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 智能组合收益明细
+import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 收益明细
 import IntelligentInvestAnalysis from '../pages/Assets/IntelligentInvestAnalysis'; // 智能组合投资分析
 import InsuranceList from '../pages/Find/InsuranceList'; //保险产品列表
 import PrivacySetting from '../pages/Settings/PrivacySetting'; //隐私设置
@@ -550,7 +550,7 @@ export default function AppStack() {
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
             <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
-            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投智能组合'}} />
+            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投全天候组合'}} />
             <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
             <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />

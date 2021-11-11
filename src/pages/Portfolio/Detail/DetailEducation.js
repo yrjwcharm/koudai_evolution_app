@@ -637,7 +637,7 @@ export default function DetailEducation({navigation, route}) {
                             }}>
                             {data.tip}
                         </Text>
-                        <BottomDesc style={{marginTop: text(80)}} />
+                        <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                     </ScrollView>
                     {showMask && (
                         <Mask
