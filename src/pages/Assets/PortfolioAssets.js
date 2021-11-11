@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-11 10:44:34
+ * @LastEditTime: 2021-11-11 11:27:43
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -691,7 +691,13 @@ export default function PortfolioAssets(props) {
                             </TouchableOpacity>
                         </View>
                     )}
-                    {Object.keys(chart).length > 0 && renderChart() /* 净值趋势图 */}
+                    {
+                        Object.keys(chart).length > 0 ? (
+                            renderChart()
+                        ) : (
+                            <View style={{height: 260 + px(48)}} />
+                        ) /* 净值趋势图 */
+                    }
                     {data?.asset_deploy && renderFixedPlan() /* 低估值投资计划 */}
                     <View style={[styles.list_card_sty, {marginTop: text(16)}]}>
                         {[...(data?.core_buttons || []), ...(data?.extend_buttons || [])].map((_item, _index, arr) => {

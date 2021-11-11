@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 11:38:57
+ * @LastEditTime: 2021-11-11 12:09:30
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -482,8 +482,8 @@ function HomeScreen({navigation, route}) {
         loading ? (
             renderLoading()
         ) : !showGesture ? (
-            isFocused && (
-                <View style={styles.container}>
+            <View style={styles.container}>
+                {isFocused && (
                     <BottomModal
                         style={{height: px(600), backgroundColor: '#fff'}}
                         ref={bottomModal}
@@ -585,516 +585,509 @@ function HomeScreen({navigation, route}) {
                             </ScrollView>
                         </View>
                     </BottomModal>
-                    {/* 登录注册蒙层 */}
-                    {!userInfo.toJS().is_login && <LoginMask />}
-                    {isVisible && (
-                        <>
-                            {!global.rootSibling && <Mask />}
-                            <Modal
-                                children={() => (
-                                    <View
-                                        style={[
-                                            Style.flexRow,
-                                            {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)},
-                                        ]}>
-                                        {modalData.options?.map((item, index) => {
-                                            return (
-                                                <TouchableOpacity
-                                                    activeOpacity={0.8}
-                                                    key={item.key}
-                                                    onPress={() => {
-                                                        setChoice(item.key);
-                                                        setNotChoose('');
-                                                    }}
-                                                    style={[
-                                                        Style.flexCenter,
-                                                        styles.option,
-                                                        choice === item.key ? styles.acOption : {},
-                                                        {marginRight: index % 2 === 0 ? text(12) : 0},
-                                                    ]}>
-                                                    <Text
-                                                        numberOfLines={1}
-                                                        style={[
-                                                            styles.optionText,
-                                                            choice === item.key ? {color: '#fff'} : {},
-                                                        ]}>
-                                                        {item.val}
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                        {notChoose ? (
-                                            <Text style={{color: Colors.red, paddingVertical: text(8)}}>
-                                                {notChoose}
-                                            </Text>
-                                        ) : null}
-                                    </View>
-                                )}
-                                clickClose={false}
-                                confirmCallBack={() => {
-                                    if (choice) {
-                                        setIsVisible(false);
-                                        reportSurvey(choice);
-                                    } else {
-                                        setNotChoose('*请选择一个答案，才能提交');
-                                    }
-                                }}
-                                confirmText={'确认'}
-                                destroy={() => {
-                                    if (choice) {
-                                        setIsVisible(false);
-                                        reportSurvey(choice);
-                                    } else {
-                                        setNotChoose('*请选择一个答案，才能提交');
-                                    }
-                                }}
-                                isTouchMaskToClose={false}
-                                isVisible={isVisible}
-                                title={modalData.title}
-                            />
-                        </>
-                    )}
-                    <Header
-                        title={'我的资产'}
-                        scrollY={scrollY}
-                        style={{
-                            opacity: 0,
-                            position: 'absolute',
-                            width: deviceWidth,
-                            backgroundColor: '#fff',
-                            zIndex: scrollY === 0 ? 0 : 10,
-                            borderColor: Colors.bgColor,
-                            borderBottomWidth: 0.5,
-                        }}
-                    />
-                    <ScrollView
-                        onScroll={onScroll}
-                        ref={scrollRef}
-                        showsVerticalScrollIndicator={false}
-                        scrollEventThrottle={16}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={refreshing}
-                                onRefresh={() => userInfo?.toJS()?.is_login && !showGesture && init('refresh')}
-                            />
-                        }>
-                        <View style={[styles.assetsContainer]}>
-                            {/* 用户头像 会员中心 */}
-                            <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
-                                <View style={[Style.flexRow, {flex: 1}]}>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={Style.flexRow}
-                                        onPress={() => {
-                                            global.LogTool('assetsAvatarStart');
-                                            navigation.navigate('Profile');
-                                        }}>
-                                        <Image
-                                            source={
-                                                userInfo?.toJS()?.avatar
-                                                    ? {uri: userInfo.toJS().avatar}
-                                                    : require('../../assets/personal/usercenter.png')
-                                            }
-                                            style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
-                                        />
-                                        <Text style={styles.username}>
-                                            {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
-                                        </Text>
-                                    </TouchableOpacity>
-                                    {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
-                                            <LinearGradient
-                                                colors={['#FFF6E8', '#FFE1B8']}
-                                                start={{x: 0, y: 0}}
-                                                end={{x: 1, y: 0}}
-                                                style={[styles.memberCenter, Style.flexRow]}>
-                                                <Text style={styles.memberText}>
-                                                    {userBasicInfo?.member_info?.title}
-                                                </Text>
-                                                <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
-                                            </LinearGradient>
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        global.LogTool('assetsNotificationCenter');
-                                        jump({path: 'RemindMessage'});
-                                    }}>
-                                    {newMes ? <View style={styles.new_message} /> : null}
-                                    <Image
-                                        style={{width: text(32), height: text(32)}}
-                                        source={require('../../assets/img/index/whiteMes.png')}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
-                            <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
-                            {/* 系统通知 */}
-                            {!hideMsg && notice?.system ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.9}
-                                    onPress={() => {
-                                        notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
-                                        jump(notice?.system?.url);
-                                    }}>
-                                    <Animated.View
-                                        style={[
-                                            styles.systemMsgContainer,
-                                            Style.flexBetween,
-                                            {
-                                                opacity: fadeAnim,
-                                                paddingRight: notice?.system?.button ? text(16) : text(38),
-                                            },
-                                        ]}>
-                                        <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
+                )}
 
-                                        {notice?.system?.button ? (
-                                            <View style={styles.btn}>
-                                                <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
-                                            </View>
-                                        ) : (
-                                            <TouchableOpacity
-                                                style={styles.closeSystemMsg}
-                                                activeOpacity={0.8}
-                                                onPress={hideSystemMsg}>
-                                                <EvilIcons name={'close'} size={22} color={Colors.yellow} />
-                                            </TouchableOpacity>
-                                        )}
-                                    </Animated.View>
-                                </TouchableOpacity>
-                            ) : null}
-                            {/* 资产信息 */}
-                            <View style={[styles.summaryTitle, Style.flexCenter]}>
-                                <Text style={styles.summaryKey}>总资产(元)</Text>
-                                <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
-                                <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
-                                    <Ionicons
-                                        name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
-                                        size={16}
-                                        color={'rgba(255, 255, 255, 0.8)'}
-                                    />
-                                </TouchableOpacity>
-                                {/* 体验金 */}
-                                {userBasicInfo?.free_fund && (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={[styles.experienceGold, Style.flexRow]}
-                                        onPress={() => {
-                                            global.LogTool('click', 'free_fund');
-                                            jump(userBasicInfo?.free_fund?.url);
-                                        }}>
-                                        <Image
-                                            source={require('../../assets/personal/jinbi.png')}
-                                            style={{width: text(15), height: text(15)}}
-                                        />
-                                        <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
-                                        <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-                            <Text style={{textAlign: 'center'}}>
-                                {showEye === 'true' ? (
-                                    <>
-                                        <Text style={styles.amount}>
-                                            {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
-                                        </Text>
-                                        <Text style={{...styles.amount, fontSize: text(24)}}>
-                                            {holdingData?.summary?.amount?.split('.')[1] || '00'}
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <Text style={styles.amount}>****</Text>
-                                )}
-                            </Text>
-                            {/* 小黄条 */}
-                            {notice?.trade && notice.trade.desc ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    style={[styles.tradeNotice, Style.flexCenter]}
-                                    onPress={() => {
-                                        global.LogTool('click', 'tradeMsg');
-                                        jump(notice?.trade?.url);
-                                    }}>
-                                    <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
-                                    <View style={[styles.noticeBox, Style.flexRow]}>
-                                        <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
-                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                    </View>
-                                </TouchableOpacity>
-                            ) : null}
-                            <View style={[styles.profitContainer, Style.flexRow]}>
-                                <View style={[Style.flexCenter, {flex: 1}]}>
-                                    <Text style={styles.profitKey}>日收益</Text>
-                                    <Text style={styles.profitVal}>
-                                        {showEye === 'true' ? holdingData?.summary?.profit || '0.00' : '****'}
-                                    </Text>
-                                </View>
-                                <View style={[Style.flexCenter, {flex: 1}]}>
-                                    <Text style={styles.profitKey}>累计收益</Text>
-                                    <Text style={styles.profitVal}>
-                                        {showEye === 'true' ? holdingData?.summary?.profit_acc || '0.00' : '****'}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                        {/* 顶部菜单 */}
-                        <View style={[styles.topMenu, Style.flexRow]}>
-                            {userBasicInfo?.top_menus?.map((item, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            global.LogTool('assetsIconsStart', 'top_menus', item.id);
-                                            jump(item.url);
-                                        }}
-                                        key={`topmenu${item.id}`}
-                                        style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                        <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                        {/* 中控 */}
-                        {centerData.length > 0 && (
-                            <LinearGradient
-                                colors={['#DEECFF', '#E2EEFF']}
-                                start={{x: 0, y: 0}}
-                                end={{x: 0, y: 1}}
-                                style={[styles.centerCtrl]}>
-                                {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
-                                <Image
-                                    source={moodEnumRef.current[centerData[page].mood || 1]}
-                                    style={styles.robotSty}
-                                />
-                                <Text
-                                    style={{
-                                        ...styles.noticeText,
-                                        color: Colors.defaultColor,
-                                        marginBottom: text(10),
-                                        marginLeft: text(60),
-                                    }}>
-                                    {`Hi，${userInfo?.toJS()?.nickname || userInfo?.toJS()?.mobile}`}
-                                </Text>
-                                {centerData.length > 1 && (
-                                    <Text style={styles.pageText}>
-                                        <Text style={styles.currentPage}>{page + 1}</Text>
-                                        <Text>/{centerData.length}</Text>
-                                    </Text>
-                                )}
-                                {centerData.length <= 1 &&
-                                    centerData.map((item, index) => {
+                {/* 登录注册蒙层 */}
+                {!userInfo.toJS().is_login && <LoginMask />}
+                {isVisible && (
+                    <>
+                        {!global.rootSibling && <Mask />}
+                        <Modal
+                            children={() => (
+                                <View
+                                    style={[
+                                        Style.flexRow,
+                                        {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)},
+                                    ]}>
+                                    {modalData.options?.map((item, index) => {
                                         return (
                                             <TouchableOpacity
                                                 activeOpacity={0.8}
+                                                key={item.key}
                                                 onPress={() => {
-                                                    if (item.button) {
-                                                        global.LogTool('assetsConsoleStart', item.type);
-                                                        http.post('/asset/center_click/20210101', {
-                                                            id: item.id,
-                                                            type: item.type,
-                                                        });
-                                                        jump(item.button.url);
-                                                    }
+                                                    setChoice(item.key);
+                                                    setNotChoose('');
                                                 }}
-                                                style={styles.contentBox}
-                                                key={item + index}>
-                                                {item.tag ? (
-                                                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
-                                                        <View
-                                                            style={[styles.contentTag, {backgroundColor: item.color}]}>
-                                                            <Text style={styles.contentTagText}>{item.tag}</Text>
-                                                        </View>
-                                                        {item.pub_date ? (
-                                                            <Text
-                                                                style={{
-                                                                    ...styles.contentTagText,
-                                                                    color: Colors.lightGrayColor,
-                                                                    fontWeight: '400',
-                                                                }}>
-                                                                {item.pub_date}
-                                                            </Text>
-                                                        ) : null}
-                                                    </View>
-                                                ) : null}
-                                                {item.title ? (
-                                                    <View style={{marginBottom: text(4)}}>
-                                                        <HTML html={item.title} style={styles.contentTitle} />
-                                                    </View>
-                                                ) : null}
-                                                <HTML html={item.content} style={styles.contentText} />
-                                                {item.button ? (
-                                                    <View
-                                                        style={[
-                                                            Style.flexRowCenter,
-                                                            styles.checkBtn,
-                                                            {backgroundColor: item.color || Colors.red},
-                                                        ]}>
-                                                        <Text style={{...styles.noticeText, marginRight: text(4)}}>
-                                                            {item.button.text}
-                                                        </Text>
-                                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                                    </View>
-                                                ) : null}
+                                                style={[
+                                                    Style.flexCenter,
+                                                    styles.option,
+                                                    choice === item.key ? styles.acOption : {},
+                                                    {marginRight: index % 2 === 0 ? text(12) : 0},
+                                                ]}>
+                                                <Text
+                                                    numberOfLines={1}
+                                                    style={[
+                                                        styles.optionText,
+                                                        choice === item.key ? {color: '#fff'} : {},
+                                                    ]}>
+                                                    {item.val}
+                                                </Text>
                                             </TouchableOpacity>
                                         );
                                     })}
-                                {centerData.length > 1 && (
-                                    <Carousel
-                                        activeSlideAlignment={'start'}
-                                        data={centerData}
-                                        inactiveSlideOpacity={1}
-                                        inactiveSlideScale={0.9}
-                                        itemHeight={text(144)}
-                                        itemWidth={deviceWidth - text(79)}
-                                        loop={Platform.select({android: false, ios: true})}
-                                        onSnapToItem={(index) => setPage(index)}
-                                        removeClippedSubviews
-                                        renderItem={renderItem}
-                                        sliderHeight={text(144)}
-                                        sliderWidth={deviceWidth - text(44)}
+                                    {notChoose ? (
+                                        <Text style={{color: Colors.red, paddingVertical: text(8)}}>{notChoose}</Text>
+                                    ) : null}
+                                </View>
+                            )}
+                            clickClose={false}
+                            confirmCallBack={() => {
+                                if (choice) {
+                                    setIsVisible(false);
+                                    reportSurvey(choice);
+                                } else {
+                                    setNotChoose('*请选择一个答案，才能提交');
+                                }
+                            }}
+                            confirmText={'确认'}
+                            destroy={() => {
+                                if (choice) {
+                                    setIsVisible(false);
+                                    reportSurvey(choice);
+                                } else {
+                                    setNotChoose('*请选择一个答案，才能提交');
+                                }
+                            }}
+                            isTouchMaskToClose={false}
+                            isVisible={isVisible}
+                            title={modalData.title}
+                        />
+                    </>
+                )}
+                <Header
+                    title={'我的资产'}
+                    scrollY={scrollY}
+                    style={{
+                        opacity: 0,
+                        position: 'absolute',
+                        width: deviceWidth,
+                        backgroundColor: '#fff',
+                        zIndex: scrollY === 0 ? 0 : 10,
+                        borderColor: Colors.bgColor,
+                        borderBottomWidth: 0.5,
+                    }}
+                />
+                <ScrollView
+                    onScroll={onScroll}
+                    ref={scrollRef}
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={16}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={() => userInfo?.toJS()?.is_login && !showGesture && init('refresh')}
+                        />
+                    }>
+                    <View style={[styles.assetsContainer]}>
+                        {/* 用户头像 会员中心 */}
+                        <View style={[styles.header, Style.flexRow, {paddingTop: insets.top + text(8)}]}>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={Style.flexRow}
+                                    onPress={() => {
+                                        global.LogTool('assetsAvatarStart');
+                                        navigation.navigate('Profile');
+                                    }}>
+                                    <Image
+                                        source={
+                                            userInfo?.toJS()?.avatar
+                                                ? {uri: userInfo.toJS().avatar}
+                                                : require('../../assets/personal/usercenter.png')
+                                        }
+                                        style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
                                     />
-                                )}
-                            </LinearGradient>
-                        )}
-                        {/* 持仓组合 */}
-                        {holdingData?.accounts?.map((item, index, arr) => {
-                            return item.portfolios ? (
-                                item.portfolios.length > 1 ? (
-                                    <View
-                                        key={`account${item.id}`}
-                                        style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
-                                        {renderTitle(item)}
-                                        {renderPortfolios(item)}
-                                    </View>
-                                ) : (
+                                    <Text style={styles.username}>
+                                        {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
+                                    </Text>
+                                </TouchableOpacity>
+                                {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
                                     <TouchableOpacity
-                                        key={`account0${item.id}`}
                                         activeOpacity={0.8}
-                                        style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
-                                        onPress={() => {
-                                            global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
-                                            jump(item?.portfolios[0].url);
-                                        }}>
-                                        {renderTitle(item?.portfolios[0])}
-                                        {renderPortfolios(item)}
-                                    </TouchableOpacity>
-                                )
-                            ) : (
-                                <View key={`account1${item.id}`}>
-                                    {item.id === 12 ? (
+                                        onPress={() => navigation.navigate('MemberCenter', {level: 0})}>
                                         <LinearGradient
-                                            colors={['#33436D', '#121D3A']}
+                                            colors={['#FFF6E8', '#FFE1B8']}
                                             start={{x: 0, y: 0}}
                                             end={{x: 1, y: 0}}
-                                            style={[styles.account, {padding: 0}]}>
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={[{padding: Space.padding}, Style.flexRow]}
-                                                onPress={() => {
-                                                    global.LogTool('click', 'vip');
-                                                    jump(item.url);
-                                                }}>
-                                                <View style={[{flex: 1}, Style.flexRow]}>
-                                                    <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
-                                                        {item.name}
-                                                    </Text>
-                                                    <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
-                                                        {item.desc}
-                                                    </Text>
-                                                </View>
-                                                <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
-                                            </TouchableOpacity>
+                                            style={[styles.memberCenter, Style.flexRow]}>
+                                            <Text style={styles.memberText}>{userBasicInfo?.member_info?.title}</Text>
+                                            <FontAwesome name={'angle-right'} size={16} color={Colors.descColor} />
                                         </LinearGradient>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    global.LogTool('assetsNotificationCenter');
+                                    jump({path: 'RemindMessage'});
+                                }}>
+                                {newMes ? <View style={styles.new_message} /> : null}
+                                <Image
+                                    style={{width: text(32), height: text(32)}}
+                                    source={require('../../assets/img/index/whiteMes.png')}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <Image source={require('../../assets/personal/mofang.png')} style={styles.mofang} />
+                        <Image source={require('../../assets/personal/mofang_bg.png')} style={styles.mofang_bg} />
+                        {/* 系统通知 */}
+                        {!hideMsg && notice?.system ? (
+                            <TouchableOpacity
+                                activeOpacity={0.9}
+                                onPress={() => {
+                                    notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
+                                    jump(notice?.system?.url);
+                                }}>
+                                <Animated.View
+                                    style={[
+                                        styles.systemMsgContainer,
+                                        Style.flexBetween,
+                                        {
+                                            opacity: fadeAnim,
+                                            paddingRight: notice?.system?.button ? text(16) : text(38),
+                                        },
+                                    ]}>
+                                    <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
+
+                                    {notice?.system?.button ? (
+                                        <View style={styles.btn}>
+                                            <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
+                                        </View>
                                     ) : (
-                                        item.id === 11 && (
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={[styles.account]}
-                                                onPress={() => {
-                                                    global.LogTool('click', 'insurance');
-                                                    jump(item.url);
-                                                }}>
-                                                {renderTitle(item)}
-                                                {item.has_bought && renderPortfolios(item)}
-                                            </TouchableOpacity>
-                                        )
+                                        <TouchableOpacity
+                                            style={styles.closeSystemMsg}
+                                            activeOpacity={0.8}
+                                            onPress={hideSystemMsg}>
+                                            <EvilIcons name={'close'} size={22} color={Colors.yellow} />
+                                        </TouchableOpacity>
                                     )}
-                                </View>
-                            );
-                        })}
-                        {/* 投顾 */}
-                        {userBasicInfo?.im_info && (
+                                </Animated.View>
+                            </TouchableOpacity>
+                        ) : null}
+                        {/* 资产信息 */}
+                        <View style={[styles.summaryTitle, Style.flexCenter]}>
+                            <Text style={styles.summaryKey}>总资产(元)</Text>
+                            <Text style={styles.date}>{holdingData?.summary?.profit_date}</Text>
+                            <TouchableOpacity activeOpacity={0.8} onPress={toggleEye}>
+                                <Ionicons
+                                    name={showEye === 'true' ? 'eye-outline' : 'eye-off-outline'}
+                                    size={16}
+                                    color={'rgba(255, 255, 255, 0.8)'}
+                                />
+                            </TouchableOpacity>
+                            {/* 体验金 */}
+                            {userBasicInfo?.free_fund && (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={[styles.experienceGold, Style.flexRow]}
+                                    onPress={() => {
+                                        global.LogTool('click', 'free_fund');
+                                        jump(userBasicInfo?.free_fund?.url);
+                                    }}>
+                                    <Image
+                                        source={require('../../assets/personal/jinbi.png')}
+                                        style={{width: text(15), height: text(15)}}
+                                    />
+                                    <Text style={styles.goldText}>{userBasicInfo?.free_fund?.title}</Text>
+                                    <FontAwesome name={'angle-right'} size={20} color={'#fff'} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <Text style={{textAlign: 'center'}}>
+                            {showEye === 'true' ? (
+                                <>
+                                    <Text style={styles.amount}>
+                                        {(holdingData?.summary?.amount?.split('.')[0] || '0') + '.'}
+                                    </Text>
+                                    <Text style={{...styles.amount, fontSize: text(24)}}>
+                                        {holdingData?.summary?.amount?.split('.')[1] || '00'}
+                                    </Text>
+                                </>
+                            ) : (
+                                <Text style={styles.amount}>****</Text>
+                            )}
+                        </Text>
+                        {/* 小黄条 */}
+                        {notice?.trade && notice.trade.desc ? (
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                style={[styles.iaInfo, Style.flexRow]}
+                                style={[styles.tradeNotice, Style.flexCenter]}
                                 onPress={() => {
-                                    global.LogTool('assetsCustomerServiceStart');
-                                    jump(userBasicInfo?.im_info.url);
+                                    global.LogTool('click', 'tradeMsg');
+                                    jump(notice?.trade?.url);
                                 }}>
-                                <View style={[Style.flexRow, {flex: 1}]}>
-                                    <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
-                                    <View>
-                                        <Text style={[styles.accountName, {marginBottom: text(4)}]}>
-                                            {userBasicInfo.im_info.name}
-                                        </Text>
-                                        <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
-                                    </View>
+                                <Octicons name={'triangle-up'} size={16} color={'rgba(157, 187, 255, 0.68)'} />
+                                <View style={[styles.noticeBox, Style.flexRow]}>
+                                    <Text style={styles.noticeText}>{notice?.trade?.desc}</Text>
+                                    <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
                                 </View>
-                                <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
                             </TouchableOpacity>
-                        )}
-                        {/* 早报 */}
-                        {userBasicInfo?.articles?.map((item, index) => {
+                        ) : null}
+                        <View style={[styles.profitContainer, Style.flexRow]}>
+                            <View style={[Style.flexCenter, {flex: 1}]}>
+                                <Text style={styles.profitKey}>日收益</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? holdingData?.summary?.profit || '0.00' : '****'}
+                                </Text>
+                            </View>
+                            <View style={[Style.flexCenter, {flex: 1}]}>
+                                <Text style={styles.profitKey}>累计收益</Text>
+                                <Text style={styles.profitVal}>
+                                    {showEye === 'true' ? holdingData?.summary?.profit_acc || '0.00' : '****'}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    {/* 顶部菜单 */}
+                    <View style={[styles.topMenu, Style.flexRow]}>
+                        {userBasicInfo?.top_menus?.map((item, index) => {
                             return (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    key={`article${index}`}
                                     onPress={() => {
-                                        global.LogTool('click', 'article', item.title);
+                                        global.LogTool('assetsIconsStart', 'top_menus', item.id);
                                         jump(item.url);
                                     }}
-                                    style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
-                                    <View style={{flex: 1}}>
-                                        <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
-                                        <Text style={styles.accountName}>{item?.desc}</Text>
-                                    </View>
-                                    <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                                    key={`topmenu${item.id}`}
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
+                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
                             );
                         })}
-                        {/* 底部菜单 */}
-                        <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
-                            {userBasicInfo?.bottom_menus?.map((item, index) => {
-                                return (
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        key={`bottommenu${item.id}`}
-                                        style={[Style.flexCenter, {flex: 1, height: '100%'}]}
-                                        onPress={() => {
-                                            global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
-                                            if (index == 3 && showCircle) {
-                                                Storage.save(
-                                                    'version' + userInfo.toJS().latest_version + 'setting_icon',
-                                                    true
-                                                );
-                                            }
-                                            jump(item.url);
-                                        }}>
-                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
-                                        <Text style={styles.topMenuTitle}>{item.title}</Text>
-                                        {index == 3 && showCircle ? <View style={styles.circle} /> : null}
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                        <BottomDesc />
-                    </ScrollView>
-                </View>
-            )
+                    </View>
+                    {/* 中控 */}
+                    {centerData.length > 0 && (
+                        <LinearGradient
+                            colors={['#DEECFF', '#E2EEFF']}
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 1}}
+                            style={[styles.centerCtrl]}>
+                            {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
+                            <Image source={moodEnumRef.current[centerData[page].mood || 1]} style={styles.robotSty} />
+                            <Text
+                                style={{
+                                    ...styles.noticeText,
+                                    color: Colors.defaultColor,
+                                    marginBottom: text(10),
+                                    marginLeft: text(60),
+                                }}>
+                                {`Hi，${userInfo?.toJS()?.nickname || userInfo?.toJS()?.mobile}`}
+                            </Text>
+                            {centerData.length > 1 && (
+                                <Text style={styles.pageText}>
+                                    <Text style={styles.currentPage}>{page + 1}</Text>
+                                    <Text>/{centerData.length}</Text>
+                                </Text>
+                            )}
+                            {centerData.length <= 1 &&
+                                centerData.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                if (item.button) {
+                                                    global.LogTool('assetsConsoleStart', item.type);
+                                                    http.post('/asset/center_click/20210101', {
+                                                        id: item.id,
+                                                        type: item.type,
+                                                    });
+                                                    jump(item.button.url);
+                                                }
+                                            }}
+                                            style={styles.contentBox}
+                                            key={item + index}>
+                                            {item.tag ? (
+                                                <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                                                    <View style={[styles.contentTag, {backgroundColor: item.color}]}>
+                                                        <Text style={styles.contentTagText}>{item.tag}</Text>
+                                                    </View>
+                                                    {item.pub_date ? (
+                                                        <Text
+                                                            style={{
+                                                                ...styles.contentTagText,
+                                                                color: Colors.lightGrayColor,
+                                                                fontWeight: '400',
+                                                            }}>
+                                                            {item.pub_date}
+                                                        </Text>
+                                                    ) : null}
+                                                </View>
+                                            ) : null}
+                                            {item.title ? (
+                                                <View style={{marginBottom: text(4)}}>
+                                                    <HTML html={item.title} style={styles.contentTitle} />
+                                                </View>
+                                            ) : null}
+                                            <HTML html={item.content} style={styles.contentText} />
+                                            {item.button ? (
+                                                <View
+                                                    style={[
+                                                        Style.flexRowCenter,
+                                                        styles.checkBtn,
+                                                        {backgroundColor: item.color || Colors.red},
+                                                    ]}>
+                                                    <Text style={{...styles.noticeText, marginRight: text(4)}}>
+                                                        {item.button.text}
+                                                    </Text>
+                                                    <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
+                                                </View>
+                                            ) : null}
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            {centerData.length > 1 && (
+                                <Carousel
+                                    activeSlideAlignment={'start'}
+                                    data={centerData}
+                                    inactiveSlideOpacity={1}
+                                    inactiveSlideScale={0.9}
+                                    itemHeight={text(144)}
+                                    itemWidth={deviceWidth - text(79)}
+                                    loop={Platform.select({android: false, ios: true})}
+                                    onSnapToItem={(index) => setPage(index)}
+                                    removeClippedSubviews
+                                    renderItem={renderItem}
+                                    sliderHeight={text(144)}
+                                    sliderWidth={deviceWidth - text(44)}
+                                />
+                            )}
+                        </LinearGradient>
+                    )}
+                    {/* 持仓组合 */}
+                    {holdingData?.accounts?.map((item, index, arr) => {
+                        return item.portfolios ? (
+                            item.portfolios.length > 1 ? (
+                                <View
+                                    key={`account${item.id}`}
+                                    style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}>
+                                    {renderTitle(item)}
+                                    {renderPortfolios(item)}
+                                </View>
+                            ) : (
+                                <TouchableOpacity
+                                    key={`account0${item.id}`}
+                                    activeOpacity={0.8}
+                                    style={[styles.account, needAdjust(item) ? styles.needAdjust : {}]}
+                                    onPress={() => {
+                                        global.LogTool('assetsProductStart', item?.portfolios[0].poid || 'adviser');
+                                        jump(item?.portfolios[0].url);
+                                    }}>
+                                    {renderTitle(item?.portfolios[0])}
+                                    {renderPortfolios(item)}
+                                </TouchableOpacity>
+                            )
+                        ) : (
+                            <View key={`account1${item.id}`}>
+                                {item.id === 12 ? (
+                                    <LinearGradient
+                                        colors={['#33436D', '#121D3A']}
+                                        start={{x: 0, y: 0}}
+                                        end={{x: 1, y: 0}}
+                                        style={[styles.account, {padding: 0}]}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[{padding: Space.padding}, Style.flexRow]}
+                                            onPress={() => {
+                                                global.LogTool('click', 'vip');
+                                                jump(item.url);
+                                            }}>
+                                            <View style={[{flex: 1}, Style.flexRow]}>
+                                                <Text style={[styles.accountName, {flex: 1, color: '#FFDAA8'}]}>
+                                                    {item.name}
+                                                </Text>
+                                                <Text style={[styles.topMenuTitle, {flex: 1, color: '#FFDAA8'}]}>
+                                                    {item.desc}
+                                                </Text>
+                                            </View>
+                                            <FontAwesome name={'angle-right'} size={20} color={'#FFE8C3'} />
+                                        </TouchableOpacity>
+                                    </LinearGradient>
+                                ) : (
+                                    item.id === 11 && (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.account]}
+                                            onPress={() => {
+                                                global.LogTool('click', 'insurance');
+                                                jump(item.url);
+                                            }}>
+                                            {renderTitle(item)}
+                                            {item.has_bought && renderPortfolios(item)}
+                                        </TouchableOpacity>
+                                    )
+                                )}
+                            </View>
+                        );
+                    })}
+                    {/* 投顾 */}
+                    {userBasicInfo?.im_info && (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={[styles.iaInfo, Style.flexRow]}
+                            onPress={() => {
+                                global.LogTool('assetsCustomerServiceStart');
+                                jump(userBasicInfo?.im_info.url);
+                            }}>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Image source={{uri: userBasicInfo.im_info.avatar}} style={styles.iaAvatar} />
+                                <View>
+                                    <Text style={[styles.accountName, {marginBottom: text(4)}]}>
+                                        {userBasicInfo.im_info.name}
+                                    </Text>
+                                    <Text style={styles.topMenuTitle}>{'您有任何投资相关问题都可以找我'}</Text>
+                                </View>
+                            </View>
+                            <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                        </TouchableOpacity>
+                    )}
+                    {/* 早报 */}
+                    {userBasicInfo?.articles?.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={`article${index}`}
+                                onPress={() => {
+                                    global.LogTool('click', 'article', item.title);
+                                    jump(item.url);
+                                }}
+                                style={[styles.article, Style.flexRow, {marginBottom: text(12)}]}>
+                                <View style={{flex: 1}}>
+                                    <Text style={[styles.topMenuTitle, {marginBottom: text(6)}]}>{item.title}</Text>
+                                    <Text style={styles.accountName}>{item?.desc}</Text>
+                                </View>
+                                <FontAwesome name={'angle-right'} size={20} color={Colors.darkGrayColor} />
+                            </TouchableOpacity>
+                        );
+                    })}
+                    {/* 底部菜单 */}
+                    <View style={[styles.topMenu, Style.flexRow, {marginTop: 0}]}>
+                        {userBasicInfo?.bottom_menus?.map((item, index) => {
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    key={`bottommenu${item.id}`}
+                                    style={[Style.flexCenter, {flex: 1, height: '100%'}]}
+                                    onPress={() => {
+                                        global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
+                                        if (index == 3 && showCircle) {
+                                            Storage.save(
+                                                'version' + userInfo.toJS().latest_version + 'setting_icon',
+                                                true
+                                            );
+                                        }
+                                        jump(item.url);
+                                    }}>
+                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <Text style={styles.topMenuTitle}>{item.title}</Text>
+                                    {index == 3 && showCircle ? <View style={styles.circle} /> : null}
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                    <BottomDesc />
+                </ScrollView>
+            </View>
         ) : (
             // 手势密码
             <GesturePassword option={'verify'} />
