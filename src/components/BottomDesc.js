@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-11-11 10:43:51
- * @LastEditors: yhc
+ * @LastEditTime: 2021-11-11 10:55:34
+ * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
  */
@@ -10,7 +10,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, View, StyleSheet, ImageBackground} from 'react-native';
 import {deviceWidth, px as text} from '../utils/appUtil';
-import {Colors, Font, Space, Style} from '../common/commonStyle';
+import {Colors, Space, Style} from '../common/commonStyle';
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import {useJump} from './hooks';
@@ -41,9 +41,13 @@ const BottomDesc = (props) => {
                     style={[styles.img]}
                 />
             </View>
-            <ImageBackground style={[Style.flexRowCenter, styles.bg]} source={require('../assets/img/bottomBg.png')}>
-                <Text style={styles.text}>{userInfo.toJS()[type + '_footer_config']?.sale_service}</Text>
-            </ImageBackground>
+            {userInfo.toJS()[type + '_footer_config']?.sale_service ? (
+                <ImageBackground
+                    style={[Style.flexRowCenter, styles.bg]}
+                    source={require('../assets/img/bottomBg.png')}>
+                    <Text style={styles.text}>{userInfo.toJS()[type + '_footer_config']?.sale_service}</Text>
+                </ImageBackground>
+            ) : null}
             <View style={styles.item}>
                 <Text style={[styles.text]}>{userInfo.toJS()[type + '_footer_config']?.sale_credential?.text}</Text>
                 {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url ? (
