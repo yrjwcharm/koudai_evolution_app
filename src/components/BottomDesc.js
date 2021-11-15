@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-11-11 10:55:34
+ * @LastEditTime: 2021-11-15 18:49:06
  * @LastEditors: dx
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -24,7 +24,7 @@ const BottomDesc = (props) => {
         setType(userInfo.toJS().po_ver === 0 ? 'ym' : 'xy');
     }, [userInfo]);
     return (
-        <View style={[styles.con, ...[Object.prototype.toString.call(style) === '[object Object]' ? [style] : style]]}>
+        <View style={[styles.con, ...(Object.prototype.toString.call(style) === '[object Object]' ? [style] : style)]}>
             {props?.fix_img ? (
                 <View style={styles.item}>
                     <FastImage
