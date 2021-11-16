@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-16 17:34:46
+ * @LastEditTime: 2021-11-16 18:15:11
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -423,17 +423,8 @@ class BankInfo extends Component {
                             onChange={(checked) => {
                                 this.setState({checked});
                             }}
-                            title="本人承诺仅为中国税收居民且为该基金投资账户的实际控制 人及受益人，我已阅读并同意"
-                            data={[
-                                {
-                                    title: '《基金电子交易远程服务协议》',
-                                    id: 16,
-                                },
-                                {
-                                    title: '《委托支付协议》',
-                                    id: 15,
-                                },
-                            ]}
+                            title={selectBank ? selectBank?.agreements?.desc : bankList[0]?.agreements?.desc}
+                            data={selectBank ? selectBank?.agreements?.list : bankList[0]?.agreements?.list}
                         />
                     </View>
                     <BottomDesc

@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -542,7 +542,6 @@ export default function DetailAccount({route, navigation}) {
                                     <View
                                         style={[
                                             {
-                                                flex: data?.risk_info?.label && data?.risk_info?.label[2] ? 1 : 1.5,
                                                 fontSize: text(12),
                                             },
                                             Style.flexRow,
