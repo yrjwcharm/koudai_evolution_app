@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-11 10:53:16
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-16 11:04:37
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -61,6 +61,7 @@ class TradeBuy extends Component {
             deltaHeight: 0,
         };
         this.plan_id = this.props.route?.params?.plan_id || '';
+        this.show_risk_disclosure = true;
     }
     getTab = () => {
         const {poid} = this.state;
@@ -115,7 +116,8 @@ class TradeBuy extends Component {
                         });
                     };
                     // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
-                    if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
+                    if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
+                        this.show_risk_disclosure = false;
                         Modal.show({
                             children: () => {
                                 return (
