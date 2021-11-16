@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-09 15:41:55
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-16 19:08:14
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -199,8 +199,8 @@ const TradeRecord = ({route, navigation}) => {
                     {item.error_msg ? (
                         <View style={styles.errorMsgBox}>
                             <Text style={styles.errorMsg}>
-                                {item.error_msg}
-                                <Icon name={'angle-right'} size={16} color={Colors.red} style={{marginLeft: px(2)}} />
+                                {item.error_msg} &nbsp;
+                                <Icon name={'angle-right'} size={px(14)} color={Colors.red} />
                             </Text>
                         </View>
                     ) : null}
