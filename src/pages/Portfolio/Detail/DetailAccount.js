@@ -343,18 +343,11 @@ export default function DetailAccount({route, navigation}) {
                             {data.line_info ? (
                                 <>
                                     <View style={styles.lowLineBox}>
-                                        <Text
-                                            style={[
-                                                {
-                                                    fontSize: Font.textH3,
-                                                    lineHeight: text(17),
-                                                    color: Colors.defaultColor,
-                                                    fontWeight: '500',
-                                                },
-                                                {paddingTop: text(12), paddingBottom: text(4)},
-                                            ]}>
-                                            {data.line_info?.line_desc?.title}
-                                        </Text>
+                                        {data.line_info?.line_desc?.title ? (
+                                            <Text style={styles.line_desc_title}>
+                                                {data.line_info?.line_desc?.title}
+                                            </Text>
+                                        ) : null}
                                         <Html
                                             style={{
                                                 fontSize: Font.textH3,
@@ -764,5 +757,13 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         color: Colors.defaultColor,
+    },
+    line_desc_title: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
+        fontWeight: '500',
+        paddingTop: text(12),
+        paddingBottom: text(4),
     },
 });

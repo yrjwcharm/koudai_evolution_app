@@ -161,6 +161,7 @@ const AssetHealthScore = ({navigation, route}) => {
                             }
                         } else if (Timer.score && val == Timer.score) {
                             // 完成
+                            setCheckScale([true, true, true]);
                             Timer.cancel();
                             setUpdateType('updated');
                             return val;
