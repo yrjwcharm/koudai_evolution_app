@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 18:29:07
+ * @LastEditTime: 2021-11-16 19:45:57
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -89,13 +89,44 @@ export default ({navigation, route}) => {
             const ratio = Math.round(100 / selectedNum.current);
             const amount = (data?.amount / selectedNum.current).toFixed(2) * 1;
             const lastSelectedIndex = findLastIndex(items, ['select', true]);
-            items.forEach((item) => {
+            let totalRatio = 0,
+                totalAmount = 0;
+            items.forEach((item, idx) => {
                 if (item.select) {
                     if (route.params.ref === 'ChooseFund') {
-                        item.ratio = ratio;
-                        item.percent = data?.ratio * ratio;
+                        if (totalRatio >= 100) {
+                            item.ratio = 0;
+                            item.percent = 0;
+                            if (totalRatio > 100) {
+                                items[idx - 1].ratio -= totalRatio - 100;
+                                items[idx - 1].percent = data?.ratio * items[idx - 1].ratio;
+                                totalRatio = 100;
+                            }
+                        } else {
+                            if (idx === lastSelectedIndex) {
+                                item.ratio = 100 - totalRatio;
+                                item.percent = data?.ratio * item.ratio;
+                            } else {
+                                totalRatio += ratio;
+                                item.ratio = ratio;
+                                item.percent = data?.ratio * item.ratio;
+                            }
+                        }
                     } else {
-                        item.amount = amount;
+                        if (totalAmount >= data?.amount) {
+                            item.amount = 0;
+                            if (totalAmount > data?.amount) {
+                                items[idx - 1].amount -= (totalAmount - data?.amount).toFixed(12) * 1;
+                                totalAmount = data?.amount;
+                            }
+                        } else {
+                            if (idx === lastSelectedIndex) {
+                                item.amount = (data?.amount - totalAmount).toFixed(12) * 1;
+                            } else {
+                                totalAmount = (totalAmount + amount).toFixed(12) * 1;
+                                item.amount = amount;
+                            }
+                        }
                     }
                 } else {
                     item.amount = 0;
@@ -103,12 +134,12 @@ export default ({navigation, route}) => {
                     item.percent = 0;
                 }
             });
-            if (route.params.ref === 'ChooseFund') {
-                items[lastSelectedIndex].ratio = 100 - (selectedNum.current - 1) * ratio;
-                items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
-            } else {
-                items[lastSelectedIndex].amount = (data?.amount - (selectedNum.current - 1) * amount).toFixed(12) * 1;
-            }
+            // if (route.params.ref === 'ChooseFund') {
+            //     items[lastSelectedIndex].ratio = 100 - (selectedNum.current - 1) * ratio;
+            //     items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
+            // } else {
+            //     items[lastSelectedIndex].amount = (data?.amount - (selectedNum.current - 1) * amount).toFixed(12) * 1;
+            // }
             dispatch({type: 'select', payload: items});
         }
     };
@@ -222,15 +253,15 @@ export default ({navigation, route}) => {
             } else {
                 if (items[index].amount > maxAmount) {
                     items[index].amount = maxAmount;
-                }
-                if (items[index].amount < parseFloat(items[index].min_limit)) {
+                } else if (items[index].amount < parseFloat(items[index].min_limit)) {
                     items[index].amount = parseFloat(items[index].min_limit);
                     items[lastSelectedIndex].amount =
                         (maxAmount - items[index].amount < 0 ? 0 : maxAmount - items[index].amount).toFixed(12) * 1;
-                }
-                const amount = `${items[index].amount}`;
-                if (amount.split('.')[1]?.length > 2) {
-                    items[index].amount = (amount.slice(0, amount.indexOf('.') + 3) * 1).toFixed(12) * 1;
+                } else {
+                    const amount = `${items[index].amount}`;
+                    if (amount.split('.')[1]?.length > 2) {
+                        items[index].amount = (amount.slice(0, amount.indexOf('.') + 3) * 1).toFixed(12) * 1;
+                    }
                 }
             }
             delete items[index].error;
