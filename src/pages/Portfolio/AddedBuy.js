@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-08 13:39:39
+ * @LastEditTime: 2021-11-17 10:12:17
  * @Description: 购买定投
  */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
@@ -157,7 +157,7 @@ const AddedBuy = ({navigation, route}) => {
         <PageLoading />
     ) : (
         <View style={{...styles.container}}>
-            <ScrollView style={{color: Colors.bgColor, paddingBottom: FixedBtn.btnHeight + px(28)}}>
+            <ScrollView bounces={false} style={{color: Colors.bgColor, paddingBottom: FixedBtn.btnHeight + px(28)}}>
                 <Text style={styles.title}>理财计划</Text>
                 {/* 追加金额 */}
                 <View style={styles.addedMoney}>
