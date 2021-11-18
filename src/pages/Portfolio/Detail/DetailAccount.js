@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -358,29 +358,31 @@ export default function DetailAccount({route, navigation}) {
                                             html={data.line_info?.line_desc?.desc}
                                         />
                                     </View>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        onPress={() => {
-                                            global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
-                                            data.line_info?.button?.avail && jump(data.line_info?.button?.url);
-                                        }}
-                                        style={styles.line_btn}>
-                                        {data.line_info?.tip ? (
-                                            <View style={styles.line_flag}>
-                                                <Text style={{color: '#fff', fontSize: px(11)}}>
-                                                    {data.line_info?.tip}
-                                                </Text>
-                                            </View>
-                                        ) : null}
-                                        <Text
-                                            style={{
-                                                fontSize: Font.textH3,
-                                                lineHeight: text(17),
-                                                color: Colors.brandColor,
-                                            }}>
-                                            {data.line_info?.button?.text}
-                                        </Text>
-                                    </TouchableOpacity>
+                                    {data.line_info?.button ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
+                                                data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                            }}
+                                            style={styles.line_btn}>
+                                            {data.line_info?.tip ? (
+                                                <View style={styles.line_flag}>
+                                                    <Text style={{color: '#fff', fontSize: px(11)}}>
+                                                        {data.line_info?.tip}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
+                                            <Text
+                                                style={{
+                                                    fontSize: Font.textH3,
+                                                    lineHeight: text(17),
+                                                    color: Colors.brandColor,
+                                                }}>
+                                                {data.line_info?.button?.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ) : null}
                                 </>
                             ) : null}
                             {data.line_desc ? (
