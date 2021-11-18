@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-16 18:02:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-18 15:20:59
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -125,7 +125,7 @@ export default function PortfolioAssets(props) {
             setTag(res.result.tag_position);
             setShowEmpty(res.result.chart?.length === 0);
             setChart(res.result);
-            setChartData(res.result.chart);
+            setChartData(res.result.chart || []);
         });
     };
     const renderLoading = () => {
@@ -170,7 +170,7 @@ export default function PortfolioAssets(props) {
         }
     }, [period]);
     useEffect(() => {
-        if (!loading && chartData && chartData.length > 0) {
+        if (!loading && chartData?.length > 0) {
             onHide();
         }
     }, [chartData, loading]);
@@ -333,7 +333,7 @@ export default function PortfolioAssets(props) {
                                                 : '#0051CC'
                                             : '#C7D8F0',
                                     flex: 1,
-                                    marginRight: _index < card.button_list.length - 1 ? text(10) : 0,
+                                    marginRight: _index < card?.button_list?.length - 1 ? text(10) : 0,
                                     height: text(40),
                                     justifyContent: 'center',
                                 }}>
@@ -445,7 +445,7 @@ export default function PortfolioAssets(props) {
                                 )}
                             </View>
                         ) : null}
-                        {chartData.length > 0 ? (
+                        {chartData?.length > 0 ? (
                             <Chart
                                 initScript={baseAreaChart(
                                     chartData,
@@ -473,7 +473,7 @@ export default function PortfolioAssets(props) {
                             )
                         )}
                     </View>
-                    {chart?.sub_tabs && chart?.chart.length > 0 && (
+                    {chart?.sub_tabs && chart?.chart?.length > 0 && (
                         <View style={styles.sub_tabs}>
                             {chart?.sub_tabs?.map((_item, _index, arr) => {
                                 return (

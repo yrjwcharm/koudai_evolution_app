@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-16 19:08:14
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-18 15:53:16
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -199,7 +199,7 @@ const TradeRecord = ({route, navigation}) => {
                     {item.error_msg ? (
                         <View style={styles.errorMsgBox}>
                             <Text style={styles.errorMsg}>
-                                {item.error_msg} &nbsp;
+                                {item.error_msg}&nbsp;
                                 <Icon name={'angle-right'} size={px(14)} color={Colors.red} />
                             </Text>
                         </View>

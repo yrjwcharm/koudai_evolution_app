@@ -50,7 +50,7 @@ const BottomDesc = (props) => {
             ) : null}
             <View style={styles.item}>
                 <Text style={[styles.text]}>{userInfo.toJS()[type + '_footer_config']?.sale_credential?.text}</Text>
-                {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url ? (
+                {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url && type === 'xy' ? (
                     <Text
                         style={styles.button}
                         onPress={() => {
