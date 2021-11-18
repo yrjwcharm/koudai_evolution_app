@@ -733,7 +733,7 @@ export default function PortfolioAssets(props) {
                         })}
                     </View>
                 </View>
-                {card.is_plan ? (
+                {card?.is_plan ? (
                     <BottomModal ref={scoreModal} title={'资产健康分'} style={{height: text(400)}}>
                         <View style={{padding: text(16)}}>
                             <>
