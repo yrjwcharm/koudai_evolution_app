@@ -2,12 +2,13 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-18 11:21:56
+ * @LastEditTime: 2021-11-18 17:43:58
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
 import {Keyboard, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {all, create} from 'mathjs';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {FixedButton} from '../../components/Button';
 import CheckBox from './components/CheckBox';
@@ -34,6 +35,20 @@ export default ({navigation, route}) => {
     const selectedNum = useRef(0); // 选中基金的数量
     const [maxInitAmountIndex, setMaxInitAmountIndex] = useState(-1); // 导致最大起购金额基金下标 -1表示没有超过初始起购金额的
     const inputRef = useRef([]);
+    const math = create(all, {
+        number: 'BigNumber',
+        precision: 20,
+    });
+
+    /**
+     * 计算极小数
+     * @param {number} a 第一个算数
+     * @param {number} b 第二个算数
+     * @param {string} op 运算符
+     */
+    const calc = (a, b, op) => {
+        return math.number(math.evaluate(`${a} ${op} ${b}`));
+    };
 
     /**
      * 计算最后一只有比例的基金占总配置的百分比
@@ -75,8 +90,7 @@ export default ({navigation, route}) => {
                     items[lastSelectedIndex].ratio = items[lastSelectedIndex].ratio * 1 + items[index].ratio * 1;
                     items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
                 } else {
-                    items[lastSelectedIndex].amount =
-                        ((items[lastSelectedIndex].amount + items[index].amount) * 1).toFixed(12) * 1;
+                    items[lastSelectedIndex].amount = calc(items[lastSelectedIndex].amount, items[index].amount, '+');
                 }
                 items[index].amount = 0;
                 items[index].percent = 0;
@@ -116,14 +130,14 @@ export default ({navigation, route}) => {
                         if (totalAmount >= data?.amount) {
                             item.amount = 0;
                             if (totalAmount > data?.amount) {
-                                items[idx - 1].amount -= (totalAmount - data?.amount).toFixed(12) * 1;
+                                items[idx - 1].amount -= calc(totalAmount, data?.amount, '-');
                                 totalAmount = data?.amount;
                             }
                         } else {
                             if (idx === lastSelectedIndex) {
-                                item.amount = (data?.amount - totalAmount).toFixed(12) * 1;
+                                item.amount = calc(data?.amount, totalAmount, '-');
                             } else {
-                                totalAmount = (totalAmount + amount).toFixed(12) * 1;
+                                totalAmount = calc(totalAmount, amount, '+');
                                 item.amount = amount;
                             }
                         }
@@ -138,7 +152,7 @@ export default ({navigation, route}) => {
             //     items[lastSelectedIndex].ratio = 100 - (selectedNum.current - 1) * ratio;
             //     items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
             // } else {
-            //     items[lastSelectedIndex].amount = (data?.amount - (selectedNum.current - 1) * amount).toFixed(12) * 1;
+            //     items[lastSelectedIndex].amount = calc(data?.amount, (selectedNum.current - 1) * amount, '-');
             // }
             dispatch({type: 'select', payload: items});
         }
@@ -160,13 +174,10 @@ export default ({navigation, route}) => {
         let maxAmount = 0;
         items.forEach((item, idx) => {
             maxRatio += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
-            maxAmount =
-                idx !== index && idx !== lastSelectedIndex
-                    ? ((maxAmount + item.amount) * 1).toFixed(12) * 1
-                    : maxAmount;
+            maxAmount = idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount, '+') : maxAmount;
         });
         maxRatio = 100 - maxRatio;
-        maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
+        maxAmount = calc(data?.amount, maxAmount, '-');
         // console.log(maxAmount);
         if (isNaN(value * 1)) {
             if (route.params.ref === 'ChooseFund') {
@@ -211,7 +222,7 @@ export default ({navigation, route}) => {
                 items[lastSelectedIndex].ratio = maxRatio - value;
                 items[lastSelectedIndex].percent = data?.ratio * items[lastSelectedIndex].ratio;
             } else {
-                items[lastSelectedIndex].amount = (maxAmount - value < 0 ? 0 : maxAmount - value).toFixed(12) * 1;
+                items[lastSelectedIndex].amount = maxAmount - value < 0 ? 0 : calc(maxAmount, value * 1, '-');
                 if (
                     items[lastSelectedIndex].amount != 0 &&
                     items[lastSelectedIndex].amount < parseFloat(items[lastSelectedIndex].min_limit)
@@ -243,10 +254,10 @@ export default ({navigation, route}) => {
         if (items[index].error) {
             items.forEach((item, idx) => {
                 maxRatio += idx !== index ? item.ratio * 1 : 0;
-                maxAmount = idx !== index ? ((maxAmount + item.amount) * 1).toFixed(12) * 1 : maxAmount;
+                maxAmount = idx !== index ? calc(maxAmount, item.amount * 1, '+') : maxAmount;
             });
             maxRatio = 100 - maxRatio;
-            maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
+            maxAmount = calc(data?.amount, maxAmount, '-');
             if (route.params.ref === 'ChooseFund') {
                 items[index].ratio = maxRatio;
                 items[index].percent = data?.ratio * maxRatio;
@@ -256,11 +267,11 @@ export default ({navigation, route}) => {
                 } else if (items[index].amount < parseFloat(items[index].min_limit)) {
                     items[index].amount = parseFloat(items[index].min_limit);
                     items[lastSelectedIndex].amount =
-                        (maxAmount - items[index].amount < 0 ? 0 : maxAmount - items[index].amount).toFixed(12) * 1;
+                        maxAmount - items[index].amount < 0 ? 0 : calc(maxAmount, items[index].amount * 1, '-');
                 } else {
                     const amount = `${items[index].amount}`;
                     if (amount.split('.')[1]?.length > 2) {
-                        items[index].amount = (amount.slice(0, amount.indexOf('.') + 3) * 1).toFixed(12) * 1;
+                        items[index].amount = amount.slice(0, amount.indexOf('.') + 3) * 1;
                     }
                 }
             }
@@ -268,17 +279,15 @@ export default ({navigation, route}) => {
         } else if (items[lastSelectedIndex].error) {
             items.forEach((item, idx) => {
                 maxAmount =
-                    idx !== index && idx !== lastSelectedIndex
-                        ? ((maxAmount + item.amount) * 1).toFixed(12) * 1
-                        : maxAmount;
+                    idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount * 1, '+') : maxAmount;
             });
-            maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
+            maxAmount = calc(data?.amount, maxAmount, '-');
             if (parseFloat(items[lastSelectedIndex].min_limit) > maxAmount) {
                 items[index].amount = 0;
                 items[lastSelectedIndex].amount = maxAmount;
             } else {
                 items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
-                items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
+                items[index].amount = calc(maxAmount, items[lastSelectedIndex].amount, '-');
                 delete items[lastSelectedIndex].error;
             }
         } else {
@@ -316,6 +325,8 @@ export default ({navigation, route}) => {
                     if (res.code === '000000') {
                         Toast.show('保存成功');
                         navigation.goBack();
+                    } else {
+                        Toast.show(res.message);
                     }
                 });
             } else {
