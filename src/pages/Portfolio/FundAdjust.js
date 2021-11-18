@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-16 19:45:57
+ * @LastEditTime: 2021-11-18 11:21:56
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -273,9 +273,14 @@ export default ({navigation, route}) => {
                         : maxAmount;
             });
             maxAmount = (data?.amount - maxAmount).toFixed(12) * 1;
-            items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
-            items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
-            delete items[lastSelectedIndex].error;
+            if (parseFloat(items[lastSelectedIndex].min_limit) > maxAmount) {
+                items[index].amount = 0;
+                items[lastSelectedIndex].amount = maxAmount;
+            } else {
+                items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
+                items[index].amount = (maxAmount - items[lastSelectedIndex].amount).toFixed(12) * 1;
+                delete items[lastSelectedIndex].error;
+            }
         } else {
             items[index].amount = items[index].amount != 0 ? parseFloat(items[index].amount) : items[index].amount;
         }
@@ -289,7 +294,12 @@ export default ({navigation, route}) => {
         //         ? data.items[maxInitAmountIndex].min_limit / (data.items[maxInitAmountIndex].percent / 100)
         //         : data.init_amount;
         // const items = data.items.sort((a, b) => b.percent - a.percent);
-        const existError = data?.items?.some((item) => item.error);
+        let fund;
+        const existError =
+            data?.items?.some((item) => {
+                item.error ? (fund = item) : '';
+                return item.error;
+            }) || maxInitAmountIndex !== -1;
         if (route.params.ref === 'ChooseFund') {
             if (!existError) {
                 navigation.navigate(route.params.ref, {asset: data});
@@ -309,6 +319,10 @@ export default ({navigation, route}) => {
                     }
                 });
             } else {
+                if (fund || data.items[maxInitAmountIndex]) {
+                    fund = fund || data.items[maxInitAmountIndex];
+                    Toast.show(`${fund.name}最低起购金额${parseFloat(fund.min_limit).toFixed(2)}元`);
+                }
                 Keyboard.dismiss();
             }
         }
