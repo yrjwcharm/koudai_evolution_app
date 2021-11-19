@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-19 15:17:22
+ * @LastEditTime: 2021-11-19 17:13:13
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1418,9 +1418,9 @@ const styles = StyleSheet.create({
         height: text(727),
     },
     new_message: {
-        width: text(6),
-        height: text(6),
-        borderRadius: text(4),
+        width: text(10),
+        height: text(10),
+        borderRadius: text(5),
         backgroundColor: Colors.red,
         position: 'absolute',
         right: text(3),

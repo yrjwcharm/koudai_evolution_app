@@ -951,9 +951,9 @@ const styles = StyleSheet.create({
         marginBottom: px(6),
     },
     new_message: {
-        width: px(6),
-        height: px(6),
-        borderRadius: px(4),
+        width: px(10),
+        height: px(10),
+        borderRadius: px(6),
         backgroundColor: Colors.red,
         position: 'absolute',
         right: px(3),
