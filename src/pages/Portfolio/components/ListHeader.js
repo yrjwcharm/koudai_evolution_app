@@ -3,14 +3,14 @@
  * @Date: 2021-01-27 10:09:32
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-09-24 10:37:48
+ * @LastEditTime: 2021-11-19 19:08:36
  */
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {px as text, px} from '../../../utils/appUtil';
+import {px as text} from '../../../utils/appUtil';
 import PropTypes from 'prop-types';
-import {Colors, Font, Space, Style} from '../../../common/commonStyle';
+import {Colors, Space, Style} from '../../../common/commonStyle';
 import {useJump} from '../../../components/hooks';
 import FastImage from 'react-native-fast-image';
 export default function ListHeader(props) {
@@ -56,7 +56,7 @@ export default function ListHeader(props) {
 
             <Text style={{color: '#0051CC', fontSize: text(12)}}>
                 {data?.text}
-                {!hide ? <AntDesign name={'right'} color={color} size={12} /> : null}
+                {!hide && data.url ? <AntDesign name={'right'} color={color} size={12} /> : null}
             </Text>
         </TouchableOpacity>
     );

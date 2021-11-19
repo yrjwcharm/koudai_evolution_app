@@ -2,11 +2,21 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-16 11:04:37
+ * @LastEditTime: 2021-11-19 20:21:17
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
+import {
+    ActivityIndicator,
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    Keyboard,
+} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
@@ -1063,7 +1073,11 @@ class TradeBuy extends Component {
                             />
                         )}
                     </View>
-                ) : null}
+                ) : (
+                    <View style={[Style.flexCenter, styles.loading]}>
+                        <ActivityIndicator color={Colors.lightGrayColor} />
+                    </View>
+                )}
             </>
         );
     }
@@ -1229,6 +1243,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(5),
         paddingVertical: px(2),
         marginLeft: px(4),
+    },
+    loading: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: Colors.bgColor,
+        zIndex: 99,
     },
 });
 
