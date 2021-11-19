@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-11 12:09:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-19 15:17:22
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -42,7 +42,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import Modal from '../../components/Modal/ModalContainer';
-import {BottomModal, Modal as _Modal} from '../../components/Modal';
+import {BottomModal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
@@ -55,7 +55,7 @@ import _ from 'lodash';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
-    const userInfo = useSelector((store) => store.userInfo);
+    const userInfo = useSelector((store) => store.userInfo)?.toJS?.() || {};
     const [scrollY, setScrollY] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [newMes, setNewmessage] = useState(0);
@@ -89,11 +89,10 @@ function HomeScreen({navigation, route}) {
         4: warn,
     }); // 机器人表情枚举
     // 滚动回调
-    const onScroll = useCallback((event) => {
+    const onScroll = (event) => {
         let y = event.nativeEvent.contentOffset.y;
-
         setScrollY(y);
-    }, []);
+    };
     // 隐藏系统消息
     const hideSystemMsg = useCallback(() => {
         global.LogTool('click', 'hideSystemMsg');
@@ -109,13 +108,13 @@ function HomeScreen({navigation, route}) {
         });
     }, [fadeAnim]);
     // 显示|隐藏金额信息
-    const toggleEye = useCallback(() => {
+    const toggleEye = () => {
         setShowEye((show) => {
             global.LogTool('click', show === 'true' ? 'eye_close' : 'eye_open');
             storage.save('myAssetsEye', show === 'true' ? 'false' : 'true');
             return show === 'true' ? 'false' : 'true';
         });
-    }, []);
+    };
     const getSignData = () => {
         http.get('adviser/get_need_sign_list/20210923').then((data) => {
             setSignData(data.result);
@@ -128,58 +127,52 @@ function HomeScreen({navigation, route}) {
             isFocused && bottomModal.current.show();
         });
     };
-    const init = useCallback(
-        (refresh) => {
-            refresh === 'refresh' && setRefreshing(true);
-            refresh === 'refresh' && setHideMsg(false);
-            http.get('/asset/holding/20210101', {
-                // uid: '1000000001',
-            }).then((res) => {
-                if (res.code === '000000') {
-                    setHoldingData(res.result);
-                    if (res.result?.is_need_sign == 1) {
-                        getSignData();
-                    }
+    const init = (refresh) => {
+        refresh === 'refresh' && setRefreshing(true);
+        refresh === 'refresh' && setHideMsg(false);
+        http.get('/asset/holding/20210101').then((res) => {
+            if (res.code === '000000') {
+                setHoldingData(res.result);
+                if (res.result?.is_need_sign == 1) {
+                    getSignData();
                 }
-            });
-            readInterface();
-            http.get('/asset/common/20210101').then((res) => {
-                if (res.code === '000000') {
-                    setUserBasicInfo(res.result);
-                }
-                !userInfo.toJS()?.is_login && setLoading(false);
-                setRefreshing(false);
-            });
-            if (userInfo.toJS()?.is_login) {
-                http.get('/asset/notice/20210101')
-                    .then((res) => {
-                        setLoading(false);
-                        if (res.code === '000000') {
-                            setNotice(res.result);
-                        }
-                    })
-                    .catch(() => {
-                        setLoading(false);
-                    });
-                http.get('/common/survey/20210521', {survey_id: 1}).then((res) => {
-                    if (res.code === '000000') {
-                        if (res.result.options) {
-                            setChoice('');
-                            setModalData(res.result);
-                            isFocused && setIsVisible(true);
-                        }
-                    }
-                });
-                http.get('/asset/center_control/20210101').then((res) => {
-                    if (res.code === '000000') {
-                        setCenterData(res.result || []);
-                    }
-                });
             }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [isFocused]
-    );
+        });
+        http.get('/asset/common/20210101').then((res) => {
+            if (res.code === '000000') {
+                setUserBasicInfo(res.result);
+            }
+            !userInfo.is_login && setLoading(false);
+            setRefreshing(false);
+        });
+        if (userInfo.is_login) {
+            readInterface();
+            http.get('/asset/notice/20210101')
+                .then((res) => {
+                    setLoading(false);
+                    if (res.code === '000000') {
+                        setNotice(res.result);
+                    }
+                })
+                .catch(() => {
+                    setLoading(false);
+                });
+            http.get('/common/survey/20210521', {survey_id: 1}).then((res) => {
+                if (res.code === '000000') {
+                    if (res.result.options) {
+                        setChoice('');
+                        setModalData(res.result);
+                        isFocused && setIsVisible(true);
+                    }
+                }
+            });
+            http.get('/asset/center_control/20210101').then((res) => {
+                if (res.code === '000000') {
+                    setCenterData(res.result || []);
+                }
+            });
+        }
+    };
     //checkBox 选中
     const checkBoxClick = (check, poid) => {
         //选中
@@ -235,13 +228,11 @@ function HomeScreen({navigation, route}) {
     const reportSurvey = (answer) => {
         http.post('/common/survey/report/20210521', {survey_id: 1, answer});
     };
-    const readInterface = useCallback(() => {
-        if (userInfo.toJS()?.is_login) {
-            http.get('/message/unread/20210101').then((res) => {
-                setNewmessage(res.result.all);
-            });
-        }
-    }, [userInfo]);
+    const readInterface = () => {
+        http.get('/message/unread/20210101').then((res) => {
+            setNewmessage(res.result.all);
+        });
+    };
     // 刷新一下
     const refreshNetWork = useCallback(() => {
         setHasNet(netInfo.isConnected);
@@ -423,8 +414,8 @@ function HomeScreen({navigation, route}) {
 
     useFocusEffect(
         useCallback(() => {
-            Storage.get('version' + userInfo.toJS().latest_version + 'setting_icon').then((res) => {
-                if (!res && global.ver < userInfo.toJS().latest_version) {
+            Storage.get('version' + userInfo.latest_version + 'setting_icon').then((res) => {
+                if (!res && global.ver < userInfo.latest_version) {
                     setShowCircle(true);
                 } else {
                     setShowCircle(false);
@@ -435,7 +426,7 @@ function HomeScreen({navigation, route}) {
                 setShowEye(res ? res : 'true');
             });
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [hasNet, showGesture])
+        }, [hasNet, showGesture, userInfo.is_login, userInfo.latest_version])
     );
     useFocusEffect(
         useCallback(() => {
@@ -448,11 +439,11 @@ function HomeScreen({navigation, route}) {
     );
     useFocusEffect(
         useCallback(() => {
-            !userInfo.toJS().is_login && scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
+            !userInfo.is_login && scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
             return () => {
                 StatusBar.setBarStyle('dark-content');
             };
-        }, [userInfo])
+        }, [userInfo.is_login])
     );
     useFocusEffect(
         useCallback(() => {
@@ -463,14 +454,15 @@ function HomeScreen({navigation, route}) {
     );
     useEffect(() => {
         const listener = navigation.addListener('tabPress', () => {
-            if (isFocused && userInfo?.toJS()?.is_login) {
+            if (isFocused && userInfo.is_login) {
                 scrollRef?.current?.scrollTo({x: 0, y: 0, animated: false});
                 hasNet && !showGesture && init('refresh');
                 global.LogTool('tabDoubleClick', 'Home');
             }
         });
         return () => listener();
-    }, [hasNet, isFocused, navigation, init, userInfo, showGesture]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hasNet, isFocused, navigation, userInfo.is_login, showGesture]);
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
@@ -588,7 +580,7 @@ function HomeScreen({navigation, route}) {
                 )}
 
                 {/* 登录注册蒙层 */}
-                {!userInfo.toJS().is_login && <LoginMask />}
+                {!userInfo.is_login && <LoginMask />}
                 {isVisible && (
                     <>
                         {!global.rootSibling && <Mask />}
@@ -675,7 +667,7 @@ function HomeScreen({navigation, route}) {
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={() => userInfo?.toJS()?.is_login && !showGesture && init('refresh')}
+                            onRefresh={() => userInfo.is_login && !showGesture && init('refresh')}
                         />
                     }>
                     <View style={[styles.assetsContainer]}>
@@ -691,14 +683,14 @@ function HomeScreen({navigation, route}) {
                                     }}>
                                     <Image
                                         source={
-                                            userInfo?.toJS()?.avatar
-                                                ? {uri: userInfo.toJS().avatar}
+                                            userInfo.avatar
+                                                ? {uri: userInfo.avatar}
                                                 : require('../../assets/personal/usercenter.png')
                                         }
                                         style={[styles.headImg, userBasicInfo?.user_info ? {} : {borderWidth: 0}]}
                                     />
                                     <Text style={styles.username}>
-                                        {userInfo?.toJS()?.nickname ? userInfo.toJS().nickname : '****'}
+                                        {userInfo.nickname ? userInfo.nickname : '****'}
                                     </Text>
                                 </TouchableOpacity>
                                 {userBasicInfo?.member_info && Object.keys(userBasicInfo?.member_info).length > 0 && (
@@ -872,7 +864,7 @@ function HomeScreen({navigation, route}) {
                                     marginBottom: text(10),
                                     marginLeft: text(60),
                                 }}>
-                                {`Hi，${userInfo?.toJS()?.nickname || userInfo?.toJS()?.mobile}`}
+                                {`Hi，${userInfo.nickname || userInfo.mobile}`}
                             </Text>
                             {centerData.length > 1 && (
                                 <Text style={styles.pageText}>
@@ -1071,10 +1063,7 @@ function HomeScreen({navigation, route}) {
                                     onPress={() => {
                                         global.LogTool('assetsIconsStart', 'bottom_menus', item.id);
                                         if (index == 3 && showCircle) {
-                                            Storage.save(
-                                                'version' + userInfo.toJS().latest_version + 'setting_icon',
-                                                true
-                                            );
+                                            Storage.save('version' + userInfo.latest_version + 'setting_icon', true);
                                         }
                                         jump(item.url);
                                     }}>

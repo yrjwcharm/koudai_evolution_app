@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-18 17:43:58
+ * @LastEditTime: 2021-11-19 15:32:15
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -174,7 +174,7 @@ export default ({navigation, route}) => {
         let maxAmount = 0;
         items.forEach((item, idx) => {
             maxRatio += idx !== index && idx !== lastSelectedIndex ? item.ratio * 1 : 0;
-            maxAmount = idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount, '+') : maxAmount;
+            maxAmount = idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount || 0, '+') : maxAmount;
         });
         maxRatio = 100 - maxRatio;
         maxAmount = calc(data?.amount, maxAmount, '-');
@@ -254,7 +254,7 @@ export default ({navigation, route}) => {
         if (items[index].error) {
             items.forEach((item, idx) => {
                 maxRatio += idx !== index ? item.ratio * 1 : 0;
-                maxAmount = idx !== index ? calc(maxAmount, item.amount * 1, '+') : maxAmount;
+                maxAmount = idx !== index ? calc(maxAmount, item.amount * 1 || 0, '+') : maxAmount;
             });
             maxRatio = 100 - maxRatio;
             maxAmount = calc(data?.amount, maxAmount, '-');
@@ -279,7 +279,7 @@ export default ({navigation, route}) => {
         } else if (items[lastSelectedIndex].error) {
             items.forEach((item, idx) => {
                 maxAmount =
-                    idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount * 1, '+') : maxAmount;
+                    idx !== index && idx !== lastSelectedIndex ? calc(maxAmount, item.amount * 1 || 0, '+') : maxAmount;
             });
             maxAmount = calc(data?.amount, maxAmount, '-');
             if (parseFloat(items[lastSelectedIndex].min_limit) > maxAmount) {
@@ -287,7 +287,7 @@ export default ({navigation, route}) => {
                 items[lastSelectedIndex].amount = maxAmount;
             } else {
                 items[lastSelectedIndex].amount = parseFloat(items[lastSelectedIndex].min_limit);
-                items[index].amount = calc(maxAmount, items[lastSelectedIndex].amount, '-');
+                items[index].amount = calc(maxAmount, items[lastSelectedIndex].amount || 0, '-');
                 delete items[lastSelectedIndex].error;
             }
         } else {
