@@ -137,14 +137,15 @@ export default function LCMF({route, navigation}) {
                         onLoadEnd={async () => {
                             const loginStatus = await Storage.get('loginStatus');
                             // console.log(loginStatus);
-                            webview.current.postMessage(
-                                JSON.stringify({
-                                    ...loginStatus,
-                                    did: DeviceInfo.getUniqueId(),
-                                    timeStamp: timeStamp.current + '',
-                                    ver: global.ver,
-                                })
-                            );
+                            loginStatus &&
+                                webview.current.postMessage(
+                                    JSON.stringify({
+                                        ...loginStatus,
+                                        did: DeviceInfo.getUniqueId(),
+                                        timeStamp: timeStamp.current + '',
+                                        ver: global.ver,
+                                    })
+                                );
                         }}
                         onMessage={onMessage}
                         originWhitelist={['*']}

@@ -2,7 +2,7 @@
  * @Date: 2021-11-05 12:19:14
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-11-19 15:32:15
+ * @LastEditTime: 2021-11-19 16:50:07
  * @Description: 基金调整
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -478,10 +478,8 @@ export default ({navigation, route}) => {
                                                 activeOpacity={1}
                                                 onPress={() => {
                                                     const isFocused = inputRef.current[index]?.isFocused?.();
-                                                    if (!isFocused) {
+                                                    if (!isFocused && lastSelectedIndex !== index) {
                                                         inputRef.current[index]?.focus?.();
-                                                        // setTimeout(() => {
-                                                        // }, 300);
                                                     }
                                                 }}
                                                 style={[
@@ -517,6 +515,7 @@ export default ({navigation, route}) => {
                                                             lastSelectedIndex !== index
                                                                 ? Colors.defaultColor
                                                                 : '#BDC2CC',
+                                                        minWidth: px(2),
                                                     }}
                                                 />
                                             </TouchableOpacity>
