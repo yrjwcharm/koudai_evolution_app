@@ -550,7 +550,15 @@ export default function DetailEducation({navigation, route}) {
                                     color={'#0051CC'}
                                 />
                                 <View style={{height: text(140)}}>
-                                    <Chart initScript={pieChart(data.asset_deploy.items, data.asset_deploy.chart)} />
+                                    <Chart
+                                        initScript={pieChart(
+                                            data.asset_deploy.items,
+                                            data.asset_deploy.chart,
+                                            null,
+                                            null,
+                                            data?.asset_deploy?.items?.map?.((item) => item.color)
+                                        )}
+                                    />
                                 </View>
                             </View>
                             <View style={[styles.card_sty, {paddingHorizontal: text(16)}]}>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-30 11:09:32
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-04 10:49:15
+ * @LastEditTime: 2021-11-22 11:50:49
  * @Description:发现
  */
 import React, {useState, useCallback, useRef} from 'react';
@@ -133,7 +133,6 @@ const FindDetail = (props) => {
                                 {data?.qa_list?.map((item, index) => {
                                     return RenderCate(item, {marginBottom: px(12)});
                                 })}
-                                {/* <QuestionCard data={data?.qa_list} /> */}
                             </View>
                         )}
                     </View>
