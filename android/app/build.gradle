@@ -196,6 +196,7 @@ packagingOptions {
                 keyPassword = "asdjkl" // And these must be set to non-empty in order to have the signing step added to the task graph.
                 storeFile = file("mofang-release-enimo.keystore")
                 storePassword = "asdjkl"
+                v2SigningEnabled true 
             }
     }
     buildTypes {
