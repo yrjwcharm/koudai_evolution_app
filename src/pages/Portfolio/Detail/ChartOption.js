@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 15:12:36
  * @Description:
  * @LastEditors: dx
- * @LastEditTime: 2021-10-25 16:08:56
+ * @LastEditTime: 2021-11-09 16:55:37
  */
 // import _ from 'lodash';
 import {Dimensions} from 'react-native';
@@ -55,7 +55,13 @@ export const baseChart = (data) => `(function(){
 })()
 `;
 
-export const pieChart = (data, map, title, height = text(140)) => `
+export const pieChart = (
+    data,
+    map,
+    title,
+    height = text(140),
+    colors = ['#E1645C', '#6694F3', '#F8A840', '#CC8FDD', '#5DC162', '#C7AC6B']
+) => `
 (function(){
   const chart = new F2.Chart({
     id: 'chart',
@@ -86,7 +92,7 @@ export const pieChart = (data, map, title, height = text(140)) => `
     radius: 0.85
   });
   chart.axis(false);
-  chart.interval().position('1*ratio').color('name', ['#E1645C', '#ECB351', '#5687EB', '#967DF2', '#5DC162', '#8543E0']).adjust('stack').style({
+  chart.interval().position('1*ratio').color('name', ${JSON.stringify(colors)}).adjust('stack').style({
     lineWidth: 0.5,
     stroke: '#fff',
     lineJoin: 'round',
@@ -176,14 +182,16 @@ export const histogram = (data, min, max_drop, height) =>
       type: 'dodge',
       marginRatio: 0.4// 设置分组间柱子的间距
     });
-    chart.guide().line({ // 绘制辅助线
-      start: [ 'min', ${max_drop} ],
-      end: [ 'max',  ${max_drop}],
-      style: {
-        stroke: '#4E556C',
-        lineDash: [ 2 ]
-      }
-    })
+    if (${max_drop} !== undefined) {
+      chart.guide().line({ // 绘制辅助线
+        start: [ 'min', ${max_drop} ],
+        end: [ 'max',  ${max_drop}],
+        style: {
+          stroke: '#4E556C',
+          lineDash: [ 2 ]
+        }
+      })
+    }
     
   chart.render();
   })()

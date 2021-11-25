@@ -2,8 +2,8 @@
  * @Description:调仓
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 18:58:30
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-09 20:49:56
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -21,7 +21,7 @@ import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
-const btnHeight = isIphoneX() ? text(90) : text(66);
+// const btnHeight = isIphoneX() ? text(90) : text(66);
 class TradeAdjust extends Component {
     constructor(props) {
         super(props);
@@ -31,6 +31,7 @@ class TradeAdjust extends Component {
             data: {},
             poid: this.props?.route?.params?.poid,
             mode: this.props?.route?.params?.mode || 0,
+            deltaHeight: 0,
         };
     }
     init = () => {
@@ -87,13 +88,18 @@ class TradeAdjust extends Component {
         this.passwordModal.show();
     };
     render() {
-        const {toggle, data} = this.state;
+        const {toggle, data, deltaHeight} = this.state;
         return (
-            <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
+            <View
+                style={{
+                    backgroundColor: Colors.bgColor,
+                    flex: 1,
+                    paddingBottom: (isIphoneX() ? text(85) : text(51)) + deltaHeight,
+                }}>
                 <Focus init={this.init} />
                 {Object.keys(data).length > 0 && (
                     <>
-                        <ScrollView style={styles.container}>
+                        <ScrollView bounces={false} style={styles.container}>
                             <View style={{marginBottom: text(10)}}>
                                 <TouchableOpacity
                                     style={[styles.list_head, Style.flexRow]}
@@ -289,7 +295,12 @@ class TradeAdjust extends Component {
                             </View>
                             <BottomDesc />
                         </ScrollView>
-                        <FixedButton title="确认调仓" onPress={this.confirmBtn} />
+                        <FixedButton
+                            agreement={data?.agreement_bottom}
+                            title="确认调仓"
+                            onPress={this.confirmBtn}
+                            heightChange={(height) => this.setState({deltaHeight: height})}
+                        />
                     </>
                 )}
             </View>
@@ -331,7 +342,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.bgColor,
         flex: 1,
-        marginBottom: btnHeight,
+        // marginBottom: btnHeight,
     },
     list_head: {
         color: Colors.defaultColor,

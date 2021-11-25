@@ -2,7 +2,7 @@
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-23 14:50:10
+ * @LastEditTime: 2021-11-09 15:50:11
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -76,6 +76,8 @@ const Settings = ({navigation}) => {
                                         selectBank: '',
                                         bank_no: '',
                                         second: 60,
+                                        name: '',
+                                        id_no: '',
                                     })
                                 );
                                 dispatch(

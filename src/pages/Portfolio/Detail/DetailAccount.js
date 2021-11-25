@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -102,7 +102,9 @@ export default function DetailAccount({route, navigation}) {
                     if (res.code === '000000') {
                         setRiskChartMin(
                             Math.min.apply(
-                                res.result.risk_info?.label[2].ratio,
+                                res.result?.risk_info?.label && res.result?.risk_info?.label[2]
+                                    ? res.result.risk_info?.label[2].ratio
+                                    : 0,
                                 res.result.risk_info?.chart.map(function (o) {
                                     return o.val;
                                 })
@@ -112,11 +114,11 @@ export default function DetailAccount({route, navigation}) {
                         navigation.setOptions({
                             title: res.result.title,
                             headerRight: () => {
-                                return (
+                                return res.result.show_toolkit ? (
                                     <TouchableOpacity onPress={rightPress} activeOpacity={1}>
                                         <Text style={styles.right_sty}>{'产品说明书'}</Text>
                                     </TouchableOpacity>
-                                );
+                                ) : null;
                             },
                         });
                         setPeriod(res.result.period);
@@ -137,7 +139,8 @@ export default function DetailAccount({route, navigation}) {
                     setLoading(false);
                 });
         }
-    }, [navigation, rightPress, route.params]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     const renderLoading = () => {
         return (
             <View
@@ -181,12 +184,10 @@ export default function DetailAccount({route, navigation}) {
                     <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
-                                style={[
-                                    styles.amount_sty,
-                                    {
-                                        fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
-                                    },
-                                ]}
+                                style={{
+                                    ...styles.amount_sty,
+                                    fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
+                                }}
                                 text={data.ratio_info.ratio_val}
                                 type={data.ratio_info?.type}
                             />
@@ -304,7 +305,7 @@ export default function DetailAccount({route, navigation}) {
                                     }}
                                 />
                             )}
-                            {data.low_line === 1 && (
+                            {data.low_line === 1 && data.line_info ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -332,52 +333,63 @@ export default function DetailAccount({route, navigation}) {
                                         style={{marginLeft: text(4)}}
                                     />
                                 </TouchableOpacity>
-                            )}
+                            ) : null}
                         </View>
                     )}
 
                     {/* 底线 */}
                     {data.low_line === 1 && type === 1 && (
                         <View style={styles.line_con}>
-                            <View style={styles.lowLineBox}>
-                                <Text
-                                    style={[
-                                        {
-                                            fontSize: Font.textH3,
-                                            lineHeight: text(17),
-                                            color: Colors.defaultColor,
-                                            fontWeight: '500',
-                                        },
-                                        {paddingTop: text(12), paddingBottom: text(4)},
-                                    ]}>
-                                    {data.line_info?.line_desc?.title}
-                                </Text>
-                                <Html
-                                    style={{
-                                        fontSize: Font.textH3,
-                                        lineHeight: text(19),
-                                        color: Colors.descColor,
-                                        textAlign: 'justify',
-                                    }}
-                                    html={data.line_info?.line_desc?.desc}
-                                />
-                            </View>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                onPress={() => {
-                                    global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
-                                    data.line_info?.button?.avail && jump(data.line_info?.button?.url);
-                                }}
-                                style={styles.line_btn}>
-                                {data.line_info?.tip ? (
-                                    <View style={styles.line_flag}>
-                                        <Text style={{color: '#fff', fontSize: px(11)}}>{data.line_info?.tip}</Text>
+                            {data.line_info ? (
+                                <>
+                                    <View style={styles.lowLineBox}>
+                                        {data.line_info?.line_desc?.title ? (
+                                            <Text style={styles.line_desc_title}>
+                                                {data.line_info?.line_desc?.title}
+                                            </Text>
+                                        ) : null}
+                                        <Html
+                                            style={{
+                                                fontSize: Font.textH3,
+                                                lineHeight: text(19),
+                                                color: Colors.descColor,
+                                                textAlign: 'justify',
+                                            }}
+                                            html={data.line_info?.line_desc?.desc}
+                                        />
                                     </View>
-                                ) : null}
-                                <Text style={{fontSize: Font.textH3, lineHeight: text(17), color: Colors.brandColor}}>
-                                    {data.line_info?.button?.text}
-                                </Text>
-                            </TouchableOpacity>
+                                    {data.line_info?.button ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => {
+                                                global.LogTool('portfolioDetailFeatureStart', 'bottomline', 0);
+                                                data.line_info?.button?.avail && jump(data.line_info?.button?.url);
+                                            }}
+                                            style={styles.line_btn}>
+                                            {data.line_info?.tip ? (
+                                                <View style={styles.line_flag}>
+                                                    <Text style={{color: '#fff', fontSize: px(11)}}>
+                                                        {data.line_info?.tip}
+                                                    </Text>
+                                                </View>
+                                            ) : null}
+                                            <Text
+                                                style={{
+                                                    fontSize: Font.textH3,
+                                                    lineHeight: text(17),
+                                                    color: Colors.brandColor,
+                                                }}>
+                                                {data.line_info?.button?.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </>
+                            ) : null}
+                            {data.line_desc ? (
+                                <View style={styles.line_tip}>
+                                    <Text style={styles.line_tip_text}>{data.line_desc.desc}</Text>
+                                </View>
+                            ) : null}
                         </View>
                     )}
 
@@ -396,7 +408,8 @@ export default function DetailAccount({route, navigation}) {
                                         data?.asset_deploy?.items,
                                         data?.asset_deploy?.chart,
                                         route.params.scene === 'adviser' ? '资产配置' : '',
-                                        Platform.select({android: text(150), ios: text(140)})
+                                        Platform.select({android: text(150), ios: text(140)}),
+                                        data?.asset_deploy?.items?.map?.((item) => item.color)
                                     )}
                                 />
                             </View>
@@ -473,31 +486,38 @@ export default function DetailAccount({route, navigation}) {
                             />
                         </View>
                     ) : null}
+                    {data?.estimate ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader data={data?.estimate?.header} ctrl={'estimate'} oid={5} hide />
+                            <FitImage
+                                resizeMode="contain"
+                                source={{uri: data?.estimate?.img}}
+                                style={{marginVertical: text(12)}}
+                            />
+                            <Text style={styles.estimateDesc}>{data?.estimate?.desc}</Text>
+                        </View>
+                    ) : null}
                     {/* 风险控制 */}
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} oid={4} />
                             <View style={{position: 'relative', paddingBottom: px(16)}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
-                                    <View style={{flex: 1, position: 'relative'}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[0]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[0]?.val}</Text>
-                                    </View>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[1]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[1]?.val}</Text>
-                                    </View>
-                                    <View style={{flex: 1}}>
-                                        <Text style={styles.row_title_sty}>{data?.risk_info?.sub_tab[2]?.title}</Text>
-                                        <Text style={styles.row_desc_sty}>{data?.risk_info?.sub_tab[2]?.val}</Text>
-                                    </View>
+                                    {data?.risk_info?.sub_tab?.map((item, index) => (
+                                        <View style={{flex: 1}} key={index}>
+                                            <Text style={styles.row_title_sty}>{item?.title}</Text>
+                                            <Text style={styles.row_desc_sty}>{item?.val}</Text>
+                                        </View>
+                                    ))}
                                 </View>
                                 <View style={{height: text(168)}}>
                                     <Chart
                                         initScript={histogram(
                                             data?.risk_info.chart,
                                             (Math.floor(riskChartMin / 3) - 1) * 3,
-                                            data?.risk_info?.label[2]?.ratio,
+                                            data?.risk_info?.label && data?.risk_info?.label[2]
+                                                ? data?.risk_info?.label[2]?.ratio
+                                                : undefined,
                                             text(160)
                                         )}
                                         style={{marginTop: text(-6), zIndex: 9}}
@@ -507,31 +527,41 @@ export default function DetailAccount({route, navigation}) {
                                 <View
                                     style={{
                                         flexDirection: 'row',
-                                        justifyContent: 'space-around',
+                                        justifyContent: 'space-between',
                                         paddingHorizontal: px(6),
                                     }}>
-                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                    <View style={[{fontSize: text(12)}, Style.flexRow]}>
                                         <Ionicons name={'square'} color={'#E74949'} size={10} />
                                         <Text> {data.risk_info?.label[0]?.key}</Text>
                                     </View>
-                                    <View style={[{flex: 1, fontSize: text(12)}, Style.flexRow]}>
+                                    <View
+                                        style={[
+                                            {
+                                                fontSize: text(12),
+                                            },
+                                            Style.flexRow,
+                                        ]}>
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
-                                    <View
-                                        style={{
-                                            fontSize: text(12),
-                                            marginBottom: px(-16),
-                                        }}>
-                                        <Text style={{fontSize: text(12)}}>--- {data?.risk_info?.label[2]?.key}</Text>
-                                        <Text
+                                    {data?.risk_info?.label && data?.risk_info?.label[2] ? (
+                                        <View
                                             style={{
-                                                fontSize: text(10),
+                                                fontSize: text(12),
+                                                marginBottom: px(-16),
                                             }}>
-                                            {'       '}
-                                            {data?.risk_info?.label[2]?.val}
-                                        </Text>
-                                    </View>
+                                            <Text style={{fontSize: text(12)}}>
+                                                --- {data?.risk_info?.label[2]?.key}
+                                            </Text>
+                                            <Text
+                                                style={{
+                                                    fontSize: text(10),
+                                                }}>
+                                                {'       '}
+                                                {data?.risk_info?.label[2]?.val}
+                                            </Text>
+                                        </View>
+                                    ) : null}
                                 </View>
                             </View>
                         </View>
@@ -563,7 +593,7 @@ export default function DetailAccount({route, navigation}) {
                     <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
                         <Html style={styles.bottomTip} html={data.tip} />
                     </View>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
@@ -712,5 +742,30 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(18),
         color: '#B8C1D3',
+    },
+    line_tip: {
+        marginTop: text(6),
+        marginBottom: Space.marginVertical,
+        padding: text(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.bgColor,
+    },
+    line_tip_text: {
+        fontSize: Font.textH3,
+        lineHeight: text(19),
+        color: Colors.descColor,
+    },
+    estimateDesc: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
+    },
+    line_desc_title: {
+        fontSize: Font.textH3,
+        lineHeight: text(17),
+        color: Colors.defaultColor,
+        fontWeight: '500',
+        paddingTop: text(12),
+        paddingBottom: text(4),
     },
 });

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-09-27 15:26:03
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-18 17:08:45
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -37,7 +37,7 @@ const AddBankCard = ({navigation, route}) => {
     const getBank = useRef(true);
     const msgSeq = useRef('');
     const orderNo = useRef('');
-
+    const [aggrement, setAggrement] = useState({});
     const onInputCardNum = useCallback(
         (value) => {
             if (value && value.length >= 12) {
@@ -46,11 +46,12 @@ const AddBankCard = ({navigation, route}) => {
                     http.get('/passport/match/bank_card_info/20210101', {
                         bank_no: value.replace(/ /g, ''),
                         bc_code: route.params?.bank_code || '',
+                        fr: 'AddBankCard',
                     }).then((res) => {
                         if (res.code === '000000') {
-                            // console.log(res);
                             setBankName(res.result.bank_name);
                             bankCode.current = res.result.bank_code;
+                            setAggrement(res.result?.agreements);
                         }
                     });
                 }
@@ -121,12 +122,14 @@ const AddBankCard = ({navigation, route}) => {
                 confirmCallBack: () => {
                     bankCode.current = value.bank_code;
                     setBankName(value.bank_name);
+                    setAggrement(value?.agreements);
                 },
                 content: value.alert_msg,
             });
         } else {
             bankCode.current = value.bank_code;
             setBankName(value.bank_name);
+            setAggrement(value?.agreements);
         }
     };
     const timer = useCallback(() => {
@@ -222,9 +225,11 @@ const AddBankCard = ({navigation, route}) => {
         http.get('/passport/bank_list/20210101', {
             channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
             bc_code: route.params?.bank_code || '',
+            fr: 'AddBankCard',
         }).then((res) => {
             if (res.code === '000000') {
                 setBankList(res.result);
+                setAggrement(res?.result[0]?.agreements);
             }
         });
     }, [route.params, userInfo]);
@@ -299,10 +304,7 @@ const AddBankCard = ({navigation, route}) => {
             </InputView>
             {route.params?.action === 'add' && (
                 <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
-                    <Agreements
-                        onChange={(checked) => setCheck(checked)}
-                        data={[{title: '《委托支付协议》', id: 15}]}
-                    />
+                    <Agreements onChange={(checked) => setCheck(checked)} data={aggrement?.list} />
                 </View>
             )}
             <Button

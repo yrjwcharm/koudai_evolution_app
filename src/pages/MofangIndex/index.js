@@ -330,125 +330,206 @@ const Index = (props) => {
 
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
-
                             {/* 推荐 */}
-                            {data?.custom_info && !data.show_recommend ? (
-                                <TouchableOpacity
-                                    activeOpacity={0.8}
-                                    onPress={() => {
-                                        global.LogTool('IndexCustomCardStart');
-                                        data?.login_status == 0
-                                            ? props.navigation.navigate('Register', {
-                                                  redirect: data?.custom_info?.button?.url,
-                                              })
-                                            : jump(data?.custom_info?.button?.url);
-                                    }}
-                                    style={{marginBottom: px(20), marginTop: px(14)}}>
-                                    <ImageBackground
-                                        source={require('../../assets/img/robotShadow.png')}
-                                        style={styles.robot}>
-                                        <FastImage
-                                            style={{width: px(80), height: px(80)}}
-                                            source={require('../../assets/img/robot.gif')}
-                                        />
-                                    </ImageBackground>
-                                    <View style={styles.recommen_card}>
+                            {data?.custom_info ? (
+                                !data.show_recommend ? (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            global.LogTool('IndexCustomCardStart');
+                                            data?.login_status == 0
+                                                ? props.navigation.navigate('Register', {
+                                                      redirect: data?.custom_info?.button?.url,
+                                                  })
+                                                : jump(data?.custom_info?.button?.url);
+                                        }}
+                                        style={{marginBottom: px(20), marginTop: px(14)}}>
                                         <ImageBackground
-                                            source={require('../../assets/img/index/recommendBg.png')}
-                                            style={{height: px(196)}}>
-                                            {/* 218 */}
-                                            <Text style={[styles.secure_title, styles.recommen_title]}>
-                                                {data?.custom_info?.title}
-                                            </Text>
-                                            <View style={[Style.flexRow, styles.recommen_con]}>
-                                                <FastImage
-                                                    style={{width: px(20), height: px(20)}}
-                                                    source={require('../../assets/img/index/categoryLeft.png')}
-                                                />
-                                                <Text style={styles.recommen_text}>{data?.custom_info?.desc}</Text>
-                                                <FastImage
-                                                    style={styles.cateRight}
-                                                    source={require('../../assets/img/index/categoryRight.png')}
-                                                />
-                                            </View>
-                                            <View style={[styles.recommen_bottom, Style.flexBetween]}>
-                                                <View style={Style.flexRow}>
-                                                    <View style={Style.flexRow}>
-                                                        {data?.custom_info?.user_avatar_list
-                                                            ?.slice(0, 2)
-                                                            .map((avar, index) => {
-                                                                return (
-                                                                    <Image
-                                                                        key={index}
-                                                                        source={{uri: avar}}
-                                                                        style={[
-                                                                            styles.user_avatar,
-                                                                            {marginLeft: index != 0 ? px(-6) : 0},
-                                                                        ]}
-                                                                    />
-                                                                );
-                                                            })}
-                                                    </View>
-                                                    <Text style={{fontSize: px(12), marginLeft: px(8)}}>
-                                                        已有
-                                                        <Text
-                                                            style={{fontSize: px(13), fontFamily: Font.numFontFamily}}>
-                                                            {formaNum(data?.custom_info?.num, 'nozero')}
-                                                        </Text>
-                                                        人开启
-                                                    </Text>
-                                                </View>
-
-                                                <LinearGradient
-                                                    start={{x: 0, y: 0.25}}
-                                                    end={{x: 0, y: 0.8}}
-                                                    colors={['#FF9463', '#FF7D41']}
-                                                    style={[styles.recommend_btn, Style.flexRow]}>
-                                                    <Text style={styles.btn_text}>
-                                                        {data?.custom_info?.button.text}
-                                                    </Text>
-                                                    <FontAwesome name={'angle-right'} size={18} color="#fff" />
-                                                </LinearGradient>
-                                            </View>
+                                            source={require('../../assets/img/robotShadow.png')}
+                                            style={styles.robot}>
+                                            <FastImage
+                                                style={{width: px(80), height: px(80)}}
+                                                source={require('../../assets/img/robot.gif')}
+                                            />
                                         </ImageBackground>
-                                    </View>
-                                </TouchableOpacity>
-                            ) : (
+                                        <View style={styles.recommen_card}>
+                                            <ImageBackground
+                                                source={require('../../assets/img/index/recommendBg.png')}
+                                                style={{height: px(196)}}>
+                                                {/* 218 */}
+                                                <Text style={[styles.secure_title, styles.recommen_title]}>
+                                                    {data?.custom_info?.title}
+                                                </Text>
+                                                <View style={[Style.flexRow, styles.recommen_con]}>
+                                                    <FastImage
+                                                        style={{width: px(20), height: px(20)}}
+                                                        source={require('../../assets/img/index/categoryLeft.png')}
+                                                    />
+                                                    <Text style={styles.recommen_text}>{data?.custom_info?.desc}</Text>
+                                                    <FastImage
+                                                        style={styles.cateRight}
+                                                        source={require('../../assets/img/index/categoryRight.png')}
+                                                    />
+                                                </View>
+                                                <View style={[styles.recommen_bottom, Style.flexBetween]}>
+                                                    <View style={Style.flexRow}>
+                                                        <View style={Style.flexRow}>
+                                                            {data?.custom_info?.user_avatar_list
+                                                                ?.slice(0, 2)
+                                                                .map((avar, index) => {
+                                                                    return (
+                                                                        <Image
+                                                                            key={index}
+                                                                            source={{uri: avar}}
+                                                                            style={[
+                                                                                styles.user_avatar,
+                                                                                {marginLeft: index != 0 ? px(-6) : 0},
+                                                                            ]}
+                                                                        />
+                                                                    );
+                                                                })}
+                                                        </View>
+                                                        <Text style={{fontSize: px(12), marginLeft: px(8)}}>
+                                                            已有
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: px(13),
+                                                                    fontFamily: Font.numFontFamily,
+                                                                }}>
+                                                                {formaNum(data?.custom_info?.num, 'nozero')}
+                                                            </Text>
+                                                            人开启
+                                                        </Text>
+                                                    </View>
+
+                                                    <LinearGradient
+                                                        start={{x: 0, y: 0.25}}
+                                                        end={{x: 0, y: 0.8}}
+                                                        colors={['#FF9463', '#FF7D41']}
+                                                        style={[styles.recommend_btn, Style.flexRow]}>
+                                                        <Text style={styles.btn_text}>
+                                                            {data?.custom_info?.button.text}
+                                                        </Text>
+                                                        <FontAwesome name={'angle-right'} size={18} color="#fff" />
+                                                    </LinearGradient>
+                                                </View>
+                                            </ImageBackground>
+                                        </View>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => {
+                                            global.LogTool('IndexProductCardStart');
+                                            data?.login_status == 0
+                                                ? props.navigation.navigate('Register', {
+                                                      redirect: data?.custom_info?.button?.url,
+                                                  })
+                                                : jump(data?.custom_info?.button?.url);
+                                        }}
+                                        style={{marginBottom: px(20)}}>
+                                        <View style={[styles.recommendBox, {alignItems: 'center'}]}>
+                                            <FastImage
+                                                source={require('../../assets/img/index/recommendShadow.png')}
+                                                style={styles.recommendShadow}
+                                            />
+                                            <View style={[Style.flexRowCenter, {width: '100%'}]}>
+                                                <FastImage
+                                                    source={{uri: data?.custom_info?.icon}}
+                                                    style={styles.recommendIcon}
+                                                />
+                                                <Text style={[styles.poName, {marginRight: px(8)}]}>
+                                                    {data?.custom_info?.name}
+                                                </Text>
+                                                <Text style={styles.poDesc}>{data?.custom_info?.desc}</Text>
+                                            </View>
+                                            <Text style={[styles.yieldRatio, {marginTop: Space.marginVertical}]}>
+                                                {data?.custom_info?.yield.ratio}
+                                            </Text>
+                                            <Text style={[styles.yieldTitle, {marginTop: px(2), textAlign: 'center'}]}>
+                                                {data?.custom_info?.yield.title}
+                                            </Text>
+                                            {data?.custom_info?.labels ? (
+                                                <View style={[Style.flexRowCenter, {marginTop: Space.marginVertical}]}>
+                                                    {data?.custom_info?.labels?.map?.((item, index) => {
+                                                        return (
+                                                            <View
+                                                                style={[
+                                                                    Style.flexRow,
+                                                                    index === 0 ? {} : {marginLeft: px(12)},
+                                                                ]}
+                                                                key={item + index}>
+                                                                <FastImage
+                                                                    source={require('../../assets/img/index/selling_point.png')}
+                                                                    style={styles.sellingPoint}
+                                                                />
+                                                                <Text style={styles.pointText}>{item}</Text>
+                                                            </View>
+                                                        );
+                                                    })}
+                                                </View>
+                                            ) : null}
+                                            <LinearGradient
+                                                colors={['#FF9463', '#FF7D41']}
+                                                start={{x: 0, y: 0}}
+                                                end={{x: 0, y: 1}}
+                                                style={[Style.flexCenter, styles.recommendBtn]}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: px(15),
+                                                        lineHeight: px(21),
+                                                        color: '#fff',
+                                                        fontWeight: '500',
+                                                    }}>
+                                                    {data?.custom_info?.button?.text}
+                                                </Text>
+                                            </LinearGradient>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            ) : null}
+                            {data?.custom_info_tool ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
                                         global.LogTool('IndexProductCardStart');
                                         data?.login_status == 0
                                             ? props.navigation.navigate('Register', {
-                                                  redirect: data?.custom_info?.button?.url,
+                                                  redirect: data?.custom_info_tool?.button?.url,
                                               })
-                                            : jump(data?.custom_info?.button?.url);
+                                            : jump(data?.custom_info_tool?.button?.url);
                                     }}
-                                    style={{marginBottom: px(20)}}>
-                                    <View style={[styles.recommendBox, {alignItems: 'center'}]}>
+                                    style={{marginBottom: px(20), marginTop: px(14)}}>
+                                    <ImageBackground
+                                        source={require('../../assets/img/robotShadow.png')}
+                                        style={styles.tool_robot}>
+                                        <FastImage
+                                            style={{width: px(70), height: px(70)}}
+                                            source={require('../../assets/img/robot.gif')}
+                                        />
+                                    </ImageBackground>
+                                    <View style={[styles.toolBox, {alignItems: 'center'}]}>
                                         <FastImage
                                             source={require('../../assets/img/index/recommendShadow.png')}
                                             style={styles.recommendShadow}
                                         />
-                                        <View style={[Style.flexRowCenter, {width: '100%'}]}>
-                                            <FastImage
-                                                source={{uri: data?.custom_info?.icon}}
-                                                style={styles.recommendIcon}
-                                            />
-                                            <Text style={[styles.poName, {marginRight: px(8)}]}>
-                                                {data?.custom_info?.name}
-                                            </Text>
-                                            <Text style={styles.poDesc}>{data?.custom_info?.desc}</Text>
+                                        <View style={{paddingLeft: px(70), width: '100%'}}>
+                                            <Text style={styles.tool_title}>{data?.custom_info_tool?.title}</Text>
                                         </View>
-                                        <Text style={[styles.yieldRatio, {marginTop: Space.marginVertical}]}>
-                                            {data?.custom_info?.yield.ratio}
-                                        </Text>
-                                        <Text style={[styles.yieldTitle, {marginTop: px(2), textAlign: 'center'}]}>
-                                            {data?.custom_info?.yield.title}
-                                        </Text>
-                                        {data?.custom_info?.labels ? (
-                                            <View style={[Style.flexRowCenter, {marginTop: Space.marginVertical}]}>
-                                                {data?.custom_info?.labels?.map?.((item, index) => {
+                                        <View style={[Style.flexRow, styles.tool_content_box]}>
+                                            <FastImage
+                                                style={styles.quoteLeft}
+                                                source={require('../../assets/img/index/categoryLeft.png')}
+                                            />
+                                            <Text style={styles.tool_content}>{data?.custom_info_tool?.content}</Text>
+                                            <FastImage
+                                                style={styles.quoteRight}
+                                                source={require('../../assets/img/index/categoryRight.png')}
+                                            />
+                                        </View>
+                                        {data?.custom_info_tool?.labels ? (
+                                            <View style={[Style.flexRow, {marginTop: px(14)}]}>
+                                                {data?.custom_info_tool?.labels?.map?.((item, index) => {
                                                     return (
                                                         <View
                                                             style={[
@@ -460,7 +541,19 @@ const Index = (props) => {
                                                                 source={require('../../assets/img/index/selling_point.png')}
                                                                 style={styles.sellingPoint}
                                                             />
-                                                            <Text style={styles.pointText}>{item}</Text>
+                                                            <Text
+                                                                style={[
+                                                                    styles.pointText,
+                                                                    {
+                                                                        color: Colors.defaultColor,
+                                                                        fontWeight: Platform.select({
+                                                                            android: '700',
+                                                                            ios: '500',
+                                                                        }),
+                                                                    },
+                                                                ]}>
+                                                                {item}
+                                                            </Text>
                                                         </View>
                                                     );
                                                 })}
@@ -470,7 +563,7 @@ const Index = (props) => {
                                             colors={['#FF9463', '#FF7D41']}
                                             start={{x: 0, y: 0}}
                                             end={{x: 0, y: 1}}
-                                            style={[Style.flexCenter, styles.recommendBtn]}>
+                                            style={[Style.flexCenter, styles.toolBtn]}>
                                             <Text
                                                 style={{
                                                     fontSize: px(15),
@@ -478,12 +571,12 @@ const Index = (props) => {
                                                     color: '#fff',
                                                     fontWeight: '500',
                                                 }}>
-                                                {data?.custom_info?.button?.text}
+                                                {data?.custom_info_tool?.button?.text}
                                             </Text>
                                         </LinearGradient>
                                     </View>
                                 </TouchableOpacity>
-                            )}
+                            ) : null}
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>
@@ -658,8 +751,8 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             </>
-                            <BottomDesc />
                         </LinearGradient>
+                        <BottomDesc />
                         <UpdateCom />
                     </ScrollView>
                     {data?.guide_tip ? (
@@ -760,6 +853,14 @@ const styles = StyleSheet.create({
         height: px(80),
         top: px(-24),
         left: px(4),
+        position: 'absolute',
+        zIndex: 10,
+    },
+    tool_robot: {
+        width: px(70),
+        height: px(70),
+        top: px(-21),
+        left: 0,
         position: 'absolute',
         zIndex: 10,
     },
@@ -929,6 +1030,42 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         position: 'relative',
     },
+    toolBox: {
+        paddingTop: px(20),
+        paddingBottom: px(20),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+    },
+    tool_title: {
+        fontSize: Font.textH1,
+        lineHeight: px(22),
+        color: Colors.defaultColor,
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
+    tool_content_box: {
+        marginTop: Space.marginVertical,
+        paddingLeft: px(43),
+        paddingRight: Space.padding,
+    },
+    tool_content: {
+        fontSize: px(13),
+        lineHeight: px(20),
+        color: Colors.descColor,
+    },
+    quoteLeft: {
+        width: px(20),
+        height: px(20),
+        position: 'absolute',
+        top: px(-3),
+        left: px(16),
+    },
+    quoteRight: {
+        width: px(20),
+        height: px(20),
+        position: 'absolute',
+        right: px(16),
+        bottom: px(-6),
+    },
     recommendShadow: {
         // width: deviceWidth - px(32),
         height: px(60),
@@ -981,5 +1118,11 @@ const styles = StyleSheet.create({
         borderRadius: px(22),
         width: px(240),
         height: px(44),
+    },
+    toolBtn: {
+        marginTop: Space.marginVertical,
+        borderRadius: px(22),
+        width: px(263),
+        height: px(40),
     },
 });

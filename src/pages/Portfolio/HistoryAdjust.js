@@ -2,7 +2,7 @@
  * @Date: 2021-01-23 10:29:49
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-10-25 16:09:10
+ * @LastEditTime: 2021-11-09 15:04:37
  * @Description: 历史调仓记录
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -18,17 +18,17 @@ import {basicPieChart} from './components/ChartOption';
 
 const RatioColor = [
     '#E1645C',
-    '#ECB351',
-    '#5687EB',
-    '#967DF2',
+    '#6694F3',
+    '#F8A840',
+    '#CC8FDD',
     '#5DC162',
-    '#5DC162',
-    '#DE79AE',
-    '#967DF2',
-    '#62B4C7',
-    '#B8D27E',
-    '#F18D60',
-    '#5E71E8',
+    '#C7AC6B',
+    '#62C4C7',
+    '#E97FAD',
+    '#C2E07F',
+    '#B1B4C5',
+    '#E78B61',
+    '#8683C9',
     '#EBDD69',
 ];
 
@@ -47,10 +47,11 @@ const HistoryAdjust = ({navigation, route}) => {
             setChart(
                 res.result.deploy_detail
                     ?.filter((item) => item.ratio !== 0)
-                    .map((item) => ({
+                    .map((item, index) => ({
                         a: '1',
                         name: item.name,
                         percent: (item.ratio * 100).toFixed(2) * 1,
+                        color: item.color || RatioColor[index],
                     }))
             );
         });
@@ -97,7 +98,7 @@ const HistoryAdjust = ({navigation, route}) => {
                         {borderTopWidth: index === 0 ? 0 : Space.borderWidth},
                     ]}>
                     <View style={[styles.leftPart, Style.flexRow]}>
-                        <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
+                        <View style={[styles.circle, {backgroundColor: section.color || RatioColor[index]}]} />
                         <Text style={[styles.assets_l1_name]}>{section.name}</Text>
                     </View>
                     <View style={[styles.rightPart, Style.flexRow]}>
@@ -137,7 +138,13 @@ const HistoryAdjust = ({navigation, route}) => {
                         </View> */}
                         {chart.length > 0 && (
                             <View style={{height: text(220)}}>
-                                <Chart initScript={basicPieChart(chart)} data={chart} />
+                                <Chart
+                                    initScript={basicPieChart(
+                                        chart,
+                                        chart.map((item) => item.color)
+                                    )}
+                                    data={chart}
+                                />
                             </View>
                         )}
                         <View
@@ -149,10 +156,10 @@ const HistoryAdjust = ({navigation, route}) => {
                                 return (
                                     <View
                                         style={[Style.flexRow, {width: '50%', marginBottom: text(8)}]}
-                                        key={RatioColor[index]}>
+                                        key={item + index}>
                                         <View style={[styles.circle, {backgroundColor: RatioColor[index]}]} />
                                         <Text style={styles.legendName}>{item.name}</Text>
-                                        <Text style={styles.legendVal}>{item.percent}%</Text>
+                                        <Text style={styles.legendVal}>{(item.percent * 1).toFixed(2)}%</Text>
                                     </View>
                                 );
                             })}

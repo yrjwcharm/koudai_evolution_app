@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:05
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-27 19:08:35
+ * @LastEditTime: 2021-11-16 18:15:11
  * @Description:银行卡信息
  */
 import React, {Component} from 'react';
@@ -68,7 +68,15 @@ class BankInfo extends Component {
         this.time && clearInterval(this.time);
     }
     checkData = (phone, code, selectBank, bank_no) => {
-        if (phone.length >= 11 && code.length >= 6 && selectBank.bank_code && bank_no.length >= 19) {
+        const {phoneError, bankErrMes} = this.state;
+        if (
+            !bankErrMes &&
+            !phoneError &&
+            phone.length >= 11 &&
+            code.length >= 6 &&
+            selectBank.bank_code &&
+            bank_no.length >= 19
+        ) {
             this.setState({btnDisable: false});
         } else {
             this.setState({btnDisable: true});
@@ -282,10 +290,14 @@ class BankInfo extends Component {
         const {bank_no, selectBank, code} = this.state;
         this.setState({phone: inputInt(_phone)}, () => {
             var phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-            this.setState({
-                phoneError: phoneReg.test(this.state.phone) ? '' : '请输入正确的手机号',
-            });
-            this.checkData(this.state.phone, code, selectBank, bank_no);
+            this.setState(
+                {
+                    phoneError: phoneReg.test(this.state.phone) ? '' : '请输入正确的手机号',
+                },
+                () => {
+                    this.checkData(this.state.phone, code, selectBank, bank_no);
+                }
+            );
         });
     };
     render() {
@@ -298,122 +310,128 @@ class BankInfo extends Component {
                     // enableResetScrollToCoords={true}
                     // enableOnAndroid={true}
                     keyboardShouldPersistTaps="handled">
-                    <BankCardModal
-                        title="请选择银行卡"
-                        data={bankList}
-                        style={{height: px(500)}}
-                        onDone={(data) => {
-                            this.setState({selectBank: data}, () => {
-                                this.checkData(phone, code, this.state.selectBank, bank_no);
-                            });
-                        }}
-                        ref={(ref) => (this.bankCard = ref)}
-                    />
-                    <FastImage
-                        style={styles.pwd_img}
-                        source={require('../../../assets/img/account/second.png')}
-                        resizeMode={FastImage.resizeMode.contain}
-                    />
-                    <View style={styles.card}>
-                        <View style={styles.card_header}>
-                            <FastImage
-                                source={require('../../../assets/img/account/cardMes.png')}
-                                style={{width: px(22), height: px(22), resizeMode: 'contain'}}
-                            />
-                            <Text style={styles.card_head_text}>银行卡信息</Text>
-                        </View>
-                        <Input
-                            label="银行卡号"
-                            placeholder="请输入您的银行卡号"
-                            keyboardType={'number-pad'}
-                            maxLength={23}
-                            onBlur={() => {
-                                global.LogTool('acBankNo');
+                    <View
+                        style={{
+                            paddingHorizontal: px(16),
+                        }}>
+                        <BankCardModal
+                            title="请选择银行卡"
+                            data={bankList}
+                            type={'hidden'}
+                            style={{height: px(500)}}
+                            onDone={(data) => {
+                                this.setState({selectBank: data}, () => {
+                                    this.checkData(phone, code, this.state.selectBank, bank_no);
+                                });
                             }}
-                            onFoucs={() => {
-                                global.LogTool('BankInfoCardnumber');
-                            }}
-                            errorMsg={bankErrMes}
-                            value={bank_no}
-                            onChangeText={this.onChangeBankNo}
+                            ref={(ref) => (this.bankCard = ref)}
                         />
-                        <View style={Style.flexRow}>
-                            <Input
-                                label="银行"
-                                isUpdate={false}
-                                placeholder="请选择您银行"
-                                value={selectBank.bank_name}
-                                onClick={this._showBankCard}
-                                inputStyle={{flex: 1}}
-                                returnKeyType={'done'}
-                            />
-                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
-                        </View>
-
-                        <Input
-                            label="手机号"
-                            placeholder="请输入您的银行预留手机号"
-                            keyboardType={'number-pad'}
-                            maxLength={11}
-                            onBlur={() => {
-                                global.LogTool('acPhone');
-                            }}
-                            onFoucs={() => {
-                                global.LogTool('BankInfoPhonenumber');
-                            }}
-                            errorMsg={phoneError}
-                            value={phone}
-                            onChangeText={this.onChangePhone}
+                        <FastImage
+                            style={styles.pwd_img}
+                            source={require('../../../assets/img/account/second.png')}
+                            resizeMode={FastImage.resizeMode.contain}
                         />
-
-                        <View style={Style.flexRow}>
+                        <View style={styles.card}>
+                            <View style={styles.card_header}>
+                                <FastImage
+                                    source={require('../../../assets/img/account/cardMes.png')}
+                                    style={{width: px(22), height: px(22), resizeMode: 'contain'}}
+                                />
+                                <Text style={styles.card_head_text}>银行卡信息</Text>
+                            </View>
                             <Input
-                                label="验证码"
-                                placeholder="请输入验证码"
+                                label="银行卡号"
+                                placeholder="请输入您的银行卡号"
                                 keyboardType={'number-pad'}
-                                maxLength={6}
+                                maxLength={23}
                                 onBlur={() => {
-                                    global.LogTool('acCode');
+                                    global.LogTool('acBankNo');
                                 }}
                                 onFoucs={() => {
-                                    global.LogTool('BankInfoEnterverificationcode');
+                                    global.LogTool('BankInfoCardnumber');
                                 }}
-                                value={code}
-                                onChangeText={(_code) => {
-                                    this.setState({code: inputInt(_code)}, () => {
-                                        this.checkData(phone, this.state.code, selectBank, bank_no);
-                                    });
-                                }}
-                                inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                errorMsg={bankErrMes}
+                                value={bank_no}
+                                onChangeText={this.onChangeBankNo}
                             />
-                            <View style={[styles.border, {width: verifyText.length > 5 ? px(110) : px(84)}]}>
-                                <Text
-                                    onPress={_.debounce(this.sendCode, 500)}
-                                    style={{
-                                        color: Colors.btnColor,
-                                    }}>
-                                    {verifyText}
-                                </Text>
+                            <View style={Style.flexRow}>
+                                <Input
+                                    label="银行"
+                                    isUpdate={false}
+                                    placeholder="请选择您银行"
+                                    value={selectBank.bank_name}
+                                    onClick={this._showBankCard}
+                                    inputStyle={{flex: 1}}
+                                    returnKeyType={'done'}
+                                />
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={18}
+                                    color={'#999999'}
+                                    style={{marginLeft: -14}}
+                                />
+                            </View>
+
+                            <Input
+                                label="手机号"
+                                placeholder="请输入您的银行预留手机号"
+                                keyboardType={'number-pad'}
+                                maxLength={11}
+                                onBlur={() => {
+                                    global.LogTool('acPhone');
+                                }}
+                                onFoucs={() => {
+                                    global.LogTool('BankInfoPhonenumber');
+                                }}
+                                errorMsg={phoneError}
+                                value={phone}
+                                onChangeText={this.onChangePhone}
+                            />
+
+                            <View style={Style.flexRow}>
+                                <Input
+                                    label="验证码"
+                                    placeholder="请输入验证码"
+                                    keyboardType={'number-pad'}
+                                    maxLength={6}
+                                    onBlur={() => {
+                                        global.LogTool('acCode');
+                                    }}
+                                    onFoucs={() => {
+                                        global.LogTool('BankInfoEnterverificationcode');
+                                    }}
+                                    value={code}
+                                    onChangeText={(_code) => {
+                                        this.setState({code: inputInt(_code)}, () => {
+                                            this.checkData(phone, this.state.code, selectBank, bank_no);
+                                        });
+                                    }}
+                                    inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                />
+                                <View style={[styles.border, {width: verifyText.length > 5 ? px(110) : px(84)}]}>
+                                    <Text
+                                        onPress={_.debounce(this.sendCode, 500)}
+                                        style={{
+                                            color: Colors.btnColor,
+                                        }}>
+                                        {verifyText}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
+                        <Agreements
+                            onChange={(checked) => {
+                                this.setState({checked});
+                            }}
+                            title={selectBank ? selectBank?.agreements?.desc : bankList[0]?.agreements?.desc}
+                            data={selectBank ? selectBank?.agreements?.list : bankList[0]?.agreements?.list}
+                        />
                     </View>
-                    <Agreements
-                        onChange={(checked) => {
-                            this.setState({checked});
+                    <BottomDesc
+                        style={{
+                            marginBottom: px(70),
                         }}
-                        title="本人承诺仅为中国税收居民且为该基金投资账户的实际控制 人及受益人，我已阅读并同意"
-                        data={[
-                            {
-                                title: '《基金电子交易远程服务协议》',
-                                id: 16,
-                            },
-                            {
-                                title: '《委托支付协议》',
-                                id: 15,
-                            },
-                        ]}
                     />
-                    <BottomDesc />
                 </KeyboardAwareScrollView>
                 <FixedButton
                     title={'立即开户'}
@@ -428,7 +446,6 @@ const styles = StyleSheet.create({
     con: {
         flex: 1,
         backgroundColor: Colors.bgColor,
-        paddingHorizontal: px(16),
     },
     pwd_img: {
         width: '100%',

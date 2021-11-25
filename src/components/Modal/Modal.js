@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-25 10:30:07
+ * @LastEditTime: 2021-11-10 00:37:19
  * @Description:
  */
 /**
@@ -18,28 +18,38 @@ import React from 'react';
 import RootSibling from 'react-native-root-siblings';
 import ModalRender from './ModalContainer';
 import Mask from '../Mask';
-let rootSibling = null;
+global.rootSibling = null;
 export function destroy() {
-    if (rootSibling) {
-        rootSibling.destroy();
+    if (global.rootSibling) {
+        global.rootSibling.destroy();
+        global.rootSibling = null;
     }
 }
 export default class Modal extends React.Component {
     static show(options) {
-        rootSibling = new RootSibling(
-            (
+        if (global.rootSibling) {
+            global.rootSibling.update(
                 <>
-                    <Mask />
+                    {<Mask />}
                     <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
                 </>
-            )
-        );
-        return rootSibling;
+            );
+        } else {
+            global.rootSibling = new RootSibling(
+                (
+                    <>
+                        {<Mask />}
+                        <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
+                    </>
+                )
+            );
+        }
+        return global.rootSibling;
     }
     static close(options) {
         destroy();
-        rootSibling = new RootSibling(<ModalRender {...options} isVisible={false} destroy={() => destroy()} />);
-        return rootSibling;
+        global.rootSibling = new RootSibling(<ModalRender {...options} isVisible={false} destroy={() => destroy()} />);
+        return global.rootSibling;
     }
     componentWillUnmount() {
         destroy();

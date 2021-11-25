@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-29 15:50:22
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-08 18:11:33
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -30,7 +30,7 @@ import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
-    const envList = ['online1', 'online2'];
+    const envList = ['online', 'online1', 'online2'];
     const timer = useRef();
     const jump = useJump();
     const inset = useSafeAreaInsets();
@@ -81,7 +81,7 @@ export default function Launch({navigation}) {
                                 本应用使用期间，我们需要申请获取您的系统权限，我们将在首次调用时逐项询问您是否允许使用该权限。您可以在我们询问时开启相关权限，也可以在设备系统“设置”里管理相关权限：
                             </Text>
                             <Text style={{fontSize: px(12), lineHeight: px(18)}}>
-                                1.消息通知权限：向您及时推送交易、调仓、阅读推荐等消息，方便您更及时了解您的理财相关数据。
+                                1.消息通知权限：向您及时推送交易、阅读推荐等消息，方便您更及时了解您的理财相关数据。
                             </Text>
                             <Text style={{fontSize: px(12), lineHeight: px(18)}}>
                                 2.读取电话状态权限：正常识别您的本机识别码，以便完成安全风控、进行统计和服务推送。
@@ -229,7 +229,7 @@ export default function Launch({navigation}) {
                         if (result.result?.env) {
                             global.env = result.result.env;
                         } else {
-                            global.env = 'online';
+                            global.env = 'onlinessl';
                         }
                     } else {
                         global.env = env;
@@ -288,7 +288,7 @@ export default function Launch({navigation}) {
                                 }
                             });
                     };
-                    getHealthEnv(0, 2);
+                    getHealthEnv(0, 3);
                 });
         });
     };

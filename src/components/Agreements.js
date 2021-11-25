@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-27 15:34:36
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-08 19:21:55
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -71,7 +71,7 @@ function Agreements(props) {
                                   }}
                                   style={{fontSize: px(11), color: '#0051CC'}}
                                   key={index}>
-                                  {item.title}
+                                  {item.title || item.name}
                               </Text>
                           );
                       })

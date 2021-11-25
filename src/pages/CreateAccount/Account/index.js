@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:22:15
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-27 16:08:09
+ * @LastEditTime: 2021-11-16 17:38:11
  * @Description:基金开户实名认证
  */
 import React, {Component} from 'react';
@@ -187,61 +187,68 @@ class Index extends Component {
         return (
             <View style={styles.con}>
                 {showMask && <Mask onClick={this.closePicker} />}
-                <ScrollView style={{paddingHorizontal: px(16)}} keyboardShouldPersistTaps="handled">
-                    <FastImage
-                        style={styles.pwd_img}
-                        source={require('../../../assets/img/account/first.png')}
-                        resizeMode={FastImage.resizeMode.contain}
-                    />
-                    <View style={styles.card}>
-                        <View style={styles.card_header}>
-                            <FastImage
-                                source={require('../../../assets/img/account/personalMes.png')}
-                                style={{width: px(22), height: px(22), resizeMode: 'contain'}}
-                            />
-                            <Text style={styles.card_head_text}>基本信息</Text>
-                        </View>
-                        <Input
-                            label="姓名"
-                            placeholder="请输入您的姓名"
-                            onChangeText={this.onChangeName}
-                            value={name}
-                            onBlur={() => {
-                                global.LogTool('acName');
-                            }}
-                            returnKeyType={'next'}
+                <ScrollView keyboardShouldPersistTaps="handled">
+                    <View style={{paddingHorizontal: px(16)}}>
+                        <FastImage
+                            style={styles.pwd_img}
+                            source={require('../../../assets/img/account/first.png')}
+                            resizeMode={FastImage.resizeMode.contain}
                         />
-                        <View style={[Style.flexRow, styles.border]}>
+                        <View style={styles.card}>
+                            <View style={styles.card_header}>
+                                <FastImage
+                                    source={require('../../../assets/img/account/personalMes.png')}
+                                    style={{width: px(22), height: px(22), resizeMode: 'contain'}}
+                                />
+                                <Text style={styles.card_head_text}>基本信息</Text>
+                            </View>
                             <Input
-                                label="身份证"
-                                placeholder="请输入您的身份证号"
-                                onChangeText={this.onChangeIdNo}
-                                value={id_no}
+                                label="姓名"
+                                placeholder="请输入您的姓名"
+                                onChangeText={this.onChangeName}
+                                value={name}
                                 onBlur={() => {
-                                    global.LogTool('acIdNo');
+                                    global.LogTool('acName');
                                 }}
-                                maxLength={18}
-                                errorMsg={idErrorMsg}
-                                inputStyle={{flex: 1, borderBottomWidth: 0}}
                                 returnKeyType={'next'}
                             />
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.jumpPage('UploadID');
-                                }}>
-                                <FontAwesome name={'camera'} size={px(20)} color={'#000'} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={Style.flexRow}>
-                            <Input
-                                label="职业信息"
-                                isUpdate={false}
-                                placeholder="请选择您的职业"
-                                value={rname}
-                                onClick={this._showPosition}
-                                inputStyle={{flex: 1, borderBottomWidth: 0}}
-                            />
-                            <FontAwesome name={'angle-right'} size={18} color={'#999999'} style={{marginLeft: -14}} />
+                            <View style={[Style.flexRow, styles.border]}>
+                                <Input
+                                    label="身份证"
+                                    placeholder="请输入您的身份证号"
+                                    onChangeText={this.onChangeIdNo}
+                                    value={id_no}
+                                    onBlur={() => {
+                                        global.LogTool('acIdNo');
+                                    }}
+                                    maxLength={18}
+                                    errorMsg={idErrorMsg}
+                                    inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                    returnKeyType={'next'}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.jumpPage('UploadID');
+                                    }}>
+                                    <FontAwesome name={'camera'} size={px(20)} color={'#000'} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={Style.flexRow}>
+                                <Input
+                                    label="职业信息"
+                                    isUpdate={false}
+                                    placeholder="请选择您的职业"
+                                    value={rname}
+                                    onClick={this._showPosition}
+                                    inputStyle={{flex: 1, borderBottomWidth: 0}}
+                                />
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={18}
+                                    color={'#999999'}
+                                    style={{marginLeft: -14}}
+                                />
+                            </View>
                         </View>
                     </View>
                     <BottomDesc />

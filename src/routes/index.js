@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-03 13:28:41
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-25 16:32:17
  * @Description:路由表
  */
 import React from 'react';
@@ -65,6 +65,7 @@ import InvestAnalysis from '../pages/Assets/InvestAnalysis'; // 投资分析
 import HoldingFund from '../pages/Assets/HoldingFund'; // 持有基金
 import HistoryHoldFunds from '../pages/Assets/HistoryHoldFunds'; // 历史持有基金
 import FundSearching from '../pages/Assets/FundSearching'; // 基金查询
+import AssetHealthScore from '../pages/Assets/AssetHealthScore'; // 资产健康分
 import BankRedeem from '../pages/BankPages/BankRedeem'; //银行赎回
 import BankBuy from '../pages/BankPages/BankBuy'; //银行购买
 import SetTarget from '../pages/FixedPortfolio/SetTarget'; //低估值设置目标
@@ -85,6 +86,7 @@ import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投�
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
 import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
+import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
 import MessageNotice from '../pages/Message/MessageNotice'; //消息列表
 import AdjustInformation from '../pages/Assets/AdjustInformation'; // 调仓信息
@@ -145,7 +147,7 @@ import Questionnaire from '../pages/Evaluation/Questionnaire'; // 传统风险�
 import PortfolioMask from '../pages/Portfolio/PortfolioMask'; //详情页蒙层
 import QuestionnaireResult from '../pages/Evaluation/QuestionnaireResult'; // 传统风险评测结果页
 import TopInvestors from '../pages/Assets/TopInvestors'; //牛人信号
-import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 智能组合收益明细
+import IntelligentIncomeDetail from '../pages/Assets/IntelligentIncomeDetail'; // 收益明细
 import IntelligentInvestAnalysis from '../pages/Assets/IntelligentInvestAnalysis'; // 智能组合投资分析
 import InsuranceList from '../pages/Find/InsuranceList'; //保险产品列表
 import PrivacySetting from '../pages/Settings/PrivacySetting'; //隐私设置
@@ -159,6 +161,11 @@ import AdvisorPortfolio from '../pages/Portfolio/AdvisorPortfolio'; // 投顾组
 import InvestStrategy from '../pages/Portfolio/InvestStrategy'; // 投资策略
 import FundAlternative from '../pages/Portfolio/FundAlternative'; // 基金备选库
 import AdvisorAssets from '../pages/Assets/AdvisorAssets'; // 投顾组合总资产页
+import PortfolioPlan from '../pages/Evaluation/PortfolioPlan'; // 定制理财计划
+import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
+import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
+import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
+import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -231,7 +238,7 @@ export default function AppStack() {
                 name="TradeBuy"
                 component={TradeBuy}
                 options={{
-                    title: '买入',
+                    title: '',
                 }}
             />
             <Stack.Screen
@@ -411,6 +418,25 @@ export default function AppStack() {
                 options={{...TransitionPresets.ModalSlideFromBottomIOS, headerShown: false}}
             />
             <Stack.Screen name="FundSearching" component={FundSearching} options={{title: '基金查询方式'}} />
+            <Stack.Screen
+                name="AssetHealthScore"
+                component={AssetHealthScore}
+                options={{
+                    title: '',
+                    headerTransparent: true,
+                    headerTitleStyle: {color: '#fff'},
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                color="#fff"
+                                size={px(26)}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                }}
+            />
             <Stack.Screen name="TradeRecord" component={TradeRecord} options={{title: '交易记录'}} />
             <Stack.Screen name="FundDetail" component={FundDetail} options={{title: '基金详情'}} />
             <Stack.Screen name="HistoryNav" component={HistoryNav} options={{title: '历史净值'}} />
@@ -461,8 +487,9 @@ export default function AppStack() {
                 }}
             />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
+            <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
             <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
-            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: '调仓信息'}} />
+            <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
             <Stack.Screen name="ComplaintsAdvices" component={ComplaintsAdvices} options={{title: '投诉建议'}} />
@@ -525,7 +552,7 @@ export default function AppStack() {
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
             <Stack.Screen name="BankWithdraw" component={BankWithdraw} options={{title: '提现'}} />
-            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投智能组合'}} />
+            <Stack.Screen name="TransferAccount" component={TransferAccount} options={{title: '一键转投全天候组合'}} />
             <Stack.Screen name="MemberCenter" component={MemberCenter} options={{title: '会员中心'}} />
             <Stack.Screen name="MemberSystem" component={MemberSystem} options={{title: '魔方会员体系'}} />
             <Stack.Screen name="MemberService" component={MemberService} options={{title: '会员专属服务'}} />
@@ -544,7 +571,7 @@ export default function AppStack() {
             <Stack.Screen name="QuestionWithdraw" component={QuestionWithdraw} options={{title: '答题提现'}} />
             {/* <Stack.Screen name="Index" component={Index} options={{title: 'Index'}} /> */}
             <Stack.Screen name="ArticleDetail" component={ArticleDetail} options={{title: '', headerShown: false}} />
-            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: '调仓记录'}} />
+            <Stack.Screen name="AdjustRecord" component={AdjustRecord} options={{title: ''}} />
             <Stack.Screen
                 name="MyScore"
                 component={MyScore}
@@ -642,6 +669,11 @@ export default function AppStack() {
                     },
                 }}
             />
+            <Stack.Screen name="PortfolioPlan" component={PortfolioPlan} options={{title: ''}} />
+            <Stack.Screen name="GlobalConfig" component={GlobalConfig} options={{title: ''}} />
+            <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
+            <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
+            <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
         </Stack.Navigator>
     );
 }

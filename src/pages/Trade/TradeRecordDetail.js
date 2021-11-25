@@ -2,7 +2,7 @@
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-10 16:04:15
+ * @LastEditTime: 2021-11-06 17:03:20
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -17,12 +17,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import HTML from '../../components/RenderHtml';
 import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
+import {Button} from '../../components/Button';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
     const {txn_id, type, sub_type} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
+    const [errorInfo, setErrorInfo] = useState(null);
     const [data, setData] = useState();
     const bankCardRef = useRef();
     const passwordModal = useRef();
@@ -37,6 +39,7 @@ const TradeRecordDetail = (props) => {
             type,
             sub_type,
         }).then((res) => {
+            setErrorInfo(res.result?.part1?.err_info);
             setData(res.result);
             props.navigation.setOptions({
                 headerRight: () => {
@@ -95,13 +98,42 @@ const TradeRecordDetail = (props) => {
     const showBank = () => {
         bankCardRef.current.show();
     };
+    const buyReplace = (password, info) => {
+        http.post('/trade/batch/replace/do/20211101', {
+            type: info?.type,
+            sub_txn_ids: errorInfo?.sub_txn_ids,
+            txn_id,
+            password,
+            batch_id: errorInfo?.batch_id,
+        }).then((res) => {
+            if (res.code === '000000') {
+                setErrorInfo(null);
+            }
+            Toast.show(res.message);
+        });
+    };
+    const handleClick = (info) => {
+        let {title, content} = info;
+        Modal.show({
+            title,
+            confirm: true,
+            content,
+            confirmCallBack: () => {
+                passwordModal.current.show(info);
+            },
+        });
+    };
     return (
         <ScrollView style={styles.container}>
             <View style={[styles.header, Style.flexCenter]}>
                 <PasswordModal
                     ref={passwordModal}
-                    onDone={(password) => {
-                        cancleTxn(password);
+                    onDone={(password, info) => {
+                        if (info) {
+                            buyReplace(password, info);
+                        } else {
+                            cancleTxn(password);
+                        }
                     }}
                 />
                 <View style={[Style.flexRow, {marginBottom: px(16)}]}>
@@ -174,6 +206,40 @@ const TradeRecordDetail = (props) => {
                 {data?.part1?.tip ? (
                     <View style={styles.tip}>
                         <Text style={{color: '#545968', fontSize: px(12), lineHeight: px(17)}}>{data?.part1?.tip}</Text>
+                    </View>
+                ) : null}
+                {errorInfo ? (
+                    <View style={styles.tip_card}>
+                        <Text style={{color: Colors.red, fontSize: px(12), lineHeight: px(17), marginBottom: px(8)}}>
+                            {errorInfo?.content}
+                        </Text>
+                        <View style={Style.flexRow}>
+                            {errorInfo?.button_list[0]?.avail == 1 ? (
+                                <Button
+                                    title={errorInfo?.button_list[0]?.text}
+                                    style={styles.button}
+                                    color={'#fff'}
+                                    textStyle={{color: Colors.lightBlackColor}}
+                                    onPress={() => {
+                                        handleClick(errorInfo?.button_list[0]);
+                                    }}
+                                />
+                            ) : null}
+                            {errorInfo?.button_list[1]?.avail == 1 ? (
+                                <Button
+                                    title={errorInfo?.button_list[1]?.text}
+                                    color={Colors.red}
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: Colors.red,
+                                        marginLeft: errorInfo?.button_list?.length > 1 ? px(20) : 0,
+                                    }}
+                                    onPress={() => {
+                                        handleClick(errorInfo?.button_list[1]);
+                                    }}
+                                />
+                            ) : null}
+                        </View>
                     </View>
                 ) : null}
             </View>
@@ -435,6 +501,19 @@ const styles = StyleSheet.create({
         marginHorizontal: px(16),
         marginTop: px(24),
         padding: px(16),
+    },
+    button: {
+        flex: 1,
+        backgroundColor: '#fff',
+        borderColor: Colors.lightBlackColor,
+        borderWidth: 0.5,
+    },
+    tip_card: {
+        backgroundColor: '#fae8e8',
+        padding: px(16),
+        margin: px(16),
+        marginBottom: 0,
+        borderRadius: px(6),
     },
 });
 export default TradeRecordDetail;

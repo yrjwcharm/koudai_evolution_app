@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-06 18:39:56
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-09-27 16:08:33
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-11 10:43:59
  * @Description: 固定按钮
  */
 import React, {Component} from 'react';
@@ -13,7 +13,7 @@ import {px, isIphoneX, deviceWidth} from '../../utils/appUtil';
 import {Space} from '../../common/commonStyle';
 export default class FixedButton extends Component {
     state = {
-        check: true,
+        check: this.props.agreement?.default_agree !== undefined ? this.props.agreement?.default_agree : true,
         keyboardHeight: new Animated.Value(0),
     };
 
@@ -51,8 +51,8 @@ export default class FixedButton extends Component {
                         style={{paddingTop: px(4), paddingBottom: Space.padding}}
                         onLayout={(e) => heightChange && heightChange(e.nativeEvent.layout.height)}>
                         <Agreements
-                            check={check}
-                            data={agreement}
+                            check={agreement?.default_agree}
+                            data={agreement?.list}
                             onChange={(checkStatus) => this.setState({check: checkStatus})}
                         />
                     </View>

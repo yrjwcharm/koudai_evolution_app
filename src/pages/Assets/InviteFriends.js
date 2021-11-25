@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-08 20:34:06
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-11 10:44:25
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -177,12 +177,7 @@ const InviteFriends = ({navigation}) => {
                     touchableComponent={TouchableOpacity}
                 />
                 <Text style={[styles.title, {fontWeight: '500', marginBottom: text(8)}]}>{'邀请规则'}</Text>
-                <HTML
-                    html={
-                        '邀请新用户购买获取魔分红包</br>1、邀请新用户在理财魔方购买智能组合成功，您就可以获取5000魔分红包</br>魔分换申购费</br>2、魔分可兑换从您账户内开始有魔分红包后，所有新产生的新申购费用，兑换比例：100魔分=1元钱。（如您获得魔分后没有投资，请投资后再兑换魔分）</br>3、魔分所兑换金额将发送到您在理财魔方申购基金时绑定银行卡（如绑定有两张或以上的银行卡，将发送到您的主卡中）</br>4、此活动最终解释权归理财魔方所有</br>'
-                    }
-                    style={styles.rules}
-                />
+                {data?.rule ? <HTML html={data?.rule} style={styles.rules} /> : null}
             </View>
             <ShareModal
                 ctrl={'invite_friends'}

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-27 16:57:57
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-08-17 16:51:48
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-11 10:44:19
  * @Description: 累计收益
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -249,11 +249,9 @@ const AccProfit = ({intelligent, poid}) => {
                     {intelligent && (
                         <View style={[styles.infoBox, {marginBottom: insets.bottom}]}>
                             <Text style={[styles.bigTitle, {marginBottom: text(4)}]}>
-                                为什么我的净值走势和我的累计收益不一致
+                                {chartData?.why_diff_desc?.title}
                             </Text>
-                            <Text style={[styles.descContent]}>
-                                净值走势代表您购买的智能组合产品的净值的涨跌走势，不受您的资金进出结构(购买、赎回等因素)影响。累计收益是由净值走势和资金进出结构共同决定的，理财魔方控制净值的最大回撤(可能出现的最大亏损情况)和走势，用户自己控制的是资金进出结构最终来获得实际的收益。
-                            </Text>
+                            <Text style={[styles.descContent]}>{chartData?.why_diff_desc?.desc}</Text>
                         </View>
                     )}
                 </View>
@@ -266,10 +264,13 @@ const AccProfit = ({intelligent, poid}) => {
                 />
             ) : null}
 
-            {list.length > 0 && (
+            {list.length > 0 && chartData?.header?.length > 0 && (
                 <View style={[styles.poHeader, Style.flexBetween]}>
-                    <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>{'组合名称'}</Text>
-                    <Text style={[styles.subTitle, {color: Colors.darkGrayColor}]}>{'累计收益'}</Text>
+                    {chartData?.header?.map((item, index) => (
+                        <Text key={index} style={[styles.subTitle, {color: Colors.darkGrayColor}]}>
+                            {item}
+                        </Text>
+                    ))}
                 </View>
             )}
             {list.map((item, index) => {

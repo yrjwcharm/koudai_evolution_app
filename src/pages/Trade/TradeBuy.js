@@ -1,12 +1,22 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-10-20 16:12:17
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-19 20:21:17
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
+import {
+    ActivityIndicator,
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    Keyboard,
+} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import TabBar from '../../components/TabBar.js';
 import {Colors, Font, Space, Style} from '../../common/commonStyle.js';
@@ -60,6 +70,8 @@ class TradeBuy extends Component {
             largeTip: '',
             deltaHeight: 0,
         };
+        this.plan_id = this.props.route?.params?.plan_id || '';
+        this.show_risk_disclosure = true;
     }
     getTab = () => {
         const {poid} = this.state;
@@ -78,95 +90,107 @@ class TradeBuy extends Component {
             );
         });
     };
-
+    init_timer = null;
     init = (_type) => {
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
-        http.get('/trade/buy/info/20210101', {
-            type: _type || type,
-            poid,
-        }).then((res) => {
-            if (res.code === '000000') {
-                console.log(_modalRef);
-                const showRishPop = () => {
-                    Modal.show({
-                        cancelCallBack: () => this.props.navigation.goBack(),
-                        cancelText: res.result.risk_pop.cancel.text,
-                        confirm: true,
-                        confirmCallBack: () => {
-                            if (res.result.risk_pop.confirm.url) {
-                                this.props.jump(res.result.risk_pop.confirm.url);
-                            }
-                        },
-                        confirmText: res.result.risk_pop.confirm.text,
-                        content: res.result.risk_pop.content,
-                        isTouchMaskToClose: false,
-                        title: res.result.risk_pop.title,
-                    });
-                };
-                // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
-                if (this.props.isFocused && res.result.risk_disclosure && !_modalRef) {
-                    Modal.show({
-                        children: () => {
-                            return (
-                                <View>
-                                    <Text
-                                        style={{
-                                            marginTop: px(2),
-                                            fontSize: Font.textH2,
-                                            lineHeight: px(20),
-                                            color: Colors.red,
-                                            textAlign: 'center',
-                                        }}>
-                                        {res.result.risk_disclosure.sub_title}
-                                    </Text>
-                                    <ScrollView
-                                        bounces={false}
-                                        style={{
-                                            marginVertical: Space.marginVertical,
-                                            paddingHorizontal: px(20),
-                                            maxHeight: px(352),
-                                        }}>
-                                        <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
-                                            {res.result.risk_disclosure.content}
+        if (this.init_timer) clearTimeout(this.init_timer);
+        this.init_timer = setTimeout(() => {
+            http.get('/trade/buy/info/20210101', {
+                type: _type || type,
+                poid,
+                amount: this.state.amount,
+            }).then((res) => {
+                if (res.code === '000000') {
+                    this.props.navigation.setOptions({title: res.result.title || '买入'});
+                    const showRishPop = () => {
+                        Modal.show({
+                            cancelCallBack: () => {
+                                if (res.result.risk_pop.cancel?.act == 'back') {
+                                    this.props.navigation.goBack();
+                                } else if (res.result.risk_pop.cancel?.act == 'jump') {
+                                    this.props.jump(res.result.risk_pop.cancel?.url);
+                                }
+                            },
+                            cancelText: res.result.risk_pop.cancel.text,
+                            confirm: true,
+                            confirmCallBack: () => {
+                                if (res.result.risk_pop.confirm.url) {
+                                    this.props.jump(res.result.risk_pop.confirm.url);
+                                }
+                            },
+                            confirmText: res.result.risk_pop.confirm.text,
+                            content: res.result.risk_pop.content,
+                            isTouchMaskToClose: false,
+                            title: res.result.risk_pop.title,
+                        });
+                    };
+                    // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
+                    if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
+                        this.show_risk_disclosure = false;
+                        Modal.show({
+                            children: () => {
+                                return (
+                                    <View>
+                                        <Text
+                                            style={{
+                                                marginTop: px(2),
+                                                fontSize: Font.textH2,
+                                                lineHeight: px(20),
+                                                color: Colors.red,
+                                                textAlign: 'center',
+                                            }}>
+                                            {res.result.risk_disclosure.sub_title}
                                         </Text>
-                                    </ScrollView>
-                                </View>
-                            );
-                        },
-                        confirmCallBack: () => {
-                            if (this.props.isFocused && res.result.risk_pop) {
-                                showRishPop();
-                            }
-                        },
-                        confirmText: '关闭',
-                        countdown: res.result.risk_disclosure.countdown,
-                        isTouchMaskToClose: false,
-                        onCloseCallBack: () => this.props.navigation.goBack(),
-                        title: res.result.risk_disclosure.title,
-                    });
-                } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
-                    showRishPop();
-                }
-                this.setState(
-                    {
-                        data: res.result,
-                        bankSelect: res.result?.pay_methods[0],
-                        currentDate: res.result?.period_info?.current_date,
-                        nextday: res.result?.period_info?.nextday,
-                    },
-                    () => {
-                        let amount = this.state.amount;
-                        if (this.state.type == 0) {
-                            this.plan(amount);
-                        }
-                        if (amount) {
-                            this.onInput(amount, 'init');
-                        }
+                                        <ScrollView
+                                            bounces={false}
+                                            style={{
+                                                marginVertical: Space.marginVertical,
+                                                paddingHorizontal: px(20),
+                                                maxHeight: px(352),
+                                            }}>
+                                            <Text
+                                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
+                                                {res.result.risk_disclosure.content}
+                                            </Text>
+                                        </ScrollView>
+                                    </View>
+                                );
+                            },
+                            confirmCallBack: () => {
+                                if (this.props.isFocused && res.result.risk_pop) {
+                                    showRishPop();
+                                }
+                            },
+                            confirmText: '关闭',
+                            countdown: res.result.risk_disclosure.countdown,
+                            isTouchMaskToClose: false,
+                            onCloseCallBack: () => this.props.navigation.goBack(),
+                            title: res.result.risk_disclosure.title,
+                        });
+                    } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
+                        showRishPop();
                     }
-                );
-            }
-        });
+                    this.setState(
+                        {
+                            data: res.result,
+                            bankSelect: res.result?.pay_methods[0],
+                            currentDate: res.result?.period_info?.current_date,
+                            nextday: res.result?.period_info?.nextday,
+                        },
+                        () => {
+                            let amount = this.state.amount;
+                            if (this.state.type == 0) {
+                                this.plan(amount);
+                            }
+                            if (amount) {
+                                this.onInput(amount, 'init');
+                            }
+                        }
+                    );
+                }
+            });
+        }, 300);
     };
 
     /**
@@ -237,6 +261,7 @@ class TradeBuy extends Component {
                 pay_method: bank.pay_method,
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
+                plan_id: this.plan_id,
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -260,6 +285,7 @@ class TradeBuy extends Component {
      */
     timer = null;
     onInput = async (_amount, init) => {
+        this.plan_id = '';
         let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
         if (!_amount && this.state.type == 0) {
             await this.plan('');
@@ -350,7 +376,45 @@ class TradeBuy extends Component {
         const {type, data} = this.state;
         global.LogTool('buy');
         Keyboard.dismiss();
-        if (type == 1 && data.fix_info.first_order) {
+        if (data?.buy_do_pop) {
+            Modal.show({
+                title: data?.buy_do_pop?.title,
+                confirm: true,
+                cancelCallBack: () => {
+                    if (data?.buy_do_pop?.cancel?.act == 'back') {
+                        this.props.navigation.goBack();
+                    } else if (data?.buy_do_pop?.cancel?.act == 'jump') {
+                        this.props.jump(data?.buy_do_pop?.cancel?.url);
+                    }
+                },
+                content: data?.buy_do_pop?.content,
+                confirmText: data?.buy_do_pop?.confirm?.text,
+                cancelText: data?.buy_do_pop?.cancel?.text,
+                confirmCallBack: () => {
+                    if (data?.buy_do_pop?.confirm?.url) {
+                        this.props.jump(data?.buy_do_pop?.confirm?.url);
+                    } else if (type == 1 && data?.fix_info?.first_order) {
+                        Modal.show({
+                            title: data.fix_modal.title,
+                            confirm: true,
+                            content: data.fix_modal.content,
+                            confirmText: data.fix_modal.confirm_text,
+                            cancelText: data.fix_modal.cancel_text,
+                            confirmCallBack: () => {
+                                this.passwordModal.show();
+                                this.need_buy = true;
+                            },
+                            cancelCallBack: () => {
+                                this.passwordModal.show();
+                                this.need_buy = false;
+                            },
+                        });
+                    } else {
+                        this.passwordModal.show();
+                    }
+                },
+            });
+        } else if (type == 1 && data?.fix_info?.first_order) {
             Modal.show({
                 title: data.fix_modal.title,
                 confirm: true,
@@ -456,122 +520,126 @@ class TradeBuy extends Component {
     };
     //买入明细
     render_config() {
-        const {planData, configExpand} = this.state;
+        const {planData, configExpand, data} = this.state;
         const {header, body} = planData;
         return (
-            <View style={{marginBottom: px(12)}}>
-                <TouchableOpacity
-                    style={styles.config}
-                    activeOpacity={0.9}
-                    onPress={() => {
-                        this.setState({configExpand: !configExpand});
-                    }}>
-                    <View style={Style.flexRowCenter}>
-                        <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
-                            买入明细
-                        </Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                Modal.show({
-                                    title: '购买明细',
-                                    content:
-                                        '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
-                                });
-                            }}>
-                            <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
-                        </TouchableOpacity>
-                    </View>
-                    {configExpand ? (
-                        <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />
-                    ) : (
-                        <Icon name={'down'} size={px(14)} color={Colors.lightGrayColor} />
-                    )}
-                </TouchableOpacity>
-                {configExpand && (
-                    <>
-                        <View style={styles.line} />
-                        <View style={styles.config_desc}>
-                            {body &&
-                                body.map((item, index) => {
-                                    return (
-                                        <View key={index}>
-                                            <View style={[Style.flexRow, {marginBottom: px(14)}]}>
-                                                <View style={[Style.flexRow, {width: px(200)}]}>
-                                                    <View style={[styles.circle, {backgroundColor: item.color}]} />
-                                                    <Text style={styles.config_title}>{item.title}</Text>
-                                                </View>
-                                                {index == 0 && (
-                                                    <>
-                                                        <Text
-                                                            style={[
-                                                                styles.config_title,
-                                                                {
-                                                                    width: px(60),
-                                                                    textAlign: 'center',
-                                                                },
-                                                            ]}>
-                                                            {header.percent}
-                                                        </Text>
-                                                        <Text
-                                                            style={[
-                                                                styles.config_title,
-                                                                {flex: 1, textAlign: 'right'},
-                                                            ]}>
-                                                            {header.amount}
-                                                        </Text>
-                                                    </>
-                                                )}
-                                            </View>
-                                            {item.funds &&
-                                                item.funds.map((fund, _index) => {
-                                                    return (
-                                                        <View
-                                                            key={fund.name}
-                                                            style={[Style.flexRow, {marginBottom: px(14)}]}>
-                                                            <View style={[{width: px(200)}]}>
-                                                                <Text
-                                                                    style={[
-                                                                        styles.config_title_desc,
-                                                                        {fontSize: px(12)},
-                                                                    ]}>
-                                                                    {fund.name}
-                                                                </Text>
-                                                            </View>
-
+            header && (
+                <View style={{marginBottom: px(12)}}>
+                    <TouchableOpacity
+                        style={styles.config}
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            this.setState({configExpand: !configExpand});
+                        }}>
+                        <View style={Style.flexRowCenter}>
+                            <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
+                                买入明细
+                            </Text>
+                            {data.is_plan ? null : (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Modal.show({
+                                            title: '购买明细',
+                                            content:
+                                                '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
+                                        });
+                                    }}>
+                                    <Icon name={'questioncircleo'} size={px(16)} color={Colors.lightGrayColor} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        {configExpand ? (
+                            <Icon name={'up'} size={px(14)} color={Colors.lightGrayColor} />
+                        ) : (
+                            <Icon name={'down'} size={px(14)} color={Colors.lightGrayColor} />
+                        )}
+                    </TouchableOpacity>
+                    {configExpand && (
+                        <>
+                            <View style={styles.line} />
+                            <View style={styles.config_desc}>
+                                {body &&
+                                    body.map((item, index) => {
+                                        return (
+                                            <View key={index}>
+                                                <View style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                    <View style={[Style.flexRow, {width: px(200)}]}>
+                                                        <View style={[styles.circle, {backgroundColor: item.color}]} />
+                                                        <Text style={styles.config_title}>{item.title}</Text>
+                                                    </View>
+                                                    {index == 0 && (
+                                                        <>
                                                             <Text
                                                                 style={[
-                                                                    styles.config_title_desc,
+                                                                    styles.config_title,
                                                                     {
                                                                         width: px(60),
-                                                                        fontFamily: Font.numMedium,
                                                                         textAlign: 'center',
                                                                     },
                                                                 ]}>
-                                                                {Number(fund.percent * 100).toFixed(2)}%
+                                                                {header.percent}
                                                             </Text>
                                                             <Text
                                                                 style={[
-                                                                    styles.config_title_desc,
-                                                                    {
-                                                                        fontFamily: Font.numMedium,
-                                                                        flex: 1,
-                                                                        textAlign: 'right',
-                                                                    },
+                                                                    styles.config_title,
+                                                                    {flex: 1, textAlign: 'right'},
                                                                 ]}>
-                                                                {fund.amount == '--'
-                                                                    ? '--'
-                                                                    : Number(fund.amount).toFixed(2)}
+                                                                {header.amount}
                                                             </Text>
-                                                        </View>
-                                                    );
-                                                })}
-                                        </View>
-                                    );
-                                })}
-                        </View>
-                    </>
-                )}
-            </View>
+                                                        </>
+                                                    )}
+                                                </View>
+                                                {item.funds &&
+                                                    item.funds.map((fund, _index) => {
+                                                        return (
+                                                            <View
+                                                                key={fund.name}
+                                                                style={[Style.flexRow, {marginBottom: px(14)}]}>
+                                                                <View style={[{width: px(200)}]}>
+                                                                    <Text
+                                                                        style={[
+                                                                            styles.config_title_desc,
+                                                                            {fontSize: px(12)},
+                                                                        ]}>
+                                                                        {fund.name}
+                                                                    </Text>
+                                                                </View>
+
+                                                                <Text
+                                                                    style={[
+                                                                        styles.config_title_desc,
+                                                                        {
+                                                                            width: px(60),
+                                                                            fontFamily: Font.numMedium,
+                                                                            textAlign: 'center',
+                                                                        },
+                                                                    ]}>
+                                                                    {Number(fund.percent * 100).toFixed(2)}%
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        styles.config_title_desc,
+                                                                        {
+                                                                            fontFamily: Font.numMedium,
+                                                                            flex: 1,
+                                                                            textAlign: 'right',
+                                                                        },
+                                                                    ]}>
+                                                                    {fund.amount == '--'
+                                                                        ? '--'
+                                                                        : Number(fund.amount).toFixed(2)}
+                                                                </Text>
+                                                            </View>
+                                                        );
+                                                    })}
+                                            </View>
+                                        );
+                                    })}
+                            </View>
+                        </>
+                    )}
+                </View>
+            )
         );
     }
     render_bank() {
@@ -880,19 +948,19 @@ class TradeBuy extends Component {
                 {/* 银行卡 */}
                 {this.render_bank()}
                 {/* 买入明细 */}
-                {type == 0 && data.scene !== 'adviser' && this.render_config()}
+                {type == 0 && this.render_config()}
                 {/* 定投周期 */}
                 {type == 1 && this.render_autoTime()}
 
-                {data.scene !== 'adviser' && (
+                {data?.agreement && (
                     <Text style={[styles.agreement, {paddingHorizontal: px(16), marginBottom: px(20)}]}>
-                        购买即代表您已知悉该基金组合的
+                        购买即代表您已知悉该{data?.is_plan ? '理财计划' : '基金组合'}的
                         <Text
                             onPress={() => {
                                 this.jumpPage('TradeAgreements', {poid: this.state.poid, type: this.state.type});
                             }}
                             style={{color: Colors.btnColor}}>
-                            基金组合协议
+                            {data?.is_plan ? '理财计划' : '基金组合'}协议
                         </Text>
                         、
                         <Text
@@ -989,7 +1057,7 @@ class TradeBuy extends Component {
                         )}
                         {button && (
                             <FixedButton
-                                agreement={data.scene === 'adviser' ? data.agreement : undefined}
+                                agreement={data?.agreement_bottom ? data?.agreement_bottom : undefined}
                                 title={button.text}
                                 disabled={button.avail == 0 || !buyBtnCanClick}
                                 onPress={this.buyClick}
@@ -1005,7 +1073,11 @@ class TradeBuy extends Component {
                             />
                         )}
                     </View>
-                ) : null}
+                ) : (
+                    <View style={[Style.flexCenter, styles.loading]}>
+                        <ActivityIndicator color={Colors.lightGrayColor} />
+                    </View>
+                )}
             </>
         );
     }
@@ -1171,6 +1243,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: px(5),
         paddingVertical: px(2),
         marginLeft: px(4),
+    },
+    loading: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: Colors.bgColor,
+        zIndex: 99,
     },
 });
 

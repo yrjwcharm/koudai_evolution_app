@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-01 15:06:11
+ * @LastEditTime: 2021-11-04 14:17:53
  * @Description: 登录
  */
 import React, {Component} from 'react';
@@ -47,6 +47,7 @@ class Login extends Component {
                         confirmCallBack: () => {
                             this.jumpPage('ForgetLoginPwd');
                         },
+                        backCloseCallbackExecute: false,
                         cancelCallBack: () => {
                             this.props.navigation.navigate('VerifyLogin', {
                                 fr: this.props.route?.params?.fr,
