@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-25 16:35:02
+ * @LastEditTime: 2021-11-25 16:52:29
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -709,14 +709,28 @@ function HomeScreen({navigation, route}) {
                                 )}
                             </View>
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 onPress={() => {
                                     global.LogTool('assetsNotificationCenter');
                                     jump({path: 'RemindMessage'});
-                                }}>
-                                {newMes ? <View style={styles.new_message} /> : null}
+                                }}
+                                style={{position: 'relative'}}>
+                                {newMes ? (
+                                    <View style={styles.point_sty}>
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: Font.textSm,
+                                                lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+                                                fontFamily: Font.numFontFamily,
+                                            }}>
+                                            {newMes > 99 ? '99+' : newMes}
+                                        </Text>
+                                    </View>
+                                ) : null}
                                 <Image
                                     style={{width: text(32), height: text(32)}}
-                                    source={require('../../assets/img/index/whiteMes.png')}
+                                    source={require('../../assets/personal/whiteMes.png')}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -1417,15 +1431,17 @@ const styles = StyleSheet.create({
         width: text(343),
         height: text(727),
     },
-    new_message: {
-        width: text(10),
-        height: text(10),
-        borderRadius: text(5),
-        backgroundColor: Colors.red,
+    point_sty: {
         position: 'absolute',
-        right: text(3),
-        top: text(5),
+        left: px(15),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(50),
+        paddingVertical: 3,
+        paddingHorizontal: 6,
         zIndex: 10,
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     option: {
         marginBottom: text(12),

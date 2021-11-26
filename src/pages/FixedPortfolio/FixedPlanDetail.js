@@ -3,17 +3,14 @@
  * @Date: 2021-02-05 14:56:52
  * @Description:定投计划
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:35:19
+ * @LastEditTime: 2021-11-25 17:19:07
  */
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, Dimensions, Image, ScrollView, ActivityIndicator} from 'react-native';
-import Slider from '../Portfolio/components/Slider';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
-import {Button, FixedButton} from '../../components/Button';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Header from '../../components/NavBar';
+import {FixedButton} from '../../components/Button';
 import FixedBtn from '../Portfolio/components/FixedBtn';
 import {useJump} from '../../components/hooks';
 import {useFocusEffect} from '@react-navigation/native';
@@ -22,26 +19,10 @@ import BottomDesc from '../../components/BottomDesc';
 const deviceWidth = Dimensions.get('window').width;
 export default function FixedPlan(props) {
     const [data, setData] = useState({});
-    const [left, setLeft] = useState('40%');
-    const [widthD, setWidthD] = useState('40%');
-    const [moveRight, setMoveRight] = useState(false);
     const jump = useJump();
     const [showEmpty, setShowEmpty] = useState(false);
     const [loading, setLoading] = useState(true);
-    // 下期进度条 边界处理
-    const onLayout = useCallback(
-        (e) => {
-            const layWidth = e.nativeEvent.layout.width;
-            const widthAll = deviceWidth - 30;
-            const curWidth = layWidth + widthAll * (left.split('%')[0] / 100);
-            if (widthAll <= curWidth) {
-                const reSetLeft = 100 - left.split('%')[0] - 21 + '%';
-                setLeft(reSetLeft);
-                setMoveRight(true);
-            }
-        },
-        [left]
-    );
+
     useFocusEffect(
         useCallback(() => {
             init();
@@ -68,7 +49,7 @@ export default function FixedPlan(props) {
         </View>
     ) : (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
-            <ScrollView style={{flex: 1}}>
+            <ScrollView bounces={false} style={{flex: 1}}>
                 {Object.keys(data).length > 0 && (
                     <View style={{marginBottom: FixedBtn.btnHeight}}>
                         <View style={styles.bank_wrap_sty}>
@@ -79,7 +60,7 @@ export default function FixedPlan(props) {
                                 />
                                 <View style={styles.bank_item_sty}>
                                     <Text style={styles.title_sty}>{data?.fix_info?.bank_text}</Text>
-                                    <Text style={{color: '#555B6C', fontSize: text(12), marginTop: text(4)}}>
+                                    <Text style={{color: Colors.descColor, fontSize: Font.textH3, marginTop: text(4)}}>
                                         {data?.fix_info?.date_text}
                                     </Text>
                                 </View>
@@ -89,7 +70,8 @@ export default function FixedPlan(props) {
 
                         <View style={styles.records_sty}>
                             <View style={Style.flexBetween}>
-                                <Text style={{color: Colors.defaultFontColor, fontSize: text(16), fontWeight: 'bold'}}>
+                                <Text
+                                    style={{color: Colors.defaultFontColor, fontSize: Font.textH1, fontWeight: 'bold'}}>
                                     {data?.fix_records?.title}
                                 </Text>
                                 <View style={Style.flexRow}>
@@ -97,7 +79,7 @@ export default function FixedPlan(props) {
                                     <Text
                                         style={{
                                             color: Colors.defaultFontColor,
-                                            fontSize: text(12),
+                                            fontSize: Font.textH3,
                                             fontFamily: Font.numFontFamily,
                                             marginLeft: text(5),
                                         }}>
@@ -105,32 +87,6 @@ export default function FixedPlan(props) {
                                     </Text>
                                 </View>
                             </View>
-
-                            {/* 定投进度 */}
-                            {/* <View style={styles.process_wrap_sty}>
-                        <View style={[styles.bubbles_sty, {left: left}]} onLayout={(e) => onLayout(e)}>
-                            <Text style={styles.bubble_text_sty}>完成12.5%，已定投5期</Text>
-                            {!moveRight && (
-                                <AntDesign
-                                    name={'caretright'}
-                                    size={12}
-                                    color={'#79839D'}
-                                    style={[styles.ab_sty, {left: -4}]}
-                                />
-                            )}
-                            {moveRight && (
-                                <AntDesign
-                                    name={'caretleft'}
-                                    size={12}
-                                    color={'#79839D'}
-                                    style={[styles.ab_sty, {right: -3.5}]}
-                                />
-                            )}
-                        </View>
-                    </View>
-                    <View style={styles.process_outer}>
-                        <View style={[styles.process_inner, {width: widthD}]}></View>
-                    </View> */}
 
                             {data?.fix_records?.list?.length > 0 ? (
                                 <ScrollView style={{marginTop: text(28)}}>
@@ -154,9 +110,7 @@ export default function FixedPlan(props) {
                                     })}
                                 </ScrollView>
                             ) : (
-                                showEmpty && (
-                                    <EmptyTip text={'暂无定投记录'} style={{paddingTop: text(20)}} type={'part'} />
-                                )
+                                showEmpty && <EmptyTip text={'暂无记录'} style={{paddingTop: text(20)}} type={'part'} />
                             )}
                         </View>
                     </View>
@@ -177,7 +131,7 @@ const styles = StyleSheet.create({
     bank_wrap_sty: {
         backgroundColor: '#fff',
         marginVertical: text(12),
-        padding: text(16),
+        padding: Space.padding,
         paddingBottom: text(10),
     },
     bank_item_sty: {
@@ -186,21 +140,20 @@ const styles = StyleSheet.create({
     title_sty: {
         color: Colors.defaultFontColor,
         fontSize: Font.textH1,
-        // fontWeight: 'bold',
         fontFamily: Font.numFontFamily,
     },
     time_sty: {
-        color: '#555B6C',
+        color: Colors.descColor,
         fontSize: Font.textH3,
         paddingTop: text(12),
     },
     records_sty: {
         paddingVertical: text(13),
-        paddingHorizontal: text(16),
+        paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
     },
     process_outer: {
-        backgroundColor: '#F5F6F8',
+        backgroundColor: Colors.bgColor,
         width: deviceWidth - 30,
         height: text(4),
         borderRadius: text(30),
@@ -208,7 +161,6 @@ const styles = StyleSheet.create({
     },
     process_inner: {
         backgroundColor: '#FF812C',
-        // width: '70%',
         height: text(4),
         borderRadius: text(30),
     },
@@ -220,7 +172,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#79839D',
         borderTopLeftRadius: text(2),
         borderTopRightRadius: text(2),
-        // left: '70%',
         top: 10,
     },
     bubble_text_sty: {
@@ -235,10 +186,10 @@ const styles = StyleSheet.create({
     },
     desc_sty: {
         color: Colors.lightBlackColor,
-        fontSize: text(12),
+        fontSize: Font.textH3,
     },
     border_sty: {
-        borderBottomWidth: 0.5,
+        borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
         paddingBottom: text(10),
     },

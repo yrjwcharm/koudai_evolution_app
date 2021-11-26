@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-25 16:32:17
+ * @LastEditTime: 2021-11-26 14:31:48
  * @Description:路由表
  */
 import React from 'react';
@@ -166,6 +166,7 @@ import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
 import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
 import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
+import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -674,6 +675,7 @@ export default function AppStack() {
             <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
             <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
+            <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

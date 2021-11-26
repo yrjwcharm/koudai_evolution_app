@@ -1,12 +1,13 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-03 15:28:28
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-26 15:04:00
  * @Description:牛人信号
  */
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 import {WebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -29,15 +30,17 @@ const TopInvestors = ({navigation, route}) => {
     const [chartData, setChartData] = useState({});
     const [showEmpty, setShowEmpty] = useState(false);
 
-    useEffect(() => {
-        http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
-            if (res.code === '000000') {
-                setData(res.result || {});
-                setShowEmpty(true);
-                res.result.period && setPeriod(res.result.period);
-            }
-        });
-    }, [route.params]);
+    useFocusEffect(
+        useCallback(() => {
+            http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
+                if (res.code === '000000') {
+                    setData(res.result || {});
+                    setShowEmpty(true);
+                    res.result.period && setPeriod(res.result.period);
+                }
+            });
+        }, [route.params])
+    );
 
     useEffect(() => {
         setChartData((prev) => ({...prev, chart: ''}));
@@ -52,7 +55,7 @@ const TopInvestors = ({navigation, route}) => {
     return Object.keys(data).length > 0 ? (
         <View style={{flex: 1, paddingBottom: isIphoneX() ? px(45) + px(8) + 34 : px(45) + px(8) + px(8)}}>
             {Object.keys(data).length > 0 && (
-                <ScrollView style={{flex: 1}}>
+                <ScrollView bounces={false} style={{flex: 1}}>
                     <TouchableOpacity
                         activeOpacity={0.8}
                         style={{width: deviceWidth, height: px(210)}}
@@ -76,8 +79,32 @@ const TopInvestors = ({navigation, route}) => {
                         {data.console?.desc ? (
                             <View style={Style.flexCenter}>
                                 <Icon name={'triangle-up'} size={22} color={'#fff'} />
-                                <View style={styles.suggestionSty}>
+                                <View style={[Style.flexCenter, styles.suggestionSty]}>
                                     <HTML html={data.console.desc} style={styles.suggestionTextSty} />
+                                    {data.console?.button ? (
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            onPress={() => jump(data.console?.button.url)}
+                                            style={[
+                                                Style.flexRowCenter,
+                                                styles.followInvest,
+                                                data.console?.is_autoing ? {backgroundColor: '#fff'} : {},
+                                            ]}>
+                                            {data.console?.is_autoing ? (
+                                                <Image
+                                                    source={require('../../assets/personal/open_follow.png')}
+                                                    style={styles.openedFollow}
+                                                />
+                                            ) : null}
+                                            <Text
+                                                style={[
+                                                    styles.followInvestText,
+                                                    data.console?.is_autoing ? {color: '#FF7D41'} : {},
+                                                ]}>
+                                                {data.console?.button.text}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ) : null}
                                 </View>
                             </View>
                         ) : null}
@@ -142,18 +169,22 @@ const TopInvestors = ({navigation, route}) => {
                                 />
                                 <Text style={styles.infoTitle}>{'牛人信号释义'}</Text>
                             </View>
-                            <View style={{marginTop: px(8)}}>
-                                <HTML
-                                    html={data.text?.diff_profit}
-                                    style={{...styles.contentSty, lineHeight: px(18)}}
-                                />
-                            </View>
-                            <View style={styles.contentBoxSty}>
-                                <HTML
-                                    html={data.text?.profit_intro}
-                                    style={{...styles.contentSty, lineHeight: px(20)}}
-                                />
-                            </View>
+                            {data.text?.diff_profit ? (
+                                <View style={{marginTop: px(8)}}>
+                                    <HTML
+                                        html={data.text?.diff_profit}
+                                        style={{...styles.contentSty, lineHeight: px(18)}}
+                                    />
+                                </View>
+                            ) : null}
+                            {data.text?.profit_intro ? (
+                                <View style={styles.contentBoxSty}>
+                                    <HTML
+                                        html={data.text?.profit_intro}
+                                        style={{...styles.contentSty, lineHeight: px(20)}}
+                                    />
+                                </View>
+                            ) : null}
                             <View style={[Style.flexRow, {marginTop: px(20)}]}>
                                 <Image source={require('../../assets/personal/remind.png')} style={styles.iconSty} />
                                 <Text style={styles.infoTitle}>{'牛人信号提醒'}</Text>
@@ -173,17 +204,21 @@ const TopInvestors = ({navigation, route}) => {
                                     <Text style={styles.numSty}>{'80℃'}</Text>
                                 </Text>
                             </View>
-                            <View style={styles.contentBoxSty}>
-                                <HTML
-                                    html={data.text?.degree_intro}
-                                    style={{...styles.contentSty, lineHeight: px(20)}}
-                                />
-                            </View>
+                            {data.text?.degree_intro ? (
+                                <View style={styles.contentBoxSty}>
+                                    <HTML
+                                        html={data.text?.degree_intro}
+                                        style={{...styles.contentSty, lineHeight: px(20)}}
+                                    />
+                                </View>
+                            ) : null}
                         </View>
                         <Text style={styles.title}>{'牛人入选说明'}</Text>
-                        <View style={styles.boxSty}>
-                            <HTML html={data.text?.niuren_intro} style={styles.suggestionTextSty} />
-                        </View>
+                        {data.text?.niuren_intro ? (
+                            <View style={styles.boxSty}>
+                                <HTML html={data.text?.niuren_intro} style={styles.suggestionTextSty} />
+                            </View>
+                        ) : null}
                     </LinearGradient>
                 </ScrollView>
             )}
@@ -269,5 +304,26 @@ const styles = StyleSheet.create({
         paddingVertical: px(6),
         borderRadius: px(20),
         marginHorizontal: px(6),
+    },
+    followInvest: {
+        marginTop: Space.marginVertical,
+        marginBottom: px(4),
+        borderWidth: Space.borderWidth,
+        borderColor: '#FF7D41',
+        borderRadius: px(20),
+        width: px(240),
+        height: px(40),
+        backgroundColor: '#FF7D41',
+    },
+    followInvestText: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: '#fff',
+        fontWeight: Platform.select({android: '700', ios: '600'}),
+    },
+    openedFollow: {
+        marginRight: px(4),
+        width: px(16),
+        height: px(16),
     },
 });
