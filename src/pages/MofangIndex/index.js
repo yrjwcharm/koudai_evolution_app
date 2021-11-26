@@ -231,6 +231,7 @@ const Index = (props) => {
                                 </Text>
                             ) : (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
                                     style={{position: 'relative'}}
                                     onPress={() => {
                                         global.LogTool('indexNotificationCenter');

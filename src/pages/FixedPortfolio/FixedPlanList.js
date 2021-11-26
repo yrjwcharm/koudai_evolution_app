@@ -1,17 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 14:12:59
+ * @LastEditTime: 2021-11-25 17:08:45
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px, px as text} from '../../utils/appUtil';
+import {px as text} from '../../utils/appUtil';
 import Http from '../../services';
-import {Button} from '../../components/Button';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Empty from '../../components/EmptyTip';
 import {useFocusEffect} from '@react-navigation/native';
@@ -59,17 +57,21 @@ export default function PlanDetail(props) {
                                 style={[
                                     Style.flexBetween,
                                     {
-                                        borderBottomWidth: 0.5,
+                                        borderBottomWidth: Space.borderWidth,
                                         borderColor: Colors.borderColor,
                                         paddingBottom: text(10),
                                     },
                                 ]}>
-                                <Text style={[styles.title_sty, {color: _item?.status == 1 ? '#292d39' : '#9AA1B2'}]}>
+                                <Text
+                                    style={[
+                                        styles.title_sty,
+                                        {color: _item?.status == 1 ? Colors.defaultColor : Colors.lightGrayColor},
+                                    ]}>
                                     {_item?.title}
                                 </Text>
-                                <Text style={{color: '#9AA1B2'}}>
+                                <Text style={{color: Colors.lightGrayColor}}>
                                     {_item?.status_text ? _item?.status_text : null}
-                                    <AntDesign name={'right'} color={'#4E556C'} size={12} />
+                                    <AntDesign name={'right'} color={Colors.descColor} size={12} />
                                 </Text>
                             </View>
                             <View style={[Style.flexBetween, {marginTop: text(8)}]}>
@@ -82,7 +84,10 @@ export default function PlanDetail(props) {
                                                     styles.num_sty,
                                                     {
                                                         textAlign: _d == 1 ? 'right' : 'left',
-                                                        color: _item?.status == 1 ? '#292d39' : '#9AA1B2',
+                                                        color:
+                                                            _item?.status == 1
+                                                                ? Colors.defaultColor
+                                                                : Colors.lightGrayColor,
                                                     },
                                                 ]}>
                                                 {_i?.val}
@@ -95,8 +100,8 @@ export default function PlanDetail(props) {
                                 <View style={styles.gray_wrap}>
                                     <Text
                                         style={{
-                                            fontSize: text(12),
-                                            color: '#9AA1B2',
+                                            fontSize: Font.textH3,
+                                            color: Colors.lightGrayColor,
                                             lineHeight: text(18),
                                         }}>
                                         {_item?.notice}
@@ -116,17 +121,17 @@ const styles = StyleSheet.create({
     card_sty: {
         backgroundColor: '#fff',
         borderRadius: text(10),
-        paddingHorizontal: text(16),
+        paddingHorizontal: Space.padding,
         paddingVertical: text(20),
-        marginBottom: text(16),
+        marginBottom: Space.marginVertical,
     },
     title_sty: {
-        color: '#333',
+        color: Colors.defaultColor,
         fontSize: Font.textH1,
         fontWeight: 'bold',
     },
     desc_sty: {
-        color: '#9AA1B2',
+        color: Colors.lightGrayColor,
         fontSize: Font.textH3,
         marginBottom: text(4),
     },
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
     },
     gray_wrap: {
-        backgroundColor: '#F5F6F8',
+        backgroundColor: Colors.bgColor,
         padding: text(15),
         marginTop: text(20),
     },
