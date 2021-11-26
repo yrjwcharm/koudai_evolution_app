@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-08 14:29:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-26 15:37:19
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
@@ -27,6 +27,7 @@ const BottomModal = React.forwardRef((props, ref) => {
          */
         onDone = () => {},
         isTouchMaskToClose = true,
+        onClose = () => {},
     } = props;
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
@@ -37,6 +38,7 @@ const BottomModal = React.forwardRef((props, ref) => {
 
     const hide = () => {
         setVisible(false);
+        onClose && onClose();
     };
 
     const confirmClick = () => {
@@ -83,7 +85,6 @@ const BottomModal = React.forwardRef((props, ref) => {
                             ) : null}
                         </View>
                     )}
-
                     {children}
                 </TouchableOpacity>
                 <Modal

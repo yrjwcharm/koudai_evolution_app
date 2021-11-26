@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 19:21:55
+ * @LastEditTime: 2021-11-26 18:38:22
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -18,7 +18,15 @@ import {useJump} from './hooks';
 function Agreements(props) {
     const jump = useJump();
     const navigation = useNavigation();
-    const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
+    const {
+        data = [],
+        check = true,
+        onChange = () => {},
+        title = '我已阅读并同意',
+        style = {},
+        isHide = false,
+        emitJump, //通知父组建跳转
+    } = props;
     const jumpPage = (item) => {
         if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
             return jump(item.url);
@@ -67,6 +75,7 @@ function Agreements(props) {
                           return (
                               <Text
                                   onPress={() => {
+                                      emitJump && emitJump();
                                       jumpPage(item);
                                   }}
                                   style={{fontSize: px(11), color: '#0051CC'}}

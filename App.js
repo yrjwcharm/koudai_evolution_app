@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-25 16:32:09
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-26 14:52:40
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -129,7 +129,7 @@ function App(props) {
             if (res && res.refresh_token) {
                 var ts = new Date().getTime();
                 if (ts > res.expires_at * 1000) {
-                    http.get('/auth/user/token_refresh/20210101', {refresh_token: res.refresh_token}).then((data) => {
+                    http.post('/auth/user/token_refresh/20210101', {refresh_token: res.refresh_token}).then((data) => {
                         Storage.save('loginStatus', data.result);
                     });
                 }

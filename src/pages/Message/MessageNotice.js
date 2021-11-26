@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 11:43:41
  * @Description:交易通知和活动通知
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 15:40:23
+ * @LastEditTime: 2021-11-26 19:12:42
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, FlatList} from 'react-native';
@@ -169,7 +169,7 @@ export default function MessageNotice({navigation, route}) {
                         activeOpacity={0.8}
                         style={styles.card_sty}
                         onPress={() => {
-                            global.LogTool('noticeStart', item.id);
+                            global.LogTool('noticeStart', item.log_id);
                             readInterface(item.id, '', item.jump_url, item?.is_read, index);
                         }}>
                         <View style={Style.flexBetween}>
@@ -201,7 +201,7 @@ export default function MessageNotice({navigation, route}) {
                         activeOpacity={0.8}
                         style={[styles.card_sty, {padding: 0}]}
                         onPress={() => {
-                            global.LogTool('noticeStart', item.id);
+                            global.LogTool('noticeStart', item.log_id);
                             readInterface(item.id, '', item.jump_url, item?.is_read, index);
                         }}>
                         <View
@@ -240,7 +240,7 @@ export default function MessageNotice({navigation, route}) {
                         activeOpacity={0.8}
                         style={styles.card_sty}
                         onPress={() => {
-                            global.LogTool('noticeStart', item.id);
+                            global.LogTool('noticeStart', item.log_id);
                             readInterface(item.id, '', item.jump_url, item?.is_read, index);
                         }}>
                         <View style={Style.flexBetween}>
