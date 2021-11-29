@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-29 16:31:27
+ * @LastEditTime: 2021-11-29 17:10:40
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -1070,6 +1070,7 @@ class TradeBuy extends Component {
                                 disabled={button.avail == 0 || !buyBtnCanClick}
                                 onPress={this.buyClick}
                                 heightChange={(height) => this.setState({deltaHeight: height})}
+                                suffix={data?.agreement_bottom?.agree_text}
                             />
                         )}
                         {showMask && (
