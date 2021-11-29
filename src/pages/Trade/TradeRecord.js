@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-18 15:53:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-29 16:13:48
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -17,6 +17,7 @@ import {useJump} from '../../components/hooks';
 import Toast from '../../components/Toast/Toast.js';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {debounce} from 'lodash';
 const trade_type = [0, 3, 5, 6, 4, 7];
 const mfb_type = [0, 1, 2];
 const TradeRecord = ({route, navigation}) => {
@@ -79,7 +80,7 @@ const TradeRecord = ({route, navigation}) => {
         }, [refresh])
     );
     const onLoadMore = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) {
+        if (distanceFromEnd < 100) {
             return;
         }
         if (hasMore) {
@@ -218,7 +219,7 @@ const TradeRecord = ({route, navigation}) => {
                 ListFooterComponent={!loading && data?.length > 0 && ListFooterComponent}
                 keyExtractor={(item, index) => index.toString()}
                 onEndReachedThreshold={0.5}
-                onEndReached={onLoadMore}
+                onEndReached={debounce(onLoadMore, 500)}
                 refreshing={loading}
                 onRefresh={onRefresh}
             />

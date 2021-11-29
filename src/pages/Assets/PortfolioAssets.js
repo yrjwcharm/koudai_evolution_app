@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-29 10:35:18
+ * @LastEditTime: 2021-11-29 17:11:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -893,10 +893,32 @@ export default function PortfolioAssets(props) {
                                     paddingTop: px(22),
                                 }}>
                                 <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
-                                    <HTML
-                                        html={card?.adviser_info?.risk_disclosure?.content}
-                                        style={styles.light_text}
-                                    />
+                                    <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
+                                        {card?.adviser_info?.risk_disclosure?.title}
+                                    </Text>
+                                    {card?.adviser_info?.risk_disclosure?.content ? (
+                                        <HTML
+                                            html={card?.adviser_info?.risk_disclosure?.content}
+                                            style={styles.light_text}
+                                        />
+                                    ) : null}
+                                    {card?.adviser_info?.risk_disclosure2?.title ? (
+                                        <Text
+                                            style={{
+                                                fontSize: px(18),
+                                                fontWeight: '700',
+                                                marginTop: px(20),
+                                                marginBottom: px(12),
+                                            }}>
+                                            {card?.adviser_info?.risk_disclosure2?.title}
+                                        </Text>
+                                    ) : null}
+                                    {card?.adviser_info?.risk_disclosure2?.content ? (
+                                        <HTML
+                                            html={card?.adviser_info?.risk_disclosure2?.content}
+                                            style={styles.light_text}
+                                        />
+                                    ) : null}
                                 </TouchableOpacity>
                             </ScrollView>
                             <>
