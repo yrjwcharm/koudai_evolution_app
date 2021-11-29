@@ -358,6 +358,13 @@ export default function DetailAccount({route, navigation}) {
                                             html={data.line_info?.line_desc?.desc}
                                         />
                                     </View>
+                                    <Text
+                                        style={[
+                                            styles.bottomTip,
+                                            {marginTop: px(12), lineHeight: px(19), color: Colors.lightGrayColor},
+                                        ]}>
+                                        {data.line_info?.line_desc?.tip}
+                                    </Text>
                                     {data.line_info?.button ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -585,7 +592,14 @@ export default function DetailAccount({route, navigation}) {
                                         jump(_info.url);
                                     }}>
                                     <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
-                                    <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    <View style={Style.flexRow}>
+                                        {_info.desc ? (
+                                            <Text style={{color: Colors.lightGrayColor, marginRight: px(8)}}>
+                                                {_info.desc}
+                                            </Text>
+                                        ) : null}
+                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    </View>
                                 </TouchableOpacity>
                             );
                         })}
@@ -689,7 +703,6 @@ const styles = StyleSheet.create({
     },
     lowLineBox: {
         marginTop: text(6),
-        marginBottom: Space.marginVertical,
         paddingHorizontal: Space.padding,
         paddingBottom: text(14),
         borderRadius: Space.borderRadius,
@@ -724,6 +737,7 @@ const styles = StyleSheet.create({
     },
     line_con: {
         paddingHorizontal: Space.padding,
+        paddingBottom: px(20),
         backgroundColor: '#fff',
         flexDirection: 'column',
         alignItems: 'center',

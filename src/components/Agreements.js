@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-26 18:38:22
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-29 16:56:32
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
 import {px} from '../utils/appUtil';
 import Image from 'react-native-fast-image';
-import {Colors, Space} from '../common/commonStyle';
+import {Colors, Font, Space} from '../common/commonStyle';
 import {baseURL} from '../services/config';
 import {useJump} from './hooks';
 
@@ -26,6 +26,7 @@ function Agreements(props) {
         style = {},
         isHide = false,
         emitJump, //通知父组建跳转
+        suffix = '',
     } = props;
     const jumpPage = (item) => {
         if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
@@ -78,13 +79,14 @@ function Agreements(props) {
                                       emitJump && emitJump();
                                       jumpPage(item);
                                   }}
-                                  style={{fontSize: px(11), color: '#0051CC'}}
+                                  style={{fontSize: Font.textSm, color: '#0051CC'}}
                                   key={index}>
                                   {item.title || item.name}
                               </Text>
                           );
                       })
                     : null}
+                {suffix ? <Text style={{...styles.text, color: Colors.descColor}}>{suffix}</Text> : null}
             </Text>
         </View>
     );
@@ -99,7 +101,8 @@ Agreements.propTypes = {
 const styles = StyleSheet.create({
     text: {
         color: Colors.lightBlackColor,
-        fontSize: px(12),
+        fontSize: Font.textSm,
+        lineHeight: px(16),
     },
     agreement_text: {
         flex: 1,
