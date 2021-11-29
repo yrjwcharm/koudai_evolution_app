@@ -358,6 +358,13 @@ export default function DetailAccount({route, navigation}) {
                                             html={data.line_info?.line_desc?.desc}
                                         />
                                     </View>
+                                    <Text
+                                        style={[
+                                            styles.bottomTip,
+                                            {marginTop: px(12), lineHeight: px(19), color: Colors.lightGrayColor},
+                                        ]}>
+                                        {data.line_info?.line_desc?.tip}
+                                    </Text>
                                     {data.line_info?.button ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -689,7 +696,6 @@ const styles = StyleSheet.create({
     },
     lowLineBox: {
         marginTop: text(6),
-        marginBottom: Space.marginVertical,
         paddingHorizontal: Space.padding,
         paddingBottom: text(14),
         borderRadius: Space.borderRadius,
@@ -724,6 +730,7 @@ const styles = StyleSheet.create({
     },
     line_con: {
         paddingHorizontal: Space.padding,
+        paddingBottom: px(20),
         backgroundColor: '#fff',
         flexDirection: 'column',
         alignItems: 'center',
