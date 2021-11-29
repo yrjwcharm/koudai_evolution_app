@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-26 18:52:18
+ * @LastEditTime: 2021-11-29 10:35:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -262,7 +262,11 @@ export default function PortfolioAssets(props) {
                     });
                 }
             } else {
-                if ((type == 'adjust' || type == 'transfer') && !card?.adviser_info?.is_signed) {
+                if (
+                    (type == 'adjust' || type == 'transfer') &&
+                    !card?.adviser_info?.is_signed &&
+                    type != 'TradeRedeem'
+                ) {
                     sign_success_jump_url = url;
                     signModal?.current?.show();
                     show_sign_focus_modal.current = true;
