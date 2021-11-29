@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-19 20:21:17
+ * @LastEditTime: 2021-11-29 16:31:27
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -643,10 +643,18 @@ class TradeBuy extends Component {
         );
     }
     render_bank() {
-        const {data, bankSelect} = this.state;
+        const {data, bankSelect, planData} = this.state;
         const {pay_methods, large_pay_method} = data;
         return (
             <View style={{marginBottom: px(12)}}>
+                {planData?.adviser_fee ? (
+                    <View style={{paddingHorizontal: Space.padding, paddingBottom: px(12)}}>
+                        <HTML
+                            html={planData?.adviser_fee}
+                            style={{fontSize: Font.textH3, lineHeight: px(17), color: Colors.lightGrayColor}}
+                        />
+                    </View>
+                ) : null}
                 <View style={[Style.flexRow, styles.bankCard]}>
                     {large_pay_method ? (
                         <TouchableOpacity

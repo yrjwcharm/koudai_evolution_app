@@ -592,7 +592,14 @@ export default function DetailAccount({route, navigation}) {
                                         jump(_info.url);
                                     }}>
                                     <Text style={{flex: 1, paddingVertical: text(20)}}>{_info.title}</Text>
-                                    <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    <View style={Style.flexRow}>
+                                        {_info.desc ? (
+                                            <Text style={{color: Colors.lightGrayColor, marginRight: px(8)}}>
+                                                {_info.desc}
+                                            </Text>
+                                        ) : null}
+                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                    </View>
                                 </TouchableOpacity>
                             );
                         })}
