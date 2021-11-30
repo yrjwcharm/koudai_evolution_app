@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-30 17:55:15
+ * @LastEditTime: 2021-11-30 18:18:35
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -222,7 +222,7 @@ const TopInvestors = ({navigation, route}) => {
                                 </View>
                             ) : null}
                             {data.text?.profit_intro ? (
-                                <View style={[styles.contentBoxSty, {backgroundColor: '#fff', paddingVertical: 0}]}>
+                                <View style={[styles.contentBoxSty, {backgroundColor: '#fff', padding: 0}]}>
                                     <HTML
                                         html={data.text?.profit_intro}
                                         style={{...styles.contentSty, lineHeight: px(20)}}
