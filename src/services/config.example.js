@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-25 16:33:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-30 11:09:42
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
@@ -13,21 +13,21 @@ const SERVER_URL = {
         WS: 'wss://kapi-im-ws.licaimofang.com/',
         IMApi: 'https://kapi-im.licaimofang.com',
         IMApiSsl: 'https://kapi-imsi.licaimofang.cn',
-        H5: 'https://evolution-h5.licaimofang.com',
+        H5: 'https://edu.licaimofang.cn',
     },
     online: {
         // 正式环境
         HTTP: 'https://kapi-web.licaimofang.com/',
         WS: 'wss://kapi-im-ws.licaimofang.com/',
         IMApi: 'https://kapi-im.licaimofang.com',
-        H5: 'https://evolution-h5.licaimofang.com',
+        H5: 'https://edu.licaimofang.cn',
     },
     online1: {
         // 正式环境1
         HTTP: 'https://kapi-web.licaimofang.cn/',
         WS: 'wss://kapi-im-ws.licaimofang.cn/',
         IMApi: 'https://kapi-im.licaimofang.cn',
-        H5: 'https://evolution-h5.licaimofang.cn',
+        H5: 'https://edu.licaimofang.cn',
     },
     online2: {
         HTTP: 'https://47.96.8.20/',
