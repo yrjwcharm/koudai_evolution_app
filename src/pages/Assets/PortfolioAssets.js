@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-29 17:11:18
+ * @LastEditTime: 2021-11-30 17:57:19
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -164,7 +164,7 @@ export default function PortfolioAssets(props) {
     }, [chartData, loading]);
     //签约
     const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: [props.route?.params?.poid]}).then((res) => {
+        http.post('adviser/sign/20210923', {poids: [card?.adviser_info?.sign_poid]}).then((res) => {
             signModal.current.toastShow(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {
