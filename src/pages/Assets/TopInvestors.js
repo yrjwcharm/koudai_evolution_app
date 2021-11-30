@@ -1,11 +1,11 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-26 15:04:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-11-30 17:25:11
  * @Description:牛人信号
  */
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {WebView} from 'react-native-webview';
@@ -15,30 +15,46 @@ import Icon from 'react-native-vector-icons/Octicons';
 import HTML from '../../components/RenderHtml';
 import {Chart} from '../../components/Chart';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
-import {FixedButton} from '../../components/Button';
+import {FixedButton, Button} from '../../components/Button';
 import Empty from '../../components/EmptyTip';
 import {useJump} from '../../components/hooks';
 import {deviceWidth, isIphoneX, px, deviceHeight} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {baseURL} from '../../services/config';
+import Agreements from '../../components/Agreements';
 import http from '../../services';
-
+import Notice from '../../components/Notice';
+import {BottomModal} from '../../components/Modal';
+import {debounce} from 'lodash';
 const TopInvestors = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
     const [chartData, setChartData] = useState({});
     const [showEmpty, setShowEmpty] = useState(false);
-
+    const [signCheck, setSignCheck] = useState(false);
+    const [signTimer, setSignTimer] = useState(8);
+    const signModal = React.useRef(null);
+    const show_sign_focus_modal = useRef(false);
+    let intervalt_timer = null;
     useFocusEffect(
         useCallback(() => {
+            //解决弹窗里跳转 返回再次弹出
+            if (data?.console && show_sign_focus_modal.current) {
+                signModal?.current?.show();
+            }
             http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
                 if (res.code === '000000') {
                     setData(res.result || {});
                     setShowEmpty(true);
+                    if (!res.result?.console?.adviser_info?.is_signed) {
+                        setSignCheck(res.result?.console?.adviser_sign?.agreement_bottom?.default_agree);
+                        setSignTimer(res.result?.console?.adviser_sign?.risk_disclosure?.countdown);
+                    }
                     res.result.period && setPeriod(res.result.period);
                 }
             });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [route.params])
     );
 
@@ -51,7 +67,35 @@ const TopInvestors = ({navigation, route}) => {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period]);
-
+    const handleClick = () => {
+        if (!data.console?.adviser_sign?.is_signed) {
+            signModal.current?.show();
+            intervalt_timer = setInterval(() => {
+                setSignTimer((time) => {
+                    if (time > 0) {
+                        return --time;
+                    } else {
+                        intervalt_timer && clearInterval(intervalt_timer);
+                        return time;
+                    }
+                });
+            }, 1000);
+        } else {
+            jump(data.console?.button.url);
+        }
+    };
+    //签约
+    const handleSign = () => {
+        http.post('adviser/sign/20210923', {poids: [route?.params?.poid]}).then((res) => {
+            signModal.current.toastShow(res.message);
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    signModal.current.hide();
+                    jump(data.console?.button.url);
+                }, 1000);
+            }
+        });
+    };
     return Object.keys(data).length > 0 ? (
         <View style={{flex: 1, paddingBottom: isIphoneX() ? px(45) + px(8) + 34 : px(45) + px(8) + px(8)}}>
             {Object.keys(data).length > 0 && (
@@ -84,7 +128,7 @@ const TopInvestors = ({navigation, route}) => {
                                     {data.console?.button ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            onPress={() => jump(data.console?.button.url)}
+                                            onPress={handleClick}
                                             style={[
                                                 Style.flexRowCenter,
                                                 styles.followInvest,
@@ -178,14 +222,16 @@ const TopInvestors = ({navigation, route}) => {
                                 </View>
                             ) : null}
                             {data.text?.profit_intro ? (
-                                <View style={styles.contentBoxSty}>
+                                <View style={[styles.contentBoxSty, {backgroundColor: '#fff', paddingVertical: 0}]}>
                                     <HTML
                                         html={data.text?.profit_intro}
                                         style={{...styles.contentSty, lineHeight: px(20)}}
                                     />
                                 </View>
                             ) : null}
-                            <View style={[Style.flexRow, {marginTop: px(20)}]}>
+                        </View>
+                        <View style={styles.boxSty}>
+                            <View style={[Style.flexRow]}>
                                 <Image source={require('../../assets/personal/remind.png')} style={styles.iconSty} />
                                 <Text style={styles.infoTitle}>{'牛人信号提醒'}</Text>
                             </View>
@@ -220,6 +266,84 @@ const TopInvestors = ({navigation, route}) => {
                             </View>
                         ) : null}
                     </LinearGradient>
+                    {data?.console?.adviser_sign && (
+                        <BottomModal
+                            style={{height: px(600), backgroundColor: '#fff'}}
+                            ref={signModal}
+                            title={data?.console?.adviser_sign?.title}
+                            onClose={() => {
+                                show_sign_focus_modal.current = false;
+                                intervalt_timer && clearInterval(intervalt_timer);
+                            }}>
+                            <View style={{flex: 1}}>
+                                {data?.console?.adviser_sign?.desc && (
+                                    <Notice content={{content: data?.console?.adviser_sign?.desc}} />
+                                )}
+                                <ScrollView
+                                    style={{
+                                        paddingHorizontal: px(16),
+                                        paddingTop: px(22),
+                                    }}>
+                                    <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
+                                        <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
+                                            {data?.console?.adviser_sign?.risk_disclosure?.title}
+                                        </Text>
+                                        {data?.console?.adviser_sign?.risk_disclosure?.content ? (
+                                            <HTML
+                                                html={data?.console?.adviser_sign?.risk_disclosure?.content}
+                                                style={styles.light_text}
+                                            />
+                                        ) : null}
+                                        {data?.console?.adviser_sign?.risk_disclosure2?.title ? (
+                                            <Text
+                                                style={{
+                                                    fontSize: px(18),
+                                                    fontWeight: '700',
+                                                    marginTop: px(20),
+                                                    marginBottom: px(12),
+                                                }}>
+                                                {data?.console?.adviser_sign?.risk_disclosure2?.title}
+                                            </Text>
+                                        ) : null}
+                                        {data?.console?.adviser_sign?.risk_disclosure2?.content ? (
+                                            <HTML
+                                                html={data?.console?.adviser_sign?.risk_disclosure2?.content}
+                                                style={styles.light_text}
+                                            />
+                                        ) : null}
+                                    </TouchableOpacity>
+                                </ScrollView>
+                                <>
+                                    {data?.console?.adviser_sign?.agreement_bottom ? (
+                                        <Agreements
+                                            style={{margin: px(16)}}
+                                            check={data?.console?.adviser_sign?.agreement_bottom?.default_agree}
+                                            data={data?.console?.adviser_sign?.agreement_bottom?.list}
+                                            onChange={(checkStatus) => setSignCheck(checkStatus)}
+                                            emitJump={() => {
+                                                signModal?.current?.hide();
+                                                setTimeout(() => {
+                                                    show_sign_focus_modal.current = true;
+                                                }, 10);
+                                            }}
+                                        />
+                                    ) : null}
+                                    {data?.console?.adviser_sign?.button ? (
+                                        <Button
+                                            disabled={signTimer > 0 || !signCheck}
+                                            style={{marginHorizontal: px(20)}}
+                                            onPress={debounce(handleSign, 500)}
+                                            title={
+                                                signTimer > 0
+                                                    ? signTimer + 's' + data?.console?.adviser_sign?.button?.text
+                                                    : data?.console?.adviser_sign?.button?.text
+                                            }
+                                        />
+                                    ) : null}
+                                </>
+                            </View>
+                        </BottomModal>
+                    )}
                 </ScrollView>
             )}
             <FixedButton
