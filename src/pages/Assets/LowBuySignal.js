@@ -14,7 +14,7 @@ export default (props) => {
     const jump = useJump();
     const init = useCallback(() => {
         setLoading(true);
-        Http.get('/position/signal_detail/20211026?poid=X00F000003', {
+        Http.get('/position/signal_detail/20211026', {
             poid: props.route?.params?.poid,
         }).then((res) => {
             setLoading(false);
