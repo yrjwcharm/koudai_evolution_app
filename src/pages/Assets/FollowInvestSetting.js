@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 18:34:07
+ * @LastEditTime: 2021-12-01 18:49:22
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -53,21 +53,7 @@ export default ({navigation, route}) => {
         setOpen((prev) => !prev);
     };
     const confirmClick = () => {
-        if (inputVal < data.min_amount) {
-            inputRef?.current?.blur();
-            inputModal.current.toastShow(`最小起购金额${formaNum(data.min_amount, 'int')}元`, 2000, {
-                onHidden: () => {
-                    inputRef?.current?.focus();
-                },
-            });
-        } else if (inputVal > data.max_amount) {
-            inputRef?.current?.blur();
-            inputModal.current.toastShow(`最大购买金额${formaNum(data.max_amount, 'int')}元`, 2000, {
-                onHidden: () => {
-                    inputRef?.current?.focus();
-                },
-            });
-        } else {
+        if (!errMes) {
             inputModal.current.hide();
             setAmount(parseFloat(inputVal));
         }
@@ -78,12 +64,15 @@ export default ({navigation, route}) => {
      * @return {*}
      */
     const changeInput = (value) => {
-        setErrMes('');
-        if (onlyNumber(value, true) > selectedBank.left_amount) {
-            setErrMes('最大单日购买金额为' + selectedBank.left_amount + '元');
+        let _amount = onlyNumber(value, true) ? parseInt(onlyNumber(value, true)) : 0;
+        if (_amount < data.min_amount) {
+            setErrMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
+        } else if (_amount > data.max_amount) {
+            setErrMes(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
-            setInputVal(onlyNumber(value, true));
+            setErrMes('');
         }
+        setInputVal(_amount + '');
     };
     const onSave = () => {
         http.post('/niuren/follow_invest/setting/modify/20210801', {
