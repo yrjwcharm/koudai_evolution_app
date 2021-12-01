@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 18:25:05
+ * @LastEditTime: 2021-12-01 18:34:07
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -36,7 +36,11 @@ export default ({navigation, route}) => {
             http.get('/niuren/follow_invest/setting/info/20210801', {poid: route.params?.poid}).then((res) => {
                 if (res.code === '000000') {
                     setOpen(res.result.status);
-                    setAmount(res.result.amount);
+                    setAmount(
+                        res.result?.amount > res.result?.pay_methods[0]?.left_amount
+                            ? res.result?.pay_methods[0]?.left_amount
+                            : res.result?.amount
+                    );
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
                     navigation.setOptions({title: res.result.title || '设置'});
