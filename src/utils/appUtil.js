@@ -2,7 +2,7 @@
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 17:28:18
+ * @LastEditTime: 2021-12-01 17:55:03
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -216,12 +216,10 @@ const onlyNumber = (value, integer = false) => {
         } else {
             //必须保证第一个为数字而不是.
             value = value.replace(/^\./g, '');
-            //保证只有出现一个.而没有多个.
-            value = value.replace(/\.{2,}/g, '.');
             //保证.只出现一次，而不能出现两次以上
             value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
             //若是第一位是负号，则容许添加
-            value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+            value = value.replace(/(\d+)\.(\d\d).*$/, '$1.$2');
         }
 
         return value;
