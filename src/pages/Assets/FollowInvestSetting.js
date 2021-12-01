@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 17:28:48
+ * @LastEditTime: 2021-12-01 18:25:05
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -24,6 +24,7 @@ export default ({navigation, route}) => {
     const [data, setData] = useState({});
     const [open, setOpen] = useState(true);
     const [amount, setAmount] = useState('');
+    const [errMes, setErrMes] = useState('');
     const [inputVal, setInputVal] = useState('');
     const inputModal = useRef();
     const inputRef = useRef();
@@ -47,7 +48,6 @@ export default ({navigation, route}) => {
     const onToggle = () => {
         setOpen((prev) => !prev);
     };
-
     const confirmClick = () => {
         if (inputVal < data.min_amount) {
             inputRef?.current?.blur();
@@ -68,7 +68,19 @@ export default ({navigation, route}) => {
             setAmount(parseFloat(inputVal));
         }
     };
-
+    /**
+     * @description: 金额输入
+     * @param {*}
+     * @return {*}
+     */
+    const changeInput = (value) => {
+        setErrMes('');
+        if (onlyNumber(value, true) > selectedBank.left_amount) {
+            setErrMes('最大单日购买金额为' + selectedBank.left_amount + '元');
+        } else {
+            setInputVal(onlyNumber(value, true));
+        }
+    };
     const onSave = () => {
         http.post('/niuren/follow_invest/setting/modify/20210801', {
             amount,
@@ -167,17 +179,23 @@ export default ({navigation, route}) => {
                         ref={inputRef}
                         clearButtonMode={'never'}
                         keyboardType={'number-pad'}
-                        onChangeText={(value) => setInputVal(onlyNumber(value, true))}
+                        onChangeText={changeInput}
                         style={styles.inputStyle}
                         value={inputVal}
                     />
                     {inputVal.length === 0 && <Text style={styles.placeholder}>{'请输入跟投金额(元)'}</Text>}
                     {inputVal.length > 0 && (
-                        <TouchableOpacity activeOpacity={0.8} onPress={() => setInputVal('')}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                setInputVal('');
+                                setErrMes('');
+                            }}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(16)} />
                         </TouchableOpacity>
                     )}
                 </View>
+                {errMes ? <Text style={{color: Colors.red, top: px(-16), left: px(16)}}>{errMes}</Text> : null}
             </InputModal>
             <BankCardModal
                 data={data.pay_methods || []}
