@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-09 10:27:46
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-10-09 10:54:16
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-01 17:28:18
  * @Description: 定义app常用工具类和常量
  */
 import {PixelRatio, Platform, Dimensions, PermissionsAndroid} from 'react-native';
@@ -199,21 +199,30 @@ const parseAmount = (value) => {
 const inputInt = (value) => {
     return value ? value.replace(/[^\d]/g, '') : '';
 };
-//金额输入框
-const onlyNumber = (value) => {
+/**
+ * @description: 金额输入框
+ * @param {value} 需要转化的字符串
+ * @param {integer} 是否是正整数 默认两位小数
+ * @return {*}
+ */
+const onlyNumber = (value, integer = false) => {
     if (value && typeof value == 'string') {
         //先把非数字的都替换掉，除了数字和.
         value = value.replace(/[^\d\.]/g, '');
         //前两位不能是0加数字
         value = value.replace(/^0\d[0-9]*/g, '');
-        //必须保证第一个为数字而不是.
-        value = value.replace(/^\./g, '');
-        //保证只有出现一个.而没有多个.
-        value = value.replace(/\.{2,}/g, '.');
-        //保证.只出现一次，而不能出现两次以上
-        value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
-        //若是第一位是负号，则容许添加
-        value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+        if (integer) {
+            value = value.replace(/\.\d*/g, '');
+        } else {
+            //必须保证第一个为数字而不是.
+            value = value.replace(/^\./g, '');
+            //保证只有出现一个.而没有多个.
+            value = value.replace(/\.{2,}/g, '.');
+            //保证.只出现一次，而不能出现两次以上
+            value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+            //若是第一位是负号，则容许添加
+            value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+        }
 
         return value;
     } else {

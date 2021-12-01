@@ -238,7 +238,7 @@ const Index = (props) => {
                                         jump({path: 'RemindMessage'});
                                     }}>
                                     {allMsg ? (
-                                        <View style={styles.point_sty}>
+                                        <View style={[styles.point_sty, Style.flexCenter]}>
                                             <Text
                                                 style={{
                                                     color: '#fff',
@@ -970,9 +970,10 @@ const styles = StyleSheet.create({
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
-        paddingVertical: px(3),
         paddingHorizontal: px(4),
         zIndex: 10,
+        minWidth: px(20),
+        height: px(20),
         borderWidth: 2,
         borderColor: '#fff',
     },

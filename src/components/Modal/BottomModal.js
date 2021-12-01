@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-26 15:37:19
+ * @LastEditTime: 2021-12-01 16:43:46
  * @Description: 底部弹窗
  */
 import React, {useState} from 'react';
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
     },
     con: {
-        paddingBottom: isIphoneX() ? 34 : 0,
+        paddingBottom: isIphoneX() ? 34 : 20,
         backgroundColor: '#fff',
         minHeight: constants.bottomMinHeight,
         borderTopLeftRadius: constants.borderRadius,

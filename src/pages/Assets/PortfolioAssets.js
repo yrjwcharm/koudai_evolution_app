@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-30 17:57:19
+ * @LastEditTime: 2021-12-01 16:39:41
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -109,10 +109,6 @@ export default function PortfolioAssets(props) {
             .then((res) => {
                 setCard(res.result);
                 setLoading(false);
-                if (!res.result?.adviser_info?.is_signed) {
-                    setSignCheck(res.result?.adviser_info?.agreement_bottom?.default_agree);
-                    setSignTimer(res.result?.adviser_info?.risk_disclosure?.countdown);
-                }
             })
             .catch(() => {
                 setLoading(false);
@@ -269,6 +265,8 @@ export default function PortfolioAssets(props) {
                 ) {
                     sign_success_jump_url = url;
                     signModal?.current?.show();
+                    setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
+                    setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
                     show_sign_focus_modal.current = true;
                     intervalt_timer = setInterval(() => {
                         setSignTimer((time) => {

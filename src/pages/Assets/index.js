@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:28:03
+ * @LastEditTime: 2021-12-01 16:53:06
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -716,7 +716,7 @@ function HomeScreen({navigation, route}) {
                                 }}
                                 style={{position: 'relative'}}>
                                 {newMes ? (
-                                    <View style={styles.point_sty}>
+                                    <View style={[styles.point_sty, Style.flexCenter]}>
                                         <Text
                                             style={{
                                                 color: '#fff',
@@ -1437,9 +1437,9 @@ const styles = StyleSheet.create({
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
-        paddingVertical: px(3),
-        paddingHorizontal: px(4),
         zIndex: 10,
+        minWidth: px(20),
+        height: px(20),
         borderWidth: 2,
         borderColor: '#fff',
     },

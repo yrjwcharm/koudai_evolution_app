@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-26 18:05:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-01 17:28:48
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -167,7 +167,7 @@ export default ({navigation, route}) => {
                         ref={inputRef}
                         clearButtonMode={'never'}
                         keyboardType={'number-pad'}
-                        onChangeText={(value) => setInputVal(onlyNumber(value))}
+                        onChangeText={(value) => setInputVal(onlyNumber(value, true))}
                         style={styles.inputStyle}
                         value={inputVal}
                     />

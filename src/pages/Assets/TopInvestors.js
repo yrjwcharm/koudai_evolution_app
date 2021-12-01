@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-30 18:18:35
+ * @LastEditTime: 2021-12-01 16:48:26
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -40,17 +40,13 @@ const TopInvestors = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             //解决弹窗里跳转 返回再次弹出
-            if (data?.console && show_sign_focus_modal.current) {
+            if (data && show_sign_focus_modal.current) {
                 signModal?.current?.show();
             }
             http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
                 if (res.code === '000000') {
                     setData(res.result || {});
                     setShowEmpty(true);
-                    if (!res.result?.console?.adviser_info?.is_signed) {
-                        setSignCheck(res.result?.console?.adviser_sign?.agreement_bottom?.default_agree);
-                        setSignTimer(res.result?.console?.adviser_sign?.risk_disclosure?.countdown);
-                    }
                     res.result.period && setPeriod(res.result.period);
                 }
             });
@@ -69,6 +65,8 @@ const TopInvestors = ({navigation, route}) => {
     }, [period]);
     const handleClick = () => {
         if (!data.console?.adviser_sign?.is_signed) {
+            setSignCheck(data?.console?.adviser_sign?.agreement_bottom?.default_agree);
+            setSignTimer(data?.console?.adviser_sign?.risk_disclosure?.countdown);
             signModal.current?.show();
             intervalt_timer = setInterval(() => {
                 setSignTimer((time) => {
@@ -322,9 +320,7 @@ const TopInvestors = ({navigation, route}) => {
                                             onChange={(checkStatus) => setSignCheck(checkStatus)}
                                             emitJump={() => {
                                                 signModal?.current?.hide();
-                                                setTimeout(() => {
-                                                    show_sign_focus_modal.current = true;
-                                                }, 10);
+                                                show_sign_focus_modal.current = true;
                                             }}
                                         />
                                     ) : null}
