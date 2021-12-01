@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-25 16:52:29
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-01 16:28:03
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1437,8 +1437,8 @@ const styles = StyleSheet.create({
         top: px(-5),
         backgroundColor: Colors.red,
         borderRadius: px(50),
-        paddingVertical: 3,
-        paddingHorizontal: 6,
+        paddingVertical: px(3),
+        paddingHorizontal: px(4),
         zIndex: 10,
         borderWidth: 2,
         borderColor: '#fff',
