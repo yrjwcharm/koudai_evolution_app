@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:48:26
+ * @LastEditTime: 2021-12-02 20:02:18
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -84,7 +84,7 @@ const TopInvestors = ({navigation, route}) => {
     };
     //签约
     const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: [data?.console?.adviser_sign?.sign_poid]}).then((res) => {
+        http.post('adviser/sign/20210923', {poids: data?.console?.adviser_sign?.sign_po_ids}).then((res) => {
             signModal.current.toastShow(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {

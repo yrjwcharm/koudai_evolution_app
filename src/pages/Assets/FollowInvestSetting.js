@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 19:06:30
+ * @LastEditTime: 2021-12-02 20:19:18
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -64,15 +64,14 @@ export default ({navigation, route}) => {
      * @return {*}
      */
     const changeInput = (value) => {
-        let _amount = onlyNumber(value, true) ? parseInt(onlyNumber(value, true)) : '';
-        if (_amount < data.min_amount) {
+        if (value < data.min_amount) {
             setErrMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
-        } else if (_amount > data.max_amount) {
+        } else if (value > data.max_amount) {
             setErrMes(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
             setErrMes('');
         }
-        setInputVal(_amount + '');
+        setInputVal(onlyNumber(value));
     };
     const onSave = () => {
         http.post('/niuren/follow_invest/setting/modify/20210801', {
@@ -122,7 +121,7 @@ export default ({navigation, route}) => {
                             }}
                             style={[Style.flexBetween, styles.inputBox]}>
                             <Text style={styles.label}>{'跟投金额(元)'}</Text>
-                            <Text style={styles.amount}>{formaNum(amount, 'int')}</Text>
+                            <Text style={styles.amount}>{amount}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{paddingHorizontal: Space.padding}}>
@@ -171,7 +170,7 @@ export default ({navigation, route}) => {
                         autoFocus
                         ref={inputRef}
                         clearButtonMode={'never'}
-                        keyboardType={'number-pad'}
+                        keyboardType="numeric"
                         onChangeText={changeInput}
                         style={styles.inputStyle}
                         value={inputVal}
