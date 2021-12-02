@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 12:03:40
+ * @LastEditTime: 2021-12-02 21:27:55
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -486,10 +486,9 @@ function HomeScreen({navigation, route}) {
                             <ScrollView
                                 style={{
                                     paddingHorizontal: px(16),
-                                    paddingTop: px(22),
-                                    paddingBottom: px(20),
+                                    paddingTop: px(20),
                                 }}>
-                                <TouchableOpacity activeOpacity={1}>
+                                <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
                                     {signData?.desc ? (
                                         <>
                                             <HTML html={signData?.desc} style={styles.light_text} />
@@ -591,16 +590,16 @@ function HomeScreen({navigation, route}) {
                                             </View>
                                         );
                                     })}
-                                    {signData?.button ? (
-                                        <Button
-                                            disabled={!signSelectData?.length > 0}
-                                            style={{marginTop: px(20)}}
-                                            onPress={_.debounce(handleSign, 500)}
-                                            title={signData?.button?.text}
-                                        />
-                                    ) : null}
                                 </TouchableOpacity>
                             </ScrollView>
+                            {signData?.button ? (
+                                <Button
+                                    disabled={!signSelectData?.length > 0}
+                                    style={{marginTop: px(12), marginHorizontal: px(16)}}
+                                    onPress={_.debounce(handleSign, 500)}
+                                    title={signData?.button?.text}
+                                />
+                            ) : null}
                         </View>
                     </BottomModal>
                 )}
