@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:39:41
+ * @LastEditTime: 2021-12-02 19:49:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -69,9 +69,9 @@ export default function PortfolioAssets(props) {
     const [showEmpty, setShowEmpty] = useState(false);
     const [signTimer, setSignTimer] = useState(8);
     const [signCheck, setSignCheck] = useState(false);
+    const sign_success_jump_url = useRef('');
     const show_sign_focus_modal = useRef(false);
     let intervalt_timer = null;
-    let sign_success_jump_url = '';
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -165,7 +165,7 @@ export default function PortfolioAssets(props) {
             if (res.code === '000000') {
                 setTimeout(() => {
                     signModal.current.hide();
-                    jump(sign_success_jump_url);
+                    jump(sign_success_jump_url?.current);
                 }, 1000);
             }
         });
@@ -263,7 +263,7 @@ export default function PortfolioAssets(props) {
                     !card?.adviser_info?.is_signed &&
                     type != 'TradeRedeem'
                 ) {
-                    sign_success_jump_url = url;
+                    sign_success_jump_url.current = url;
                     signModal?.current?.show();
                     setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
                     setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
