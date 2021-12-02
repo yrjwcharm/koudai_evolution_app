@@ -613,7 +613,14 @@ export default function DetailRetiredPlan({navigation, route}) {
                                             jump(_q.url);
                                         }}>
                                         <Text style={{flex: 1, paddingVertical: text(20)}}>{_q.title}</Text>
-                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        <View style={Style.flexRow}>
+                                            {_q.desc ? (
+                                                <Text style={{color: Colors.lightGrayColor, marginRight: text(8)}}>
+                                                    {_q.desc}
+                                                </Text>
+                                            ) : null}
+                                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        </View>
                                     </TouchableOpacity>
                                 );
                             })}

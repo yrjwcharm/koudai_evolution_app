@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-11-29 11:18:44
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-11-29 15:12:39
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-02 14:23:24
  * @Description: 投顾服务费
  */
 import React, {useEffect, useState} from 'react';
@@ -32,7 +32,7 @@ export default ({navigation}) => {
     return (
         <>
             {Object.keys(data).length > 0 ? (
-                <ScrollView bounces={false} style={styles.container}>
+                <ScrollView bounces={false} style={styles.container} scrollIndicatorInsets={{right: 1}}>
                     <View style={styles.topPart}>
                         <Text style={styles.label}>{data.fee[0]?.text}</Text>
                         <Text style={styles.bigFee}>{data.fee[0]?.value}</Text>
@@ -47,6 +47,38 @@ export default ({navigation}) => {
                             </View>
                         </View>
                     </View>
+                    {data?.fee_list
+                        ? data?.fee_list?.map((item, index) => (
+                              <TouchableOpacity
+                                  key={index}
+                                  activeOpacity={0.8}
+                                  onPress={() => jump(item?.url)}
+                                  style={[Style.flexBetween, styles.card]}>
+                                  <View>
+                                      <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                          <Text>{item.title}</Text>
+                                          <Text style={styles.tag}>{item.tag}</Text>
+                                      </View>
+                                      <Text
+                                          style={{
+                                              color: Colors.darkGrayColor,
+                                              fontFamily: Font.numRegular,
+                                              fontSize: px(12),
+                                          }}>
+                                          {item.date}
+                                      </Text>
+                                  </View>
+                                  <View>
+                                      <Text style={{fontFamily: Font.numFontFamily, marginBottom: px(6)}}>
+                                          {item.amount}
+                                      </Text>
+                                      <Text style={{color: Colors.lightBlackColor, fontSize: px(12)}}>
+                                          {item.amount_desc}
+                                      </Text>
+                                  </View>
+                              </TouchableOpacity>
+                          ))
+                        : null}
                     {data.fee_intro ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -56,11 +88,11 @@ export default ({navigation}) => {
                             <Icon color={Colors.descColor} name="right" size={px(12)} />
                         </TouchableOpacity>
                     ) : null}
+                    <BottomDesc fix_img={data.advisor_footer_img} style={styles.bottomDesc} />
                 </ScrollView>
             ) : (
                 <Loading />
             )}
-            <BottomDesc fix_img={data.advisor_footer_img} style={styles.bottomDesc} />
         </>
     );
 };
@@ -74,6 +106,7 @@ const styles = StyleSheet.create({
         paddingTop: px(34),
         paddingBottom: px(20),
         backgroundColor: '#fff',
+        marginBottom: px(16),
     },
     label: {
         fontSize: px(13),
@@ -109,10 +142,20 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
-    bottomDesc: {
-        position: 'absolute',
-        right: 0,
-        left: 0,
-        bottom: isIphoneX() ? 34 : 0,
+    tag: {
+        marginHorizontal: px(4),
+        paddingVertical: px(4),
+        paddingHorizontal: px(6),
+        borderRadius: px(4),
+        backgroundColor: '#F0F6FD',
+        fontSize: px(12),
+        color: Colors.btnColor,
+    },
+    card: {
+        marginHorizontal: px(16),
+        marginBottom: px(16),
+        backgroundColor: '#fff',
+        borderRadius: px(6),
+        padding: px(16),
     },
 });

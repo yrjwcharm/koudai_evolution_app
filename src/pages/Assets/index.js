@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:53:06
+ * @LastEditTime: 2021-12-02 12:03:40
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -51,6 +51,7 @@ import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
 import CheckBox from '../../components/CheckBox';
+import Notice from '../../components/Notice';
 import _ from 'lodash';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
@@ -479,9 +480,9 @@ function HomeScreen({navigation, route}) {
                     <BottomModal
                         style={{height: px(600), backgroundColor: '#fff'}}
                         ref={bottomModal}
-                        title={signData?.title}
-                        sub_title={signData?.title_tip}>
+                        title={signData?.title}>
                         <View style={{flex: 1}}>
+                            {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                             <ScrollView
                                 style={{
                                     paddingHorizontal: px(16),
@@ -509,22 +510,34 @@ function HomeScreen({navigation, route}) {
                                             </Text>
                                         </>
                                     ) : null}
-                                    <View style={[Style.flexRow, {marginTop: px(12)}, styles.border_bottom]}>
-                                        <CheckBox
-                                            checked={signSelectData?.length == signData?.plan_list?.length}
-                                            style={{marginRight: px(6)}}
-                                            onChange={(value) => {
-                                                checkBoxClick(value);
-                                            }}
-                                        />
-                                        <Text style={{fontSize: px(14), fontWeight: '700'}}>
-                                            全选({signSelectData?.length}/{signData?.plan_list?.length})
+                                    <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
+                                        <View style={Style.flexRow}>
+                                            <CheckBox
+                                                checked={signSelectData?.length == signData?.plan_list?.length}
+                                                style={{marginRight: px(6)}}
+                                                onChange={(value) => {
+                                                    checkBoxClick(value);
+                                                }}
+                                            />
+                                            <Text style={{fontSize: px(16), fontWeight: '700'}}>全选</Text>
+                                        </View>
+                                        <Text style={{fontSize: px(16)}}>
+                                            {signSelectData?.length}/{signData?.plan_list?.length}
                                         </Text>
                                     </View>
                                     {signData?.plan_list?.map((item, index) => {
                                         return (
                                             <View key={index} style={styles.border_bottom}>
-                                                <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text
+                                                    style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
+                                                    {item?.name}
+                                                </Text>
+                                                {item?.adviser_cost_desc ? (
+                                                    <Text style={[styles.light_text, {marginBottom: px(6)}]}>
+                                                        {item.adviser_cost_desc}
+                                                    </Text>
+                                                ) : null}
+                                                <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
                                                     <CheckBox
                                                         checked={signSelectData?.includes(item?.poid)}
                                                         style={{marginRight: px(6)}}
@@ -532,36 +545,49 @@ function HomeScreen({navigation, route}) {
                                                             checkBoxClick(value, item.poid);
                                                         }}
                                                     />
-                                                    <Text style={styles.light_text}>{item?.name}</Text>
-                                                </View>
-                                                <Text style={styles.light_text}>
-                                                    {item?.desc}
-                                                    <Text
-                                                        style={{
-                                                            color: signOpen?.includes(item?.poid)
-                                                                ? Colors.defaultColor
-                                                                : Colors.btnColor,
-                                                        }}
-                                                        onPress={() => {
-                                                            handleSignOpen(item?.poid);
-                                                        }}>
-                                                        {item?.link_name}
-                                                    </Text>
-                                                    {signOpen?.includes(item?.poid) &&
-                                                        item?.link_list?.map((link, _index) => (
-                                                            <Text
-                                                                style={{color: Colors.btnColor}}
-                                                                key={_index}
-                                                                onPress={() => {
-                                                                    if (link?.url) {
-                                                                        jump(link?.url);
-                                                                        bottomModal.current.hide();
-                                                                    }
-                                                                }}>
-                                                                {link?.text}
+                                                    <Text style={[styles.light_text, {flex: 1}]}>
+                                                        {item?.desc}
+                                                        <Text
+                                                            style={{
+                                                                color: signOpen?.includes(item?.poid)
+                                                                    ? Colors.lightBlackColor
+                                                                    : Colors.btnColor,
+                                                            }}
+                                                            onPress={() => {
+                                                                handleSignOpen(item?.poid);
+                                                            }}>
+                                                            {item?.link_name}
+                                                        </Text>
+                                                        {signOpen?.includes(item?.poid) && (
+                                                            <Text>
+                                                                {item?.link_list?.map((link, _index) => (
+                                                                    <Text
+                                                                        style={{color: Colors.btnColor}}
+                                                                        key={_index}
+                                                                        onPress={() => {
+                                                                            if (link?.url) {
+                                                                                jump(link?.url);
+                                                                                bottomModal.current.hide();
+                                                                            }
+                                                                        }}>
+                                                                        {link?.text}
+                                                                        {item?.link_list?.length > 1 &&
+                                                                        _index == item?.link_list?.length - 2
+                                                                            ? '和'
+                                                                            : _index == item?.link_list?.length - 1
+                                                                            ? ''
+                                                                            : '、'}
+                                                                    </Text>
+                                                                ))}
+                                                                {item?.desc_end ? (
+                                                                    <Text style={styles.light_text}>
+                                                                        {item?.desc_end}
+                                                                    </Text>
+                                                                ) : null}
                                                             </Text>
-                                                        ))}
-                                                </Text>
+                                                        )}
+                                                    </Text>
+                                                </View>
                                             </View>
                                         );
                                     })}
@@ -1482,7 +1508,7 @@ const styles = StyleSheet.create({
         right: text(26),
         top: px(14),
     },
-    light_text: {fontSize: px(13), lineHeight: px(17)},
+    light_text: {fontSize: px(13), lineHeight: px(17), color: Colors.lightBlackColor},
     border_bottom: {
         borderColor: Colors.lineColor,
         borderBottomWidth: 0.5,
