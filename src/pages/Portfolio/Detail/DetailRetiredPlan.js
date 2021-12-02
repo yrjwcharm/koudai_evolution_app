@@ -626,15 +626,25 @@ export default function DetailRetiredPlan({navigation, route}) {
                             })}
                         </View>
                     </View>
-                    <Text
-                        style={{
-                            color: '#B8C1D3',
-                            paddingHorizontal: text(16),
-                            lineHeight: text(18),
-                            fontSize: text(11),
-                        }}>
-                        {data.tip}
-                    </Text>
+                    <View style={{paddingHorizontal: Space.padding}}>
+                        <Text style={styles.bottomTip}>
+                            {data?.advisor_tip?.text}
+                            {data?.advisor_tip?.agreements
+                                ? data?.advisor_tip?.agreements?.map((item, index) => {
+                                      return (
+                                          <Text
+                                              key={index}
+                                              style={{color: Colors.btnColor}}
+                                              onPress={() => {
+                                                  jump(item.url);
+                                              }}>
+                                              {item?.title}
+                                          </Text>
+                                      );
+                                  })
+                                : null}
+                        </Text>
+                    </View>
                     <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             ) : null}
@@ -786,5 +796,10 @@ const styles = StyleSheet.create({
         fontSize: text(26),
         lineHeight: text(37),
         color: Colors.placeholderColor,
+    },
+    bottomTip: {
+        fontSize: Font.textSm,
+        lineHeight: text(18),
+        color: '#B8C1D3',
     },
 });

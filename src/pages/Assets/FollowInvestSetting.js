@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 18:49:22
+ * @LastEditTime: 2021-12-02 19:06:30
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -64,7 +64,7 @@ export default ({navigation, route}) => {
      * @return {*}
      */
     const changeInput = (value) => {
-        let _amount = onlyNumber(value, true) ? parseInt(onlyNumber(value, true)) : 0;
+        let _amount = onlyNumber(value, true) ? parseInt(onlyNumber(value, true)) : '';
         if (_amount < data.min_amount) {
             setErrMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
         } else if (_amount > data.max_amount) {

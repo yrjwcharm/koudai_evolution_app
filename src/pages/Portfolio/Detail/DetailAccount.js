@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: dx
+ * @LastEditors: yhc
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -605,7 +605,23 @@ export default function DetailAccount({route, navigation}) {
                         })}
                     </View>
                     <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
-                        <Html style={styles.bottomTip} html={data.tip} />
+                        <Text style={styles.bottomTip}>
+                            {data?.advisor_tip?.text}
+                            {data?.advisor_tip?.agreements
+                                ? data?.advisor_tip?.agreements?.map((item, index) => {
+                                      return (
+                                          <Text
+                                              key={index}
+                                              style={{color: Colors.btnColor}}
+                                              onPress={() => {
+                                                  jump(item.url);
+                                              }}>
+                                              {item?.title}
+                                          </Text>
+                                      );
+                                  })
+                                : null}
+                        </Text>
                     </View>
                     <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
