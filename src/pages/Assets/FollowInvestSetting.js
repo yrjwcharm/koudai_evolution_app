@@ -2,7 +2,7 @@
  * @Date: 2021-11-26 10:59:14
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 20:19:18
+ * @LastEditTime: 2021-12-02 21:23:08
  * @Description: 牛人跟投设置
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -36,16 +36,14 @@ export default ({navigation, route}) => {
             http.get('/niuren/follow_invest/setting/info/20210801', {poid: route.params?.poid}).then((res) => {
                 if (res.code === '000000') {
                     setOpen(res.result.status);
-                    setAmount(
-                        res.result?.amount > res.result?.pay_methods[0]?.left_amount
-                            ? res.result?.pay_methods[0]?.left_amount
-                            : res.result?.amount
-                    );
+                    setAmount(res.result?.amount);
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
+                    changeInput(res.result?.amount, res.result.pay_methods[0]);
                     navigation.setOptions({title: res.result.title || '设置'});
                 }
             });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [navigation, route.params])
     );
 
@@ -58,14 +56,21 @@ export default ({navigation, route}) => {
             setAmount(parseFloat(inputVal));
         }
     };
+    const changeBankCard = (select) => {
+        setSelectedBank(select);
+        changeInput(amount, select);
+    };
     /**
      * @description: 金额输入
      * @param {*}
      * @return {*}
      */
-    const changeInput = (value) => {
+    const changeInput = (value, _bank) => {
+        let bank = _bank || selectedBank;
         if (value < data.min_amount) {
             setErrMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
+        } else if (value > bank.single_amount) {
+            setErrMes(`最大购买金额${formaNum(bank.single_amount, 'int')}元`);
         } else if (value > data.max_amount) {
             setErrMes(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
@@ -115,6 +120,7 @@ export default ({navigation, route}) => {
                             onPress={() => {
                                 setInputVal(`${amount}`);
                                 inputModal.current?.show?.();
+                                // changeInput(`${amount}`);
                                 // setTimeout(() => {
                                 //     inputRef.current?.focus?.();
                                 // }, 200);
@@ -123,6 +129,7 @@ export default ({navigation, route}) => {
                             <Text style={styles.label}>{'跟投金额(元)'}</Text>
                             <Text style={styles.amount}>{amount}</Text>
                         </TouchableOpacity>
+                        {errMes ? <Text style={{color: Colors.red, top: px(-12)}}>{errMes}</Text> : null}
                     </View>
                     <View style={{paddingHorizontal: Space.padding}}>
                         <Text style={styles.desc}>{data.desc}</Text>
@@ -191,7 +198,7 @@ export default ({navigation, route}) => {
             </InputModal>
             <BankCardModal
                 data={data.pay_methods || []}
-                onDone={(select) => setSelectedBank(select)}
+                onDone={changeBankCard}
                 ref={bankModal}
                 select={data?.pay_methods?.findIndex?.((item) => item.pay_method === selectedBank.pay_method) || 0}
             />
