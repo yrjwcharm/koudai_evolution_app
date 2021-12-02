@@ -19,7 +19,7 @@ axios.defaults.transformRequest = [
         return ret;
     },
 ];
-
+console.log('object');
 // // axios拦截器
 axios.interceptors.request.use(
     async (config) => {
@@ -35,11 +35,12 @@ axios.interceptors.request.use(
             uid = result.uid;
             utid = result.utid;
         }
+        global.did = DeviceInfo.getUniqueId();
         config.headers.Authorization = token;
         config.params = {
             app: '4000',
             ts: new Date().getTime(),
-            did: DeviceInfo.getUniqueId(),
+            did: global.did,
             uid,
             utid,
             chn: global.channel,
