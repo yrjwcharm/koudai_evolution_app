@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
@@ -80,7 +80,6 @@ export default (props) => {
                 <View style={styles.blockStyle}>
                     <Text style={styles.blockTitle}>{data?.percentage?.title}</Text>
                     <Html html={data?.percentage?.explain} style={styles.blockDesc} />
-
                     <FastImage
                         style={{
                             width: text(243),
