@@ -78,8 +78,8 @@ export default ({navigation, route}) => {
             setErr('');
         } else if (value < data.min_amount) {
             setErr(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
-        } else if (bank.pay_method !== 'wallet' && value > bank.single_amount) {
-            setErr(`单笔限额${formaNum(bank.single_amount, 'int')}元`);
+        } else if (bank.pay_method !== 'wallet' && value > bank.day_limit) {
+            setErr(`最大单日购买金额为${formaNum(bank.day_limit, 'int')}元`);
         } else if (value > data.max_amount) {
             setErr(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
