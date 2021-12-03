@@ -40,8 +40,14 @@ export default ({navigation, route}) => {
                     setAmount(res.result?.amount);
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
-                    // 用此处理主错误提示和下弹框提示
-                    changeInput(res.result?.amount, res.result.pay_methods[0], setErrMainMes);
+                    // 初始的默认金额---使用后端返回的默认银行卡的单日限额 和 默认金额 中的最小值
+                    let defaultAmount = res.result?.amount;
+                    if (res.result.pay_methods[0].pay_method !== 'wallet') {
+                        // 魔方宝不参入判断
+                        defaultAmount = Math.min(res.result?.amount, res.result.pay_methods[0].day_limit);
+                    }
+                    // 用此处理主界面错误提示和下弹框提示
+                    changeInput(defaultAmount, res.result.pay_methods[0], setErrMainMes);
                     navigation.setOptions({title: res.result.title || '设置'});
                 }
             });
