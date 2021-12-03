@@ -12,14 +12,15 @@ import {useFocusEffect} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
-import {BankCardModal, InputModal} from '../../components/Modal';
+import {BankCardModal, Modal, InputModal} from '../../components/Modal';
 import Loading from '../Portfolio/components/PageLoading';
 import {formaNum, onlyNumber, px} from '../../utils/appUtil';
 import http from '../../services';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
+import {useSelector} from 'react-redux';
 
-export default ({navigation, route}) => {
+const FollowInvestSetting = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [open, setOpen] = useState(true);
@@ -224,6 +225,36 @@ export default ({navigation, route}) => {
         </>
     );
 };
+
+function WithHooks(props) {
+    const jump = useJump();
+    const userInfo = useSelector((state) => state.userInfo);
+    useFocusEffect(
+        React.useCallback(() => {
+            const {anti_pop} = userInfo.toJS();
+            if (anti_pop) {
+                Modal.show({
+                    title: anti_pop.title,
+                    content: anti_pop.content,
+                    confirm: true,
+                    isTouchMaskToClose: false,
+                    cancelCallBack: () => {
+                        props.navigation.goBack();
+                    },
+                    confirmCallBack: () => {
+                        jump(anti_pop.confirm_action?.url);
+                    },
+                    cancelText: anti_pop.cancel_action?.text,
+                    confirmText: anti_pop.confirm_action?.text,
+                });
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, [userInfo])
+    );
+    return <FollowInvestSetting {...props} />;
+}
+
+export default WithHooks;
 
 const styles = StyleSheet.create({
     container: {
