@@ -90,14 +90,14 @@ export default function FixedPlan(props) {
 
                             {data?.fix_records?.list?.length > 0 ? (
                                 <ScrollView style={{marginTop: text(28)}}>
-                                    <View style={[Style.flexBetween, styles.border_sty]}>
+                                    <View style={[Style.flexRow, styles.border_sty]}>
                                         <Text style={styles.desc_sty}>{data?.fix_records?.header?.date}</Text>
                                         <Text style={styles.desc_sty}>{data?.fix_records?.header?.amount}</Text>
                                         <Text style={styles.desc_sty}>{data?.fix_records?.header?.status}</Text>
                                     </View>
                                     {data?.fix_records?.list.map((_l, _d) => {
                                         return (
-                                            <View style={[Style.flexBetween, {marginTop: text(8)}]} key={_d + '_l'}>
+                                            <View style={[Style.flexRow, {marginTop: text(8)}]} key={_d + '_l'}>
                                                 <Text style={[styles.desc_sty, {fontFamily: Font.numFontFamily}]}>
                                                     {_l.date}
                                                 </Text>
@@ -187,6 +187,8 @@ const styles = StyleSheet.create({
     desc_sty: {
         color: Colors.lightBlackColor,
         fontSize: Font.textH3,
+        textAlign: 'center',
+        width: '33.3%',
     },
     border_sty: {
         borderBottomWidth: Space.borderWidth,
