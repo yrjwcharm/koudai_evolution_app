@@ -24,7 +24,8 @@ export default ({navigation, route}) => {
     const [data, setData] = useState({});
     const [open, setOpen] = useState(true);
     const [amount, setAmount] = useState('');
-    const [errMes, setErrMes] = useState('');
+    const [errMainMes, setErrMainMes] = useState('');
+    const [errBottomMes, setErrBottomMes] = useState('');
     const [inputVal, setInputVal] = useState('');
     const inputModal = useRef();
     const inputRef = useRef();
@@ -39,7 +40,8 @@ export default ({navigation, route}) => {
                     setAmount(res.result?.amount);
                     setSelectedBank(res.result.pay_methods[0]);
                     setData(res.result);
-                    changeInput(res.result?.amount, res.result.pay_methods[0]);
+                    // 用此处理主错误提示和下弹框提示
+                    changeInput(res.result?.amount, res.result.pay_methods[0], setErrMainMes);
                     navigation.setOptions({title: res.result.title || '设置'});
                 }
             });
@@ -51,32 +53,40 @@ export default ({navigation, route}) => {
         setOpen((prev) => !prev);
     };
     const confirmClick = () => {
-        if (!errMes) {
+        if (!errBottomMes) {
             inputModal.current.hide();
-            setAmount(parseFloat(inputVal));
+            let val = inputVal ? parseFloat(inputVal) : '';
+            changeInput(val, null, setErrMainMes);
+            setAmount(val);
         }
     };
     const changeBankCard = (select) => {
         setSelectedBank(select);
-        changeInput(amount, select);
+        changeInput(amount, select, setErrMainMes);
     };
     /**
      * @description: 金额输入
      * @param {*}
      * @return {*}
      */
-    const changeInput = (value, _bank) => {
+    const changeInput = (value, _bank, setErr) => {
+        // 格式化
+        value = value ? value + '' : '';
         let bank = _bank || selectedBank;
-        if (value < data.min_amount) {
-            setErrMes(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
-        } else if (value > bank.single_amount) {
-            setErrMes(`最大购买金额${formaNum(bank.single_amount, 'int')}元`);
+        // 可以清空金额
+        if (value === '') {
+            setErr('');
+        } else if (value < data.min_amount) {
+            setErr(`最小起购金额${formaNum(data.min_amount, 'int')}元`);
+        } else if (bank.pay_method !== 'wallet' && value > bank.single_amount) {
+            setErr(`单笔限额${formaNum(bank.single_amount, 'int')}元`);
         } else if (value > data.max_amount) {
-            setErrMes(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
+            setErr(`最大购买金额${formaNum(data.max_amount, 'int')}元`);
         } else {
-            setErrMes('');
+            setErr('');
         }
-        setInputVal(onlyNumber(value));
+        // 不一样则设置
+        value !== inputVal && setInputVal(onlyNumber(value));
     };
     const onSave = () => {
         http.post('/niuren/follow_invest/setting/modify/20210801', {
@@ -118,8 +128,8 @@ export default ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={1}
                             onPress={() => {
-                                setInputVal(`${amount}`);
                                 inputModal.current?.show?.();
+                                changeInput(amount, null, setErrBottomMes);
                                 // changeInput(`${amount}`);
                                 // setTimeout(() => {
                                 //     inputRef.current?.focus?.();
@@ -129,7 +139,7 @@ export default ({navigation, route}) => {
                             <Text style={styles.label}>{'跟投金额(元)'}</Text>
                             <Text style={styles.amount}>{amount}</Text>
                         </TouchableOpacity>
-                        {errMes ? <Text style={{color: Colors.red, top: px(-12)}}>{errMes}</Text> : null}
+                        {errMainMes ? <Text style={{color: Colors.red, top: px(-12)}}>{errMainMes}</Text> : null}
                     </View>
                     <View style={{paddingHorizontal: Space.padding}}>
                         <Text style={styles.desc}>{data.desc}</Text>
@@ -164,6 +174,7 @@ export default ({navigation, route}) => {
                     <Button
                         onPress={onSave}
                         style={{marginTop: px(40), marginHorizontal: Space.marginAlign}}
+                        disabled={!!errMainMes || !amount}
                         title={'保存'}
                     />
                 </ScrollView>
@@ -178,7 +189,7 @@ export default ({navigation, route}) => {
                         ref={inputRef}
                         clearButtonMode={'never'}
                         keyboardType="numeric"
-                        onChangeText={changeInput}
+                        onChangeText={(val) => changeInput(val, null, setErrBottomMes)}
                         style={styles.inputStyle}
                         value={inputVal}
                     />
@@ -188,13 +199,15 @@ export default ({navigation, route}) => {
                             activeOpacity={0.8}
                             onPress={() => {
                                 setInputVal('');
-                                setErrMes('');
+                                setErrBottomMes('');
                             }}>
                             <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(16)} />
                         </TouchableOpacity>
                     )}
                 </View>
-                {errMes ? <Text style={{color: Colors.red, top: px(-16), left: px(16)}}>{errMes}</Text> : null}
+                {errBottomMes ? (
+                    <Text style={{color: Colors.red, top: px(-16), left: px(16)}}>{errBottomMes}</Text>
+                ) : null}
             </InputModal>
             <BankCardModal
                 data={data.pay_methods || []}
