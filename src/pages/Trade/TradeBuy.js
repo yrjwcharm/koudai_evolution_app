@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-29 17:10:40
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-06 15:08:47
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -92,6 +92,7 @@ class TradeBuy extends Component {
     };
     init_timer = null;
     init = (_type) => {
+        console.log(this.props);
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
         if (this.init_timer) clearTimeout(this.init_timer);
@@ -296,7 +297,10 @@ class TradeBuy extends Component {
                     // 您当日剩余可用额度为
                     this.setState({
                         buyBtnCanClick: false,
-                        errTip: `您当日剩余可用额度为${selectCard.left_amount}元，推荐使用大额极速购`,
+                        // po_ver为0代表盈米
+                        errTip: `您当日剩余可用额度为${selectCard.left_amount}元${
+                            this.props.po_ver == 0 ? '' : ' ，推荐使用大额极速购'
+                        }`,
                         mfbTip: false,
                     });
                 } else if (_amount > selectCard.single_amount) {
@@ -1128,7 +1132,7 @@ function WithHooks(props) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [userInfo])
     );
-    return <TradeBuy {...props} isFocused={isFocused} jump={jump} />;
+    return <TradeBuy {...props} isFocused={isFocused} po_ver={userInfo.toJS()?.po_ver} jump={jump} />;
 }
 const styles = StyleSheet.create({
     title: {

@@ -2,7 +2,7 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-18 17:08:45
+ * @LastEditTime: 2021-12-06 15:34:00
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -18,7 +18,7 @@ import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
 import {BankCardModal, Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
-
+import {PageModal} from '../../components/Modal';
 const AddBankCard = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const [second, setSecond] = useState(0);
@@ -38,6 +38,7 @@ const AddBankCard = ({navigation, route}) => {
     const msgSeq = useRef('');
     const orderNo = useRef('');
     const [aggrement, setAggrement] = useState({});
+    const signModal = useRef(null);
     const onInputCardNum = useCallback(
         (value) => {
             if (value && value.length >= 12) {
@@ -239,80 +240,91 @@ const AddBankCard = ({navigation, route}) => {
         } else {
             navigation.setOptions({title: '更换绑定银行卡'});
         }
+        signModal.current?.show();
         return () => {
             clearInterval(timerRef.current);
         };
     }, [navigation, route]);
     return (
-        <ScrollView style={styles.container}>
-            <BankCardModal
-                data={bankList}
-                onDone={onSelectBank}
-                ref={bankModal}
-                select={bankList?.findIndex((item) => item.bank_name === bankName)}
-                style={{height: text(500)}}
-                title={'请选择银行'}
-                type={'hidden'}
-            />
-            <InputView
-                clearButtonMode={'while-editing'}
-                keyboardType={'number-pad'}
-                maxLength={23}
-                onChangeText={onInputCardNum}
-                placeholder={'请输入您的银行卡号'}
-                style={styles.input}
-                title={'银行卡号'}
-                value={cardNum}
-            />
-            <InputView
-                clearButtonMode={'while-editing'}
-                editable={false}
-                onPress={() => {
-                    global.LogTool('click', 'chooseBank');
-                    bankModal.current.show();
-                }}
-                placeholder={'请选择银行'}
-                style={styles.input}
-                textContentType={'newPassword'}
-                title={'银行名称'}
-                value={bankName}>
-                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-            </InputView>
-            <InputView
-                clearButtonMode={'while-editing'}
-                keyboardType={'phone-pad'}
-                maxLength={11}
-                onChangeText={(value) => setPhone(value.replace(/\D/g, ''))}
-                placeholder={'请输入您的银行预留手机号'}
-                style={styles.input}
-                title={'手机号'}
-                value={phone}
-            />
-            <InputView
-                clearButtonMode={'while-editing'}
-                keyboardType={'number-pad'}
-                maxLength={6}
-                onChangeText={(value) => setCode(value.replace(/\D/g, ''))}
-                placeholder={'请输入验证码'}
-                style={styles.input}
-                textContentType={'telephoneNumber'}
-                title={'验证码'}
-                value={code}>
-                <Text style={styles.inputRightText} onPress={getCode}>
-                    {codeText}
+        <>
+            <ScrollView style={styles.container}>
+                <BankCardModal
+                    data={bankList}
+                    onDone={onSelectBank}
+                    ref={bankModal}
+                    select={bankList?.findIndex((item) => item.bank_name === bankName)}
+                    style={{height: text(500)}}
+                    title={'请选择银行'}
+                    type={'hidden'}
+                />
+                <InputView
+                    clearButtonMode={'while-editing'}
+                    keyboardType={'number-pad'}
+                    maxLength={23}
+                    onChangeText={onInputCardNum}
+                    placeholder={'请输入您的银行卡号'}
+                    style={styles.input}
+                    title={'银行卡号'}
+                    value={cardNum}
+                />
+                <InputView
+                    clearButtonMode={'while-editing'}
+                    editable={false}
+                    onPress={() => {
+                        global.LogTool('click', 'chooseBank');
+                        bankModal.current.show();
+                    }}
+                    placeholder={'请选择银行'}
+                    style={styles.input}
+                    textContentType={'newPassword'}
+                    title={'银行名称'}
+                    value={bankName}>
+                    <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                </InputView>
+                <InputView
+                    clearButtonMode={'while-editing'}
+                    keyboardType={'phone-pad'}
+                    maxLength={11}
+                    onChangeText={(value) => setPhone(value.replace(/\D/g, ''))}
+                    placeholder={'请输入您的银行预留手机号'}
+                    style={styles.input}
+                    title={'手机号'}
+                    value={phone}
+                />
+                <InputView
+                    clearButtonMode={'while-editing'}
+                    keyboardType={'number-pad'}
+                    maxLength={6}
+                    onChangeText={(value) => setCode(value.replace(/\D/g, ''))}
+                    placeholder={'请输入验证码'}
+                    style={styles.input}
+                    textContentType={'telephoneNumber'}
+                    title={'验证码'}
+                    value={code}>
+                    <Text style={styles.inputRightText} onPress={getCode}>
+                        {codeText}
+                    </Text>
+                </InputView>
+                {route.params?.action === 'add' && (
+                    <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
+                        <Agreements onChange={(checked) => setCheck(checked)} data={aggrement?.list} />
+                    </View>
+                )}
+                <Button
+                    onPress={submit}
+                    style={styles.btn}
+                    title={route.params?.action === 'add' ? '添加新银行卡' : '更换新银行卡'}
+                />
+            </ScrollView>
+            <PageModal ref={signModal} height={text(600)}>
+                <Text
+                    onPress={() => {
+                        navigation.navigate('Login');
+                    }}>
+                    111
                 </Text>
-            </InputView>
-            {route.params?.action === 'add' && (
-                <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
-                    <Agreements onChange={(checked) => setCheck(checked)} data={aggrement?.list} />
-                </View>
-            )}
-            <Button
-                onPress={submit}
-                style={styles.btn}
-                title={route.params?.action === 'add' ? '添加新银行卡' : '更换新银行卡'}
-            />
-        </ScrollView>
+            </PageModal>
+        </>
     );
 };
 

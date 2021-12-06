@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 16:05:59
+ * @LastEditTime: 2021-12-06 15:22:11
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
         height: height,
         left: left,
         top: top,
+        zIndex: 10,
     },
     mask: {
         backgroundColor: '#000000',
