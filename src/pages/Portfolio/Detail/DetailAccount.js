@@ -181,17 +181,18 @@ export default function DetailAccount({route, navigation}) {
                             <Text style={styles.secondaryTitle}>{data.secondary_title}</Text>
                         </View>
                     ) : null}
-                    <View style={[Style.flexRow, {alignItems: 'flex-end', height: text(94)}]}>
+                    <View style={[Style.flexRow, {height: text(94)}]}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
                                 style={{
                                     ...styles.amount_sty,
                                     fontSize: data.ratio_info?.type == 1 ? px(34) : px(26),
+                                    lineHeight: text(30),
                                 }}
                                 text={data.ratio_info.ratio_val}
                                 type={data.ratio_info?.type}
                             />
-                            <Text style={styles.radio_sty}>{data.ratio_info.ratio_desc}</Text>
+                            <Html html={data?.ratio_info?.ratio_desc} style={styles.radio_sty} />
                         </View>
                         {data.line_drawback && data.low_line === 1 && (
                             <View style={[Style.flexCenter, styles.container_sty]}>
@@ -202,9 +203,7 @@ export default function DetailAccount({route, navigation}) {
                                     ]}>
                                     {data.line_drawback.ratio_val}
                                 </Text>
-                                <Text style={[styles.radio_sty, {marginTop: text(6)}]}>
-                                    {data.line_drawback.ratio_desc}
-                                </Text>
+                                <Html html={data?.line_drawback?.ratio_desc} style={styles.radio_sty} />
                             </View>
                         )}
                         {data.rise_info && (
