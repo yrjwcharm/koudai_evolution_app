@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-01 15:58:17
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-06 10:43:04
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -50,7 +50,6 @@ function App(props) {
     const navigationRef = useRef();
     const routeNameRef = useRef();
     const userInfoRef = useRef({});
-    const imageH = useRef(0);
     const homeShowModal = useRef(true);
     let lastBackPressed = '';
     const onBackAndroid = () => {
@@ -226,7 +225,7 @@ function App(props) {
                 if (res.result.image) {
                     Image.getSize(res.result.image, (w, h) => {
                         const height = Math.floor(h / (w / (res.result.device_width ? deviceWidth : text(280))));
-                        imageH.current = height;
+                        res.result.imgHeight = height || text(375);
                         if (res.result.page) {
                             if (res.result?.page?.includes(navigationRef?.current?.getCurrentRoute()?.name)) {
                                 showModal(res.result);
@@ -301,7 +300,7 @@ function App(props) {
                 imageUrl: modal.image,
                 id: modal.log_id,
                 imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: imageH.current,
+                imgHeight: modal.imgHeight,
                 isTouchMaskToClose: modal.touch_close,
                 confirmCallBack: () => {
                     modal.log_id &&
@@ -336,7 +335,7 @@ function App(props) {
                         source={{uri: modal.image}}
                         style={{
                             width: text(280),
-                            height: imageH.current,
+                            height: modal.imgHeight,
                             borderTopRightRadius: 8,
                             borderTopLeftRadius: 8,
                         }}
@@ -369,7 +368,7 @@ function App(props) {
                 type: 'image',
                 imageUrl: modal.image,
                 imgWidth: modal.device_width ? deviceWidth : 0,
-                imgHeight: imageH.current,
+                imgHeight: modal.imgHeight,
                 isTouchMaskToClose: modal.touch_close,
                 id: modal.log_id,
                 confirmCallBack: () => {
