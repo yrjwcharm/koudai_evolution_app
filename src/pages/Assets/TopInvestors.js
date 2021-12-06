@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 20:02:18
+ * @LastEditTime: 2021-12-06 15:43:26
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -36,7 +36,7 @@ const TopInvestors = ({navigation, route}) => {
     const [signTimer, setSignTimer] = useState(8);
     const signModal = React.useRef(null);
     const show_sign_focus_modal = useRef(false);
-    let intervalt_timer = null;
+    const intervalt_timer = useRef('');
     useFocusEffect(
         useCallback(() => {
             //解决弹窗里跳转 返回再次弹出
@@ -68,12 +68,12 @@ const TopInvestors = ({navigation, route}) => {
             setSignCheck(data?.console?.adviser_sign?.agreement_bottom?.default_agree);
             setSignTimer(data?.console?.adviser_sign?.risk_disclosure?.countdown);
             signModal.current?.show();
-            intervalt_timer = setInterval(() => {
+            intervalt_timer.current = setInterval(() => {
                 setSignTimer((time) => {
                     if (time > 0) {
                         return --time;
                     } else {
-                        intervalt_timer && clearInterval(intervalt_timer);
+                        intervalt_timer.current && clearInterval(intervalt_timer.current);
                         return time;
                     }
                 });
@@ -271,7 +271,7 @@ const TopInvestors = ({navigation, route}) => {
                             title={data?.console?.adviser_sign?.title}
                             onClose={() => {
                                 show_sign_focus_modal.current = false;
-                                intervalt_timer && clearInterval(intervalt_timer);
+                                intervalt_timer.current && clearInterval(intervalt_timer.current);
                             }}>
                             <View style={{flex: 1}}>
                                 {data?.console?.adviser_sign?.desc && (
