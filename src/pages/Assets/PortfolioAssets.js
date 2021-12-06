@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 20:02:04
+ * @LastEditTime: 2021-12-06 15:42:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -71,7 +71,7 @@ export default function PortfolioAssets(props) {
     const [signCheck, setSignCheck] = useState(false);
     const sign_success_jump_url = useRef('');
     const show_sign_focus_modal = useRef(false);
-    let intervalt_timer = null;
+    const intervalt_timer = useRef('');
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
@@ -268,12 +268,12 @@ export default function PortfolioAssets(props) {
                     setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
                     setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
                     show_sign_focus_modal.current = true;
-                    intervalt_timer = setInterval(() => {
+                    intervalt_timer.current = setInterval(() => {
                         setSignTimer((time) => {
                             if (time > 0) {
                                 return --time;
                             } else {
-                                intervalt_timer && clearInterval(intervalt_timer);
+                                intervalt_timer.current && clearInterval(intervalt_timer.current);
                                 return time;
                             }
                         });
@@ -881,7 +881,7 @@ export default function PortfolioAssets(props) {
                         title={card?.adviser_info?.title}
                         onClose={() => {
                             show_sign_focus_modal.current = false;
-                            intervalt_timer && clearInterval(intervalt_timer);
+                            intervalt_timer.current && clearInterval(intervalt_timer.current);
                         }}>
                         <View style={{flex: 1}}>
                             {card?.adviser_info?.desc && <Notice content={{content: card?.adviser_info?.desc}} />}
