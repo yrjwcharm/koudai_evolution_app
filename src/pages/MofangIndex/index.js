@@ -239,15 +239,7 @@ const Index = (props) => {
                                     }}>
                                     {allMsg ? (
                                         <View style={[styles.point_sty, Style.flexCenter]}>
-                                            <Text
-                                                style={{
-                                                    color: '#fff',
-                                                    fontSize: Font.textSm,
-                                                    lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
-                                                    fontFamily: Font.numFontFamily,
-                                                }}>
-                                                {allMsg > 99 ? '99+' : allMsg}
-                                            </Text>
+                                            <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
                                         </View>
                                     ) : null}
                                     <FastImage
@@ -1126,5 +1118,12 @@ const styles = StyleSheet.create({
         borderRadius: px(22),
         width: px(263),
         height: px(40),
+    },
+    point_text: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
     },
 });

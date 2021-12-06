@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 21:27:55
+ * @LastEditTime: 2021-12-06 18:31:20
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -742,15 +742,7 @@ function HomeScreen({navigation, route}) {
                                 style={{position: 'relative'}}>
                                 {newMes ? (
                                     <View style={[styles.point_sty, Style.flexCenter]}>
-                                        <Text
-                                            style={{
-                                                color: '#fff',
-                                                fontSize: Font.textSm,
-                                                lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
-                                                fontFamily: Font.numFontFamily,
-                                            }}>
-                                            {newMes > 99 ? '99+' : newMes}
-                                        </Text>
+                                        <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
                                     </View>
                                 ) : null}
                                 <Image
@@ -1512,6 +1504,13 @@ const styles = StyleSheet.create({
         borderColor: Colors.lineColor,
         borderBottomWidth: 0.5,
         paddingVertical: px(12),
+    },
+    point_text: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
     },
 });
 export default HomeScreen;

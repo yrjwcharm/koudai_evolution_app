@@ -2,14 +2,14 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:22:11
+ * @LastEditTime: 2021-12-06 17:43:01
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
  * Created by sybil052 on 2017/6/19.
  */
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Animated, Easing, Dimensions, TouchableOpacity, BackHandler} from 'react-native';
 import {constants} from './util';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
@@ -36,6 +36,18 @@ export default class PageModal extends Component {
         isTouchMaskToClose: true, //点击蒙层是否能关闭
         onClose: () => {}, //关闭的回掉
         confirmClick: () => {}, //确认按钮的回掉
+    };
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+    }
+    //安卓返回按钮关闭弹窗
+    onBackAndroid = () => {
+        if (!this.state.hide) {
+            this.cancel();
+            return true;
+        } else {
+            return false;
+        }
     };
     render() {
         const {header, title, sub_title, confirmText, children, style, isTouchMaskToClose, confirmClick} = this.props;
@@ -92,8 +104,9 @@ export default class PageModal extends Component {
         }
     }
 
-    componentDidMount() {}
-    componentWillUnmount() {}
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+    }
 
     //显示动画
     in = () => {
@@ -195,6 +208,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: px(16),
         color: '#333333',
-        fontWeight: '500',
+        fontWeight: '700',
     },
 });
