@@ -2,23 +2,28 @@
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:34:00
+ * @LastEditTime: 2021-12-07 17:27:07
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil.js';
-import {Colors, Font, Space} from '../../common/commonStyle';
+import {px as text, px} from '../../utils/appUtil.js';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services/index.js';
 import {formCheck} from '../../utils/validator';
 import InputView from './components/input';
 import Agreements from '../../components/Agreements';
 import {Button} from '../../components/Button';
 import Toast from '../../components/Toast';
-import {BankCardModal, Modal} from '../../components/Modal';
+import {BankCardModal, Modal, PageModal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
-import {PageModal} from '../../components/Modal';
+import Notice from '../../components/Notice';
+import HTML from '../../components/RenderHtml';
+import CheckBox from '../../components/CheckBox';
+import {useJump} from '../../components/hooks';
+import _ from 'lodash';
+import {useIsFocused} from '@react-navigation/core';
 const AddBankCard = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const [second, setSecond] = useState(0);
@@ -31,6 +36,7 @@ const AddBankCard = ({navigation, route}) => {
     const bankCode = useRef('');
     const [phone, setPhone] = useState('');
     const [code, setCode] = useState('');
+    const [signData, setSignData] = useState(null);
     const subBtnClick = useRef(true);
     const bankModal = useRef(null);
     const [check, setCheck] = useState(true);
@@ -39,6 +45,10 @@ const AddBankCard = ({navigation, route}) => {
     const orderNo = useRef('');
     const [aggrement, setAggrement] = useState({});
     const signModal = useRef(null);
+    const [signTimer, setSignTimer] = useState(8);
+    const [signSelectData, setSignSelectData] = useState([]);
+    const intervalt_timer = useRef('');
+    const jump = useJump();
     const onInputCardNum = useCallback(
         (value) => {
             if (value && value.length >= 12) {
@@ -210,7 +220,24 @@ const AddBankCard = ({navigation, route}) => {
                             subBtnClick.current = true;
                         },
                     });
-                    navigation.goBack();
+                    if (!signData) {
+                        navigation.goBack();
+                    } else {
+                        //签约
+                        setTimeout(() => {
+                            intervalt_timer.current = setInterval(() => {
+                                setSignTimer((time) => {
+                                    if (time > 0) {
+                                        return --time;
+                                    } else {
+                                        intervalt_timer.current && clearInterval(intervalt_timer.current);
+                                        return time;
+                                    }
+                                });
+                            }, 1000);
+                            signModal.current?.show();
+                        }, 100);
+                    }
                 } else {
                     Toast.show(res.message, {
                         onHidden: () => {
@@ -220,8 +247,50 @@ const AddBankCard = ({navigation, route}) => {
                 }
             });
         }
-    }, [bankName, cardNum, check, code, phone, navigation, route.params]);
-
+    }, [bankName, cardNum, check, code, phone, navigation, route.params, signData]);
+    //checkBox 选中
+    const checkBoxClick = (check, poid) => {
+        //选中
+        if (check) {
+            if (poid) {
+                setSignSelectData((prev) => {
+                    return [...prev, poid];
+                });
+            } else {
+                setSignSelectData((prev) => {
+                    let poids = signData?.plan_list?.map((item) => {
+                        return item.poid;
+                    });
+                    return [...new Set([...prev, ...poids])];
+                });
+            }
+        } else {
+            //非选中
+            if (poid) {
+                setSignSelectData((prev) => {
+                    let data = [...prev];
+                    _.remove(data, function (_poid) {
+                        return _poid === poid;
+                    });
+                    return data;
+                });
+            } else {
+                setSignSelectData([]);
+            }
+        }
+    };
+    //签约
+    const handleSign = () => {
+        http.post('adviser/sign/20210923', {poids: signSelectData}).then((res) => {
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    signModal.current.hide();
+                    navigation.goBack();
+                }, 1000);
+            }
+        });
+    };
     useEffect(() => {
         http.get('/passport/bank_list/20210101', {
             channel: userInfo.toJS().po_ver === 0 ? 'ym' : 'xy',
@@ -240,7 +309,12 @@ const AddBankCard = ({navigation, route}) => {
         } else {
             navigation.setOptions({title: '更换绑定银行卡'});
         }
-        signModal.current?.show();
+        http.get('/adviser/bind/bank/signs/20211206').then((sign) => {
+            if (sign.code == '000000') {
+                setSignData(sign?.result?.countdown);
+                setSignData(sign.result);
+            }
+        });
         return () => {
             clearInterval(timerRef.current);
         };
@@ -316,14 +390,142 @@ const AddBankCard = ({navigation, route}) => {
                     title={route.params?.action === 'add' ? '添加新银行卡' : '更换新银行卡'}
                 />
             </ScrollView>
-            <PageModal ref={signModal} height={text(600)}>
-                <Text
-                    onPress={() => {
-                        navigation.navigate('Login');
+            {signData && (
+                <PageModal
+                    ref={signModal}
+                    height={text(600)}
+                    title={signData?.title}
+                    onClose={() => {
+                        intervalt_timer.current && clearInterval(intervalt_timer.current);
+                        navigation.goBack();
                     }}>
-                    111
-                </Text>
-            </PageModal>
+                    <View style={{flex: 1}}>
+                        {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
+                        <View
+                            style={{
+                                flex: 1,
+                            }}>
+                            <ScrollView
+                                bounces={false}
+                                style={{
+                                    flex: 1,
+                                    paddingHorizontal: text(16),
+                                    paddingTop: text(20),
+                                    borderRadius: px(6),
+                                }}>
+                                {signData?.risk_disclosure_list?.length > 0 &&
+                                signData?.risk_disclosure_list[0]?.title ? (
+                                    <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
+                                        {signData?.risk_disclosure_list[0]?.title}
+                                    </Text>
+                                ) : null}
+                                <View style={styles.sign_scrollview}>
+                                    <ScrollView
+                                        nestedScrollEnabled={true}
+                                        style={{
+                                            flex: 1,
+                                            paddingRight: px(12),
+                                        }}>
+                                        {signData?.risk_disclosure_list
+                                            ? signData?.risk_disclosure_list?.map((item, index) => {
+                                                  return (
+                                                      <HTML
+                                                          html={item?.content}
+                                                          key={index}
+                                                          style={{fontSize: px(13), lineHeight: px(20)}}
+                                                      />
+                                                  );
+                                              })
+                                            : null}
+                                    </ScrollView>
+                                </View>
+                                <View style={[Style.flexBetween, {marginTop: text(12)}, styles.border_bottom]}>
+                                    <View style={Style.flexRow}>
+                                        <CheckBox
+                                            checked={signSelectData?.length == signData?.plan_list?.length}
+                                            style={{marginRight: text(6)}}
+                                            onChange={(value) => {
+                                                checkBoxClick(value);
+                                            }}
+                                        />
+                                        <Text style={{fontSize: text(16), fontWeight: '700'}}>全选</Text>
+                                    </View>
+                                    <Text style={{fontSize: text(16)}}>
+                                        {signSelectData?.length}/{signData?.plan_list?.length}
+                                    </Text>
+                                </View>
+                                <View style={{marginBottom: px(40)}}>
+                                    {signData?.plan_list?.map((item, index) => {
+                                        return (
+                                            <View key={index} style={styles.border_bottom}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: text(16),
+                                                        fontWeight: '700',
+                                                        marginBottom: text(6),
+                                                    }}>
+                                                    {item?.name}
+                                                </Text>
+                                                {item?.adviser_cost_desc ? (
+                                                    <Text style={[styles.light_text, {marginBottom: text(6)}]}>
+                                                        {item.adviser_cost_desc}
+                                                    </Text>
+                                                ) : null}
+                                                <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
+                                                    <CheckBox
+                                                        checked={signSelectData?.includes(item?.poid)}
+                                                        style={{marginRight: text(6)}}
+                                                        onChange={(value) => {
+                                                            checkBoxClick(value, item.poid);
+                                                        }}
+                                                    />
+                                                    <Text style={[styles.light_text, {flex: 1}]}>
+                                                        {item?.desc}
+
+                                                        <Text>
+                                                            {item?.link_list?.map((link, _index) => (
+                                                                <Text
+                                                                    style={{color: Colors.btnColor}}
+                                                                    key={_index}
+                                                                    onPress={() => {
+                                                                        if (link?.url) {
+                                                                            jump(link?.url);
+                                                                        }
+                                                                    }}>
+                                                                    {link?.text}
+                                                                    {item?.link_list?.length > 1 &&
+                                                                    _index == item?.link_list?.length - 2
+                                                                        ? '和'
+                                                                        : _index == item?.link_list?.length - 1
+                                                                        ? ''
+                                                                        : '、'}
+                                                                </Text>
+                                                            ))}
+                                                            {item?.desc_end ? (
+                                                                <Text style={styles.light_text}>{item?.desc_end}</Text>
+                                                            ) : null}
+                                                        </Text>
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </ScrollView>
+                        </View>
+                        {signData?.button ? (
+                            <Button
+                                disabled={signTimer > 0 || !signSelectData?.length > 0}
+                                style={{marginTop: px(12), marginHorizontal: px(16)}}
+                                onPress={_.debounce(handleSign, 500)}
+                                title={
+                                    signTimer > 0 ? signTimer + 's' + signData?.button?.text : signData?.button?.text
+                                }
+                            />
+                        ) : null}
+                    </View>
+                </PageModal>
+            )}
         </>
     );
 };
@@ -345,6 +547,19 @@ const styles = StyleSheet.create({
     btn: {
         marginTop: text(28),
         marginHorizontal: text(20),
+    },
+    light_text: {fontSize: text(13), lineHeight: px(17), color: Colors.lightBlackColor},
+    border_bottom: {
+        borderColor: Colors.lineColor,
+        borderBottomWidth: 0.5,
+        paddingVertical: px(12),
+    },
+    sign_scrollview: {
+        height: px(168),
+        backgroundColor: '#F5F6F8',
+        borderRadius: px(6),
+        padding: px(12),
+        paddingRight: 0,
     },
 });
 
