@@ -2,7 +2,7 @@
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 17:43:01
+ * @LastEditTime: 2021-12-07 17:27:18
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -15,7 +15,6 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {isIphoneX, px} from '../../utils/appUtil';
 const {width, height} = Dimensions.get('window');
 const [left, top] = [0, 0];
-
 export default class PageModal extends Component {
     constructor(props) {
         super(props);
@@ -38,11 +37,11 @@ export default class PageModal extends Component {
         confirmClick: () => {}, //确认按钮的回掉
     };
     componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        // BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
     }
     //安卓返回按钮关闭弹窗
     onBackAndroid = () => {
-        if (!this.state.hide) {
+        if (!this.state.hide && this.props.focused) {
             this.cancel();
             return true;
         } else {
@@ -73,7 +72,7 @@ export default class PageModal extends Component {
                                     {
                                         translateY: this.state.offset.interpolate({
                                             inputRange: [0, 1],
-                                            outputRange: [height, height - this.state.aHeight],
+                                            outputRange: [height, height - this.state.aHeight - px(60)],
                                         }),
                                     },
                                 ],
@@ -105,7 +104,7 @@ export default class PageModal extends Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        // BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
     }
 
     //显示动画
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
         height: height,
     },
     content: {
-        paddingBottom: isIphoneX() ? 34 : 0,
+        paddingBottom: isIphoneX() ? 34 + px(20) : px(20),
         backgroundColor: '#fff',
         minHeight: constants.bottomMinHeight,
         borderTopLeftRadius: constants.borderRadius,
