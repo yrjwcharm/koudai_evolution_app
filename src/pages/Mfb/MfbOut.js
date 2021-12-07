@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 19:04:42
+ * @LastEditTime: 2021-12-07 18:14:40
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -76,6 +76,12 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
+                    if (data.amount - amount < 500) {
+                        return this.setState({
+                            tips: '账户最低持仓金额500元',
+                            enable: false,
+                        });
+                    }
                     return this.setState({
                         tips: '',
                         enable: true,
@@ -89,13 +95,19 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
+                    if (data.amount - amount < 500) {
+                        return this.setState({
+                            tips: '账户最低持仓金额500元',
+                            enable: false,
+                        });
+                    }
                     return this.setState({
                         tips: '',
                         enable: true,
                     });
                 }
             }
-        } else if (amount == 0) {
+        } else if (amount && amount == 0) {
             const tips = '转出金额不能为0';
             this.setState({
                 tips,

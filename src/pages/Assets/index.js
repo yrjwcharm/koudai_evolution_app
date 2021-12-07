@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 18:31:20
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-07 15:57:07
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -41,8 +41,8 @@ import GesturePassword from '../Settings/GesturePassword';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
-import Modal from '../../components/Modal/ModalContainer';
-import {BottomModal} from '../../components/Modal';
+import ModalContainer from '../../components/Modal/ModalContainer';
+import {BottomModal, Modal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
@@ -609,7 +609,7 @@ function HomeScreen({navigation, route}) {
                 {isVisible && (
                     <>
                         {!global.rootSibling && <Mask />}
-                        <Modal
+                        <ModalContainer
                             children={() => (
                                 <View
                                     style={[
@@ -869,11 +869,31 @@ function HomeScreen({navigation, route}) {
                                     activeOpacity={0.8}
                                     onPress={() => {
                                         global.LogTool('assetsIconsStart', 'top_menus', item.id);
-                                        jump(item.url);
+                                        if (item.pop) {
+                                            Modal.show({
+                                                children: () => (
+                                                    <View style={styles.popContentBox}>
+                                                        <Text style={styles.popContent}>{item.pop.content}</Text>
+                                                    </View>
+                                                ),
+                                                confirmCallBack: () => jump(item.pop.confirm?.url),
+                                                confirmText: item.pop.confirm?.text,
+                                                title: item.pop.title,
+                                            });
+                                        } else {
+                                            jump(item.url);
+                                        }
                                     }}
                                     key={`topmenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <View style={{position: 'relative'}}>
+                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                        {item.is_new ? (
+                                            <View style={styles.newMenu}>
+                                                <Text style={styles.contentTagText}>{'新'}</Text>
+                                            </View>
+                                        ) : null}
+                                    </View>
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
                             );
@@ -1280,6 +1300,27 @@ const styles = StyleSheet.create({
         height: text(24),
         marginBottom: text(4),
     },
+    newMenu: {
+        paddingVertical: px(1),
+        paddingHorizontal: px(5),
+        borderRadius: px(9),
+        borderBottomLeftRadius: px(1),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        bottom: px(18),
+        left: px(16),
+    },
+    popContentBox: {
+        marginTop: px(12),
+        marginHorizontal: px(20),
+        marginBottom: px(27),
+    },
+    popContent: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.descColor,
+        textAlign: 'center',
+    },
     topMenuTitle: {
         fontSize: Font.textH3,
         lineHeight: text(17),
@@ -1327,13 +1368,13 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentTitle: {
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentText: {
         fontSize: Font.textH3,
@@ -1357,7 +1398,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: text(22),
         color: Colors.green,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
         textAlign: 'center',
     },
     centerCtrlContent: {
@@ -1382,7 +1423,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     tag: {
         paddingHorizontal: text(6),
@@ -1393,7 +1434,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     po_profit: {
         flex: 1,

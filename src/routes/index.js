@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-29 13:45:40
+ * @LastEditTime: 2021-12-06 15:12:07
  * @Description:路由表
  */
 import React from 'react';
@@ -168,6 +168,7 @@ import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
 import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
+import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -678,6 +679,7 @@ export default function AppStack() {
             <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
             <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
             <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
+            <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

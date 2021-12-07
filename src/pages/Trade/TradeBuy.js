@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-07 11:45:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-07 16:11:53
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -92,7 +92,7 @@ class TradeBuy extends Component {
     };
     init_timer = null;
     init = (_type) => {
-        console.log(this.props);
+        // console.log(this.props);
         this.setState({bankSelectIndex: 0});
         const {type, poid} = this.state;
         if (this.init_timer) clearTimeout(this.init_timer);

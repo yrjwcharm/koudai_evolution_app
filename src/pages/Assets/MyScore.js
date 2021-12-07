@@ -1,13 +1,12 @@
 /*
  * @Date: 2021-02-02 16:20:54
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-20 18:19:02
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-07 19:06:37
  * @Description: 我的魔分
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Image from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -44,8 +43,32 @@ const MyScore = ({navigation, route}) => {
                 StatusBar.setBarStyle('light-content');
                 setData(res.result);
                 setRefreshing(false);
+                navigation.setOptions({
+                    title: res.result.title || '我的魔分',
+                    headerBackImage: () => {
+                        return (
+                            <Feather
+                                name="chevron-left"
+                                size={30}
+                                color={'#fff'}
+                                style={{marginLeft: Platform.select({ios: 10, android: 0})}}
+                            />
+                        );
+                    },
+                    headerRight: () => (
+                        <TouchableOpacity
+                            style={styles.detailCon}
+                            onPress={() => {
+                                global.LogTool('click', 'scoreDetail');
+                                navigation.navigate(res.result.top_button?.url || 'ScoreDetail');
+                            }}>
+                            <Text style={styles.detail}>{res.result.top_button?.text || '魔分明细'}</Text>
+                        </TouchableOpacity>
+                    ),
+                });
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onWithdraw = () => {
@@ -92,31 +115,6 @@ const MyScore = ({navigation, route}) => {
             };
         }, [init])
     );
-    useEffect(() => {
-        navigation.setOptions({
-            title: data.title || '我的魔分',
-            headerBackImage: () => {
-                return (
-                    <Feather
-                        name="chevron-left"
-                        size={30}
-                        color={'#fff'}
-                        style={{marginLeft: Platform.select({ios: 10, android: 0})}}
-                    />
-                );
-            },
-            headerRight: () => (
-                <TouchableOpacity
-                    style={styles.detailCon}
-                    onPress={() => {
-                        global.LogTool('click', 'scoreDetail');
-                        navigation.navigate(data.top_button?.url || 'ScoreDetail');
-                    }}>
-                    <Text style={styles.detail}>{data.top_button?.text || '魔分明细'}</Text>
-                </TouchableOpacity>
-            ),
-        });
-    }, []);
 
     return (
         <View style={styles.container}>
