@@ -194,7 +194,7 @@ export default function DetailAccount({route, navigation}) {
                             />
                             <Html html={data?.ratio_info?.ratio_desc} style={styles.radio_sty} />
                         </View>
-                        {data.line_drawback && data.low_line === 1 && (
+                        {data.line_drawback && (
                             <View style={[Style.flexCenter, styles.container_sty]}>
                                 <Text
                                     style={[
@@ -222,7 +222,7 @@ export default function DetailAccount({route, navigation}) {
                             </View>
                         )}
                     </View>
-                    {data.low_line === 1 && (
+                    {data.tags ? (
                         <View style={{backgroundColor: '#fff'}}>
                             <View style={[Style.flexRowCenter, styles.tags]}>
                                 {data.tags?.map((tag, index) => {
@@ -234,7 +234,7 @@ export default function DetailAccount({route, navigation}) {
                                 })}
                             </View>
                         </View>
-                    )}
+                    ) : null}
                     <RenderChart lowLine={data.low_line} chartData={chartData} chart={chart} type={type} />
 
                     <View
@@ -270,7 +270,7 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-                    {chartData?.yield_info?.remark && (data.low_line !== 1 || type !== 1) && (
+                    {chartData?.yield_info?.remark && type !== 1 && (
                         <View
                             style={{
                                 paddingBottom: text(20),
@@ -304,7 +304,7 @@ export default function DetailAccount({route, navigation}) {
                                     }}
                                 />
                             )}
-                            {data.low_line === 1 && data.line_info ? (
+                            {data.line_info ? (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
                                     onPress={() => {
@@ -337,26 +337,30 @@ export default function DetailAccount({route, navigation}) {
                     )}
 
                     {/* 底线 */}
-                    {data.low_line === 1 && type === 1 && (
+                    {type === 1 && (
                         <View style={styles.line_con}>
                             {data.line_info ? (
                                 <>
-                                    <View style={styles.lowLineBox}>
-                                        {data.line_info?.line_desc?.title ? (
-                                            <Text style={styles.line_desc_title}>
-                                                {data.line_info?.line_desc?.title}
-                                            </Text>
-                                        ) : null}
-                                        <Html
-                                            style={{
-                                                fontSize: Font.textH3,
-                                                lineHeight: text(19),
-                                                color: Colors.descColor,
-                                                textAlign: 'justify',
-                                            }}
-                                            html={data.line_info?.line_desc?.desc}
-                                        />
-                                    </View>
+                                    {data.line_info?.line_desc?.title ? (
+                                        <View style={styles.lowLineBox}>
+                                            {data.line_info?.line_desc?.title ? (
+                                                <Text style={styles.line_desc_title}>
+                                                    {data.line_info?.line_desc?.title}
+                                                </Text>
+                                            ) : null}
+                                            {data.line_info?.line_desc?.desc ? (
+                                                <Html
+                                                    style={{
+                                                        fontSize: Font.textH3,
+                                                        lineHeight: text(19),
+                                                        color: Colors.descColor,
+                                                        textAlign: 'justify',
+                                                    }}
+                                                    html={data.line_info?.line_desc?.desc}
+                                                />
+                                            ) : null}
+                                        </View>
+                                    ) : null}
                                     <Text
                                         style={[
                                             styles.bottomTip,

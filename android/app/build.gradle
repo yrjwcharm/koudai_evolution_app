@@ -155,7 +155,7 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 63001
+        versionCode 63100
         versionName '6.3.1'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
