@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:10:15
- * @LastEditTime: 2021-11-16 17:34:35
+ * @LastEditTime: 2021-12-06 20:46:35
  * @LastEditors: yhc
  * @Description: 底部背书
  * @FilePath: /koudai_evolution_app/src/components/BottomDesc.js
@@ -50,7 +50,7 @@ const BottomDesc = (props) => {
             ) : null}
             <View style={styles.item}>
                 <Text style={[styles.text]}>{userInfo.toJS()[type + '_footer_config']?.sale_credential?.text}</Text>
-                {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url && type === 'xy' ? (
+                {userInfo.toJS()[type + '_footer_config']?.sale_credential?.url ? (
                     <Text
                         style={styles.button}
                         onPress={() => {

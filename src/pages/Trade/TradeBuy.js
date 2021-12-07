@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 18:37:08
+ * @LastEditTime: 2021-12-07 11:45:21
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -647,14 +647,14 @@ class TradeBuy extends Component {
         );
     }
     render_bank() {
-        const {data, bankSelect, planData} = this.state;
+        const {data, bankSelect} = this.state;
         const {pay_methods, large_pay_method} = data;
         return (
             <View style={{marginBottom: px(12)}}>
-                {planData?.adviser_fee ? (
+                {data?.adviser_fee ? (
                     <View style={{paddingHorizontal: Space.padding, paddingBottom: px(12)}}>
                         <HTML
-                            html={planData?.adviser_fee}
+                            html={data?.adviser_fee}
                             style={{fontSize: Font.textH3, lineHeight: px(17), color: Colors.lightGrayColor}}
                         />
                     </View>
