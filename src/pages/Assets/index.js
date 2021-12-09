@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-07 15:57:07
+ * @LastEditTime: 2021-12-08 18:32:50
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -881,6 +881,9 @@ function HomeScreen({navigation, route}) {
                                                 title: item.pop.title,
                                             });
                                         } else {
+                                            if (item.is_new) {
+                                                http.post('/tool/menu/click/20211207', {id: item.id});
+                                            }
                                             jump(item.url);
                                         }
                                     }}

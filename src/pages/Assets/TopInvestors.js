@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:43:26
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-08 19:07:17
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -25,6 +25,7 @@ import Agreements from '../../components/Agreements';
 import http from '../../services';
 import Notice from '../../components/Notice';
 import {BottomModal} from '../../components/Modal';
+import Toast from '../../components/Toast';
 import {debounce} from 'lodash';
 const TopInvestors = ({navigation, route}) => {
     const jump = useJump();
@@ -37,21 +38,26 @@ const TopInvestors = ({navigation, route}) => {
     const signModal = React.useRef(null);
     const show_sign_focus_modal = useRef(false);
     const intervalt_timer = useRef('');
+
+    const init = () => {
+        http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
+            if (res.code === '000000') {
+                setData(res.result || {});
+                setShowEmpty(true);
+                res.result.period && setPeriod(res.result.period);
+            }
+        });
+    };
+
     useFocusEffect(
         useCallback(() => {
             //解决弹窗里跳转 返回再次弹出
             if (data && show_sign_focus_modal.current) {
                 signModal?.current?.show();
             }
-            http.get('/niuren/buy/signal/info/20210801', {poid: route.params?.poid}).then((res) => {
-                if (res.code === '000000') {
-                    setData(res.result || {});
-                    setShowEmpty(true);
-                    res.result.period && setPeriod(res.result.period);
-                }
-            });
+            init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [route.params])
+        }, [])
     );
 
     useEffect(() => {
@@ -344,8 +350,19 @@ const TopInvestors = ({navigation, route}) => {
             )}
             <FixedButton
                 title={data.button?.text || '追加购买'}
-                disabled={!(data.button?.avail || 1)}
-                onPress={() => jump(data.button?.url)}
+                disabled={!(data.button?.avail !== undefined ? data.button.avail : 1)}
+                onPress={() => {
+                    if (data.button?.action === 'buy') {
+                        jump(data.button?.url);
+                    } else {
+                        http.post('/tool/manage/open/20211207', {type: 'niuren'}).then((res) => {
+                            if (res.code === '000000') {
+                                Toast.show('开启成功');
+                                init();
+                            }
+                        });
+                    }
+                }}
             />
         </View>
     ) : showEmpty ? (

@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-07 19:04:08
+ * @LastEditTime: 2021-12-08 18:14:01
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -28,104 +28,104 @@ export default () => {
     const [scrollY, setScrollY] = useState(0);
     const [percentTextBoxWidth, setWidth] = useState(px(30)); // 百分比容器宽度
     const [data, setData] = useState({
-        img: 'https://static.licaimofang.com/wp-content/uploads/2021/12/tool_top_bg.png',
-        close_list: [
-            {
-                button: {
-                    text: '去开启',
-                    type: 'default',
-                },
-                content: '牛人买入信号是魔方根据平台收益top1%用户的加仓点为用户进行推送追加购买时间点。',
-                icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/top_buy.png',
-                margin_type: 3,
-                state_info: {
-                    value: '<span style="color: #121D3A;">增强择时能力</span>',
-                    value_tip: '',
-                    value_type: 'text',
-                },
-                tags: [],
-                title: '牛人买入工具',
-            },
-            {
-                content: '帮助用户降低风险',
-                icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/target_profit.png',
-                margin_type: 3,
-                pop: {
-                    cancel: {
-                        text: '取消',
-                    },
-                    confirm: {
-                        text: '去购买',
-                        url: {
-                            params: {poid: 'X00F456509'},
-                            path: 'TradeBuy',
-                            type: 1,
-                        },
-                    },
-                    content: '该工具帮助您的低估值组合进行止盈提醒，因此您需要持有低估值组合。',
-                    title: '止盈工具开启',
-                },
-                state_info: {
-                    value: '<span style="color: #121D3A;">止盈提醒落袋为安</span>',
-                    value_tip: '',
-                    value_type: 'text',
-                },
-                style: 2,
-                tags: [],
-                tip: '购买低估值组合可开启',
-                title: '止盈工具',
-            },
-        ],
-        open_list: [
-            {
-                button: {
-                    text: '去购买',
-                    type: 'primary',
-                },
-                content: '本次买入持仓成本可降低1.12%，长期来看收益可增加1.12%，建议您追加购买50,000.00元。',
-                icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/low_buy.png',
-                margin_type: 2,
-                state_info: {
-                    value: '<span style="color: #4BA471;">-0.61%</span>',
-                    value_tip: '今日买入持仓成本',
-                    value_type: 'number',
-                },
-                tags: ['建议买入'],
-                title: '低位买入工具',
-            },
-            {
-                content: '由于您当前持有组合于最优组合出现偏离，您可以选择调仓把所有持仓调整为最新比例。',
-                icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/intelligent_adjust.png',
-                margin_type: 3,
-                state_info: {
-                    value: '<span style="color: #4BA471;">健康</span>',
-                    value_tip: '',
-                    value_type: 'text',
-                },
-                tags: [],
-                title: '智能调仓工具',
-            },
-            {
-                content: '当前低估值智能定投止盈进度达到86%，还未达成止盈条件，您可以保持现有投资或追加购买。',
-                icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/target_profit.png',
-                margin_type: 2,
-                progress: {
-                    percent: 0.86,
-                    percent_text: '86%',
-                    range_text: [
-                        '<span style="fontFamily: DINAlternate-Bold;">0%</span>',
-                        '目标收益率<span style="fontFamily: DINAlternate-Bold;">20%</span>',
-                    ],
-                },
-                state_info: {
-                    value: '<span style="color: #121D3A;">17%</span>',
-                    value_tip: '当前收益率',
-                    value_type: 'number',
-                },
-                tags: [],
-                title: '止盈工具',
-            },
-        ],
+        // img: 'https://static.licaimofang.com/wp-content/uploads/2021/12/tool_top_bg.png',
+        // close_list: [
+        //     {
+        //         button: {
+        //             text: '去开启',
+        //             type: 'default',
+        //         },
+        //         content: '牛人买入信号是魔方根据平台收益top1%用户的加仓点为用户进行推送追加购买时间点。',
+        //         icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/top_buy.png',
+        //         margin_type: 3,
+        //         state_info: {
+        //             value: '<span style="color: #121D3A;">增强择时能力</span>',
+        //             value_tip: '',
+        //             value_type: 'text',
+        //         },
+        //         tags: [],
+        //         title: '牛人买入工具',
+        //     },
+        //     {
+        //         content: '帮助用户降低风险',
+        //         icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/target_profit.png',
+        //         margin_type: 3,
+        //         pop: {
+        //             cancel: {
+        //                 text: '取消',
+        //             },
+        //             confirm: {
+        //                 text: '去购买',
+        //                 url: {
+        //                     params: {poid: 'X00F456509'},
+        //                     path: 'TradeBuy',
+        //                     type: 1,
+        //                 },
+        //             },
+        //             content: '该工具帮助您的低估值组合进行止盈提醒，因此您需要持有低估值组合。',
+        //             title: '止盈工具开启',
+        //         },
+        //         state_info: {
+        //             value: '<span style="color: #121D3A;">止盈提醒落袋为安</span>',
+        //             value_tip: '',
+        //             value_type: 'text',
+        //         },
+        //         style: 2,
+        //         tags: [],
+        //         tip: '购买低估值组合可开启',
+        //         title: '止盈工具',
+        //     },
+        // ],
+        // open_list: [
+        //     {
+        //         button: {
+        //             text: '去购买',
+        //             type: 'primary',
+        //         },
+        //         content: '本次买入持仓成本可降低1.12%，长期来看收益可增加1.12%，建议您追加购买50,000.00元。',
+        //         icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/low_buy.png',
+        //         margin_type: 2,
+        //         state_info: {
+        //             value: '<span style="color: #4BA471;">-0.61%</span>',
+        //             value_tip: '今日买入持仓成本',
+        //             value_type: 'number',
+        //         },
+        //         tags: ['建议买入'],
+        //         title: '低位买入工具',
+        //     },
+        //     {
+        //         content: '由于您当前持有组合于最优组合出现偏离，您可以选择调仓把所有持仓调整为最新比例。',
+        //         icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/intelligent_adjust.png',
+        //         margin_type: 3,
+        //         state_info: {
+        //             value: '<span style="color: #4BA471;">健康</span>',
+        //             value_tip: '',
+        //             value_type: 'text',
+        //         },
+        //         tags: [],
+        //         title: '智能调仓工具',
+        //     },
+        //     {
+        //         content: '当前低估值智能定投止盈进度达到86%，还未达成止盈条件，您可以保持现有投资或追加购买。',
+        //         icon: 'https://static.licaimofang.com/wp-content/uploads/2021/12/target_profit.png',
+        //         margin_type: 2,
+        //         progress: {
+        //             percent: 0.86,
+        //             percent_text: '86%',
+        //             range_text: [
+        //                 '<span style="fontFamily: DINAlternate-Bold;">0%</span>',
+        //                 '目标收益率<span style="fontFamily: DINAlternate-Bold;">20%</span>',
+        //             ],
+        //         },
+        //         state_info: {
+        //             value: '<span style="color: #121D3A;">17%</span>',
+        //             value_tip: '当前收益率',
+        //             value_type: 'number',
+        //         },
+        //         tags: [],
+        //         title: '止盈工具',
+        //     },
+        // ],
     });
 
     /**
@@ -191,7 +191,7 @@ export default () => {
                             <View style={Style.flexBetween}>
                                 <View>
                                     <HTML
-                                        html={item.state_info.value}
+                                        html={`${item.state_info.value}`}
                                         style={
                                             item.state_info?.value_type === 'number' ? styles.numberSty : styles.textSty
                                         }
@@ -252,9 +252,9 @@ export default () => {
                         </View>
                     ) : null}
                     {/* margin_type 1: 没有state_info 2: state_info.value和.value_tip都有 3: state_info只有value */}
-                    <Text style={[styles.contentSty, {marginTop: {1: px(14), 2: px(12), 3: px(6)}[item.margin_type]}]}>
-                        {item.content}
-                    </Text>
+                    <View style={{marginTop: {1: px(14), 2: px(12), 3: px(6)}[item.margin_type]}}>
+                        <HTML html={item.content} style={styles.contentSty} />
+                    </View>
                     {/* button type primary: 实底 default: 默认边框 */}
                     {item.button ? (
                         <View style={Style.flexRow}>
@@ -315,7 +315,7 @@ export default () => {
         <View style={styles.container}>
             <Header
                 leftIcon="chevron-left"
-                title={scrollY > 0 ? '财富工具' : ''}
+                title={scrollY > 0 ? data.title || '财富工具' : ''}
                 scrollY={scrollY}
                 style={{
                     opacity: scrollY > 0 ? 0 : 1,

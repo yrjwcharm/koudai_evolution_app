@@ -8,6 +8,7 @@ import {useJump} from '../../components/hooks';
 import FastImage from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/core';
 import Html from '../../components/RenderHtml';
+import Toast from '../../components/Toast';
 export default (props) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({});
@@ -52,6 +53,7 @@ export default (props) => {
     ) : (
         <>
             <ScrollView
+                bounces={false}
                 scrollIndicatorInsets={{right: 1}}
                 style={[
                     styles.container,
@@ -59,27 +61,31 @@ export default (props) => {
                         marginBottom: isIphoneX() ? text(85) : text(51),
                     },
                 ]}>
-                <View style={styles.lowBuyInfo}>
-                    <View style={[styles.lowBuyInfoRatio, Style.flexCenter]}>
-                        <Text
+                {data?.notice_info ? (
+                    <View style={styles.lowBuyInfo}>
+                        <View style={[styles.lowBuyInfoRatio, Style.flexCenter]}>
+                            <Text
+                                style={{
+                                    color: data?.notice_info?.yield_incr > 1 ? Colors.red : Colors.green,
+                                    ...styles.lowBuyInfoRatioNum,
+                                }}>
+                                {data?.notice_info?.yield_incr}%
+                            </Text>
+                            <Text style={styles.lowBuyInfoRatioDesc}>{data?.notice_info?.explain}</Text>
+                        </View>
+                        <View
                             style={{
-                                color: data?.notice_info?.yield_incr > 1 ? Colors.red : Colors.green,
-                                ...styles.lowBuyInfoRatioNum,
+                                paddingTop: text(20),
                             }}>
-                            {data?.notice_info?.yield_incr}%
-                        </Text>
-                        <Text style={styles.lowBuyInfoRatioDesc}>{data?.notice_info?.explain}</Text>
+                            <Html html={data?.notice_info?.content} style={styles.lowBuyInfoText} />
+                        </View>
                     </View>
-                    <View
-                        style={{
-                            paddingTop: text(20),
-                        }}>
-                        <Html html={data?.notice_info?.content} style={styles.lowBuyInfoText} />
-                    </View>
-                </View>
+                ) : null}
                 <View style={styles.blockStyle}>
                     <Text style={styles.blockTitle}>{data?.percentage?.title}</Text>
-                    <Html html={data?.percentage?.explain} style={styles.blockDesc} />
+                    {data?.percentage?.explain ? (
+                        <Html html={data.percentage.explain} style={styles.blockDesc} />
+                    ) : null}
                     <FastImage
                         style={{
                             width: text(243),
@@ -93,7 +99,9 @@ export default (props) => {
                 </View>
                 <View style={styles.blockStyle}>
                     <Text style={styles.blockTitle}>{data?.signal_case?.title}</Text>
-                    <Html html={data?.signal_case?.explain} style={styles.blockDesc} />
+                    {data?.signal_case?.explain ? (
+                        <Html html={data.signal_case.explain} style={styles.blockDesc} />
+                    ) : null}
                     {data?.signal_case?.img ? (
                         <FastImage
                             style={{
@@ -115,14 +123,26 @@ export default (props) => {
                         </Text>
                     </View>
                     <View style={styles.hintContent}>
-                        <Html html={data?.remind_img?.explain} style={styles.blockDesc} />
+                        {data?.remind_img?.explain ? (
+                            <Html html={data.remind_img.explain} style={styles.blockDesc} />
+                        ) : null}
                     </View>
                 </View>
             </ScrollView>
             <FixedButton
+                disabled={!(data?.button?.avail !== undefined ? data.button.avail : 1)}
                 title={data?.button?.text}
                 onPress={() => {
-                    jump(data?.button?.url);
+                    if (data?.button?.action === 'buy') {
+                        jump(data?.button?.url);
+                    } else {
+                        Http.post('/tool/manage/open/20211207', {type: 'low_buy'}).then((res) => {
+                            if (res.code === '000000') {
+                                Toast.show('开启成功');
+                                init();
+                            }
+                        });
+                    }
                 }}
             />
         </>
