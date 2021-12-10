@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-07 19:00:53
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-09 10:26:17
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
@@ -87,6 +87,7 @@ const SERVER_URL = {
         HTTP: 'http://kmapi.huangjianquan.mofanglicai.com.cn:10080',
         WS: 'ws://192.168.88.68:39503',
         IMApi: 'http://kapi-im.lengxiaochu.mofanglicai.com.cn:10080/',
+        H5: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080',
     },
     hmm: {
         HTTP: 'http://kapi-web.hmm.mofanglicai.com.cn:10080/',

@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-08 18:14:01
+ * @LastEditTime: 2021-12-10 11:35:18
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -137,7 +137,7 @@ export default () => {
     const renderToolBox = (item = {}, index = 0) => {
         return (
             <TouchableOpacity
-                activeOpacity={1}
+                activeOpacity={0.8}
                 key={item + index}
                 onPress={() => {
                     // 未开启展示弹窗
@@ -157,6 +157,8 @@ export default () => {
                             isTouchMaskToClose: false,
                             title: item.pop.title,
                         });
+                    } else {
+                        jump(item.url);
                     }
                 }}
                 style={styles.toolBox}>
@@ -328,6 +330,7 @@ export default () => {
                 bounces={false}
                 onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
                 scrollEventThrottle={16}
+                scrollIndicatorInsets={{right: 1}}
                 style={{flex: 1}}>
                 <Image source={{uri: data.img}} style={styles.topBg} />
                 <View style={{paddingTop: insets.top + px(44), paddingBottom: insets.bottom}}>
