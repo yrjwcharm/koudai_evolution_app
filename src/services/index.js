@@ -47,6 +47,8 @@ axios.interceptors.request.use(
             ver: global.ver,
             platform: Platform.OS,
             device: device || '',
+            deviceId: DeviceInfo.getDeviceId(),
+            systemVersion: DeviceInfo.getSystemVersion(),
             request_id: new Date().getTime().toString() + parseInt(Math.random() * 1e6, 16),
         };
         return config;
