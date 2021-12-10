@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-07 17:27:07
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-10 16:54:23
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -23,10 +23,9 @@ import HTML from '../../components/RenderHtml';
 import CheckBox from '../../components/CheckBox';
 import {useJump} from '../../components/hooks';
 import _ from 'lodash';
-import {useIsFocused} from '@react-navigation/core';
 const AddBankCard = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo);
-    const [second, setSecond] = useState(0);
+    const [, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('发送验证码');
     const btnClick = useRef(true);
     const timerRef = useRef('');
@@ -249,9 +248,9 @@ const AddBankCard = ({navigation, route}) => {
         }
     }, [bankName, cardNum, check, code, phone, navigation, route.params, signData]);
     //checkBox 选中
-    const checkBoxClick = (check, poid) => {
+    const checkBoxClick = (_check, poid) => {
         //选中
-        if (check) {
+        if (_check) {
             if (poid) {
                 setSignSelectData((prev) => {
                     return [...prev, poid];
@@ -281,7 +280,7 @@ const AddBankCard = ({navigation, route}) => {
     };
     //签约
     const handleSign = () => {
-        http.post('adviser/sign/20210923', {poids: signSelectData}).then((res) => {
+        http.post('/adviser/sign/20210923', {poids: signSelectData}).then((res) => {
             Toast.show(res.message);
             if (res.code === '000000') {
                 setTimeout(() => {
@@ -311,7 +310,7 @@ const AddBankCard = ({navigation, route}) => {
         }
         http.get('/adviser/bind/bank/signs/20211206').then((sign) => {
             if (sign.code == '000000') {
-                setSignData(sign?.result?.countdown);
+                setSignTimer(sign?.result?.countdown);
                 setSignData(sign.result);
             }
         });

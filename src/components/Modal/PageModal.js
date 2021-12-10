@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-12-01 14:57:22
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-07 17:27:18
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-10 16:59:50
  * @Description:页面级弹窗，弹窗弹出时，跳转页面不会覆盖该页面
  */
 /**
@@ -154,6 +154,12 @@ export default class PageModal extends Component {
     show = () => {
         if (this.state.hide) {
             this.setState({hide: false}, this.in);
+        }
+    };
+
+    hide = () => {
+        if (!this.state.hide) {
+            this.setState({hide: true}, this.out);
         }
     };
 }
