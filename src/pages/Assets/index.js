@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-10 15:02:57
+ * @LastEditTime: 2021-12-13 10:35:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -871,7 +871,6 @@ function HomeScreen({navigation, route}) {
                                         global.LogTool('assetsIconsStart', 'top_menus', item.id);
                                         if (item.pop) {
                                             Modal.show({
-                                                backButtonClose: false,
                                                 children: () => (
                                                     <View style={styles.popContentBox}>
                                                         <Text style={styles.popContent}>{item.pop.content}</Text>
@@ -879,7 +878,6 @@ function HomeScreen({navigation, route}) {
                                                 ),
                                                 confirmCallBack: () => jump(item.pop.confirm?.url),
                                                 confirmText: item.pop.confirm?.text,
-                                                isTouchMaskToClose: false,
                                                 title: item.pop.title,
                                             });
                                         } else {

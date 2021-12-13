@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-10 11:35:18
+ * @LastEditTime: 2021-12-13 10:36:16
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -143,7 +143,6 @@ export default () => {
                     // 未开启展示弹窗
                     if (item.pop) {
                         Modal.show({
-                            backButtonClose: false,
                             cancelCallBack: () => jump(item.pop.cancel?.url),
                             cancelText: item.pop.cancel?.text,
                             children: () => (
@@ -154,7 +153,6 @@ export default () => {
                             confirm: !!item.pop.cancel?.text,
                             confirmCallBack: () => jump(item.pop.confirm?.url),
                             confirmText: item.pop.confirm?.text,
-                            isTouchMaskToClose: false,
                             title: item.pop.title,
                         });
                     } else {

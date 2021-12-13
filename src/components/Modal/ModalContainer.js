@@ -7,6 +7,7 @@ import {
     Modal,
     Linking,
     Clipboard,
+    Platform,
 } from 'react-native';
 import React, {Component} from 'react';
 import Image from 'react-native-fast-image';
@@ -476,9 +477,8 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
-        fontFamily: 'PingFangSC-Semibold',
         fontSize: text(16),
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
         color: Colors.defaultColor,
         paddingTop: text(18),
     },
