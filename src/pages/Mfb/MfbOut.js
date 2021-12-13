@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 11:54:17
+ * @LastEditTime: 2021-12-13 17:40:05
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -76,7 +76,7 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
-                    if (data.amount - amount < 500 && data.amount - amount > 0) {
+                    if (pay_methods.left_amount - amount < 500 && pay_methods.left_amount - amount > 0) {
                         return this.setState({
                             tips: '账户最低持仓金额500元',
                             enable: false,
@@ -95,7 +95,7 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
-                    if (data.amount - amount < 500 && data.amount - amount > 0) {
+                    if (pay_methods.left_amount - amount < 500 && pay_methods.left_amount - amount > 0) {
                         return this.setState({
                             tips: '账户最低持仓金额500元',
                             enable: false,
@@ -277,7 +277,7 @@ class MfbOut extends Component {
                                 autoFocus={true}
                             />
                         </View>
-                        <TouchableOpacity onPress={this.allAmount}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={this.allAmount}>
                             <Text style={{color: '#0051CC'}}>{withdraw_info?.button.text}</Text>
                         </TouchableOpacity>
                     </View>

@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-07 16:11:53
+ * @LastEditTime: 2021-12-13 17:36:07
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -104,73 +104,11 @@ class TradeBuy extends Component {
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
-                    const showRishPop = () => {
-                        Modal.show({
-                            cancelCallBack: () => {
-                                if (res.result.risk_pop.cancel?.act == 'back') {
-                                    this.props.navigation.goBack();
-                                } else if (res.result.risk_pop.cancel?.act == 'jump') {
-                                    this.props.jump(res.result.risk_pop.cancel?.url);
-                                }
-                            },
-                            cancelText: res.result.risk_pop.cancel.text,
-                            confirm: true,
-                            confirmCallBack: () => {
-                                if (res.result.risk_pop.confirm.url) {
-                                    this.props.jump(res.result.risk_pop.confirm.url);
-                                }
-                            },
-                            confirmText: res.result.risk_pop.confirm.text,
-                            content: res.result.risk_pop.content,
-                            isTouchMaskToClose: false,
-                            title: res.result.risk_pop.title,
-                        });
-                    };
                     // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
                     if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
-                        this.show_risk_disclosure = false;
-                        Modal.show({
-                            children: () => {
-                                return (
-                                    <View>
-                                        <Text
-                                            style={{
-                                                marginTop: px(2),
-                                                fontSize: Font.textH2,
-                                                lineHeight: px(20),
-                                                color: Colors.red,
-                                                textAlign: 'center',
-                                            }}>
-                                            {res.result.risk_disclosure.sub_title}
-                                        </Text>
-                                        <ScrollView
-                                            bounces={false}
-                                            style={{
-                                                marginVertical: Space.marginVertical,
-                                                paddingHorizontal: px(20),
-                                                maxHeight: px(352),
-                                            }}>
-                                            <Text
-                                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
-                                                {res.result.risk_disclosure.content}
-                                            </Text>
-                                        </ScrollView>
-                                    </View>
-                                );
-                            },
-                            confirmCallBack: () => {
-                                if (this.props.isFocused && res.result.risk_pop) {
-                                    showRishPop();
-                                }
-                            },
-                            confirmText: '关闭',
-                            countdown: res.result.risk_disclosure.countdown,
-                            isTouchMaskToClose: false,
-                            onCloseCallBack: () => this.props.navigation.goBack(),
-                            title: res.result.risk_disclosure.title,
-                        });
+                        this.showRiskDisclosure(res.result);
                     } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
-                        showRishPop();
+                        this.showRishPop(res.result);
                     }
                     this.setState(
                         {
@@ -192,6 +130,82 @@ class TradeBuy extends Component {
                 }
             });
         }, 300);
+    };
+
+    /**
+     * @description 展示风险揭示书
+     * @param {any} data 风险揭示书内容
+     * @returns void
+     */
+    showRiskDisclosure = (data) => {
+        this.show_risk_disclosure = false;
+        Modal.show({
+            children: () => {
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                marginTop: px(2),
+                                fontSize: Font.textH2,
+                                lineHeight: px(20),
+                                color: Colors.red,
+                                textAlign: 'center',
+                            }}>
+                            {data.risk_disclosure.sub_title}
+                        </Text>
+                        <ScrollView
+                            bounces={false}
+                            style={{
+                                marginVertical: Space.marginVertical,
+                                paddingHorizontal: px(20),
+                                maxHeight: px(352),
+                            }}>
+                            <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
+                                {data.risk_disclosure.content}
+                            </Text>
+                        </ScrollView>
+                    </View>
+                );
+            },
+            confirmCallBack: () => {
+                if (this.props.isFocused && data.risk_pop) {
+                    this.showRishPop();
+                }
+            },
+            confirmText: '关闭',
+            countdown: data.risk_disclosure.countdown,
+            isTouchMaskToClose: false,
+            onCloseCallBack: () => this.props.navigation.goBack(),
+            title: data.risk_disclosure.title,
+        });
+    };
+
+    /**
+     * @description 展示风险弹窗
+     * @param {any} data 风险弹窗内容
+     * @returns void
+     */
+    showRishPop = (data) => {
+        Modal.show({
+            cancelCallBack: () => {
+                if (data.risk_pop.cancel?.act == 'back') {
+                    this.props.navigation.goBack();
+                } else if (data.risk_pop.cancel?.act == 'jump') {
+                    this.props.jump(data.risk_pop.cancel?.url);
+                }
+            },
+            cancelText: data.risk_pop.cancel.text,
+            confirm: true,
+            confirmCallBack: () => {
+                if (data.risk_pop.confirm.url) {
+                    this.props.jump(data.risk_pop.confirm.url);
+                }
+            },
+            confirmText: data.risk_pop.confirm.text,
+            content: data.risk_pop.content,
+            isTouchMaskToClose: false,
+            title: data.risk_pop.title,
+        });
     };
 
     /**
@@ -1029,6 +1043,11 @@ class TradeBuy extends Component {
                         this.setState({bankSelect: select, bankSelectIndex: index}, async () => {
                             if (!this.state.isLargeAmount) {
                                 this.onInput(this.state.amount);
+                            }
+                            if (this.state.bankSelect?.pop_risk_disclosure) {
+                                setTimeout(() => {
+                                    this.showRiskDisclosure(this.state.data);
+                                }, 300);
                             }
                         });
                     }}
