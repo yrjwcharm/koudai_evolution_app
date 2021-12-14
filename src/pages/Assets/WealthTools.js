@@ -2,7 +2,7 @@
  * @Date: 2021-12-06 14:17:56
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 10:36:16
+ * @LastEditTime: 2021-12-14 15:57:30
  * @Description: 财富工具
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -336,7 +336,11 @@ export default () => {
                         <Text style={styles.title}>{'财富工具'}</Text>
                         <Text style={styles.subTitle}>{'帮你快速进行交易决策'}</Text>
                     </View>
-                    <View style={{marginTop: px(176), paddingHorizontal: Space.padding}}>
+                    <View
+                        style={{
+                            marginTop: Platform.select({android: px(188), ios: px(174)}),
+                            paddingHorizontal: Space.padding,
+                        }}>
                         {data.open_list?.length > 0 ? (
                             <Text style={[styles.typeTitle, {paddingBottom: px(12)}]}>{'已开启'}</Text>
                         ) : null}
@@ -419,7 +423,7 @@ const styles = StyleSheet.create({
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     numberSty: {
-        fontSize: px(26),
+        fontSize: px(22),
         lineHeight: px(30),
         fontFamily: Font.numFontFamily,
     },

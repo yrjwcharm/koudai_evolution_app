@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 17:40:05
+ * @LastEditTime: 2021-12-14 15:32:43
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -245,7 +245,7 @@ class MfbOut extends Component {
     }
     render_buy() {
         const {amount, data, bankSelect, tips} = this.state;
-        const {withdraw_info, title, pay_methods} = data;
+        const {withdraw_info, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
@@ -267,11 +267,6 @@ class MfbOut extends Component {
                                 placeholderTextColor={'#CCD0DB'}
                                 onChangeText={(value) => {
                                     this.onInput(value);
-                                }}
-                                onEndEditing={() => {
-                                    if (amount) {
-                                        this.setState({amount: Number(this.state.amount).toFixed(2)});
-                                    }
                                 }}
                                 value={amount}
                                 autoFocus={true}
