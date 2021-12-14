@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-08 19:07:17
+ * @LastEditTime: 2021-12-14 11:39:17
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -27,6 +27,8 @@ import Notice from '../../components/Notice';
 import {BottomModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
 import {debounce} from 'lodash';
+import Loading from '../Portfolio/components/PageLoading';
+
 const TopInvestors = ({navigation, route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
@@ -110,6 +112,7 @@ const TopInvestors = ({navigation, route}) => {
                         onPress={() => jump(data.console?.buy_url)}>
                         {data.console ? (
                             <WebView
+                                renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                                 startInLoadingState={true}
                                 scalesPageToFit={false}
                                 source={{

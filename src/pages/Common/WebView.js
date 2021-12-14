@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-26 16:04:01
+ * @LastEditTime: 2021-12-14 11:27:30
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -16,6 +16,8 @@ import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {Style} from '../../common/commonStyle';
 import {deviceHeight} from '../../utils/appUtil';
+import Loading from '../Portfolio/components/PageLoading';
+
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
@@ -162,6 +164,7 @@ export default function WebView({route, navigation}) {
                         );
                     }}
                     onNavigationStateChange={onNavigationStateChange}
+                    renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                     // showsVerticalScrollIndicator={false}
                     startInLoadingState={true}
                     style={{flex: 1}}

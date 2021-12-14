@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-02 20:40:07
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-14 11:42:21
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -33,6 +33,8 @@ import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import Loading from '../Portfolio/components/PageLoading';
+
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -398,6 +400,7 @@ const ArticleDetail = ({navigation, route}) => {
                             onHttpError={(err) => {
                                 console.log(err, 'object');
                             }}
+                            renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                             startInLoadingState
                             style={{height: webviewHeight}}
                             textZoom={100}
