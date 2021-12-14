@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text, deviceWidth, isIphoneX} from '../../utils/appUtil';
+import {px as text, deviceWidth, isIphoneX, px} from '../../utils/appUtil';
 import Http from '../../services';
 import {FixedButton} from '../../components/Button';
 import {useJump} from '../../components/hooks';
@@ -77,6 +77,7 @@ export default (props) => {
                             style={{
                                 paddingTop: text(20),
                             }}>
+                            <FastImage source={require('../../assets/personal/quota.png')} style={styles.quota} />
                             <Html html={data?.notice_info?.content} style={styles.lowBuyInfoText} />
                         </View>
                     </View>
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: text(12),
         paddingHorizontal: text(32),
         paddingBottom: text(28),
-        ...Space.boxShadow('rgba(40, 71, 158, 0.06)', 0, text(6), 1, text(12)),
+        // ...Space.boxShadow('rgba(40, 71, 158, 0.03)', 0, text(6), 1, text(12)),
     },
     lowBuyInfoRatio: {
         borderBottomWidth: Space.borderWidth,
@@ -223,5 +224,12 @@ const styles = StyleSheet.create({
         paddingVertical: text(10),
         position: 'absolute',
         bottom: 0,
+    },
+    quota: {
+        width: px(24),
+        height: px(17),
+        position: 'absolute',
+        top: px(15),
+        left: px(-16),
     },
 });
