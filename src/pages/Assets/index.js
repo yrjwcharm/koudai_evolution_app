@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-11-19 17:13:13
+ * @LastEditTime: 2021-12-13 10:35:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -41,8 +41,8 @@ import GesturePassword from '../Settings/GesturePassword';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
-import Modal from '../../components/Modal/ModalContainer';
-import {BottomModal} from '../../components/Modal';
+import ModalContainer from '../../components/Modal/ModalContainer';
+import {BottomModal, Modal} from '../../components/Modal';
 import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
@@ -51,6 +51,7 @@ import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
 import CheckBox from '../../components/CheckBox';
+import Notice from '../../components/Notice';
 import _ from 'lodash';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
@@ -479,16 +480,15 @@ function HomeScreen({navigation, route}) {
                     <BottomModal
                         style={{height: px(600), backgroundColor: '#fff'}}
                         ref={bottomModal}
-                        title={signData?.title}
-                        sub_title={signData?.title_tip}>
+                        title={signData?.title}>
                         <View style={{flex: 1}}>
+                            {signData?.title_tip && <Notice content={{content: signData?.title_tip}} />}
                             <ScrollView
                                 style={{
                                     paddingHorizontal: px(16),
-                                    paddingTop: px(22),
-                                    paddingBottom: px(20),
+                                    paddingTop: px(20),
                                 }}>
-                                <TouchableOpacity activeOpacity={1}>
+                                <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
                                     {signData?.desc ? (
                                         <>
                                             <HTML html={signData?.desc} style={styles.light_text} />
@@ -509,22 +509,34 @@ function HomeScreen({navigation, route}) {
                                             </Text>
                                         </>
                                     ) : null}
-                                    <View style={[Style.flexRow, {marginTop: px(12)}, styles.border_bottom]}>
-                                        <CheckBox
-                                            checked={signSelectData?.length == signData?.plan_list?.length}
-                                            style={{marginRight: px(6)}}
-                                            onChange={(value) => {
-                                                checkBoxClick(value);
-                                            }}
-                                        />
-                                        <Text style={{fontSize: px(14), fontWeight: '700'}}>
-                                            全选({signSelectData?.length}/{signData?.plan_list?.length})
+                                    <View style={[Style.flexBetween, {marginTop: px(12)}, styles.border_bottom]}>
+                                        <View style={Style.flexRow}>
+                                            <CheckBox
+                                                checked={signSelectData?.length == signData?.plan_list?.length}
+                                                style={{marginRight: px(6)}}
+                                                onChange={(value) => {
+                                                    checkBoxClick(value);
+                                                }}
+                                            />
+                                            <Text style={{fontSize: px(16), fontWeight: '700'}}>全选</Text>
+                                        </View>
+                                        <Text style={{fontSize: px(16)}}>
+                                            {signSelectData?.length}/{signData?.plan_list?.length}
                                         </Text>
                                     </View>
                                     {signData?.plan_list?.map((item, index) => {
                                         return (
                                             <View key={index} style={styles.border_bottom}>
-                                                <View style={[Style.flexRow, {marginBottom: px(6)}]}>
+                                                <Text
+                                                    style={{fontSize: px(16), fontWeight: '700', marginBottom: px(6)}}>
+                                                    {item?.name}
+                                                </Text>
+                                                {item?.adviser_cost_desc ? (
+                                                    <Text style={[styles.light_text, {marginBottom: px(6)}]}>
+                                                        {item.adviser_cost_desc}
+                                                    </Text>
+                                                ) : null}
+                                                <View style={[Style.flexRow, {alignItems: 'flex-start'}]}>
                                                     <CheckBox
                                                         checked={signSelectData?.includes(item?.poid)}
                                                         style={{marginRight: px(6)}}
@@ -532,49 +544,62 @@ function HomeScreen({navigation, route}) {
                                                             checkBoxClick(value, item.poid);
                                                         }}
                                                     />
-                                                    <Text style={styles.light_text}>{item?.name}</Text>
-                                                </View>
-                                                <Text style={styles.light_text}>
-                                                    {item?.desc}
-                                                    <Text
-                                                        style={{
-                                                            color: signOpen?.includes(item?.poid)
-                                                                ? Colors.defaultColor
-                                                                : Colors.btnColor,
-                                                        }}
-                                                        onPress={() => {
-                                                            handleSignOpen(item?.poid);
-                                                        }}>
-                                                        {item?.link_name}
-                                                    </Text>
-                                                    {signOpen?.includes(item?.poid) &&
-                                                        item?.link_list?.map((link, _index) => (
-                                                            <Text
-                                                                style={{color: Colors.btnColor}}
-                                                                key={_index}
-                                                                onPress={() => {
-                                                                    if (link?.url) {
-                                                                        jump(link?.url);
-                                                                        bottomModal.current.hide();
-                                                                    }
-                                                                }}>
-                                                                {link?.text}
+                                                    <Text style={[styles.light_text, {flex: 1}]}>
+                                                        {item?.desc}
+                                                        <Text
+                                                            style={{
+                                                                color: signOpen?.includes(item?.poid)
+                                                                    ? Colors.lightBlackColor
+                                                                    : Colors.btnColor,
+                                                            }}
+                                                            onPress={() => {
+                                                                handleSignOpen(item?.poid);
+                                                            }}>
+                                                            {item?.link_name}
+                                                        </Text>
+                                                        {signOpen?.includes(item?.poid) && (
+                                                            <Text>
+                                                                {item?.link_list?.map((link, _index) => (
+                                                                    <Text
+                                                                        style={{color: Colors.btnColor}}
+                                                                        key={_index}
+                                                                        onPress={() => {
+                                                                            if (link?.url) {
+                                                                                jump(link?.url);
+                                                                                bottomModal.current.hide();
+                                                                            }
+                                                                        }}>
+                                                                        {link?.text}
+                                                                        {item?.link_list?.length > 1 &&
+                                                                        _index == item?.link_list?.length - 2
+                                                                            ? '和'
+                                                                            : _index == item?.link_list?.length - 1
+                                                                            ? ''
+                                                                            : '、'}
+                                                                    </Text>
+                                                                ))}
+                                                                {item?.desc_end ? (
+                                                                    <Text style={styles.light_text}>
+                                                                        {item?.desc_end}
+                                                                    </Text>
+                                                                ) : null}
                                                             </Text>
-                                                        ))}
-                                                </Text>
+                                                        )}
+                                                    </Text>
+                                                </View>
                                             </View>
                                         );
                                     })}
-                                    {signData?.button ? (
-                                        <Button
-                                            disabled={!signSelectData?.length > 0}
-                                            style={{marginTop: px(20)}}
-                                            onPress={_.debounce(handleSign, 500)}
-                                            title={signData?.button?.text}
-                                        />
-                                    ) : null}
                                 </TouchableOpacity>
                             </ScrollView>
+                            {signData?.button ? (
+                                <Button
+                                    disabled={!signSelectData?.length > 0}
+                                    style={{marginTop: px(12), marginHorizontal: px(16)}}
+                                    onPress={_.debounce(handleSign, 500)}
+                                    title={signData?.button?.text}
+                                />
+                            ) : null}
                         </View>
                     </BottomModal>
                 )}
@@ -584,7 +609,7 @@ function HomeScreen({navigation, route}) {
                 {isVisible && (
                     <>
                         {!global.rootSibling && <Mask />}
-                        <Modal
+                        <ModalContainer
                             children={() => (
                                 <View
                                     style={[
@@ -709,14 +734,20 @@ function HomeScreen({navigation, route}) {
                                 )}
                             </View>
                             <TouchableOpacity
+                                activeOpacity={0.8}
                                 onPress={() => {
                                     global.LogTool('assetsNotificationCenter');
                                     jump({path: 'RemindMessage'});
-                                }}>
-                                {newMes ? <View style={styles.new_message} /> : null}
+                                }}
+                                style={{position: 'relative'}}>
+                                {newMes ? (
+                                    <View style={[styles.point_sty, Style.flexCenter]}>
+                                        <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
+                                    </View>
+                                ) : null}
                                 <Image
                                     style={{width: text(32), height: text(32)}}
-                                    source={require('../../assets/img/index/whiteMes.png')}
+                                    source={require('../../assets/personal/whiteMes.png')}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -838,11 +869,34 @@ function HomeScreen({navigation, route}) {
                                     activeOpacity={0.8}
                                     onPress={() => {
                                         global.LogTool('assetsIconsStart', 'top_menus', item.id);
-                                        jump(item.url);
+                                        if (item.pop) {
+                                            Modal.show({
+                                                children: () => (
+                                                    <View style={styles.popContentBox}>
+                                                        <Text style={styles.popContent}>{item.pop.content}</Text>
+                                                    </View>
+                                                ),
+                                                confirmCallBack: () => jump(item.pop.confirm?.url),
+                                                confirmText: item.pop.confirm?.text,
+                                                title: item.pop.title,
+                                            });
+                                        } else {
+                                            if (item.is_new) {
+                                                http.post('/tool/menu/click/20211207', {id: item.id});
+                                            }
+                                            jump(item.url);
+                                        }
                                     }}
                                     key={`topmenu${item.id}`}
                                     style={[Style.flexCenter, {flex: 1, height: '100%'}]}>
-                                    <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                    <View style={{position: 'relative'}}>
+                                        <Image source={{uri: item.icon}} style={styles.topMenuIcon} />
+                                        {item.is_new ? (
+                                            <View style={styles.newMenu}>
+                                                <Text style={styles.contentTagText}>{'新'}</Text>
+                                            </View>
+                                        ) : null}
+                                    </View>
                                     <Text style={styles.topMenuTitle}>{item.title}</Text>
                                 </TouchableOpacity>
                             );
@@ -1249,6 +1303,27 @@ const styles = StyleSheet.create({
         height: text(24),
         marginBottom: text(4),
     },
+    newMenu: {
+        paddingVertical: px(1),
+        paddingHorizontal: px(5),
+        borderRadius: px(9),
+        borderBottomLeftRadius: px(1),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        bottom: px(18),
+        left: px(16),
+    },
+    popContentBox: {
+        marginTop: px(12),
+        marginHorizontal: px(20),
+        marginBottom: px(27),
+    },
+    popContent: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.descColor,
+        textAlign: 'center',
+    },
     topMenuTitle: {
         fontSize: Font.textH3,
         lineHeight: text(17),
@@ -1296,13 +1371,13 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentTitle: {
         fontSize: text(13),
         lineHeight: text(18),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentText: {
         fontSize: Font.textH3,
@@ -1326,7 +1401,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH1,
         lineHeight: text(22),
         color: Colors.green,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
         textAlign: 'center',
     },
     centerCtrlContent: {
@@ -1351,7 +1426,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textH2,
         lineHeight: text(20),
         color: Colors.defaultColor,
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     tag: {
         paddingHorizontal: text(6),
@@ -1362,7 +1437,7 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: text(16),
         color: '#fff',
-        fontWeight: '500',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     po_profit: {
         flex: 1,
@@ -1417,15 +1492,17 @@ const styles = StyleSheet.create({
         width: text(343),
         height: text(727),
     },
-    new_message: {
-        width: text(10),
-        height: text(10),
-        borderRadius: text(5),
-        backgroundColor: Colors.red,
+    point_sty: {
         position: 'absolute',
-        right: text(3),
-        top: text(5),
+        left: px(15),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(50),
         zIndex: 10,
+        minWidth: px(20),
+        height: px(20),
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     option: {
         marginBottom: text(12),
@@ -1466,11 +1543,18 @@ const styles = StyleSheet.create({
         right: text(26),
         top: px(14),
     },
-    light_text: {fontSize: px(13), lineHeight: px(17)},
+    light_text: {fontSize: px(13), lineHeight: px(17), color: Colors.lightBlackColor},
     border_bottom: {
         borderColor: Colors.lineColor,
         borderBottomWidth: 0.5,
         paddingVertical: px(12),
+    },
+    point_text: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
     },
 });
 export default HomeScreen;

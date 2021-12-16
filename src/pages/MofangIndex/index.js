@@ -231,11 +231,17 @@ const Index = (props) => {
                                 </Text>
                             ) : (
                                 <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    style={{position: 'relative'}}
                                     onPress={() => {
                                         global.LogTool('indexNotificationCenter');
                                         jump({path: 'RemindMessage'});
                                     }}>
-                                    {allMsg ? <View style={styles.new_message} /> : null}
+                                    {allMsg ? (
+                                        <View style={[styles.point_sty, Style.flexCenter]}>
+                                            <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
+                                        </View>
+                                    ) : null}
                                     <FastImage
                                         style={{width: px(32), height: px(32)}}
                                         source={require('../../assets/img/index/message.png')}
@@ -950,15 +956,18 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
         marginBottom: px(6),
     },
-    new_message: {
-        width: px(10),
-        height: px(10),
-        borderRadius: px(6),
-        backgroundColor: Colors.red,
+    point_sty: {
         position: 'absolute',
-        right: px(3),
-        top: px(5),
+        left: px(15),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(50),
+        paddingHorizontal: px(4),
         zIndex: 10,
+        minWidth: px(20),
+        height: px(20),
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     large_num: {
         fontSize: px(28),
@@ -1109,5 +1118,12 @@ const styles = StyleSheet.create({
         borderRadius: px(22),
         width: px(263),
         height: px(40),
+    },
+    point_text: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
     },
 });

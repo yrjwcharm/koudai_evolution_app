@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-08 19:21:55
+ * @LastEditTime: 2021-12-06 15:49:45
  * @Description: 协议
  */
 import React, {useState} from 'react';
@@ -11,14 +11,23 @@ import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
 import {px} from '../utils/appUtil';
 import Image from 'react-native-fast-image';
-import {Colors, Space} from '../common/commonStyle';
+import {Colors, Font, Space} from '../common/commonStyle';
 import {baseURL} from '../services/config';
 import {useJump} from './hooks';
 
 function Agreements(props) {
     const jump = useJump();
     const navigation = useNavigation();
-    const {data = [], check = true, onChange = () => {}, title = '我已阅读并同意', style = {}, isHide = false} = props;
+    const {
+        data = [],
+        check = true,
+        onChange = () => {},
+        title = '我已阅读并同意',
+        style = {},
+        isHide = false,
+        emitJump, //通知父组建跳转
+        suffix = '',
+    } = props;
     const jumpPage = (item) => {
         if (item.url && Object.prototype.toString.call(item.url) === '[object Object]') {
             return jump(item.url);
@@ -56,7 +65,10 @@ function Agreements(props) {
     return (
         <View style={[{flexDirection: 'row'}, style]}>
             {!isHide && (
-                <TouchableHighlight onPress={toggle} underlayColor="transparent">
+                <TouchableHighlight
+                    onPress={toggle}
+                    underlayColor="transparent"
+                    style={{width: px(20), height: px(40)}}>
                     {container}
                 </TouchableHighlight>
             )}
@@ -67,15 +79,17 @@ function Agreements(props) {
                           return (
                               <Text
                                   onPress={() => {
+                                      emitJump && emitJump();
                                       jumpPage(item);
                                   }}
-                                  style={{fontSize: px(11), color: '#0051CC'}}
+                                  style={{fontSize: Font.textSm, color: '#0051CC'}}
                                   key={index}>
                                   {item.title || item.name}
                               </Text>
                           );
                       })
                     : null}
+                {suffix ? <Text style={{...styles.text, color: Colors.descColor}}>{suffix}</Text> : null}
             </Text>
         </View>
     );
@@ -90,7 +104,8 @@ Agreements.propTypes = {
 const styles = StyleSheet.create({
     text: {
         color: Colors.lightBlackColor,
-        fontSize: px(12),
+        fontSize: Font.textSm,
+        lineHeight: px(16),
     },
     agreement_text: {
         flex: 1,

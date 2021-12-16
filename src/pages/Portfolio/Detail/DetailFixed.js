@@ -3,7 +3,7 @@
  * @Date: 2021-01-27 16:21:38
  * @Description:低估值智能定投
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 19:37:42
+ * @LastEditTime: 2021-12-06 20:27:56
  */
 
 import React, {useState, useCallback, useRef} from 'react';
@@ -142,6 +142,7 @@ export default function DetailAccount({route, navigation}) {
                         </View>
                     </View>
                     <RenderChart chartData={chartData} chart={chart} type={type} />
+
                     <View
                         style={{
                             flexDirection: 'row',
@@ -175,7 +176,9 @@ export default function DetailAccount({route, navigation}) {
                             );
                         })}
                     </View>
-
+                    {data.line_info?.line_desc?.tip ? (
+                        <Text style={[styles.bottomTip, styles.chart_desc]}>{data.line_info?.line_desc?.tip}</Text>
+                    ) : null}
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View>
                             {data?.asset_intros?.map((_i, _d) => {
@@ -247,25 +250,39 @@ export default function DetailAccount({route, navigation}) {
                                             global.LogTool('portfolioDetailFeatureStart', 'bottommenu', _index);
                                             jump(_g.url);
                                         }}>
-                                        <Text style={{flex: 1, paddingVertical: text(20), color: '#545968'}}>
-                                            {_g.title}
-                                        </Text>
-                                        <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        <Text style={{flex: 1, paddingVertical: text(20)}}>{_g.title}</Text>
+                                        <View style={Style.flexRow}>
+                                            {_g.desc ? (
+                                                <Text style={{color: Colors.lightGrayColor, marginRight: px(8)}}>
+                                                    {_g.desc}
+                                                </Text>
+                                            ) : null}
+                                            <AntDesign name={'right'} color={'#555B6C'} size={12} />
+                                        </View>
                                     </TouchableOpacity>
                                 );
                             })}
                         </View>
                     </View>
-                    <Text
-                        style={{
-                            color: '#B8C1D3',
-                            paddingHorizontal: text(16),
-                            lineHeight: text(18),
-                            fontSize: text(11),
-                            marginTop: text(12),
-                        }}>
-                        {data.tip}
-                    </Text>
+                    <View style={{marginTop: Space.marginVertical, paddingHorizontal: Space.padding}}>
+                        <Text style={styles.bottomTip}>
+                            {data?.advisor_tip?.text}
+                            {data?.advisor_tip?.agreements
+                                ? data?.advisor_tip?.agreements?.map((item, index) => {
+                                      return (
+                                          <Text
+                                              key={index}
+                                              style={{color: Colors.btnColor}}
+                                              onPress={() => {
+                                                  jump(item.url);
+                                              }}>
+                                              {item?.title}
+                                          </Text>
+                                      );
+                                  })
+                                : null}
+                        </Text>
+                    </View>
                     <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             )}
@@ -362,5 +379,17 @@ const styles = StyleSheet.create({
         borderRadius: text(10),
         padding: Space.padding,
         marginTop: text(12),
+    },
+    bottomTip: {
+        fontSize: Font.textSm,
+        lineHeight: text(18),
+        color: '#B8C1D3',
+    },
+    chart_desc: {
+        padding: px(16),
+        paddingTop: 0,
+        lineHeight: px(19),
+        color: Colors.lightGrayColor,
+        backgroundColor: '#fff',
     },
 });

@@ -3,7 +3,7 @@
  * @Date: 2021-01-26 11:04:08
  * @Description:魔方宝提现
  * @LastEditors: dx
- * @LastEditTime: 2021-04-22 19:04:42
+ * @LastEditTime: 2021-12-14 15:32:43
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Image, Keyboard} from 'react-native';
@@ -76,6 +76,12 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
+                    if (pay_methods.left_amount - amount < 500 && pay_methods.left_amount - amount > 0) {
+                        return this.setState({
+                            tips: '账户最低持仓金额500元',
+                            enable: false,
+                        });
+                    }
                     return this.setState({
                         tips: '',
                         enable: true,
@@ -89,13 +95,19 @@ class MfbOut extends Component {
                         enable: false,
                     });
                 } else {
+                    if (pay_methods.left_amount - amount < 500 && pay_methods.left_amount - amount > 0) {
+                        return this.setState({
+                            tips: '账户最低持仓金额500元',
+                            enable: false,
+                        });
+                    }
                     return this.setState({
                         tips: '',
                         enable: true,
                     });
                 }
             }
-        } else if (amount == 0) {
+        } else if (amount && amount == 0) {
             const tips = '转出金额不能为0';
             this.setState({
                 tips,
@@ -233,7 +245,7 @@ class MfbOut extends Component {
     }
     render_buy() {
         const {amount, data, bankSelect, tips} = this.state;
-        const {withdraw_info, title, pay_methods} = data;
+        const {withdraw_info, pay_methods} = data;
         return (
             <ScrollView style={{color: Colors.bgColor}} keyboardShouldPersistTaps="handled">
                 <PasswordModal
@@ -256,16 +268,11 @@ class MfbOut extends Component {
                                 onChangeText={(value) => {
                                     this.onInput(value);
                                 }}
-                                onEndEditing={() => {
-                                    if (amount) {
-                                        this.setState({amount: Number(this.state.amount).toFixed(2)});
-                                    }
-                                }}
                                 value={amount}
                                 autoFocus={true}
                             />
                         </View>
-                        <TouchableOpacity onPress={this.allAmount}>
+                        <TouchableOpacity activeOpacity={0.8} onPress={this.allAmount}>
                             <Text style={{color: '#0051CC'}}>{withdraw_info?.button.text}</Text>
                         </TouchableOpacity>
                     </View>

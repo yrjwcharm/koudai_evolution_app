@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 15:52:27
- * @LastEditTime: 2021-11-06 19:22:13
+ * @LastEditTime: 2021-12-13 16:25:08
  * @LastEditors: dx
  * @Description: 详情页底部固定按钮
  * @FilePath: /koudai_evolution_app/src/pages/Detail/components/FixedBtn.js
@@ -93,7 +93,7 @@ const FixedBtn = (props) => {
                     </TouchableOpacity>
                     <Button
                         title={btns[1]?.title}
-                        // desc={btns[1]?.desc}
+                        desc={btns[1]?.desc}
                         style={styles.btn}
                         textStyle={styles.btnText}
                         descStyle={styles.descText}

@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-10-11 17:39:12
+ * @LastEditTime: 2021-12-14 11:41:25
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -23,6 +23,7 @@ import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import {useSelector} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import Storage from '../../utils/storage';
+import Loading from '../Portfolio/components/PageLoading';
 
 export default function LCMF({route, navigation}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -149,6 +150,7 @@ export default function LCMF({route, navigation}) {
                         }}
                         onMessage={onMessage}
                         originWhitelist={['*']}
+                        renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                         ref={webview}
                         source={{
                             uri:

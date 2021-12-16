@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-01 15:56:13
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-14 11:42:21
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -33,6 +33,8 @@ import Mask from '../../components/Mask.js';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import Loading from '../Portfolio/components/PageLoading';
+
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -376,7 +378,12 @@ const ArticleDetail = ({navigation, route}) => {
                             allowsFullscreenVideo={false}
                             allowsInlineMediaPlayback={true}
                             ref={webviewRef}
-                            onLoadEnd={() => {
+                            onLoadEnd={async () => {
+                                webviewRef.current.postMessage(
+                                    JSON.stringify({
+                                        did: global.did,
+                                    })
+                                );
                                 if (data.feedback_status == 1) {
                                     setTimeout(() => {
                                         webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
@@ -393,6 +400,7 @@ const ArticleDetail = ({navigation, route}) => {
                             onHttpError={(err) => {
                                 console.log(err, 'object');
                             }}
+                            renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                             startInLoadingState
                             style={{height: webviewHeight}}
                             textZoom={100}

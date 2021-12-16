@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-17 15:37:35
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-06 15:12:07
  * @Description:路由表
  */
 import React from 'react';
@@ -84,6 +84,7 @@ import FundAnnouncement from '../pages/Portfolio/FundAnnouncement'; // 基金公
 import FixedPlanList from '../pages/FixedPortfolio/FixedPlanList'; //定投计划列表
 import FixedPlanDetail from '../pages/FixedPortfolio/FixedPlanDetail'; //定投计划详情
 import PortfolioAssets from '../pages/Assets/PortfolioAssets'; //持仓页
+import LowBuySignal from '../pages/Assets/LowBuySignal'; //低位买入信号
 import FixedUpdate from '../pages/FixedPortfolio/FixedUpdate'; //定投修改
 import AddedBuy from '../pages/Portfolio/AddedBuy'; // 追加购买
 import RemindMessage from '../pages/Message/RemindMessage'; //消息提醒
@@ -165,6 +166,9 @@ import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
 import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
 import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
+import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
+import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
+import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -546,6 +550,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
+            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{title: '低位买入信号'}} />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />
@@ -672,6 +677,9 @@ export default function AppStack() {
             <Stack.Screen name="ChooseFund" component={ChooseFund} options={{title: ''}} />
             <Stack.Screen name="FundAdjust" component={FundAdjust} options={{title: ''}} />
             <Stack.Screen name="OptimizePlan" component={OptimizePlan} options={{title: '优化计划'}} />
+            <Stack.Screen name="FollowInvestSetting" component={FollowInvestSetting} options={{title: ''}} />
+            <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
+            <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

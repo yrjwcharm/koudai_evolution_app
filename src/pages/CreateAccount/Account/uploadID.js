@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-29 18:44:21
+ * @LastEditors: dx
+ * @LastEditTime: 2021-11-01 16:09:29
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -27,6 +27,7 @@ import Toast from '../../../components/Toast';
 import _ from 'lodash';
 import http from '../../../services';
 import {getUserInfo} from '../../../redux/actions/userInfo';
+import {deleteModal} from '../../../redux/actions/modalInfo';
 import {connect} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 const typeArr = ['从相册中获取', '拍照'];
@@ -84,6 +85,9 @@ class UploadID extends Component {
         if (this.state.behindSource && this.state.frontSource) {
             setTimeout(() => {
                 this.props.getUserInfo();
+                if (this.props.modalInfo?.log_id === 'upload_identity_pop') {
+                    this.props.deleteModal();
+                }
             }, 10);
         }
     };
@@ -280,11 +284,19 @@ const styles = StyleSheet.create({
     },
 });
 
+const mapStateToProps = (state) => {
+    return {
+        modalInfo: state.modalInfo?.toJS(),
+    };
+};
 const mapDispatchToProps = (dispatch) => {
     return {
         getUserInfo: () => {
             dispatch(getUserInfo());
         },
+        deleteModal: () => {
+            dispatch(deleteModal());
+        },
     };
 };
-export default connect(null, mapDispatchToProps)(UploadID);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadID);

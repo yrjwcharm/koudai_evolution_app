@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: dx
- * @LastEditTime: 2021-11-18 15:20:59
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-06 15:42:18
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -23,7 +23,7 @@ import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px, px as text, isIphoneX} from '../../utils/appUtil';
 import Html from '../../components/RenderHtml';
-import Http from '../../services';
+import http from '../../services';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {baseAreaChart} from '../Portfolio/components/ChartOption';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -39,7 +39,10 @@ import CircleLegend from '../../components/CircleLegend';
 import FastImage from 'react-native-fast-image';
 import EmptyTip from '../../components/EmptyTip';
 import GuideTips from '../../components/GuideTips';
-import {throttle} from 'lodash';
+import {throttle, debounce} from 'lodash';
+import {Button} from '../../components/Button';
+import HTML from '../../components/RenderHtml';
+import Agreements from '../../components/Agreements';
 const deviceWidth = Dimensions.get('window').width;
 
 export default function PortfolioAssets(props) {
@@ -60,16 +63,21 @@ export default function PortfolioAssets(props) {
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
     const scoreModal = React.useRef();
+    const signModal = React.useRef(null);
     const jump = useJump();
     const [loading, setLoading] = useState(true);
     const [showEmpty, setShowEmpty] = useState(false);
-
+    const [signTimer, setSignTimer] = useState(8);
+    const [signCheck, setSignCheck] = useState(false);
+    const sign_success_jump_url = useRef('');
+    const show_sign_focus_modal = useRef(false);
+    const intervalt_timer = useRef('');
     const changeTab = throttle((p) => {
         global.LogTool('assetsDetailChartSwitch', props.route?.params?.poid, p);
         setPeriod(p);
     }, 300);
     const init = useCallback(() => {
-        Http.get('/position/detail/20210101', {
+        http.get('/position/detail/20210101', {
             poid: props.route?.params?.poid,
         }).then((res) => {
             if (res.result.period) {
@@ -78,16 +86,6 @@ export default function PortfolioAssets(props) {
             setData(res.result);
             setRefreshing(false);
             props.navigation.setOptions({
-                // headerRight: () => (
-                //     <>
-                //         <TouchableOpacity
-                //             activeOpacity={0.8}
-                //             style={[Style.flexCenter, styles.topRightBtn]}
-                //             onPress={() => {}}>
-                //             <FastImage source={require('../../assets/personal/edit.png')} style={styles.editImg} />
-                //         </TouchableOpacity>
-                //     </>
-                // ),
                 title: res.result.title,
             });
             if (res.result?.progress_bar) {
@@ -105,7 +103,7 @@ export default function PortfolioAssets(props) {
                 setWidthD(res.result.progress_bar.percent_text);
             }
         });
-        Http.get('/position/console/20210101', {
+        http.get('/position/console/20210101', {
             poid: props.route?.params?.poid,
         })
             .then((res) => {
@@ -118,7 +116,7 @@ export default function PortfolioAssets(props) {
     }, [props.route.params]);
     const getChartInfo = () => {
         setChartData([]);
-        Http.get('/position/chart/20210101', {
+        http.get('/position/chart/20210101', {
             poid: props.route?.params?.poid,
             period: period,
         }).then((res) => {
@@ -128,26 +126,12 @@ export default function PortfolioAssets(props) {
             setChartData(res.result.chart || []);
         });
     };
-    const renderLoading = () => {
-        return (
-            <View
-                style={{
-                    paddingTop: Space.padding,
-                    flex: 1,
-                    backgroundColor: '#fff',
-                }}>
-                <FastImage
-                    style={{
-                        flex: 1,
-                    }}
-                    source={require('../../assets/personal/loading.png')}
-                    resizeMode={FastImage.resizeMode.contain}
-                />
-            </View>
-        );
-    };
     useFocusEffect(
         useCallback(() => {
+            //解决弹窗里跳转 返回再次弹出
+            if (card && show_sign_focus_modal.current) {
+                signModal?.current?.show();
+            }
             init();
             storage.get('portfolioAssets').then((res) => {
                 setShowEye(res ? res : 'true');
@@ -174,6 +158,36 @@ export default function PortfolioAssets(props) {
             onHide();
         }
     }, [chartData, loading]);
+    //签约
+    const handleSign = () => {
+        http.post('adviser/sign/20210923', {poids: card?.adviser_info?.sign_po_ids}).then((res) => {
+            signModal.current.toastShow(res.message);
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    signModal.current.hide();
+                    jump(sign_success_jump_url?.current);
+                }, 1000);
+            }
+        });
+    };
+    const renderLoading = () => {
+        return (
+            <View
+                style={{
+                    paddingTop: Space.padding,
+                    flex: 1,
+                    backgroundColor: '#fff',
+                }}>
+                <FastImage
+                    style={{
+                        flex: 1,
+                    }}
+                    source={require('../../assets/personal/loading.png')}
+                    resizeMode={FastImage.resizeMode.contain}
+                />
+            </View>
+        );
+    };
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -221,7 +235,7 @@ export default function PortfolioAssets(props) {
     }, []);
 
     const accountJump = (url, type) => {
-        Http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
+        http.get('/position/popup/20210101', {poid: props.route?.params?.poid, action: type}).then((res) => {
             if (res.result) {
                 if (res.result?.button_list) {
                     Modal.show({
@@ -244,7 +258,29 @@ export default function PortfolioAssets(props) {
                     });
                 }
             } else {
-                jump(url);
+                if (
+                    (type == 'adjust' || type == 'transfer') &&
+                    !card?.adviser_info?.is_signed &&
+                    type != 'TradeRedeem'
+                ) {
+                    sign_success_jump_url.current = url;
+                    signModal?.current?.show();
+                    setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
+                    setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
+                    show_sign_focus_modal.current = true;
+                    intervalt_timer.current = setInterval(() => {
+                        setSignTimer((time) => {
+                            if (time > 0) {
+                                return --time;
+                            } else {
+                                intervalt_timer.current && clearInterval(intervalt_timer.current);
+                                return time;
+                            }
+                        });
+                    }, 1000);
+                } else {
+                    jump(url);
+                }
             }
         });
     };
@@ -545,6 +581,7 @@ export default function PortfolioAssets(props) {
             </>
         );
     };
+
     return loading ? (
         renderLoading()
     ) : (
@@ -707,7 +744,7 @@ export default function PortfolioAssets(props) {
                                     onPress={() => {
                                         global.LogTool('assetsDetailIconsStart', props.route?.params?.poid, _item.id);
                                         if (_item.red_point) {
-                                            Http.get('/wechat/report/red_point/20210906');
+                                            http.get('/wechat/report/red_point/20210906');
                                         }
                                         jump(_item.url);
                                     }}>
@@ -837,6 +874,83 @@ export default function PortfolioAssets(props) {
                         </View>
                     </BottomModal>
                 )}
+                {card?.adviser_info && (
+                    <BottomModal
+                        style={{height: px(600), backgroundColor: '#fff'}}
+                        ref={signModal}
+                        title={card?.adviser_info?.title}
+                        onClose={() => {
+                            show_sign_focus_modal.current = false;
+                            intervalt_timer.current && clearInterval(intervalt_timer.current);
+                        }}>
+                        <View style={{flex: 1}}>
+                            {card?.adviser_info?.desc && <Notice content={{content: card?.adviser_info?.desc}} />}
+                            <ScrollView
+                                style={{
+                                    paddingHorizontal: px(16),
+                                    paddingTop: px(22),
+                                }}>
+                                <TouchableOpacity activeOpacity={1} style={{paddingBottom: px(40)}}>
+                                    <Text style={{fontSize: px(18), fontWeight: '700', marginBottom: px(12)}}>
+                                        {card?.adviser_info?.risk_disclosure?.title}
+                                    </Text>
+                                    {card?.adviser_info?.risk_disclosure?.content ? (
+                                        <HTML
+                                            html={card?.adviser_info?.risk_disclosure?.content}
+                                            style={styles.light_text}
+                                        />
+                                    ) : null}
+                                    {card?.adviser_info?.risk_disclosure2?.title ? (
+                                        <Text
+                                            style={{
+                                                fontSize: px(18),
+                                                fontWeight: '700',
+                                                marginTop: px(20),
+                                                marginBottom: px(12),
+                                            }}>
+                                            {card?.adviser_info?.risk_disclosure2?.title}
+                                        </Text>
+                                    ) : null}
+                                    {card?.adviser_info?.risk_disclosure2?.content ? (
+                                        <HTML
+                                            html={card?.adviser_info?.risk_disclosure2?.content}
+                                            style={styles.light_text}
+                                        />
+                                    ) : null}
+                                </TouchableOpacity>
+                            </ScrollView>
+                            <>
+                                {card?.adviser_info?.agreement_bottom ? (
+                                    <Agreements
+                                        style={{margin: px(16)}}
+                                        check={card?.adviser_info?.agreement_bottom?.default_agree}
+                                        data={card?.adviser_info?.agreement_bottom?.list}
+                                        onChange={(checkStatus) => setSignCheck(checkStatus)}
+                                        emitJump={() => {
+                                            signModal?.current?.hide();
+                                            setTimeout(() => {
+                                                show_sign_focus_modal.current = true;
+                                            }, 10);
+                                        }}
+                                    />
+                                ) : null}
+                                {card?.adviser_info?.button ? (
+                                    <Button
+                                        disabled={signTimer > 0 || !signCheck}
+                                        style={{marginHorizontal: px(20)}}
+                                        onPress={debounce(handleSign, 500)}
+                                        title={
+                                            signTimer > 0
+                                                ? signTimer + 's' + card?.adviser_info?.button?.text
+                                                : card?.adviser_info?.button?.text
+                                        }
+                                    />
+                                ) : null}
+                            </>
+                        </View>
+                    </BottomModal>
+                )}
+
                 <BottomModal ref={bottomModal} title={tip?.title}>
                     <View style={{padding: text(16)}}>
                         {tip?.img ? (
@@ -1174,4 +1288,5 @@ const styles = StyleSheet.create({
         lineHeight: px(21),
         color: Colors.lightGrayColor,
     },
+    light_text: {fontSize: px(13), lineHeight: px(17)},
 });
