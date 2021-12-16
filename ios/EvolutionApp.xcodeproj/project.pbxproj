@@ -848,7 +848,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 62802;
+				CURRENT_PROJECT_VERSION = 64100;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -900,7 +900,7 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1047,7 +1047,7 @@
 				CODE_SIGN_ENTITLEMENTS = EvolutionApp/EvolutionApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 62802;
+				CURRENT_PROJECT_VERSION = 64100;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1101,7 +1101,7 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1127,7 +1127,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 62802;
+				CURRENT_PROJECT_VERSION = 64100;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1179,7 +1179,7 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 6.0.0;
+				MARKETING_VERSION = 6.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
