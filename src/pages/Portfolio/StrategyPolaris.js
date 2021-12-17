@@ -31,25 +31,29 @@ export default function StrategyPolaris(props) {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView scrollIndicatorInsets={{right: 1}}>
-                    <View style={{backgroundColor: '#fff'}}>
-                        <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
-                        <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>
-                            <Image
-                                source={{
-                                    uri: data.avatar,
-                                }}
-                                style={styles.head_img_sty}
-                            />
-                            <Image source={{uri: data.v_icon}} style={styles.v_icon} />
+                    {data.show_top_status ? (
+                        <View style={{backgroundColor: '#fff'}}>
+                            <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
+                            <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>
+                                <Image
+                                    source={{
+                                        uri: data.avatar,
+                                    }}
+                                    style={styles.head_img_sty}
+                                />
+                                <Image source={{uri: data.v_icon}} style={styles.v_icon} />
+                            </View>
+                            <View style={[styles.content_sty, Style.columnAlign]}>
+                                <Text style={styles.content_title_sty}>{data.nickname}</Text>
+                                <Text>{data.desc}</Text>
+                                <Text style={styles.desc_sty}>{data.strategy}</Text>
+                            </View>
                         </View>
-                        <View style={[styles.content_sty, Style.columnAlign]}>
-                            <Text style={styles.content_title_sty}>{data.nickname}</Text>
-                            <Text>{data.desc}</Text>
-                            <Text style={styles.desc_sty}>{data.strategy}</Text>
-                        </View>
-                    </View>
+                    ) : null}
+
                     <View style={{padding: text(16), paddingTop: text(20)}}>
-                        <Text style={styles.title_sty}>{data.portfolios_title}</Text>
+                        {data.show_top_status ? <Text style={styles.title_sty}>{data.portfolios_title}</Text> : null}
+
                         {data.portfolios.map((_item, _index) => {
                             return (
                                 <TouchableOpacity

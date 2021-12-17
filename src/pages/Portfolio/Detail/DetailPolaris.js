@@ -362,7 +362,7 @@ export default function DetailPolaris({route, navigation}) {
                             {data.tip}
                         </Text>
                     </View>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc fix_img={data?.advisor_footer_img} style={{marginTop: text(80)}} />
                 </ScrollView>
             )}
 
