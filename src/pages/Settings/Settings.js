@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-03 11:26:45
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-09 15:50:11
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-17 10:36:08
  * @Description: 个人设置
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -68,6 +68,7 @@ const Settings = ({navigation}) => {
                         Http.post('/auth/user/logout/20210101').then(async (res) => {
                             if (res.code === '000000') {
                                 await Storage.delete('loginStatus');
+                                await Storage.delete('AD');
                                 dispatch(resetVision());
                                 dispatch(getUserInfo());
                                 dispatch(
