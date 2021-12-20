@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-20 12:11:37
+ * @LastEditTime: 2021-12-20 16:07:22
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
@@ -52,7 +52,7 @@ export default function StrategyPolaris(props) {
                     ) : null}
 
                     <View style={{padding: text(16), paddingTop: text(20)}}>
-                        <Text style={styles.title_sty}>{data.portfolios_title}</Text>
+                        {data?.show_top_status ? <Text style={styles.title_sty}>{data.portfolios_title}</Text> : null}
                         {data.portfolios.map((_item, _index) => {
                             return (
                                 <TouchableOpacity
