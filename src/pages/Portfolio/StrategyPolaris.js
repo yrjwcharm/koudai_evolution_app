@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
- * @LastEditors: dx
- * @LastEditTime: 2021-09-24 10:52:05
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-20 12:11:37
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';
@@ -31,23 +31,26 @@ export default function StrategyPolaris(props) {
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {Object.keys(data).length > 0 && (
                 <ScrollView scrollIndicatorInsets={{right: 1}}>
-                    <View style={{backgroundColor: '#fff'}}>
-                        <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
-                        <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>
-                            <Image
-                                source={{
-                                    uri: data.avatar,
-                                }}
-                                style={styles.head_img_sty}
-                            />
-                            <Image source={{uri: data.v_icon}} style={styles.v_icon} />
+                    {data?.show_top_status ? (
+                        <View style={{backgroundColor: '#fff'}}>
+                            <FitImage source={{uri: data.bg_img}} resizeMode="contain" />
+                            <View style={[Style.flexRowCenter, {marginTop: text(-60)}]}>
+                                <Image
+                                    source={{
+                                        uri: data.avatar,
+                                    }}
+                                    style={styles.head_img_sty}
+                                />
+                                <Image source={{uri: data.v_icon}} style={styles.v_icon} />
+                            </View>
+                            <View style={[styles.content_sty, Style.columnAlign]}>
+                                <Text style={styles.content_title_sty}>{data.nickname}</Text>
+                                <Text>{data.desc}</Text>
+                                <Text style={styles.desc_sty}>{data.strategy}</Text>
+                            </View>
                         </View>
-                        <View style={[styles.content_sty, Style.columnAlign]}>
-                            <Text style={styles.content_title_sty}>{data.nickname}</Text>
-                            <Text>{data.desc}</Text>
-                            <Text style={styles.desc_sty}>{data.strategy}</Text>
-                        </View>
-                    </View>
+                    ) : null}
+
                     <View style={{padding: text(16), paddingTop: text(20)}}>
                         <Text style={styles.title_sty}>{data.portfolios_title}</Text>
                         {data.portfolios.map((_item, _index) => {

@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 17:23:31
  * @Description:马红漫组合
- * @LastEditors: dx
- * @LastEditTime: 2021-07-01 19:06:57
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-20 12:10:44
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, Platform} from 'react-native';
@@ -362,7 +362,7 @@ export default function DetailPolaris({route, navigation}) {
                             {data.tip}
                         </Text>
                     </View>
-                    <BottomDesc style={{marginTop: text(80)}} />
+                    <BottomDesc style={{marginTop: text(80)}} fix_img={data?.advisor_footer_img} />
                 </ScrollView>
             )}
 
