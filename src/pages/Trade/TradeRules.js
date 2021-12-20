@@ -1,8 +1,8 @@
 /*
  * @Author: dx
  * @Date: 2021-01-18 19:31:01
- * @LastEditTime: 2021-11-17 16:06:36
- * @LastEditors: dx
+ * @LastEditTime: 2021-12-20 11:36:16
+ * @LastEditors: yhc
  * @Description: 交易须知
  * @FilePath: /koudai_evolution_app/src/pages/Detail/TradeRules.js
  */
@@ -133,7 +133,7 @@ const Part1 = () => {
                             <Html
                                 style={styles.feeDesc}
                                 html={
-                                    '基金卖出时一般按照先进先出规则, 部分基金卖出按照后进后出规则. 基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.'
+                                    '基金卖出时一般按照先进先出规则, 部分基金卖出按照先进后出规则. 基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.'
                                 }
                             />
                         </View>
