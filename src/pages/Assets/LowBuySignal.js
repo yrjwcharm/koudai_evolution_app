@@ -133,6 +133,7 @@ export default (props) => {
             <FixedButton
                 disabled={!(data?.button?.avail !== undefined ? data.button.avail : 1)}
                 title={data?.button?.text}
+                superscript={data.button?.superscript}
                 onPress={() => {
                     if (data?.button?.action === 'buy') {
                         jump(data?.button?.url);
