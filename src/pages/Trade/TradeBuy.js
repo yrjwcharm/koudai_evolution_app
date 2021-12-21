@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 17:36:07
+ * @LastEditTime: 2021-12-21 11:27:57
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -106,7 +106,9 @@ class TradeBuy extends Component {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
                     // _modalRef 该弹窗之前存在弹窗，则该弹窗不弹出
                     if (this.props.isFocused && res.result.risk_disclosure && this.show_risk_disclosure && !_modalRef) {
-                        this.showRiskDisclosure(res.result);
+                        if (res.result?.pay_methods[0]?.pop_risk_disclosure) {
+                            this.showRiskDisclosure(res.result);
+                        }
                     } else if (this.props.isFocused && res.result.risk_pop && !_modalRef) {
                         this.showRishPop(res.result);
                     }
@@ -169,7 +171,7 @@ class TradeBuy extends Component {
             },
             confirmCallBack: () => {
                 if (this.props.isFocused && data.risk_pop) {
-                    this.showRishPop();
+                    this.showRishPop(data);
                 }
             },
             confirmText: '关闭',
