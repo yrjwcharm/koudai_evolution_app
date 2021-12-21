@@ -2,7 +2,7 @@
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-14 11:39:17
+ * @LastEditTime: 2021-12-21 14:29:58
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -353,6 +353,7 @@ const TopInvestors = ({navigation, route}) => {
             )}
             <FixedButton
                 title={data.button?.text || '追加购买'}
+                superscript={data.button?.superscript}
                 disabled={!(data.button?.avail !== undefined ? data.button.avail : 1)}
                 onPress={() => {
                     if (data.button?.action === 'buy') {

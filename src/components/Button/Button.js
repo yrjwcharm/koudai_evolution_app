@@ -1,15 +1,15 @@
 /*
  * @Date: 2021-01-06 18:41:17
  * @Author: yhc
- * @LastEditors: xjh
- * @LastEditTime: 2021-03-26 17:21:25
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-21 14:25:43
  * @Description:通用按钮
  */
 import React from 'react';
-import {Text, StyleSheet, TouchableHighlight, View} from 'react-native';
+import {Text, StyleSheet, TouchableHighlight, View, Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import {px as text} from '../../utils/appUtil';
-import {Colors, Style} from '../../common/commonStyle';
+import {Colors, Font, Style} from '../../common/commonStyle';
 
 class Button extends React.Component {
     static propTypes = {
@@ -38,9 +38,25 @@ class Button extends React.Component {
     };
     constructor(props) {
         super(props);
+        this.state = {
+            superscriptWidth: text(54),
+        };
     }
     render() {
-        const {type, color, onPress, style, disabled, disabledColor, textStyle, descStyle, title, desc} = this.props;
+        const {
+            type,
+            color,
+            onPress,
+            style,
+            disabled,
+            disabledColor,
+            textStyle,
+            descStyle,
+            title,
+            desc,
+            superscript = '',
+        } = this.props;
+        const {superscriptWidth} = this.state;
         return (
             <>
                 <TouchableHighlight
@@ -55,8 +71,17 @@ class Button extends React.Component {
                     underlayColor={type == 'primary' ? (color ? color : '#0046B1') : '#F6F6F6'}
                     disabled={disabled}>
                     <View style={[Style.flexCenter, {width: '100%', height: '100%'}]}>
-                        <Text style={[type == 'primary' ? styles.Text : styles.minorText, textStyle]}>{title}</Text>
-                        {desc ? <Text style={[descStyle || {}]}>{desc}</Text> : null}
+                        <View>
+                            <Text style={[type == 'primary' ? styles.Text : styles.minorText, textStyle]}>{title}</Text>
+                            {desc ? <Text style={[descStyle || {}]}>{desc}</Text> : null}
+                            {superscript ? (
+                                <View
+                                    onLayout={(e) => this.setState({superscriptWidth: e.nativeEvent.layout.width})}
+                                    style={[styles.superscriptBox, {right: text(-4) - superscriptWidth}]}>
+                                    <Text style={styles.superscript}>{superscript}</Text>
+                                </View>
+                            ) : null}
+                        </View>
                     </View>
                 </TouchableHighlight>
             </>
@@ -88,6 +113,21 @@ const styles = StyleSheet.create({
     },
     disable: {
         backgroundColor: '#c2d5f0',
+    },
+    superscriptBox: {
+        paddingVertical: text(1),
+        paddingHorizontal: text(5),
+        borderRadius: text(9),
+        borderBottomLeftRadius: text(0.5),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        bottom: text(11),
+    },
+    superscript: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: '#fff',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
     },
 });
 export default Button;
