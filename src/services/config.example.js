@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-06 16:22:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-09 10:26:17
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-20 10:58:48
  * @Description:环境
  */
 const env = 'onlinessl'; //默认
@@ -10,8 +10,8 @@ const SERVER_URL = {
     onlinessl: {
         // 正式环境
         HTTP: 'https://kapi-websi.licaimofang.cn/',
-        WS: 'wss://kapi-im-ws.licaimofang.com/',
-        IMApi: 'https://kapi-im.licaimofang.com',
+        WS: 'wss://kapi-im-ws.licaimofang.cn/',
+        IMApi: 'https://kapi-im.licaimofang.cn',
         IMApiSsl: 'https://kapi-imsi.licaimofang.cn',
         H5: 'https://edu.licaimofang.cn',
     },

@@ -2,8 +2,8 @@
 /*
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-11-08 18:11:33
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-12-20 11:31:22
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -346,14 +346,15 @@ export default function Launch({navigation}) {
                         onLoadStart={() => {
                             clock.current = new Date().getTime();
                         }}
-                        onLoadEnd={imageLoadEnd}
+                        onLoad={imageLoadEnd} //加载成功
                         onProgress={() => {
                             //如果图片加载时间超过2s
                             if (new Date().getTime() - clock.current > 2000) {
                                 authLoading();
                             }
                         }}
-                        onLoadError={() => {
+                        onError={() => {
+                            //加载失败
                             timer.current && clearInterval(timer.current);
                             authLoading();
                         }}
