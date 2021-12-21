@@ -20,6 +20,18 @@
 		0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0080455E2591A5E20083350B /* SystemConfiguration.framework */; };
 		008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045602591A5F00083350B /* CoreTelephony.framework */; };
 		008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045622591A5FD0083350B /* libsqlite3.0.tbd */; };
+		00D4ABE42771E9CF007FE68D /* IDCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABC42771E9CD007FE68D /* IDCardModel.m */; };
+		00D4ABE52771E9CF007FE68D /* MJPropertyType.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABCC2771E9CE007FE68D /* MJPropertyType.m */; };
+		00D4ABE62771E9CF007FE68D /* NSObject+MJKeyValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABCF2771E9CE007FE68D /* NSObject+MJKeyValue.m */; };
+		00D4ABE72771E9CF007FE68D /* MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD02771E9CE007FE68D /* MJProperty.m */; };
+		00D4ABE82771E9CF007FE68D /* NSObject+MJCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD22771E9CE007FE68D /* NSObject+MJCoding.m */; };
+		00D4ABE92771E9CF007FE68D /* MJExtensionConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD42771E9CE007FE68D /* MJExtensionConst.m */; };
+		00D4ABEA2771E9CF007FE68D /* NSObject+MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD52771E9CE007FE68D /* NSObject+MJProperty.m */; };
+		00D4ABEB2771E9CF007FE68D /* NSObject+MJClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD72771E9CE007FE68D /* NSObject+MJClass.m */; };
+		00D4ABEC2771E9CF007FE68D /* NSString+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD82771E9CE007FE68D /* NSString+MJExtension.m */; };
+		00D4ABED2771E9CF007FE68D /* MJPropertyKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD92771E9CE007FE68D /* MJPropertyKey.m */; };
+		00D4ABEE2771E9CF007FE68D /* MJFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABDD2771E9CE007FE68D /* MJFoundation.m */; };
+		00D4ABEF2771E9CF007FE68D /* ReadCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABDE2771E9CE007FE68D /* ReadCardManager.m */; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
 		0C140D6F06EEF82032CEB527 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FF701FCEC3967D78711580 /* libPods-EvolutionApp-tvOSTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -83,6 +95,31 @@
 		008045602591A5F00083350B /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		008045622591A5FD0083350B /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		00D4ABC42771E9CD007FE68D /* IDCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDCardModel.m; sourceTree = "<group>"; };
+		00D4ABC92771E9CE007FE68D /* MJPropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyKey.h; sourceTree = "<group>"; };
+		00D4ABCA2771E9CE007FE68D /* NSObject+MJClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJClass.h"; sourceTree = "<group>"; };
+		00D4ABCB2771E9CE007FE68D /* NSString+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MJExtension.h"; sourceTree = "<group>"; };
+		00D4ABCC2771E9CE007FE68D /* MJPropertyType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJPropertyType.m; sourceTree = "<group>"; };
+		00D4ABCD2771E9CE007FE68D /* NSObject+MJProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJProperty.h"; sourceTree = "<group>"; };
+		00D4ABCE2771E9CE007FE68D /* MJExtensionConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJExtensionConst.h; sourceTree = "<group>"; };
+		00D4ABCF2771E9CE007FE68D /* NSObject+MJKeyValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJKeyValue.m"; sourceTree = "<group>"; };
+		00D4ABD02771E9CE007FE68D /* MJProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJProperty.m; sourceTree = "<group>"; };
+		00D4ABD12771E9CE007FE68D /* MJFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJFoundation.h; sourceTree = "<group>"; };
+		00D4ABD22771E9CE007FE68D /* NSObject+MJCoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJCoding.m"; sourceTree = "<group>"; };
+		00D4ABD32771E9CE007FE68D /* MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJExtension.h; sourceTree = "<group>"; };
+		00D4ABD42771E9CE007FE68D /* MJExtensionConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJExtensionConst.m; sourceTree = "<group>"; };
+		00D4ABD52771E9CE007FE68D /* NSObject+MJProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJProperty.m"; sourceTree = "<group>"; };
+		00D4ABD62771E9CE007FE68D /* MJPropertyType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyType.h; sourceTree = "<group>"; };
+		00D4ABD72771E9CE007FE68D /* NSObject+MJClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJClass.m"; sourceTree = "<group>"; };
+		00D4ABD82771E9CE007FE68D /* NSString+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MJExtension.m"; sourceTree = "<group>"; };
+		00D4ABD92771E9CE007FE68D /* MJPropertyKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJPropertyKey.m; sourceTree = "<group>"; };
+		00D4ABDA2771E9CE007FE68D /* MJProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJProperty.h; sourceTree = "<group>"; };
+		00D4ABDB2771E9CE007FE68D /* NSObject+MJKeyValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJKeyValue.h"; sourceTree = "<group>"; };
+		00D4ABDC2771E9CE007FE68D /* NSObject+MJCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJCoding.h"; sourceTree = "<group>"; };
+		00D4ABDD2771E9CE007FE68D /* MJFoundation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJFoundation.m; sourceTree = "<group>"; };
+		00D4ABDE2771E9CE007FE68D /* ReadCardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadCardManager.m; path = "../../../Desktop/lcmf/nfc/令牌云RN-Demo/ios/ReadCardManager.m"; sourceTree = "<group>"; };
+		00D4ABE22771E9CE007FE68D /* IDCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDCardModel.h; sourceTree = "<group>"; };
+		00D4ABE32771E9CE007FE68D /* ReadCardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadCardManager.h; path = "../../../Desktop/lcmf/nfc/令牌云RN-Demo/ios/ReadCardManager.h"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* EvolutionAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EvolutionAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* EvolutionAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EvolutionAppTests.m; sourceTree = "<group>"; };
@@ -163,6 +200,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00D4ABC82771E9CE007FE68D /* MJExtension */ = {
+			isa = PBXGroup;
+			children = (
+				00D4ABC92771E9CE007FE68D /* MJPropertyKey.h */,
+				00D4ABCA2771E9CE007FE68D /* NSObject+MJClass.h */,
+				00D4ABCB2771E9CE007FE68D /* NSString+MJExtension.h */,
+				00D4ABCC2771E9CE007FE68D /* MJPropertyType.m */,
+				00D4ABCD2771E9CE007FE68D /* NSObject+MJProperty.h */,
+				00D4ABCE2771E9CE007FE68D /* MJExtensionConst.h */,
+				00D4ABCF2771E9CE007FE68D /* NSObject+MJKeyValue.m */,
+				00D4ABD02771E9CE007FE68D /* MJProperty.m */,
+				00D4ABD12771E9CE007FE68D /* MJFoundation.h */,
+				00D4ABD22771E9CE007FE68D /* NSObject+MJCoding.m */,
+				00D4ABD32771E9CE007FE68D /* MJExtension.h */,
+				00D4ABD42771E9CE007FE68D /* MJExtensionConst.m */,
+				00D4ABD52771E9CE007FE68D /* NSObject+MJProperty.m */,
+				00D4ABD62771E9CE007FE68D /* MJPropertyType.h */,
+				00D4ABD72771E9CE007FE68D /* NSObject+MJClass.m */,
+				00D4ABD82771E9CE007FE68D /* NSString+MJExtension.m */,
+				00D4ABD92771E9CE007FE68D /* MJPropertyKey.m */,
+				00D4ABDA2771E9CE007FE68D /* MJProperty.h */,
+				00D4ABDB2771E9CE007FE68D /* NSObject+MJKeyValue.h */,
+				00D4ABDC2771E9CE007FE68D /* NSObject+MJCoding.h */,
+				00D4ABDD2771E9CE007FE68D /* MJFoundation.m */,
+			);
+			path = MJExtension;
+			sourceTree = "<group>";
+		};
 		00E356EF1AD99517003FC87E /* EvolutionAppTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +261,11 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				00D4ABE22771E9CE007FE68D /* IDCardModel.h */,
+				00D4ABC42771E9CD007FE68D /* IDCardModel.m */,
+				00D4ABC82771E9CE007FE68D /* MJExtension */,
+				00D4ABE32771E9CE007FE68D /* ReadCardManager.h */,
+				00D4ABDE2771E9CE007FE68D /* ReadCardManager.m */,
 			);
 			name = EvolutionApp;
 			sourceTree = "<group>";
@@ -754,8 +824,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00D4ABE92771E9CF007FE68D /* MJExtensionConst.m in Sources */,
+				00D4ABEC2771E9CF007FE68D /* NSString+MJExtension.m in Sources */,
+				00D4ABEA2771E9CF007FE68D /* NSObject+MJProperty.m in Sources */,
+				00D4ABE82771E9CF007FE68D /* NSObject+MJCoding.m in Sources */,
+				00D4ABEB2771E9CF007FE68D /* NSObject+MJClass.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				00D4ABE72771E9CF007FE68D /* MJProperty.m in Sources */,
+				00D4ABEE2771E9CF007FE68D /* MJFoundation.m in Sources */,
+				00D4ABED2771E9CF007FE68D /* MJPropertyKey.m in Sources */,
+				00D4ABE52771E9CF007FE68D /* MJPropertyType.m in Sources */,
+				00D4ABE42771E9CF007FE68D /* IDCardModel.m in Sources */,
+				00D4ABE62771E9CF007FE68D /* NSObject+MJKeyValue.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				00D4ABEF2771E9CF007FE68D /* ReadCardManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -864,6 +946,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 62802;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1151,6 +1234,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 62802;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
