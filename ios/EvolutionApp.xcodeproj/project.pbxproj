@@ -10,6 +10,10 @@
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
+		004DB1622771A86F007184F9 /* FaceSdk_NoSilent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */; };
+		004DB1662771A8A4007184F9 /* CWResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 004DB1652771A8A4007184F9 /* CWResource.bundle */; };
+		004DB16A2771A8BE007184F9 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1632771A88A007184F9 /* TKCloudSDK.framework */; };
+		004DB16B2771A8BE007184F9 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1632771A88A007184F9 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045532591A5B30083350B /* libRCTWeChat.a */; };
 		008045552591A5CD0083350B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB7F258B442700501EA5 /* libz.tbd */; };
 		0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045592591A5DA0083350B /* libc++.tbd */; };
@@ -57,6 +61,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				004DB16B2771A8BE007184F9 /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,6 +74,9 @@
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EvolutionApp.entitlements; path = EvolutionApp/EvolutionApp.entitlements; sourceTree = "<group>"; };
 		0048D3E3271D757400F2CD34 /* iot.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = iot.p12; sourceTree = "<group>"; };
+		004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceSdk_NoSilent.framework; sourceTree = "<group>"; };
+		004DB1632771A88A007184F9 /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
+		004DB1652771A8A4007184F9 /* CWResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CWResource.bundle; sourceTree = "<group>"; };
 		008045532591A5B30083350B /* libRCTWeChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTWeChat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		008045592591A5DA0083350B /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		0080455E2591A5E20083350B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -123,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
+				004DB16A2771A8BE007184F9 /* TKCloudSDK.framework in Frameworks */,
 				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
@@ -130,6 +139,7 @@
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
+				004DB1622771A86F007184F9 /* FaceSdk_NoSilent.framework in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,8 +186,11 @@
 				0048D3E3271D757400F2CD34 /* iot.p12 */,
 				D078539625B803F900274C2D /* fonts */,
 				002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */,
+				004DB1632771A88A007184F9 /* TKCloudSDK.framework */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
+				004DB1652771A8A4007184F9 /* CWResource.bundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -429,6 +442,7 @@
 				D059087E25C260C000EFA6CA /* DIN-Medium.otf in Resources */,
 				0048D3E4271D757400F2CD34 /* iot.p12 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				004DB1662771A8A4007184F9 /* CWResource.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -850,6 +864,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 62802;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1051,6 +1069,10 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1129,6 +1151,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 62802;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",

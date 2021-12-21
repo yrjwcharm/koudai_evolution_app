@@ -2,7 +2,7 @@
  * @Date: 2020-12-28 11:53:04
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-18 15:18:01
+ * @LastEditTime: 2021-12-21 10:31:36
  * @Description:
  */
 
@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import cn.jiguang.plugins.push.JPushModule;
-
+import com.licaimofang.readcard.ReadCardPackage;
 // import com.github.wumke.RNExitApp.RNExitAppPackage;
 public class MainApplication extends Application implements ReactApplication {
 
@@ -41,7 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
             packages.add(new WeChatPackage());
-
+            packages.add(new ReadCardPackage());
             CodePush.getJSBundleFile();
             new CodePush(
 //                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging

@@ -110,5 +110,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+		<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>F049442E43484E</string>
+	</array>
+	<key>NFCReaderUsageDescription</key>
+	<string>NFC使用说明</string>
 </dict>
 </plist>
