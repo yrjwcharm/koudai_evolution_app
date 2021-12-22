@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 10:35:48
+ * @LastEditTime: 2021-12-22 17:44:48
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -910,7 +910,7 @@ function HomeScreen({navigation, route}) {
                             end={{x: 0, y: 1}}
                             style={[styles.centerCtrl]}>
                             {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
-                            <Image source={moodEnumRef.current[centerData[page].mood || 1]} style={styles.robotSty} />
+                            <Image source={moodEnumRef.current[centerData[page]?.mood || 1]} style={styles.robotSty} />
                             <Text
                                 style={{
                                     ...styles.noticeText,
