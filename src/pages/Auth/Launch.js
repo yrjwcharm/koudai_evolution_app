@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-20 11:31:22
+ * @LastEditTime: 2021-12-22 17:54:04
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -218,6 +218,16 @@ export default function Launch({navigation}) {
             }
         });
     };
+    //跳转
+    const appJump = (res) => {
+        if (res) {
+            navigation.replace('Tab');
+            SplashScreen.hide();
+        } else {
+            navigation.replace('AppGuide');
+        }
+    };
+    //域名切换
     const authLoading = (callback) => {
         Storage.get('AppGuide').then((res) => {
             http.get('/health/check', {env})
@@ -238,14 +248,7 @@ export default function Launch({navigation}) {
                     if (callback) {
                         callback();
                     } else {
-                        if (res) {
-                            navigation.replace('Tab');
-                            setTimeout(() => {
-                                SplashScreen.hide();
-                            }, 8);
-                        } else {
-                            navigation.replace('AppGuide');
-                        }
+                        appJump(res);
                     }
                 })
                 .catch(() => {
@@ -261,14 +264,7 @@ export default function Launch({navigation}) {
                                 if (callback) {
                                     callback();
                                 } else {
-                                    if (res) {
-                                        navigation.replace('Tab');
-                                        setTimeout(() => {
-                                            SplashScreen.hide();
-                                        }, 8);
-                                    } else {
-                                        navigation.replace('AppGuide');
-                                    }
+                                    appJump(res);
                                 }
                             })
                             .catch(() => {
@@ -277,14 +273,7 @@ export default function Launch({navigation}) {
                                 } else {
                                     global.LogTool('Host', 'failed');
                                     Toast.show('网络异常，请稍后再试~');
-                                    if (res) {
-                                        navigation.replace('Tab');
-                                        setTimeout(() => {
-                                            SplashScreen.hide();
-                                        }, 8);
-                                    } else {
-                                        navigation.replace('AppGuide');
-                                    }
+                                    appJump(res);
                                 }
                             });
                     };
@@ -350,6 +339,7 @@ export default function Launch({navigation}) {
                         onProgress={() => {
                             //如果图片加载时间超过2s
                             if (new Date().getTime() - clock.current > 2000) {
+                                timer.current && clearInterval(timer.current);
                                 authLoading();
                             }
                         }}

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-08 18:50:53
+ * @LastEditTime: 2021-12-22 17:40:16
  * @Description: 
  */
 package com.licaimofang.app;
@@ -23,9 +23,9 @@ public class MainActivity extends ReactActivity {
   }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //webview 调试
-        WebView.setWebContentsDebuggingEnabled(true);
-    }
+    //  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) { //webview 调试
+    //     WebView.setWebContentsDebuggingEnabled(true);
+    // }
       SplashScreen.show(this,R.style.SplashScreenTheme);  // here
       super.onCreate(savedInstanceState);
   }
