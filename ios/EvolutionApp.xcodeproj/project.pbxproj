@@ -10,10 +10,7 @@
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
-		004DB1622771A86F007184F9 /* FaceSdk_NoSilent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */; };
 		004DB1662771A8A4007184F9 /* CWResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 004DB1652771A8A4007184F9 /* CWResource.bundle */; };
-		004DB16A2771A8BE007184F9 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1632771A88A007184F9 /* TKCloudSDK.framework */; };
-		004DB16B2771A8BE007184F9 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 004DB1632771A88A007184F9 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045532591A5B30083350B /* libRCTWeChat.a */; };
 		008045552591A5CD0083350B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB7F258B442700501EA5 /* libz.tbd */; };
 		0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045592591A5DA0083350B /* libc++.tbd */; };
@@ -32,6 +29,9 @@
 		00D4ABED2771E9CF007FE68D /* MJPropertyKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABD92771E9CE007FE68D /* MJPropertyKey.m */; };
 		00D4ABEE2771E9CF007FE68D /* MJFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABDD2771E9CE007FE68D /* MJFoundation.m */; };
 		00D4ABEF2771E9CF007FE68D /* ReadCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D4ABDE2771E9CE007FE68D /* ReadCardManager.m */; };
+		00D4AD152772FF24007FE68D /* FaceSdk_NoSilent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D4AD142772FF24007FE68D /* FaceSdk_NoSilent.framework */; };
+		00D4AE43277319D9007FE68D /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D4ADDB277319B1007FE68D /* TKCloudSDK.framework */; };
+		00D4AE44277319DA007FE68D /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00D4ADDB277319B1007FE68D /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		00E356F31AD99517003FC87E /* EvolutionAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EvolutionAppTests.m */; };
 		0C140D6F06EEF82032CEB527 /* libPods-EvolutionApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4FF701FCEC3967D78711580 /* libPods-EvolutionApp-tvOSTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -73,7 +73,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				004DB16B2771A8BE007184F9 /* TKCloudSDK.framework in Embed Frameworks */,
+				00D4AE44277319DA007FE68D /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -86,8 +86,6 @@
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EvolutionApp.entitlements; path = EvolutionApp/EvolutionApp.entitlements; sourceTree = "<group>"; };
 		0048D3E3271D757400F2CD34 /* iot.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = iot.p12; sourceTree = "<group>"; };
-		004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceSdk_NoSilent.framework; sourceTree = "<group>"; };
-		004DB1632771A88A007184F9 /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		004DB1652771A8A4007184F9 /* CWResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CWResource.bundle; sourceTree = "<group>"; };
 		008045532591A5B30083350B /* libRCTWeChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTWeChat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		008045592591A5DA0083350B /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -120,6 +118,8 @@
 		00D4ABDE2771E9CE007FE68D /* ReadCardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadCardManager.m; path = "../../../Desktop/lcmf/nfc/令牌云RN-Demo/ios/ReadCardManager.m"; sourceTree = "<group>"; };
 		00D4ABE22771E9CE007FE68D /* IDCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDCardModel.h; sourceTree = "<group>"; };
 		00D4ABE32771E9CE007FE68D /* ReadCardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReadCardManager.h; path = "../../../Desktop/lcmf/nfc/令牌云RN-Demo/ios/ReadCardManager.h"; sourceTree = "<group>"; };
+		00D4AD142772FF24007FE68D /* FaceSdk_NoSilent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FaceSdk_NoSilent.framework; path = fonts/FaceSdk_NoSilent.framework; sourceTree = "<group>"; };
+		00D4ADDB277319B1007FE68D /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TKCloudSDK.framework; path = "../../../Library/Containers/com.tencent.xinWeChat/Data/Library/Application Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK/TKCloudSDK.framework"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* EvolutionAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EvolutionAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* EvolutionAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EvolutionAppTests.m; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
-				004DB16A2771A8BE007184F9 /* TKCloudSDK.framework in Frameworks */,
+				00D4AE43277319D9007FE68D /* TKCloudSDK.framework in Frameworks */,
 				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
@@ -176,7 +176,7 @@
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
-				004DB1622771A86F007184F9 /* FaceSdk_NoSilent.framework in Frameworks */,
+				00D4AD152772FF24007FE68D /* FaceSdk_NoSilent.framework in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,13 +249,13 @@
 			isa = PBXGroup;
 			children = (
 				0048D3E3271D757400F2CD34 /* iot.p12 */,
+				00D4ADDB277319B1007FE68D /* TKCloudSDK.framework */,
+				00D4AD142772FF24007FE68D /* FaceSdk_NoSilent.framework */,
 				D078539625B803F900274C2D /* fonts */,
 				002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */,
-				004DB1632771A88A007184F9 /* TKCloudSDK.framework */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				004DB1652771A8A4007184F9 /* CWResource.bundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				004DB1612771A86F007184F9 /* FaceSdk_NoSilent.framework */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -946,10 +946,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 62802;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/fonts",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1151,10 +1156,15 @@
 				CURRENT_PROJECT_VERSION = 62802;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/fonts",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1238,6 +1248,11 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/fonts",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
+					"$(USER_LIBRARY_DIR)/Containers/com.tencent.xinWeChat/Data/Library/Application\\ Support/com.tencent.xinWeChat/2.0b4.0.9/2d6aad99beb9198d2530f962b531d744/Message/MessageTemp/d29bbd0e96096d7e22be8529237897d2/File/令牌云RN-Demo/ios/开启Bitcode身份认证和活体SDK",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
