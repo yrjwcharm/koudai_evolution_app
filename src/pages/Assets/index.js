@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-23 16:17:27
+ * @LastEditTime: 2021-12-23 18:50:49
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -906,7 +906,7 @@ function HomeScreen({navigation, route}) {
                     </View>
                     {/* 中控 */}
                     {centerData.length > 0 &&
-                        (centerData[0]?.type === 12 ? (
+                        (centerData[0]?.style === 1 ? (
                             <View style={[Style.flexRow, styles.centerCtrl, {paddingLeft: text(7)}]}>
                                 <Image source={smile1} style={styles.robotSty1} />
                                 <View style={{flex: 1}}>
