@@ -2,7 +2,7 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-23 16:49:16
+ * @LastEditTime: 2021-12-23 16:51:52
  * @Description: 自定义跳转钩子
  */
 import {useRef} from 'react';
@@ -46,27 +46,27 @@ function useJump() {
                 });
             } else if (url.type === 6) {
                 // 弹出弹窗
-                const {pop} = url;
+                const {popup} = url;
                 Modal.show({
                     cancelCallBack: () => {
-                        if (pop?.cancel?.act === 'back') {
+                        if (popup?.cancel?.act === 'back') {
                             navigation.goBack();
-                        } else if (pop?.cancel?.act === 'jump') {
-                            jump(pop?.cancel?.url);
+                        } else if (popup?.cancel?.act === 'jump') {
+                            jump(popup?.cancel?.url);
                         }
                     },
-                    cancelText: pop?.cancel?.text,
-                    confirm: pop?.cancel ? true : false,
+                    cancelText: popup?.cancel?.text,
+                    confirm: popup?.cancel ? true : false,
                     confirmCallBack: () => {
-                        if (pop?.confirm?.act === 'back') {
+                        if (popup?.confirm?.act === 'back') {
                             navigation.goBack();
-                        } else if (pop?.confirm?.act === 'jump') {
-                            jump(pop?.confirm?.url);
+                        } else if (popup?.confirm?.act === 'jump') {
+                            jump(popup?.confirm?.url);
                         }
                     },
-                    confirmText: pop?.confirm?.text,
-                    content: pop?.content,
-                    title: pop?.title,
+                    confirmText: popup?.confirm?.text,
+                    content: popup?.content,
+                    title: popup?.title,
                 });
             } else {
                 navigation[type](url.path, url.params || {});
