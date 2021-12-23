@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-22 17:44:48
+ * @LastEditTime: 2021-12-23 14:43:44
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -391,6 +391,7 @@ function HomeScreen({navigation, route}) {
                 <View style={{height: text(60)}}>
                     <HTML
                         html={item.content}
+                        numberOfLines={3}
                         style={{
                             ...styles.contentText,
                             color: item.title ? Colors.descColor : Colors.defaultColor,
