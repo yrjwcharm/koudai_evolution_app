@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-23 18:50:49
+ * @LastEditTime: 2021-12-24 17:32:33
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -90,6 +90,7 @@ function HomeScreen({navigation, route}) {
         3: sad,
         4: warn,
     }); // 机器人表情枚举
+    const carouselRef = useRef(null);
     // 滚动回调
     const onScroll = (event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -170,7 +171,17 @@ function HomeScreen({navigation, route}) {
             });
             http.get('/asset/center_control/20210101').then((res) => {
                 if (res.code === '000000') {
-                    setCenterData(res.result || []);
+                    setCenterData((prev) => {
+                        const next = res.result || [];
+                        if (prev.length > 0) {
+                            setPage((prevPage) => {
+                                const nextPage = prevPage + 1 > next.length ? next.length - 1 : prevPage;
+                                carouselRef.current?.snapToItem(nextPage);
+                                return nextPage;
+                            });
+                        }
+                        return next;
+                    });
                 }
             });
         }
@@ -1013,6 +1024,7 @@ function HomeScreen({navigation, route}) {
                                         itemWidth={deviceWidth - text(79)}
                                         loop={Platform.select({android: false, ios: true})}
                                         onSnapToItem={(index) => setPage(index)}
+                                        ref={carouselRef}
                                         removeClippedSubviews
                                         renderItem={renderItem}
                                         sliderHeight={text(144)}
