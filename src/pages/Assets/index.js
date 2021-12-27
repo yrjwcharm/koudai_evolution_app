@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-27 15:55:22
+ * @LastEditTime: 2021-12-27 17:48:38
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -179,6 +179,8 @@ function HomeScreen({navigation, route}) {
                                 carouselRef.current?.snapToItem(nextPage);
                                 return nextPage;
                             });
+                        } else {
+                            setPage(0);
                         }
                         return next;
                     });
