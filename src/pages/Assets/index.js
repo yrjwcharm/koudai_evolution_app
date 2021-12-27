@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-27 10:41:07
+ * @LastEditTime: 2021-12-27 15:55:22
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1418,7 +1418,7 @@ const styles = StyleSheet.create({
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentTitle: {
-        fontSize: text(13),
+        fontSize: Font.textH2,
         lineHeight: text(18),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),
