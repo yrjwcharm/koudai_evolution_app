@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-24 17:32:33
+ * @LastEditTime: 2021-12-27 10:41:07
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -397,19 +397,17 @@ function HomeScreen({navigation, route}) {
                 ) : null}
                 {item.title ? (
                     <View style={{marginBottom: text(4)}}>
-                        <HTML html={item.title} style={styles.contentTitle} />
+                        <HTML html={item.title} numberOfLines={1} style={styles.contentTitle} />
                     </View>
                 ) : null}
-                <View style={{height: text(60)}}>
-                    <HTML
-                        html={item.content}
-                        numberOfLines={3}
-                        style={{
-                            ...styles.contentText,
-                            color: item.title ? Colors.descColor : Colors.defaultColor,
-                        }}
-                    />
-                </View>
+                <HTML
+                    html={item.content}
+                    numberOfLines={3}
+                    style={{
+                        ...styles.contentText,
+                        color: item.title ? Colors.descColor : Colors.defaultColor,
+                    }}
+                />
                 {item.button ? (
                     <View
                         style={[
@@ -994,10 +992,18 @@ function HomeScreen({navigation, route}) {
                                                 ) : null}
                                                 {item.title ? (
                                                     <View style={{marginBottom: text(4)}}>
-                                                        <HTML html={item.title} style={styles.contentTitle} />
+                                                        <HTML
+                                                            html={item.title}
+                                                            numberOfLines={2}
+                                                            style={styles.contentTitle}
+                                                        />
                                                     </View>
                                                 ) : null}
-                                                <HTML html={item.content} style={styles.contentText} />
+                                                <HTML
+                                                    html={item.content}
+                                                    numberOfLines={3}
+                                                    style={styles.contentText}
+                                                />
                                                 {item.button ? (
                                                     <View
                                                         style={[
