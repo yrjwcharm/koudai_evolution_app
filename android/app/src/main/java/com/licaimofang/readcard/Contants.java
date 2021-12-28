@@ -1,4 +1,3 @@
-
 package com.licaimofang.readcard;
 
 public class Contants {

@@ -107,14 +107,27 @@ export function detectNFCStatus(callback) {
 
 /**
  * 进入令牌云读卡页面
+ * @param uiConfig 主题配置json字符串
+ * ----
+ * readTitle: 读卡标题，默认为：身份认证，仅需一贴
+ * readTitleColor: 读卡标题颜色，默认为：#333333
+ * readBtnTextColor: 读卡按钮文字颜色，默认为：#FFFFFF
+ * readBtnBgColor: 读卡按钮背景颜色，默认为：#333333
+ * bottomTipText: 读卡底部提示文本，默认为：个人信息已加密保护
+ * bottomTipTextColor: 读卡底部提示文本颜色，默认为：#CDCDCD
+ * sureMessageTextColor: 确认信息按钮文字颜色，默认为：#FFFFFF
+ * sureMessageBgColor: 确认信息按钮背景颜色，默认为：#333333
+ * bottomTipImageDrawableBase64:盾牌icon base64,不传或置空为默认
+ * openNfcBtnBgColor: 打开nfc按钮的背景颜色，默认为：#333333
+ * openNfcBtnTextColor: 打开nfc按钮文字颜色，默认为：#FFFFFF
  */
-export function enterToReadCardPage() {
+export function enterToReadCardPage(uiConfig) {
     if (Platform.OS === 'ios') {
         // iOS
-        ReadCardManager.gotoReadCardController();
+        ReadCardManager.gotoReadCardController(uiConfig);
     } else {
         // 安卓
-        ReadCardManager.showReadCardActivity();
+        ReadCardManager.showReadCardActivity(uiConfig);
     }
 }
 

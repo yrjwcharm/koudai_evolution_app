@@ -124,9 +124,24 @@ class TKNativeView extends Component {
                             detectNFCStatus((status) => {
                                 if (status === 1) {
                                     console.log('NFC开启');
+                                    const uiconfig = {
+                                        readTitle: '身份认证，立即开启',
+                                        readTitleColor: '#ff0000',
+                                        readBtnTextColor: '#FFFFFF',
+                                        readBtnBgColor: '#0000FF',
+                                        bottomTipText: '个人信息已加密保护',
+                                        bottomTipTextColor: '#333333',
+                                        sureMessageTextColor: '#FFFFFF',
+                                        sureMessageBgColor: '#00FF00',
+                                        bottomTipImageDrawableBase64: '112jiaaaa',
+                                        openNfcBtnBgColor: '#333333',
+                                        openNfcBtnTextColor: '#FFFFFF',
+                                    };
+                                    const configString = JSON.stringify(uiconfig);
                                     // 进入读卡页面
-                                    enterToReadCardPage();
+                                    enterToReadCardPage(configString);
                                 } else if (status === 2) {
+                                    enterToReadCardPage();
                                     console.log('(仅限安卓):未开启');
                                 } else if (status === 3) {
                                     console.log('不支持NFC');

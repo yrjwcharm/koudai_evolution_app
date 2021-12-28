@@ -309,8 +309,7 @@ dependencies {
     }
 
       //读卡sdk
-   // implementation files('libs/readcard-release-v1.1.1.aar')
-    implementation files('libs/readcard-release-v1.2.1.aar')
+    implementation files('libs/readcard-release-v1.3.1.aar')
     implementation files('libs/FaceSdk_V1.0.7.aar')
     //androidx下 的约束布局
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'

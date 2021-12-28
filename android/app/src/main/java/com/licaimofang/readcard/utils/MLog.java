@@ -1,10 +1,3 @@
-/*
- * @Date: 2021-12-21 10:27:48
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-21 10:52:05
- * @Description: 
- */
 package com.licaimofang.readcard.utils;
 
 

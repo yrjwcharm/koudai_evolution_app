@@ -1,10 +1,3 @@
-/*
- * @Date: 2021-12-21 10:27:48
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-21 11:39:23
- * @Description: 
- */
 package com.licaimofang.readcard.utils;
 
 import android.app.Activity;
@@ -26,7 +19,7 @@ public class FaceUtil {
 
 
         IdocrFaceSdkManager faceManager = EidLinkSdkFactory.getSdkManager(eidInitParams);
-        faceManager.setModel(false, false, true, false, 1);
+        faceManager.setModel(true, true, true, true, 4);
         faceManager.start(activity, requestParams, new OnIdocrGetResultListener() {
             @Override
             public void onSuccess(String reqId) {

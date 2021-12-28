@@ -1,13 +1,7 @@
-/*
- * @Date: 2021-12-21 10:27:48
- * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-12-21 10:32:38
- * @Description: 
- */
 package com.licaimofang.readcard.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -44,5 +38,19 @@ public class BitmapUtil {
         }
         return result;
     }
+    /**
+     * base64转为bitmap
+     * @param base64Data
+     * @return
+     */
+    public static Bitmap base64ToBitmap(String base64Data) {
+        try {
+            byte[] bytes = Base64.decode(base64Data, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        }catch (Exception e){
 
+            return null;
+        }
+
+    }
 }
