@@ -3,7 +3,7 @@
  * @Date: 2021-02-22 11:01:39
  * @Description:马红漫策略页
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-20 16:07:22
+ * @LastEditTime: 2021-12-21 10:10:22
  */
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image} from 'react-native';

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-13 10:35:48
+ * @LastEditTime: 2021-12-27 17:48:38
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -47,6 +47,7 @@ import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
 import smile from '../../assets/personal/smile.gif';
+import smile1 from '../../assets/personal/smile1.gif';
 import sad from '../../assets/personal/sad.gif';
 import warn from '../../assets/personal/warning.gif';
 import Storage from '../../utils/storage';
@@ -89,6 +90,7 @@ function HomeScreen({navigation, route}) {
         3: sad,
         4: warn,
     }); // 机器人表情枚举
+    const carouselRef = useRef(null);
     // 滚动回调
     const onScroll = (event) => {
         let y = event.nativeEvent.contentOffset.y;
@@ -169,7 +171,19 @@ function HomeScreen({navigation, route}) {
             });
             http.get('/asset/center_control/20210101').then((res) => {
                 if (res.code === '000000') {
-                    setCenterData(res.result || []);
+                    setCenterData((prev) => {
+                        const next = res.result || [];
+                        if (prev.length > 0) {
+                            setPage((prevPage) => {
+                                const nextPage = prevPage + 1 > next.length ? next.length - 1 : prevPage;
+                                carouselRef.current?.snapToItem(nextPage);
+                                return nextPage;
+                            });
+                        } else {
+                            setPage(0);
+                        }
+                        return next;
+                    });
                 }
             });
         }
@@ -385,18 +399,17 @@ function HomeScreen({navigation, route}) {
                 ) : null}
                 {item.title ? (
                     <View style={{marginBottom: text(4)}}>
-                        <HTML html={item.title} style={styles.contentTitle} />
+                        <HTML html={item.title} numberOfLines={1} style={styles.contentTitle} />
                     </View>
                 ) : null}
-                <View style={{height: text(60)}}>
-                    <HTML
-                        html={item.content}
-                        style={{
-                            ...styles.contentText,
-                            color: item.title ? Colors.descColor : Colors.defaultColor,
-                        }}
-                    />
-                </View>
+                <HTML
+                    html={item.content}
+                    numberOfLines={3}
+                    style={{
+                        ...styles.contentText,
+                        color: item.title ? Colors.descColor : Colors.defaultColor,
+                    }}
+                />
                 {item.button ? (
                     <View
                         style={[
@@ -903,103 +916,131 @@ function HomeScreen({navigation, route}) {
                         })}
                     </View>
                     {/* 中控 */}
-                    {centerData.length > 0 && (
-                        <LinearGradient
-                            colors={['#DEECFF', '#E2EEFF']}
-                            start={{x: 0, y: 0}}
-                            end={{x: 0, y: 1}}
-                            style={[styles.centerCtrl]}>
-                            {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
-                            <Image source={moodEnumRef.current[centerData[page].mood || 1]} style={styles.robotSty} />
-                            <Text
-                                style={{
-                                    ...styles.noticeText,
-                                    color: Colors.defaultColor,
-                                    marginBottom: text(10),
-                                    marginLeft: text(60),
-                                }}>
-                                {`Hi，${userInfo.nickname || userInfo.mobile}`}
-                            </Text>
-                            {centerData.length > 1 && (
-                                <Text style={styles.pageText}>
-                                    <Text style={styles.currentPage}>{page + 1}</Text>
-                                    <Text>/{centerData.length}</Text>
-                                </Text>
-                            )}
-                            {centerData.length <= 1 &&
-                                centerData.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            onPress={() => {
-                                                if (item.button) {
-                                                    global.LogTool('assetsConsoleStart', item.type);
-                                                    http.post('/asset/center_click/20210101', {
-                                                        id: item.id,
-                                                        type: item.type,
-                                                    });
-                                                    jump(item.button.url);
-                                                }
-                                            }}
-                                            style={styles.contentBox}
-                                            key={item + index}>
-                                            {item.tag ? (
-                                                <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
-                                                    <View style={[styles.contentTag, {backgroundColor: item.color}]}>
-                                                        <Text style={styles.contentTagText}>{item.tag}</Text>
-                                                    </View>
-                                                    {item.pub_date ? (
-                                                        <Text
-                                                            style={{
-                                                                ...styles.contentTagText,
-                                                                color: Colors.lightGrayColor,
-                                                                fontWeight: '400',
-                                                            }}>
-                                                            {item.pub_date}
-                                                        </Text>
-                                                    ) : null}
-                                                </View>
-                                            ) : null}
-                                            {item.title ? (
-                                                <View style={{marginBottom: text(4)}}>
-                                                    <HTML html={item.title} style={styles.contentTitle} />
-                                                </View>
-                                            ) : null}
-                                            <HTML html={item.content} style={styles.contentText} />
-                                            {item.button ? (
-                                                <View
-                                                    style={[
-                                                        Style.flexRowCenter,
-                                                        styles.checkBtn,
-                                                        {backgroundColor: item.color || Colors.red},
-                                                    ]}>
-                                                    <Text style={{...styles.noticeText, marginRight: text(4)}}>
-                                                        {item.button.text}
-                                                    </Text>
-                                                    <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
-                                                </View>
-                                            ) : null}
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            {centerData.length > 1 && (
-                                <Carousel
-                                    activeSlideAlignment={'start'}
-                                    data={centerData}
-                                    inactiveSlideOpacity={1}
-                                    inactiveSlideScale={0.9}
-                                    itemHeight={text(144)}
-                                    itemWidth={deviceWidth - text(79)}
-                                    loop={Platform.select({android: false, ios: true})}
-                                    onSnapToItem={(index) => setPage(index)}
-                                    removeClippedSubviews
-                                    renderItem={renderItem}
-                                    sliderHeight={text(144)}
-                                    sliderWidth={deviceWidth - text(44)}
+                    {centerData.length > 0 &&
+                        (centerData[0]?.style === 1 ? (
+                            <View style={[Style.flexRow, styles.centerCtrl, {paddingLeft: text(7)}]}>
+                                <Image source={smile1} style={styles.robotSty1} />
+                                <View style={{flex: 1}}>
+                                    {centerData[0]?.title ? (
+                                        <View style={{marginBottom: text(2)}}>
+                                            <HTML html={centerData[0]?.title} style={styles.contentTitle} />
+                                        </View>
+                                    ) : null}
+                                    {centerData[0]?.content ? (
+                                        <HTML html={centerData[0]?.content} style={styles.contentText} />
+                                    ) : null}
+                                </View>
+                            </View>
+                        ) : (
+                            <LinearGradient
+                                colors={['#DEECFF', '#E2EEFF']}
+                                start={{x: 0, y: 0}}
+                                end={{x: 0, y: 1}}
+                                style={[styles.centerCtrl]}>
+                                {/* mood 1代表平静 2代表微笑 3代表伤心 4代表警告 */}
+                                <Image
+                                    source={moodEnumRef.current[centerData[page]?.mood || 1]}
+                                    style={styles.robotSty}
                                 />
-                            )}
-                        </LinearGradient>
-                    )}
+                                <Text
+                                    style={{
+                                        ...styles.noticeText,
+                                        color: Colors.defaultColor,
+                                        marginBottom: text(10),
+                                        marginLeft: text(60),
+                                    }}>
+                                    {`Hi，${userInfo.hold_info || userInfo.nickname || userInfo.mobile}`}
+                                </Text>
+                                {centerData.length > 1 && (
+                                    <Text style={styles.pageText}>
+                                        <Text style={styles.currentPage}>{page + 1}</Text>
+                                        <Text>/{centerData.length}</Text>
+                                    </Text>
+                                )}
+                                {centerData.length <= 1 &&
+                                    centerData.map((item, index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                activeOpacity={0.8}
+                                                onPress={() => {
+                                                    if (item.button) {
+                                                        global.LogTool('assetsConsoleStart', item.type);
+                                                        http.post('/asset/center_click/20210101', {
+                                                            id: item.id,
+                                                            type: item.type,
+                                                        });
+                                                        jump(item.button.url);
+                                                    }
+                                                }}
+                                                style={styles.contentBox}
+                                                key={item + index}>
+                                                {item.tag ? (
+                                                    <View style={[Style.flexBetween, {marginBottom: text(8)}]}>
+                                                        <View
+                                                            style={[styles.contentTag, {backgroundColor: item.color}]}>
+                                                            <Text style={styles.contentTagText}>{item.tag}</Text>
+                                                        </View>
+                                                        {item.pub_date ? (
+                                                            <Text
+                                                                style={{
+                                                                    ...styles.contentTagText,
+                                                                    color: Colors.lightGrayColor,
+                                                                    fontWeight: '400',
+                                                                }}>
+                                                                {item.pub_date}
+                                                            </Text>
+                                                        ) : null}
+                                                    </View>
+                                                ) : null}
+                                                {item.title ? (
+                                                    <View style={{marginBottom: text(4)}}>
+                                                        <HTML
+                                                            html={item.title}
+                                                            numberOfLines={2}
+                                                            style={styles.contentTitle}
+                                                        />
+                                                    </View>
+                                                ) : null}
+                                                <HTML
+                                                    html={item.content}
+                                                    numberOfLines={3}
+                                                    style={styles.contentText}
+                                                />
+                                                {item.button ? (
+                                                    <View
+                                                        style={[
+                                                            Style.flexRowCenter,
+                                                            styles.checkBtn,
+                                                            {backgroundColor: item.color || Colors.red},
+                                                        ]}>
+                                                        <Text style={{...styles.noticeText, marginRight: text(4)}}>
+                                                            {item.button.text}
+                                                        </Text>
+                                                        <FontAwesome name={'angle-right'} size={16} color={'#fff'} />
+                                                    </View>
+                                                ) : null}
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                {centerData.length > 1 && (
+                                    <Carousel
+                                        activeSlideAlignment={'start'}
+                                        data={centerData}
+                                        inactiveSlideOpacity={1}
+                                        inactiveSlideScale={0.9}
+                                        itemHeight={text(144)}
+                                        itemWidth={deviceWidth - text(79)}
+                                        loop={Platform.select({android: false, ios: true})}
+                                        onSnapToItem={(index) => setPage(index)}
+                                        ref={carouselRef}
+                                        removeClippedSubviews
+                                        renderItem={renderItem}
+                                        sliderHeight={text(144)}
+                                        sliderWidth={deviceWidth - text(44)}
+                                    />
+                                )}
+                            </LinearGradient>
+                        ))}
                     {/* 持仓组合 */}
                     {holdingData?.accounts?.map((item, index, arr) => {
                         return item.portfolios ? (
@@ -1334,7 +1375,7 @@ const styles = StyleSheet.create({
         marginHorizontal: Space.marginAlign,
         padding: text(12),
         borderRadius: Space.borderRadius,
-        backgroundColor: '#fff',
+        backgroundColor: '#DEECFF',
     },
     robotSty: {
         width: text(54),
@@ -1342,6 +1383,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: text(3),
         left: text(12),
+    },
+    robotSty1: {
+        marginRight: text(3),
+        width: text(54),
+        height: text(54),
     },
     pageText: {
         fontSize: Font.textH3,
@@ -1374,7 +1420,7 @@ const styles = StyleSheet.create({
         fontWeight: Platform.select({android: '700', ios: '500'}),
     },
     contentTitle: {
-        fontSize: text(13),
+        fontSize: Font.textH2,
         lineHeight: text(18),
         color: Colors.defaultColor,
         fontWeight: Platform.select({android: '700', ios: '500'}),

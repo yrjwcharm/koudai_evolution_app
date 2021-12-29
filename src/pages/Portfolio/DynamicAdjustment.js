@@ -2,7 +2,7 @@
  * @Date: 2021-01-21 15:34:03
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-19 16:07:44
+ * @LastEditTime: 2021-12-23 17:42:41
  * @Description: 智能调仓
  */
 import React, {Component} from 'react';
@@ -49,6 +49,7 @@ class DynamicAdjustment extends Component {
             // console.log(obj);
             this.setState({
                 chartData: res.result.chart,
+                chartColor: res.result.colors,
             });
         });
     };
@@ -56,7 +57,7 @@ class DynamicAdjustment extends Component {
         this.init();
     }
     render() {
-        const {data, chartData, refreshing, showEmpty} = this.state;
+        const {data, chartColor, chartData, refreshing, showEmpty} = this.state;
         const {navigation, route} = this.props;
         return (
             <ScrollView
@@ -67,7 +68,7 @@ class DynamicAdjustment extends Component {
                         <View style={[styles.topPart]}>
                             {chartData?.length > 0 && (
                                 <Chart
-                                    initScript={percentStackColumn(chartData)}
+                                    initScript={percentStackColumn(chartData, 'stack', chartColor)}
                                     data={chartData}
                                     style={{width: '100%'}}
                                 />

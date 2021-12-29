@@ -2,12 +2,12 @@
  * @Author: xjh
  * @Date: 2021-02-19 17:34:35
  * @Description:修改定投
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-28 18:53:50
+ * @LastEditors: dx
+ * @LastEditTime: 2021-12-22 18:33:45
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, ScrollView} from 'react-native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {px as text, formaNum, onlyNumber} from '../../utils/appUtil';
@@ -44,6 +44,8 @@ export default function FixedUpdate({navigation, route}) {
     const initAmount = useRef('');
     const [loading, setLoading] = useState(true);
     const userInfo = useSelector((state) => state.userInfo);
+    const isFocused = useIsFocused();
+    const show_risk_disclosure = useRef(true);
 
     const addNum = () => {
         setNum((prev) => {
@@ -59,6 +61,48 @@ export default function FixedUpdate({navigation, route}) {
                 Toast.show(`${cycleRef.current}投入金额最小为${formaNum(initAmount.current, 'nozero')}`);
             }
             return prev - intervalRef.current < initAmount.current ? initAmount.current : prev - intervalRef.current;
+        });
+    };
+    /**
+     * @description 展示风险揭示书
+     * @param {any} risk_disclosure 风险揭示书内容
+     * @returns void
+     */
+    const showRiskDisclosure = (risk_disclosure) => {
+        show_risk_disclosure.current = false;
+        Modal.show({
+            children: () => {
+                return (
+                    <View>
+                        <Text
+                            style={{
+                                marginTop: text(2),
+                                fontSize: Font.textH2,
+                                lineHeight: text(20),
+                                color: Colors.red,
+                                textAlign: 'center',
+                            }}>
+                            {risk_disclosure.sub_title}
+                        </Text>
+                        <ScrollView
+                            bounces={false}
+                            style={{
+                                marginVertical: Space.marginVertical,
+                                paddingHorizontal: text(20),
+                                maxHeight: text(352),
+                            }}>
+                            <Text style={{fontSize: text(13), lineHeight: text(22), color: Colors.descColor}}>
+                                {risk_disclosure.content}
+                            </Text>
+                        </ScrollView>
+                    </View>
+                );
+            },
+            confirmText: '关闭',
+            countdown: risk_disclosure.countdown,
+            isTouchMaskToClose: false,
+            onCloseCallBack: () => navigation.goBack(),
+            title: risk_disclosure.title,
         });
     };
     useFocusEffect(
@@ -86,6 +130,11 @@ export default function FixedUpdate({navigation, route}) {
             })
                 .then((res) => {
                     if (res.code === '000000') {
+                        if (isFocused && res.result.risk_disclosure && show_risk_disclosure.current) {
+                            if (res.result?.pay_methods[0]?.pop_risk_disclosure) {
+                                showRiskDisclosure(res.result.risk_disclosure);
+                            }
+                        }
                         intervalRef.current = res.result.target_info.invest.incr;
                         initAmount.current = res.result.target_info.invest.init_amount;
                         setData(res.result);
@@ -259,7 +308,14 @@ export default function FixedUpdate({navigation, route}) {
                     </InputModal>
                     <BankCardModal
                         data={data?.pay_methods || []}
-                        onDone={(value) => setPayMethod(value)}
+                        onDone={(value) => {
+                            setPayMethod(value);
+                            if (value?.pop_risk_disclosure) {
+                                setTimeout(() => {
+                                    showRiskDisclosure(data.risk_disclosure);
+                                }, 300);
+                            }
+                        }}
                         select={data?.pay_methods?.findIndex((item) => item.bank_name === payMethod.bank_name)}
                         ref={bankCardModal}
                         title={'请选择支付银行卡'}
