@@ -101,6 +101,8 @@
 		B26FADA7835E39D4C5D3C3E9 /* Pods-EvolutionApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		C4FF701FCEC3967D78711580 /* libPods-EvolutionApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EvolutionApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D059087D25C260C000EFA6CA /* DIN-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DIN-Medium.otf"; sourceTree = "<group>"; };
+		D07216DB27717293006AFA8D /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
+		D07216DD27717393006AFA8D /* libJPush.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libJPush.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D078539F25B8050600274C2D /* DIN-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DIN-Regular.otf"; sourceTree = "<group>"; };
 		E6E63C6CC15A22AB1BA7C337 /* Pods-EvolutionApp-tvOS.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EvolutionApp-tvOS.staging.xcconfig"; path = "Target Support Files/Pods-EvolutionApp-tvOS/Pods-EvolutionApp-tvOS.staging.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -190,6 +192,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D07216DD27717393006AFA8D /* libJPush.a */,
+				D07216DB27717293006AFA8D /* libswiftWebKit.tbd */,
 				008045622591A5FD0083350B /* libsqlite3.0.tbd */,
 				008045602591A5F00083350B /* CoreTelephony.framework */,
 				0080455E2591A5E20083350B /* SystemConfiguration.framework */,
@@ -900,7 +904,12 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				MARKETING_VERSION = 6.4.1;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1101,6 +1110,10 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				MARKETING_VERSION = 6.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1179,7 +1192,12 @@
 				INFOPLIST_FILE = EvolutionApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				MARKETING_VERSION = 6.4.1;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
