@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-05-20 19:11:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-06 16:22:45
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -90,7 +90,7 @@ const ShareModal = React.forwardRef((props, ref) => {
     };
 
     const share = (item) => {
-        if (item.type === 'ShareAppMessage') {
+        if (item.type === 'ShareAppMessage' || item.type == 'ShareTimeline') {
             global.LogTool('shareStart', props.ctrl);
             if (needLogin) {
                 hide();
@@ -99,49 +99,24 @@ const ShareModal = React.forwardRef((props, ref) => {
             WeChat.isWXAppInstalled().then((isInstalled) => {
                 if (isInstalled) {
                     try {
-                        WeChat.shareWebpage({
-                            title: shareContent.title,
-                            description: shareContent.content,
-                            thumbImageUrl: shareContent.avatar,
-                            webpageUrl: shareContent.link,
-                            scene: 0,
-                        }).then((res) => {
-                            hide();
-                            Toast.show('分享成功');
-                            global.LogTool('shareSuccess', props.ctrl);
-                        });
-                    } catch (e) {
-                        if (e instanceof WeChat.WechatError) {
-                            console.error(e.stack);
+                        if (shareContent.type == 'image') {
+                            WeChat.shareImage({
+                                imageUrl: shareContent?.image,
+                                scene: item.type === 'ShareAppMessage' ? 0 : 1, //0好友 1朋友圈
+                            });
                         } else {
-                            throw e;
+                            WeChat.shareWebpage({
+                                title: shareContent.title,
+                                description: shareContent.content,
+                                thumbImageUrl: shareContent.avatar,
+                                webpageUrl: shareContent.link,
+                                scene: item.type === 'ShareAppMessage' ? 0 : 1, //0好友 1朋友圈
+                            }).then((res) => {
+                                hide();
+                                Toast.show('分享成功');
+                                global.LogTool('shareSuccess', props.ctrl);
+                            });
                         }
-                    }
-                } else {
-                    Toast.show('请安装微信');
-                    hide();
-                }
-            });
-        } else if (item.type == 'ShareTimeline') {
-            global.LogTool('shareStart', props.ctrl);
-            if (needLogin) {
-                hide();
-                return navigation.navigate('Login');
-            }
-            WeChat.isWXAppInstalled().then((isInstalled) => {
-                if (isInstalled) {
-                    try {
-                        WeChat.shareWebpage({
-                            title: shareContent.title,
-                            description: shareContent.content,
-                            thumbImageUrl: shareContent.avatar,
-                            webpageUrl: shareContent.link,
-                            scene: 1,
-                        }).then(() => {
-                            hide();
-                            Toast.show('分享成功');
-                            global.LogTool('shareSuccess', props.ctrl);
-                        });
                     } catch (e) {
                         if (e instanceof WeChat.WechatError) {
                             console.error(e.stack);
@@ -223,6 +198,12 @@ const ShareModal = React.forwardRef((props, ref) => {
                 activeOpacity={1}
                 onPress={isTouchMaskToClose ? hide : () => {}}
                 style={[styles.container]}>
+                {shareContent?.image ? (
+                    <Image
+                        source={{uri: shareContent?.image}}
+                        style={{height: px(400), width: px(300), marginBottom: px(40)}}
+                    />
+                ) : null}
                 <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
                     {header ||
                         (title ? (
@@ -246,6 +227,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                                     ? require('../../assets/img/share/collectActive.png')
                                     : require('../../assets/img/share/collect.png');
                             }
+
                             if (!more) {
                                 if (item.type === 'Like' || item.type === 'Collect') {
                                     return null;
@@ -290,6 +272,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     con: {
         backgroundColor: Colors.bgColor,
@@ -325,7 +308,7 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     cancelBtn: {
-        width: '100%',
+        width: deviceWidth,
         height: isIphoneX() ? px(55) + 34 : px(55),
         backgroundColor: '#fff',
         borderRadius: 0,

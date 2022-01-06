@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 10:30:09
+ * @LastEditTime: 2022-01-06 18:12:31
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,15 +17,28 @@ import {useJump} from '../../components/hooks';
 import {Style} from '../../common/commonStyle';
 import {deviceHeight} from '../../utils/appUtil';
 import Loading from '../Portfolio/components/PageLoading';
+import {ShareModal} from '../../components/Modal';
+import http from '../../services';
 
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
     const [title, setTitle] = useState('');
     const [token, setToken] = useState('');
+    const [data, setData] = useState();
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
     const timeStamp = useRef(Date.now());
+    const shareModal = useRef(null);
+    const image =
+        'https://lcmf.oss-cn-hangzhou.aliyuncs.com/invite/share/20220106/bg/jianchi.jpg?x-oss-process=image%2Fauto-orient%2C1%2Fformat%2Cjpg%2Fwatermark%2Cg_se%2Cimage_aW52aXRlL3NoYXJlLzIwMjIwMTA2L3FyY29kZS90ZXN0LzEwMTAwMDY0MjUuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTM1LGhfMTM1%2Cx_108%2Cy_120&OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1956823847&Signature=h9SHdxNK7aE3%2F1vZ7iwtb2py0s8%3D';
     useEffect(() => {
+        http.get(
+            'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/common/webview/info/20220101?scene=annual_report'
+        ).then((res) => {
+            setData(res.result);
+            shareModal?.current?.show();
+        });
+
         const getToken = () => {
             Storage.get('loginStatus').then((result) => {
                 setToken(result?.access_token ? result?.access_token : 'null');
@@ -43,29 +56,12 @@ export default function WebView({route, navigation}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backButtonEnabled]);
     const onNavigationStateChange = (navState) => {
-        // console.log(navState.url);
-        if (navState.url.indexOf('/myInsurance') > -1) {
-            setTitle('我的保险');
-        } else if (navState.url.indexOf('/expertOpinion') > -1) {
-            setTitle('家庭保险方案建议');
-        } else if (navState.url.indexOf('/introduceDetail') > -1) {
-            setTitle('保险详情');
-        } else if (navState.url.indexOf('/insuranceAssist') > -1) {
-            setTitle('协助投保');
-        } else if (navState.url.indexOf('/insuranceProgress') > -1) {
-            setTitle('保险进度');
-        } else if (navState.url.indexOf('/complaintFeedback') > -1) {
-            setTitle('投诉反馈');
-        } else if (navState.url.indexOf('/recommendations') > -1) {
-            setTitle('专家意见书');
-        } else {
-            if (route?.params?.title) {
-                setTitle(route?.params?.title);
-            } else if (navState.title) {
-                setTitle(navState.title);
-            }
+        if (route?.params?.title) {
+            setTitle(route?.params?.title);
+        } else if (navState.title) {
+            setTitle(navState.title);
         }
-        setBackButtonEnabled(navState.canGoBack && navState.url.indexOf('/insuranceProgress') <= -1);
+        setBackButtonEnabled(navState.canGoBack);
     };
 
     useFocusEffect(
@@ -87,12 +83,24 @@ export default function WebView({route, navigation}) {
     };
     return (
         <View style={{flex: 1}}>
+            <ShareModal
+                ctrl={route.params?.link}
+                ref={shareModal}
+                shareContent={{
+                    type: 'image',
+                    image: image,
+                }}
+                more={false}
+                title={data?.title}
+            />
             <NavBar
                 leftIcon="chevron-left"
-                title={title}
+                title={data?.title_info?.title}
                 leftPress={onBackAndroid}
-                style={{backgroundColor: 'transparent', position: 'absolute'}}
-                titleStyle={{color: '#000'}}
+                style={
+                    data?.title_info?.title_style == 1 ? {backgroundColor: 'transparent', position: 'absolute'} : null
+                }
+                titleStyle={data?.title_info?.title_style == 1 ? {color: '#000'} : null}
             />
             {token && route?.params?.link ? (
                 <RNWebView
@@ -102,9 +110,11 @@ export default function WebView({route, navigation}) {
                         const data = event.nativeEvent.data;
                         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
                         if (data?.indexOf('logParams=') > -1) {
+                            //打点
                             const logParams = JSON.parse(data?.split('logParams=')[1] || []);
                             global.LogTool(...logParams);
                         } else if (data && data.indexOf('url=') > -1) {
+                            //跳转
                             const url = JSON.parse(data.split('url=')[1]);
                             jump(url);
                         } else if (data && data.indexOf('https') <= -1) {
@@ -123,7 +133,7 @@ export default function WebView({route, navigation}) {
                                     .catch((err) => Toast.show(err));
                             }
                         } else if (data && data.indexOf('https') > -1) {
-                            //保险保单跳转外链
+                            //跳转外链
                             jump({type: 2, path: data});
                         }
                     }}
@@ -156,10 +166,8 @@ export default function WebView({route, navigation}) {
                     }}
                     javaScriptEnabled={true}
                     injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
-                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
                     onLoadEnd={async () => {
                         const loginStatus = await Storage.get('loginStatus');
-                        // console.log(loginStatus);
                         webview.current.postMessage(
                             JSON.stringify({
                                 ...loginStatus,
@@ -171,7 +179,6 @@ export default function WebView({route, navigation}) {
                     }}
                     onNavigationStateChange={onNavigationStateChange}
                     renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
-                    // showsVerticalScrollIndicator={false}
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{

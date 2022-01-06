@@ -320,7 +320,11 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-
+                            <Button
+                                onPress={() => {
+                                    props.navigation.navigate('ReportWebView');
+                                }}
+                            />
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 推荐 */}
