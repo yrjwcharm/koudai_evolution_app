@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 11:08:51
+ * @LastEditTime: 2022-01-06 10:30:09
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -87,7 +87,13 @@ export default function WebView({route, navigation}) {
     };
     return (
         <View style={{flex: 1}}>
-            <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
+            <NavBar
+                leftIcon="chevron-left"
+                title={title}
+                leftPress={onBackAndroid}
+                style={{backgroundColor: 'transparent', position: 'absolute'}}
+                titleStyle={{color: '#000'}}
+            />
             {token && route?.params?.link ? (
                 <RNWebView
                     bounces={false}
@@ -169,9 +175,10 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        uri: route?.params?.timestamp
-                            ? `${route.params.link}?timeStamp=${timeStamp.current}`
-                            : route?.params?.link,
+                        // uri: route?.params?.timestamp
+                        //     ? `${route.params.link}?timeStamp=${timeStamp.current}`
+                        //     : route?.params?.link,
+                        uri: 'http://192.168.88.133:3000/PersonalAnnualReport',
                     }}
                     textZoom={100}
                 />
