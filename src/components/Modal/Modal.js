@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:09:49
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-16 11:15:17
+ * @LastEditTime: 2022-03-21 11:48:45
  * @Description:
  */
 /**
@@ -17,6 +17,7 @@
 import React from 'react';
 import RootSibling from 'react-native-root-siblings';
 import ModalRender from './ModalContainer';
+import BottomModal from './BottomModal';
 import Mask from '../Mask';
 global.rootSibling = null;
 export function destroy() {
@@ -26,24 +27,49 @@ export function destroy() {
     }
 }
 export default class Modal extends React.Component {
-    static show(options) {
+    static show(options, type = 'fade') {
         if (global.rootSibling) {
             global.rootSibling.update(
-                <>
-                    {<Mask />}
-                    <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
-                </>
-            );
-        } else {
-            global.rootSibling = new RootSibling(
-                (
+                type === 'fade' ? (
                     <>
                         {<Mask />}
                         <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
                     </>
-                )
+                ) : type === 'slide' ? (
+                    <>
+                        <Mask />
+                        <BottomModal
+                            backdrop={false}
+                            destroy={() => destroy()}
+                            {...options}
+                            ref={(ref) => (this.bottomModal = ref)}
+                        />
+                    </>
+                ) : null
+            );
+        } else {
+            global.rootSibling = new RootSibling(
+                type === 'fade' ? (
+                    <>
+                        {<Mask />}
+                        <ModalRender {...options} isVisible={true} destroy={() => destroy()} />
+                    </>
+                ) : type === 'slide' ? (
+                    <>
+                        <Mask />
+                        <BottomModal
+                            backdrop={false}
+                            destroy={() => destroy()}
+                            {...options}
+                            ref={(ref) => (this.bottomModal = ref)}
+                        />
+                    </>
+                ) : null
             );
         }
+        setTimeout(() => {
+            this.bottomModal && this.bottomModal.show();
+        }, 0);
         return global.rootSibling;
     }
     static showCustom(children) {
@@ -66,9 +92,13 @@ export default class Modal extends React.Component {
         }
         return global.rootSibling;
     }
-    static close(options) {
+    static close(options, type = 'fade') {
         destroy();
-        global.rootSibling = new RootSibling(<ModalRender {...options} isVisible={false} destroy={() => destroy()} />);
+        if (type === 'fade') {
+            global.rootSibling = new RootSibling(
+                <ModalRender {...options} isVisible={false} destroy={() => destroy()} />
+            );
+        }
         return global.rootSibling;
     }
     componentWillUnmount() {

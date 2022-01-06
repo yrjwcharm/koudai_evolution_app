@@ -29,6 +29,8 @@ export default function Praise(props) {
                     action_type: _like,
                     resource_cate: type,
                 });
+            } else if (type === 'product') {
+                http.post('/community/comment/favor/20220101', {resource_id: comment.id, action_type: _like});
             } else {
                 http.post('/comment/like/20210101', {id: comment.id, favor: _like});
             }

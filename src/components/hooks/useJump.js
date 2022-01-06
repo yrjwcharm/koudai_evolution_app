@@ -2,17 +2,20 @@
  * @Date: 2021-03-01 19:48:43
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-12-23 16:51:52
+ * @LastEditTime: 2022-01-04 15:56:23
  * @Description: 自定义跳转钩子
  */
 import {useRef} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Linking} from 'react-native';
 import Toast from '../Toast';
 import {Modal} from '../Modal';
+import http from '../../services';
+import {generateOptions} from '../../../App';
 import * as WeChat from 'react-native-wechat-lib';
 function useJump() {
     const navigation = useNavigation();
+    const route = useRoute();
     const flagRef = useRef(true);
     return function jump(url, type = 'navigate') {
         if (url && flagRef.current) {
@@ -47,27 +50,36 @@ function useJump() {
             } else if (url.type === 6) {
                 // 弹出弹窗
                 const {popup} = url;
-                Modal.show({
-                    cancelCallBack: () => {
-                        if (popup?.cancel?.act === 'back') {
-                            navigation.goBack();
-                        } else if (popup?.cancel?.act === 'jump') {
-                            jump(popup?.cancel?.url);
-                        }
-                    },
-                    cancelText: popup?.cancel?.text,
-                    confirm: popup?.cancel ? true : false,
-                    confirmCallBack: () => {
-                        if (popup?.confirm?.act === 'back') {
-                            navigation.goBack();
-                        } else if (popup?.confirm?.act === 'jump') {
-                            jump(popup?.confirm?.url);
-                        }
-                    },
-                    confirmText: popup?.confirm?.text,
-                    content: popup?.content,
-                    title: popup?.title,
-                });
+                if (popup.type === 'add_wechat_guide') {
+                    const options = generateOptions(popup);
+                    Modal.show(options, 'slide');
+                } else {
+                    Modal.show({
+                        cancelCallBack: () => {
+                            if (popup?.cancel?.act === 'back') {
+                                navigation.goBack();
+                            } else if (popup?.cancel?.act === 'jump') {
+                                jump(popup?.cancel?.url);
+                            }
+                        },
+                        cancelText: popup?.cancel?.text,
+                        confirm: popup?.cancel ? true : false,
+                        confirmCallBack: () => {
+                            if (popup?.confirm?.act === 'back') {
+                                navigation.goBack();
+                            } else if (popup?.confirm?.act === 'jump') {
+                                jump(popup?.confirm?.url);
+                            }
+                        },
+                        confirmText: popup?.confirm?.text,
+                        content: popup?.content,
+                        title: popup?.title,
+                    });
+                }
+                if (popup.log_id) {
+                    http.post('/common/layer/click/20210801', {log_id: popup.log_id});
+                    global.LogTool('campaignPopup', route.name, popup.log_id);
+                }
             } else {
                 navigation[type](url.path, url.params || {});
             }

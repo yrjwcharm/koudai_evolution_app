@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: dx
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -26,6 +26,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import NumText from '../../../components/NumText';
+import Praise from '../../../components/Praise';
 import {throttle} from 'lodash';
 import {BottomModal} from '../../../components/Modal';
 
@@ -40,6 +41,7 @@ export default function DetailAccount({route, navigation}) {
     const [riskChartMin, setRiskChartMin] = useState(0);
     const bottomModal = React.useRef(null);
     const [tipsDataOfBottomModal, setTipsDataOfBottomModal] = useState({});
+    const [commentData, setCommentData] = useState({});
     const changeTab = useCallback(
         throttle((p, t) => {
             setPeriod((prev) => {
@@ -103,6 +105,15 @@ export default function DetailAccount({route, navigation}) {
                 .then((res) => {
                     setLoading(false);
                     if (res.code === '000000') {
+                        if (res.result.account_id) {
+                            Http.get('/community/comment/top/20220101', {account_id: res.result.account_id}).then(
+                                (resp) => {
+                                    if (resp.code === '000000') {
+                                        setCommentData(resp.result);
+                                    }
+                                }
+                            );
+                        }
                         setRiskChartMin(
                             Math.min.apply(
                                 res.result?.risk_info?.label && res.result?.risk_info?.label[2]
@@ -637,6 +648,42 @@ export default function DetailAccount({route, navigation}) {
                         </View>
                     ) : null}
 
+                    {/* 用户评论 */}
+                    {Object.keys(commentData || {}).length > 0 ? (
+                        <View style={styles.card_sty}>
+                            <ListHeader color={Colors.brandColor} data={commentData.header} ctrl={'comment'} oid={6} />
+                            {commentData.items?.map?.((item, index) => {
+                                return (
+                                    <View
+                                        style={[
+                                            styles.commentItem,
+                                            index === 0 ? {paddingTop: 0, borderTopWidth: 0} : {},
+                                        ]}
+                                        key={item + index}>
+                                        <View style={[Style.flexBetween, {alignItems: 'flex-start'}]}>
+                                            <View style={{flexDirection: 'row'}}>
+                                                <Image
+                                                    source={{
+                                                        uri: item.avatar,
+                                                    }}
+                                                    style={styles.avatar}
+                                                />
+                                                <View>
+                                                    <Text style={styles.nickname}>{item.name}</Text>
+                                                    <Text style={styles.commentDate}>{item.time}</Text>
+                                                </View>
+                                            </View>
+                                            <Praise comment={item} type="product" />
+                                        </View>
+                                        <Text numberOfLines={4} style={styles.commentContent}>
+                                            {item.content}
+                                        </Text>
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    ) : null}
+
                     <View style={[styles.card_sty, {paddingVertical: 0}]}>
                         {data?.gather_info.map((_info, _idx) => {
                             return (
@@ -877,5 +924,34 @@ const styles = StyleSheet.create({
         lineHeight: text(20),
         fontSize: text(14),
         marginBottom: text(4),
+    },
+    commentItem: {
+        marginTop: Space.marginVertical,
+        paddingTop: Space.padding,
+        borderTopWidth: Space.borderWidth,
+        borderColor: Colors.borderColor,
+    },
+    avatar: {
+        marginRight: text(12),
+        borderRadius: text(100),
+        width: text(32),
+        height: text(32),
+    },
+    nickname: {
+        fontSize: text(13),
+        lineHeight: text(18),
+        color: Colors.descColor,
+    },
+    commentDate: {
+        marginTop: text(1),
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: Colors.lightGrayColor,
+    },
+    commentContent: {
+        marginTop: text(8),
+        fontSize: text(13),
+        lineHeight: text(20),
+        color: Colors.defaultColor,
     },
 });

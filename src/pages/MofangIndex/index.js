@@ -590,7 +590,17 @@ const Index = (props) => {
                             {/* 听听魔方用户怎么说 */}
                             {data?.comment_list ? (
                                 <>
-                                    <RenderTitle title={'听听魔方用户怎么说'} />
+                                    <RenderTitle
+                                        more_text={'更多'}
+                                        onPress={() => {
+                                            jump({
+                                                path: 'CommentList',
+                                                params: {scene: 'user_say', title: '用户留言详情'},
+                                                type: 1,
+                                            });
+                                        }}
+                                        title={'听听魔方用户怎么说'}
+                                    />
                                     <ScrollView
                                         style={{paddingLeft: px(16), width: deviceWidth, marginLeft: px(-16)}}
                                         showsPagination={false}
@@ -603,7 +613,8 @@ const Index = (props) => {
                                                 ? Math.ceil(lastx / interval)
                                                 : Math.floor(lastx / interval);
                                             var scrollTo = snapTo * interval;
-                                            global.LogTool('indexUserReviewSlide', data?.comment_list[snapTo].id);
+                                            data?.comment_list[snapTo]?.id &&
+                                                global.LogTool('indexUserReviewSlide', data.comment_list[snapTo].id);
                                             snapScroll?.current.scrollTo({x: scrollTo, y: 0, animated: true});
                                         }}
                                         scrollEventThrottle={100}

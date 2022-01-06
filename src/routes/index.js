@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-03-22 14:09:24
+ * @LastEditTime: 2022-03-22 14:11:41
  * @Description:路由表
  */
 import React from 'react';
@@ -177,6 +177,8 @@ import ProductCover from '../pages/Portfolio/ProductCover'; //组合宣传封面
 import RationalLevel from '../pages/Vision/RationalLevel'; // 理性等级
 import RationalRecord from '../pages/Vision/RationalRecord'; // 理性值记录
 import RationalUpgrade from '../pages/Vision/RationalUpgrade'; // 理性等级升级
+import CommentList from '../pages/Portfolio/CommentList'; // 评论列表
+import PublishComment from '../pages/Portfolio/PublishComment'; // 发布评论
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -709,6 +711,8 @@ export default function AppStack() {
             <Stack.Screen name="RationalLevel" component={RationalLevel} options={{title: '理性等级'}} />
             <Stack.Screen name="RationalRecord" component={RationalRecord} options={{title: '理性值记录'}} />
             <Stack.Screen name="RationalUpgrade" component={RationalUpgrade} options={{title: '理性等级升级'}} />
+            <Stack.Screen name="CommentList" component={CommentList} options={{title: ''}} />
+            <Stack.Screen name="PublishComment" component={PublishComment} options={{title: ''}} />
         </Stack.Navigator>
     );
 }
