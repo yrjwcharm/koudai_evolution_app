@@ -2,11 +2,11 @@
  * @Date: 2021-01-14 14:58:00
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-07 15:09:37
+ * @LastEditTime: 2022-01-09 15:09:18
  * @Description:
  */
 import React from 'react';
-import {TouchableHighlight, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {px as text} from '../utils/appUtil';
 import Image from 'react-native-fast-image';
@@ -19,6 +19,7 @@ class CheckBox extends React.Component {
         color: '#0052CD',
         style: {},
         control: false, // 是否受控
+        checkedIcon: null,
     };
     static propTypes = {
         checked: PropTypes.bool,
@@ -43,7 +44,7 @@ class CheckBox extends React.Component {
         }
     }
     render() {
-        const {control} = this.props;
+        const {control, checkedIcon} = this.props;
         // var source = 'checkbox-blank-circle-outline';
         // if (this.state.checked) {
         //     source = 'checkbox-marked-circle';
@@ -51,21 +52,25 @@ class CheckBox extends React.Component {
         // var container = <Icon name={source} size={text(18)} color={color ? color : '#0052CD'} />;
         const imgStyle = {width: text(15), height: text(15)};
         const container = (control ? this.state.checked : this.props.checked) ? (
-            <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+            checkedIcon ? (
+                checkedIcon
+            ) : (
+                <Image source={require('../assets/img/login/checked.png')} style={imgStyle} />
+            )
         ) : (
             <View
                 style={{
-                    ...imgStyle,
                     borderColor: Colors.darkGrayColor,
                     borderWidth: Space.borderWidth,
                     borderRadius: text(15),
+                    ...imgStyle,
                 }}
             />
         );
         return (
-            <TouchableHighlight onPress={this.toggle.bind(this)} underlayColor="white" style={this.props.style}>
+            <TouchableOpacity activeOpacity={0.9} onPress={this.toggle.bind(this)} style={this.props.style}>
                 {container}
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

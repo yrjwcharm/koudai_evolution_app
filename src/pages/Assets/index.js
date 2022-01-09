@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-27 17:48:38
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-07 11:49:59
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -54,6 +54,7 @@ import Storage from '../../utils/storage';
 import CheckBox from '../../components/CheckBox';
 import Notice from '../../components/Notice';
 import _ from 'lodash';
+import FastImage from 'react-native-fast-image';
 function HomeScreen({navigation, route}) {
     const netInfo = useNetInfo();
     const [hasNet, setHasNet] = useState(true);
@@ -915,6 +916,21 @@ function HomeScreen({navigation, route}) {
                             );
                         })}
                     </View>
+                    {/* 运营位 */}
+                    {userBasicInfo?.ad_info ? (
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                                jump(userBasicInfo?.ad_info?.url);
+                            }}>
+                            <FastImage
+                                source={{
+                                    uri: userBasicInfo?.ad_info?.cover,
+                                }}
+                                style={styles.ad_info}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                     {/* 中控 */}
                     {centerData.length > 0 &&
                         (centerData[0]?.style === 1 ? (
@@ -1601,6 +1617,12 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
         fontFamily: Font.numFontFamily,
+    },
+    ad_info: {
+        height: px(60),
+        borderRadius: 8,
+        marginBottom: px(12),
+        marginHorizontal: px(16),
     },
 });
 export default HomeScreen;

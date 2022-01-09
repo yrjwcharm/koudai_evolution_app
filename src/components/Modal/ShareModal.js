@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 16:22:45
+ * @LastEditTime: 2022-01-07 18:05:09
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -88,7 +88,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             onHidden && onHidden();
         }, duration);
     };
-
     const share = (item) => {
         if (item.type === 'ShareAppMessage' || item.type == 'ShareTimeline') {
             global.LogTool('shareStart', props.ctrl);
@@ -200,10 +199,13 @@ const ShareModal = React.forwardRef((props, ref) => {
                 style={[styles.container]}>
                 {shareContent?.image ? (
                     <Image
-                        source={{uri: shareContent?.image}}
+                        source={{
+                            uri: shareContent?.image,
+                        }}
                         style={{height: px(400), width: px(300), marginBottom: px(40)}}
                     />
                 ) : null}
+
                 <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.con}>
                     {header ||
                         (title ? (

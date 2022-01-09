@@ -7375,6 +7375,13 @@ react-native-picker@^4.3.7:
   resolved "https://registry.npm.taobao.org/react-native-picker/download/react-native-picker-4.3.7.tgz#9842e8c62ff0d8b676e9514d9f9172413c0518a8"
   integrity sha1-mELoxi/w2LZ26VFNn5FyQTwFGKg=
 
+react-native-progress@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmmirror.com/react-native-progress/download/react-native-progress-5.0.0.tgz#f5ac6ceaeee27f184c660b00f29419e82a9d0ab0"
+  integrity sha1-9axs6u7ifxhMZgsA8pQZ6CqdCrA=
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-raw-bottom-sheet@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npm.taobao.org/react-native-raw-bottom-sheet/download/react-native-raw-bottom-sheet-2.2.0.tgz#d11dabb86aadb014273767ef7b554924b13633c5"
@@ -7461,10 +7468,10 @@ react-native-ssl-request@^1.0.8:
   dependencies:
     q "^1.4.1"
 
-react-native-svg@^12.1.0:
-  version "12.1.0"
-  resolved "https://registry.npm.taobao.org/react-native-svg/download/react-native-svg-12.1.0.tgz#acfe48c35cd5fca3d5fd767abae0560c36cfc03d"
-  integrity sha1-rP5Iw1zV/KPV/XZ6uuBWDDbPwD0=
+react-native-svg@^12.1.1:
+  version "12.1.1"
+  resolved "https://registry.npmmirror.com/react-native-svg/download/react-native-svg-12.1.1.tgz#5f292410b8bcc07bbc52b2da7ceb22caf5bcaaee"
+  integrity sha1-XykkELi8wHu8UrLafOsiyvW8qu4=
   dependencies:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"

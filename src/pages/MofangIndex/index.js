@@ -321,6 +321,7 @@ const Index = (props) => {
                                 </TouchableOpacity>
                             )}
                             <Button
+                                title="年报"
                                 onPress={() => {
                                     props.navigation.navigate('ReportWebView');
                                 }}
@@ -574,6 +575,7 @@ const Index = (props) => {
                                     </View>
                                 </TouchableOpacity>
                             ) : null}
+
                             {/* 推荐阅读 */}
                             {data?.article_list && (
                                 <View style={{marginBottom: px(20)}}>

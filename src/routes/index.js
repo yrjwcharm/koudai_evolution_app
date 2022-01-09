@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 11:37:33
+ * @LastEditTime: 2022-01-09 14:47:38
  * @Description:路由表
  */
 import React from 'react';
@@ -169,7 +169,7 @@ import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
 import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
 import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
-import ReportWebView from '../pages/Common/ReportWebView'; //年报webview
+import ReportWebView from '../pages/Activity/ReportWebView'; //年报webview
 const Stack = createStackNavigator();
 
 export default function AppStack() {
