@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 15:18:35
+ * @LastEditTime: 2022-01-09 16:01:00
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -92,7 +92,7 @@ export default function WebView({route, navigation}) {
         RNWebViewRef?.current?.setNativeProps({opacity: 0});
         setLoadProgress(Math.round(e.nativeEvent.progress * 100));
         if (Math.round(e.nativeEvent.progress * 100) == 100) {
-            RNWebViewRef?.current?.fadeInUp();
+            RNWebViewRef?.current?.fadeIn();
         }
     };
     return data ? (
@@ -126,37 +126,42 @@ export default function WebView({route, navigation}) {
                         <ImageBackground
                             source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/01/reportCover.jpg'}}
                             style={[styles.coverCon, {opacity: startReprot ? 0.2 : 1}]}>
-                            <Animatable.View
-                                animation="fadeInUp"
-                                style={{
-                                    position: 'absolute',
-                                    alignItems: 'center',
-                                    // bottom: 0,
-                                    bottom: isIPhoneX() ? px(43) + 34 : px(43),
-                                }}>
-                                <View style={[Style.flexRow, {marginBottom: px(13)}]}>
-                                    <CheckBox checked={check} control={true} onChange={(value) => setCheck(value)} />
-                                    <Text style={[styles.lightText, {marginLeft: px(6)}]}>
-                                        同意理财魔方查询并统计我的理财数据，查看
-                                    </Text>
-                                </View>
-                                <Button
-                                    color={'#EB7121'}
-                                    style={styles.button}
-                                    title="立即开启"
-                                    disabled={!check}
-                                    disabledColor={'#f5b889'}
-                                    onPress={() => {
-                                        setStartReport(true);
-                                    }}
-                                />
-                                <Text style={styles.lightText}>数据统计日期截止至2021年12月31日</Text>
-                            </Animatable.View>
+                            {!startReprot && (
+                                <Animatable.View
+                                    animation="fadeInUp"
+                                    style={{
+                                        position: 'absolute',
+                                        alignItems: 'center',
+                                        bottom: isIPhoneX() ? px(43) + 34 : px(43),
+                                    }}>
+                                    <View style={[Style.flexRow, {marginBottom: px(13)}]}>
+                                        <CheckBox
+                                            checked={check}
+                                            control={true}
+                                            onChange={(value) => setCheck(value)}
+                                        />
+                                        <Text style={[styles.lightText, {marginLeft: px(6)}]}>
+                                            同意理财魔方查询并统计我的理财数据，查看
+                                        </Text>
+                                    </View>
+                                    <Button
+                                        color={'#EB7121'}
+                                        style={styles.button}
+                                        title="立即开启"
+                                        disabled={!check}
+                                        disabledColor={'#f5b889'}
+                                        onPress={() => {
+                                            setStartReport(true);
+                                        }}
+                                    />
+                                    <Text style={styles.lightText}>数据统计日期截止至2021年12月31日</Text>
+                                </Animatable.View>
+                            )}
                         </ImageBackground>
                         {/* 封面加载进度 */}
                         {startReprot && loadProgress < 100 && (
                             <View style={{position: 'absolute', zIndex: 200, alignItems: 'center'}}>
-                                <Text style={styles.startingText}>正在进入你的理财报告</Text>
+                                <Text style={styles.startingText}>正在进入您的理财报告</Text>
                                 <Progress.Bar
                                     progress={loadProgress / 100}
                                     color={'#EB7121'}
@@ -255,8 +260,7 @@ export default function WebView({route, navigation}) {
                                         // uri: route?.params?.timestamp
                                         //     ? `${route.params.link}?timeStamp=${timeStamp.current}`
                                         //     : route?.params?.link,
-                                        uri:
-                                            'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/PersonalAnnualReport',
+                                        uri: `http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/PersonalAnnualReport?timeStamp=${timeStamp.current}`,
                                         // uri: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/article/901',
                                     }}
                                     textZoom={100}
