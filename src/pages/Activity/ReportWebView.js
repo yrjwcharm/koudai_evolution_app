@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 16:51:48
+ * @LastEditTime: 2022-01-09 17:19:11
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -46,6 +46,7 @@ export default function WebView({route, navigation}) {
     useEffect(() => {
         http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/entrance/20220109').then((res) => {
             setData(res.result);
+            setCheck(res.result?.check_box?.checked);
             // shareModal?.current?.show();
         });
         getToken();
@@ -90,9 +91,9 @@ export default function WebView({route, navigation}) {
         RNWebViewRef?.current?.setNativeProps({opacity: 0});
         setLoadProgress(Math.round(e.nativeEvent.progress * 100));
         if (Math.round(e.nativeEvent.progress * 100) == 100) {
-            // setTimeout(() => {
-            // }, 500);
-            RNWebViewRef?.current?.fadeIn();
+            setTimeout(() => {
+                RNWebViewRef?.current?.fadeInUp();
+            }, 500);
         }
     };
     return data ? (
@@ -121,7 +122,7 @@ export default function WebView({route, navigation}) {
                     <Animatable.View animation="fadeIn" style={styles.con}>
                         {/* 封面 */}
                         <ImageBackground
-                            source={{uri: 'http://wp0.licaimofang.com/wp-content/uploads/2022/01/reportCover.jpg'}}
+                            source={{uri: data?.background}}
                             style={[styles.coverCon, {opacity: startReprot ? 0.2 : 1}]}>
                             {!startReprot && (
                                 <Animatable.View
@@ -138,7 +139,7 @@ export default function WebView({route, navigation}) {
                                             onChange={(value) => setCheck(value)}
                                         />
                                         <Text style={[styles.lightText, {marginLeft: px(6)}]}>
-                                            同意理财魔方查询并统计我的理财数据，查看
+                                            {data?.check_box?.content}
                                         </Text>
                                     </View>
                                     <Button
@@ -151,14 +152,14 @@ export default function WebView({route, navigation}) {
                                             setStartReport(true);
                                         }}
                                     />
-                                    <Text style={styles.lightText}>数据统计日期截止至2021年12月31日</Text>
+                                    <Text style={styles.lightText}>{data?.tips}</Text>
                                 </Animatable.View>
                             )}
                         </ImageBackground>
                         {/* 封面加载进度 */}
-                        {startReprot && loadProgress < 100 && (
+                        {startReprot && loadProgress <= 100 && (
                             <View style={{position: 'absolute', zIndex: 200, alignItems: 'center'}}>
-                                <Text style={styles.startingText}>正在进入您的理财报告</Text>
+                                <Text style={styles.startingText}>{data?.loading_content}</Text>
                                 <Progress.Bar
                                     progress={loadProgress / 100}
                                     color={'#EB7121'}
@@ -257,7 +258,7 @@ export default function WebView({route, navigation}) {
                                         // uri: route?.params?.timestamp
                                         //     ? `${route.params.link}?timeStamp=${timeStamp.current}`
                                         //     : route?.params?.link,
-                                        uri: `http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/PersonalAnnualReport?timeStamp=${timeStamp.current}`,
+                                        uri: `http://192.168.88.101:3000/PersonalAnnualReport?timeStamp=${timeStamp.current}`,
                                         // uri: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/article/901',
                                     }}
                                     textZoom={100}
