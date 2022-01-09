@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 17:19:11
+ * @LastEditTime: 2022-01-09 18:45:46
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -26,18 +26,17 @@ import CheckBox from '../../components/CheckBox';
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
-    const [title, setTitle] = useState('');
     const [token, setToken] = useState('');
     const [data, setData] = useState();
+    const [shareData, setShareData] = useState();
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
     const timeStamp = useRef(Date.now());
     const [startReprot, setStartReport] = useState(false);
-    const shareModal = useRef(null);
+    const shareImageModal = useRef(null);
+    const shareLinkModal = useRef(null);
     const RNWebViewRef = useRef(null);
     const [check, setCheck] = useState(false);
     const [loadProgress, setLoadProgress] = useState(0);
-    const image =
-        'https://lcmf.oss-cn-hangzhou.aliyuncs.com/invite/share/20220106/bg/jianchi.jpg?x-oss-process=image%2Fauto-orient%2C1%2Fformat%2Cjpg%2Fwatermark%2Cg_se%2Cimage_aW52aXRlL3NoYXJlLzIwMjIwMTA2L3FyY29kZS90ZXN0LzEwMTAwMDY0MjUuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTM1LGhfMTM1%2Cx_108%2Cy_120&OSSAccessKeyId=LTAI51SSQWDG4LDz&Expires=1956823847&Signature=h9SHdxNK7aE3%2F1vZ7iwtb2py0s8%3D';
     const getToken = () => {
         Storage.get('loginStatus').then((result) => {
             setToken(result?.access_token ? result?.access_token : 'null');
@@ -47,8 +46,11 @@ export default function WebView({route, navigation}) {
         http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/entrance/20220109').then((res) => {
             setData(res.result);
             setCheck(res.result?.check_box?.checked);
-            // shareModal?.current?.show();
         });
+        http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/share/20220109').then((res) => {
+            setShareData(res.result);
+        });
+
         getToken();
     }, []);
     useEffect(() => {
@@ -61,11 +63,6 @@ export default function WebView({route, navigation}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [backButtonEnabled]);
     const onNavigationStateChange = (navState) => {
-        if (route?.params?.title) {
-            setTitle(route?.params?.title);
-        } else if (navState.title) {
-            setTitle(navState.title);
-        }
         setBackButtonEnabled(navState.canGoBack);
     };
 
@@ -96,18 +93,32 @@ export default function WebView({route, navigation}) {
             }, 500);
         }
     };
+    //收到h5的信息
+    const onMessage = (event) => {
+        const data = event.nativeEvent.data;
+        console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
+        // 分享图片
+        if (data?.indexOf('shareImg') > -1) {
+            shareImageModal?.current?.show();
+        } else if (data?.indexOf('shareApp') > -1) {
+            shareLinkModal?.current?.show();
+        } else if (data?.indexOf('jump=') > -1) {
+            //跳转
+            const url = JSON.parse(data.split('jump=')[1]);
+            jump(url);
+        }
+    };
     return data ? (
         <View style={{flex: 1}}>
             <ShareModal
-                ctrl={route.params?.link}
-                ref={shareModal}
+                ref={shareImageModal}
                 shareContent={{
                     type: 'image',
-                    image: decodeURI(image),
+                    image: shareData?.share_img_info?.share_pic,
                 }}
-                more={false}
-                title={data?.title}
+                title={shareData?.share_img_info?.title}
             />
+            <ShareModal ref={shareLinkModal} title={'分享理财魔方'} shareContent={shareData?.share_link_info || {}} />
             <NavBar
                 leftIcon="chevron-left"
                 title={data?.title}
@@ -178,39 +189,7 @@ export default function WebView({route, navigation}) {
                                 <RNWebView
                                     bounces={false}
                                     ref={webview}
-                                    onMessage={(event) => {
-                                        const data = event.nativeEvent.data;
-                                        console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-                                        if (data?.indexOf('logParams=') > -1) {
-                                            //打点
-                                            const logParams = JSON.parse(data?.split('logParams=')[1] || []);
-                                            global.LogTool(...logParams);
-                                        } else if (data && data.indexOf('url=') > -1) {
-                                            //跳转
-                                            const url = JSON.parse(data.split('url=')[1]);
-                                            jump(url);
-                                        } else if (data && data.indexOf('https') <= -1) {
-                                            const url = data.split('phone=')[1] ? `tel:${data.split('phone=')[1]}` : '';
-                                            if (url) {
-                                                global.LogTool('call');
-                                                Linking.canOpenURL(url)
-                                                    .then((supported) => {
-                                                        if (!supported) {
-                                                            return Toast.show(
-                                                                `您的设备不支持该功能，请手动拨打 ${
-                                                                    data.split('phone=')[1]
-                                                                }`
-                                                            );
-                                                        }
-                                                        return Linking.openURL(url);
-                                                    })
-                                                    .catch((err) => Toast.show(err));
-                                            }
-                                        } else if (data && data.indexOf('https') > -1) {
-                                            //跳转外链
-                                            jump({type: 2, path: data});
-                                        }
-                                    }}
+                                    onMessage={onMessage}
                                     originWhitelist={['*']}
                                     onHttpError={(syntheticEvent) => {
                                         const {nativeEvent} = syntheticEvent;

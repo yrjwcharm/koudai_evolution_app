@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-07 18:05:09
+ * @LastEditTime: 2022-01-09 18:41:44
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -189,7 +189,6 @@ const ShareModal = React.forwardRef((props, ref) => {
             toastShow: toastShow,
         };
     });
-
     return (
         <Modal animationType={'slide'} visible={visible} onRequestClose={hide} transparent={true}>
             {backdrop && <Mask />}
@@ -202,7 +201,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         source={{
                             uri: shareContent?.image,
                         }}
-                        style={{height: px(400), width: px(300), marginBottom: px(40)}}
+                        style={{height: px(390), width: px(335), marginBottom: px(50)}}
                     />
                 ) : null}
 
