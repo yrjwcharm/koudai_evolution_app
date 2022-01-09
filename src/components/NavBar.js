@@ -2,14 +2,14 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-04-11 18:15:11
+ * @LastEditTime: 2022-01-09 16:48:07
  * @Description:头部组件
  */
 
 import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 import {StyleSheet, View, Animated, TouchableOpacity, TouchableNativeFeedback, Platform, Text} from 'react-native';
-import {px as px2dp} from '../utils/appUtil';
+import {deviceWidth, px as px2dp} from '../utils/appUtil';
 import Icon from 'react-native-vector-icons/Feather';
 import {Colors} from '../common/commonStyle';
 import {useNavigation} from '@react-navigation/native';
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 10,
+        width: deviceWidth,
         paddingHorizontal: px2dp(10),
     },
     btn: {

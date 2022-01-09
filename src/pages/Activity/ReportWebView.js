@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 16:01:00
+ * @LastEditTime: 2022-01-09 16:51:48
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {Colors, Style} from '../../common/commonStyle';
-import {deviceHeight, px} from '../../utils/appUtil';
+import {deviceHeight, deviceWidth, px} from '../../utils/appUtil';
 import {ShareModal} from '../../components/Modal';
 import http from '../../services';
 import * as Animatable from 'react-native-animatable';
@@ -44,9 +44,7 @@ export default function WebView({route, navigation}) {
         });
     };
     useEffect(() => {
-        http.get(
-            'http://kmapi.huangjianquan.mofanglicai.com.cn:10080/common/webview/info/20220101?scene=annual_report'
-        ).then((res) => {
+        http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/entrance/20220109').then((res) => {
             setData(res.result);
             // shareModal?.current?.show();
         });
@@ -92,6 +90,8 @@ export default function WebView({route, navigation}) {
         RNWebViewRef?.current?.setNativeProps({opacity: 0});
         setLoadProgress(Math.round(e.nativeEvent.progress * 100));
         if (Math.round(e.nativeEvent.progress * 100) == 100) {
+            // setTimeout(() => {
+            // }, 500);
             RNWebViewRef?.current?.fadeIn();
         }
     };
@@ -109,14 +109,11 @@ export default function WebView({route, navigation}) {
             />
             <NavBar
                 leftIcon="chevron-left"
-                title={data?.title_info?.title}
+                title={data?.title}
                 leftPress={onBackAndroid}
                 style={
-                    data?.title_info?.title_style == 1
-                        ? {backgroundColor: 'transparent', position: 'absolute', zIndex: 20}
-                        : null
+                    data?.title_style == 1 ? {backgroundColor: 'transparent', position: 'absolute', zIndex: 20} : null
                 }
-                titleStyle={data?.title_info?.title_style == 1 ? {color: '#000'} : null}
             />
             {token ? (
                 <>
@@ -132,7 +129,7 @@ export default function WebView({route, navigation}) {
                                     style={{
                                         position: 'absolute',
                                         alignItems: 'center',
-                                        bottom: isIPhoneX() ? px(43) + 34 : px(43),
+                                        bottom: isIPhoneX() ? px(53) + 34 : px(53),
                                     }}>
                                     <View style={[Style.flexRow, {marginBottom: px(13)}]}>
                                         <CheckBox
