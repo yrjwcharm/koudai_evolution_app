@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-07 11:49:59
+ * @LastEditTime: 2022-01-10 14:00:43
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -921,6 +921,7 @@ function HomeScreen({navigation, route}) {
                         <TouchableOpacity
                             activeOpacity={0.9}
                             onPress={() => {
+                                global.LogTool('capsuleStart', userBasicInfo?.ad_info?.id);
                                 jump(userBasicInfo?.ad_info?.url);
                             }}>
                             <FastImage

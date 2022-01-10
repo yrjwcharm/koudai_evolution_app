@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 18:45:46
+ * @LastEditTime: 2022-01-10 16:00:49
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -15,7 +15,7 @@ import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {Colors, Style} from '../../common/commonStyle';
-import {deviceHeight, deviceWidth, px} from '../../utils/appUtil';
+import {deviceHeight, px} from '../../utils/appUtil';
 import {ShareModal} from '../../components/Modal';
 import http from '../../services';
 import * as Animatable from 'react-native-animatable';
@@ -43,11 +43,11 @@ export default function WebView({route, navigation}) {
         });
     };
     useEffect(() => {
-        http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/entrance/20220109').then((res) => {
+        http.get('/report/annual/entrance/20220109').then((res) => {
             setData(res.result);
             setCheck(res.result?.check_box?.checked);
         });
-        http.get('http://kapiweb.mayue.mofanglicai.com.cn:10080/report/annual/share/20220109').then((res) => {
+        http.get('/report/annual/share/20220109').then((res) => {
             setShareData(res.result);
         });
 
@@ -99,14 +99,24 @@ export default function WebView({route, navigation}) {
         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
         // 分享图片
         if (data?.indexOf('shareImg') > -1) {
+            global.LogTool('reportSharelmageStart');
             shareImageModal?.current?.show();
         } else if (data?.indexOf('shareApp') > -1) {
+            global.LogTool('reportShareAppStare', shareData?.share_link_info?.id);
             shareLinkModal?.current?.show();
         } else if (data?.indexOf('jump=') > -1) {
             //跳转
+            global.LogTool('redPacketStart', 99);
             const url = JSON.parse(data.split('jump=')[1]);
             jump(url);
         }
+    };
+    //开启年报
+    const reportOpen = () => {
+        global.LogTool('reportAgreeStart');
+        setStartReport(true);
+        //上报
+        http.post('/protocol/user/agree/20220106', {id: data?.check_box?.agreement_id});
     };
     return data ? (
         <View style={{flex: 1}}>
@@ -151,6 +161,13 @@ export default function WebView({route, navigation}) {
                                         />
                                         <Text style={[styles.lightText, {marginLeft: px(6)}]}>
                                             {data?.check_box?.content}
+                                            <Text
+                                                onPress={() => {
+                                                    jump(data?.check_box?.agreement_url);
+                                                }}
+                                                style={{color: '#EB7121'}}>
+                                                {data?.check_box?.agreement_title}
+                                            </Text>
                                         </Text>
                                     </View>
                                     <Button
@@ -159,9 +176,7 @@ export default function WebView({route, navigation}) {
                                         title="立即开启"
                                         disabled={!check}
                                         disabledColor={'#f5b889'}
-                                        onPress={() => {
-                                            setStartReport(true);
-                                        }}
+                                        onPress={reportOpen}
                                     />
                                     <Text style={styles.lightText}>{data?.tips}</Text>
                                 </Animatable.View>

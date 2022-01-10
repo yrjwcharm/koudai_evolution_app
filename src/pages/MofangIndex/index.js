@@ -306,6 +306,7 @@ const Index = (props) => {
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={() => {
+                                        global.LogTool('capsuleStart', data?.ad_info?.id);
                                         jump(data?.ad_info?.url);
                                     }}>
                                     <FastImage

@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 18:41:44
+ * @LastEditTime: 2022-01-10 14:55:19
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -201,7 +201,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                         source={{
                             uri: shareContent?.image,
                         }}
-                        style={{height: px(390), width: px(335), marginBottom: px(50)}}
+                        style={{height: px(390), width: px(335), marginBottom: px(50), borderRadius: px(12)}}
                     />
                 ) : null}
 
