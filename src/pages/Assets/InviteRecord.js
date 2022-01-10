@@ -1,16 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2021-04-13 21:34:55
+ * @LastEditTime: 2022-01-07 17:45:52
  * @Description: 邀请好友记录
  */
-import React, {useCallback, useEffect, useState} from 'react';
-import {SectionList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SectionList, StyleSheet, Text, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
+import {Colors, Space, Style} from '../../common/commonStyle';
+import http from '../../services';
 import Empty from '../../components/EmptyTip';
+import HTML from '../../components/RenderHtml';
+import Loading from '../Portfolio/components/PageLoading';
 
 const InviteRecord = ({navigation, route}) => {
     const [page, setPage] = useState(1);
@@ -20,46 +23,37 @@ const InviteRecord = ({navigation, route}) => {
     const [list, setList] = useState([]);
     const [showEmpty, setShowEmpty] = useState(false);
 
-    const init = useCallback(
-        (status, first) => {
-            // status === 'refresh' && setRefreshing(true);
-            http.get('/promotion/invitees/20210101', {
-                page,
-            }).then((res) => {
-                setShowEmpty(true);
-                setRefreshing(false);
-                if (res.code === '000000') {
-                    setHasMore(res.result.has_more || false);
-                    first && navigation.setOptions({title: res.result.title || '邀请好友记录'});
-                    first && setHeader(res.result.head);
-                    if (status === 'refresh') {
-                        setList(res.result.list || []);
-                    } else if (status === 'loadmore') {
-                        setList((prevList) => [...prevList, ...(res.result.list || [])]);
-                    }
+    const init = (status, first) => {
+        // status === 'refresh' && setRefreshing(true);
+        http.get('/promotion/invitees/20210101', {
+            page,
+            ...route.params,
+        }).then((res) => {
+            setShowEmpty(true);
+            setRefreshing(false);
+            if (res.code === '000000') {
+                setHasMore(res.result.has_more || false);
+                first && navigation.setOptions({title: res.result.title || '邀请好友记录'});
+                first && setHeader(res.result.head);
+                if (status === 'refresh') {
+                    setList(res.result.list || []);
+                } else if (status === 'loadmore') {
+                    setList((prevList) => [...prevList, ...(res.result.list || [])]);
                 }
-            });
-        },
-        [navigation, page]
-    );
-    // 下拉刷新
-    const onRefresh = useCallback(() => {
-        setPage(1);
-    }, []);
+            }
+        });
+    };
     // 上拉加载
-    const onEndReached = useCallback(
-        ({distanceFromEnd}) => {
-            if (distanceFromEnd < 0) {
-                return false;
-            }
-            if (hasMore) {
-                setPage((p) => p + 1);
-            }
-        },
-        [hasMore]
-    );
+    const onEndReached = ({distanceFromEnd}) => {
+        if (distanceFromEnd < 0) {
+            return false;
+        }
+        if (hasMore) {
+            setPage((p) => p + 1);
+        }
+    };
     // 渲染头部
-    const renderHeader = useCallback(() => {
+    const renderHeader = () => {
         return (
             <View style={[Style.flexRow, styles.header]}>
                 {header.map((item, index, arr) => {
@@ -77,9 +71,9 @@ const InviteRecord = ({navigation, route}) => {
                 })}
             </View>
         );
-    }, [header]);
+    };
     // 渲染底部
-    const renderFooter = useCallback(() => {
+    const renderFooter = () => {
         return (
             <>
                 {list.length > 0 && (
@@ -89,23 +83,33 @@ const InviteRecord = ({navigation, route}) => {
                 )}
             </>
         );
-    }, [hasMore, list]);
+    };
     // 渲染空数据状态
-    const renderEmpty = useCallback(() => {
-        return showEmpty ? <Empty text={'暂无邀请好友记录'} /> : null;
-    }, [showEmpty]);
+    const renderEmpty = () => {
+        return showEmpty ? (
+            <Empty text={route.params.type === 'year_share_withdraw' ? '暂无提现记录' : '暂无邀请记录'} />
+        ) : null;
+    };
     // 渲染列表项
-    const renderItem = useCallback(({item, index}) => {
+    const renderItem = ({item, index}) => {
         return (
             <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                <Text style={[styles.itemText, {textAlign: 'left', fontFamily: Font.numRegular}]}>{item[0]}</Text>
-                <Text style={[styles.itemText, {flex: 1.5}]}>
-                    <Text style={{fontFamily: Font.numRegular}}>{item[1]} </Text>({item[2]})
-                </Text>
-                <Text style={[styles.itemText, {textAlign: 'right', fontFamily: Font.numRegular}]}>{item[3]}</Text>
+                {item?.map?.((html, idx, arr) => {
+                    return html ? (
+                        <View
+                            key={html + idx}
+                            style={[
+                                idx === 0 || idx === arr.length - 1 ? {flex: 1} : {flex: 1.5},
+                                idx === 0 ? {alignItems: 'flex-start'} : {alignItems: 'center'},
+                                idx === arr.length - 1 ? {alignItems: 'flex-end'} : {},
+                            ]}>
+                            <HTML html={html} style={styles.itemText} />
+                        </View>
+                    ) : null;
+                })}
             </View>
         );
-    }, []);
+    };
 
     useEffect(() => {
         if (page === 1) {
@@ -113,8 +117,8 @@ const InviteRecord = ({navigation, route}) => {
         } else {
             init('loadmore');
         }
-    }, [page, init]);
-    return (
+    }, [page]);
+    return list.length > 0 ? (
         <View style={styles.container}>
             <SectionList
                 sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
@@ -124,13 +128,15 @@ const InviteRecord = ({navigation, route}) => {
                 ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
-                onRefresh={onRefresh}
+                onRefresh={() => setPage(1)}
                 refreshing={refreshing}
                 renderItem={renderItem}
                 renderSectionHeader={renderHeader}
                 stickySectionHeadersEnabled
             />
         </View>
+    ) : (
+        <Loading />
     );
 };
 

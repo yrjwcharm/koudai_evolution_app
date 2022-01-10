@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 14:47:38
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-10 13:16:46
  * @Description:路由表
  */
 import React from 'react';
@@ -564,7 +564,7 @@ export default function AppStack() {
             <Stack.Screen name="ExperienceGoldRule" component={ExperienceGoldRule} options={{headerShown: false}} />
             <Stack.Screen name="GesturePassword" component={GesturePassword} options={{title: '手势密码'}} />
             <Stack.Screen name="InviteFriends" component={InviteFriends} options={{title: '邀请好友'}} />
-            <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: '邀请好友记录'}} />
+            <Stack.Screen name="InviteRecord" component={InviteRecord} options={{title: ''}} />
             <Stack.Screen name="ForgetLoginPwd" component={ForgetLoginPwd} options={{title: ''}} />
             <Stack.Screen
                 name="InviteExperienceGold"
