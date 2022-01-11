@@ -321,12 +321,6 @@ const Index = (props) => {
                                     />
                                 </TouchableOpacity>
                             )}
-                            <Button
-                                title="年报"
-                                onPress={() => {
-                                    props.navigation.navigate('ReportWebView');
-                                }}
-                            />
                             {/* 安全保障 */}
                             {data?.buy_status == 0 && renderSecurity(data?.menu_list)}
                             {/* 推荐 */}
