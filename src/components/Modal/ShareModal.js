@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-10 14:55:19
+ * @LastEditTime: 2022-01-11 16:05:39
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -99,10 +99,12 @@ const ShareModal = React.forwardRef((props, ref) => {
                 if (isInstalled) {
                     try {
                         if (shareContent.type == 'image') {
-                            WeChat.shareImage({
-                                imageUrl: shareContent?.image,
-                                scene: item.type === 'ShareAppMessage' ? 0 : 1, //0好友 1朋友圈
-                            });
+                            if (shareContent?.image) {
+                                WeChat.shareImage({
+                                    imageUrl: shareContent?.image,
+                                    scene: item.type === 'ShareAppMessage' ? 0 : 1, //0好友 1朋友圈
+                                });
+                            }
                         } else {
                             WeChat.shareWebpage({
                                 title: shareContent.title,
