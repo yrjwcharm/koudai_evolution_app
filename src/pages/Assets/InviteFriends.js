@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-10 15:00:13
+ * @LastEditTime: 2022-01-10 19:14:26
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -226,12 +226,20 @@ const InviteFriends = ({navigation, route}) => {
                                 shareModal.current.show();
                             } else if (data.button.type === 'withdraw') {
                                 global.LogTool('redPacketWithdrawStart');
-                                onWithdraw();
+                                if (data.button.avail) {
+                                    onWithdraw();
+                                }
                             }
                         }}
                         activeOpacity={0.8}
-                        style={[Style.flexCenter, styles.btn, {backgroundColor: '#FFD24D'}]}>
-                        <Text style={styles.btnText}>{data.button.text}</Text>
+                        style={[
+                            Style.flexCenter,
+                            styles.btn,
+                            {backgroundColor: data.button.avail === 0 ? '#FFF1C9' : '#FFD24D'},
+                        ]}>
+                        <Text style={[styles.btnText, data.button.avail === 0 ? {color: Colors.lightGrayColor} : {}]}>
+                            {data.button.text}
+                        </Text>
                     </TouchableOpacity>
                 ) : null}
             </View>
