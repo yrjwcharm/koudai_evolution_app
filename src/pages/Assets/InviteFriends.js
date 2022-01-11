@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-10 19:14:26
+ * @LastEditTime: 2022-01-11 12:35:51
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -12,7 +12,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import Accordion from 'react-native-collapsible/Accordion';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '../../utils/appUtil';
+import {isIphoneX, px as text} from '../../utils/appUtil';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import http from '../../services';
 import {Modal, ShareModal} from '../../components/Modal';
@@ -243,7 +243,7 @@ const InviteFriends = ({navigation, route}) => {
                     </TouchableOpacity>
                 ) : null}
             </View>
-            <View style={{marginHorizontal: Space.marginAlign}}>
+            <View style={{marginHorizontal: Space.marginAlign, paddingBottom: isIphoneX() ? 34 : 0}}>
                 {/* 邀请好友记录 */}
                 <Accordion
                     sections={[1]}
