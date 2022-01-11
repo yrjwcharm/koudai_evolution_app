@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-10 16:00:49
+ * @LastEditTime: 2022-01-11 11:36:57
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -151,7 +151,7 @@ export default function WebView({route, navigation}) {
                                     style={{
                                         position: 'absolute',
                                         alignItems: 'center',
-                                        bottom: isIPhoneX() ? px(53) + 34 : px(53),
+                                        bottom: isIPhoneX() ? px(43) + 34 : px(43),
                                     }}>
                                     <View style={[Style.flexRow, {marginBottom: px(13)}]}>
                                         <CheckBox
@@ -249,11 +249,9 @@ export default function WebView({route, navigation}) {
                                     onNavigationStateChange={onNavigationStateChange}
                                     style={{flex: 1}}
                                     source={{
-                                        // uri: route?.params?.timestamp
-                                        //     ? `${route.params.link}?timeStamp=${timeStamp.current}`
-                                        //     : route?.params?.link,
-                                        uri: `http://192.168.88.101:3000/PersonalAnnualReport?timeStamp=${timeStamp.current}`,
-                                        // uri: 'http://koudai-evolution-h5.yitao.mofanglicai.com.cn:10080/article/901',
+                                        uri: route?.params?.timestamp
+                                            ? `${route.params.link}?timeStamp=${timeStamp.current}`
+                                            : route?.params?.link,
                                     }}
                                     textZoom={100}
                                 />
