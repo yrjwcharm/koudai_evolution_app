@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-12 14:58:32
+ * @LastEditTime: 2022-01-12 16:40:39
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -46,9 +46,9 @@ const InviteFriends = ({navigation, route}) => {
                                 <Text style={styles.title}>{top_button.text}</Text>
                             </TouchableOpacity>
                         ),
-                        title: res.result.title || '邀请好友',
                     });
                 }
+                navigation.setOptions({title: res.result.title || '邀请好友'});
                 setData(res.result);
             }
         });
