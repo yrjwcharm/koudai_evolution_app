@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-11 17:37:54
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-12 16:23:21
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -36,7 +36,7 @@ const ShareModal = React.forwardRef((props, ref) => {
     const [visible, setVisible] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [toastText, setToastText] = useState('');
-    const [list, setList] = useState([
+    const [list] = useState([
         {
             img: require('../../assets/img/share/wechat.png'),
             title: '发送微信好友',
@@ -155,7 +155,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 hide();
                 return navigation.navigate('Login');
             }
-            Clipboard.setString(shareContent.link);
+            Clipboard.setString(shareContent.link || shareContent.image);
             hide();
             setTimeout(() => {
                 Toast.show('复制成功');
@@ -169,7 +169,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             if (Object.keys(shareContent).length > 0) {
                 ActionSheetIOS.showShareActionSheetWithOptions(
                     {
-                        url: shareContent.link,
+                        url: shareContent.link || shareContent.image,
                         message: shareContent.content,
                         subject: shareContent.title,
                     },
