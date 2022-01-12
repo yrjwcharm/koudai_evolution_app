@@ -1,12 +1,22 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-11 11:36:57
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-12 10:41:25
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Platform, BackHandler, Linking, ActivityIndicator, Text, ImageBackground, StyleSheet} from 'react-native';
+import {
+    View,
+    Platform,
+    BackHandler,
+    Linking,
+    ActivityIndicator,
+    Text,
+    ImageBackground,
+    StyleSheet,
+    TouchableOpacity,
+} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {WebView as RNWebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
@@ -15,7 +25,7 @@ import NavBar from '../../components/NavBar';
 import Toast from '../../components/Toast';
 import {useJump} from '../../components/hooks';
 import {Colors, Style} from '../../common/commonStyle';
-import {deviceHeight, px} from '../../utils/appUtil';
+import {deviceHeight, deviceWidth, px} from '../../utils/appUtil';
 import {ShareModal} from '../../components/Modal';
 import http from '../../services';
 import * as Animatable from 'react-native-animatable';
@@ -37,6 +47,7 @@ export default function WebView({route, navigation}) {
     const RNWebViewRef = useRef(null);
     const [check, setCheck] = useState(false);
     const [loadProgress, setLoadProgress] = useState(0);
+    const envelopeRef = useRef(null);
     const getToken = () => {
         Storage.get('loginStatus').then((result) => {
             setToken(result?.access_token ? result?.access_token : 'null');
@@ -143,11 +154,28 @@ export default function WebView({route, navigation}) {
                     <Animatable.View animation="fadeIn" style={styles.con}>
                         {/* 封面 */}
                         <ImageBackground
-                            source={{uri: data?.background}}
+                            source={require('../../assets/img/reportBg.jpg')}
                             style={[styles.coverCon, {opacity: startReprot ? 0.2 : 1}]}>
+                            <Animatable.Image
+                                animation={{
+                                    from: {
+                                        bottom: px(-50),
+                                        transform: [{scale: 1.4}],
+                                    },
+                                    to: {
+                                        bottom: isIPhoneX() ? px(120) + 34 : px(120),
+                                        transform: [{scale: 1}],
+                                    },
+                                }}
+                                duration={2000}
+                                onAnimationEnd={() => envelopeRef.current?.setNativeProps({style: {zIndex: 0}})}
+                                ref={envelopeRef}
+                                source={require('../../assets/img/envelope.png')}
+                                style={styles.envelope}
+                            />
+                            <TouchableOpacity onPress={() => check && reportOpen()} style={styles.seal} />
                             {!startReprot && (
-                                <Animatable.View
-                                    animation="fadeInUp"
+                                <View
                                     style={{
                                         position: 'absolute',
                                         alignItems: 'center',
@@ -179,7 +207,7 @@ export default function WebView({route, navigation}) {
                                         onPress={reportOpen}
                                     />
                                     <Text style={styles.lightText}>{data?.tips}</Text>
-                                </Animatable.View>
+                                </View>
                             )}
                         </ImageBackground>
                         {/* 封面加载进度 */}
@@ -308,5 +336,21 @@ const styles = StyleSheet.create({
         borderRadius: px(30),
         width: px(230),
         marginBottom: px(13),
+    },
+    envelope: {
+        position: 'absolute',
+        left: 0,
+        // bottom: isIPhoneX() ? px(120) + 34 : px(120),
+        zIndex: 3,
+        width: deviceWidth,
+        height: px(274),
+    },
+    seal: {
+        position: 'absolute',
+        right: px(148),
+        bottom: isIPhoneX() ? px(242) + 34 : px(242),
+        zIndex: 4,
+        width: px(80),
+        height: px(80),
     },
 });
