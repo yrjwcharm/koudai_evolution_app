@@ -301,8 +301,8 @@ PODS:
     - React-Core
   - react-native-progress-bar-android (1.0.4):
     - React
-  - react-native-progress-view (1.2.3):
-    - React
+  - react-native-progress-view (1.3.1):
+    - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
   - react-native-slider (3.0.3):
@@ -748,7 +748,7 @@ SPEC CHECKSUMS:
   react-native-orientation-locker: f0ca1a8e5031dab6b74bfb4ab33a17ed2c2fcb0d
   react-native-pdf: 4b5a9e4465a6a3b399e91dc4838eb44ddf716d1f
   react-native-progress-bar-android: be43138ab7da30d51fc038bafa98e9ed594d0c40
-  react-native-progress-view: 21b1e29e70c7559c16c9e0a04c4adc19fce6ede2
+  react-native-progress-view: 9e6b6a5305a9115c2157ae3b8852081aba0aab7c
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-slider: e99fc201cefe81270fc9d81714a7a0f5e566b168
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865

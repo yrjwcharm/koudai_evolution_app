@@ -33,6 +33,7 @@ import {Button} from '../../components/Button';
 import * as Progress from 'react-native-progress';
 import {isIPhoneX} from '../../components/IM/app/chat/utils';
 import CheckBox from '../../components/CheckBox';
+import URI from 'urijs';
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
@@ -277,9 +278,7 @@ export default function WebView({route, navigation}) {
                                     onNavigationStateChange={onNavigationStateChange}
                                     style={{flex: 1}}
                                     source={{
-                                        uri: route?.params?.timestamp
-                                            ? `${route.params.link}?timeStamp=${timeStamp.current}`
-                                            : route?.params?.link,
+                                        uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
                                     }}
                                     textZoom={100}
                                 />

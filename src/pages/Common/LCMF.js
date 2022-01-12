@@ -24,6 +24,7 @@ import {useSelector} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
 import Storage from '../../utils/storage';
 import Loading from '../Portfolio/components/PageLoading';
+import URI from 'urijs';
 
 export default function LCMF({route, navigation}) {
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
@@ -153,10 +154,7 @@ export default function LCMF({route, navigation}) {
                         renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                         ref={webview}
                         source={{
-                            uri:
-                                route.params?.scene === 'know_lcmf'
-                                    ? `${route.params.link}?timeStamp=${timeStamp.current}`
-                                    : route?.params?.link,
+                            uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
                         }}
                         startInLoadingState={true}
                         style={{flex: 1}}

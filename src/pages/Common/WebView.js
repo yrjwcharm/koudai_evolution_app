@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-12 15:31:55
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-12 16:09:25
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -18,6 +18,7 @@ import {Style} from '../../common/commonStyle';
 import {deviceHeight} from '../../utils/appUtil';
 import Loading from '../Portfolio/components/PageLoading';
 import {ShareModal} from '../../components/Modal';
+import URI from 'urijs';
 
 export default function WebView({route, navigation}) {
     const jump = useJump();
@@ -176,9 +177,7 @@ export default function WebView({route, navigation}) {
                     startInLoadingState={true}
                     style={{flex: 1}}
                     source={{
-                        uri: route?.params?.timestamp
-                            ? `${route.params.link}?timeStamp=${timeStamp.current}`
-                            : route?.params?.link,
+                        uri: URI(route.params.link).addQuery({timeStamp: timeStamp.current}).valueOf(),
                     }}
                     textZoom={100}
                 />
