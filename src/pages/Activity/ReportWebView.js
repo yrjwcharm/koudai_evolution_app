@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-12 16:13:24
+ * @LastEditTime: 2022-01-12 16:15:20
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -167,7 +167,7 @@ export default function WebView({route, navigation}) {
                                         transform: [{scale: 1}],
                                     },
                                 }}
-                                duration={1500}
+                                duration={1000}
                                 onAnimationEnd={() => envelopeRef.current?.setNativeProps({style: {zIndex: 0}})}
                                 ref={envelopeRef}
                                 source={require('../../assets/img/envelope.png')}
