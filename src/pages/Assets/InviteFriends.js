@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-12 16:40:39
+ * @LastEditTime: 2022-01-12 17:36:01
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -49,6 +49,12 @@ const InviteFriends = ({navigation, route}) => {
                     });
                 }
                 navigation.setOptions({title: res.result.title || '邀请好友'});
+                if (res.result.invite_table?.spread) {
+                    setActiveSections1([0]);
+                }
+                if (res.result.withdraw_table?.spread) {
+                    setActiveSections2([0]);
+                }
                 setData(res.result);
             }
         });
