@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2022-01-12 10:41:25
+ * @LastEditTime: 2022-01-12 15:51:54
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -167,7 +167,7 @@ export default function WebView({route, navigation}) {
                                         transform: [{scale: 1}],
                                     },
                                 }}
-                                duration={2000}
+                                duration={1500}
                                 onAnimationEnd={() => envelopeRef.current?.setNativeProps({style: {zIndex: 0}})}
                                 ref={envelopeRef}
                                 source={require('../../assets/img/envelope.png')}
@@ -347,10 +347,10 @@ const styles = StyleSheet.create({
     },
     seal: {
         position: 'absolute',
-        right: px(148),
-        bottom: isIPhoneX() ? px(242) + 34 : px(242),
+        right: px(128),
+        bottom: isIPhoneX() ? px(222) + 34 : px(222),
         zIndex: 4,
-        width: px(80),
-        height: px(80),
+        width: px(120),
+        height: px(120),
     },
 });
