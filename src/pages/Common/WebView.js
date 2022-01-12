@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 11:08:51
+ * @LastEditTime: 2022-01-12 15:31:55
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -17,12 +17,15 @@ import {useJump} from '../../components/hooks';
 import {Style} from '../../common/commonStyle';
 import {deviceHeight} from '../../utils/appUtil';
 import Loading from '../Portfolio/components/PageLoading';
+import {ShareModal} from '../../components/Modal';
 
 export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
     const [title, setTitle] = useState('');
     const [token, setToken] = useState('');
+    const shareLinkModal = useRef(null);
+    const [shareData, setShareData] = useState();
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
     const timeStamp = useRef(Date.now());
     useEffect(() => {
@@ -88,6 +91,7 @@ export default function WebView({route, navigation}) {
     return (
         <View style={{flex: 1}}>
             <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
+            <ShareModal ref={shareLinkModal} title={route?.params?.title} shareContent={shareData || {}} />
             {token && route?.params?.link ? (
                 <RNWebView
                     bounces={false}
@@ -95,7 +99,10 @@ export default function WebView({route, navigation}) {
                     onMessage={(event) => {
                         const data = event.nativeEvent.data;
                         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-                        if (data?.indexOf('logParams=') > -1) {
+                        if (data?.indexOf('shareLink=') > -1) {
+                            setShareData(JSON.parse(data.split('shareLink=')[1]));
+                            shareLinkModal?.current?.show();
+                        } else if (data?.indexOf('logParams=') > -1) {
                             const logParams = JSON.parse(data?.split('logParams=')[1] || []);
                             global.LogTool(...logParams);
                         } else if (data && data.indexOf('url=') > -1) {
