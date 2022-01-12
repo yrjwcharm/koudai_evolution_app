@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-01-12 15:51:54
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-12 16:13:24
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -100,7 +100,7 @@ export default function WebView({route, navigation}) {
         setLoadProgress(Math.round(e.nativeEvent.progress * 100));
         if (Math.round(e.nativeEvent.progress * 100) == 100) {
             setTimeout(() => {
-                RNWebViewRef?.current?.fadeInUp();
+                Platform.OS == 'android' ? RNWebViewRef?.current?.fadeInUp() : RNWebViewRef?.current?.fadeIn();
             }, 500);
         }
     };
@@ -135,7 +135,7 @@ export default function WebView({route, navigation}) {
                 ref={shareImageModal}
                 shareContent={{
                     type: 'image',
-                    image: shareData?.share_img_info?.share_pic,
+                    image: decodeURI(shareData?.share_img_info?.share_pic),
                 }}
                 title={shareData?.share_img_info?.title}
             />
