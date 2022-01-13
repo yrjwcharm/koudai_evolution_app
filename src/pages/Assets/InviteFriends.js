@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-12 17:36:01
+ * @LastEditTime: 2022-01-13 10:24:01
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -281,7 +281,7 @@ const InviteFriends = ({navigation, route}) => {
                 ) : null}
                 {data.rule ? (
                     <>
-                        <Text style={[styles.title, styles.ruleTitle]}>{'邀请规则'}</Text>
+                        <Text style={[styles.title, styles.ruleTitle]}>{data.rule_title || '邀请规则'}</Text>
                         <HTML html={data.rule} style={styles.rules} />
                     </>
                 ) : null}
