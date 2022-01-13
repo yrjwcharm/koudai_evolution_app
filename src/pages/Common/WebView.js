@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-01-12 16:09:25
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-13 10:43:38
  * @Description:webview
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -92,7 +92,7 @@ export default function WebView({route, navigation}) {
     return (
         <View style={{flex: 1}}>
             <NavBar leftIcon="chevron-left" title={title} leftPress={onBackAndroid} />
-            <ShareModal ref={shareLinkModal} title={route?.params?.title} shareContent={shareData || {}} />
+            <ShareModal ref={shareLinkModal} title={'分享理财魔方'} shareContent={shareData || {}} />
             {token && route?.params?.link ? (
                 <RNWebView
                     bounces={false}
