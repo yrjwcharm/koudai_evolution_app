@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:10:11
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-07 17:45:52
+ * @LastEditTime: 2022-01-13 15:30:49
  * @Description: 邀请好友记录
  */
 import React, {useEffect, useState} from 'react';
@@ -133,6 +133,7 @@ const InviteRecord = ({navigation, route}) => {
                 renderItem={renderItem}
                 renderSectionHeader={renderHeader}
                 stickySectionHeadersEnabled
+                scrollIndicatorInsets={{right: 1}}
             />
         </View>
     ) : (
