@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-10 14:00:43
+ * @LastEditors: dx
+ * @LastEditTime: 2022-01-13 16:08:13
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -41,9 +41,7 @@ import GesturePassword from '../Settings/GesturePassword';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
-import ModalContainer from '../../components/Modal/ModalContainer';
 import {BottomModal, Modal} from '../../components/Modal';
-import Mask from '../../components/Mask';
 import HTML from '../../components/RenderHtml';
 import calm from '../../assets/personal/calm.gif';
 import smile from '../../assets/personal/smile.gif';
@@ -76,10 +74,6 @@ function HomeScreen({navigation, route}) {
     const scrollRef = useRef(null);
     const showGesture = useShowGesture();
     const [loading, setLoading] = useState(true);
-    const [choice, setChoice] = useState('');
-    const [notChoose, setNotChoose] = useState('');
-    const [isVisible, setIsVisible] = useState(false);
-    const [modalData, setModalData] = useState({});
     const [showCircle, setShowCircle] = useState(false);
     const [signData, setSignData] = useState(null);
     const bottomModal = useRef(null);
@@ -164,9 +158,7 @@ function HomeScreen({navigation, route}) {
             http.get('/common/survey/20210521', {survey_id: 1}).then((res) => {
                 if (res.code === '000000') {
                     if (res.result.options) {
-                        setChoice('');
-                        setModalData(res.result);
-                        isFocused && setIsVisible(true);
+                        isFocused && !global.rootSibling && showChannelModal(res.result);
                     }
                 }
             });
@@ -188,6 +180,55 @@ function HomeScreen({navigation, route}) {
                 }
             });
         }
+    };
+    // 展示渠道弹窗
+    const showChannelModal = (_modalData) => {
+        Modal.show({
+            children: () => (
+                <View style={[Style.flexRow, {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)}]}>
+                    {_modalData.options?.map((item, index) => {
+                        return (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                key={item.key}
+                                onPress={() => {
+                                    _modalData.choice = item.key;
+                                    _modalData.notChoose = '';
+                                    showChannelModal(_modalData);
+                                }}
+                                style={[
+                                    Style.flexCenter,
+                                    styles.option,
+                                    _modalData.choice === item.key ? styles.acOption : {},
+                                    {marginRight: index % 2 === 0 ? text(12) : 0},
+                                ]}>
+                                <Text
+                                    numberOfLines={1}
+                                    style={[styles.optionText, _modalData.choice === item.key ? {color: '#fff'} : {}]}>
+                                    {item.val}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                    {_modalData.notChoose ? (
+                        <Text style={{color: Colors.red, paddingVertical: text(8)}}>{_modalData.notChoose}</Text>
+                    ) : null}
+                </View>
+            ),
+            clickClose: false,
+            confirmCallBack: () => {
+                if (_modalData.choice) {
+                    Modal.close({});
+                    reportSurvey(_modalData.choice);
+                } else {
+                    _modalData.notChoose = '*请选择一个答案，才能提交';
+                    showChannelModal(_modalData);
+                }
+            },
+            confirmText: '确认',
+            isTouchMaskToClose: false,
+            title: _modalData.title,
+        });
     };
     //checkBox 选中
     const checkBoxClick = (check, poid) => {
@@ -620,71 +661,6 @@ function HomeScreen({navigation, route}) {
 
                 {/* 登录注册蒙层 */}
                 {!userInfo.is_login && <LoginMask />}
-                {isVisible && (
-                    <>
-                        {!global.rootSibling && <Mask />}
-                        <ModalContainer
-                            children={() => (
-                                <View
-                                    style={[
-                                        Style.flexRow,
-                                        {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)},
-                                    ]}>
-                                    {modalData.options?.map((item, index) => {
-                                        return (
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                key={item.key}
-                                                onPress={() => {
-                                                    setChoice(item.key);
-                                                    setNotChoose('');
-                                                }}
-                                                style={[
-                                                    Style.flexCenter,
-                                                    styles.option,
-                                                    choice === item.key ? styles.acOption : {},
-                                                    {marginRight: index % 2 === 0 ? text(12) : 0},
-                                                ]}>
-                                                <Text
-                                                    numberOfLines={1}
-                                                    style={[
-                                                        styles.optionText,
-                                                        choice === item.key ? {color: '#fff'} : {},
-                                                    ]}>
-                                                    {item.val}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        );
-                                    })}
-                                    {notChoose ? (
-                                        <Text style={{color: Colors.red, paddingVertical: text(8)}}>{notChoose}</Text>
-                                    ) : null}
-                                </View>
-                            )}
-                            clickClose={false}
-                            confirmCallBack={() => {
-                                if (choice) {
-                                    setIsVisible(false);
-                                    reportSurvey(choice);
-                                } else {
-                                    setNotChoose('*请选择一个答案，才能提交');
-                                }
-                            }}
-                            confirmText={'确认'}
-                            destroy={() => {
-                                if (choice) {
-                                    setIsVisible(false);
-                                    reportSurvey(choice);
-                                } else {
-                                    setNotChoose('*请选择一个答案，才能提交');
-                                }
-                            }}
-                            isTouchMaskToClose={false}
-                            isVisible={isVisible}
-                            title={modalData.title}
-                        />
-                    </>
-                )}
                 <Header
                     title={'我的资产'}
                     scrollY={scrollY}
