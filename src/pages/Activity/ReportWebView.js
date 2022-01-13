@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-13 15:47:44
+ * @LastEditTime: 2022-01-13 18:30:08
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -142,7 +142,8 @@ export default function WebView({route, navigation}) {
                 ref={shareImageModal}
                 shareContent={{
                     type: 'image',
-                    image: decodeURI(shareData?.share_img_info?.share_pic),
+                    image: decodeURI(shareData?.share_img_info.share_pic),
+                    link: shareData?.share_img_info?.link,
                 }}
                 title={shareData?.share_img_info?.title}
             />

@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-01-12 16:23:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-13 18:19:17
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -155,7 +155,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 hide();
                 return navigation.navigate('Login');
             }
-            Clipboard.setString(shareContent.link || shareContent.image);
+            Clipboard.setString(shareContent.link);
             hide();
             setTimeout(() => {
                 Toast.show('复制成功');
@@ -169,7 +169,7 @@ const ShareModal = React.forwardRef((props, ref) => {
             if (Object.keys(shareContent).length > 0) {
                 ActionSheetIOS.showShareActionSheetWithOptions(
                     {
-                        url: shareContent.link || shareContent.image,
+                        url: shareContent.link,
                         message: shareContent.content,
                         subject: shareContent.title,
                     },
