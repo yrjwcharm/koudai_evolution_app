@@ -2,7 +2,7 @@
  * @Date: 2021-03-19 11:23:44
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-12 16:15:20
+ * @LastEditTime: 2022-01-13 15:47:44
  * @Description:年报
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -38,6 +38,7 @@ export default function WebView({route, navigation}) {
     const jump = useJump();
     const webview = useRef(null);
     const [token, setToken] = useState('');
+    const [title, setTitle] = useState('');
     const [data, setData] = useState();
     const [shareData, setShareData] = useState();
     const [backButtonEnabled, setBackButtonEnabled] = useState(false);
@@ -57,6 +58,7 @@ export default function WebView({route, navigation}) {
     useEffect(() => {
         http.get('/report/annual/entrance/20220109').then((res) => {
             setData(res.result);
+            setTitle(res.result.title);
             setCheck(res.result?.check_box?.checked);
         });
         http.get('/report/annual/share/20220109').then((res) => {
@@ -107,20 +109,24 @@ export default function WebView({route, navigation}) {
     };
     //收到h5的信息
     const onMessage = (event) => {
-        const data = event.nativeEvent.data;
+        const _data = event.nativeEvent.data;
         console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
         // 分享图片
-        if (data?.indexOf('shareImg') > -1) {
+        if (_data?.indexOf('shareImg') > -1) {
             global.LogTool('reportSharelmageStart');
             shareImageModal?.current?.show();
-        } else if (data?.indexOf('shareApp') > -1) {
+        } else if (_data?.indexOf('shareApp') > -1) {
             global.LogTool('reportShareAppStare', shareData?.share_link_info?.id);
             shareLinkModal?.current?.show();
-        } else if (data?.indexOf('jump=') > -1) {
+        } else if (_data?.indexOf('jump=') > -1) {
             //跳转
             global.LogTool('redPacketStart', 99);
-            const url = JSON.parse(data.split('jump=')[1]);
+            const url = JSON.parse(_data.split('jump=')[1]);
             jump(url);
+        } else if (_data?.indexOf('showTitle') > -1) {
+            setTitle(data.title);
+        } else if (_data?.indexOf('hideTitle') > -1) {
+            setTitle('');
         }
     };
     //开启年报
@@ -143,7 +149,7 @@ export default function WebView({route, navigation}) {
             <ShareModal ref={shareLinkModal} title={'分享理财魔方'} shareContent={shareData?.share_link_info || {}} />
             <NavBar
                 leftIcon="chevron-left"
-                title={data?.title}
+                title={title}
                 leftPress={onBackAndroid}
                 style={
                     data?.title_style == 1 ? {backgroundColor: 'transparent', position: 'absolute', zIndex: 20} : null
