@@ -3,7 +3,7 @@
  * @Date: 2021-03-02 14:25:55
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-13 10:24:01
+ * @LastEditTime: 2022-01-13 16:51:17
  * @Description: 邀请好友注册(得魔分)
  */
 import React, {useCallback, useRef, useState} from 'react';
@@ -250,7 +250,7 @@ const InviteFriends = ({navigation, route}) => {
                     </TouchableOpacity>
                 ) : null}
             </View>
-            <View style={{marginHorizontal: Space.marginAlign, paddingBottom: isIphoneX() ? 34 : 0}}>
+            <View style={{marginHorizontal: Space.marginAlign, paddingBottom: isIphoneX() ? 34 : Space.padding}}>
                 {/* 邀请好友记录 */}
                 <Accordion
                     sections={[1]}
