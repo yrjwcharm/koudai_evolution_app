@@ -2,7 +2,7 @@
  * @Date: 2021-01-08 11:43:44
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-13 19:33:38
+ * @LastEditTime: 2022-01-14 11:56:43
  * @Description: 分享弹窗
  */
 import React, {useState} from 'react';
@@ -201,6 +201,7 @@ const ShareModal = React.forwardRef((props, ref) => {
                 style={[styles.container]}>
                 {shareContent?.image ? (
                     <LazyImage
+                        resizeMode="contain"
                         source={shareContent?.image}
                         style={{height: px(430), width: px(335), marginBottom: px(40), borderRadius: px(12)}}
                     />
