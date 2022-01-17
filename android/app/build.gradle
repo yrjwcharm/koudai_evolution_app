@@ -168,7 +168,7 @@ packagingOptions {
                   JPUSH_CHANNEL: "developer-default"        //在此替换你的channel，也可使用默认的
           ]
       ndk {
-        abiFilters "armeabi-v7a","x86"
+        abiFilters "armeabi-v7a","x86","arm64-v8a", "x86_64"
        }
     }
 

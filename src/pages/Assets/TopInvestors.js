@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-07-27 17:00:06
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-21 14:29:58
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-17 13:43:26
  * @Description:牛人信号
  */
 import React, {useCallback, useEffect, useState, useRef} from 'react';
@@ -56,6 +56,7 @@ const TopInvestors = ({navigation, route}) => {
             //解决弹窗里跳转 返回再次弹出
             if (data && show_sign_focus_modal.current) {
                 signModal?.current?.show();
+                startTimer();
             }
             init();
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,21 +72,25 @@ const TopInvestors = ({navigation, route}) => {
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period]);
+    //签约计时器
+    const startTimer = () => {
+        intervalt_timer.current = setInterval(() => {
+            setSignTimer((time) => {
+                if (time > 0) {
+                    return --time;
+                } else {
+                    intervalt_timer.current && clearInterval(intervalt_timer.current);
+                    return time;
+                }
+            });
+        }, 1000);
+    };
     const handleClick = () => {
         if (!data.console?.adviser_sign?.is_signed) {
             setSignCheck(data?.console?.adviser_sign?.agreement_bottom?.default_agree);
             setSignTimer(data?.console?.adviser_sign?.risk_disclosure?.countdown);
             signModal.current?.show();
-            intervalt_timer.current = setInterval(() => {
-                setSignTimer((time) => {
-                    if (time > 0) {
-                        return --time;
-                    } else {
-                        intervalt_timer.current && clearInterval(intervalt_timer.current);
-                        return time;
-                    }
-                });
-            }, 1000);
+            startTimer();
         } else {
             jump(data.console?.button.url);
         }

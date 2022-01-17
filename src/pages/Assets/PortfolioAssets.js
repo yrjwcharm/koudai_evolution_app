@@ -4,7 +4,7 @@
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
  * @LastEditors: yhc
- * @LastEditTime: 2021-12-06 15:42:18
+ * @LastEditTime: 2022-01-17 13:33:41
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -131,6 +131,7 @@ export default function PortfolioAssets(props) {
             //解决弹窗里跳转 返回再次弹出
             if (card && show_sign_focus_modal.current) {
                 signModal?.current?.show();
+                startTimer();
             }
             init();
             storage.get('portfolioAssets').then((res) => {
@@ -158,6 +159,19 @@ export default function PortfolioAssets(props) {
             onHide();
         }
     }, [chartData, loading]);
+    //签约计时器
+    const startTimer = () => {
+        intervalt_timer.current = setInterval(() => {
+            setSignTimer((time) => {
+                if (time > 0) {
+                    return --time;
+                } else {
+                    intervalt_timer.current && clearInterval(intervalt_timer.current);
+                    return time;
+                }
+            });
+        }, 1000);
+    };
     //签约
     const handleSign = () => {
         http.post('adviser/sign/20210923', {poids: card?.adviser_info?.sign_po_ids}).then((res) => {
@@ -268,16 +282,7 @@ export default function PortfolioAssets(props) {
                     setSignCheck(card?.adviser_info?.agreement_bottom?.default_agree);
                     setSignTimer(card?.adviser_info?.risk_disclosure?.countdown);
                     show_sign_focus_modal.current = true;
-                    intervalt_timer.current = setInterval(() => {
-                        setSignTimer((time) => {
-                            if (time > 0) {
-                                return --time;
-                            } else {
-                                intervalt_timer.current && clearInterval(intervalt_timer.current);
-                                return time;
-                            }
-                        });
-                    }, 1000);
+                    startTimer();
                 } else {
                     jump(url);
                 }
