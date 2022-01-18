@@ -301,6 +301,11 @@ const Index = (props) => {
                                     </Swiper>
                                 )}
                             </View>
+                            <Button
+                                onPress={() => {
+                                    props.navigation.navigate('NativeEmitter');
+                                }}
+                            />
                             {/* 运营位 */}
                             {data?.ad_info && (
                                 <TouchableOpacity

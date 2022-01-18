@@ -155,8 +155,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 64300
-        versionName '6.4.3'
+        versionCode 64400
+        versionName '6.4.4'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
@@ -244,6 +244,11 @@ packagingOptions {
         }
 
     }
+      sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     // applicationVariants are e.g. debug, release
     // applicationVariants.all { variant ->
     //     variant.outputs.each { output ->
@@ -302,6 +307,18 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+      //读卡sdk
+    implementation files('libs/readcard-release-v1.3.2.aar')
+    implementation files('libs/FaceSdk_V1.0.7.aar')
+    //androidx下 的约束布局
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+    //lottie  用户播放json动画
+    implementation 'com.airbnb.android:lottie:3.4.0'
+    //数据转换
+    implementation 'com.google.code.gson:gson:2.8.7'
+    //androidx下的support库
+    implementation "androidx.legacy:legacy-support-v4:1.0.0+"
 }
 
 // Run this once to be able to run the application with BUCK

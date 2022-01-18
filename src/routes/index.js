@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-01-10 13:16:46
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-01-17 19:35:32
  * @Description:路由表
  */
 import React from 'react';
@@ -170,6 +170,7 @@ import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
 import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 import ReportWebView from '../pages/Activity/ReportWebView'; //年报webview
+import NativeEmitter from '../NativeEmitter';
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -682,6 +683,7 @@ export default function AppStack() {
             <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
             <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
             <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
+            <Stack.Screen name="NativeEmitter" component={NativeEmitter} options={{headerShown: false}} />
         </Stack.Navigator>
     );
 }

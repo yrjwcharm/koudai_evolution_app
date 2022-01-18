@@ -19,7 +19,6 @@ axios.defaults.transformRequest = [
         return ret;
     },
 ];
-console.log('object');
 // // axios拦截器
 axios.interceptors.request.use(
     async (config) => {

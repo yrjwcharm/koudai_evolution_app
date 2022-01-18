@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0016AC30277B276D00E78FBC /* MJPropertyType.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC19277B276800E78FBC /* MJPropertyType.m */; };
+		0016AC31277B276D00E78FBC /* NSObject+MJKeyValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1C277B276800E78FBC /* NSObject+MJKeyValue.m */; };
+		0016AC32277B276D00E78FBC /* MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1D277B276800E78FBC /* MJProperty.m */; };
+		0016AC33277B276D00E78FBC /* NSObject+MJCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1F277B276800E78FBC /* NSObject+MJCoding.m */; };
+		0016AC34277B276D00E78FBC /* MJExtensionConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC21277B276800E78FBC /* MJExtensionConst.m */; };
+		0016AC35277B276D00E78FBC /* NSObject+MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC22277B276800E78FBC /* NSObject+MJProperty.m */; };
+		0016AC36277B276D00E78FBC /* NSObject+MJClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC24277B276800E78FBC /* NSObject+MJClass.m */; };
+		0016AC37277B276D00E78FBC /* NSString+MJExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC25277B276800E78FBC /* NSString+MJExtension.m */; };
+		0016AC38277B276D00E78FBC /* MJPropertyKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC26277B276800E78FBC /* MJPropertyKey.m */; };
+		0016AC39277B276D00E78FBC /* MJFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2A277B276800E78FBC /* MJFoundation.m */; };
+		0016AC3A277B276D00E78FBC /* ReadCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2B277B276800E78FBC /* ReadCardManager.m */; };
+		0016AC3B277B276D00E78FBC /* FaceSdk_NoSilent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0016AC2D277B276C00E78FBC /* FaceSdk_NoSilent.framework */; };
+		0016AC3C277B276D00E78FBC /* IDCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2E277B276C00E78FBC /* IDCardModel.m */; };
+		0016AC3D277B276D00E78FBC /* CWResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0016AC2F277B276D00E78FBC /* CWResource.bundle */; };
+		0016AC43277B282500E78FBC /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0016AC41277B280100E78FBC /* TKCloudSDK.framework */; };
+		0016AC44277B282500E78FBC /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0016AC41277B280100E78FBC /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
@@ -57,6 +73,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0016AC44277B282500E78FBC /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +81,34 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0016AC14277B276700E78FBC /* IDCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDCardModel.h; sourceTree = "<group>"; };
+		0016AC16277B276800E78FBC /* MJPropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyKey.h; sourceTree = "<group>"; };
+		0016AC17277B276800E78FBC /* NSObject+MJClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJClass.h"; sourceTree = "<group>"; };
+		0016AC18277B276800E78FBC /* NSString+MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MJExtension.h"; sourceTree = "<group>"; };
+		0016AC19277B276800E78FBC /* MJPropertyType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJPropertyType.m; sourceTree = "<group>"; };
+		0016AC1A277B276800E78FBC /* NSObject+MJProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJProperty.h"; sourceTree = "<group>"; };
+		0016AC1B277B276800E78FBC /* MJExtensionConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJExtensionConst.h; sourceTree = "<group>"; };
+		0016AC1C277B276800E78FBC /* NSObject+MJKeyValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJKeyValue.m"; sourceTree = "<group>"; };
+		0016AC1D277B276800E78FBC /* MJProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJProperty.m; sourceTree = "<group>"; };
+		0016AC1E277B276800E78FBC /* MJFoundation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJFoundation.h; sourceTree = "<group>"; };
+		0016AC1F277B276800E78FBC /* NSObject+MJCoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJCoding.m"; sourceTree = "<group>"; };
+		0016AC20277B276800E78FBC /* MJExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJExtension.h; sourceTree = "<group>"; };
+		0016AC21277B276800E78FBC /* MJExtensionConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJExtensionConst.m; sourceTree = "<group>"; };
+		0016AC22277B276800E78FBC /* NSObject+MJProperty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJProperty.m"; sourceTree = "<group>"; };
+		0016AC23277B276800E78FBC /* MJPropertyType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyType.h; sourceTree = "<group>"; };
+		0016AC24277B276800E78FBC /* NSObject+MJClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MJClass.m"; sourceTree = "<group>"; };
+		0016AC25277B276800E78FBC /* NSString+MJExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MJExtension.m"; sourceTree = "<group>"; };
+		0016AC26277B276800E78FBC /* MJPropertyKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJPropertyKey.m; sourceTree = "<group>"; };
+		0016AC27277B276800E78FBC /* MJProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJProperty.h; sourceTree = "<group>"; };
+		0016AC28277B276800E78FBC /* NSObject+MJKeyValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJKeyValue.h"; sourceTree = "<group>"; };
+		0016AC29277B276800E78FBC /* NSObject+MJCoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJCoding.h"; sourceTree = "<group>"; };
+		0016AC2A277B276800E78FBC /* MJFoundation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJFoundation.m; sourceTree = "<group>"; };
+		0016AC2B277B276800E78FBC /* ReadCardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadCardManager.m; sourceTree = "<group>"; };
+		0016AC2C277B276800E78FBC /* ReadCardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadCardManager.h; sourceTree = "<group>"; };
+		0016AC2D277B276C00E78FBC /* FaceSdk_NoSilent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FaceSdk_NoSilent.framework; sourceTree = "<group>"; };
+		0016AC2E277B276C00E78FBC /* IDCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDCardModel.m; sourceTree = "<group>"; };
+		0016AC2F277B276D00E78FBC /* CWResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CWResource.bundle; sourceTree = "<group>"; };
+		0016AC41277B280100E78FBC /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		002DFB7F258B442700501EA5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		002DFB85258B443100501EA5 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -125,6 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */,
+				0016AC43277B282500E78FBC /* TKCloudSDK.framework in Frameworks */,
 				0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */,
 				008045632591A5FD0083350B /* libsqlite3.0.tbd in Frameworks */,
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
@@ -132,6 +178,7 @@
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
+				0016AC3B277B276D00E78FBC /* FaceSdk_NoSilent.framework in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,6 +202,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0016AC15277B276800E78FBC /* MJExtension */ = {
+			isa = PBXGroup;
+			children = (
+				0016AC16277B276800E78FBC /* MJPropertyKey.h */,
+				0016AC17277B276800E78FBC /* NSObject+MJClass.h */,
+				0016AC18277B276800E78FBC /* NSString+MJExtension.h */,
+				0016AC19277B276800E78FBC /* MJPropertyType.m */,
+				0016AC1A277B276800E78FBC /* NSObject+MJProperty.h */,
+				0016AC1B277B276800E78FBC /* MJExtensionConst.h */,
+				0016AC1C277B276800E78FBC /* NSObject+MJKeyValue.m */,
+				0016AC1D277B276800E78FBC /* MJProperty.m */,
+				0016AC1E277B276800E78FBC /* MJFoundation.h */,
+				0016AC1F277B276800E78FBC /* NSObject+MJCoding.m */,
+				0016AC20277B276800E78FBC /* MJExtension.h */,
+				0016AC21277B276800E78FBC /* MJExtensionConst.m */,
+				0016AC22277B276800E78FBC /* NSObject+MJProperty.m */,
+				0016AC23277B276800E78FBC /* MJPropertyType.h */,
+				0016AC24277B276800E78FBC /* NSObject+MJClass.m */,
+				0016AC25277B276800E78FBC /* NSString+MJExtension.m */,
+				0016AC26277B276800E78FBC /* MJPropertyKey.m */,
+				0016AC27277B276800E78FBC /* MJProperty.h */,
+				0016AC28277B276800E78FBC /* NSObject+MJKeyValue.h */,
+				0016AC29277B276800E78FBC /* NSObject+MJCoding.h */,
+				0016AC2A277B276800E78FBC /* MJFoundation.m */,
+			);
+			path = MJExtension;
+			sourceTree = "<group>";
+		};
 		00E356EF1AD99517003FC87E /* EvolutionAppTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,6 +250,14 @@
 		13B07FAE1A68108700A75B9A /* EvolutionApp */ = {
 			isa = PBXGroup;
 			children = (
+				0016AC41277B280100E78FBC /* TKCloudSDK.framework */,
+				0016AC2F277B276D00E78FBC /* CWResource.bundle */,
+				0016AC2D277B276C00E78FBC /* FaceSdk_NoSilent.framework */,
+				0016AC14277B276700E78FBC /* IDCardModel.h */,
+				0016AC2E277B276C00E78FBC /* IDCardModel.m */,
+				0016AC15277B276800E78FBC /* MJExtension */,
+				0016AC2C277B276800E78FBC /* ReadCardManager.h */,
+				0016AC2B277B276800E78FBC /* ReadCardManager.m */,
 				0048D3E3271D757400F2CD34 /* iot.p12 */,
 				D078539625B803F900274C2D /* fonts */,
 				002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */,
@@ -433,6 +516,7 @@
 				D059087E25C260C000EFA6CA /* DIN-Medium.otf in Resources */,
 				0048D3E4271D757400F2CD34 /* iot.p12 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				0016AC3D277B276D00E78FBC /* CWResource.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,8 +828,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0016AC36277B276D00E78FBC /* NSObject+MJClass.m in Sources */,
+				0016AC38277B276D00E78FBC /* MJPropertyKey.m in Sources */,
+				0016AC3C277B276D00E78FBC /* IDCardModel.m in Sources */,
+				0016AC31277B276D00E78FBC /* NSObject+MJKeyValue.m in Sources */,
+				0016AC39277B276D00E78FBC /* MJFoundation.m in Sources */,
+				0016AC3A277B276D00E78FBC /* ReadCardManager.m in Sources */,
+				0016AC30277B276D00E78FBC /* MJPropertyType.m in Sources */,
+				0016AC34277B276D00E78FBC /* MJExtensionConst.m in Sources */,
+				0016AC33277B276D00E78FBC /* NSObject+MJCoding.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				0016AC32277B276D00E78FBC /* MJProperty.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				0016AC37277B276D00E78FBC /* NSString+MJExtension.m in Sources */,
+				0016AC35277B276D00E78FBC /* NSObject+MJProperty.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -854,6 +950,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 64301;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1060,6 +1160,10 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1142,6 +1246,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 64301;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
