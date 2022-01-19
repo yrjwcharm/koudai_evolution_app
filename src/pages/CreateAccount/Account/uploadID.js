@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-19 15:28:48
+ * @LastEditTime: 2022-01-19 17:45:28
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -93,26 +93,12 @@ class UploadID extends Component {
     };
     componentDidMount() {
         // 令牌云SDK初始化
-        // tokenCloudIdentityInit(
-        //     '00DA2110281448486514',
-        //     0,
-        //     'eidcloudread.eidlink.com',
-        //     9989,
-        //     52302,
-        //     (status, errorCode) => {
-        //         if (status === 0) {
-        //             console.log('初始化成功');
-        //         } else {
-        //             console.log('初始化失败: ' + errorCode);
-        //         }
-        //     }
-        // );
         tokenCloudIdentityInit(
-            'F186ED61F9DC446FA6C1',
+            '00DA2110281448486514',
             0,
-            'testeidcloudread.eidlink.com',
+            'eidcloudread.eidlink.com',
             9989,
-            26814,
+            52302,
             (status, errorCode) => {
                 if (status === 0) {
                     console.log('初始化成功');
@@ -121,6 +107,20 @@ class UploadID extends Component {
                 }
             }
         );
+        // tokenCloudIdentityInit(
+        //     'F186ED61F9DC446FA6C1',
+        //     0,
+        //     'testeidcloudread.eidlink.com',
+        //     9989,
+        //     26814,
+        //     (status, errorCode) => {
+        //         if (status === 0) {
+        //             console.log('初始化成功');
+        //         } else {
+        //             console.log('初始化失败: ' + errorCode);
+        //         }
+        //     }
+        // );
 
         // 读卡成功获取到reqid
         this.successReqidSubscription = NativeReadCardEmitter.addListener(MethodObj.readCardSuccess, (reminder) => {
