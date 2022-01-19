@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-19 14:50:03
+ * @LastEditTime: 2022-01-19 15:28:48
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
