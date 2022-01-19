@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-19 17:45:28
+ * @LastEditTime: 2022-01-19 20:09:15
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -179,21 +179,25 @@ class UploadID extends Component {
         http.get('/passport/tokencloud/element/20220117', {
             req_id: reqId,
         }).then((res) => {
-            const cardInfo = res.result;
-            this.cartInfo = cardInfo;
-            // 请求9要素解码接口获取数据，转为json字符串处理进入确认信息页面
-            if (Platform.OS === 'ios') {
-                // iOS
-                setTimeout(() => {
+            console.log(res);
+            if (res.code === '000000' && res.result && Object.keys(res.result).length) {
+                const cardInfo = res.result;
+                this.cartInfo = cardInfo;
+
+                // 请求9要素解码接口获取数据，转为json字符串处理进入确认信息页面
+                if (Platform.OS === 'ios') {
+                    // iOS
+                    setTimeout(() => {
+                        const infoString = JSON.stringify(cardInfo);
+                        enterToConfirmInfoPage(infoString);
+                    }, 300);
+                } else {
+                    // 安卓
+                    androidShowLoading();
                     const infoString = JSON.stringify(cardInfo);
+                    androidHideLoading();
                     enterToConfirmInfoPage(infoString);
-                }, 300);
-            } else {
-                // 安卓
-                androidShowLoading();
-                const infoString = JSON.stringify(cardInfo);
-                androidHideLoading();
-                enterToConfirmInfoPage(infoString);
+                }
             }
         });
     }
@@ -231,7 +235,7 @@ class UploadID extends Component {
                     }
                     resolve(1);
                 } else {
-                    reject(0);
+                    reject(res.message);
                 }
             });
         });
@@ -251,8 +255,8 @@ class UploadID extends Component {
                 Toast.show('上传成功');
                 DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
             })
-            .catch((errcode) => {
-                Toast.show('上传失败');
+            .catch((err) => {
+                Toast.show(err);
             });
     }
     //  确信页面页面加载异常

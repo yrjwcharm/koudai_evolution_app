@@ -19,3 +19,6 @@
 
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+-keep class com.eidlink.**{*;}
+-keep class net.sf.**{*;}
+-keep class org.eid_bc.**{*;}
