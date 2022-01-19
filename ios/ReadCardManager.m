@@ -10,7 +10,6 @@
 #import "AppDelegate.h"
 #import <React/RCTUtils.h>
 #import <TKCloudSDK/TKCloudManager.h>
-#import <FaceSdk_NoSilent/JLFaceSdkManager.h>
 #import "MJExtension.h"
 #import "IDCardModel.h"
 
@@ -28,7 +27,7 @@
 #define method_confirmInfoFailed @"confirmInfoFailed"
 
 
-@interface ReadCardManager()<TKCloudManagerDelegate, JLFaceManagerDelegate>
+@interface ReadCardManager()<TKCloudManagerDelegate>
 
 @end
 
@@ -151,26 +150,6 @@ RCT_EXPORT_METHOD(gotoConfirmInfoController:(NSString *)cardInfoString) {
   });
 }
 
-/// 开启活体检测
-RCT_EXPORT_METHOD(enterFaceDetectController:(NSString *)reqID) {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    JLFaceSdkManager *faceManager = [[JLFaceSdkManager alloc]initJLDetectionWithVC:delegate.window.rootViewController appID:self->_faceAppID reqID:reqID IP:self->_faceIP port:self->_facePort];
-    faceManager.faceManagerDelegate = self;
-    faceManager.navbarColor = [UIColor redColor];
-    faceManager.btnColor = [UIColor blueColor];
-    /**
-     *  活体动作检测超时时间，默认8s。
-     */
-    faceManager.livessTime = 8;
-    /**
-     *  活体检测动作个数 默认为3个动作  可在此直接设置1-4个动作
-     */
-    faceManager.livessNumber = 3;
-    // 请求服务器数据
-    [faceManager detectionStart];
-  });
-}
 
 
 

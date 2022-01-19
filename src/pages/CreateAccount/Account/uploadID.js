@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-18 15:21:28
+ * @LastEditTime: 2022-01-19 14:50:03
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -30,14 +30,13 @@ import {getUserInfo} from '../../../redux/actions/userInfo';
 import {deleteModal} from '../../../redux/actions/modalInfo';
 import {connect} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
+
 import {
-    androidApplyCameraPermission,
     androidHideLoading,
     androidShowLoading,
     detectNFCStatus,
     enterToConfirmInfoPage,
     enterToReadCardPage,
-    faceLivingSDKInit,
     MethodObj,
     NativeReadCardEmitter,
     tokenCloudIdentityInit,
@@ -56,6 +55,7 @@ class UploadID extends Component {
         openNfcBtnBgColor: '#333333',
         openNfcBtnTextColor: '#FFFFFF',
     };
+    cartInfo = {};
     state = {
         frontSource: '',
         behindSource: '',
@@ -75,24 +75,38 @@ class UploadID extends Component {
         // 检测NFC状态
         detectNFCStatus((status) => {
             if (status === 1) {
-                console.log('NFC开启');
-                const configString = JSON.stringify(this.uiconfig);
-                // // 进入读卡页面
-                // enterToReadCardPage(configString);
-                let selectData = [...this.state.typeArr, 'NFC读取身份证'];
+                // console.log('NFC开启');
+                let selectData = this.state.typeArr;
+                !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
                 this.setState({showTypePop: true, typeArr: selectData, clickIndex});
             } else if (status === 2) {
-                enterToReadCardPage();
-                console.log('(仅限安卓):未开启');
-            } else if (status === 3) {
-                console.log('不支持NFC');
-            } else if (status === 4) {
-                console.log('(仅限iOS):NFC不可用,版本过低，iOS14.5以上才可使用');
+                let selectData = this.state.typeArr;
+                !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
+                this.setState({showTypePop: true, typeArr: selectData, clickIndex});
+                // console.log('(仅限安卓):未开启');
+            } else if (status === 3 || status === 4) {
+                this.setState({showTypePop: true, clickIndex});
+                // console.log('不支持NFC');
+                // console.log('(仅限iOS):NFC不可用,版本过低，iOS14.5以上才可使用');
             }
         });
     };
     componentDidMount() {
         // 令牌云SDK初始化
+        // tokenCloudIdentityInit(
+        //     '00DA2110281448486514',
+        //     0,
+        //     'eidcloudread.eidlink.com',
+        //     9989,
+        //     52302,
+        //     (status, errorCode) => {
+        //         if (status === 0) {
+        //             console.log('初始化成功');
+        //         } else {
+        //             console.log('初始化失败: ' + errorCode);
+        //         }
+        //     }
+        // );
         tokenCloudIdentityInit(
             'F186ED61F9DC446FA6C1',
             0,
@@ -159,14 +173,14 @@ class UploadID extends Component {
     }
     // 读卡成功，获取到ReqID
     successReqidCallback(reminder) {
-        console.log(reminder);
         // iOS和安卓都有
         let reqId = reminder.reqId;
         // iOS由于系统原因，无hardwareId, iOS为null
-        http.get('http://kapi-web.ll.mofanglicai.com.cn:10080/passport/tokencloud/element/20220117', {
+        http.get('/passport/tokencloud/element/20220117', {
             req_id: reqId,
         }).then((res) => {
             const cardInfo = res.result;
+            this.cartInfo = cardInfo;
             // 请求9要素解码接口获取数据，转为json字符串处理进入确认信息页面
             if (Platform.OS === 'ios') {
                 // iOS
@@ -177,8 +191,8 @@ class UploadID extends Component {
             } else {
                 // 安卓
                 androidShowLoading();
-                androidHideLoading();
                 const infoString = JSON.stringify(cardInfo);
+                androidHideLoading();
                 enterToConfirmInfoPage(infoString);
             }
         });
@@ -195,19 +209,52 @@ class UploadID extends Component {
     readCardFailed(reminder) {
         console.log(reminder);
     }
-
+    //上传正反面base64照片
+    base64Upload = (index, data) => {
+        return new Promise((resolve, reject) => {
+            http.post('mapi/identity/upload/20210101', {
+                file_con: data,
+                desc: index == 1 ? 'front' : 'back',
+                ...this.cartInfo,
+                adapter: 1, //使用axios
+            }).then((res) => {
+                Toast.hide(this.toast);
+                if (res.code === '000000') {
+                    if (index == 1) {
+                        this.setState({
+                            frontSource: 'data:image/png;base64,' + data,
+                        });
+                    } else {
+                        this.setState({
+                            behindSource: 'data:image/png;base64,' + data,
+                        });
+                    }
+                    resolve(1);
+                } else {
+                    reject(0);
+                }
+            });
+        });
+    };
     // 用户在确认信息页面返回获取到正反面图片
     //  @param code 点击类型，0: 点击左上角返回按钮 1: 点击确认信息按钮
     //  @param frontBitmapBase64Str 正面身份证照(头像页) base64
     //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
     //  @param fullBitmapBase64Str 正反面合成照片 base64
     confirmCardInfoCallback(reminder) {
-        console.log(reminder);
-        this.setState({
-            combinationImgBase64: reminder.fullBitmapBase64Str,
-        });
+        this.toast = Toast.showLoading('正在上传');
+        Promise.all([
+            this.base64Upload(1, reminder.frontBitmapBase64Str),
+            this.base64Upload(2, reminder.backBitmapBase64Str),
+        ])
+            .then((res) => {
+                Toast.show('上传成功');
+                DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
+            })
+            .catch((errcode) => {
+                Toast.show('上传失败');
+            });
     }
-
     //  确信页面页面加载异常
     //  触发场景：传入数据在sdk内部解析失败，无法正确展示UI页面
     confirmCardFailed(reminder) {
@@ -236,6 +283,7 @@ class UploadID extends Component {
             }, 10);
         }
     };
+
     uploadImage = (response) => {
         const {clickIndex} = this.state;
         this.toast = Toast.showLoading('正在上传');
@@ -260,7 +308,6 @@ class UploadID extends Component {
             },
             () => {
                 Toast.hide(this.toast);
-
                 Toast.show('上传失败');
             }
         );
@@ -339,8 +386,12 @@ class UploadID extends Component {
                         callback={(i) => {
                             if (i == 0) {
                                 this.onClickChoosePicture();
-                            } else {
+                            } else if (i == 1) {
                                 this.takePic();
+                            } else {
+                                // 进入读卡页面
+                                const configString = JSON.stringify(this.uiconfig);
+                                enterToReadCardPage(configString);
                             }
                         }}
                         show={showTypePop}

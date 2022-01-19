@@ -107,6 +107,9 @@ export default class http {
             if (showLoading) {
                 toast = Toast.showLoading(showLoading);
             }
+            if (params?.adapter == 1) {
+                this.adapter == axios;
+            }
             let res = await this.adapter.post(url, params);
             toast && Toast.hide(toast);
             return res;
