@@ -1,5 +1,7 @@
 package com.licaimofang.readcard.bean;
+import androidx.annotation.Keep;
 
+@Keep
 public class IdDetailBean {
 
 

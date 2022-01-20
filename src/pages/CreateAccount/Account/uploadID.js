@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-19 20:09:15
+ * @LastEditTime: 2022-01-19 21:42:30
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -30,7 +30,6 @@ import {getUserInfo} from '../../../redux/actions/userInfo';
 import {deleteModal} from '../../../redux/actions/modalInfo';
 import {connect} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
-
 import {
     androidHideLoading,
     androidShowLoading,

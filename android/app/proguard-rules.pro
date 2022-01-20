@@ -22,3 +22,4 @@
 -keep class com.eidlink.**{*;}
 -keep class net.sf.**{*;}
 -keep class org.eid_bc.**{*;}
+-keep class com.licaimofang.readcard.bean** { *; }
