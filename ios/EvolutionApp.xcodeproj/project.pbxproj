@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00106B692799941E00D7106A /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00106B672799941900D7106A /* TKCloudSDK.framework */; };
+		00106B6A2799941E00D7106A /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 00106B672799941900D7106A /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0016AC30277B276D00E78FBC /* MJPropertyType.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC19277B276800E78FBC /* MJPropertyType.m */; };
 		0016AC31277B276D00E78FBC /* NSObject+MJKeyValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1C277B276800E78FBC /* NSObject+MJKeyValue.m */; };
 		0016AC32277B276D00E78FBC /* MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1D277B276800E78FBC /* MJProperty.m */; };
@@ -19,8 +21,6 @@
 		0016AC39277B276D00E78FBC /* MJFoundation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2A277B276800E78FBC /* MJFoundation.m */; };
 		0016AC3A277B276D00E78FBC /* ReadCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2B277B276800E78FBC /* ReadCardManager.m */; };
 		0016AC3C277B276D00E78FBC /* IDCardModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC2E277B276C00E78FBC /* IDCardModel.m */; };
-		0027130E27996724005FC99B /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0027130C27996717005FC99B /* TKCloudSDK.framework */; };
-		0027130F27996724005FC99B /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0027130C27996717005FC99B /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
@@ -71,7 +71,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				0027130F27996724005FC99B /* TKCloudSDK.framework in Embed Frameworks */,
+				00106B6A2799941E00D7106A /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,6 +79,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00106B672799941900D7106A /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		0016AC14277B276700E78FBC /* IDCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDCardModel.h; sourceTree = "<group>"; };
 		0016AC16277B276800E78FBC /* MJPropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyKey.h; sourceTree = "<group>"; };
 		0016AC17277B276800E78FBC /* NSObject+MJClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJClass.h"; sourceTree = "<group>"; };
@@ -104,7 +105,6 @@
 		0016AC2B277B276800E78FBC /* ReadCardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadCardManager.m; sourceTree = "<group>"; };
 		0016AC2C277B276800E78FBC /* ReadCardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadCardManager.h; sourceTree = "<group>"; };
 		0016AC2E277B276C00E78FBC /* IDCardModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDCardModel.m; sourceTree = "<group>"; };
-		0027130C27996717005FC99B /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		002DFB7F258B442700501EA5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		002DFB85258B443100501EA5 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -171,7 +171,7 @@
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
-				0027130E27996724005FC99B /* TKCloudSDK.framework in Frameworks */,
+				00106B692799941E00D7106A /* TKCloudSDK.framework in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
@@ -245,7 +245,7 @@
 		13B07FAE1A68108700A75B9A /* EvolutionApp */ = {
 			isa = PBXGroup;
 			children = (
-				0027130C27996717005FC99B /* TKCloudSDK.framework */,
+				00106B672799941900D7106A /* TKCloudSDK.framework */,
 				0016AC14277B276700E78FBC /* IDCardModel.h */,
 				0016AC2E277B276C00E78FBC /* IDCardModel.m */,
 				0016AC15277B276800E78FBC /* MJExtension */,
