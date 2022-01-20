@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 16:43:17
+ * @LastEditTime: 2022-01-20 19:39:11
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -67,55 +67,44 @@ class UploadID extends Component {
         backImgBase64: '',
         combinationImgBase64: '',
         typeArr: ['从相册中获取', '拍照'],
+        nfc_enable: false,
     };
     toast = '';
     fr = this.props.route?.params?.fr;
     showPop = (clickIndex) => {
-        // 检测NFC状态
-        detectNFCStatus((status) => {
-            if (status === 1) {
-                console.log('NFC开启');
-                // 进入读卡页面
-                // const configString = JSON.stringify(this.uiconfig);
-                // enterToReadCardPage(configString);
-                let selectData = this.state.typeArr;
-                !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
-                this.setState({showTypePop: true, typeArr: selectData, clickIndex});
-            } else if (status === 2) {
-                console.log('是否开启？');
-                let selectData = this.state.typeArr;
-                !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
-                this.setState({showTypePop: true, typeArr: selectData, clickIndex});
-                // console.log('(仅限安卓):未开启');
-            } else if (status === 3 || status === 4) {
-                this.setState({showTypePop: true, clickIndex});
-                // console.log('不支持NFC');
-                // console.log('(仅限iOS):NFC不可用,版本过低，iOS14.5以上才可使用');
-            }
-        });
+        if (this.state.nfc_enable) {
+            // 检测NFC状态
+            detectNFCStatus((status) => {
+                if (status === 1) {
+                    console.log('NFC开启');
+                    // 进入读卡页面
+                    let selectData = this.state.typeArr;
+                    !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
+                    this.setState({showTypePop: true, typeArr: selectData, clickIndex});
+                } else if (status === 2) {
+                    console.log('是否开启？');
+                    let selectData = this.state.typeArr;
+                    !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
+                    this.setState({showTypePop: true, typeArr: selectData, clickIndex});
+                    // console.log('(仅限安卓):未开启');
+                } else if (status === 3 || status === 4) {
+                    this.setState({showTypePop: true, clickIndex});
+                    // console.log('不支持NFC');
+                    // console.log('(仅限iOS):NFC不可用,版本过低，iOS14.5以上才可使用');
+                }
+            });
+        } else {
+            this.setState({showTypePop: true, clickIndex});
+        }
     };
     componentDidMount() {
         // 令牌云SDK初始化
-        // tokenCloudIdentityInit(
-        //     '00DA2110281448486514',
-        //     0,
-        //     'eidcloudread.eidlink.com',
-        //     9989,
-        //     52302,
-        //     (status, errorCode) => {
-        //         if (status === 0) {
-        //             console.log('初始化成功');
-        //         } else {
-        //             console.log('初始化失败: ' + errorCode);
-        //         }
-        //     }
-        // );
         tokenCloudIdentityInit(
-            'F186ED61F9DC446FA6C1',
+            '00DA2110281448486514',
             0,
-            'testeidcloudread.eidlink.com',
+            'eidcloudread.eidlink.com',
             9989,
-            26814,
+            52302,
             (status, errorCode) => {
                 if (status === 0) {
                     console.log('初始化成功');
@@ -124,6 +113,20 @@ class UploadID extends Component {
                 }
             }
         );
+        // tokenCloudIdentityInit(
+        //     'F186ED61F9DC446FA6C1',
+        //     0,
+        //     'testeidcloudread.eidlink.com',
+        //     9989,
+        //     26814,
+        //     (status, errorCode) => {
+        //         if (status === 0) {
+        //             console.log('初始化成功');
+        //         } else {
+        //             console.log('初始化失败: ' + errorCode);
+        //         }
+        //     }
+        // );
 
         // 读卡成功获取到reqid
         this.successReqidSubscription = NativeReadCardEmitter.addListener(MethodObj.readCardSuccess, (reminder) => {
@@ -152,6 +155,7 @@ class UploadID extends Component {
                 frontSource: res.result.identity?.front,
                 behindSource: res.result.identity?.back,
                 desc: res.result.desc,
+                nfc_enable: res.result.nfc_enable,
             });
         });
 
@@ -182,11 +186,9 @@ class UploadID extends Component {
         http.get('/passport/tokencloud/element/20220117', {
             req_id: reqId,
         }).then((res) => {
-            console.log(res);
             if (res.code === '000000' && res.result && Object.keys(res.result).length) {
                 const cardInfo = res.result;
                 this.cartInfo = cardInfo;
-
                 // 请求9要素解码接口获取数据，转为json字符串处理进入确认信息页面
                 if (Platform.OS === 'ios') {
                     // iOS
@@ -224,7 +226,7 @@ class UploadID extends Component {
                 desc: index == 1 ? 'front' : 'back',
                 ...this.cartInfo,
                 adapter: 1, //使用axios
-            }).then((res) => {
+            }).then(async (res) => {
                 Toast.hide(this.toast);
                 if (res.code === '000000') {
                     if (index == 1) {
@@ -249,7 +251,7 @@ class UploadID extends Component {
     //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
     //  @param fullBitmapBase64Str 正反面合成照片 base64
     confirmCardInfoCallback = async (reminder) => {
-        if (reminder.code == 1) {
+        if (reminder.code !== 0) {
             this.toast = Toast.showLoading('正在上传');
             try {
                 await this.base64Upload(1, reminder.frontBitmapBase64Str);
