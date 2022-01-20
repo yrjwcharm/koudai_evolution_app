@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 16:39:18
+ * @LastEditTime: 2022-01-20 16:43:17
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -249,14 +249,16 @@ class UploadID extends Component {
     //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
     //  @param fullBitmapBase64Str 正反面合成照片 base64
     confirmCardInfoCallback = async (reminder) => {
-        this.toast = Toast.showLoading('正在上传');
-        try {
-            await this.base64Upload(1, reminder.frontBitmapBase64Str);
-            await this.base64Upload(2, reminder.backBitmapBase64Str);
-            Toast.show('上传成功');
-            DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
-        } catch (error) {
-            Toast.show(error);
+        if (reminder.code == 1) {
+            this.toast = Toast.showLoading('正在上传');
+            try {
+                await this.base64Upload(1, reminder.frontBitmapBase64Str);
+                await this.base64Upload(2, reminder.backBitmapBase64Str);
+                Toast.show('上传成功');
+                DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
+            } catch (error) {
+                Toast.show(error);
+            }
         }
     };
     //  确信页面页面加载异常
