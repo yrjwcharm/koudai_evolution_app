@@ -2,7 +2,7 @@
  * @Date: 2021-02-20 17:27:43
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-02-22 10:43:06
+ * @LastEditTime: 2022-01-20 15:29:15
  * @Description:底部选择弹出框
  */
 import React, {Component} from 'react';
@@ -15,7 +15,7 @@ export default class SelectModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isVisible: this.props.show,
+            isVisible: this.props.show || false,
         };
         this.entityList = this.props.entityList;
     }
@@ -25,10 +25,14 @@ export default class SelectModal extends Component {
     }
 
     closeModal() {
-        this.setState({
-            isVisible: false,
-        });
-        this.props.closeModal(false);
+        this.setState(
+            {
+                isVisible: false,
+            },
+            () => {
+                this.props.closeModal && this.props.closeModal(false);
+            }
+        );
     }
 
     renderItem(item, i) {
@@ -41,8 +45,8 @@ export default class SelectModal extends Component {
 
     choose(i) {
         if (this.state.isVisible) {
-            this.props.callback(i);
             this.closeModal();
+            this.props.callback(i);
         }
     }
 

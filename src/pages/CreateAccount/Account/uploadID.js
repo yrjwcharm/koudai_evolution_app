@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 10:31:42
+ * @LastEditTime: 2022-01-20 16:39:18
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -74,11 +74,15 @@ class UploadID extends Component {
         // 检测NFC状态
         detectNFCStatus((status) => {
             if (status === 1) {
-                // console.log('NFC开启');
+                console.log('NFC开启');
+                // 进入读卡页面
+                // const configString = JSON.stringify(this.uiconfig);
+                // enterToReadCardPage(configString);
                 let selectData = this.state.typeArr;
                 !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
                 this.setState({showTypePop: true, typeArr: selectData, clickIndex});
             } else if (status === 2) {
+                console.log('是否开启？');
                 let selectData = this.state.typeArr;
                 !selectData.includes('NFC读取身份证') && selectData.push('NFC读取身份证');
                 this.setState({showTypePop: true, typeArr: selectData, clickIndex});
@@ -244,20 +248,17 @@ class UploadID extends Component {
     //  @param frontBitmapBase64Str 正面身份证照(头像页) base64
     //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
     //  @param fullBitmapBase64Str 正反面合成照片 base64
-    confirmCardInfoCallback(reminder) {
+    confirmCardInfoCallback = async (reminder) => {
         this.toast = Toast.showLoading('正在上传');
-        Promise.all([
-            this.base64Upload(1, reminder.frontBitmapBase64Str),
-            this.base64Upload(2, reminder.backBitmapBase64Str),
-        ])
-            .then((res) => {
-                Toast.show('上传成功');
-                DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
-            })
-            .catch((err) => {
-                Toast.show(err);
-            });
-    }
+        try {
+            await this.base64Upload(1, reminder.frontBitmapBase64Str);
+            await this.base64Upload(2, reminder.backBitmapBase64Str);
+            Toast.show('上传成功');
+            DeviceEventEmitter.emit('upload', {name: this.cartInfo.name, id_no: this.cartInfo.idnum});
+        } catch (error) {
+            Toast.show(error);
+        }
+    };
     //  确信页面页面加载异常
     //  触发场景：传入数据在sdk内部解析失败，无法正确展示UI页面
     confirmCardFailed(reminder) {
@@ -392,16 +393,15 @@ class UploadID extends Component {
                             } else if (i == 1) {
                                 this.takePic();
                             } else {
-                                // 进入读卡页面
-                                const configString = JSON.stringify(this.uiconfig);
-                                enterToReadCardPage(configString);
+                                setTimeout(() => {
+                                    // 进入读卡页面
+                                    enterToReadCardPage(JSON.stringify(this.uiconfig));
+                                }, 1000);
                             }
                         }}
                         show={showTypePop}
-                        closeModal={(show) => {
-                            this.setState({
-                                showTypePop: show,
-                            });
+                        closeModal={(value) => {
+                            this.setState({showTypePop: value});
                         }}
                     />
                     <Text style={styles.text}>

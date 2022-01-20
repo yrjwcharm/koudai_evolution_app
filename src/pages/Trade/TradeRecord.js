@@ -3,7 +3,7 @@
  * @Date: 2021-01-29 17:11:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-11-29 19:13:47
+ * @LastEditTime: 2022-01-20 13:58:27
  * @Description:交易记录
  */
 import React, {useEffect, useState, useCallback} from 'react';
@@ -245,7 +245,7 @@ const TradeRecord = ({route, navigation}) => {
     };
 
     return (
-        <View style={{flex: 1, paddingTop: 1}}>
+        <View style={{flex: 1, paddingTop: 1, backgroundColor: Colors.bgColor}}>
             {isMfb ? (
                 <ScrollableTabView onChangeTab={changeTab} renderTabBar={() => <TabBar />} initialPage={0}>
                     <View tabLabel="全部" style={styles.container}>
