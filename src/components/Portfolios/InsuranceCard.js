@@ -2,7 +2,7 @@
  * @Date: 2021-08-20 10:39:20
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-03 15:46:47
+ * @LastEditTime: 2022-01-20 17:22:18
  * @Description: 保险产品卡片
  */
 import React from 'react';
@@ -23,17 +23,14 @@ const InsuranceCard = ({data, style}) => {
                 jump(data?.url);
             }}>
             <View style={Style.flexRow}>
-                <FastImage
-                    style={{
-                        width: px(72),
-                        height: px(72),
-                        borderRadius: px(6),
-                        marginRight: px(12),
-                    }}
-                    source={{
-                        uri: data?.icon,
-                    }}
-                />
+                {data.icon ? (
+                    <FastImage
+                        style={styles.card_img}
+                        source={{
+                            uri: data.icon,
+                        }}
+                    />
+                ) : null}
                 <View>
                     <Text style={{fontSize: px(14), fontWeight: '600', lineHeight: px(20), marginVertical: px(4)}}>
                         {data?.name}
@@ -85,4 +82,10 @@ const styles = StyleSheet.create({
         borderRadius: px(2),
     },
     mark: {width: px(12), height: px(10), position: 'absolute', left: 0, top: 0},
+    card_img: {
+        width: px(72),
+        height: px(72),
+        borderRadius: px(6),
+        marginRight: px(12),
+    },
 });
