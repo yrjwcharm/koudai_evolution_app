@@ -112,6 +112,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>com.apple.developer.nfc.readersession.formats
+com.apple.developer.nfc.readersession.formats
+com</key>
+	<array>
+		<string>NDEF</string>
+	</array>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
 	<array>
 		<string>F049442E43484E</string>
