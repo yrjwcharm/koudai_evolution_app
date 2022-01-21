@@ -167,8 +167,10 @@ packagingOptions {
                   JPUSH_APPKEY: "9cba9122f27784d37918105b",         //在此替换你的APPKey
                   JPUSH_CHANNEL: "developer-default"        //在此替换你的channel，也可使用默认的
           ]
+        //   "x86_64","x86" 是支持模拟器架构 release可以去掉
+        // "armeabi-v7a","arm64-v8a", 支持64位的
       ndk {
-        abiFilters "armeabi-v7a","x86","arm64-v8a", "x86_64"
+        abiFilters "armeabi-v7a","arm64-v8a", "x86_64","x86",
        }
     }
 
