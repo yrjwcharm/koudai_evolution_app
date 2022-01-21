@@ -108,7 +108,7 @@ public class ReadCardModule extends ReactContextBaseJavaModule {
                 LPYReadCardFactory.getPageRouterSE().removeAllResultPageListener();
                 //进入结果页面成功，返回图像位图的base64字符串个js页面
                 WritableMap params = Arguments.createMap();
-                params.putInt("code", i);
+                params.putInt("code", i-1);
                 params.putString("frontBitmapBase64Str", BitmapUtil.bitmapToBase64(bitmap));
                 params.putString("backBitmapBase64Str", BitmapUtil.bitmapToBase64(bitmap1));
                 params.putString("fullBitmapBase64Str", BitmapUtil.bitmapToBase64(bitmap2));

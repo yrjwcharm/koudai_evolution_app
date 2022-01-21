@@ -2,7 +2,7 @@
  * @Date: 2021-01-18 10:27:39
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 19:39:11
+ * @LastEditTime: 2022-01-21 01:49:03
  * @Description:上传身份证
  */
 import React, {Component} from 'react';
@@ -251,6 +251,7 @@ class UploadID extends Component {
     //  @param backBitmapBase64Str 反面身份证照(国徽页) base64
     //  @param fullBitmapBase64Str 正反面合成照片 base64
     confirmCardInfoCallback = async (reminder) => {
+        console.log(reminder.code);
         if (reminder.code !== 0) {
             this.toast = Toast.showLoading('正在上传');
             try {
