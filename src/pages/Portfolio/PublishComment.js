@@ -3,10 +3,10 @@
  * @Date: 2021-12-29 17:29:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-01-05 09:48:43
+ * @LastEditTime: 2022-02-09 17:52:26
  * @Description: 发布评论
  */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {px} from '../../utils/appUtil';
@@ -20,9 +20,14 @@ import http from '../../services/index.js';
 export default ({navigation, route}) => {
     const [value, setValue] = useState('');
     const [hide, setHide] = useState(false);
+    const listener = useRef();
+    const clickRef = useRef(true);
 
     const onSubmit = () => {
-        console.log(value, hide);
+        if (!clickRef.current) {
+            return false;
+        }
+        clickRef.current = false;
         http.post('/community/comment/save/20220101', {
             account_id: route.params.account_id,
             content: value,
@@ -30,16 +35,20 @@ export default ({navigation, route}) => {
         }).then((res) => {
             if (res.code === '000000') {
                 Toast.show('评论发布成功，精选后展示');
-                setTimeout(() => {
-                    navigation.goBack();
-                }, 1000);
+            } else {
+                Toast.show(res.message);
             }
+            setTimeout(() => {
+                listener.current?.();
+                navigation.goBack();
+                clickRef.current = true;
+            }, 1000);
         });
     };
 
     useEffect(() => {
         navigation.setOptions({title: route.params.title || '发布评论'});
-        navigation.addListener('beforeRemove', (e) => {
+        listener.current = navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
             Modal.show({
                 title: '温馨提示',
@@ -52,6 +61,9 @@ export default ({navigation, route}) => {
                 backButtonClose: false,
             });
         });
+        return () => {
+            listener.current?.();
+        };
     }, []);
 
     return (
