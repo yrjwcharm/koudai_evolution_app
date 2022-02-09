@@ -3,7 +3,7 @@
  * @Date: 2021-12-29 17:29:36
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-02-09 17:52:26
+ * @LastEditTime: 2022-02-09 18:01:50
  * @Description: 发布评论
  */
 import React, {useEffect, useRef, useState} from 'react';
@@ -52,7 +52,7 @@ export default ({navigation, route}) => {
             e.preventDefault();
             Modal.show({
                 title: '温馨提示',
-                content: '退出后将无法享受此次评论机会，是否继续评论',
+                content: '退出后将无法享受此次评论机会，是否继续评论？',
                 confirm: true,
                 confirmText: '继续编辑',
                 cancelText: '确认退出',
