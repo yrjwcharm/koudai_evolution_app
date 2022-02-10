@@ -24,6 +24,7 @@ export default function RenderChart(props) {
         tootipScope = true,
         showFutureArea = true,
         lowLine = 0,
+        chartProps = {},
     } = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
@@ -190,10 +191,12 @@ export default function RenderChart(props) {
                         2,
                         width,
                         props.appendPadding || [10, 10, 10, 15],
-                        null,
+                        chartProps.tag_position || null,
                         height,
                         chartData?.yield_info?.max_ratio,
-                        type == 2 && !showFutureArea ? false : true
+                        type == 2 && !showFutureArea ? false : true,
+                        chartProps.ownColor || false,
+                        chartProps.snap || false
                     )}
                     onChange={onChartChange}
                     // data={chart}

@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: wxp
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -27,6 +27,7 @@ import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import NumText from '../../../components/NumText';
 import {throttle} from 'lodash';
+import {BottomModal} from '../../../components/Modal';
 
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
@@ -37,6 +38,7 @@ export default function DetailAccount({route, navigation}) {
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
     const [riskChartMin, setRiskChartMin] = useState(0);
+    const bottomModal = React.useRef(null);
     const changeTab = useCallback(
         throttle((p, t) => {
             setPeriod((prev) => {
@@ -203,7 +205,21 @@ export default function DetailAccount({route, navigation}) {
                                     ]}>
                                     {data.line_drawback.ratio_val}
                                 </Text>
-                                <Html html={data?.line_drawback?.ratio_desc} style={styles.radio_sty} />
+                                <View style={Style.flexRowCenter}>
+                                    <Text style={styles.radio_sty}>{data?.line_drawback?.ratio_desc}</Text>
+                                    {data?.line_drawback?.tips ? (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                bottomModal.current.show();
+                                            }}
+                                            style={{...styles.radio_sty, marginLeft: px(4)}}>
+                                            <Image
+                                                style={{width: text(12), height: text(12)}}
+                                                source={require('../../../assets/img/tip.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </View>
                             </View>
                         )}
                         {data.rise_info && (
@@ -235,7 +251,19 @@ export default function DetailAccount({route, navigation}) {
                             </View>
                         </View>
                     ) : null}
-                    <RenderChart lowLine={data.low_line} chartData={chartData} chart={chart} type={type} />
+                    <RenderChart
+                        lowLine={data.low_line}
+                        chartData={chartData}
+                        chart={chart}
+                        type={type}
+                        chartProps={{
+                            tag_position: {
+                                splitTag: chart.find((item) => +item.update === 1),
+                            },
+                            ownColor: true,
+                            snap: true,
+                        }}
+                    />
 
                     <View
                         style={{
@@ -630,6 +658,20 @@ export default function DetailAccount({route, navigation}) {
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
+            {data?.line_drawback?.tips ? (
+                <BottomModal ref={bottomModal} title={data?.line_drawback?.tips?.title}>
+                    <View style={[{padding: text(16)}]}>
+                        {data?.line_drawback?.tips?.content?.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
+                                    <Text style={styles.tipTitle}>{item.key}:</Text>
+                                    <Html style={{lineHeight: text(18), fontSize: text(13)}} html={item.val} />
+                                </View>
+                            );
+                        })}
+                    </View>
+                </BottomModal>
+            ) : null}
         </>
     );
 }
@@ -800,5 +842,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         paddingTop: text(12),
         paddingBottom: text(4),
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: text(20),
+        fontSize: text(14),
+        marginBottom: text(4),
     },
 });

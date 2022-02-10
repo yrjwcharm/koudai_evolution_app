@@ -35,8 +35,25 @@ export const baseAreaChart = (
     height = 220,
     max = null,
     showArea = true,
-    showDate = false
-) => `
+    showDate = false,
+    ownColor = false, // 是否使用对象里自带的颜色
+    snap = false
+) => {
+    // 处理颜色分割
+    let splitTag = tag_position?.splitTag;
+    if (splitTag) {
+        let sameTypeArr = data.filter((item) => item.type === splitTag.type);
+        let splitTagIndex = sameTypeArr.indexOf(splitTag);
+        if (splitTagIndex > 0) {
+            let insertObj = {
+                ...sameTypeArr[splitTagIndex],
+                line: sameTypeArr[splitTagIndex - 1].line,
+                area: sameTypeArr[splitTagIndex - 1].area,
+            };
+            data.push(insertObj);
+        }
+    }
+    return `
 (function(){
   chart = new F2.Chart({
     id: 'chart',
@@ -97,7 +114,7 @@ export const baseAreaChart = (
     showCrosshairs: true,
     showXTip: ${JSON.stringify(showDate)},
     // showYTip: true,
-    // snap: true,
+    snap: ${snap},
     tooltipMarkerStyle: {
       radius: 1
     },
@@ -162,12 +179,35 @@ export const baseAreaChart = (
         }
       });
     };
+    if(${JSON.stringify(tag_position)}&&${JSON.stringify(tag_position.splitTag)}){
+      chart.guide().tag({
+        position: [${JSON.stringify(splitTag?.date)},${JSON.stringify(splitTag?.value)}],
+        content: ${JSON.stringify(splitTag?.text)},
+        limitInPlot:true,
+        offsetY: -9,
+        offsetX: 0,
+        direct: 'tc',
+        background: {
+          fill: '#545968',
+          padding: [4, 4],
+        },
+        pointStyle: {
+          fill: '#545968',
+          r: 5,
+        },
+        textStyle: {
+          fontSize: 11, // 字体大小
+        }
+      });
+    }
 
     if(${JSON.stringify(showArea)}){
-      chart.area({startOnZero: false})
+      chart.area({startOnZero: false, connectNulls: ${!!splitTag}})
         .position('date*value')
         .shape('smooth')
-        .color('type', ${JSON.stringify(areaColors)})
+        .color(${ownColor} ? 'area' : 'type',${ownColor} ? function(color){
+          return color
+        } :  ${JSON.stringify(areaColors)})
         .animate({
           appear: {
             animation: 'groupWaveIn',
@@ -179,7 +219,9 @@ export const baseAreaChart = (
   chart.line()
     .position('date*value')
     .shape('smooth')
-    .color('type', ${JSON.stringify(colors)})
+    .color(${ownColor} ? 'line' : 'type',${ownColor} ? function(color){
+      return color
+    } :  ${JSON.stringify(colors)})
    
     .animate({
       appear: {
@@ -212,6 +254,7 @@ export const baseAreaChart = (
   chart.render();
 })();
 `;
+};
 
 export const areaChart = (
     data,

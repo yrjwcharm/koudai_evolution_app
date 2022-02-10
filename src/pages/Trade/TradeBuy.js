@@ -161,7 +161,8 @@ class TradeBuy extends Component {
                                 marginVertical: Space.marginVertical,
                                 paddingHorizontal: px(20),
                                 maxHeight: px(352),
-                            }}>
+                            }}
+                            ref={(e) => (this.riskDisclosureModalRef = e)}>
                             <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
                                 {data.risk_disclosure.content}
                             </Text>
@@ -178,6 +179,11 @@ class TradeBuy extends Component {
             countdown: data.risk_disclosure.countdown,
             isTouchMaskToClose: false,
             onCloseCallBack: () => this.props.navigation.goBack(),
+            onCountdownChange: (val) => {
+                if (+val == 1) {
+                    this.riskDisclosureModalRef.scrollToEnd({animated: true});
+                }
+            },
             title: data.risk_disclosure.title,
         });
     };

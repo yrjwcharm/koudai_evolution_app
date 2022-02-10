@@ -129,46 +129,18 @@ const Part1 = () => {
                         );
                     })}
                     <View style={[styles.feeDescBox]}>
-                        <View style={{marginBottom: text(12)}}>
-                            <Html
-                                style={styles.feeDesc}
-                                html={
-                                    '基金卖出时一般按照先进先出规则, 部分基金卖出按照先进后出规则. 基金卖出手续费与持有期限相关. 实际费用收取请以基金公司确认为准.'
-                                }
-                            />
-                        </View>
-                        <View style={{marginBottom: text(20)}}>
-                            <Html
-                                style={styles.feeDesc}
-                                html={
-                                    '赎回计算公式：\n赎回总额=赎回数量xT日基金单位净值\n赎回费用=赎回总额x赎回费率\n赎回到账金额=赎回总额-赎回费用'
-                                }
-                            />
-                        </View>
-                        <Html
-                            style={{...styles.feeDesc, lineHeight: text(20)}}
-                            html={'基金费率等信息以基金公司最新披露的基金信息为准'}
-                        />
+                        <Html style={{...styles.feeDesc, lineHeight: text(20)}} html={data?.redeem?.content} />
                     </View>
-                    <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
-                        {isPlan ? '优化计划' : '调仓'}费率
-                    </Text>
-                    <View style={[styles.feeDescBox, {paddingTop: 0}]}>
-                        <Text style={[styles.feeDesc, {color: Colors.descColor}]}>{data?.adjust_content}</Text>
-                    </View>
-                    {data?.manage ? (
+                    {Object.values(data?.desc_list)?.map((item) => (
                         <>
                             <Text style={[styles.title, {marginTop: text(10), paddingTop: Space.padding}]}>
-                                {data?.manage?.title}
+                                {item.title}
                             </Text>
                             <View style={[styles.feeDescBox, {paddingTop: 0}]}>
-                                <Html
-                                    html={data?.manage?.content}
-                                    style={{...styles.feeDesc, color: Colors.descColor}}
-                                />
+                                <Html html={item.content} style={{...styles.feeDesc, color: Colors.descColor}} />
                             </View>
                         </>
-                    ) : null}
+                    ))}
                 </>
             )}
         </View>
