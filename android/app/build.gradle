@@ -170,7 +170,7 @@ packagingOptions {
         //   "x86_64","x86" 是支持模拟器架构 release可以去掉
         // "armeabi-v7a","arm64-v8a", 支持64位的
       ndk {
-        abiFilters "armeabi-v7a","arm64-v8a", "x86_64","x86",
+        abiFilters "armeabi-v7a","arm64-v8a", "x86_64","x86"
        }
     }
 
