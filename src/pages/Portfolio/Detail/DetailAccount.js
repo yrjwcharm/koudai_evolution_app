@@ -206,7 +206,7 @@ export default function DetailAccount({route, navigation}) {
                                     {data.line_drawback.ratio_val}
                                 </Text>
                                 <View style={Style.flexRowCenter}>
-                                    <Text style={styles.radio_sty}>{data?.line_drawback?.ratio_desc}</Text>
+                                    <Html style={styles.radio_sty} html={data?.line_drawback?.ratio_desc} />
                                     {data?.line_drawback?.tips ? (
                                         <TouchableOpacity
                                             onPress={() => {
