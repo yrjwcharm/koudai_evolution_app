@@ -30,6 +30,7 @@ const AdjustRecord = ({navigation, route}) => {
             http.get('/portfolio/adjust/20210101', {
                 poid: route.params?.poid,
                 upid: route.params?.upid,
+                card: route.params?.card,
                 page,
                 scene: 'history',
             }).then((res) => {
