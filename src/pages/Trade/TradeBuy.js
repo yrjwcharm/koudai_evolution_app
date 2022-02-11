@@ -36,6 +36,7 @@ import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
 let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
@@ -163,9 +164,10 @@ class TradeBuy extends Component {
                                 maxHeight: px(352),
                             }}
                             ref={(e) => (this.riskDisclosureModalRef = e)}>
-                            <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
-                                {data.risk_disclosure.content}
-                            </Text>
+                            <Html
+                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}
+                                html={data.risk_disclosure.content}
+                            />
                         </ScrollView>
                     </View>
                 );

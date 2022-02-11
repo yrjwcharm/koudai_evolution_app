@@ -23,6 +23,8 @@ import {BankCardModal, InputModal} from '../../components/Modal';
 import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
+
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -93,9 +95,10 @@ export default function FixedUpdate({navigation, route}) {
                                 maxHeight: text(352),
                             }}
                             ref={(e) => (riskDisclosureModalRef.current = e)}>
-                            <Text style={{fontSize: text(13), lineHeight: text(22), color: Colors.descColor}}>
-                                {risk_disclosure.content}
-                            </Text>
+                            <Html
+                                style={{fontSize: text(13), lineHeight: text(22), color: Colors.descColor}}
+                                html={risk_disclosure.content}
+                            />
                         </ScrollView>
                     </View>
                 );
