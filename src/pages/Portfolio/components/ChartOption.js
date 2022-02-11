@@ -40,7 +40,8 @@ export const baseAreaChart = (
     snap = false
 ) => {
     // 处理颜色分割
-    let splitTag = tag_position?.splitTag;
+    tag_position = tag_position || {};
+    let splitTag = tag_position.splitTag;
     if (splitTag) {
         let sameTypeArr = data.filter((item) => item.type === splitTag.type);
         let splitTagIndex = sameTypeArr.indexOf(splitTag);
