@@ -183,7 +183,7 @@ export default function DetailAccount({route, navigation}) {
                             <Text style={styles.secondaryTitle}>{data.secondary_title}</Text>
                         </View>
                     ) : null}
-                    <View style={[Style.flexRow, {height: text(94)}]}>
+                    <View style={{height: text(94), flexDirection: 'row'}}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
                                 style={{
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
         marginRight: text(-10),
     },
     container_sty: {
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         paddingBottom: text(20),
         backgroundColor: '#fff',
         flex: 1,
@@ -722,7 +722,6 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         textAlign: 'center',
-        marginTop: text(4),
     },
     btn_sty: {
         borderWidth: 0.5,
