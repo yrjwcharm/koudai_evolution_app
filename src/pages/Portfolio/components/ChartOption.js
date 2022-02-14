@@ -191,6 +191,7 @@ export const baseAreaChart = (
         background: {
           fill: '#545968',
           padding: [4, 4],
+          opacity: 0.7,
         },
         pointStyle: {
           fill: '#545968',

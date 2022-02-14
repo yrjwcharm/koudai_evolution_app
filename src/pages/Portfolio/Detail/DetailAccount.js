@@ -582,25 +582,22 @@ export default function DetailAccount({route, navigation}) {
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
-                                    {data?.risk_info?.label && data?.risk_info?.label[2] ? (
-                                        <View
-                                            style={{
-                                                fontSize: text(12),
-                                                marginBottom: px(-16),
-                                            }}>
-                                            <Text style={{fontSize: text(12)}}>
-                                                --- {data?.risk_info?.label[2]?.key}
-                                            </Text>
-                                            <Text
-                                                style={{
-                                                    fontSize: text(10),
-                                                }}>
-                                                {'       '}
-                                                {data?.risk_info?.label[2]?.val}
-                                            </Text>
-                                        </View>
-                                    ) : null}
                                 </View>
+                                {data?.risk_info?.label?.[2] ? (
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            paddingHorizontal: px(6),
+                                            marginTop: px(16),
+                                        }}>
+                                        <Text>--- {data?.risk_info?.label[2]?.key}</Text>
+                                        <Text>
+                                            {'       '}
+                                            {data?.risk_info?.label[2]?.val}
+                                        </Text>
+                                    </View>
+                                ) : null}
                             </View>
                         </View>
                     ) : null}
