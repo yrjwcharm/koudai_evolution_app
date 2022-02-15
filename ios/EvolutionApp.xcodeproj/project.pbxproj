@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		001156AF279AA63300A4C538 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001156AD279AA62600A4C538 /* TKCloudSDK.framework */; };
-		001156B0279AA63300A4C538 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 001156AD279AA62600A4C538 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0016AC30277B276D00E78FBC /* MJPropertyType.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC19277B276800E78FBC /* MJPropertyType.m */; };
 		0016AC31277B276D00E78FBC /* NSObject+MJKeyValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1C277B276800E78FBC /* NSObject+MJKeyValue.m */; };
 		0016AC32277B276D00E78FBC /* MJProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 0016AC1D277B276800E78FBC /* MJProperty.m */; };
@@ -24,6 +22,8 @@
 		0032120B261181BD002B9C12 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB85258B443100501EA5 /* libresolv.tbd */; };
 		0032120F261181CE002B9C12 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB8B258B443E00501EA5 /* UserNotifications.framework */; };
 		0048D3E4271D757400F2CD34 /* iot.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 0048D3E3271D757400F2CD34 /* iot.p12 */; };
+		0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; };
+		0049823627BB4FFA00A88DA1 /* TKCloudSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045532591A5B30083350B /* libRCTWeChat.a */; };
 		008045552591A5CD0083350B /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 002DFB7F258B442700501EA5 /* libz.tbd */; };
 		0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 008045592591A5DA0083350B /* libc++.tbd */; };
@@ -71,7 +71,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				001156B0279AA63300A4C538 /* TKCloudSDK.framework in Embed Frameworks */,
+				0049823627BB4FFA00A88DA1 /* TKCloudSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,7 +79,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		001156AD279AA62600A4C538 /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		0016AC14277B276700E78FBC /* IDCardModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDCardModel.h; sourceTree = "<group>"; };
 		0016AC16277B276800E78FBC /* MJPropertyKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJPropertyKey.h; sourceTree = "<group>"; };
 		0016AC17277B276800E78FBC /* NSObject+MJClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+MJClass.h"; sourceTree = "<group>"; };
@@ -110,6 +109,7 @@
 		002DFB8B258B443E00501EA5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		002DFB8F258B456100501EA5 /* EvolutionApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EvolutionApp.entitlements; path = EvolutionApp/EvolutionApp.entitlements; sourceTree = "<group>"; };
 		0048D3E3271D757400F2CD34 /* iot.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = iot.p12; sourceTree = "<group>"; };
+		0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TKCloudSDK.framework; sourceTree = "<group>"; };
 		008045532591A5B30083350B /* libRCTWeChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRCTWeChat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		008045592591A5DA0083350B /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		0080455E2591A5E20083350B /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -171,7 +171,7 @@
 				008045612591A5F00083350B /* CoreTelephony.framework in Frameworks */,
 				0080455F2591A5E20083350B /* SystemConfiguration.framework in Frameworks */,
 				0080455A2591A5DA0083350B /* libc++.tbd in Frameworks */,
-				001156AF279AA63300A4C538 /* TKCloudSDK.framework in Frameworks */,
+				0049823527BB4FFA00A88DA1 /* TKCloudSDK.framework in Frameworks */,
 				008045552591A5CD0083350B /* libz.tbd in Frameworks */,
 				008045542591A5B30083350B /* libRCTWeChat.a in Frameworks */,
 				BD0F0B888F7B65A1968EC5F5 /* libPods-EvolutionApp.a in Frameworks */,
@@ -245,7 +245,7 @@
 		13B07FAE1A68108700A75B9A /* EvolutionApp */ = {
 			isa = PBXGroup;
 			children = (
-				001156AD279AA62600A4C538 /* TKCloudSDK.framework */,
+				0049823327BB4FF000A88DA1 /* TKCloudSDK.framework */,
 				0016AC14277B276700E78FBC /* IDCardModel.h */,
 				0016AC2E277B276C00E78FBC /* IDCardModel.m */,
 				0016AC15277B276800E78FBC /* MJExtension */,
@@ -545,8 +545,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "
-";
+			shellScript = "\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n\n# removes unused architectures.\n\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\n\ndo\n\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\n\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\n\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\n\ndo\n\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\n\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\n\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\n\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\n\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\n\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\n\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\n\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
 		};
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -941,7 +940,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64500;
+				CURRENT_PROJECT_VERSION = 64501;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1012,7 +1011,7 @@
 				PRODUCT_NAME = EvolutionApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				VALIDATE_WORKSPACE = NO;
+				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Staging;
@@ -1151,7 +1150,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64500;
+				CURRENT_PROJECT_VERSION = 64501;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = WZU46PUMFV;
 				ENABLE_BITCODE = NO;
@@ -1224,7 +1223,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				VALIDATE_WORKSPACE = NO;
+				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1237,11 +1236,11 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EvolutionApp/EvolutionApp.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 64500;
-				DEVELOPMENT_TEAM = WZU46PUMFV;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 64501;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1310,9 +1309,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.licaimofang.app;
 				PRODUCT_NAME = EvolutionApp;
-				PROVISIONING_PROFILE_SPECIFIER = iosDistribution;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
-				VALIDATE_WORKSPACE = NO;
+				VALIDATE_WORKSPACE = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1522,6 +1521,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODEPUSH_KEY = ESpSaqVW6vnMpDSxV0OjVfbSag164ksvOXqog;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
