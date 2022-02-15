@@ -390,13 +390,7 @@ export default function DetailAccount({route, navigation}) {
                                         </View>
                                     ) : null}
                                     <View style={{marginTop: px(12)}}>
-                                        <Html
-                                            style={{
-                                                ...styles.bottomTip,
-                                                lineHeight: px(19),
-                                            }}
-                                            html={data.line_info?.line_desc?.tip}
-                                        />
+                                        <Html html={data.line_info?.line_desc?.tip} />
                                     </View>
                                     {data.line_info?.button ? (
                                         <TouchableOpacity
@@ -602,13 +596,7 @@ export default function DetailAccount({route, navigation}) {
                                 ) : null}
                                 {data?.risk_info?.chart_tips && (
                                     <View style={{marginTop: px(12)}}>
-                                        <Html
-                                            style={{
-                                                ...styles.bottomTip,
-                                                lineHeight: px(19),
-                                            }}
-                                            html={data?.risk_info?.chart_tips}
-                                        />
+                                        <Html html={data?.risk_info?.chart_tips} />
                                     </View>
                                 )}
                             </View>
