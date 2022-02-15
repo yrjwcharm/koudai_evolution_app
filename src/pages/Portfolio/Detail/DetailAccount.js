@@ -389,7 +389,7 @@ export default function DetailAccount({route, navigation}) {
                                             ) : null}
                                         </View>
                                     ) : null}
-                                    <View style={{marginTop: px(12)}}>
+                                    <View>
                                         <Html html={data.line_info?.line_desc?.tip} />
                                     </View>
                                     {data.line_info?.button ? (
@@ -595,7 +595,7 @@ export default function DetailAccount({route, navigation}) {
                                     </View>
                                 ) : null}
                                 {data?.risk_info?.chart_tips && (
-                                    <View style={{marginTop: px(12)}}>
+                                    <View>
                                         <Html html={data?.risk_info?.chart_tips} />
                                     </View>
                                 )}
