@@ -30,6 +30,19 @@ export default function RenderChart(props) {
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
+
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -82,18 +95,7 @@ export default function RenderChart(props) {
             ],
         });
     }, [chartData, getColor, lowLine]);
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
+
     useEffect(() => {
         if (chartData?.yield_info && chart?.length > 0) {
             onHide();

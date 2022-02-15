@@ -183,7 +183,7 @@ export default function DetailAccount({route, navigation}) {
                             <Text style={styles.secondaryTitle}>{data.secondary_title}</Text>
                         </View>
                     ) : null}
-                    <View style={{height: text(94), flexDirection: 'row'}}>
+                    <View style={{paddingTop: px(12), flexDirection: 'row', backgroundColor: '#fff'}}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
                                 style={{
@@ -389,13 +389,15 @@ export default function DetailAccount({route, navigation}) {
                                             ) : null}
                                         </View>
                                     ) : null}
-                                    <Text
-                                        style={[
-                                            styles.bottomTip,
-                                            {marginTop: px(12), lineHeight: px(19), color: Colors.lightGrayColor},
-                                        ]}>
-                                        {data.line_info?.line_desc?.tip}
-                                    </Text>
+                                    <View style={{marginTop: px(12)}}>
+                                        <Html
+                                            style={{
+                                                ...styles.bottomTip,
+                                                lineHeight: px(19),
+                                            }}
+                                            html={data.line_info?.line_desc?.tip}
+                                        />
+                                    </View>
                                     {data.line_info?.button ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -598,6 +600,17 @@ export default function DetailAccount({route, navigation}) {
                                         </Text>
                                     </View>
                                 ) : null}
+                                {data?.risk_info?.chart_tips && (
+                                    <View style={{marginTop: px(12)}}>
+                                        <Html
+                                            style={{
+                                                ...styles.bottomTip,
+                                                lineHeight: px(19),
+                                            }}
+                                            html={data?.risk_info?.chart_tips}
+                                        />
+                                    </View>
+                                )}
                             </View>
                         </View>
                     ) : null}
