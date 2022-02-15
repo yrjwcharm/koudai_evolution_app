@@ -535,7 +535,7 @@ export default function DetailAccount({route, navigation}) {
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} oid={4} />
-                            <View style={{position: 'relative', paddingBottom: px(16)}}>
+                            <View style={{position: 'relative'}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
                                     {data?.risk_info?.sub_tab?.map((item, index) => (
                                         <View style={{flex: 1}} key={index}>
@@ -595,7 +595,7 @@ export default function DetailAccount({route, navigation}) {
                                     </View>
                                 ) : null}
                                 {data?.risk_info?.chart_tips && (
-                                    <View>
+                                    <View style={{paddingTop: text(14)}}>
                                         <Html html={data?.risk_info?.chart_tips} />
                                     </View>
                                 )}
