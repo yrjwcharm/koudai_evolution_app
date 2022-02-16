@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 16:48:47
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-15 14:55:46
  * @Description:路由表
  */
 import React from 'react';
@@ -170,6 +170,7 @@ import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
 import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 import ReportWebView from '../pages/Activity/ReportWebView'; //年报webview
+import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -682,6 +683,7 @@ export default function AppStack() {
             <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
             <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
             <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
+            <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
         </Stack.Navigator>
     );
 }
