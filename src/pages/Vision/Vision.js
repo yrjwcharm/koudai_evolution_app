@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:12:50
+ * @LastEditTime: 2022-02-16 17:38:17
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -30,6 +30,7 @@ import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useJump} from '../../components/hooks';
+import BottomDesc from '../../components/BottomDesc';
 
 const Vision = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
@@ -45,21 +46,13 @@ const Vision = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const [data, setData] = useState();
     const jump = useJump();
-    const init = useCallback(
-        (type) => {
-            type == 'refresh' && setRefreshing(true);
-            http.get('http://127.0.0.1:4523/mock/587315/vision/index/20220215').then((res) => {
-                setData(res.result);
-                dispatch(
-                    updateVision({
-                        recommend: res.result,
-                    })
-                );
-                setRefreshing(false);
-            });
-        },
-        [dispatch]
-    );
+    const init = useCallback((type) => {
+        type == 'refresh' && setRefreshing(true);
+        http.get('http://127.0.0.1:4523/mock/587315/vision/index/20220215').then((res) => {
+            setData(res.result);
+            setRefreshing(false);
+        });
+    }, []);
     useFocusEffect(
         useCallback(() => {
             init();
@@ -151,47 +144,46 @@ const Vision = ({navigation, route}) => {
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 0.2}}
                         colors={['#fff', '#F5F6F8']}
-                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5}}>
-                        <View style={{padding: px(16), paddingTop: px(6)}}>
-                            {/* 推荐位 */}
-                            <RecommendCard
-                                style={{marginBottom: px(16)}}
-                                data={data?.part2}
-                                onPress={() => {
-                                    global.LogTool('visionRecArticle', data?.part2);
-                                }}
-                            />
-                            {/* 其他模块 */}
-                            {data?.part3?.map((item, index) => {
-                                return (
-                                    <View key={index + 'i'}>
-                                        <RenderTitle
-                                            _key={index}
-                                            title={item.title}
-                                            more_text={item?.more ? item?.more?.text : ''}
-                                            onPress={() => {
-                                                jump(item?.more?.url);
-                                            }}
-                                        />
+                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5, padding: px(16), paddingTop: px(6)}}>
+                        {/* 推荐位 */}
+                        <RecommendCard
+                            style={{marginBottom: px(16)}}
+                            data={data?.part2}
+                            onPress={() => {
+                                global.LogTool('visionRecArticle', data?.part2);
+                            }}
+                        />
+                        {/* 其他模块 */}
+                        {data?.part3?.map((item, index) => {
+                            return (
+                                <View key={index + 'i'}>
+                                    <RenderTitle
+                                        _key={index}
+                                        title={item.title}
+                                        more_text={item?.more ? item?.more?.text : ''}
+                                        onPress={() => {
+                                            jump(item?.more?.url);
+                                        }}
+                                    />
 
-                                        {item?.direction == 'horizontal' ? (
-                                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                                {item?.items?.map((_article, index) => {
-                                                    return RenderCate(_article, {
-                                                        marginBottom: px(12),
-                                                        marginRight: px(12),
-                                                    });
-                                                })}
-                                            </ScrollView>
-                                        ) : (
-                                            item?.items?.map((_article, index) => {
-                                                return RenderCate(_article, {marginBottom: px(12)});
-                                            })
-                                        )}
-                                    </View>
-                                );
-                            })}
-                        </View>
+                                    {item?.direction == 'horizontal' ? (
+                                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                            {item?.items?.map((_article, index) => {
+                                                return RenderCate(_article, {
+                                                    marginBottom: px(12),
+                                                    marginRight: px(12),
+                                                });
+                                            })}
+                                        </ScrollView>
+                                    ) : (
+                                        item?.items?.map((_article, index) => {
+                                            return RenderCate(_article, {marginBottom: px(12)});
+                                        })
+                                    )}
+                                </View>
+                            );
+                        })}
+                        <BottomDesc />
                     </LinearGradient>
                 </ScrollView>
                 {!userInfo.is_login && <LoginMask scene="vision" />}

@@ -2,10 +2,10 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:08:11
+ * @LastEditTime: 2022-02-16 17:57:31
  * @Description:用户问答卡片
  */
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
@@ -16,7 +16,6 @@ import Praise from '../Praise';
 export default function QuestionCard({data, scene}) {
     const jump = useJump();
     const visionData = useSelector((store) => store.vision).toJS();
-
     return (
         <TouchableOpacity
             activeOpacity={0.9}
@@ -32,7 +31,7 @@ export default function QuestionCard({data, scene}) {
                     <Text style={[styles.article_content, {color: Colors.defaultColor}]}>{data?.phase}</Text>
                 ) : null}
             </View>
-            <View style={[Style.flexRow, {marginVertical: px(16)}]}>
+            <View style={[Style.flexRow, {marginVertical: px(8)}]}>
                 <Text
                     numberOfLines={2}
                     style={[

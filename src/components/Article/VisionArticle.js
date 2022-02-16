@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 15:02:36
+ * @LastEditTime: 2022-02-16 18:24:18
  * @Description:视野文章模块
  */
 
@@ -17,8 +17,8 @@ import {useSelector} from 'react-redux';
 import LazyImage from '../LazyImage';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
-    //上下布局
-    const isHorizontal = data?.show_mode == 'horizontal';
+    //上下布局 默认左右布局 图片资源在右边
+    const isHorizontal = data?.show_mode ? data?.show_mode == 'horizontal' : true;
     const jump = useJump();
     let numberOfLines = 2;
     return (
@@ -46,7 +46,6 @@ export default function VisionArticle({data = '', style, scene}) {
                             style={[
                                 styles.article_content,
                                 {
-                                    height: px(21) * numberOfLines,
                                     color:
                                         (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
                                         scene !== 'collect'
@@ -59,16 +58,17 @@ export default function VisionArticle({data = '', style, scene}) {
                     ) : (
                         <Text style={{height: px(20) * numberOfLines}} />
                     )}
-
-                    <View style={[Style.flexRow, {marginTop: px(8)}]}>
-                        {data?.tag_list?.map((item, index) => {
-                            return (
-                                <Text key={index} style={[styles.light_text]}>
-                                    {item}
-                                </Text>
-                            );
-                        })}
-                    </View>
+                    {data?.tag_list ? (
+                        <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                            {data?.tag_list?.map((item, index) => {
+                                return (
+                                    <Text key={index} style={[styles.light_text]}>
+                                        {item}
+                                    </Text>
+                                );
+                            })}
+                        </View>
+                    ) : null}
                 </View>
                 {data?.cover && isHorizontal ? (
                     <LazyImage

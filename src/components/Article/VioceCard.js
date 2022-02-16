@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:04:44
+ * @LastEditTime: 2022-02-16 18:12:30
  * @Description:音频模块
  */
 
@@ -19,7 +19,8 @@ const VioceCard = ({data, style, scene}) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
 
-    const isHorizontal = data?.show_mode == 'horizontal';
+    //上下布局 默认左右布局 图片资源在右边
+    const isHorizontal = data?.show_mode ? data?.show_mode == 'horizontal' : true;
     const coverRender = () => {
         return (
             <View style={styles.cover_con}>
@@ -41,7 +42,7 @@ const VioceCard = ({data, style, scene}) => {
     return (
         <TouchableOpacity
             activeOpacity={0.9}
-            style={[styles.card, {width: isHorizontal ? px(162) : 'auto'}, style]}
+            style={[styles.card, !isHorizontal && {width: px(162)}, style]}
             onPress={debounce(() => {
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
@@ -58,17 +59,12 @@ const VioceCard = ({data, style, scene}) => {
                         </View>
                     ) : null}
 
-                    <>
-                        <View style={Style.flexRow}>
-                            <Text numberOfLines={1} style={[styles.title]}>
-                                {data.album_name}
-                            </Text>
-                            {visionData?.album_update?.includes(data.album_id) ? <View style={styles.badge} /> : null}
-                        </View>
-                        <Text numberOfLines={2} style={styles.detail}>
-                            {data.title}
-                        </Text>
-                    </>
+                    <Text numberOfLines={1} style={[styles.title]}>
+                        {data.album_name}
+                    </Text>
+                    <Text numberOfLines={2} style={styles.detail}>
+                        {data.title}sadasda
+                    </Text>
                 </View>
                 {data?.cover && isHorizontal ? coverRender() : null}
             </View>
@@ -100,10 +96,9 @@ const styles = StyleSheet.create({
     },
     detail: {
         color: Colors.defaultColor,
-
         fontSize: px(14),
         lineHeight: px(20),
-        height: px(40),
+        height: px(42),
     },
     title: {
         fontSize: px(14),
