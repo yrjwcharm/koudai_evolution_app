@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 17:59:00
+ * @LastEditTime: 2022-02-16 17:08:11
  * @Description:用户问答卡片
  */
 import React, {useState, useEffect} from 'react';
@@ -15,36 +15,24 @@ import {useSelector} from 'react-redux';
 import Praise from '../Praise';
 export default function QuestionCard({data, scene}) {
     const jump = useJump();
-    const [is_new, setIsNew] = useState(data.is_new);
     const visionData = useSelector((store) => store.vision).toJS();
-    useEffect(() => {
-        setIsNew((pre_new) => {
-            return data.is_new != pre_new ? data.is_new : pre_new;
-        });
-    }, [data.is_new]);
+
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={debounce(() => {
-                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}
             style={[styles.ques_card]}>
             <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
             <View style={Style.flexRow}>
-                {is_new && (
-                    <FastImage source={require('../../assets/img/article/voiceUpdate.png')} style={styles.new_tag} />
-                )}
-                {data?.phase ? (
-                    <Text style={[styles.article_content, {color: Colors.defaultColor, fontWeight: 'bold'}]}>
-                        {data?.phase}：
-                    </Text>
-                ) : null}
-                <Text style={styles.article_content}>{data?.nickname}</Text>
-            </View>
-            <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
                 <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
+                {data?.phase ? (
+                    <Text style={[styles.article_content, {color: Colors.defaultColor}]}>{data?.phase}</Text>
+                ) : null}
+            </View>
+            <View style={[Style.flexRow, {marginVertical: px(16)}]}>
                 <Text
                     numberOfLines={2}
                     style={[
@@ -94,7 +82,6 @@ const styles = StyleSheet.create({
     article_title: {
         flex: 1,
         fontSize: px(14),
-        fontWeight: '700',
         color: Colors.defaultColor,
         lineHeight: px(20),
     },

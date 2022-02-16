@@ -2,13 +2,14 @@
  * @Date: 2021-06-07 10:49:13
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-06-07 11:02:51
+ * @LastEditTime: 2022-02-16 15:45:40
  * @Description:
  */
 import React from 'react';
-import {Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {Style, Colors} from '../../../common/commonStyle';
 import {px} from '../../../utils/appUtil';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const RenderTitle = (props) => {
     return props.title ? (
         <TouchableOpacity
@@ -23,7 +24,12 @@ const RenderTitle = (props) => {
                 },
             ]}>
             <Text style={styles.large_title}>{props.title}</Text>
-            {props.more_text ? <Text style={Style.more}>{props.more_text}</Text> : null}
+            {props.more_text ? (
+                <View style={Style.flexRow}>
+                    <Text style={[Style.more, {marginRight: px(4)}]}>{props.more_text}</Text>
+                    <FontAwesome name={'angle-right'} color={Colors.btnColor} size={18} />
+                </View>
+            ) : null}
         </TouchableOpacity>
     ) : null;
 };

@@ -721,7 +721,6 @@ const Index = (props) => {
                                                     e.stopPropagation();
                                                     const url = _.cloneDeep(data?.about_info?.url);
                                                     url.params.link += `/${index}`;
-                                                    // console.log(url);
                                                     jump(url);
                                                 }}
                                                 style={{alignItems: 'flex-start', flex: 1, paddingLeft: Space.padding}}>

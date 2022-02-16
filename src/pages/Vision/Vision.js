@@ -2,45 +2,34 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-18 15:43:45
+ * @LastEditTime: 2022-02-16 17:12:50
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import ScrollTabbar from './components/ScrollTabbar';
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
-import {Style} from '../../common/commonStyle';
+import {Colors, Font, Style} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
 import Recommend from './components/Recommend'; //推荐
 import CommonView from './components/CommonView'; //魔方问答
+import RenderTitle from './components/RenderTitle.js';
+import RecommendCard from '../../components/Article/RecommendCard';
+import LiveCard from '../../components/Article/LiveCard';
+import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
 import LoginMask from '../../components/LoginMask';
-import {updateVision, updateFresh} from '../../redux/actions/visionData';
+import {updateVision} from '../../redux/actions/visionData';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Empty from '../../components/EmptyTip';
 import {Button} from '../../components/Button';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import _ from 'lodash';
-let activeTab = 0;
-const shadow = {
-    color: '#ddd',
-    border: 12,
-    radius: 6,
-    opacity: 0.4,
-    x: -2,
-    y: 12,
-    width: px(52),
-    height: px(21),
-    style: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
-    },
-};
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useJump} from '../../components/hooks';
 
 const Vision = ({navigation, route}) => {
     const visionData = useSelector((store) => store.vision).toJS();
@@ -50,102 +39,33 @@ const Vision = ({navigation, route}) => {
     const isFocused = useIsFocused();
     const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
-    const [tabs, setTabs] = useState([]);
+    const scrollRef = useRef(null);
+    const [refreshing, setRefreshing] = useState(false);
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
-
+    const [data, setData] = useState();
+    const jump = useJump();
+    const init = useCallback(
+        (type) => {
+            type == 'refresh' && setRefreshing(true);
+            http.get('http://127.0.0.1:4523/mock/587315/vision/index/20220215').then((res) => {
+                setData(res.result);
+                dispatch(
+                    updateVision({
+                        recommend: res.result,
+                    })
+                );
+                setRefreshing(false);
+            });
+        },
+        [dispatch]
+    );
     useFocusEffect(
         useCallback(() => {
+            init();
             dispatch(updateVision({visionUpdate: ''}));
-        }, [dispatch])
+        }, [init, dispatch])
     );
-    useEffect(() => {
-        setTabs([]);
-        getTabs();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hasNet, userInfo.is_login, getTabs]);
-    useEffect(() => {
-        const unsubscribe = navigation.addListener(
-            'tabPress',
-            _.debounce(() => {
-                dispatch(updateVision({refreshing: false}));
-                if (isFocused) {
-                    if (activeTab == 0) {
-                        recommedRef.current?.tabRefresh();
-                    } else {
-                        tabs.length > 0 && comViewRef.current?.tabRefresh(tabs[activeTab].k);
-                    }
-                }
-            }, 500)
-        );
-        return () => {
-            unsubscribe();
-        };
-    }, [isFocused, navigation, tabs, visionData, dispatch]);
-
-    const getTabs = useCallback(() => {
-        http.get('/vision/tabs/20210524').then((res) => {
-            setTabs(res.result);
-        });
-    }, []);
-
-    const _renderDynamicView = useCallback(() => {
-        const _views = [];
-        for (let i = 0; i < tabs.length; i++) {
-            if (tabs[i].k == 'recommend') {
-                _views.push(<Recommend ref={recommedRef} key={tabs[i].k} i={i} tabLabel={tabs[i].v} k={tabs[i].k} />);
-            } else {
-                _views.push(<CommonView ref={comViewRef} key={tabs[i].k} tabLabel={tabs[i].v} k={tabs[i].k} />);
-            }
-        }
-        return _views;
-    }, [tabs]);
-    const renderContent = () => {
-        return (
-            <>
-                <LinearGradient
-                    start={{x: 0, y: 0}}
-                    end={{x: 0, y: 0.2}}
-                    colors={['#fff', '#F5F6F8']}
-                    style={{flex: 1, borderColor: '#fff', borderWidth: 0.5}}>
-                    <View style={{height: inset.top}} />
-                    <View style={[Style.flexRow, {flex: 1}]}>
-                        {tabs?.length > 0 ? (
-                            <ScrollableTabView
-                                renderTabBar={() => <ScrollTabbar tabList={tabs} boxStyle={styles.tab} />}
-                                onChangeTab={(obj) => {
-                                    activeTab = obj.i;
-                                    global.LogTool('visionTabIndex', tabs[obj.i].k);
-                                    if (visionData.visionTabUpdate == tabs[obj.i].k) {
-                                        dispatch(updateFresh(tabs[obj.i].k));
-                                    }
-                                }}
-                                initialPage={0}>
-                                {_renderDynamicView()}
-                            </ScrollableTabView>
-                        ) : null}
-                        <BoxShadow setting={shadow}>
-                            <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={['#FBFBFC', '#F6F7F9']}>
-                                <TouchableOpacity
-                                    activeOpacity={0.9}
-                                    style={styles.menu}
-                                    onPress={() => {
-                                        global.LogTool('visionMisc');
-                                        navigation.navigate('VisionCollect');
-                                    }}>
-                                    <Image
-                                        source={require('../../assets/img/vision/menu.png')}
-                                        style={{width: px(24), height: px(24)}}
-                                    />
-                                </TouchableOpacity>
-                            </LinearGradient>
-                        </BoxShadow>
-                    </View>
-                </LinearGradient>
-                {!userInfo.is_login && <LoginMask scene="vision" />}
-            </>
-        );
-    };
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
             setHasNet(state.isConnected);
@@ -167,28 +87,153 @@ const Vision = ({navigation, route}) => {
     };
     // 刷新一下
     const refreshNetWork = useCallback(() => {
-        getTabs();
+        init();
         setHasNet(netInfo.isConnected);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [netInfo]);
+    const header = () => {
+        return (
+            <>
+                <View style={{height: inset.top, backgroundColor: '#fff'}} />
+                <View style={[styles.header, Style.flexBetween]}>
+                    <TouchableOpacity activeOpacity={0.9} style={Style.flexRow}>
+                        <Image source={{uri: data?.part1?.user?.avatar}} style={styles.avatar} />
+                        <Text style={styles.name}>{data?.part1?.user?.nickname}</Text>
+                        <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
+                    </TouchableOpacity>
+                    <View style={Style.flexRow}>
+                        {/* 收藏 */}
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+                                jump({path: 'VisionCollect'});
+                            }}>
+                            <Image
+                                source={require('../../assets/img/vision/collect_icon.png')}
+                                style={styles.header_icon}
+                            />
+                        </TouchableOpacity>
+                        {/* 消息 */}
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={{position: 'relative'}}
+                            onPress={() => {
+                                global.LogTool('indexNotificationCenter');
+                                jump({path: 'RemindMessage'});
+                            }}>
+                            {data?.part1?.unread_message_num ? (
+                                <View style={[styles.point_sty, Style.flexCenter]}>
+                                    <Text style={styles.point_text}>
+                                        {data?.part1?.unread_message_num > 99 ? '99+' : data?.part1?.unread_message_num}
+                                    </Text>
+                                </View>
+                            ) : null}
+                            <Image
+                                style={{width: px(32), height: px(32)}}
+                                source={require('../../assets/img/index/message.png')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </>
+        );
+    };
+    const renderContent = () => {
+        return data ? (
+            <>
+                {header()}
+                <ScrollView
+                    ref={scrollRef}
+                    key={1}
+                    style={{backgroundColor: Colors.bgColor}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
+                    <LinearGradient
+                        start={{x: 0, y: 0}}
+                        end={{x: 0, y: 0.2}}
+                        colors={['#fff', '#F5F6F8']}
+                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5}}>
+                        <View style={{padding: px(16), paddingTop: px(6)}}>
+                            {/* 推荐位 */}
+                            <RecommendCard
+                                style={{marginBottom: px(16)}}
+                                data={data?.part2}
+                                onPress={() => {
+                                    global.LogTool('visionRecArticle', data?.part2);
+                                }}
+                            />
+                            {/* 其他模块 */}
+                            {data?.part3?.map((item, index) => {
+                                return (
+                                    <View key={index + 'i'}>
+                                        <RenderTitle
+                                            _key={index}
+                                            title={item.title}
+                                            more_text={item?.more ? item?.more?.text : ''}
+                                            onPress={() => {
+                                                jump(item?.more?.url);
+                                            }}
+                                        />
+
+                                        {item?.direction == 'horizontal' ? (
+                                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                                {item?.items?.map((_article, index) => {
+                                                    return RenderCate(_article, {
+                                                        marginBottom: px(12),
+                                                        marginRight: px(12),
+                                                    });
+                                                })}
+                                            </ScrollView>
+                                        ) : (
+                                            item?.items?.map((_article, index) => {
+                                                return RenderCate(_article, {marginBottom: px(12)});
+                                            })
+                                        )}
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    </LinearGradient>
+                </ScrollView>
+                {!userInfo.is_login && <LoginMask scene="vision" />}
+            </>
+        ) : null;
+    };
+
     return hasNet ? renderContent() : NetError();
 };
 
 export default Vision;
 
 const styles = StyleSheet.create({
-    tab: {
-        paddingLeft: px(8),
-        paddingRight: px(52),
-        backgroundColor: 'transparent',
-        marginTop: px(-1.5),
-        marginLeft: px(-1),
+    header: {
+        height: px(50),
+        paddingHorizontal: px(16),
+        backgroundColor: '#fff',
     },
-    menu: {
-        height: px(40),
-        width: px(52),
-        paddingLeft: px(11),
-        paddingRight: px(17),
-        justifyContent: 'center',
+    avatar: {width: px(32), height: px(32), borderRadius: px(16), marginRight: px(10)},
+    name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
+    header_icon: {
+        width: px(32),
+        height: px(32),
+    },
+    point_sty: {
+        position: 'absolute',
+        left: px(15),
+        top: px(-5),
+        backgroundColor: Colors.red,
+        borderRadius: px(50),
+        paddingHorizontal: px(4),
+        zIndex: 10,
+        minWidth: px(20),
+        height: px(20),
+        borderWidth: 2,
+        borderColor: '#fff',
+    },
+    point_text: {
+        textAlign: 'center',
+        color: '#fff',
+        fontSize: Font.textSm,
+        lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
+        fontFamily: Font.numFontFamily,
     },
 });

@@ -2,13 +2,14 @@
  * @Date: 2021-05-31 15:51:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 14:27:05
+ * @LastEditTime: 2022-02-16 11:12:32
  * @Description:根据type生成对应的内容模块
  */
 import React from 'react';
 import VioceCard from '../../../components/Article/VioceCard';
 import VisionArticle from '../../../components/Article/VisionArticle';
 import QuestionCard from '../../../components/Article/QuestionCard';
+import LiveCard from '../../../components/Article/LiveCard';
 /**
  * @description: type
  * @param {*} 1 普通文章
@@ -17,6 +18,7 @@ import QuestionCard from '../../../components/Article/QuestionCard';
  * @param {*} 4 问答文章
  * @param {*} 5 活动文章
  * @param {*} 6 专辑文章
+ * @param {*} 7 直播类型
  * @return {*}
  */
 const RenderCate = (data, style, scene) => {
@@ -32,6 +34,9 @@ const RenderCate = (data, style, scene) => {
             break;
         case 4:
             com = <QuestionCard data={data} key={data.id} style={style} scene={scene} />;
+            break;
+        case 7:
+            com = <LiveCard data={data} key={data.id} style={style} scene={scene} />;
             break;
         default:
             com = <VisionArticle data={data} key={data.id} style={style} scene={scene} />;
