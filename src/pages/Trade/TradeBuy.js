@@ -36,6 +36,7 @@ import Ratio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
 let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
@@ -161,10 +162,12 @@ class TradeBuy extends Component {
                                 marginVertical: Space.marginVertical,
                                 paddingHorizontal: px(20),
                                 maxHeight: px(352),
-                            }}>
-                            <Text style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}>
-                                {data.risk_disclosure.content}
-                            </Text>
+                            }}
+                            ref={(e) => (this.riskDisclosureModalRef = e)}>
+                            <Html
+                                style={{fontSize: px(13), lineHeight: px(22), color: Colors.descColor}}
+                                html={data.risk_disclosure.content}
+                            />
                         </ScrollView>
                     </View>
                 );
@@ -178,6 +181,11 @@ class TradeBuy extends Component {
             countdown: data.risk_disclosure.countdown,
             isTouchMaskToClose: false,
             onCloseCallBack: () => this.props.navigation.goBack(),
+            onCountdownChange: (val) => {
+                if (+val == 1) {
+                    this.riskDisclosureModalRef.scrollToEnd({animated: true});
+                }
+            },
             title: data.risk_disclosure.title,
         });
     };

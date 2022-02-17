@@ -3,12 +3,12 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:25:02
+ * @LastEditTime: 2022-02-17 17:19:22
  * @Description:直播模块
  */
 
 import React, {useState, useCallback} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image, AppState} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image, AppState, ImageBackground} from 'react-native';
 import {Colors, Style} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
 import {useJump} from '../hooks';
@@ -19,9 +19,13 @@ import {useFocusEffect} from '@react-navigation/native';
 import {Modal} from '../Modal';
 import http from '../../services';
 import Toast from '../Toast';
-const LiveCard = ({data, style, scene}) => {
+const LiveCard = ({data, style, coverStyle, scene}) => {
     // 直播状态:status 1预约 2直播 3回放
     const [reserved, setReserved] = useState(data.reserved);
+    //直播推荐位大卡片
+    const isLiveRecommend = scene == 'largeLiveCard';
+    //是否是回放小卡片 针对回放小卡片特殊处理
+    const issmLiveCard = scene == 'smLiveCard';
     const jump = useJump();
     useFocusEffect(
         useCallback(() => {
@@ -124,39 +128,44 @@ const LiveCard = ({data, style, scene}) => {
     return (
         <TouchableOpacity style={[styles.card, style]} activeOpacity={0.8} onPress={handleClick}>
             {/* 封面 */}
-            <FastImage source={{uri: data?.cover}} style={styles.cover} />
-            {/* 预约人数直播观看人数 */}
-            <View style={[styles.live_order, Style.flexBetween]}>
-                <Image
-                    source={
-                        data?.status == 2
-                            ? require('../../assets/img/vision/live.gif')
-                            : require('../../assets/img/vision/video.png')
-                    }
-                    style={{height: px(26), width: px(30), marginLeft: px(-2)}}
-                />
-
-                <Text style={{color: '#fff', fontSize: px(11)}}>{data?.people_num_desc}</Text>
-            </View>
-            {/* 直播状态 */}
-            {data?.status_desc ? (
-                <View
-                    style={[
-                        styles.live_status,
-                        Style.flexRowCenter,
-                        {backgroundColor: data?.status == 1 ? '#F06F1A' : data?.status == 2 ? '#E74949' : '#3E8BFF'},
-                    ]}>
-                    <Text style={{color: '#fff', fontSize: px(12), fontWeight: '600'}}>{data?.status_desc}</Text>
+            <ImageBackground source={{uri: data?.cover}} style={[styles.cover, coverStyle]}>
+                {/* 预约人数直播观看人数 */}
+                <View style={[styles.live_order, Style.flexBetween, {paddingLeft: issmLiveCard ? px(8) : 0}]}>
+                    {issmLiveCard ? null : (
+                        <Image
+                            source={
+                                data?.status == 2
+                                    ? require('../../assets/img/vision/live.gif')
+                                    : require('../../assets/img/vision/video.png')
+                            }
+                            style={{height: px(26), width: px(30), marginLeft: px(-2)}}
+                        />
+                    )}
+                    <Text style={{color: '#fff', fontSize: px(11)}}>{data?.people_num_desc}</Text>
                 </View>
-            ) : null}
-            <View style={styles.card_bottom}>
-                <Text style={styles.title}>{data?.title}</Text>
+                {/* 直播状态 直播时间 */}
+                {data?.status_desc ? (
+                    <View
+                        style={[
+                            styles.live_status,
+                            Style.flexRowCenter,
+                            {
+                                backgroundColor:
+                                    data?.status == 1 ? '#F06F1A' : data?.status == 2 ? '#E74949' : '#3E8BFF',
+                            },
+                        ]}>
+                        <Text style={{color: '#fff', fontSize: px(12), fontWeight: '600'}}>{data?.status_desc}</Text>
+                    </View>
+                ) : null}
+            </ImageBackground>
+            <View style={[styles.card_bottom, {paddingVertical: isLiveRecommend ? px(16) : px(12)}]}>
+                <Text style={[styles.title, {fontSize: isLiveRecommend ? px(16) : px(14)}]}>{data?.title}</Text>
                 {data?.avatar ? (
                     <View
                         style={[
                             Style.flexRow,
                             {
-                                marginTop: px(12),
+                                marginTop: px(10),
                             },
                         ]}>
                         {data?.status == 2 ? (
@@ -169,38 +178,60 @@ const LiveCard = ({data, style, scene}) => {
                                 style={styles.avatar}
                             />
                         )}
-                        <Text style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
-                            {data?.user_name}
-                        </Text>
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize: isLiveRecommend ? px(14) : px(13),
+                                    lineHeight: isLiveRecommend ? px(20) : px(18),
+                                    color: Colors.lightBlackColor,
+                                    marginHorizontal: px(6),
+                                }}>
+                                {data?.user_name}
+                            </Text>
+                            {data?.user_desc ? <Text style={styles.user_desc}>{data?.user_desc}</Text> : null}
+                        </View>
                     </View>
                 ) : null}
-                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    {data?.start_desc ? (
-                        <View style={[styles.time]}>
-                            <Text style={styles.time}>{data?.start_desc}</Text>
-                        </View>
-                    ) : (
-                        <View />
-                    )}
-                    <TouchableOpacity
-                        activeOpacity={0.9}
-                        style={[
-                            styles.button,
-                            {
-                                backgroundColor: data?.status == 1 && reserved ? '#F5F6F8' : '#fff',
-                                borderWidth: data?.status == 1 && reserved ? 0 : px(0.5),
-                            },
-                        ]}
-                        onPress={handleClick}>
-                        <Text
-                            style={{
-                                fontSize: px(13),
-                                color: data?.status == 1 && reserved ? '#9AA1B2' : Colors.btnColor,
-                            }}>
-                            {data?.status == 1 ? (reserved ? '已预约' : '预约') : data?.button?.text}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                {issmLiveCard || isLiveRecommend ? null : (
+                    <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                        {data?.start_desc ? (
+                            <View style={[styles.time]}>
+                                <Text style={styles.time}>{data?.start_desc}</Text>
+                            </View>
+                        ) : (
+                            <View />
+                        )}
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={[
+                                styles.button,
+                                {
+                                    backgroundColor: data?.status == 1 && reserved ? '#F5F6F8' : '#fff',
+                                    borderWidth: data?.status == 1 && reserved ? 0 : px(0.5),
+                                },
+                            ]}
+                            onPress={handleClick}>
+                            <Text
+                                style={{
+                                    fontSize: px(13),
+                                    color: data?.status == 1 && reserved ? '#9AA1B2' : Colors.btnColor,
+                                }}>
+                                {data?.status == 1 ? (reserved ? '已预约' : '预约') : data?.button?.text}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+                {data?.tag_list ? (
+                    <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                        {data?.tag_list?.map((item, index) => {
+                            return (
+                                <Text key={index} style={[styles.light_text]}>
+                                    {item}
+                                </Text>
+                            );
+                        })}
+                    </View>
+                ) : null}
             </View>
         </TouchableOpacity>
     );
@@ -217,7 +248,6 @@ const styles = StyleSheet.create({
     },
     card_bottom: {
         paddingHorizontal: px(16),
-        paddingVertical: px(12),
     },
 
     title: {
@@ -271,9 +301,20 @@ const styles = StyleSheet.create({
     live_status: {
         height: px(22),
         position: 'absolute',
-        top: px(97),
+        bottom: px(0),
         right: px(0),
         borderTopLeftRadius: px(6),
         paddingHorizontal: px(8),
+    },
+    user_desc: {
+        fontSize: px(12),
+        lineHeight: px(17),
+        color: Colors.lightGrayColor,
+        marginHorizontal: px(6),
+    },
+    light_text: {
+        color: Colors.lightGrayColor,
+        fontSize: px(12),
+        marginRight: px(4),
     },
 });

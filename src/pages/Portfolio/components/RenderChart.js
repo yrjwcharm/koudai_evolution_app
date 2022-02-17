@@ -24,11 +24,25 @@ export default function RenderChart(props) {
         tootipScope = true,
         showFutureArea = true,
         lowLine = 0,
+        chartProps = {},
     } = props;
     const _textTime = useRef(null);
     const _textPortfolio = useRef(null);
     const _textBenchmark = useRef(null);
     const bottomModal = React.useRef(null);
+
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.defaultColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     // 图表滑动legend变化
     const onChartChange = useCallback(
         ({items}) => {
@@ -81,18 +95,7 @@ export default function RenderChart(props) {
             ],
         });
     }, [chartData, getColor, lowLine]);
-    const getColor = useCallback((t) => {
-        if (!t) {
-            return Colors.defaultColor;
-        }
-        if (parseFloat(t.replace(/,/g, '')) < 0) {
-            return Colors.green;
-        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-            return Colors.defaultColor;
-        } else {
-            return Colors.red;
-        }
-    }, []);
+
     useEffect(() => {
         if (chartData?.yield_info && chart?.length > 0) {
             onHide();
@@ -190,10 +193,12 @@ export default function RenderChart(props) {
                         2,
                         width,
                         props.appendPadding || [10, 10, 10, 15],
-                        null,
+                        chartProps.tag_position || null,
                         height,
                         chartData?.yield_info?.max_ratio,
-                        type == 2 && !showFutureArea ? false : true
+                        type == 2 && !showFutureArea ? false : true,
+                        chartProps.ownColor || false,
+                        chartProps.snap || false
                     )}
                     onChange={onChartChange}
                     // data={chart}

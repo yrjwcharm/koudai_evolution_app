@@ -7,18 +7,21 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Font, Colors, Space, Style} from '../../common/commonStyle';
 import BottomDesc from '../../components/BottomDesc';
+import Html from '../../components/RenderHtml';
 import {useJump} from '../../components/hooks';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
+import {BottomModal} from '../../components/Modal';
 import {isIphoneX, px} from '../../utils/appUtil';
 
 export default ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
-
+    const bottomModal = React.useRef(null);
     useEffect(() => {
         http.get('/adviser/fee/20211101').then((res) => {
             if (res.code === '000000') {
@@ -34,7 +37,21 @@ export default ({navigation}) => {
             {Object.keys(data).length > 0 ? (
                 <ScrollView bounces={false} style={styles.container} scrollIndicatorInsets={{right: 1}}>
                     <View style={styles.topPart}>
-                        <Text style={styles.label}>{data.fee[0]?.text}</Text>
+                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={styles.label}>{data.fee[0]?.text}</Text>
+                            {data?.tips ? (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        bottomModal.current.show();
+                                    }}
+                                    style={{...styles.radio_sty, marginLeft: px(6)}}>
+                                    <Image
+                                        style={{width: px(15), height: px(15)}}
+                                        source={require('../../assets/img/tip.png')}
+                                    />
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
                         <Text style={styles.bigFee}>{data.fee[0]?.value}</Text>
                         <View style={[Style.flexRow, {marginTop: px(24)}]}>
                             <View style={{flex: 1}}>
@@ -89,6 +106,18 @@ export default ({navigation}) => {
                         </TouchableOpacity>
                     ) : null}
                     <BottomDesc fix_img={data.advisor_footer_img} style={styles.bottomDesc} />
+                    <BottomModal ref={bottomModal} title={data?.tips?.title}>
+                        <View style={[{padding: px(16)}]}>
+                            {data?.tips?.content?.map?.((item, index) => {
+                                return (
+                                    <View key={item + index} style={{marginTop: index === 0 ? 0 : px(16)}}>
+                                        <Text style={styles.tipTitle}>{item.key}:</Text>
+                                        <Html style={{lineHeight: px(18), fontSize: px(13)}} html={item.val} />
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    </BottomModal>
                 </ScrollView>
             ) : (
                 <Loading />
@@ -157,5 +186,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: px(6),
         padding: px(16),
+    },
+    radio_sty: {
+        color: Colors.darkGrayColor,
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        textAlign: 'center',
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: px(20),
+        fontSize: px(14),
+        marginBottom: px(4),
     },
 });

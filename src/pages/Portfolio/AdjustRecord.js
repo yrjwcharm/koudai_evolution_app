@@ -30,18 +30,19 @@ const AdjustRecord = ({navigation, route}) => {
             http.get('/portfolio/adjust/20210101', {
                 poid: route.params?.poid,
                 upid: route.params?.upid,
+                card: route.params?.card,
                 page,
                 scene: 'history',
             }).then((res) => {
                 setShowEmpty(true);
                 setEmptyMsg(res.result.empty_msg || '暂无调仓记录');
                 setRefreshing(false);
-                setHasMore(res.result.record?.items?.length >= 10);
+                setHasMore(res.result.record?.[0]?.items?.length >= 10);
                 first && navigation.setOptions({title: res.result.title || '调仓记录'});
                 if (status === 'refresh') {
-                    setList(res.result.record?.items || []);
+                    setList(res.result.record?.[0]?.items || []);
                 } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(res.result.record?.items || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.record?.[0]?.items || [])]);
                 }
             });
         },

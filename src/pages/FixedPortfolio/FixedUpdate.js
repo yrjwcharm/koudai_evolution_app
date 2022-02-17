@@ -23,6 +23,8 @@ import {BankCardModal, InputModal} from '../../components/Modal';
 import BottomDesc from '../../components/BottomDesc';
 import {Modal} from '../../components/Modal';
 import {useSelector} from 'react-redux';
+import Html from '../../components/RenderHtml';
+
 export default function FixedUpdate({navigation, route}) {
     const [data, setData] = useState({});
     const [num, setNum] = useState();
@@ -46,6 +48,7 @@ export default function FixedUpdate({navigation, route}) {
     const userInfo = useSelector((state) => state.userInfo);
     const isFocused = useIsFocused();
     const show_risk_disclosure = useRef(true);
+    const riskDisclosureModalRef = useRef(null);
 
     const addNum = () => {
         setNum((prev) => {
@@ -90,10 +93,12 @@ export default function FixedUpdate({navigation, route}) {
                                 marginVertical: Space.marginVertical,
                                 paddingHorizontal: text(20),
                                 maxHeight: text(352),
-                            }}>
-                            <Text style={{fontSize: text(13), lineHeight: text(22), color: Colors.descColor}}>
-                                {risk_disclosure.content}
-                            </Text>
+                            }}
+                            ref={(e) => (riskDisclosureModalRef.current = e)}>
+                            <Html
+                                style={{fontSize: text(13), lineHeight: text(22), color: Colors.descColor}}
+                                html={risk_disclosure.content}
+                            />
                         </ScrollView>
                     </View>
                 );
@@ -102,6 +107,11 @@ export default function FixedUpdate({navigation, route}) {
             countdown: risk_disclosure.countdown,
             isTouchMaskToClose: false,
             onCloseCallBack: () => navigation.goBack(),
+            onCountdownChange: (val) => {
+                if (+val == 1) {
+                    riskDisclosureModalRef.current.scrollToEnd({animated: true});
+                }
+            },
             title: risk_disclosure.title,
         });
     };

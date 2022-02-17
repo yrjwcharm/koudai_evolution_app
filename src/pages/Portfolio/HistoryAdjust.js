@@ -52,7 +52,7 @@ const HistoryAdjust = ({navigation, route}) => {
                         name: item.name,
                         percent: (item.ratio * 100).toFixed(2) * 1,
                         color: item.color || RatioColor[index],
-                    }))
+                    })) || []
             );
         });
     }, [navigation, route]);
@@ -178,7 +178,7 @@ const HistoryAdjust = ({navigation, route}) => {
                             onChange={updateSections}
                             renderContent={renderContent}
                             renderHeader={renderHeader}
-                            sections={data.deploy_detail || []}
+                            sections={data?.deploy_detail || []}
                             touchableComponent={TouchableOpacity}
                             touchableProps={{activeOpacity: 1}}
                         />

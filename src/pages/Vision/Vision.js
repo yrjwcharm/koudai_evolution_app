@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 11:32:33
+ * @LastEditTime: 2022-02-17 14:55:17
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -45,6 +45,7 @@ const Vision = ({navigation, route}) => {
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo).toJS();
     const [data, setData] = useState();
+    const [allMsg, setAll] = useState(0);
     const jump = useJump();
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
@@ -53,11 +54,17 @@ const Vision = ({navigation, route}) => {
             setRefreshing(false);
         });
     }, []);
+    const readInterface = useCallback(() => {
+        http.get('/message/unread/20210101').then((res) => {
+            setAll(res.result.all);
+        });
+    }, []);
     useFocusEffect(
         useCallback(() => {
             init();
+            readInterface();
             dispatch(updateVision({visionUpdate: ''}));
-        }, [init, dispatch])
+        }, [init, dispatch, readInterface])
     );
     useEffect(() => {
         const listener = NetInfo.addEventListener((state) => {
@@ -119,11 +126,9 @@ const Vision = ({navigation, route}) => {
                                 global.LogTool('indexNotificationCenter');
                                 jump({path: 'RemindMessage'});
                             }}>
-                            {data?.part1?.unread_message_num ? (
+                            {allMsg ? (
                                 <View style={[styles.point_sty, Style.flexCenter]}>
-                                    <Text style={styles.point_text}>
-                                        {data?.part1?.unread_message_num > 99 ? '99+' : data?.part1?.unread_message_num}
-                                    </Text>
+                                    <Text style={styles.point_text}>{allMsg > 99 ? '99+' : allMsg}</Text>
                                 </View>
                             ) : null}
                             <Image
@@ -149,7 +154,7 @@ const Vision = ({navigation, route}) => {
                         start={{x: 0, y: 0}}
                         end={{x: 0, y: 0.2}}
                         colors={['#fff', '#F5F6F8']}
-                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5, padding: px(16), paddingTop: px(6)}}>
+                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5, padding: px(16), paddingTop: px(4)}}>
                         {/* 推荐位 */}
                         <RecommendCard
                             style={{marginBottom: px(16)}}
@@ -203,7 +208,7 @@ export default Vision;
 
 const styles = StyleSheet.create({
     header: {
-        height: px(50),
+        height: px(42),
         paddingHorizontal: px(16),
         backgroundColor: '#fff',
     },
