@@ -3,8 +3,8 @@
  * @Author: xjh
  * @Date: 2021-02-19 10:33:09
  * @Description:组合持仓页
- * @LastEditors: yhc
- * @LastEditTime: 2022-01-17 13:33:41
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-17 17:18:48
  */
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
@@ -342,11 +342,18 @@ export default function PortfolioAssets(props) {
                     </View>
                 ) : null} */}
                 {card?.notice_info ? (
-                    <View style={{marginBottom: text(16)}}>
+                    <View style={{marginBottom: text(24)}}>
                         <View style={styles.noticeSty}>
                             <Image
                                 source={require('../../assets/personal/noticeArrow.png')}
-                                style={styles.noticeArrow}
+                                style={[
+                                    styles.noticeArrow,
+                                    card.notice_info.arrow_position === 'middle'
+                                        ? styles.center
+                                        : card.notice_info.arrow_position === 'right'
+                                        ? styles.right
+                                        : {},
+                                ]}
                             />
                             <Html html={card?.notice_info.content} style={styles.noticeTextSty} />
                         </View>
@@ -364,8 +371,9 @@ export default function PortfolioAssets(props) {
                                 disabled={_button.avail == 0}
                                 activeOpacity={1}
                                 style={{
-                                    borderColor: '#4E556C',
-                                    borderWidth: _index == arr.length - 1 && _button.avail !== 0 ? 0.5 : 0,
+                                    borderColor: Colors.descColor,
+                                    borderWidth:
+                                        _index == arr.length - 1 && _button.avail !== 0 ? Space.borderWidth : 0,
                                     borderRadius: text(6),
                                     backgroundColor:
                                         _button.avail !== 0
@@ -391,6 +399,11 @@ export default function PortfolioAssets(props) {
                                     }}>
                                     {_button.text}
                                 </Text>
+                                {_button.tips ? (
+                                    <View style={styles.superscriptBox}>
+                                        <Text style={styles.superscript}>{_button.tips}</Text>
+                                    </View>
+                                ) : null}
                             </TouchableOpacity>
                         );
                     })}
@@ -1253,6 +1266,12 @@ const styles = StyleSheet.create({
         bottom: text(-7),
         left: text(36),
     },
+    center: {
+        left: text(143.5),
+    },
+    right: {
+        left: text(251),
+    },
     redDot: {
         width: text(8),
         height: text(8),
@@ -1294,4 +1313,20 @@ const styles = StyleSheet.create({
         color: Colors.lightGrayColor,
     },
     light_text: {fontSize: px(13), lineHeight: px(17)},
+    superscriptBox: {
+        paddingVertical: text(1),
+        paddingHorizontal: text(5),
+        borderRadius: text(9),
+        borderBottomLeftRadius: text(0.5),
+        backgroundColor: Colors.red,
+        position: 'absolute',
+        bottom: text(31),
+        right: 0,
+    },
+    superscript: {
+        fontSize: Font.textSm,
+        lineHeight: text(16),
+        color: '#fff',
+        fontWeight: Platform.select({android: '700', ios: '500'}),
+    },
 });

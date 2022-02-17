@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-06 17:03:20
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-17 17:05:07
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
@@ -124,7 +124,7 @@ const TradeRecordDetail = (props) => {
         });
     };
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView bounces={false} style={styles.container}>
             <View style={[styles.header, Style.flexCenter]}>
                 <PasswordModal
                     ref={passwordModal}
@@ -148,20 +148,35 @@ const TradeRecordDetail = (props) => {
                     </View>
                     <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
                 </View>
-                {/* 调仓比例 */}
-                {data?.part1?.percent ? (
-                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                        <Text style={[styles.header_text, {marginRight: px(6)}]}>比例</Text>
-                        <Text style={styles.bold_text}>{data?.part1?.percent}</Text>
+                {data?.part1?.table ? (
+                    <View style={[Style.flexRow, {width: '100%'}]}>
+                        {data.part1.table.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={[Style.flexCenter, {flex: 1}]}>
+                                    {item.k ? <Text style={styles.header_text}>{item.k}</Text> : null}
+                                    {item.v ? <Text style={styles.bold_text}>{item.v}</Text> : null}
+                                </View>
+                            );
+                        })}
                     </View>
-                ) : null}
-                {/* 金额展示 */}
-                {data?.part1?.amount ? (
-                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                        <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
-                        <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
-                    </View>
-                ) : null}
+                ) : (
+                    <>
+                        {/* 调仓比例 */}
+                        {data?.part1?.percent ? (
+                            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={[styles.header_text, {marginRight: px(6)}]}>比例</Text>
+                                <Text style={styles.bold_text}>{data?.part1?.percent}</Text>
+                            </View>
+                        ) : null}
+                        {/* 金额展示 */}
+                        {data?.part1?.amount ? (
+                            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
+                                <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
+                            </View>
+                        ) : null}
+                    </>
+                )}
                 {data?.part1?.items?.map((_item, key) => (
                     <View style={Style.flexRow} key={key}>
                         <Text style={styles.header_text}>{_item.k}</Text>
