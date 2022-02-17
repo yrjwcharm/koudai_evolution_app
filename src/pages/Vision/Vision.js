@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 19:33:46
+ * @LastEditTime: 2022-02-17 11:32:33
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -89,7 +89,12 @@ const Vision = ({navigation, route}) => {
             <>
                 <View style={{height: inset.top, backgroundColor: '#fff'}} />
                 <View style={[styles.header, Style.flexBetween]}>
-                    <TouchableOpacity activeOpacity={0.9} style={Style.flexRow}>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={Style.flexRow}
+                        onPress={() => {
+                            jump({path: 'SelectIdentity'});
+                        }}>
                         <Image source={{uri: data?.part1?.user?.avatar}} style={styles.avatar} />
                         <Text style={styles.name}>{data?.part1?.user?.nickname}</Text>
                         <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
