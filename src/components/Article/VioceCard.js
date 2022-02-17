@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 18:12:30
+ * @LastEditTime: 2022-02-16 19:25:05
  * @Description:音频模块
  */
 
@@ -16,9 +16,7 @@ import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import LazyImage from '../LazyImage';
 const VioceCard = ({data, style, scene}) => {
-    const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
-
     //上下布局 默认左右布局 图片资源在右边
     const isHorizontal = data?.show_mode ? data?.show_mode == 'horizontal' : true;
     const coverRender = () => {
@@ -63,7 +61,7 @@ const VioceCard = ({data, style, scene}) => {
                         {data.album_name}
                     </Text>
                     <Text numberOfLines={2} style={styles.detail}>
-                        {data.title}sadasda
+                        {data.title}
                     </Text>
                 </View>
                 {data?.cover && isHorizontal ? coverRender() : null}

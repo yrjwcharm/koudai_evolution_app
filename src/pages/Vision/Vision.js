@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:38:17
+ * @LastEditTime: 2022-02-16 19:33:46
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -160,12 +160,12 @@ const Vision = ({navigation, route}) => {
                                     <RenderTitle
                                         _key={index}
                                         title={item.title}
+                                        sub_title={item?.sub_title}
                                         more_text={item?.more ? item?.more?.text : ''}
                                         onPress={() => {
                                             jump(item?.more?.url);
                                         }}
                                     />
-
                                     {item?.direction == 'horizontal' ? (
                                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                             {item?.items?.map((_article, index) => {
