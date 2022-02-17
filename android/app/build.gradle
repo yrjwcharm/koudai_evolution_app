@@ -155,8 +155,8 @@ packagingOptions {
         applicationId "com.licaimofang.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 64400
-        versionName '6.4.4'
+        versionCode 64500
+        versionName '6.4.5'
         multiDexEnabled true //配置多个dex
         flavorDimensions "default"
         // renderscriptTargetApi 23
@@ -169,7 +169,7 @@ packagingOptions {
           ]
         //   "x86_64","x86" 是支持模拟器架构 release可以去掉
         // "armeabi-v7a","arm64-v8a", 支持64位的
-      ndk{
+      ndk {
         abiFilters "armeabi-v7a","arm64-v8a", "x86_64","x86"
        }
     }

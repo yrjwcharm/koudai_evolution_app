@@ -2,7 +2,7 @@
  * @Author: xjh
  * @Date: 2021-01-26 14:21:25
  * @Description:长短期详情页
- * @LastEditors: yhc
+ * @LastEditors: wxp
  * @LastEditdate: 2021-03-01 17:21:42
  */
 import React, {useState, useCallback} from 'react';
@@ -27,6 +27,7 @@ import {useJump} from '../../../components/hooks';
 import RenderChart from '../components/RenderChart';
 import NumText from '../../../components/NumText';
 import {throttle} from 'lodash';
+import {BottomModal} from '../../../components/Modal';
 
 export default function DetailAccount({route, navigation}) {
     const jump = useJump();
@@ -37,6 +38,7 @@ export default function DetailAccount({route, navigation}) {
     const [type, setType] = useState(1);
     const [loading, setLoading] = useState(true);
     const [riskChartMin, setRiskChartMin] = useState(0);
+    const bottomModal = React.useRef(null);
     const changeTab = useCallback(
         throttle((p, t) => {
             setPeriod((prev) => {
@@ -181,7 +183,7 @@ export default function DetailAccount({route, navigation}) {
                             <Text style={styles.secondaryTitle}>{data.secondary_title}</Text>
                         </View>
                     ) : null}
-                    <View style={[Style.flexRow, {height: text(94)}]}>
+                    <View style={{paddingTop: px(12), flexDirection: 'row', backgroundColor: '#fff'}}>
                         <View style={[Style.flexCenter, styles.container_sty]}>
                             <NumText
                                 style={{
@@ -203,7 +205,21 @@ export default function DetailAccount({route, navigation}) {
                                     ]}>
                                     {data.line_drawback.ratio_val}
                                 </Text>
-                                <Html html={data?.line_drawback?.ratio_desc} style={styles.radio_sty} />
+                                <View style={Style.flexRowCenter}>
+                                    <Html style={styles.radio_sty} html={data?.line_drawback?.ratio_desc} />
+                                    {data?.line_drawback?.tips ? (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                bottomModal.current.show();
+                                            }}
+                                            style={{...styles.radio_sty, marginLeft: px(4)}}>
+                                            <Image
+                                                style={{width: text(12), height: text(12)}}
+                                                source={require('../../../assets/img/tip.png')}
+                                            />
+                                        </TouchableOpacity>
+                                    ) : null}
+                                </View>
                             </View>
                         )}
                         {data.rise_info && (
@@ -235,7 +251,19 @@ export default function DetailAccount({route, navigation}) {
                             </View>
                         </View>
                     ) : null}
-                    <RenderChart lowLine={data.low_line} chartData={chartData} chart={chart} type={type} />
+                    <RenderChart
+                        lowLine={data.low_line}
+                        chartData={chartData}
+                        chart={chart}
+                        type={type}
+                        chartProps={{
+                            tag_position: {
+                                splitTag: chart.find((item) => +item.update === 1),
+                            },
+                            ownColor: true,
+                            snap: true,
+                        }}
+                    />
 
                     <View
                         style={{
@@ -361,13 +389,9 @@ export default function DetailAccount({route, navigation}) {
                                             ) : null}
                                         </View>
                                     ) : null}
-                                    <Text
-                                        style={[
-                                            styles.bottomTip,
-                                            {marginTop: px(12), lineHeight: px(19), color: Colors.lightGrayColor},
-                                        ]}>
-                                        {data.line_info?.line_desc?.tip}
-                                    </Text>
+                                    <View>
+                                        <Html html={data.line_info?.line_desc?.tip} />
+                                    </View>
                                     {data.line_info?.button ? (
                                         <TouchableOpacity
                                             activeOpacity={0.8}
@@ -511,7 +535,7 @@ export default function DetailAccount({route, navigation}) {
                     {data?.risk_info ? (
                         <View style={styles.card_sty}>
                             <ListHeader data={data?.risk_info?.header} ctrl={'riskControl'} oid={4} />
-                            <View style={{position: 'relative', paddingBottom: px(16)}}>
+                            <View style={{position: 'relative'}}>
                                 <View style={[Style.flexRow, {marginTop: text(13), paddingLeft: text(30)}]}>
                                     {data?.risk_info?.sub_tab?.map((item, index) => (
                                         <View style={{flex: 1}} key={index}>
@@ -554,25 +578,27 @@ export default function DetailAccount({route, navigation}) {
                                         <Ionicons name={'square'} color={'#545968'} size={10} />
                                         <Text> {data?.risk_info?.label[1]?.key}</Text>
                                     </View>
-                                    {data?.risk_info?.label && data?.risk_info?.label[2] ? (
-                                        <View
-                                            style={{
-                                                fontSize: text(12),
-                                                marginBottom: px(-16),
-                                            }}>
-                                            <Text style={{fontSize: text(12)}}>
-                                                --- {data?.risk_info?.label[2]?.key}
-                                            </Text>
-                                            <Text
-                                                style={{
-                                                    fontSize: text(10),
-                                                }}>
-                                                {'       '}
-                                                {data?.risk_info?.label[2]?.val}
-                                            </Text>
-                                        </View>
-                                    ) : null}
                                 </View>
+                                {data?.risk_info?.label?.[2] ? (
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            paddingHorizontal: px(6),
+                                            marginTop: px(16),
+                                        }}>
+                                        <Text>--- {data?.risk_info?.label[2]?.key}</Text>
+                                        <Text>
+                                            {'       '}
+                                            {data?.risk_info?.label[2]?.val}
+                                        </Text>
+                                    </View>
+                                ) : null}
+                                {data?.risk_info?.chart_tips && (
+                                    <View style={{paddingTop: text(14)}}>
+                                        <Html html={data?.risk_info?.chart_tips} />
+                                    </View>
+                                )}
                             </View>
                         </View>
                     ) : null}
@@ -630,6 +656,20 @@ export default function DetailAccount({route, navigation}) {
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
+            {data?.line_drawback?.tips ? (
+                <BottomModal ref={bottomModal} title={data?.line_drawback?.tips?.title}>
+                    <View style={[{padding: text(16)}]}>
+                        {data?.line_drawback?.tips?.content?.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
+                                    <Text style={styles.tipTitle}>{item.key}:</Text>
+                                    <Html style={{lineHeight: text(18), fontSize: text(13)}} html={item.val} />
+                                </View>
+                            );
+                        })}
+                    </View>
+                </BottomModal>
+            ) : null}
         </>
     );
 }
@@ -640,7 +680,7 @@ const styles = StyleSheet.create({
         marginRight: text(-10),
     },
     container_sty: {
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         paddingBottom: text(20),
         backgroundColor: '#fff',
         flex: 1,
@@ -680,7 +720,6 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: text(17),
         textAlign: 'center',
-        marginTop: text(4),
     },
     btn_sty: {
         borderWidth: 0.5,
@@ -800,5 +839,11 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         paddingTop: text(12),
         paddingBottom: text(4),
+    },
+    tipTitle: {
+        fontWeight: 'bold',
+        lineHeight: text(20),
+        fontSize: text(14),
+        marginBottom: text(4),
     },
 });

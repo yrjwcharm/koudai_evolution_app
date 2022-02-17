@@ -9,11 +9,12 @@ import React, {Component} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import {px as text} from '../../utils/appUtil';
+import {px as text, isIphoneX} from '../../utils/appUtil';
 import http from '../../services';
 import HTML from '../../components/RenderHtml';
 import {percentStackColumn} from './components/ChartOption';
 import {Chart} from '../../components/Chart';
+import Accordion from 'react-native-collapsible/Accordion';
 import Empty from '../../components/EmptyTip';
 
 class DynamicAdjustment extends Component {
@@ -24,6 +25,7 @@ class DynamicAdjustment extends Component {
             chartData: [],
             refreshing: false,
             showEmpty: false,
+            activeSections: [],
         };
     }
     init = () => {
@@ -31,8 +33,12 @@ class DynamicAdjustment extends Component {
         http.get('/portfolio/adjust/20210101', {
             poid,
             upid,
+            card: 'index',
         }).then((res) => {
-            this.setState({data: res.result, refreshing: false, showEmpty: true});
+            const activeSections = res.result.card_list
+                .map((item, index) => (item.toggle === 'open' ? index : undefined))
+                .filter((item) => !isNaN(item));
+            this.setState({data: res.result, refreshing: false, showEmpty: true, activeSections});
             this.props.navigation.setOptions({title: res.result.title});
         });
         http.get('/portfolio/adjust_chart/20210101', {
@@ -53,17 +59,87 @@ class DynamicAdjustment extends Component {
             });
         });
     };
+    updateSections = (activeSections) => {
+        this.setState({activeSections});
+    };
+    renderHeader = (data, _, isActive) => {
+        return (
+            <View style={Style.flexBetween}>
+                <Text style={[styles.adjustTitle]}>{data.title}</Text>
+                <FontAwesome
+                    name={isActive ? 'angle-down' : 'angle-up'}
+                    size={20}
+                    color={Colors.descColor}
+                    style={{marginLeft: text(12)}}
+                />
+            </View>
+        );
+    };
+    renderContent = (data) => {
+        return data?.items?.length ? (
+            <>
+                {data?.items?.map((item, index) => {
+                    return (
+                        <View
+                            key={item.id}
+                            style={[styles.borderTop, index === data.items.length - 1 ? styles.borderBottom : {}]}>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                style={[styles.adjustRecord, Style.flexRow]}
+                                onPress={() =>
+                                    this.props.navigation.navigate('HistoryAdjust', {
+                                        adjust_id: item.id,
+                                        upid: this.props.route.params?.upid || 1,
+                                        fr: 'portfolio',
+                                    })
+                                }>
+                                <View style={{flex: 1}}>
+                                    <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
+                                        <Text style={[styles.recordTitle, {fontWeight: '500'}]}>{item.title}</Text>
+                                        <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
+                                            &nbsp;&nbsp;({item.date})
+                                        </Text>
+                                    </Text>
+                                    <HTML numberOfLines={1} html={item.content} style={styles.recordDesc} />
+                                </View>
+                                <FontAwesome
+                                    name={'angle-right'}
+                                    size={20}
+                                    color={Colors.descColor}
+                                    style={{marginLeft: text(12)}}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
+                })}
+                {data?.btn && (
+                    <TouchableOpacity
+                        style={[styles.moreRecord, Style.flexCenter]}
+                        onPress={() => this.props.navigation.navigate(data?.btn?.url?.path, data?.btn?.url?.params)}>
+                        <Text style={[styles.moreText]}>{data.btn.title}</Text>
+                        <FontAwesome
+                            name={'angle-right'}
+                            size={20}
+                            color={Colors.brandColor}
+                            style={{marginLeft: text(4)}}
+                        />
+                    </TouchableOpacity>
+                )}
+            </>
+        ) : (
+            <Text style={{paddingVertical: text(50), textAlign: 'center'}}>暂无数据</Text>
+        );
+    };
     componentDidMount() {
         this.init();
     }
     render() {
-        const {data, chartColor, chartData, refreshing, showEmpty} = this.state;
-        const {navigation, route} = this.props;
+        const {data, chartColor, chartData, refreshing, showEmpty, activeSections} = this.state;
         return (
             <ScrollView
                 style={[styles.container]}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.init} />}>
-                {data?.record?.items?.length > 0 ? (
+                {data?.card_list?.length > 0 ? (
                     <>
                         <View style={[styles.topPart]}>
                             {chartData?.length > 0 && (
@@ -74,66 +150,18 @@ class DynamicAdjustment extends Component {
                                 />
                             )}
                         </View>
-                        <View style={[styles.adjustListContainer]}>
-                            <Text style={[styles.adjustTitle]}>{data.record?.title}</Text>
-                            {data.record?.items?.map((item, index) => {
-                                return (
-                                    <View
-                                        key={item.id}
-                                        style={[
-                                            styles.borderTop,
-                                            index === data.record.items.length - 1 ? styles.borderBottom : {},
-                                        ]}>
-                                        <TouchableOpacity
-                                            activeOpacity={0.8}
-                                            style={[styles.adjustRecord, Style.flexRow]}
-                                            onPress={() =>
-                                                navigation.navigate('HistoryAdjust', {
-                                                    adjust_id: item.id,
-                                                    upid: route.params?.upid || 1,
-                                                    fr: 'portfolio',
-                                                })
-                                            }>
-                                            <View style={{flex: 1}}>
-                                                <Text style={[Style.flexRow, {textAlign: 'justify'}]}>
-                                                    <Text style={[styles.recordTitle, {fontWeight: '500'}]}>
-                                                        {item.title}
-                                                    </Text>
-                                                    <Text style={[styles.recordTitle, {fontSize: Font.textH3}]}>
-                                                        &nbsp;&nbsp;({item.date})
-                                                    </Text>
-                                                </Text>
-                                                <HTML numberOfLines={1} html={item.content} style={styles.recordDesc} />
-                                            </View>
-                                            <FontAwesome
-                                                name={'angle-right'}
-                                                size={20}
-                                                color={Colors.descColor}
-                                                style={{marginLeft: text(12)}}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                );
-                            })}
-                            {data?.record?.btn && (
-                                <TouchableOpacity
-                                    style={[styles.moreRecord, Style.flexCenter]}
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            data?.record?.btn?.url?.path,
-                                            data?.record?.btn?.url?.params
-                                        )
-                                    }>
-                                    <Text style={[styles.moreText]}>{data.record?.btn.title}</Text>
-                                    <FontAwesome
-                                        name={'angle-right'}
-                                        size={20}
-                                        color={Colors.brandColor}
-                                        style={{marginLeft: text(4)}}
-                                    />
-                                </TouchableOpacity>
-                            )}
-                        </View>
+                        <Accordion
+                            sections={data.card_list}
+                            expandMultiple
+                            touchableProps={{activeOpacity: 1}}
+                            activeSections={activeSections}
+                            renderHeader={this.renderHeader}
+                            renderContent={this.renderContent}
+                            onChange={this.updateSections}
+                            sectionContainerStyle={[styles.adjustListContainer, {marginBottom: text(12)}]}
+                            touchableComponent={TouchableOpacity}
+                        />
+                        <View style={{paddingBottom: isIphoneX() ? 34 : text(8)}} />
                     </>
                 ) : showEmpty ? (
                     <Empty text={'暂无调仓信息'} />

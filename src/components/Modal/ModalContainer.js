@@ -53,6 +53,7 @@ export default class MyModal extends Component {
             props.backCloseCallbackExecute !== undefined ? props.backCloseCallbackExecute : true; //返回键是否执行cancleCallBack 默认执行
         this.imageUrl = props.imageUrl;
         this.clickClose = this.props.clickClose; //点击是否关闭弹窗
+        this.onCountdownChange = this.props.onCountdownChange; // 监听倒计时变换
         this.state = {
             isVisible: this.props.isVisible || false,
             imgHeight: props.imgHeight || 0,
@@ -117,6 +118,7 @@ export default class MyModal extends Component {
                     if (prev.countdown === 1) {
                         clearInterval(timer);
                     }
+                    this.onCountdownChange && this.onCountdownChange(prev.countdown - 1);
                     return {
                         ...prev,
                         countdown: prev.countdown - 1,
