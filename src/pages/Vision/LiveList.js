@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 17:21:41
+ * @LastEditTime: 2022-02-18 12:28:23
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -18,6 +18,8 @@ import LiveCard from '../../components/Article/LiveCard';
 const LiveList = () => {
     const [data, setData] = useState();
     const [playBackList, setPlayBackList] = useState();
+    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(2);
     const jump = useJump();
     const init = useCallback(() => {
         http.get('http://127.0.0.1:4523/mock2/587315/11748061').then((res) => {
@@ -27,12 +29,16 @@ const LiveList = () => {
     useEffect(() => {
         init();
     }, [init]);
+    useEffect(() => {
+        http.get('http://127.0.0.1:4523/mock/587315/live/get_lived_list/202202015', {page}).then((res) => {
+            setHasMore(res.result.has_more);
+            setPlayBackList(res.result.items);
+        });
+    }, [page]);
     const _onScroll = (evt) => {
         const event = evt.nativeEvent;
-
         // 如果拖拽值超过底部50，且当前的scrollview高度大于屏幕高度，则加载更多
         const _num = event.contentSize.height - event.layoutMeasurement.height - event.contentOffset.y;
-
         if (event.contentSize.height > event.layoutMeasurement.height && _num < -50) {
             console.log('上拉，加载更多评论');
         }
@@ -68,7 +74,7 @@ const LiveList = () => {
                 <>
                     <RenderTitle title={data?.part3?.title} sub_title={data?.part3?.sub_title} />
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap'}}>
-                        {data?.part3?.items?.map((_article, index) => (
+                        {playBackList?.map((_article, index) => (
                             <LiveCard
                                 data={_article}
                                 scene="smLiveCard"

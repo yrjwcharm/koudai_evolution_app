@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:57:31
+ * @LastEditTime: 2022-02-18 18:37:35
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -23,12 +23,12 @@ export default function QuestionCard({data, scene}) {
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}
-            style={[styles.ques_card]}>
+            style={styles.ques_card}>
             <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
             <View style={Style.flexRow}>
                 <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
-                {data?.phase ? (
-                    <Text style={[styles.article_content, {color: Colors.defaultColor}]}>{data?.phase}</Text>
+                {data?.cate_name ? (
+                    <Text style={[styles.article_content, {color: Colors.defaultColor}]}>{data?.cate_name}</Text>
                 ) : null}
             </View>
             <View style={[Style.flexRow, {marginVertical: px(8)}]}>
@@ -44,29 +44,26 @@ export default function QuestionCard({data, scene}) {
                                     : Colors.defaultColor,
                         },
                     ]}>
-                    {data?.name}
+                    {data?.title}
                 </Text>
             </View>
             <View style={styles.content}>
                 <Text numberOfLines={2} style={[styles.article_content, {fontSize: px(12)}]}>
                     <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>{data.author_name}：</Text>
-                    {data?.content}
+                    {data?.desc}
                 </Text>
             </View>
-            {scene == 'collect' ? null : (
-                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <Text style={styles.light_text}>{data?.view_num}人已阅读</Text>
-                    <Praise
-                        type={'article'}
-                        noClick={true}
-                        comment={{
-                            favor_status: data?.favor_status,
-                            favor_num: parseInt(data?.favor_num),
-                            id: data?.id,
-                        }}
-                    />
+            {scene == 'collect' ? null : data?.tag_list ? (
+                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    {data?.tag_list?.map((item, index) => {
+                        return (
+                            <Text key={index} style={[styles.light_text, {marginRight: px(4)}]}>
+                                {item}
+                            </Text>
+                        );
+                    })}
                 </View>
-            )}
+            ) : null}
         </TouchableOpacity>
     );
 }

@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 17:38:30
+ * @LastEditTime: 2022-02-18 17:26:12
  * @Description:路由表
  */
 import React from 'react';
@@ -701,7 +701,7 @@ export default function AppStack() {
             <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
             <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
             <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
-            <Stack.Screen name="ArticleList" component={ArticleList} options={{headerShown: '更多'}} />
+            <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
             <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
         </Stack.Navigator>
     );

@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 17:19:22
+ * @LastEditTime: 2022-02-18 11:37:24
  * @Description:直播模块
  */
 
@@ -78,7 +78,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         });
     };
     const postReserve = (sucess) => {
-        http.post('/vision/recommend/reserve/20210524', {id: data.id}).then((res) => {
+        http.post('http://127.0.0.1:4523/mock/587315/live/reserve/202202015', {id: data.id}).then((res) => {
             if (res.code === '000000') {
                 AppState.removeEventListener('change', _handleAppStateChange);
                 sucess();

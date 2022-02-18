@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 18:24:18
+ * @LastEditTime: 2022-02-18 18:48:20
  * @Description:视野文章模块
  */
 
@@ -29,7 +29,7 @@ export default function VisionArticle({data = '', style, scene}) {
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
-            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+            <View style={{flexDirection: 'row'}}>
                 <View style={{flex: 1}}>
                     {data?.cate_icon ? (
                         <View style={[Style.flexRow, {marginBottom: px(8)}]}>
@@ -59,7 +59,7 @@ export default function VisionArticle({data = '', style, scene}) {
                         <Text style={{height: px(20) * numberOfLines}} />
                     )}
                     {data?.tag_list ? (
-                        <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                        <View style={[Style.flexRow, {marginTop: isHorizontal ? px(13) : px(8)}]}>
                             {data?.tag_list?.map((item, index) => {
                                 return (
                                     <Text key={index} style={[styles.light_text]}>
@@ -71,16 +71,18 @@ export default function VisionArticle({data = '', style, scene}) {
                     ) : null}
                 </View>
                 {data?.cover && isHorizontal ? (
-                    <LazyImage
-                        style={styles.article_img}
-                        source={{
-                            uri: data?.cover,
-                        }}
-                        logoStyle={{
-                            width: px(22),
-                            height: px(24),
-                        }}
-                    />
+                    <View style={{alignSelf: 'flex-end'}}>
+                        <LazyImage
+                            style={styles.article_img}
+                            source={{
+                                uri: data?.cover,
+                            }}
+                            logoStyle={{
+                                width: px(22),
+                                height: px(24),
+                            }}
+                        />
+                    </View>
                 ) : null}
             </View>
             {data?.cover && !isHorizontal ? (
@@ -126,6 +128,7 @@ const styles = StyleSheet.create({
     },
     article_content: {
         fontSize: px(14),
+        height: px(42),
         color: Colors.defaultColor,
         lineHeight: px(20),
     },

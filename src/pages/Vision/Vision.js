@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 14:55:17
+ * @LastEditTime: 2022-02-18 18:51:03
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -33,7 +33,6 @@ import {useJump} from '../../components/hooks';
 import BottomDesc from '../../components/BottomDesc';
 
 const Vision = ({navigation, route}) => {
-    const visionData = useSelector((store) => store.vision).toJS();
     const netInfo = useNetInfo();
     const recommedRef = useRef();
     const comViewRef = useRef();
@@ -49,7 +48,7 @@ const Vision = ({navigation, route}) => {
     const jump = useJump();
     const init = useCallback((type) => {
         type == 'refresh' && setRefreshing(true);
-        http.get('http://127.0.0.1:4523/mock/587315/vision/index/20220215').then((res) => {
+        http.get('/vision/index/20220215').then((res) => {
             setData(res.result);
             setRefreshing(false);
         });
@@ -62,8 +61,9 @@ const Vision = ({navigation, route}) => {
     useFocusEffect(
         useCallback(() => {
             init();
-            readInterface();
+            userInfo?.is_login && readInterface();
             dispatch(updateVision({visionUpdate: ''}));
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [init, dispatch, readInterface])
     );
     useEffect(() => {
@@ -111,7 +111,8 @@ const Vision = ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
-                                jump({path: 'VisionCollect'});
+                                // jump({path: 'VisionCollect'});
+                                jump({path: 'ArticleList'});
                             }}>
                             <Image
                                 source={require('../../assets/img/vision/collect_icon.png')}
@@ -142,7 +143,7 @@ const Vision = ({navigation, route}) => {
         );
     };
     const renderContent = () => {
-        return data ? (
+        return (
             <>
                 {header()}
                 <ScrollView
@@ -152,7 +153,7 @@ const Vision = ({navigation, route}) => {
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
                     <LinearGradient
                         start={{x: 0, y: 0}}
-                        end={{x: 0, y: 0.2}}
+                        end={{x: 0, y: 0.05}}
                         colors={['#fff', '#F5F6F8']}
                         style={{flex: 1, borderColor: '#fff', borderWidth: 0.5, padding: px(16), paddingTop: px(4)}}>
                         {/* 推荐位 */}
@@ -198,7 +199,7 @@ const Vision = ({navigation, route}) => {
                 </ScrollView>
                 {!userInfo.is_login && <LoginMask scene="vision" />}
             </>
-        ) : null;
+        );
     };
 
     return hasNet ? renderContent() : NetError();

@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-02-15 14:59:27
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-18 18:52:34
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -1162,7 +1162,6 @@ function HomeScreen({navigation, route}) {
                             );
                         })}
                     </View>
-                    <Button onPress={() => navigation.navigate('SelectIdentity')} title="选择视野中的身份" />
                     <BottomDesc />
                 </ScrollView>
             </View>
