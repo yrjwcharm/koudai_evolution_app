@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-17 17:38:30
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-18 10:55:43
  * @Description:路由表
  */
 import React from 'react';
@@ -702,7 +702,7 @@ export default function AppStack() {
             <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
             <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
             <Stack.Screen name="ArticleList" component={ArticleList} options={{headerShown: '更多'}} />
-            <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
+            <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: ''}} />
         </Stack.Navigator>
     );
 }

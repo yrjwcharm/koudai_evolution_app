@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-02-16 15:31:21
+ * @LastEditTime: 2022-02-18 14:15:02
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -24,16 +25,19 @@ import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
 import {Modal, SelectModal} from '../../components/Modal';
 import Toast from '../../components/Toast';
+import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
 import upload from '../../services/upload';
 import {px, requestAuth} from '../../utils/appUtil';
 
 function reducer(state, action) {
     switch (action.type) {
+        case 'set_data':
+            return {...action.payload};
         case 'update_avatar':
-            return {...state, avatar: action.payload};
+            return {...state, virtual: {...state.virtual, img: action.payload}};
         case 'update_nickname':
-            return {...state, nickname: action.payload};
+            return {...state, virtual: {...state.virtual, name: action.payload}};
         case 'update_error_tip':
             return {...state, errorTip: action.payload};
         default:
@@ -41,12 +45,12 @@ function reducer(state, action) {
     }
 }
 
-export default () => {
+export default ({navigation}) => {
     const inputRef = useRef();
     const modalRef = useRef();
     const [type, setType] = useState();
-    const [userInfo, dispatch] = useReducer(reducer, {avatar: '', errorTip: '', nickname: ''});
-    const {avatar, errorTip, nickname} = userInfo;
+    const [data, dispatch] = useReducer(reducer, {});
+    const {button = {}, desc, errorTip = '', real = {}, virtual, virtual: {img: avatar, name: nickname} = {}} = data;
 
     // 选择图片或相册
     const onClickChoosePicture = () => {
@@ -146,7 +150,7 @@ export default () => {
     const uploadImage = (file) => {
         const toast = Toast.showLoading('正在上传');
         upload(
-            'http://127.0.0.1:4523/mock2/587315/11659399',
+            '/vision/image_upload/20220216',
             file,
             [],
             (res) => {
@@ -164,10 +168,34 @@ export default () => {
             }
         );
     };
+    // 完成设置
+    const onSubmit = () => {
+        const toast = Toast.showLoading('设置中');
+        const {img, name} = type === 'real' ? real : virtual;
+        http.post('/vision/set_user_info/20220216', {img, name, show_type: type === 'real' ? 0 : 1}).then((res) => {
+            Toast.hide(toast);
+            if (res.code === '000000') {
+                Toast.show('设置成功');
+                navigation.goBack();
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
 
     useEffect(() => {
         ImagePicker.clean();
-        setType('real');
+        http.get('/vision/select_user_info/20220216').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '选择视野中的身份'});
+                if (res.result.real.select) {
+                    setType('real');
+                } else {
+                    setType('virtual');
+                }
+                dispatch({payload: res.result, type: 'set_data'});
+            }
+        });
     }, []);
 
     useEffect(() => {
@@ -181,19 +209,19 @@ export default () => {
         }
     }, [avatar, nickname, type]);
 
-    return (
+    return Object.keys(data || {}).length > 0 ? (
         <ScrollView bounces={false} style={styles.container}>
-            <Text style={styles.info}>
-                {'在视野社区，我们为您提供两种身份，一个是您的真实身份和微信头像，另外一种您可以自行更换昵称和头像。'}
-            </Text>
+            <Text style={styles.info}>{desc || ''}</Text>
             <View style={[Style.flexBetween, {marginTop: Space.marginVertical}]}>
                 <View style={[styles.identityCon, type === 'real' ? {borderColor: Colors.brandColor} : {}]}>
                     <Text style={styles.info}>{'真实'}</Text>
                     <Image
-                        source={{uri: 'https://static.licaimofang.com/wp-content/uploads/2021/04/mage_icon_1.png'}}
+                        source={{
+                            uri: real.img || 'https://static.licaimofang.com/wp-content/uploads/2022/02/avatar.png',
+                        }}
                         style={[styles.avatar, {marginTop: Space.marginVertical, marginHorizontal: px(42)}]}
                     />
-                    <Text style={[styles.username, {marginTop: Space.marginVertical}]}>{'张先生'}</Text>
+                    <Text style={[styles.username, {marginTop: Space.marginVertical}]}>{real.name || ''}</Text>
                     <View style={styles.chooseBtn}>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -252,8 +280,9 @@ export default () => {
             </View>
             <Button
                 disabled={type === 'virtual' && (avatar === '' || nickname === '')}
+                onPress={onSubmit}
                 style={{marginTop: px(40)}}
-                title="确定"
+                title={button.text || '确定'}
             />
             <SelectModal
                 callback={(index) => {
@@ -268,6 +297,8 @@ export default () => {
                 show={false}
             />
         </ScrollView>
+    ) : (
+        <Loading />
     );
 };
 
