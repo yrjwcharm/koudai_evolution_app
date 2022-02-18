@@ -20,11 +20,11 @@ export default class RenderHtml extends Component {
         return (
             <HTML
                 ignoredStyles={[
-                    'fontFamily',
+                    'font-family',
                     'transform',
                     'display',
-                    'borderStyle',
-                    'maxWidth',
+                    'border-style',
+                    'max-width',
                     // 'default-src',
                     // 'loadingIndicatorSrc',
                 ]}
@@ -33,8 +33,9 @@ export default class RenderHtml extends Component {
                     allowFontScaling: false,
                     numberOfLines,
                 }}
-                baseStyle={style}
+                baseFontStyle={style}
                 source={{html: this.props.html}}
+                imagesMaxWidth={width - text(30)}
             />
         );
     }
