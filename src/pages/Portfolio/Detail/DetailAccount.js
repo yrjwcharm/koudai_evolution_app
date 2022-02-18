@@ -39,6 +39,7 @@ export default function DetailAccount({route, navigation}) {
     const [loading, setLoading] = useState(true);
     const [riskChartMin, setRiskChartMin] = useState(0);
     const bottomModal = React.useRef(null);
+    const [tipsDataOfBottomModal, setTipsDataOfBottomModal] = useState({});
     const changeTab = useCallback(
         throttle((p, t) => {
             setPeriod((prev) => {
@@ -194,7 +195,22 @@ export default function DetailAccount({route, navigation}) {
                                 text={data.ratio_info.ratio_val}
                                 type={data.ratio_info?.type}
                             />
-                            <Html html={data?.ratio_info?.ratio_desc} style={styles.radio_sty} />
+                            <View style={Style.flexRowCenter}>
+                                <Html html={data?.ratio_info?.ratio_desc} style={styles.radio_sty} />
+                                {data?.ratio_info?.tips ? (
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setTipsDataOfBottomModal(data?.ratio_info?.tips);
+                                            bottomModal.current.show();
+                                        }}
+                                        style={{...styles.radio_sty, marginLeft: px(4)}}>
+                                        <Image
+                                            style={{width: text(12), height: text(12)}}
+                                            source={require('../../../assets/img/tip.png')}
+                                        />
+                                    </TouchableOpacity>
+                                ) : null}
+                            </View>
                         </View>
                         {data.line_drawback && (
                             <View style={[Style.flexCenter, styles.container_sty]}>
@@ -210,6 +226,7 @@ export default function DetailAccount({route, navigation}) {
                                     {data?.line_drawback?.tips ? (
                                         <TouchableOpacity
                                             onPress={() => {
+                                                setTipsDataOfBottomModal(data?.line_drawback?.tips);
                                                 bottomModal.current.show();
                                             }}
                                             style={{...styles.radio_sty, marginLeft: px(4)}}>
@@ -656,20 +673,18 @@ export default function DetailAccount({route, navigation}) {
                 </ScrollView>
             ) : null}
             {data?.btns && <FixedBtn btns={data.btns} />}
-            {data?.line_drawback?.tips ? (
-                <BottomModal ref={bottomModal} title={data?.line_drawback?.tips?.title}>
-                    <View style={[{padding: text(16)}]}>
-                        {data?.line_drawback?.tips?.content?.map?.((item, index) => {
-                            return (
-                                <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
-                                    <Text style={styles.tipTitle}>{item.key}:</Text>
-                                    <Html style={{lineHeight: text(18), fontSize: text(13)}} html={item.val} />
-                                </View>
-                            );
-                        })}
-                    </View>
-                </BottomModal>
-            ) : null}
+            <BottomModal ref={bottomModal} title={tipsDataOfBottomModal?.title}>
+                <View style={[{padding: text(16)}]}>
+                    {tipsDataOfBottomModal?.content?.map?.((item, index) => {
+                        return (
+                            <View key={item + index} style={{marginTop: index === 0 ? 0 : text(16)}}>
+                                <Text style={styles.tipTitle}>{item.key}:</Text>
+                                <Html style={{lineHeight: text(18), fontSize: text(13)}} html={item.val} />
+                            </View>
+                        );
+                    })}
+                </View>
+            </BottomModal>
         </>
     );
 }

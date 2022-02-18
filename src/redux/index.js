@@ -25,9 +25,9 @@ const persistConfig = {
 
 //中间件
 const middlewares = [thunkMiddleware];
-if (__DEV__) {
-    middlewares.push(require('redux-logger').createLogger());
-}
+// if (__DEV__) {
+//     middlewares.push(require('redux-logger').createLogger());
+// }
 
 const reducer = combineReducers({
     userInfo: UserReducer,
