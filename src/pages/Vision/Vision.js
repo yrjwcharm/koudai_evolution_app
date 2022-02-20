@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:51:03
+ * @LastEditTime: 2022-02-18 18:59:04
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -145,58 +145,72 @@ const Vision = ({navigation, route}) => {
     const renderContent = () => {
         return (
             <>
-                {header()}
-                <ScrollView
-                    ref={scrollRef}
-                    key={1}
-                    style={{backgroundColor: Colors.bgColor}}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
-                    <LinearGradient
-                        start={{x: 0, y: 0}}
-                        end={{x: 0, y: 0.05}}
-                        colors={['#fff', '#F5F6F8']}
-                        style={{flex: 1, borderColor: '#fff', borderWidth: 0.5, padding: px(16), paddingTop: px(4)}}>
-                        {/* 推荐位 */}
-                        <RecommendCard
-                            style={{marginBottom: px(16)}}
-                            data={data?.part2}
-                            onPress={() => {
-                                global.LogTool('visionRecArticle', data?.part2);
-                            }}
-                        />
-                        {/* 其他模块 */}
-                        {data?.part3?.map((item, index) => {
-                            return (
-                                <View key={index + 'i'}>
-                                    <RenderTitle
-                                        _key={index}
-                                        title={item.title}
-                                        sub_title={item?.sub_title}
-                                        more_text={item?.more ? item?.more?.text : ''}
-                                        onPress={() => {
-                                            jump(item?.more?.url);
-                                        }}
-                                    />
-                                    {item?.direction == 'horizontal' ? (
-                                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                            {item?.items?.map((_article, index) => {
-                                                return RenderCate(_article, {
-                                                    marginBottom: px(12),
-                                                    marginRight: px(12),
-                                                });
-                                            })}
-                                        </ScrollView>
-                                    ) : (
-                                        item?.items?.map((_article, index) => {
-                                            return RenderCate(_article, {marginBottom: px(12)});
-                                        })
-                                    )}
-                                </View>
-                            );
-                        })}
-                        <BottomDesc />
-                    </LinearGradient>
-                </ScrollView>
+                {data ? (
+                    <>
+                        {header()}
+                        <ScrollView
+                            ref={scrollRef}
+                            key={1}
+                            style={{backgroundColor: Colors.bgColor}}
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />
+                            }>
+                            <LinearGradient
+                                start={{x: 0, y: 0}}
+                                end={{x: 0, y: 0.05}}
+                                colors={['#fff', '#F5F6F8']}
+                                style={{
+                                    flex: 1,
+                                    borderColor: '#fff',
+                                    borderWidth: 0.5,
+                                    padding: px(16),
+                                    paddingTop: px(4),
+                                }}>
+                                {/* 推荐位 */}
+                                <RecommendCard
+                                    style={{marginBottom: px(16)}}
+                                    data={data?.part2}
+                                    onPress={() => {
+                                        global.LogTool('visionRecArticle', data?.part2);
+                                    }}
+                                />
+                                {/* 其他模块 */}
+                                {data?.part3?.map((item, index) => {
+                                    return (
+                                        <View key={index + 'i'}>
+                                            <RenderTitle
+                                                _key={index}
+                                                title={item.title}
+                                                sub_title={item?.sub_title}
+                                                more_text={item?.more ? item?.more?.text : ''}
+                                                onPress={() => {
+                                                    jump(item?.more?.url);
+                                                }}
+                                            />
+                                            {item?.direction == 'horizontal' ? (
+                                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                                    {item?.items?.map((_article, index) => {
+                                                        return RenderCate(_article, {
+                                                            marginBottom: px(12),
+                                                            marginRight: px(12),
+                                                        });
+                                                    })}
+                                                </ScrollView>
+                                            ) : (
+                                                item?.items?.map((_article, index) => {
+                                                    return RenderCate(_article, {marginBottom: px(12)});
+                                                })
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                                <BottomDesc />
+                            </LinearGradient>
+                        </ScrollView>
+                    </>
+                ) : (
+                    <View style={{flex: 1, backgroundColor: '#fff'}} />
+                )}
                 {!userInfo.is_login && <LoginMask scene="vision" />}
             </>
         );

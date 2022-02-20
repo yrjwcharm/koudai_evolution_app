@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 19:25:05
+ * @LastEditTime: 2022-02-18 19:17:01
  * @Description:音频模块
  */
 
@@ -56,10 +56,6 @@ const VioceCard = ({data, style, scene}) => {
                             <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
                         </View>
                     ) : null}
-
-                    <Text numberOfLines={1} style={[styles.title]}>
-                        {data.album_name}
-                    </Text>
                     <Text numberOfLines={2} style={styles.detail}>
                         {data.title}
                     </Text>
@@ -67,7 +63,7 @@ const VioceCard = ({data, style, scene}) => {
                 {data?.cover && isHorizontal ? coverRender() : null}
             </View>
             {scene == 'collect' ? null : (
-                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                <View style={[Style.flexRow, {marginTop: px(8), marginBottom: isHorizontal ? 0 : px(12)}]}>
                     {data?.tag_list?.map((item, index) => {
                         return (
                             <Text key={index} style={[styles.light_text]}>

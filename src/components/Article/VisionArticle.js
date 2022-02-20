@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:48:20
+ * @LastEditTime: 2022-02-18 19:13:49
  * @Description:视野文章模块
  */
 
@@ -38,6 +38,21 @@ export default function VisionArticle({data = '', style, scene}) {
                                 style={{width: px(16), height: px(16), marginRight: px(6)}}
                             />
                             <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
+                        </View>
+                    ) : null}
+                    {/* 博主大v */}
+                    {data?.blogger ? (
+                        <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                            <FastImage
+                                source={{uri: data?.blogger?.avatar}}
+                                style={{width: px(36), height: px(36), marginRight: px(6), borderRadius: px(18)}}
+                            />
+                            <View>
+                                <Text style={styles.blogger_name}>{data?.blogger?.nickname}</Text>
+                                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                                    {data?.blogger?.fans_num_desc}
+                                </Text>
+                            </View>
                         </View>
                     ) : null}
                     {data?.title ? (
@@ -138,15 +153,10 @@ const styles = StyleSheet.create({
         padding: px(10),
         borderRadius: 8,
     },
-    zan_img: {
-        width: px(12),
-        height: px(12),
-    },
-    new_tag: {
-        width: px(23),
-        height: px(18),
-        position: 'absolute',
-        left: 0,
-        top: px(1),
+    blogger_name: {
+        fontSize: px(14),
+        color: Colors.lightBlackColor,
+        fontWeight: '700',
+        marginBottom: px(4),
     },
 });
