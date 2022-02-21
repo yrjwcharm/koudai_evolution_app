@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:52:34
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-21 16:45:22
  * @Description: 我的资产页
  */
 import React, {useState, useEffect, useRef, useCallback} from 'react';
@@ -184,6 +184,7 @@ function HomeScreen({navigation, route}) {
     // 展示渠道弹窗
     const showChannelModal = (_modalData) => {
         Modal.show({
+            backButtonClose: false,
             children: () => (
                 <View style={[Style.flexRow, {flexWrap: 'wrap', paddingVertical: text(12), paddingLeft: text(34)}]}>
                     {_modalData.options?.map((item, index) => {

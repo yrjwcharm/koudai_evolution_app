@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 10:43:46
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-21 17:13:28
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import Image from 'react-native-fast-image';
-// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {PERMISSIONS, openSettings} from 'react-native-permissions';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
 import {Button} from '../../components/Button';
@@ -94,45 +94,45 @@ export default ({navigation}) => {
     };
     // 打开相册或相机
     const openPicker = (action) => {
-        // setTimeout(() => {
-        //     if (action === 'gallery') {
-        //         ImagePicker.openPicker({
-        //             width: px(320),
-        //             height: px(320),
-        //             cropping: true,
-        //             cropperChooseText: '选择',
-        //             cropperCancelText: '取消',
-        //         })
-        //             .then((image) => {
-        //                 uploadImage({
-        //                     fileName: image.filename,
-        //                     type: image.mime,
-        //                     uri: image.path,
-        //                 });
-        //             })
-        //             .catch((err) => {
-        //                 console.warn(err);
-        //             });
-        //     } else if (action === 'camera') {
-        //         ImagePicker.openCamera({
-        //             width: px(320),
-        //             height: px(320),
-        //             cropping: true,
-        //             cropperChooseText: '选择',
-        //             cropperCancelText: '取消',
-        //         })
-        //             .then((image) => {
-        //                 uploadImage({
-        //                     fileName: image.filename,
-        //                     type: image.mime,
-        //                     uri: image.path,
-        //                 });
-        //             })
-        //             .catch((err) => {
-        //                 console.warn(err);
-        //             });
-        //     }
-        // }, 800);
+        setTimeout(() => {
+            if (action === 'gallery') {
+                ImagePicker.openPicker({
+                    width: px(320),
+                    height: px(320),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
+            } else if (action === 'camera') {
+                ImagePicker.openCamera({
+                    width: px(320),
+                    height: px(320),
+                    cropping: true,
+                    cropperChooseText: '选择',
+                    cropperCancelText: '取消',
+                })
+                    .then((image) => {
+                        uploadImage({
+                            fileName: image.filename,
+                            type: image.mime,
+                            uri: image.path,
+                        });
+                    })
+                    .catch((err) => {
+                        console.warn(err);
+                    });
+            }
+        }, 800);
     };
     // 权限提示弹窗
     const blockCal = (action) => {
@@ -184,18 +184,18 @@ export default ({navigation}) => {
     };
 
     useEffect(() => {
-        // ImagePicker.clean();
-        // http.get('/vision/select_user_info/20220216').then((res) => {
-        //     if (res.code === '000000') {
-        //         navigation.setOptions({title: res.result.title || '选择视野中的身份'});
-        //         if (res.result.real.select) {
-        //             setType('real');
-        //         } else {
-        //             setType('virtual');
-        //         }
-        //         dispatch({payload: res.result, type: 'set_data'});
-        //     }
-        // });
+        ImagePicker.clean();
+        http.get('/vision/select_user_info/20220216').then((res) => {
+            if (res.code === '000000') {
+                navigation.setOptions({title: res.result.title || '选择视野中的身份'});
+                if (res.result.real.select) {
+                    setType('real');
+                } else {
+                    setType('virtual');
+                }
+                dispatch({payload: res.result, type: 'set_data'});
+            }
+        });
     }, []);
 
     useEffect(() => {
