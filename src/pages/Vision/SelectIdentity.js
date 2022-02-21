@@ -2,13 +2,8 @@
 /*
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
-<<<<<<< HEAD
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:54:52
-=======
- * @LastEditors: dx
- * @LastEditTime: 2022-02-18 14:15:02
->>>>>>> 957be87a260de500ba7b49a3e9efd7abb1c32e19
+ * @LastEditTime: 2022-02-21 10:43:46
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
