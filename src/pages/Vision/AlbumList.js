@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:47:44
+ * @LastEditTime: 2022-02-21 19:26:22
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -132,8 +132,14 @@ const AlbumList = ({navigation, route}) => {
                         </View>
                     ) : null}
                 </View>
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
+                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    {item?.tag_list?.map((_item, _index) => {
+                        return (
+                            <Text key={_index} style={[styles.light_text]} numberOfLines={1}>
+                                {_item}
+                            </Text>
+                        );
+                    })}
                 </View>
             </TouchableOpacity>
         ) : (
@@ -156,8 +162,14 @@ const AlbumList = ({navigation, route}) => {
                     {item?.title}
                 </Text>
 
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
+                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    {item?.tag_list?.map((_item, _index) => {
+                        return (
+                            <Text key={_index} style={[styles.light_text]} numberOfLines={1}>
+                                {_item}
+                            </Text>
+                        );
+                    })}
                 </View>
             </TouchableOpacity>
         );
@@ -249,7 +261,7 @@ const styles = StyleSheet.create({
         marginLeft: px(3),
     },
     play_text: {fontSize: px(13), color: '#fff', marginLeft: px(2), fontWeight: '600'},
-    light_text: {color: Colors.lightGrayColor, fontSize: px(12)},
+    light_text: {color: Colors.lightGrayColor, fontSize: px(12), marginRight: px(4)},
     gray_text: {
         fontSize: px(12),
         color: '#fff',

@@ -2,13 +2,12 @@
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 16:33:27
+ * @LastEditTime: 2022-02-21 19:10:03
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import http from '../../services';
-import {useJump} from '../../components/hooks';
 import RenderCate from './components/RenderCate';
 import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors} from '../../common/commonStyle';
@@ -21,7 +20,6 @@ const LiveList = () => {
     const [hasMore, setHasMore] = useState(true);
     const [showMoreLoading, setShowMoreLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const jump = useJump();
     const init = useCallback(() => {
         http.get('/live/index/202202015').then((res) => {
             setData(res.result);
@@ -47,7 +45,7 @@ const LiveList = () => {
         const event = evt.nativeEvent;
         // 如果拖拽值超过底部50，且当前的scrollview高度大于屏幕高度，则加载更多
         const _num = event.contentSize.height - event.layoutMeasurement.height - event.contentOffset.y;
-        if (event.contentSize.height > event.layoutMeasurement.height && _num < 0) {
+        if (event.contentSize.height > event.layoutMeasurement.height && _num <= 0) {
             setPage((pre) => {
                 return pre + 1;
             });

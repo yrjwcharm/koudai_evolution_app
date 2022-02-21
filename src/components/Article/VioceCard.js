@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 19:17:01
+ * @LastEditTime: 2022-02-21 19:25:23
  * @Description:音频模块
  */
 
@@ -59,20 +59,25 @@ const VioceCard = ({data, style, scene}) => {
                     <Text numberOfLines={2} style={styles.detail}>
                         {data.title}
                     </Text>
+                    {scene == 'collect' ? null : (
+                        <View
+                            style={[
+                                Style.flexRow,
+                                {marginTop: isHorizontal ? px(24) : px(8), marginBottom: isHorizontal ? 0 : px(12)},
+                            ]}>
+                            {data?.tag_list?.map((item, index) => {
+                                return (
+                                    <Text key={index} style={[styles.light_text]} numberOfLines={1}>
+                                        {item}
+                                    </Text>
+                                );
+                            })}
+                        </View>
+                    )}
                 </View>
                 {data?.cover && isHorizontal ? coverRender() : null}
             </View>
-            {scene == 'collect' ? null : (
-                <View style={[Style.flexRow, {marginTop: px(8), marginBottom: isHorizontal ? 0 : px(12)}]}>
-                    {data?.tag_list?.map((item, index) => {
-                        return (
-                            <Text key={index} style={[styles.light_text]}>
-                                {item}
-                            </Text>
-                        );
-                    })}
-                </View>
-            )}
+
             {data?.cover && !isHorizontal ? coverRender() : null}
         </TouchableOpacity>
     );
@@ -85,8 +90,7 @@ const styles = StyleSheet.create({
         borderRadius: px(8),
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
-        paddingTop: px(15),
-        paddingBottom: px(12),
+        paddingVertical: px(16),
     },
     detail: {
         color: Colors.defaultColor,
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
     light_text: {
         color: Colors.lightGrayColor,
         fontSize: px(12),
+        marginRight: px(4),
     },
     cover_con: {
         marginLeft: px(13),

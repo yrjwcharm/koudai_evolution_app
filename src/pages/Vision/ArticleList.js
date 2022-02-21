@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:52:47
+ * @LastEditTime: 2022-02-21 19:10:36
  * @Description:更多文章列表
  */
 import {StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native';
@@ -12,7 +12,7 @@ import RenderCate from './components/RenderCate';
 import {deviceWidth, px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import _ from 'lodash';
-const ArticleList = ({navigation}) => {
+const ArticleList = ({navigation, route}) => {
     const [data, setData] = useState();
     const [hasMore, setHasMore] = useState(false);
     const [refreshing, setRefreshing] = useState(true);
@@ -23,7 +23,7 @@ const ArticleList = ({navigation}) => {
             if (status == 'loadmore') {
                 isloadMore.current = true;
             }
-            http.get('/vision/articles/20220215', {page, cate_id: 10}).then((res) => {
+            http.get('/vision/articles/20220215', {page, cate_id: route?.params?.id}).then((res) => {
                 navigation.setOptions({title: res.result.title});
                 setRefreshing(false);
                 isloadMore.current = false;
@@ -35,7 +35,7 @@ const ArticleList = ({navigation}) => {
                 }
             });
         },
-        [page, navigation]
+        [page, navigation, route]
     );
 
     useEffect(() => {
