@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: dx
- * @LastEditTime: 2021-12-27 18:24:00
+ * @LastEditTime: 2022-02-17 18:33:11
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -76,20 +76,22 @@ class TradeBuy extends Component {
     }
     getTab = () => {
         const {poid} = this.state;
-        http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
-            this.setState(
-                {
-                    type: data.result.active,
-                    has_tab: data.result.has_tab,
-                },
-                () => {
-                    this.init(data.result.active);
-                    if (this.tabView) {
-                        this.tabView.goToPage(data.result.active);
+        http.get('/trade/set_tabs/20210101', {page_type: this.props.route.params.page_type || '', poid}).then(
+            (data) => {
+                this.setState(
+                    {
+                        type: data.result.active,
+                        has_tab: data.result.has_tab,
+                    },
+                    () => {
+                        this.init(data.result.active);
+                        if (this.tabView) {
+                            this.tabView.goToPage(data.result.active);
+                        }
                     }
-                }
-            );
-        });
+                );
+            }
+        );
     };
     init_timer = null;
     init = (_type) => {
@@ -102,6 +104,7 @@ class TradeBuy extends Component {
                 type: _type || type,
                 poid,
                 amount: this.state.amount,
+                page_type: this.props.route.params.page_type || '',
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
@@ -237,6 +240,7 @@ class TradeBuy extends Component {
                     password,
                     trade_method: bank?.pay_type,
                     pay_method: bank.pay_method || '',
+                    page_type: this.props.route.params.page_type || '',
                 }).then((res) => {
                     Toast.hide(toast);
                     if (res.code === '000000') {
@@ -287,6 +291,7 @@ class TradeBuy extends Component {
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
                 plan_id: this.plan_id,
+                page_type: this.props.route.params.page_type || '',
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -550,6 +555,9 @@ class TradeBuy extends Component {
     render_config() {
         const {planData, configExpand, data} = this.state;
         const {header, body} = planData;
+        const {
+            buy_info: {buy_text, tips},
+        } = data;
         return (
             header && (
                 <View style={{marginBottom: px(12)}}>
@@ -561,14 +569,15 @@ class TradeBuy extends Component {
                         }}>
                         <View style={Style.flexRowCenter}>
                             <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
-                                买入明细
+                                {buy_text || '买入明细'}
                             </Text>
                             {data.is_plan ? null : (
                                 <TouchableOpacity
                                     onPress={() => {
                                         Modal.show({
-                                            title: '购买明细',
+                                            title: buy_text || '买入明细',
                                             content:
+                                                tips ||
                                                 '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
                                         });
                                     }}>
@@ -605,20 +614,32 @@ class TradeBuy extends Component {
                                                                         textAlign: 'center',
                                                                     },
                                                                 ]}>
-                                                                {header.percent}
+                                                                {header.title1}
                                                             </Text>
                                                             <Text
                                                                 style={[
                                                                     styles.config_title,
                                                                     {flex: 1, textAlign: 'right'},
                                                                 ]}>
-                                                                {header.amount}
+                                                                {header.title2}
                                                             </Text>
                                                         </>
                                                     )}
                                                 </View>
                                                 {item.funds &&
                                                     item.funds.map((fund, _index) => {
+                                                        const _color1 =
+                                                            fund.compare1 == 'gt'
+                                                                ? Colors.red
+                                                                : fund.compare1 == 'lt'
+                                                                ? Colors.green
+                                                                : Colors.descColor;
+                                                        const _color2 =
+                                                            fund.compare2 == 'gt'
+                                                                ? Colors.red
+                                                                : fund.compare2 == 'lt'
+                                                                ? Colors.green
+                                                                : Colors.descColor;
                                                         return (
                                                             <View
                                                                 key={fund.name}
@@ -633,30 +654,48 @@ class TradeBuy extends Component {
                                                                     </Text>
                                                                 </View>
 
-                                                                <Text
-                                                                    style={[
-                                                                        styles.config_title_desc,
-                                                                        {
-                                                                            width: px(60),
+                                                                <View style={[Style.flexCenter, {width: px(60)}]}>
+                                                                    <HTML
+                                                                        html={`${fund.field1}`}
+                                                                        style={{
+                                                                            ...styles.config_title_desc,
                                                                             fontFamily: Font.numMedium,
-                                                                            textAlign: 'center',
-                                                                        },
-                                                                    ]}>
-                                                                    {Number(fund.percent * 100).toFixed(2)}%
-                                                                </Text>
-                                                                <Text
+                                                                        }}
+                                                                    />
+                                                                    {fund.compare1 !== 'et' && (
+                                                                        <Icon
+                                                                            name={
+                                                                                fund.compare1 == 'gt'
+                                                                                    ? 'arrowup'
+                                                                                    : 'arrowdown'
+                                                                            }
+                                                                            color={_color1}
+                                                                        />
+                                                                    )}
+                                                                </View>
+                                                                <View
                                                                     style={[
-                                                                        styles.config_title_desc,
-                                                                        {
-                                                                            fontFamily: Font.numMedium,
-                                                                            flex: 1,
-                                                                            textAlign: 'right',
-                                                                        },
+                                                                        Style.flexRow,
+                                                                        {flex: 1, justifyContent: 'flex-end'},
                                                                     ]}>
-                                                                    {fund.amount == '--'
-                                                                        ? '--'
-                                                                        : Number(fund.amount).toFixed(2)}
-                                                                </Text>
+                                                                    <HTML
+                                                                        html={`${fund.field2}`}
+                                                                        style={{
+                                                                            ...styles.config_title_desc,
+                                                                            fontFamily: Font.numMedium,
+                                                                        }}
+                                                                    />
+                                                                    {fund.compare2 !== 'et' && (
+                                                                        <Icon
+                                                                            name={
+                                                                                fund.compare2 == 'gt'
+                                                                                    ? 'arrowup'
+                                                                                    : 'arrowdown'
+                                                                            }
+                                                                            color={_color2}
+                                                                        />
+                                                                    )}
+                                                                </View>
                                                             </View>
                                                         );
                                                     })}
@@ -1235,7 +1274,7 @@ const styles = StyleSheet.create({
     },
     config_title_desc: {
         fontSize: px(13),
-        color: '#4E556C',
+        color: Colors.descColor,
     },
     line: {
         height: 0.5,

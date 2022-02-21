@@ -1,15 +1,16 @@
 /*
  * @Date: 2021-02-02 12:27:26
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-11-06 17:03:20
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-17 19:23:25
  * @Description:交易记录详情
  */
 import React, {useCallback, useState, useEffect, useRef} from 'react';
 import {Text, View, StyleSheet, ScrollView, TouchableOpacity, DeviceEventEmitter} from 'react-native';
 import {px, isIphoneX, tagColor, getTradeColor} from '../../utils/appUtil';
-import {Style, Colors, Font} from '../../common/commonStyle';
+import {Style, Space, Colors, Font} from '../../common/commonStyle';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import {Modal, BankCardModal} from '../../components/Modal';
 import http from '../../services';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -18,14 +19,17 @@ import HTML from '../../components/RenderHtml';
 import {PasswordModal} from '../../components/Password';
 import Toast from '../../components/Toast';
 import {Button} from '../../components/Button';
+import {useJump} from '../../components/hooks';
 // 交易类型 type.val      3: 购买（红色） 4:赎回（绿色）6:调仓（蓝色） 7:分红（红色）
 // 交易状态 status.val    -1 交易失败（红色）1:确认中（橙色）6:交易成功(绿色) 7:撤单中(橙色) 9:已撤单（灰色）
 const TradeRecordDetail = (props) => {
+    const jump = useJump();
     const {txn_id, type, sub_type} = props.route?.params;
     const [heightArr, setHeightArr] = useState([]);
     const [showMore, setShowMore] = useState([]);
     const [errorInfo, setErrorInfo] = useState(null);
     const [data, setData] = useState();
+    const [hideMsg, setHideMsg] = useState(false);
     const bankCardRef = useRef();
     const passwordModal = useRef();
     const cardLayout = (index, e) => {
@@ -123,8 +127,44 @@ const TradeRecordDetail = (props) => {
             },
         });
     };
+    // 隐藏系统消息
+    const hideSystemMsg = () => {
+        global.LogTool('click', 'hideSystemMsg');
+        setHideMsg(true);
+    };
+    const {notice} = data || {};
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView bounces={false} style={styles.container}>
+            {/* 小黄条 */}
+            {!hideMsg && notice?.system ? (
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => {
+                        notice?.system?.log_id && global.LogTool(notice?.system?.log_id);
+                        jump(notice?.system?.url);
+                    }}>
+                    <View
+                        style={[
+                            styles.systemMsgContainer,
+                            Style.flexBetween,
+                            {
+                                paddingRight: notice?.system?.button ? px(16) : px(38),
+                            },
+                        ]}>
+                        <Text style={styles.systemMsgText}>{notice?.system?.desc}</Text>
+
+                        {notice?.system?.button ? (
+                            <View style={styles.btn}>
+                                <Text style={styles.btn_text}>{notice?.system?.button?.text}</Text>
+                            </View>
+                        ) : (
+                            <TouchableOpacity style={styles.closeSystemMsg} activeOpacity={0.8} onPress={hideSystemMsg}>
+                                <EvilIcons name={'close'} size={22} color={Colors.yellow} />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </TouchableOpacity>
+            ) : null}
             <View style={[styles.header, Style.flexCenter]}>
                 <PasswordModal
                     ref={passwordModal}
@@ -148,20 +188,35 @@ const TradeRecordDetail = (props) => {
                     </View>
                     <Text style={{color: Colors.defaultColor, fontSize: px(16)}}>{data?.part1?.name}</Text>
                 </View>
-                {/* 调仓比例 */}
-                {data?.part1?.percent ? (
-                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                        <Text style={[styles.header_text, {marginRight: px(6)}]}>比例</Text>
-                        <Text style={styles.bold_text}>{data?.part1?.percent}</Text>
+                {data?.part1?.table ? (
+                    <View style={[Style.flexRow, {width: '100%', paddingHorizontal: px(20)}]}>
+                        {data.part1.table.map?.((item, index) => {
+                            return (
+                                <View key={item + index} style={[Style.flexCenter, {flex: 1}]}>
+                                    {item.k ? <Text style={styles.header_text}>{item.k}</Text> : null}
+                                    {item.v ? <Text style={styles.bold_text}>{item.v}</Text> : null}
+                                </View>
+                            );
+                        })}
                     </View>
-                ) : null}
-                {/* 金额展示 */}
-                {data?.part1?.amount ? (
-                    <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
-                        <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
-                        <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
-                    </View>
-                ) : null}
+                ) : (
+                    <>
+                        {/* 调仓比例 */}
+                        {data?.part1?.percent ? (
+                            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={[styles.header_text, {marginRight: px(6)}]}>比例</Text>
+                                <Text style={styles.bold_text}>{data?.part1?.percent}</Text>
+                            </View>
+                        ) : null}
+                        {/* 金额展示 */}
+                        {data?.part1?.amount ? (
+                            <View style={[Style.flexRow, {alignItems: 'flex-end'}]}>
+                                <Text style={styles.bold_text}>{data?.part1?.amount}</Text>
+                                <Text style={[styles.header_text, {marginLeft: px(4)}]}>{data?.part1?.unit}</Text>
+                            </View>
+                        ) : null}
+                    </>
+                )}
                 {data?.part1?.items?.map((_item, key) => (
                     <View style={Style.flexRow} key={key}>
                         <Text style={styles.header_text}>{_item.k}</Text>
@@ -398,6 +453,36 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.bgColor,
+    },
+    systemMsgContainer: {
+        backgroundColor: '#FFF5E5',
+        paddingTop: px(8),
+        paddingBottom: px(12),
+        paddingRight: px(38),
+        paddingLeft: Space.marginAlign,
+    },
+    systemMsgText: {
+        fontSize: px(13),
+        lineHeight: px(18),
+        color: Colors.yellow,
+        textAlign: 'justify',
+    },
+    closeSystemMsg: {
+        position: 'absolute',
+        right: px(12),
+        top: px(10),
+    },
+    btn: {
+        borderRadius: px(14),
+        paddingVertical: px(5),
+        paddingHorizontal: px(10),
+        backgroundColor: '#FF7D41',
+    },
+    btn_text: {
+        fontWeight: '600',
+        color: '#fff',
+        fontSize: px(12),
+        lineHeight: px(17),
     },
     header: {
         marginTop: 1,
