@@ -3,7 +3,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-02-21 17:13:28
+ * @LastEditTime: 2022-02-21 18:13:43
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -102,6 +102,7 @@ export default ({navigation}) => {
                     cropping: true,
                     cropperChooseText: '选择',
                     cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
                 })
                     .then((image) => {
                         uploadImage({
@@ -120,6 +121,7 @@ export default ({navigation}) => {
                     cropping: true,
                     cropperChooseText: '选择',
                     cropperCancelText: '取消',
+                    loadingLabelText: '加载中',
                 })
                     .then((image) => {
                         uploadImage({
