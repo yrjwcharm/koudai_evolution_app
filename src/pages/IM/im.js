@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-12 21:35:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-02-21 17:37:36
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-21 18:43:22
  * @Description:
  */
 import React, {useState, useEffect, useRef} from 'react';
@@ -508,6 +508,7 @@ const IM = (props) => {
             ImagePicker.openPicker({
                 maxFiles: 6,
                 multiple: true,
+                compressImageQuality: 0.5,
             }).then((selectedPhotos) => {
                 selectedPhotos.forEach((response) => {
                     let cmid = randomMsgId('IMR');

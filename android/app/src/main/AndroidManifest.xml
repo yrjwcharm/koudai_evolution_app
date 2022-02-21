@@ -65,5 +65,5 @@
         android:value="${JPUSH_APPKEY}" />  
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
-
+  <application android:requestLegacyExternalStorage="true" />
 </manifest>
