@@ -7562,11 +7562,6 @@ react-native-haptic-feedback@^1.11.0:
   resolved "https://registry.nlark.com/react-native-haptic-feedback/download/react-native-haptic-feedback-1.11.0.tgz"
   integrity sha1-rf2EHztnBGUy+RLG7IJ66gA32K0=
 
-react-native-image-crop-picker@^0.33.2:
-  version "0.33.4"
-  resolved "https://registry.npmmirror.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.33.4.tgz#12c25f97f37596720348776809557b1f7552cdcf"
-  integrity sha512-HHA1Optc5JhGVzS/+ctNBLDBbgR3AnxEg421LJN2GRL/KmsleKWHlIEOVEFO0DYu62iV4NC/2zRScQLih6Dv1w==
-
 react-native-image-pan-zoom@^2.1.12:
   version "2.1.12"
   resolved "https://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.12.tgz"
