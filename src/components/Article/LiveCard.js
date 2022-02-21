@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 11:37:24
+ * @LastEditTime: 2022-02-21 16:02:53
  * @Description:直播模块
  */
 
@@ -46,7 +46,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         if (data.status == 1) {
             subscription();
         } else {
-            jump(data?.button?.url);
+            jump(data?.url);
         }
     };
     const _handleAppStateChange = useCallback(
@@ -126,7 +126,12 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         });
     };
     return (
-        <TouchableOpacity style={[styles.card, style]} activeOpacity={0.8} onPress={handleClick}>
+        <TouchableOpacity
+            style={[styles.card, style]}
+            activeOpacity={0.8}
+            onPress={() => {
+                jump(data?.url);
+            }}>
             {/* 封面 */}
             <ImageBackground source={{uri: data?.cover}} style={[styles.cover, coverStyle]}>
                 {/* 预约人数直播观看人数 */}
@@ -159,7 +164,9 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                 ) : null}
             </ImageBackground>
             <View style={[styles.card_bottom, {paddingVertical: isLiveRecommend ? px(16) : px(12)}]}>
-                <Text style={[styles.title, {fontSize: isLiveRecommend ? px(16) : px(14)}]}>{data?.title}</Text>
+                <Text numberOfLines={2} style={[styles.title, {fontSize: isLiveRecommend ? px(16) : px(14)}]}>
+                    {data?.title}
+                </Text>
                 {data?.avatar ? (
                     <View
                         style={[
@@ -188,7 +195,11 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                                 }}>
                                 {data?.user_name}
                             </Text>
-                            {data?.user_desc ? <Text style={styles.user_desc}>{data?.user_desc}</Text> : null}
+                            {data?.user_desc ? (
+                                <Text numberOfLines={1} style={styles.user_desc}>
+                                    {data?.user_desc}
+                                </Text>
+                            ) : null}
                         </View>
                     </View>
                 ) : null}
@@ -255,6 +266,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: 'bold',
         lineHeight: px(20),
+        height: px(40),
     },
     time: {
         color: Colors.defaultColor,

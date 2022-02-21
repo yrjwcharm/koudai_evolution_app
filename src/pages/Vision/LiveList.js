@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 12:28:23
+ * @LastEditTime: 2022-02-21 16:33:27
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -19,10 +19,11 @@ const LiveList = () => {
     const [data, setData] = useState();
     const [playBackList, setPlayBackList] = useState();
     const [hasMore, setHasMore] = useState(true);
-    const [page, setPage] = useState(2);
+    const [showMoreLoading, setShowMoreLoading] = useState(false);
+    const [page, setPage] = useState(1);
     const jump = useJump();
     const init = useCallback(() => {
-        http.get('http://127.0.0.1:4523/mock2/587315/11748061').then((res) => {
+        http.get('/live/index/202202015').then((res) => {
             setData(res.result);
         });
     }, []);
@@ -30,17 +31,26 @@ const LiveList = () => {
         init();
     }, [init]);
     useEffect(() => {
-        http.get('http://127.0.0.1:4523/mock/587315/live/get_lived_list/202202015', {page}).then((res) => {
+        setShowMoreLoading(true);
+        http.get('/live/get_lived_list/202202015', {page}).then((res) => {
+            setShowMoreLoading(false);
             setHasMore(res.result.has_more);
-            setPlayBackList(res.result.items);
+            if (page == 1) {
+                setPlayBackList(res.result.items);
+            } else {
+                setPlayBackList((prevList) => [...prevList, ...(res.result.items || [])]);
+            }
         });
     }, [page]);
     const _onScroll = (evt) => {
+        if (!hasMore || showMoreLoading) return;
         const event = evt.nativeEvent;
         // 如果拖拽值超过底部50，且当前的scrollview高度大于屏幕高度，则加载更多
         const _num = event.contentSize.height - event.layoutMeasurement.height - event.contentOffset.y;
-        if (event.contentSize.height > event.layoutMeasurement.height && _num < -50) {
-            console.log('上拉，加载更多评论');
+        if (event.contentSize.height > event.layoutMeasurement.height && _num < 0) {
+            setPage((pre) => {
+                return pre + 1;
+            });
         }
     };
     return (
@@ -57,7 +67,7 @@ const LiveList = () => {
                     key={index}
                 />
             ))}
-            {data?.part3 ? (
+            {data?.part2 ? (
                 <>
                     <RenderTitle title={data?.part2?.title} sub_title={data?.part2?.sub_title} />
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -86,6 +96,7 @@ const LiveList = () => {
                     </View>
                 </>
             ) : null}
+            {data ? <Text style={{textAlign: 'center'}}>{hasMore ? '努力加载中' : '加载完了'}</Text> : null}
         </ScrollView>
     );
 };

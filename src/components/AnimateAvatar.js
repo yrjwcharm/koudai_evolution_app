@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 10:48:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 17:20:47
+ * @LastEditTime: 2022-02-21 16:11:23
  * @Description:直播动态头像组建
  */
 import {StyleSheet, View} from 'react-native';
@@ -16,7 +16,7 @@ const AnimateAvatar = (data) => {
             scale: 1,
         },
         0.5: {
-            scale: 0.8,
+            scale: 0.9,
         },
         1: {
             scale: 1,
@@ -28,7 +28,7 @@ const AnimateAvatar = (data) => {
             opacity: 1,
         },
         1: {
-            scale: 1.2,
+            scale: 1.1,
             opacity: 0,
         },
     };
@@ -38,12 +38,12 @@ const AnimateAvatar = (data) => {
                 animation={zoomBorderOut}
                 iterationCount={'infinite'}
                 style={[styles.animate_border, data?.style]}
-                duration={1000}
+                duration={1500}
             />
             <Animatable.Image
                 animation={zoomImageOut}
                 iterationCount={'infinite'}
-                duration={1000}
+                duration={1500}
                 source={{
                     uri: data.source,
                 }}
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         height: px(26),
         borderColor: 'red',
         borderWidth: px(1),
-        borderRadius: px(13),
+        borderRadius: px(20),
         position: 'relative',
         zIndex: 10,
     },
