@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 19:10:03
+ * @LastEditTime: 2022-02-22 16:19:58
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -94,7 +94,9 @@ const LiveList = () => {
                     </View>
                 </>
             ) : null}
-            {data ? <Text style={{textAlign: 'center'}}>{hasMore ? '努力加载中' : '加载完了'}</Text> : null}
+            {playBackList?.length > 10 ? (
+                <Text style={{textAlign: 'center'}}>{hasMore ? '努力加载中' : '加载完了'}</Text>
+            ) : null}
         </ScrollView>
     );
 };
