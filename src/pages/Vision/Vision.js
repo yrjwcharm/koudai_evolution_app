@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-22 10:46:54
+ * @LastEditTime: 2022-02-22 15:12:35
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -72,6 +72,14 @@ const Vision = ({navigation, route}) => {
         });
         return () => listener();
     }, []);
+    //上传滚动百分比
+    const onScroll = (evt) => {
+        const event = evt.nativeEvent;
+        global.LogTool(
+            'pageScroll',
+            Math.round((event.contentOffset.y / (event.contentSize.height - event.layoutMeasurement.height)) * 100)
+        );
+    };
     const NetError = () => {
         return (
             <>
@@ -111,8 +119,8 @@ const Vision = ({navigation, route}) => {
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => {
-                                // jump({path: 'VisionCollect'});
-                                jump({path: 'ArticleList'});
+                                global.LogTool('visionMisc');
+                                jump({path: 'VisionCollect'});
                             }}>
                             <Image
                                 source={require('../../assets/img/vision/collect_icon.png')}
@@ -151,6 +159,8 @@ const Vision = ({navigation, route}) => {
                         <ScrollView
                             ref={scrollRef}
                             key={1}
+                            scrollEventThrottle={200}
+                            onMomentumScrollEnd={onScroll}
                             style={{backgroundColor: Colors.bgColor}}
                             refreshControl={
                                 <RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />
