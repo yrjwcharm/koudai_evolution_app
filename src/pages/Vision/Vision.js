@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:59:04
+ * @LastEditTime: 2022-02-22 10:46:54
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -178,15 +178,17 @@ const Vision = ({navigation, route}) => {
                                 {data?.part3?.map((item, index) => {
                                     return (
                                         <View key={index + 'i'}>
-                                            <RenderTitle
-                                                _key={index}
-                                                title={item.title}
-                                                sub_title={item?.sub_title}
-                                                more_text={item?.more ? item?.more?.text : ''}
-                                                onPress={() => {
-                                                    jump(item?.more?.url);
-                                                }}
-                                            />
+                                            {item?.items?.length > 0 ? (
+                                                <RenderTitle
+                                                    _key={index}
+                                                    title={item.title}
+                                                    sub_title={item?.sub_title}
+                                                    more_text={item?.more ? item?.more?.text : ''}
+                                                    onPress={() => {
+                                                        jump(item?.more?.url);
+                                                    }}
+                                                />
+                                            ) : null}
                                             {item?.direction == 'horizontal' ? (
                                                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                                     {item?.items?.map((_article, index) => {
