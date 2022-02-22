@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 17:45:04
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-22 11:37:49
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -325,7 +325,6 @@ function App(props) {
                         );
                     jump(navigationRef.current, modal.confirm.url || '');
                 },
-                clickClose: false,
                 confirmText: modal.confirm.text || '',
                 cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
                 cancelText: modal.cancel?.text || '',

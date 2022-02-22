@@ -421,9 +421,6 @@ PODS:
     - React-Core
   - RNSVG (12.1.1):
     - React
-  - RNSyanImagePicker (0.5.3):
-    - React
-    - TZImagePickerController
   - RNVectorIcons (7.1.0):
     - React
   - SDWebImage (5.10.4):
@@ -434,7 +431,6 @@ PODS:
     - SDWebImage/Core (~> 5.7)
   - SSZipArchive (2.2.3)
   - TOCropViewController (2.6.1)
-  - TZImagePickerController (3.6.4)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -531,7 +527,6 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
-  - RNSyanImagePicker (from `../node_modules/react-native-syan-image-picker`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -555,7 +550,6 @@ SPEC REPOS:
     - SDWebImageWebPCoder
     - SSZipArchive
     - TOCropViewController
-    - TZImagePickerController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -699,8 +693,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  RNSyanImagePicker:
-    :path: "../node_modules/react-native-syan-image-picker"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -791,13 +783,11 @@ SPEC CHECKSUMS:
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 45c457af3d2ee9e08fc01e70da87e653d46b1198
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
-  RNSyanImagePicker: 5c650d33f16f7cd59c47d9269f6c4856b30d7616
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
-  TZImagePickerController: 1cc39ec0454d6e94d0397418953164d7aa631719
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
