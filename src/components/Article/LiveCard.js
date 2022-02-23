@@ -3,16 +3,15 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 16:40:26
+ * @LastEditTime: 2022-02-23 18:01:21
  * @Description:直播模块
  */
 
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image, AppState, ImageBackground} from 'react-native';
 import {Colors, Style} from '../../common/commonStyle';
 import {px} from '../../utils/appUtil';
 import {useJump} from '../hooks';
-import FastImage from 'react-native-fast-image';
 import AnimateAvatar from '../AnimateAvatar';
 import {openSettings, checkNotifications, requestNotifications} from 'react-native-permissions';
 import {useFocusEffect} from '@react-navigation/native';
@@ -22,6 +21,8 @@ import Toast from '../Toast';
 const LiveCard = ({data, style, coverStyle, scene}) => {
     // 直播状态:status 1预约 2直播 3回放
     const [reserved, setReserved] = useState(data.reserved);
+    //特殊处理预约人数
+    const [reservedNum, setReservedNum] = useState(data?.reserved_num);
     //直播推荐位大卡片
     const isLiveRecommend = scene == 'largeLiveCard';
     //是否是回放小卡片 针对回放小卡片特殊处理
@@ -30,17 +31,16 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
     useFocusEffect(
         useCallback(() => {
             setReserved((pre) => {
-                if (pre == data.reserved) {
-                    return pre;
-                } else {
-                    return data.reserved;
-                }
+                return pre == data.reserved ? pre : data.reserved;
             });
             return () => {
                 AppState.removeEventListener('change', _handleAppStateChange);
             };
         }, [_handleAppStateChange, data.reserved])
     );
+    useEffect(() => {
+        setReservedNum(data?.reserved_num);
+    }, [data.reserved_num]);
     //预约或者跳转进入直播
     const handleClick = () => {
         if (data.status == 1) {
@@ -82,6 +82,9 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
             if (res.code === '000000') {
                 AppState.removeEventListener('change', _handleAppStateChange);
                 sucess();
+                //预约人数加1
+                setReservedNum((pre) => pre + 1);
+                //弹窗
                 if (res.result?.title) {
                     Modal.show({title: res.result?.title, content: res.result?.desc});
                 } else {
@@ -155,7 +158,9 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                             style={{height: px(26), width: px(30), marginLeft: px(-2)}}
                         />
                     )}
-                    <Text style={{color: '#fff', fontSize: px(11)}}>{data?.people_num_desc}</Text>
+                    <Text style={{color: '#fff', fontSize: px(11)}}>
+                        {data?.status == 1 ? reservedNum + '人预约' : data?.people_num_desc}
+                    </Text>
                 </View>
                 {/* 直播状态 直播时间 */}
                 {data?.status_desc ? (
@@ -173,15 +178,10 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                 ) : null}
             </ImageBackground>
             <View style={[styles.card_bottom, {paddingVertical: isLiveRecommend ? px(16) : px(12)}]}>
-                {isLiveRecommend ? (
-                    <Text numberOfLines={1} style={[styles.title, {fontSize: px(16)}]}>
-                        {data?.title}
-                    </Text>
-                ) : (
-                    <Text numberOfLines={1} style={[styles.title]}>
-                        {data?.title}
-                    </Text>
-                )}
+                <Text numberOfLines={1} style={[styles.title, {fontSize: isLiveRecommend ? px(16) : px(14)}]}>
+                    {data?.title}
+                </Text>
+
                 {data?.avatar ? (
                     <View
                         style={[

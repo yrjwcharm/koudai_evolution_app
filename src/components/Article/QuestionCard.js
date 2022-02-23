@@ -2,7 +2,7 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 18:37:35
+ * @LastEditTime: 2022-02-23 17:39:25
  * @Description:用户问答卡片
  */
 import React from 'react';
@@ -12,7 +12,6 @@ import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
-import Praise from '../Praise';
 export default function QuestionCard({data, scene}) {
     const jump = useJump();
     const visionData = useSelector((store) => store.vision).toJS();
@@ -54,7 +53,7 @@ export default function QuestionCard({data, scene}) {
                 </Text>
             </View>
             {scene == 'collect' ? null : data?.tag_list ? (
-                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                <View style={[Style.flexRow, {marginTop: px(12)}]}>
                     {data?.tag_list?.map((item, index) => {
                         return (
                             <Text key={index} style={[styles.light_text, {marginRight: px(4)}]}>
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: Space.cardPadding,
         paddingTop: px(20),
-        paddingBottom: px(12),
+        paddingBottom: px(16),
         marginBottom: px(12),
     },
     light_text: {

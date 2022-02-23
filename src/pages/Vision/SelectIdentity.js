@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-02-21 18:13:43
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-23 18:18:48
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -46,7 +46,6 @@ function reducer(state, action) {
 }
 
 export default ({navigation}) => {
-    const inputRef = useRef();
     const modalRef = useRef();
     const [type, setType] = useState();
     const [data, dispatch] = useReducer(reducer, {});
@@ -260,7 +259,7 @@ export default ({navigation}) => {
                             onChangeText={(text) => dispatch({payload: text, type: 'update_nickname'})}
                             placeholder="点击输入昵称"
                             placeholderTextColor={Colors.lightGrayColor}
-                            ref={inputRef}
+                            textAlign="center"
                             style={styles.input}
                             value={nickname}
                         />
@@ -354,7 +353,7 @@ const styles = StyleSheet.create({
         height: px(22),
         fontSize: Font.textH2,
         color: Colors.defaultColor,
-        textAlign: 'center',
+        // textAlign: 'center',
     },
     editImg: {
         position: 'absolute',
