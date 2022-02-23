@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 16:02:53
+ * @LastEditTime: 2022-02-23 10:57:53
  * @Description:直播模块
  */
 
@@ -78,11 +78,15 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
         });
     };
     const postReserve = (sucess) => {
-        http.post('http://127.0.0.1:4523/mock/587315/live/reserve/202202015', {id: data.id}).then((res) => {
+        http.post('/live/reserve/202202015', {id: data.id}).then((res) => {
             if (res.code === '000000') {
                 AppState.removeEventListener('change', _handleAppStateChange);
                 sucess();
-                Toast.show(res.message);
+                if (res.result?.title) {
+                    Modal.show({title: res.result?.title, content: res.result?.desc});
+                } else {
+                    Toast.show(res.message);
+                }
             }
         });
     };
@@ -205,9 +209,9 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                 ) : null}
                 {issmLiveCard || isLiveRecommend ? null : (
                     <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                        {data?.start_desc ? (
+                        {data?.live_time_desc ? (
                             <View style={[styles.time]}>
-                                <Text style={styles.time}>{data?.start_desc}</Text>
+                                <Text style={styles.time}>{data?.live_time_desc}</Text>
                             </View>
                         ) : (
                             <View />

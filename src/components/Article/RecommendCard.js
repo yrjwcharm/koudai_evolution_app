@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 10:22:09
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-16 15:41:11
+ * @LastEditTime: 2022-02-23 10:35:58
  * @Description:推荐模块
  */
 import React from 'react';
@@ -42,7 +42,7 @@ const RecommendCard = ({data, style, onPress}) => {
                 <LinearGradient
                     start={{x: 0, y: 0}}
                     end={{x: 0, y: 1}}
-                    style={{padding: px(16), position: 'absolute', bottom: px(0)}}
+                    style={{padding: px(16), position: 'absolute', bottom: px(0), width: '100%'}}
                     colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
                     <Text style={styles.recommend_title} numberOfLines={2}>
                         {data?.title}

@@ -2,23 +2,21 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-22 15:12:35
+ * @LastEditTime: 2022-02-23 11:29:10
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
-import ScrollTabbar from './components/ScrollTabbar';
+
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {Colors, Font, Style} from '../../common/commonStyle';
-import {px} from '../../utils/appUtil';
+import {px, deviceWidth} from '../../utils/appUtil';
 import {BoxShadow} from 'react-native-shadow';
-import Recommend from './components/Recommend'; //推荐
-import CommonView from './components/CommonView'; //魔方问答
+
 import RenderTitle from './components/RenderTitle.js';
 import RecommendCard from '../../components/Article/RecommendCard';
-import LiveCard from '../../components/Article/LiveCard';
+
 import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
@@ -200,13 +198,18 @@ const Vision = ({navigation, route}) => {
                                                 />
                                             ) : null}
                                             {item?.direction == 'horizontal' ? (
-                                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                                    {item?.items?.map((_article, index) => {
-                                                        return RenderCate(_article, {
-                                                            marginBottom: px(12),
-                                                            marginRight: px(12),
-                                                        });
-                                                    })}
+                                                <ScrollView
+                                                    horizontal
+                                                    style={styles.horiView}
+                                                    showsHorizontalScrollIndicator={false}>
+                                                    <View style={[{marginLeft: px(16)}, Style.flexRow]}>
+                                                        {item?.items?.map((_article, index) => {
+                                                            return RenderCate(_article, {
+                                                                marginBottom: px(12),
+                                                                marginRight: px(12),
+                                                            });
+                                                        })}
+                                                    </View>
                                                 </ScrollView>
                                             ) : (
                                                 item?.items?.map((_article, index) => {
@@ -264,5 +267,10 @@ const styles = StyleSheet.create({
         fontSize: Font.textSm,
         lineHeight: Platform.select({ios: px(12), android: Font.textSm}),
         fontFamily: Font.numFontFamily,
+    },
+    horiView: {
+        width: deviceWidth,
+        position: 'relative',
+        left: -px(16),
     },
 });
