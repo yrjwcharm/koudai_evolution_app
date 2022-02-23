@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 10:57:53
+ * @LastEditTime: 2022-02-23 14:11:35
  * @Description:直播模块
  */
 
@@ -139,7 +139,12 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
             {/* 封面 */}
             <ImageBackground source={{uri: data?.cover}} style={[styles.cover, coverStyle]}>
                 {/* 预约人数直播观看人数 */}
-                <View style={[styles.live_order, Style.flexBetween, {paddingLeft: issmLiveCard ? px(8) : 0}]}>
+                <View
+                    style={[
+                        styles.live_order,
+                        Style.flexBetween,
+                        {paddingLeft: issmLiveCard ? px(8) : 0, borderRadius: issmLiveCard ? px(4) : px(9)},
+                    ]}>
                     {issmLiveCard ? null : (
                         <Image
                             source={
@@ -220,9 +225,10 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                             activeOpacity={0.9}
                             style={[
                                 styles.button,
+                                Style.flexRow,
                                 {
                                     backgroundColor: data?.status == 1 && reserved ? '#F5F6F8' : '#fff',
-                                    borderWidth: data?.status == 1 && reserved ? 0 : px(0.5),
+                                    borderWidth: data?.status == 1 && reserved ? 0 : 0.5,
                                 },
                             ]}
                             onPress={handleClick}>
@@ -290,9 +296,10 @@ const styles = StyleSheet.create({
     },
     button: {
         borderColor: Colors.btnColor,
-        paddingHorizontal: px(14),
+        paddingHorizontal: px(12),
         paddingVertical: px(5),
         borderRadius: px(13),
+        height: px(26),
     },
 
     cover: {
@@ -311,7 +318,6 @@ const styles = StyleSheet.create({
         top: px(12),
         overflow: 'hidden',
         left: px(12),
-        borderRadius: px(9),
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     live_status: {

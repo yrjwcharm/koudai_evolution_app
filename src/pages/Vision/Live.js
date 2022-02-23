@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:15:02
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 19:00:59
+ * @LastEditTime: 2022-02-23 14:40:51
  * @Description:直播
  */
 import {StyleSheet, View} from 'react-native';
@@ -13,7 +13,7 @@ import NavBar from '../../components/NavBar';
 
 const Live = ({route, navigation}) => {
     return (
-        <View style={{flex: 1, borderWidth: 0.5}}>
+        <View style={{flex: 1, borderWidth: 0.1}}>
             <NavBar
                 leftIcon="chevron-left"
                 title={''}

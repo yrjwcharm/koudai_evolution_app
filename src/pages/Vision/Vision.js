@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 11:29:10
+ * @LastEditTime: 2022-02-23 14:30:50
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -12,11 +12,8 @@ import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
 import {Colors, Font, Style} from '../../common/commonStyle';
 import {px, deviceWidth} from '../../utils/appUtil';
-import {BoxShadow} from 'react-native-shadow';
-
 import RenderTitle from './components/RenderTitle.js';
 import RecommendCard from '../../components/Article/RecommendCard';
-
 import RenderCate from './components/RenderCate';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector, useDispatch} from 'react-redux';
@@ -32,9 +29,6 @@ import BottomDesc from '../../components/BottomDesc';
 
 const Vision = ({navigation, route}) => {
     const netInfo = useNetInfo();
-    const recommedRef = useRef();
-    const comViewRef = useRef();
-    const isFocused = useIsFocused();
     const [hasNet, setHasNet] = useState(true);
     const inset = useSafeAreaInsets();
     const scrollRef = useRef(null);
@@ -109,7 +103,7 @@ const Vision = ({navigation, route}) => {
                             jump({path: 'SelectIdentity'});
                         }}>
                         <Image source={{uri: data?.part1?.user?.avatar}} style={styles.avatar} />
-                        <Text style={styles.name}>{data?.part1?.user?.nickname}</Text>
+                        <Text style={styles.name}>{data?.part1?.user?.nickname || '昵称'}</Text>
                         <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
                     </TouchableOpacity>
                     <View style={Style.flexRow}>
@@ -151,81 +145,70 @@ const Vision = ({navigation, route}) => {
     const renderContent = () => {
         return (
             <>
-                {data ? (
-                    <>
-                        {header()}
-                        <ScrollView
-                            ref={scrollRef}
-                            key={1}
-                            scrollEventThrottle={200}
-                            onMomentumScrollEnd={onScroll}
-                            style={{backgroundColor: Colors.bgColor}}
-                            refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />
-                            }>
-                            <LinearGradient
-                                start={{x: 0, y: 0}}
-                                end={{x: 0, y: 0.05}}
-                                colors={['#fff', '#F5F6F8']}
-                                style={{
-                                    flex: 1,
-                                    borderColor: '#fff',
-                                    borderWidth: 0.5,
-                                    padding: px(16),
-                                    paddingTop: px(4),
-                                }}>
-                                {/* 推荐位 */}
-                                <RecommendCard
-                                    style={{marginBottom: px(16)}}
-                                    data={data?.part2}
-                                    onPress={() => {
-                                        global.LogTool('visionRecArticle', data?.part2);
-                                    }}
-                                />
-                                {/* 其他模块 */}
-                                {data?.part3?.map((item, index) => {
-                                    return (
-                                        <View key={index + 'i'}>
-                                            {item?.items?.length > 0 ? (
-                                                <RenderTitle
-                                                    _key={index}
-                                                    title={item.title}
-                                                    sub_title={item?.sub_title}
-                                                    more_text={item?.more ? item?.more?.text : ''}
-                                                    onPress={() => {
-                                                        jump(item?.more?.url);
-                                                    }}
-                                                />
-                                            ) : null}
-                                            {item?.direction == 'horizontal' ? (
-                                                <ScrollView
-                                                    horizontal
-                                                    style={styles.horiView}
-                                                    showsHorizontalScrollIndicator={false}>
-                                                    <View style={[{marginLeft: px(16)}, Style.flexRow]}>
-                                                        {item?.items?.map((_article, index) => {
-                                                            return RenderCate(_article, {
-                                                                marginBottom: px(12),
-                                                                marginRight: px(12),
-                                                            });
-                                                        })}
-                                                    </View>
-                                                </ScrollView>
-                                            ) : (
-                                                item?.items?.map((_article, index) => {
-                                                    return RenderCate(_article, {marginBottom: px(12)});
-                                                })
-                                            )}
-                                        </View>
-                                    );
-                                })}
-                                <BottomDesc />
-                            </LinearGradient>
-                        </ScrollView>
-                    </>
-                ) : (
-                    <View style={{flex: 1, backgroundColor: '#fff'}} />
-                )}
+                {header()}
+                <ScrollView
+                    ref={scrollRef}
+                    key={1}
+                    scrollEventThrottle={200}
+                    onMomentumScrollEnd={onScroll}
+                    style={{backgroundColor: Colors.bgColor}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => init('refresh')} />}>
+                    {data ? (
+                        <LinearGradient
+                            start={{x: 0, y: 0}}
+                            end={{x: 0, y: 0.05}}
+                            colors={['#fff', '#F5F6F8']}
+                            style={styles.con_bg}>
+                            {/* 推荐位 */}
+                            <RecommendCard
+                                style={{marginBottom: px(16)}}
+                                data={data?.part2}
+                                onPress={() => {
+                                    global.LogTool('visionRecArticle', data?.part2);
+                                }}
+                            />
+                            {/* 其他模块 */}
+                            {data?.part3?.map((item, index) => {
+                                return (
+                                    <View key={index + 'i'}>
+                                        {item?.items?.length > 0 ? (
+                                            <RenderTitle
+                                                _key={index}
+                                                title={item.title}
+                                                sub_title={item?.sub_title}
+                                                more_text={item?.more ? item?.more?.text : ''}
+                                                onPress={() => {
+                                                    jump(item?.more?.url);
+                                                }}
+                                            />
+                                        ) : null}
+                                        {item?.direction == 'horizontal' ? (
+                                            <ScrollView
+                                                horizontal
+                                                style={styles.horiView}
+                                                showsHorizontalScrollIndicator={false}>
+                                                <View style={[{marginLeft: px(16)}, Style.flexRow]}>
+                                                    {item?.items?.map((_article, index) => {
+                                                        return RenderCate(_article, {
+                                                            marginBottom: px(12),
+                                                            marginRight: px(12),
+                                                        });
+                                                    })}
+                                                </View>
+                                            </ScrollView>
+                                        ) : (
+                                            item?.items?.map((_article, index) => {
+                                                return RenderCate(_article, {marginBottom: px(12)});
+                                            })
+                                        )}
+                                    </View>
+                                );
+                            })}
+                            <BottomDesc />
+                        </LinearGradient>
+                    ) : null}
+                </ScrollView>
+
                 {!userInfo.is_login && <LoginMask scene="vision" />}
             </>
         );
@@ -272,5 +255,12 @@ const styles = StyleSheet.create({
         width: deviceWidth,
         position: 'relative',
         left: -px(16),
+    },
+    con_bg: {
+        flex: 1,
+        borderColor: '#fff',
+        borderWidth: 0.5,
+        padding: px(16),
+        paddingTop: px(4),
     },
 });
