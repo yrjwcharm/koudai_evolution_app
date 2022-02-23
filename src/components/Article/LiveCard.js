@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 14:11:35
+ * @LastEditTime: 2022-02-23 16:40:26
  * @Description:直播模块
  */
 
@@ -173,9 +173,15 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                 ) : null}
             </ImageBackground>
             <View style={[styles.card_bottom, {paddingVertical: isLiveRecommend ? px(16) : px(12)}]}>
-                <Text numberOfLines={2} style={[styles.title, {fontSize: isLiveRecommend ? px(16) : px(14)}]}>
-                    {data?.title}
-                </Text>
+                {isLiveRecommend ? (
+                    <Text numberOfLines={1} style={[styles.title, {fontSize: px(16)}]}>
+                        {data?.title}
+                    </Text>
+                ) : (
+                    <Text numberOfLines={1} style={[styles.title]}>
+                        {data?.title}
+                    </Text>
+                )}
                 {data?.avatar ? (
                     <View
                         style={[
@@ -276,7 +282,6 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontWeight: 'bold',
         lineHeight: px(20),
-        height: px(40),
     },
     time: {
         color: Colors.defaultColor,
