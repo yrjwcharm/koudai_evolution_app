@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 19:26:22
+ * @LastEditTime: 2022-02-23 19:07:31
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -12,11 +12,9 @@ import {px} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
-import Praise from '../../components/Praise';
 import {useJump} from '../../components/hooks';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
-import LinearGradient from 'react-native-linear-gradient';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {

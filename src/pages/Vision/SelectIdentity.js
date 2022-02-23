@@ -3,7 +3,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 18:18:48
+ * @LastEditTime: 2022-02-23 18:50:53
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -47,6 +47,7 @@ function reducer(state, action) {
 
 export default ({navigation}) => {
     const modalRef = useRef();
+    const inputRef = useRef();
     const [type, setType] = useState();
     const [data, dispatch] = useReducer(reducer, {});
     const {button = {}, desc, errorTip = '', real = {}, virtual, virtual: {img: avatar, name: nickname} = {}} = data;
@@ -209,6 +210,14 @@ export default ({navigation}) => {
             }
         }
     }, [avatar, nickname, type]);
+    const onChangeText = (text) => {
+        if (text) {
+            inputRef?.current?.setNativeProps({textAlign: 'center'});
+        } else {
+            inputRef?.current?.setNativeProps({textAlign: 'left'});
+        }
+        dispatch({payload: text, type: 'update_nickname'});
+    };
 
     return Object.keys(data || {}).length > 0 ? (
         <ScrollView bounces={false} style={styles.container}>
@@ -256,10 +265,11 @@ export default ({navigation}) => {
                     <View style={[Style.flexCenter, {marginTop: Space.marginVertical}]}>
                         <TextInput
                             maxLength={8}
-                            onChangeText={(text) => dispatch({payload: text, type: 'update_nickname'})}
+                            onChangeText={onChangeText}
                             placeholder="点击输入昵称"
                             placeholderTextColor={Colors.lightGrayColor}
-                            textAlign="center"
+                            textAlign="left"
+                            ref={inputRef}
                             style={styles.input}
                             value={nickname}
                         />
@@ -348,8 +358,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     input: {
-        // paddingLeft: px(30),
-        width: '100%',
+        // width: '100%',
         height: px(22),
         fontSize: Font.textH2,
         color: Colors.defaultColor,
