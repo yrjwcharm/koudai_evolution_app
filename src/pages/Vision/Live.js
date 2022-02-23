@@ -2,10 +2,10 @@
  * @Date: 2022-02-16 15:15:02
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 14:40:51
+ * @LastEditTime: 2022-02-23 15:05:09
  * @Description:直播
  */
-import {StyleSheet, View} from 'react-native';
+import {View} from 'react-native';
 import React from 'react';
 import {WebView as RNWebView} from 'react-native-webview';
 
@@ -47,5 +47,3 @@ const Live = ({route, navigation}) => {
 };
 
 export default Live;
-
-const styles = StyleSheet.create({});
