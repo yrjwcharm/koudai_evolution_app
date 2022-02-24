@@ -2,7 +2,7 @@
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-24 15:07:21
+ * @LastEditTime: 2022-02-24 15:14:13
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -478,7 +478,7 @@ class TradeBuy extends Component {
     };
     //清空输入框
     clearInput = () => {
-        this.setState({amount: ''});
+        this.setState({amount: '', buyBtnCanClick: false});
         this.onInput('');
     };
     //切换银行卡
@@ -923,7 +923,10 @@ class TradeBuy extends Component {
                                     if (_amount >= 100000000) {
                                         Toast.show('金额需小于1亿');
                                     }
-                                    this.setState({amount: onlyNumber(_amount >= 100000000 ? '99999999.99' : _amount)});
+                                    this.setState({
+                                        amount: onlyNumber(_amount >= 100000000 ? '99999999.99' : _amount),
+                                        buyBtnCanClick: false,
+                                    });
                                     this.onInput(onlyNumber(_amount));
                                 }}
                                 value={`${amount}`}
