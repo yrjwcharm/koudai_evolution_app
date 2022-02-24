@@ -2,8 +2,8 @@
 /*
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-02-22 11:37:49
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-24 16:59:20
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -29,6 +29,7 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce, cloneDeep} from 'lodash';
+import RNExitApp from 'react-native-exit-app';
 global.ver = '6.5.0';
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
@@ -411,10 +412,12 @@ function App(props) {
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
             LogTool(appState);
         }
+        //后台运行app十分钟杀死
         if (appState.match(/background/)) {
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
-            }, 600000);
+                RNExitApp.exitApp();
+            }, 10 * 60 * 1000);
         } else if (appState.match(/active/)) {
             BackgroundTimer.stopBackgroundTimer();
         }
