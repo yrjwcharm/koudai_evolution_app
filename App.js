@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-24 16:59:20
+ * @LastEditTime: 2022-02-24 17:03:03
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -157,7 +157,8 @@ function App(props) {
                     if (
                         (!prev.is_login && next.is_login) ||
                         (!prev.has_account && next.has_account) ||
-                        (!prev.buy_status && next.buy_status)
+                        (!prev.buy_status && next.buy_status) ||
+                        (!prev.buy_status_for_vision && next.buy_status_for_vision)
                     ) {
                         getModalData();
                     }
@@ -412,11 +413,14 @@ function App(props) {
         if (appState.match(/inactive|background/) || nextAppState === 'active') {
             LogTool(appState);
         }
-        //后台运行app十分钟杀死
         if (appState.match(/background/)) {
+            //后台运行app十五分钟杀死
+            BackgroundTimer.runBackgroundTimer(() => {
+                RNExitApp.exitApp();
+            }, 15 * 60 * 1000);
+            // 后台运行app十分钟关闭手势密码验证
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
-                RNExitApp.exitApp();
             }, 10 * 60 * 1000);
         } else if (appState.match(/active/)) {
             BackgroundTimer.stopBackgroundTimer();
