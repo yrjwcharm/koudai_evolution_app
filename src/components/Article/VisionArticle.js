@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 14:16:19
+ * @LastEditTime: 2022-02-25 14:22:28
  * @Description:视野文章模块
  */
 
@@ -58,6 +58,7 @@ export default function VisionArticle({data = '', style, scene}) {
                             numberOfLines={numberOfLines}
                             style={[
                                 styles.article_content,
+
                                 {
                                     color:
                                         (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
@@ -144,6 +145,7 @@ const styles = StyleSheet.create({
         height: px(42),
         color: Colors.defaultColor,
         lineHeight: px(20),
+        flex: 1,
     },
     content: {
         fontSize: px(12),
