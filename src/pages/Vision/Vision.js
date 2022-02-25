@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 14:30:50
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-25 14:41:56
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -204,9 +204,9 @@ const Vision = ({navigation, route}) => {
                                     </View>
                                 );
                             })}
-                            <BottomDesc />
                         </LinearGradient>
                     ) : null}
+                    <BottomDesc />
                 </ScrollView>
 
                 {!userInfo.is_login && <LoginMask scene="vision" />}
