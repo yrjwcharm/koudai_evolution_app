@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 17:30:43
+ * @LastEditTime: 2022-02-25 18:43:50
  * @Description:直播模块
  */
 
@@ -246,10 +246,10 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                     </View>
                 )}
                 {data?.tag_list ? (
-                    <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    <View style={[Style.flexRow, {marginTop: px(8), flex: 1}]}>
                         {data?.tag_list?.map((item, index) => {
                             return (
-                                <Text key={index} style={[styles.light_text]}>
+                                <Text key={index} style={[styles.light_text]} numberOfLines={1}>
                                     {item}
                                 </Text>
                             );

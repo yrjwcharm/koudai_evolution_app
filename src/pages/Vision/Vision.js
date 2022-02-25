@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2022-02-25 14:41:56
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-25 18:47:49
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -100,7 +100,7 @@ const Vision = ({navigation, route}) => {
                         activeOpacity={0.9}
                         style={Style.flexRow}
                         onPress={() => {
-                            jump({path: 'SelectIdentity'});
+                            jump(data?.part1?.url);
                         }}>
                         <Image source={{uri: data?.part1?.user?.avatar}} style={styles.avatar} />
                         <Text style={styles.name}>{data?.part1?.user?.nickname || '昵称'}</Text>

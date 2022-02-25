@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 19:25:23
+ * @LastEditTime: 2022-02-25 18:47:05
  * @Description:音频模块
  */
 
@@ -13,7 +13,6 @@ import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
-import {useSelector} from 'react-redux';
 import LazyImage from '../LazyImage';
 const VioceCard = ({data, style, scene}) => {
     const jump = useJump();
@@ -60,19 +59,17 @@ const VioceCard = ({data, style, scene}) => {
                         {data.title}
                     </Text>
                     {scene == 'collect' ? null : (
-                        <View
-                            style={[
-                                Style.flexRow,
-                                {marginTop: isHorizontal ? px(24) : px(8), marginBottom: isHorizontal ? 0 : px(12)},
-                            ]}>
+                        <Text
+                            numberOfLines={1}
+                            style={{marginTop: isHorizontal ? px(24) : px(8), marginBottom: isHorizontal ? 0 : px(12)}}>
                             {data?.tag_list?.map((item, index) => {
                                 return (
                                     <Text key={index} style={[styles.light_text]} numberOfLines={1}>
-                                        {item}
+                                        {item}&nbsp;
                                     </Text>
                                 );
                             })}
-                        </View>
+                        </Text>
                     )}
                 </View>
                 {data?.cover && isHorizontal ? coverRender() : null}
@@ -108,7 +105,6 @@ const styles = StyleSheet.create({
     light_text: {
         color: Colors.lightGrayColor,
         fontSize: px(12),
-        marginRight: px(4),
     },
     cover_con: {
         marginLeft: px(13),
