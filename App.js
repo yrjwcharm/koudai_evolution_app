@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-24 17:03:03
+ * @LastEditTime: 2022-02-25 19:38:16
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -426,35 +426,6 @@ function App(props) {
             BackgroundTimer.stopBackgroundTimer();
         }
     };
-    // const prefix = Linking.makeUrl('/');
-    const linking = {
-        // prefixes: [prefix],
-        config: {
-            screens: {
-                Login: {
-                    path: 'login',
-                },
-                HomeStack: {
-                    path: 'stack',
-                    initialRouteName: 'Home',
-                    screens: {
-                        Home: 'home',
-                        Profile: {
-                            path: 'user/:id/:age',
-                            parse: {
-                                id: (id) => `there, ${id}`,
-                                age: Number,
-                            },
-                            stringify: {
-                                id: (id) => id.replace('there, ', ''),
-                            },
-                        },
-                    },
-                },
-                Settings: 'settings',
-            },
-        },
-    };
     const getRouteNameId = (route, routeName, id) => {
         if (route.name == routeName && route.params?.[id]) {
             return route.params?.[id];
@@ -504,8 +475,7 @@ function App(props) {
                                     LogTool('staytime', null, null, previousRoutePageId, null, staytime);
                                 }
                                 routeNameRef.current = currentRoutePageId;
-                            }}
-                            linking={linking}>
+                            }}>
                             <AppStack />
                         </NavigationContainer>
                     </PersistGate>

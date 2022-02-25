@@ -3,11 +3,21 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-17 19:34:06
+ * @LastEditTime: 2022-02-25 19:31:34
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
-import {StyleSheet, View, Image, Text, TouchableOpacity, Platform, BackHandler, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Image,
+    Text,
+    TouchableOpacity,
+    Platform,
+    BackHandler,
+    ScrollView,
+    Linking,
+} from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
 import http from '../../services';
