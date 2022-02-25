@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 18:01:21
+ * @LastEditTime: 2022-02-25 10:26:32
  * @Description:直播模块
  */
 
@@ -17,7 +17,6 @@ import {openSettings, checkNotifications, requestNotifications} from 'react-nati
 import {useFocusEffect} from '@react-navigation/native';
 import {Modal} from '../Modal';
 import http from '../../services';
-import Toast from '../Toast';
 const LiveCard = ({data, style, coverStyle, scene}) => {
     // 直播状态:status 1预约 2直播 3回放
     const [reserved, setReserved] = useState(data.reserved);
@@ -87,8 +86,6 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
                 //弹窗
                 if (res.result?.title) {
                     Modal.show({title: res.result?.title, content: res.result?.desc});
-                } else {
-                    Toast.show(res.message);
                 }
             }
         });

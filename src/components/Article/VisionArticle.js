@@ -2,16 +2,15 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-18 19:13:49
+ * @LastEditTime: 2022-02-25 10:26:04
  * @Description:视野文章模块
  */
 
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
-import Praise from '../Praise';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
 import LazyImage from '../LazyImage';

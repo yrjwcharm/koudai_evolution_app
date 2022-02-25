@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-21 19:10:36
+ * @LastEditTime: 2022-02-25 10:31:12
  * @Description:更多文章列表
  */
 import {StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native';
@@ -78,6 +78,7 @@ const ArticleList = ({navigation, route}) => {
                     onRefresh={() => {
                         // console.log(alert(refreshing));
                         setPage(1);
+                        if (page == 1) init();
                     }}
                 />
             </View>
