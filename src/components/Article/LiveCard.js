@@ -3,7 +3,7 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 10:26:32
+ * @LastEditTime: 2022-02-25 17:30:43
  * @Description:直播模块
  */
 
@@ -120,7 +120,7 @@ const LiveCard = ({data, style, coverStyle, scene}) => {
     const blockCal = () => {
         Modal.show({
             title: '权限申请',
-            content: '我们将在文章更新的时候，为您推送提醒，请开启通知权限。',
+            content: '我们将在直播前10分钟为您推送提醒，请开启通知权限',
             confirm: true,
             confirmText: '前往',
             confirmCallBack: () => {

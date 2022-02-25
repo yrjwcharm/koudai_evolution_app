@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:36
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-22 16:19:58
+ * @LastEditTime: 2022-02-25 16:35:38
  * @Description:直播列表
  */
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
@@ -52,10 +52,7 @@ const LiveList = () => {
         }
     };
     return (
-        <ScrollView
-            style={{flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16)}}
-            scrollEventThrottle={200}
-            onScroll={_onScroll}>
+        <ScrollView style={styles.con} scrollEventThrottle={200} onScroll={_onScroll}>
             {data?.part1?.items?.map((_article, index) => (
                 <LiveCard
                     data={_article}
@@ -103,4 +100,6 @@ const LiveList = () => {
 
 export default LiveList;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    con: {flex: 1, backgroundColor: Colors.bgColor, paddingHorizontal: px(16), borderColor: '#fff', borderWidth: 0.1},
+});
