@@ -3,7 +3,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-02-25 18:35:35
+ * @LastEditTime: 2022-02-25 19:11:32
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -210,14 +210,6 @@ export default ({navigation}) => {
             }
         }
     }, [avatar, nickname, type]);
-    const onChangeText = (text) => {
-        if (text) {
-            inputRef?.current?.setNativeProps({textAlign: 'center'});
-        } else {
-            inputRef?.current?.setNativeProps({textAlign: 'left'});
-        }
-        dispatch({payload: text, type: 'update_nickname'});
-    };
 
     return Object.keys(data || {}).length > 0 ? (
         <ScrollView bounces={false} style={styles.container}>
@@ -263,11 +255,10 @@ export default ({navigation}) => {
                         </View>
                     </TouchableOpacity>
                     <View style={[Style.flexCenter, {marginTop: Space.marginVertical}]}>
+                        {nickname?.length === 0 && <Text style={styles.placeholder}>点击输入昵称</Text>}
                         <TextInput
-                            maxLength={8}
-                            onChangeText={onChangeText}
-                            placeholder="点击输入昵称"
-                            placeholderTextColor={Colors.lightGrayColor}
+                            maxLength={7}
+                            onChangeText={(text) => dispatch({payload: text, type: 'update_nickname'})}
                             textAlign="left"
                             ref={inputRef}
                             style={styles.input}
@@ -358,11 +349,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     input: {
-        // width: '100%',
+        width: '80%',
         height: px(22),
         fontSize: Font.textH2,
         color: Colors.defaultColor,
-        // textAlign: 'center',
+    },
+    placeholder: {
+        fontSize: Font.textH2,
+        lineHeight: px(22),
+        color: Colors.lightGrayColor,
+        textAlign: 'center',
+        position: 'absolute',
     },
     editImg: {
         position: 'absolute',
