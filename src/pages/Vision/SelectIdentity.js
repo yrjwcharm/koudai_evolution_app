@@ -2,8 +2,8 @@
 /*
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-23 18:50:53
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-25 18:35:35
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -159,6 +159,7 @@ export default ({navigation}) => {
                 Toast.hide(toast);
                 if (res?.code === '000000') {
                     Toast.show('上传成功');
+                    ImagePicker.clean();
                     dispatch({payload: res?.result?.url, type: 'update_avatar'});
                 } else {
                     Toast.show(res?.message || '上传失败');
@@ -186,7 +187,6 @@ export default ({navigation}) => {
     };
 
     useEffect(() => {
-        ImagePicker.clean();
         http.get('/vision/select_user_info/20220216').then((res) => {
             if (res.code === '000000') {
                 navigation.setOptions({title: res.result.title || '选择视野中的身份'});
