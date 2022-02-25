@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:14:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 10:31:12
+ * @LastEditTime: 2022-02-25 14:04:38
  * @Description:更多文章列表
  */
 import {StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native';
@@ -56,33 +56,31 @@ const ArticleList = ({navigation, route}) => {
         );
     };
     return (
-        <>
-            <View style={{flex: 1}}>
-                <FlatList
-                    data={data}
-                    style={{paddingHorizontal: px(16), paddingTop: px(10)}}
-                    ListFooterComponent={data?.length > 0 && ListFooterComponent}
-                    renderItem={({item}) => {
-                        return RenderCate(item, {marginBottom: px(12)});
-                    }}
-                    keyExtractor={(item, _index) => _index.toString()}
-                    onEndReachedThreshold={0.1}
-                    onEndReached={_.debounce(() => {
-                        !isloadMore.current &&
-                            hasMore &&
-                            setPage((pre) => {
-                                return pre + 1;
-                            });
-                    }, 500)}
-                    refreshing={refreshing}
-                    onRefresh={() => {
-                        // console.log(alert(refreshing));
-                        setPage(1);
-                        if (page == 1) init();
-                    }}
-                />
-            </View>
-        </>
+        <View style={{flex: 1, borderWidth: 0.1, borderColor: '#fff'}}>
+            <FlatList
+                data={data}
+                style={{paddingTop: px(10), paddingHorizontal: px(16)}}
+                ListFooterComponent={data?.length > 0 && ListFooterComponent}
+                renderItem={({item}) => {
+                    return RenderCate(item, {marginBottom: px(12)});
+                }}
+                keyExtractor={(item, _index) => _index.toString()}
+                onEndReachedThreshold={0.1}
+                onEndReached={_.debounce(() => {
+                    !isloadMore.current &&
+                        hasMore &&
+                        setPage((pre) => {
+                            return pre + 1;
+                        });
+                }, 500)}
+                refreshing={refreshing}
+                onRefresh={() => {
+                    // console.log(alert(refreshing));
+                    setPage(1);
+                    if (page == 1) init();
+                }}
+            />
+        </View>
     );
 };
 

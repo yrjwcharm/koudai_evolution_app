@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-05 12:06:28
  * @Description:计划详情
- * @LastEditors: dx
- * @LastEditTime: 2021-11-25 17:08:45
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-25 12:51:15
  */
 import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
@@ -42,7 +42,7 @@ export default function PlanDetail(props) {
             <ActivityIndicator color={Colors.brandColor} />
         </View>
     ) : (
-        <ScrollView style={Style.containerPadding}>
+        <ScrollView style={Style.containerPadding} scrollIndicatorInsets={{right: 1}}>
             {Object.keys(data).length > 0 ? (
                 data.map((_item, _index) => {
                     return (

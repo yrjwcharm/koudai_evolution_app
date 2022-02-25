@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 10:26:04
+ * @LastEditTime: 2022-02-25 14:16:19
  * @Description:视野文章模块
  */
 
@@ -13,7 +13,6 @@ import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
-import LazyImage from '../LazyImage';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
     //上下布局 默认左右布局 图片资源在右边
@@ -86,7 +85,7 @@ export default function VisionArticle({data = '', style, scene}) {
                 </View>
                 {data?.cover && isHorizontal ? (
                     <View style={{alignSelf: 'flex-end'}}>
-                        <LazyImage
+                        <FastImage
                             style={styles.article_img}
                             source={{
                                 uri: data?.cover,
@@ -100,7 +99,7 @@ export default function VisionArticle({data = '', style, scene}) {
                 ) : null}
             </View>
             {data?.cover && !isHorizontal ? (
-                <LazyImage
+                <FastImage
                     style={styles.vertical_article_img}
                     source={{
                         uri: data?.cover,
