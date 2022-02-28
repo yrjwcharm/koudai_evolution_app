@@ -2,11 +2,21 @@
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 18:47:49
+ * @LastEditTime: 2022-02-28 10:17:08
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {StyleSheet, View, TouchableOpacity, Image, RefreshControl, ScrollView, Text, Platform} from 'react-native';
+import {
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    Image,
+    RefreshControl,
+    ScrollView,
+    Text,
+    Platform,
+    ActivityIndicator,
+} from 'react-native';
 
 import http from '../../services/index.js';
 import {useSafeAreaInsets} from 'react-native-safe-area-context'; //获取安全区域高度
@@ -104,7 +114,9 @@ const Vision = ({navigation, route}) => {
                         }}>
                         <Image source={{uri: data?.part1?.user?.avatar}} style={styles.avatar} />
                         <Text style={styles.name}>{data?.part1?.user?.nickname || '昵称'}</Text>
-                        <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
+                        {data?.part1?.url ? (
+                            <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
+                        ) : null}
                     </TouchableOpacity>
                     <View style={Style.flexRow}>
                         {/* 收藏 */}
@@ -204,9 +216,13 @@ const Vision = ({navigation, route}) => {
                                     </View>
                                 );
                             })}
+                            <BottomDesc />
                         </LinearGradient>
-                    ) : null}
-                    <BottomDesc />
+                    ) : (
+                        <View style={{flex: 1, paddingTop: px(100)}}>
+                            <ActivityIndicator />
+                        </View>
+                    )}
                 </ScrollView>
 
                 {!userInfo.is_login && <LoginMask scene="vision" />}

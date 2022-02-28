@@ -2,14 +2,14 @@
  * @Date: 2022-02-16 15:14:08
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 14:04:38
+ * @LastEditTime: 2022-02-28 10:44:18
  * @Description:更多文章列表
  */
 import {StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native';
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import http from '../../services';
 import RenderCate from './components/RenderCate';
-import {deviceWidth, px} from '../../utils/appUtil';
+import {px} from '../../utils/appUtil';
 import {Colors, Style} from '../../common/commonStyle';
 import _ from 'lodash';
 const ArticleList = ({navigation, route}) => {
@@ -77,7 +77,7 @@ const ArticleList = ({navigation, route}) => {
                 onRefresh={() => {
                     // console.log(alert(refreshing));
                     setPage(1);
-                    if (page == 1) init();
+                    if (page == 1) init('refresh');
                 }}
             />
         </View>

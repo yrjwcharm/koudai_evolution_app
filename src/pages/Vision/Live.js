@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:15:02
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 16:40:27
+ * @LastEditTime: 2022-02-25 20:14:02
  * @Description:直播
  */
 import {View} from 'react-native';
