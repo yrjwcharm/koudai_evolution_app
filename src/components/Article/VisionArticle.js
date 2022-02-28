@@ -2,7 +2,7 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-28 10:44:36
+ * @LastEditTime: 2022-02-28 12:00:05
  * @Description:视野文章模块
  */
 
@@ -77,7 +77,7 @@ export default function VisionArticle({data = '', style, scene}) {
                             {data?.tag_list?.map((item, index) => {
                                 return (
                                     <Text key={index} style={[styles.light_text]}>
-                                        {item}&nbsp;
+                                        {item}&ensp;
                                     </Text>
                                 );
                             })}

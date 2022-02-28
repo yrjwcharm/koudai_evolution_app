@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:15:02
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 20:14:02
+ * @LastEditTime: 2022-02-28 14:24:00
  * @Description:直播
  */
 import {View} from 'react-native';
@@ -34,9 +34,11 @@ const Live = ({route, navigation}) => {
                     const {nativeEvent} = syntheticEvent;
                     console.warn('WebView error: ', nativeEvent);
                 }}
+                style={{opacity: 0.99, flex: 1}}
+                mediaPlaybackRequiresUserAction={false}
                 allowsInlineMediaPlayback={true}
                 javaScriptEnabled={true}
-                style={{flex: 1}}
+                androidLayerType="hardware"
                 source={{
                     uri: route.params.link,
                 }}
