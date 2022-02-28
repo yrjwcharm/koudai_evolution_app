@@ -3,7 +3,7 @@
  * @Date: 2022-02-15 14:47:58
  * @Author: dx
  * @LastEditors: dx
- * @LastEditTime: 2022-02-25 19:11:32
+ * @LastEditTime: 2022-02-28 14:30:33
  * @Description: 选择视野中的身份
  */
 import React, {useEffect, useReducer, useRef, useState} from 'react';
@@ -46,8 +46,8 @@ function reducer(state, action) {
 }
 
 export default ({navigation}) => {
-    const modalRef = useRef();
     const inputRef = useRef();
+    const [visible, setVisible] = useState(false);
     const [type, setType] = useState();
     const [data, dispatch] = useReducer(reducer, {});
     const {button = {}, desc, errorTip = '', real = {}, virtual, virtual: {img: avatar, name: nickname} = {}} = data;
@@ -241,7 +241,8 @@ export default ({navigation}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
-                            modalRef.current.setState({isVisible: true});
+                            setVisible(true);
+                            setType('virtual');
                         }}
                         style={[Style.flexCenter, {marginTop: Space.marginVertical}]}>
                         <Image
@@ -254,18 +255,27 @@ export default ({navigation}) => {
                             <Icon name="camera" size={12} />
                         </View>
                     </TouchableOpacity>
-                    <View style={[Style.flexCenter, {marginTop: Space.marginVertical}]}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                            const isFocused = inputRef.current?.isFocused();
+                            if (!isFocused) {
+                                inputRef.current?.focus();
+                            }
+                        }}
+                        style={[Style.flexCenter, {marginTop: Space.marginVertical}]}>
                         {nickname?.length === 0 && <Text style={styles.placeholder}>点击输入昵称</Text>}
                         <TextInput
                             maxLength={7}
                             onChangeText={(text) => dispatch({payload: text, type: 'update_nickname'})}
+                            onFocus={() => setType('virtual')}
                             textAlign="left"
                             ref={inputRef}
                             style={styles.input}
                             value={nickname}
                         />
                         <Image source={require('../../assets/img/vision/edit.png')} style={styles.editImg} />
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.chooseBtn}>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -294,9 +304,9 @@ export default ({navigation}) => {
                         takePic();
                     }
                 }}
+                closeModal={() => setVisible(false)}
                 entityList={['从相册中获取', '拍照']}
-                ref={modalRef}
-                show={false}
+                show={visible}
             />
         </ScrollView>
     ) : (
