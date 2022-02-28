@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-05-18 11:10:23
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-02-28 10:17:08
+ * @LastEditors: dx
+ * @LastEditTime: 2022-02-28 17:15:01
  * @Description:视野
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -171,51 +171,53 @@ const Vision = ({navigation, route}) => {
                             end={{x: 0, y: 0.05}}
                             colors={['#fff', '#F5F6F8']}
                             style={styles.con_bg}>
-                            {/* 推荐位 */}
-                            <RecommendCard
-                                style={{marginBottom: px(16)}}
-                                data={data?.part2}
-                                onPress={() => {
-                                    global.LogTool('visionRecArticle', data?.part2);
-                                }}
-                            />
-                            {/* 其他模块 */}
-                            {data?.part3?.map((item, index) => {
-                                return (
-                                    <View key={index + 'i'}>
-                                        {item?.items?.length > 0 ? (
-                                            <RenderTitle
-                                                _key={index}
-                                                title={item.title}
-                                                sub_title={item?.sub_title}
-                                                more_text={item?.more ? item?.more?.text : ''}
-                                                onPress={() => {
-                                                    jump(item?.more?.url);
-                                                }}
-                                            />
-                                        ) : null}
-                                        {item?.direction == 'horizontal' ? (
-                                            <ScrollView
-                                                horizontal
-                                                style={styles.horiView}
-                                                showsHorizontalScrollIndicator={false}>
-                                                <View style={[{marginLeft: px(16)}, Style.flexRow]}>
-                                                    {item?.items?.map((_article, index) => {
-                                                        return RenderCate(_article, {
-                                                            marginBottom: px(12),
-                                                            marginRight: px(12),
-                                                        });
-                                                    })}
-                                                </View>
-                                            </ScrollView>
-                                        ) : (
-                                            item?.items?.map((_article, index) => {
-                                                return RenderCate(_article, {marginBottom: px(12)});
-                                            })
-                                        )}
-                                    </View>
-                                );
-                            })}
+                            <View style={{paddingHorizontal: px(16)}}>
+                                {/* 推荐位 */}
+                                <RecommendCard
+                                    style={{marginBottom: px(16)}}
+                                    data={data?.part2}
+                                    onPress={() => {
+                                        global.LogTool('visionRecArticle', data?.part2);
+                                    }}
+                                />
+                                {/* 其他模块 */}
+                                {data?.part3?.map((item, index) => {
+                                    return (
+                                        <View key={index + 'i'}>
+                                            {item?.items?.length > 0 ? (
+                                                <RenderTitle
+                                                    _key={index}
+                                                    title={item.title}
+                                                    sub_title={item?.sub_title}
+                                                    more_text={item?.more ? item?.more?.text : ''}
+                                                    onPress={() => {
+                                                        jump(item?.more?.url);
+                                                    }}
+                                                />
+                                            ) : null}
+                                            {item?.direction == 'horizontal' ? (
+                                                <ScrollView
+                                                    horizontal
+                                                    style={styles.horiView}
+                                                    showsHorizontalScrollIndicator={false}>
+                                                    <View style={[{marginLeft: px(16)}, Style.flexRow]}>
+                                                        {item?.items?.map((_article, index) => {
+                                                            return RenderCate(_article, {
+                                                                marginBottom: px(12),
+                                                                marginRight: px(12),
+                                                            });
+                                                        })}
+                                                    </View>
+                                                </ScrollView>
+                                            ) : (
+                                                item?.items?.map((_article, index) => {
+                                                    return RenderCate(_article, {marginBottom: px(12)});
+                                                })
+                                            )}
+                                        </View>
+                                    );
+                                })}
+                            </View>
                             <BottomDesc />
                         </LinearGradient>
                     ) : (
@@ -276,7 +278,7 @@ const styles = StyleSheet.create({
         flex: 1,
         borderColor: '#fff',
         borderWidth: 0.5,
-        padding: px(16),
+        paddingBottom: px(16),
         paddingTop: px(4),
     },
 });
