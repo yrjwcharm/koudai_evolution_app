@@ -2,7 +2,7 @@
  * @Date: 2022-02-16 15:15:02
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-28 14:24:00
+ * @LastEditTime: 2022-02-28 19:44:31
  * @Description:直播
  */
 import {View} from 'react-native';
@@ -15,9 +15,10 @@ const Live = ({route, navigation}) => {
     return (
         <View style={{flex: 1, borderWidth: 0.5, borderColor: '#000'}}>
             <NavBar
-                leftIcon="chevron-left"
+                rightIcon="x"
                 title={''}
-                leftPress={() => {
+                fontStyle={{color: '#fff', fontSize: 20}}
+                rightPress={() => {
                     navigation.goBack();
                 }}
                 style={{backgroundColor: 'transparent', position: 'absolute', zIndex: 20}}
