@@ -20,6 +20,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useJump} from '../../../components/hooks';
 import Notice from '../../../components/Notice';
 import RenderChart from '../components/RenderChart';
+import Html from '../../../components/RenderHtml';
 
 export default function DetailAccount({route, navigation}) {
     const [data, setData] = useState({});
@@ -177,7 +178,9 @@ export default function DetailAccount({route, navigation}) {
                         })}
                     </View>
                     {data.line_info?.line_desc?.tip ? (
-                        <Text style={[styles.bottomTip, styles.chart_desc]}>{data.line_info?.line_desc?.tip}</Text>
+                        <View style={{padding: px(16), paddingTop: 0, backgroundColor: '#fff'}}>
+                            <Html html={data.line_info?.line_desc?.tip} style={[styles.bottomTip, styles.chart_desc]} />
+                        </View>
                     ) : null}
                     <View style={{paddingHorizontal: Space.padding}}>
                         <View>
@@ -386,10 +389,7 @@ const styles = StyleSheet.create({
         color: '#B8C1D3',
     },
     chart_desc: {
-        padding: px(16),
-        paddingTop: 0,
         lineHeight: px(19),
         color: Colors.lightGrayColor,
-        backgroundColor: '#fff',
     },
 });
