@@ -166,7 +166,7 @@ import GlobalConfig from '../pages/Portfolio/GlobalConfig'; // 全球配置
 import ChooseFund from '../pages/Portfolio/ChooseFund'; // 挑选基金
 import FundAdjust from '../pages/Portfolio/FundAdjust'; // 基金调整
 import OptimizePlan from '../pages/Assets/OptimizePlan'; // 优化计划
-import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 牛人跟投设置
+import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 跟投设置
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
 import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 import ReportWebView from '../pages/Activity/ReportWebView'; //年报webview
@@ -551,7 +551,7 @@ export default function AppStack() {
                 component={ExperienceGoldResult}
                 options={{title: '体验金提现'}}
             />
-            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{title: '低位买入信号'}} />
+            <Stack.Screen name="LowBuySignal" component={LowBuySignal} options={{headerShown: false}} />
             <Stack.Screen name="ExperienceGoldTrade" component={ExperienceGoldTrade} options={{title: ''}} />
             <Stack.Screen name="AssetNav" component={AssetNav} options={{title: '净值'}} />
             <Stack.Screen name="ProductIntro" component={ProductIntro} options={{title: '产品说明书'}} />

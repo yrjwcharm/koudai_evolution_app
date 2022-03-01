@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-12-14 20:55:59
  * @Description: 财富工具
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     ScrollView,
     StyleSheet,
@@ -17,7 +17,7 @@ import {
     Animated,
     View,
 } from 'react-native';
-import {useFocusEffect, useNavigation} from '@react-navigation/core';
+import {useFocusEffect} from '@react-navigation/core';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,16 +27,13 @@ import Header from '../../components/NavBar';
 import * as Animatable from 'react-native-animatable';
 import Loading from '../Portfolio/components/PageLoading';
 import http from '../../services';
-import Html from '../../components/RenderHtml';
 import {deviceWidth, px} from '../../utils/appUtil';
 import TextSwiper from './components/TextSwiper';
 import HotRuler from './components/HotRuler';
-import {Button} from '../../components/Button';
 
 const defaultItemsFinish = [false, false, false, false];
 const WealthTools = () => {
     const insets = useSafeAreaInsets();
-    const navigation = useNavigation();
     const jump = useJump();
     const [pageLoading, updatePageLoading] = useState(true);
     const [scrollY, setScrollY] = useState(0);
@@ -51,7 +48,7 @@ const WealthTools = () => {
     const topPartHintRef = useRef(null);
     const bottomPartOfLoadingRef = useRef(null);
     const bottomPartOnOpenRef = useRef(null);
-    useEffect(() => {
+    const init = useCallback(() => {
         updatePageLoading(true);
         let rate = null;
         let rateListener = null;
@@ -59,12 +56,13 @@ const WealthTools = () => {
             .then(async (res) => {
                 try {
                     setData(res.result);
+                    if (hasOpen) return;
                     const hasOpenState = !!res.result.open_list;
                     updateHasOpen(hasOpenState);
 
                     // 如果有开启的工具
                     if (hasOpenState) {
-                        let loadingDataRes = await http.post('/signal/open/animation/detail/20220221');
+                        let loadingDataRes = await http.get('/tool/open/animation/detail/20220221');
 
                         setLinearColors(['#2557F5', '#F5F6F8']);
                         setLoadingData(loadingDataRes.result);
@@ -83,7 +81,7 @@ const WealthTools = () => {
                                 // loading动画完成
                                 rate.removeListener(rateListener);
                                 bottomPartOfLoadingRef?.current
-                                    .animate('fadeOutUp')
+                                    ?.animate('fadeOutUp')
                                     .then(() => {
                                         setLoadingFinish(true);
                                     })
@@ -93,7 +91,7 @@ const WealthTools = () => {
                                             '#F5F6F8',
                                         ]);
                                         bottomPartOnOpenRef?.current.animate('fadeInUp');
-                                        topPartHintRef?.current.animate('fadeIn');
+                                        topPartHintRef?.current?.animate('fadeIn');
                                     });
                             }
                         });
@@ -117,6 +115,7 @@ const WealthTools = () => {
 
         return () => rate?.removeListener?.(rateListener);
     }, []);
+    useFocusEffect(init);
 
     const jumpToolDetail = (url) => {
         jump(url);
@@ -126,14 +125,14 @@ const WealthTools = () => {
         const waitOpen = !!item.tip;
         return (
             <View
+                key={idx}
                 style={{backgroundColor: '#fff', width: px(343), borderRadius: px(8), marginTop: px(idx > 0 ? 12 : 0)}}>
                 <TouchableOpacity
                     activeOpacity={waitOpen ? 0.3 : 0.8}
-                    key={idx}
                     style={[styles.toolItemOnNotOpen, {opacity: waitOpen ? 0.3 : 1}]}
                     onPress={() => {
                         if (waitOpen) return;
-                        console.log(123);
+                        jump(item.button.url);
                     }}>
                     <View style={styles.tionoLeft}>
                         <Image source={{uri: item.icon}} style={{width: px(44), height: px(44)}} />
@@ -187,6 +186,7 @@ const WealthTools = () => {
             <TouchableOpacity
                 activeOpacity={0.8}
                 key={idx}
+                onPress={() => jumpToolDetail(item?.state_info?.button?.url || item?.url)}
                 style={[styles.toolItemOnOpen, {marginTop: px(idx > 0 ? 12 : 0)}]}>
                 <View style={styles.toolItemHeaderOnOpen}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -201,16 +201,6 @@ const WealthTools = () => {
                         <Text style={styles.toolItemContentLeftDegreeOnOpen}>{item?.state_info?.value}</Text>
                     </View>
                     <View style={styles.toolItemContentRightOnOpen}>
-                        {/* ticks={[
-                                [0, '持有'],
-                                [0.62, '买入'],
-                                [1, ''],
-                            ]}
-                            valueArea={[
-                                ['62%', '#2B7AF3'],
-                                ['80%', '#E74949'],
-                            ]}
-                            mark={{value: 0.8, theme: '#E74949', bg_color: '#FFF6F6', text: '建议买入50,000元'}} */}
                         {item.state_info?.chart && <HotRuler {...item.state_info?.chart} />}
                     </View>
                 </View>
@@ -351,6 +341,7 @@ const WealthTools = () => {
                                             source={{uri: loadingData?.settings_gif}}
                                         />
                                         <TextInput
+                                            editable={false}
                                             ref={(e) => (topPartRateRef.current = e)}
                                             style={styles.topPartRate}
                                         />
