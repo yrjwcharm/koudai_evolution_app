@@ -207,7 +207,9 @@ const TopInvestors = ({route}) => {
                                             ]}>
                                             <Text style={[styles.autoFlowItemLeft]}>跟投金额(元)</Text>
                                             <View style={styles.autoFlowAmountWrapper}>
-                                                <Text style={styles.autoFlowAmount}>xxx</Text>
+                                                <Text style={styles.autoFlowAmount}>
+                                                    {data.head?.settings?.f_amount}
+                                                </Text>
                                                 <Icon
                                                     style={{marginLeft: px(5)}}
                                                     name="right"

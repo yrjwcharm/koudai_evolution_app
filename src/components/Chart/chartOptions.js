@@ -544,7 +544,8 @@ chart.tooltip({
   chart.area({startOnZero: false, connectNulls: true})
   .position('date*value')
   .shape('smooth')
-  .color(${JSON.stringify(areaColors)})
+  .color('type',${JSON.stringify(areaColors)})
+  .adjust('stack')
   .animate({
       appear: {
       animation: 'groupWaveIn',
@@ -555,8 +556,8 @@ chart.tooltip({
 chart.line()
   .position('date*value')
   .shape('smooth')
-  .color(${JSON.stringify(colors)})
- 
+  .color('type',${JSON.stringify(colors)})
+  .adjust('stack')
   .animate({
     appear: {
       animation: 'groupWaveIn',

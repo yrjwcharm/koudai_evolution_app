@@ -155,8 +155,8 @@ const LowBuySignalExplain = ({route}) => {
             if (webviewLoaded === '2') {
                 let injectedJavaScript = LowBuyAreaChart(
                     calcData?.chart,
-                    [Colors.red],
-                    ['l(90) 0:#E74949 1:#fff'],
+                    [Colors.red, '#6694F3'],
+                    ['l(90) 0:#E74949 1:#fff', 'transparent'],
                     calcData?.tag_position,
                     px
                 );
@@ -378,7 +378,9 @@ const LowBuySignalExplain = ({route}) => {
                                             ]}>
                                             <Text style={[styles.autoFlowItemLeft]}>跟投金额(元)</Text>
                                             <View style={styles.autoFlowAmountWrapper}>
-                                                <Text style={styles.autoFlowAmount}>xxx</Text>
+                                                <Text style={styles.autoFlowAmount}>
+                                                    {data.head?.settings?.f_amount}
+                                                </Text>
                                                 <Icon
                                                     style={{marginLeft: px(5)}}
                                                     name="right"

@@ -30,6 +30,7 @@ import http from '../../services';
 import {deviceWidth, px} from '../../utils/appUtil';
 import TextSwiper from './components/TextSwiper';
 import HotRuler from './components/HotRuler';
+import dayjs from 'dayjs';
 
 const defaultItemsFinish = [false, false, false, false];
 const WealthTools = () => {
@@ -43,7 +44,7 @@ const WealthTools = () => {
     const [loadItemsFinish, setLoadItemsFinish] = useState(defaultItemsFinish);
     const [linearColors, setLinearColors] = useState([]);
     const [loadingFinish, setLoadingFinish] = useState(false);
-    const now = useRef(new Date().toLocaleString());
+    const now = useRef(dayjs().format('YYYY/MM/DD HH:mm'));
     const topPartRateRef = useRef(null);
     const topPartHintRef = useRef(null);
     const bottomPartOfLoadingRef = useRef(null);
