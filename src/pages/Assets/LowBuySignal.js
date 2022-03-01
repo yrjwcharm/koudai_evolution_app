@@ -228,7 +228,7 @@ const LowBuySignalExplain = ({route}) => {
     useEffect(() => {
         if (!isNaN(sliderMoveRate)) {
             let rate = sliderMoveRate.toFixed(4);
-            let rangeStartDate = dayjs().subtract(4, 'year');
+            let rangeStartDate = dayjs(calcData.date_bar?.start_date);
             let rangeEndDate = dayjs().subtract(1, 'year');
             let diffDays = rangeEndDate.diff(rangeStartDate, 'day');
             let addDays = Math.round(diffDays * rate);
@@ -237,7 +237,7 @@ const LowBuySignalExplain = ({route}) => {
             textInputRef.current?.setNativeProps({text: start_date + '起一年'});
             startDateRef.current = start_date;
         }
-    }, [sliderMoveRate]);
+    }, [calcData.date_bar, sliderMoveRate]);
 
     //签约计时器
     const startTimer = () => {
