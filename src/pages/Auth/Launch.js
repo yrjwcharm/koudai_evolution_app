@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-02-25 19:31:34
+ * @LastEditTime: 2022-03-01 16:34:33
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -16,7 +16,7 @@ import {
     Platform,
     BackHandler,
     ScrollView,
-    Linking,
+    NativeModules,
 } from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
 import Storage from '../../utils/storage';
@@ -38,6 +38,8 @@ import JPush from 'jpush-react-native';
 import {getAppMetaData} from 'react-native-get-channel';
 import * as WeChat from 'react-native-wechat-lib';
 import {updateVision} from '../../redux/actions/visionData';
+
+const {PTRIDFA} = NativeModules;
 export default function Launch({navigation}) {
     const dispatch = useDispatch();
     const envList = ['online', 'online1', 'online2'];
@@ -191,11 +193,18 @@ export default function Launch({navigation}) {
             });
         }, [])
     );
+    // 获取ios idfa
+    const getIdfa = async () => {
+        let idfa = await PTRIDFA.getIDFA();
+        console.log(idfa);
+        global.idfa = idfa;
+    };
     const init = () => {
         heartBeat();
         setInterval(() => {
             heartBeat();
         }, 60000);
+        Platform.OS == 'ios' && getIdfa();
         initJpush();
         WeChat.registerApp('wx38a79825fa0884f4', 'https://msite.licaimofang.com/lcmf/');
 

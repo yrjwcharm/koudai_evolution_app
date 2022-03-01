@@ -33,7 +33,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import GuideTips from '../../components/GuideTips';
 import CodePush from 'react-native-code-push';
 import RenderCate from '../Vision/components/RenderCate';
-
 let codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.MANUAL,
 };
