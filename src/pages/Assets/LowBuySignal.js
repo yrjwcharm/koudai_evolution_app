@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useRef, useMemo} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
     View,
     Text,
@@ -70,7 +70,7 @@ const source = Platform.select({
 });
 const panelSource = Platform.select({
     ios: require('../../components/Chart/echarts.html'),
-    android: {uri: 'file:///android_asset/f2chart.html'},
+    android: {uri: 'file:///android_asset/echarts.html'},
 });
 const LowBuySignalExplain = ({route}) => {
     const jump = useJump();
@@ -106,7 +106,7 @@ const LowBuySignalExplain = ({route}) => {
     const panelChartRef = useRef(null);
     const signModal = useRef(null);
     const show_sign_focus_modal = useRef(false);
-    const intervalt_timer = useRef('');
+    const intervalt_timer = useRef(null);
 
     const panResponder = useRef(
         PanResponder.create({

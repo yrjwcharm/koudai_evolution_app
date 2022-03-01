@@ -43,7 +43,7 @@ const panelSource = Platform.select({
     android: {uri: 'file:///android_asset/echarts.html'},
 });
 
-const TopInvestors = ({navigation, route}) => {
+const TopInvestors = ({route}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [period, setPeriod] = useState('y1');
