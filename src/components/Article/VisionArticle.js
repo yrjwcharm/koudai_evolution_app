@@ -2,36 +2,28 @@
  * @Date: 2021-05-31 18:46:52
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-30 14:53:03
+ * @LastEditTime: 2022-02-28 12:00:05
  * @Description:视野文章模块
  */
 
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
-import Praise from '../Praise';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
-import LazyImage from '../LazyImage';
 export default function VisionArticle({data = '', style, scene}) {
     const visionData = useSelector((store) => store.vision).toJS();
-    const [is_new, setIsNew] = useState(data.is_new);
+    //上下布局 默认左右布局 图片资源在右边
+    const isHorizontal = data?.show_mode ? data?.show_mode == 'horizontal' : true;
     const jump = useJump();
-    let numberOfLines = scene == 'recommend' || scene == 'index' || scene == 'collect' ? 2 : data?.cover ? 3 : 2;
-    useEffect(() => {
-        setIsNew((pre_new) => {
-            return data.is_new != pre_new ? data.is_new : pre_new;
-        });
-    }, [data.is_new]);
-
+    let numberOfLines = 2;
     return (
         <TouchableOpacity
-            style={[styles.card, style]}
+            style={[styles.card, {width: isHorizontal ? 'auto' : px(230)}, style]}
             activeOpacity={0.9}
             onPress={debounce(() => {
-                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
@@ -46,82 +38,79 @@ export default function VisionArticle({data = '', style, scene}) {
                             <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
                         </View>
                     ) : null}
-                    {data?.title ? (
-                        <View>
-                            {is_new ? (
-                                <>
-                                    <FastImage
-                                        source={require('../../assets/img/article/voiceUpdate.png')}
-                                        style={styles.new_tag}
-                                    />
-                                    <Text
-                                        numberOfLines={2}
-                                        style={[
-                                            styles.article_content,
-                                            {
-                                                height: px(21) * numberOfLines,
-                                                color:
-                                                    (data.view_status == 1 ||
-                                                        visionData?.readList?.includes(data.id)) &&
-                                                    scene !== 'collect'
-                                                        ? Colors.lightBlackColor
-                                                        : Colors.defaultColor,
-                                            },
-                                        ]}>
-                                        &emsp;&emsp;
-                                        {data?.title}
-                                    </Text>
-                                </>
-                            ) : (
-                                <Text
-                                    numberOfLines={numberOfLines}
-                                    style={[
-                                        styles.article_content,
-                                        {
-                                            height: px(21) * numberOfLines,
-                                            color:
-                                                (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
-                                                scene !== 'collect'
-                                                    ? Colors.lightBlackColor
-                                                    : Colors.defaultColor,
-                                        },
-                                    ]}>
-                                    {data?.title}
+                    {/* 博主大v */}
+                    {data?.blogger ? (
+                        <View style={[Style.flexRow, {marginBottom: px(8)}]}>
+                            <FastImage
+                                source={{uri: data?.blogger?.avatar}}
+                                style={{width: px(36), height: px(36), marginRight: px(6), borderRadius: px(18)}}
+                            />
+                            <View>
+                                <Text style={styles.blogger_name}>{data?.blogger?.nickname}</Text>
+                                <Text style={{fontSize: px(12), color: Colors.lightGrayColor}}>
+                                    {data?.blogger?.fans_num_desc}
                                 </Text>
-                            )}
+                            </View>
                         </View>
+                    ) : null}
+                    {data?.title ? (
+                        <Text
+                            numberOfLines={numberOfLines}
+                            style={[
+                                styles.article_content,
+
+                                {
+                                    color:
+                                        (data.view_status == 1 || visionData?.readList?.includes(data.id)) &&
+                                        scene !== 'collect'
+                                            ? Colors.lightBlackColor
+                                            : Colors.defaultColor,
+                                },
+                            ]}>
+                            {data?.title}
+                        </Text>
                     ) : (
-                        <Text style={{height: px(21) * numberOfLines}} />
+                        <Text style={{height: px(20) * numberOfLines}} />
                     )}
+                    {data?.tag_list ? (
+                        <Text style={{marginTop: isHorizontal ? px(13) : px(8)}} numberOfLines={1}>
+                            {data?.tag_list?.map((item, index) => {
+                                return (
+                                    <Text key={index} style={[styles.light_text]}>
+                                        {item}&ensp;
+                                    </Text>
+                                );
+                            })}
+                        </Text>
+                    ) : null}
                 </View>
-                {data?.cover ? (
-                    <LazyImage
-                        style={styles.article_img}
-                        source={{
-                            uri: data?.cover,
-                        }}
-                        logoStyle={{
-                            width: px(22),
-                            height: px(24),
-                        }}
-                    />
+                {data?.cover && isHorizontal ? (
+                    <View style={{alignSelf: 'flex-end'}}>
+                        <FastImage
+                            style={styles.article_img}
+                            source={{
+                                uri: data?.cover,
+                            }}
+                            logoStyle={{
+                                width: px(22),
+                                height: px(24),
+                            }}
+                        />
+                    </View>
                 ) : null}
             </View>
-
-            {scene == 'collect' ? null : (
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={[styles.light_text]}>{data?.view_num}人已阅读</Text>
-                    <Praise
-                        comment={{
-                            favor_status: data?.favor_status,
-                            favor_num: parseInt(data?.favor_num),
-                            id: data?.id,
-                        }}
-                        noClick={true}
-                        type={'article'}
-                    />
-                </View>
-            )}
+            {data?.cover && !isHorizontal ? (
+                <FastImage
+                    style={styles.vertical_article_img}
+                    source={{
+                        uri: data?.cover,
+                    }}
+                    logoStyle={{
+                        width: px(22),
+                        height: px(24),
+                    }}
+                />
+            ) : null}
         </TouchableOpacity>
     );
 }
@@ -132,27 +121,31 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: Space.cardPadding,
     },
-    article_title: {
-        fontSize: px(14),
-        fontWeight: 'bold',
-        lineHeight: px(20),
-    },
+
     article_img: {
-        width: px(84),
-        height: px(63),
+        width: px(98),
+        height: px(70),
         borderRadius: px(4),
         marginLeft: px(10),
-        alignSelf: 'flex-start',
+        alignSelf: 'flex-end',
+    },
+    vertical_article_img: {
+        width: px(198),
+        height: px(110),
+        borderRadius: px(4),
+        marginTop: px(12),
     },
     light_text: {
         color: Colors.lightGrayColor,
         fontSize: px(12),
+        marginRight: px(4),
     },
     article_content: {
         fontSize: px(14),
+        height: px(42),
         color: Colors.defaultColor,
         lineHeight: px(20),
-        fontWeight: 'bold',
+        flex: 1,
     },
     content: {
         fontSize: px(12),
@@ -160,15 +153,10 @@ const styles = StyleSheet.create({
         padding: px(10),
         borderRadius: 8,
     },
-    zan_img: {
-        width: px(12),
-        height: px(12),
-    },
-    new_tag: {
-        width: px(23),
-        height: px(18),
-        position: 'absolute',
-        left: 0,
-        top: px(1),
+    blogger_name: {
+        fontSize: px(14),
+        color: Colors.lightBlackColor,
+        fontWeight: '700',
+        marginBottom: px(4),
     },
 });

@@ -2,7 +2,7 @@
  * @Date: 2021-06-01 19:39:07
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-11 15:47:54
+ * @LastEditTime: 2022-02-23 19:07:31
  * @Description:专辑列表
  */
 import React, {useState, useEffect, useCallback} from 'react';
@@ -12,11 +12,9 @@ import {px} from '../../utils/appUtil';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
-import Praise from '../../components/Praise';
 import {useJump} from '../../components/hooks';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../redux/actions/visionData';
-import LinearGradient from 'react-native-linear-gradient';
 import _ from 'lodash';
 import {BoxShadow} from 'react-native-shadow';
 const shadow = {
@@ -89,62 +87,28 @@ const AlbumList = ({navigation, route}) => {
         },
         [hasMore]
     );
-    //点击去掉新
-    const clickItem = (id, index) => {
-        let newAlbumList = [...visionData.albumList];
-        if (newAlbumList[index]?.is_new) {
-            newAlbumList[index].is_new = false;
-            dispatch(updateVision({albumList: newAlbumList}));
-        }
-    };
     const renderItem = ({item, index}) => {
         return item?.is_latest ? (
             <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.con}
                 onPress={() => {
-                    clickItem(item.id, index);
                     jump(item?.url);
                 }}>
                 <View style={[Style.flexRow, {flex: 1}]}>
                     <View style={{flex: 1}}>
-                        {!item.is_new ? (
-                            <Text
-                                numberOfLines={2}
-                                style={[
-                                    styles.title,
-                                    {
-                                        color: visionData?.albumListendList?.includes(item.id)
-                                            ? Colors.lightBlackColor
-                                            : Colors.defaultColor,
-                                        fontSize: px(15),
-                                        lineHeight: px(24),
-                                        height: px(48),
-                                    },
-                                ]}>
-                                {item?.title}
-                            </Text>
-                        ) : (
-                            <>
-                                <FastImage
-                                    source={require('../../assets/img/article/voiceUpdate.png')}
-                                    style={{width: px(23), height: px(18), position: 'absolute', left: 0, top: px(3)}}
-                                />
-                                <Text
-                                    numberOfLines={2}
-                                    style={[
-                                        styles.title,
-                                        {
-                                            fontSize: px(15),
-                                            lineHeight: px(24),
-                                            height: px(48),
-                                        },
-                                    ]}>
-                                    &emsp;&emsp;
-                                    {item?.title}
-                                </Text>
-                            </>
-                        )}
+                        <Text
+                            numberOfLines={2}
+                            style={[
+                                styles.title,
+                                {
+                                    fontSize: px(15),
+                                    lineHeight: px(24),
+                                    height: px(48),
+                                },
+                            ]}>
+                            {item?.title}
+                        </Text>
 
                         <BoxShadow setting={shadow}>
                             <View style={[Style.flexRowCenter, styles.play]}>
@@ -156,31 +120,24 @@ const AlbumList = ({navigation, route}) => {
                     {item?.cover ? (
                         <View style={styles.cover_con}>
                             <FastImage source={{uri: item?.cover}} style={styles.cover} />
-                            <LinearGradient
-                                start={{x: 0, y: 0}}
-                                end={{x: 0, y: 1}}
-                                style={[styles.media_duration, {justifyContent: 'flex-end'}]}
-                                colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
-                                <View style={[Style.flexRow]}>
-                                    <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
-                                    <Text style={styles.duration_text}>{item?.media_duration}</Text>
-                                </View>
-                            </LinearGradient>
+                            <View style={[styles.media_duration, Style.flexRow]}>
+                                <FastImage
+                                    source={require('../../assets/img/vision/play.png')}
+                                    style={{width: px(14), height: px(14)}}
+                                />
+                                <Text style={styles.duration_text}>{item?.media_duration}</Text>
+                            </View>
                         </View>
                     ) : null}
                 </View>
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
-
-                    <Praise
-                        type={'article'}
-                        noClick={true}
-                        comment={{
-                            favor_status: item?.favor_status,
-                            favor_num: parseInt(item?.favor_num),
-                            id: item?.id,
-                        }}
-                    />
+                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    {item?.tag_list?.map((_item, _index) => {
+                        return (
+                            <Text key={_index} style={[styles.light_text]} numberOfLines={1}>
+                                {_item}
+                            </Text>
+                        );
+                    })}
                 </View>
             </TouchableOpacity>
         ) : (
@@ -188,63 +145,29 @@ const AlbumList = ({navigation, route}) => {
                 activeOpacity={0.9}
                 style={styles.con}
                 onPress={() => {
-                    clickItem(item.id, index);
                     jump(item?.url);
                 }}>
-                {item.is_new ? (
-                    <>
-                        <FastImage
-                            source={require('../../assets/img/article/voiceUpdate.png')}
-                            style={{width: px(23), height: px(18), position: 'absolute', left: 0, top: px(16)}}
-                        />
-                        <Text
-                            numberOfLines={2}
-                            style={[
-                                styles.title,
-                                {
-                                    color: visionData?.albumListendList?.includes(item.id)
-                                        ? Colors.lightBlackColor
-                                        : Colors.defaultColor,
-                                },
-                            ]}>
-                            &emsp;&emsp;
-                            {item?.title}
-                        </Text>
-                    </>
-                ) : (
-                    <Text
-                        numberOfLines={2}
-                        style={[
-                            styles.title,
-                            {
-                                color: visionData?.albumListendList?.includes(item.id)
-                                    ? Colors.lightBlackColor
-                                    : Colors.defaultColor,
-                            },
-                        ]}>
-                        {item?.title}
-                    </Text>
-                )}
+                <Text
+                    numberOfLines={2}
+                    style={[
+                        styles.title,
+                        {
+                            color: visionData?.albumListendList?.includes(item.id)
+                                ? Colors.lightBlackColor
+                                : Colors.defaultColor,
+                        },
+                    ]}>
+                    {item?.title}
+                </Text>
 
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={styles.light_text}>{item?.view_num}人已收听</Text>
-                    <View style={[Style.flexBetween, {width: px(120)}]}>
-                        <View style={Style.flexRow}>
-                            <Icon name="md-play-circle-outline" size={px(16)} color={Colors.lightBlackColor} />
-                            <Text style={[styles.gray_text, {color: Colors.lightBlackColor}]}>
-                                {item?.media_duration}
+                <View style={[Style.flexRow, {marginTop: px(8)}]}>
+                    {item?.tag_list?.map((_item, _index) => {
+                        return (
+                            <Text key={_index} style={[styles.light_text]} numberOfLines={1}>
+                                {_item}
                             </Text>
-                        </View>
-                        <Praise
-                            noClick={true}
-                            type={'article'}
-                            comment={{
-                                favor_status: item?.favor_status,
-                                favor_num: parseInt(item?.favor_num),
-                                id: item?.id,
-                            }}
-                        />
-                    </View>
+                        );
+                    })}
                 </View>
             </TouchableOpacity>
         );
@@ -301,7 +224,6 @@ const styles = StyleSheet.create({
         paddingBottom: px(12),
     },
     title: {
-        fontWeight: '700',
         fontSize: px(14),
         lineHeight: px(20),
         height: px(40),
@@ -321,15 +243,14 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
     },
     media_duration: {
-        bottom: 0,
+        bottom: px(7),
+        right: px(7),
         zIndex: 100,
-        height: px(34),
-        width: px(106),
-        paddingHorizontal: px(8),
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: px(2),
+        paddingHorizontal: px(4),
         paddingVertical: px(4),
         position: 'absolute',
-        borderBottomLeftRadius: px(8),
-        borderBottomRightRadius: px(8),
     },
     duration_text: {
         fontSize: px(12),
@@ -338,7 +259,7 @@ const styles = StyleSheet.create({
         marginLeft: px(3),
     },
     play_text: {fontSize: px(13), color: '#fff', marginLeft: px(2), fontWeight: '600'},
-    light_text: {color: Colors.lightGrayColor, fontSize: px(12)},
+    light_text: {color: Colors.lightGrayColor, fontSize: px(12), marginRight: px(4)},
     gray_text: {
         fontSize: px(12),
         color: '#fff',

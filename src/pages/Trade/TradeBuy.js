@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-20 10:25:41
  * @Author: yhc
- * @LastEditors: dx
- * @LastEditTime: 2021-12-27 18:24:00
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-24 15:14:13
  * @Description: 购买定投
  */
 import React, {Component} from 'react';
@@ -37,6 +37,7 @@ import FastImage from 'react-native-fast-image';
 import {useJump} from '../../components/hooks';
 import {useSelector} from 'react-redux';
 import Html from '../../components/RenderHtml';
+import _ from 'lodash';
 let _modalRef = '';
 class TradeBuy extends Component {
     constructor(props) {
@@ -76,20 +77,22 @@ class TradeBuy extends Component {
     }
     getTab = () => {
         const {poid} = this.state;
-        http.get('/trade/set_tabs/20210101', {poid}).then((data) => {
-            this.setState(
-                {
-                    type: data.result.active,
-                    has_tab: data.result.has_tab,
-                },
-                () => {
-                    this.init(data.result.active);
-                    if (this.tabView) {
-                        this.tabView.goToPage(data.result.active);
+        http.get('/trade/set_tabs/20210101', {page_type: this.props.route.params.page_type || '', poid}).then(
+            (data) => {
+                this.setState(
+                    {
+                        type: data.result.active,
+                        has_tab: data.result.has_tab,
+                    },
+                    () => {
+                        this.init(data.result.active);
+                        if (this.tabView) {
+                            this.tabView.goToPage(data.result.active);
+                        }
                     }
-                }
-            );
-        });
+                );
+            }
+        );
     };
     init_timer = null;
     init = (_type) => {
@@ -102,6 +105,7 @@ class TradeBuy extends Component {
                 type: _type || type,
                 poid,
                 amount: this.state.amount,
+                page_type: this.props.route.params.page_type || '',
             }).then((res) => {
                 if (res.code === '000000') {
                     this.props.navigation.setOptions({title: res.result.title || '买入'});
@@ -237,6 +241,7 @@ class TradeBuy extends Component {
                     password,
                     trade_method: bank?.pay_type,
                     pay_method: bank.pay_method || '',
+                    page_type: this.props.route.params.page_type || '',
                 }).then((res) => {
                     Toast.hide(toast);
                     if (res.code === '000000') {
@@ -277,8 +282,13 @@ class TradeBuy extends Component {
      * @param {*} plan
      * @return {*}
      */
+    // plan_timer = null;
     plan = (amount) => {
+        // this.plan_timer && clearTimeout(this.plan_timer);
         const {isLargeAmount, largeAmount, bankSelect} = this.state;
+        // this.plan_timer = setTimeout(()=>{
+
+        // })
         return new Promise((resove, reject) => {
             let bank = isLargeAmount ? largeAmount : bankSelect || '';
             const params = {
@@ -287,6 +297,7 @@ class TradeBuy extends Component {
                 poid: this.state.poid,
                 init: amount ? 0 : 1,
                 plan_id: this.plan_id,
+                page_type: this.props.route.params.page_type || '',
             };
             http.get('/trade/buy/plan/20210101', params).then((data) => {
                 if (data.code === '000000') {
@@ -294,7 +305,7 @@ class TradeBuy extends Component {
                     resove(data.result.buy_id);
                 } else {
                     this.setState({
-                        buyBtnCanClick: false,
+                        // buyBtnCanClick: false,
                         errTip: data.message,
                     });
                     reject();
@@ -309,88 +320,89 @@ class TradeBuy extends Component {
      * @return {*}
      */
     timer = null;
-    onInput = async (_amount, init) => {
-        this.plan_id = '';
-        let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
-        if (!_amount && this.state.type == 0) {
-            await this.plan('');
-        }
-        this.setState({errTip: '', fixTip: '', largeTip: ''}, async () => {
-            if (this.state.type == 0) {
-                if (_amount > selectCard.left_amount && selectCard.pay_method !== 'wallet') {
-                    // 您当日剩余可用额度为
-                    this.setState({
-                        buyBtnCanClick: false,
-                        // po_ver为0代表盈米
-                        errTip: `您当日剩余可用额度为${selectCard.left_amount}元${
-                            this.props.po_ver == 0 ? '' : ' ，推荐使用大额极速购'
-                        }`,
-                        mfbTip: false,
-                    });
-                } else if (_amount > selectCard.single_amount) {
-                    if (selectCard.pay_method == 'wallet') {
+    onInput = (_amount, init) => {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(async () => {
+            this.plan_id = '';
+            let selectCard = this.state.isLargeAmount ? this.state.largeAmount : this.state.bankSelect;
+            if (!_amount && this.state.type == 0) {
+                await this.plan('');
+            }
+            this.setState({errTip: '', fixTip: '', largeTip: ''}, async () => {
+                if (this.state.type == 0) {
+                    if (_amount > selectCard.left_amount && selectCard.pay_method !== 'wallet') {
+                        // 您当日剩余可用额度为
                         this.setState({
                             buyBtnCanClick: false,
-                            errTip: '魔方宝余额不足,建议',
-                            mfbTip: true,
-                            largeTip:
-                                this.state.planData.left_discount_count > 0
-                                    ? `您尚有${this.state.planData.left_discount_count}次大额极速购优惠，去汇款激活使用`
-                                    : '',
+                            // po_ver为0代表盈米
+                            errTip: `您当日剩余可用额度为${selectCard.left_amount}元${
+                                this.props.po_ver == 0 ? '' : ' ，推荐使用大额极速购'
+                            }`,
+                            mfbTip: false,
                         });
+                    } else if (_amount > selectCard.single_amount) {
+                        if (selectCard.pay_method == 'wallet') {
+                            this.setState({
+                                buyBtnCanClick: false,
+                                errTip: '魔方宝余额不足,建议',
+                                mfbTip: true,
+                                largeTip:
+                                    this.state.planData.left_discount_count > 0
+                                        ? `您尚有${this.state.planData.left_discount_count}次大额极速购优惠，去汇款激活使用`
+                                        : '',
+                            });
+                        } else {
+                            this.setState({
+                                buyBtnCanClick: false,
+                                errTip: `最大单笔购买金额为${selectCard.single_amount}元`,
+                                mfbTip: false,
+                            });
+                        }
+                    } else if (_amount >= this.state.data.buy_info.initial_amount) {
+                        this.setState({
+                            buyBtnCanClick: this.state.errTip == '' ? true : false,
+                            mfbTip: false,
+                        });
+
+                        this.plan(_amount);
+                    } else {
+                        this.setState({buyBtnCanClick: false, mfbTip: false});
+                        if (_amount) {
+                            this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                        } else {
+                            this.setState({errTip: ''});
+                        }
+                    }
+                } else {
+                    //定投
+                    if (_amount > this.state.bankSelect.day_limit && this.state.bankSelect.pay_method !== 'wallet') {
+                        this.setState({
+                            buyBtnCanClick: false,
+                            errTip: `最大单日购买金额为${this.state.bankSelect.day_limit}元`,
+                            mfbTip: false,
+                        });
+                    } else if (_amount < this.state.data.buy_info.initial_amount) {
+                        this.setState({buyBtnCanClick: false, mfbTip: false});
+                        if (_amount) {
+                            this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
+                        } else {
+                            this.setState({errTip: ''});
+                        }
                     } else {
                         this.setState({
-                            buyBtnCanClick: false,
-                            errTip: `最大单笔购买金额为${selectCard.single_amount}元`,
+                            buyBtnCanClick: true,
+                            errTip: '',
+                            fixTip: this.state.data?.actual_amount
+                                ? `${_amount * this.state.data?.actual_amount.min}元~${
+                                      _amount * this.state.data?.actual_amount.max
+                                  }元`
+                                : '',
                             mfbTip: false,
                         });
                     }
-                } else if (_amount >= this.state.data.buy_info.initial_amount) {
-                    clearTimeout(this.timer);
-                    this.setState({
-                        buyBtnCanClick: this.state.errTip == '' ? true : false,
-                        mfbTip: false,
-                    });
-                    this.timer = setTimeout(() => {
-                        this.plan(_amount);
-                    }, 500);
-                } else {
-                    this.setState({buyBtnCanClick: false, mfbTip: false});
-                    if (_amount) {
-                        this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
-                    } else {
-                        this.setState({errTip: ''});
-                    }
                 }
-            } else {
-                //定投
-                if (_amount > this.state.bankSelect.day_limit && this.state.bankSelect.pay_method !== 'wallet') {
-                    this.setState({
-                        buyBtnCanClick: false,
-                        errTip: `最大单日购买金额为${this.state.bankSelect.day_limit}元`,
-                        mfbTip: false,
-                    });
-                } else if (_amount < this.state.data.buy_info.initial_amount) {
-                    this.setState({buyBtnCanClick: false, mfbTip: false});
-                    if (_amount) {
-                        this.setState({errTip: `起购金额${this.state.data.buy_info.initial_amount}`});
-                    } else {
-                        this.setState({errTip: ''});
-                    }
-                } else {
-                    this.setState({
-                        buyBtnCanClick: true,
-                        errTip: '',
-                        fixTip: this.state.data?.actual_amount
-                            ? `${_amount * this.state.data?.actual_amount.min}元~${
-                                  _amount * this.state.data?.actual_amount.max
-                              }元`
-                            : '',
-                        mfbTip: false,
-                    });
-                }
-            }
-        });
+            });
+        }, 300);
     };
     showFixModal = () => {
         this.bottomModal.show();
@@ -466,7 +478,7 @@ class TradeBuy extends Component {
     };
     //清空输入框
     clearInput = () => {
-        this.setState({amount: ''});
+        this.setState({amount: '', buyBtnCanClick: false});
         this.onInput('');
     };
     //切换银行卡
@@ -550,6 +562,9 @@ class TradeBuy extends Component {
     render_config() {
         const {planData, configExpand, data} = this.state;
         const {header, body} = planData;
+        const {
+            buy_info: {buy_text, tips},
+        } = data;
         return (
             header && (
                 <View style={{marginBottom: px(12)}}>
@@ -561,14 +576,15 @@ class TradeBuy extends Component {
                         }}>
                         <View style={Style.flexRowCenter}>
                             <Text style={{color: Colors.darkGrayColor, marginRight: px(10), fontSize: px(14)}}>
-                                买入明细
+                                {buy_text || '买入明细'}
                             </Text>
                             {data.is_plan ? null : (
                                 <TouchableOpacity
                                     onPress={() => {
                                         Modal.show({
-                                            title: '购买明细',
+                                            title: buy_text || '买入明细',
                                             content:
+                                                tips ||
                                                 '根据您输入的购买金额不同，系统会实时计算匹配最优的基金配置方案，金额的变动可能会导致配置的基金和比例跟随变动。',
                                         });
                                     }}>
@@ -605,20 +621,32 @@ class TradeBuy extends Component {
                                                                         textAlign: 'center',
                                                                     },
                                                                 ]}>
-                                                                {header.percent}
+                                                                {header.title1}
                                                             </Text>
                                                             <Text
                                                                 style={[
                                                                     styles.config_title,
                                                                     {flex: 1, textAlign: 'right'},
                                                                 ]}>
-                                                                {header.amount}
+                                                                {header.title2}
                                                             </Text>
                                                         </>
                                                     )}
                                                 </View>
                                                 {item.funds &&
                                                     item.funds.map((fund, _index) => {
+                                                        const _color1 =
+                                                            fund.compare1 == 'gt'
+                                                                ? Colors.red
+                                                                : fund.compare1 == 'lt'
+                                                                ? Colors.green
+                                                                : Colors.descColor;
+                                                        const _color2 =
+                                                            fund.compare2 == 'gt'
+                                                                ? Colors.red
+                                                                : fund.compare2 == 'lt'
+                                                                ? Colors.green
+                                                                : Colors.descColor;
                                                         return (
                                                             <View
                                                                 key={fund.name}
@@ -633,30 +661,48 @@ class TradeBuy extends Component {
                                                                     </Text>
                                                                 </View>
 
-                                                                <Text
-                                                                    style={[
-                                                                        styles.config_title_desc,
-                                                                        {
-                                                                            width: px(60),
+                                                                <View style={[Style.flexCenter, {width: px(60)}]}>
+                                                                    <HTML
+                                                                        html={`${fund.field1}`}
+                                                                        style={{
+                                                                            ...styles.config_title_desc,
                                                                             fontFamily: Font.numMedium,
-                                                                            textAlign: 'center',
-                                                                        },
-                                                                    ]}>
-                                                                    {Number(fund.percent * 100).toFixed(2)}%
-                                                                </Text>
-                                                                <Text
+                                                                        }}
+                                                                    />
+                                                                    {fund.compare1 !== 'et' && (
+                                                                        <Icon
+                                                                            name={
+                                                                                fund.compare1 == 'gt'
+                                                                                    ? 'arrowup'
+                                                                                    : 'arrowdown'
+                                                                            }
+                                                                            color={_color1}
+                                                                        />
+                                                                    )}
+                                                                </View>
+                                                                <View
                                                                     style={[
-                                                                        styles.config_title_desc,
-                                                                        {
-                                                                            fontFamily: Font.numMedium,
-                                                                            flex: 1,
-                                                                            textAlign: 'right',
-                                                                        },
+                                                                        Style.flexRow,
+                                                                        {flex: 1, justifyContent: 'flex-end'},
                                                                     ]}>
-                                                                    {fund.amount == '--'
-                                                                        ? '--'
-                                                                        : Number(fund.amount).toFixed(2)}
-                                                                </Text>
+                                                                    <HTML
+                                                                        html={`${fund.field2}`}
+                                                                        style={{
+                                                                            ...styles.config_title_desc,
+                                                                            fontFamily: Font.numMedium,
+                                                                        }}
+                                                                    />
+                                                                    {fund.compare2 !== 'et' && (
+                                                                        <Icon
+                                                                            name={
+                                                                                fund.compare2 == 'gt'
+                                                                                    ? 'arrowup'
+                                                                                    : 'arrowdown'
+                                                                            }
+                                                                            color={_color2}
+                                                                        />
+                                                                    )}
+                                                                </View>
                                                             </View>
                                                         );
                                                     })}
@@ -877,7 +923,10 @@ class TradeBuy extends Component {
                                     if (_amount >= 100000000) {
                                         Toast.show('金额需小于1亿');
                                     }
-                                    this.setState({amount: onlyNumber(_amount >= 100000000 ? '99999999.99' : _amount)});
+                                    this.setState({
+                                        amount: onlyNumber(_amount >= 100000000 ? '99999999.99' : _amount),
+                                        buyBtnCanClick: false,
+                                    });
                                     this.onInput(onlyNumber(_amount));
                                 }}
                                 value={`${amount}`}
@@ -1235,7 +1284,7 @@ const styles = StyleSheet.create({
     },
     config_title_desc: {
         fontSize: px(13),
-        color: '#4E556C',
+        color: Colors.descColor,
     },
     line: {
         height: 0.5,

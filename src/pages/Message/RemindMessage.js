@@ -2,8 +2,8 @@
  * @Author: xjh
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
- * @LastEditors: dx
- * @LastEditTime: 2021-11-08 18:12:19
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-25 13:58:01
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -62,7 +62,7 @@ export default function RemindMessage({navigation}) {
         });
     };
     return (
-        <View style={{flex: 1, backgroundColor: Colors.bgColor}}>
+        <View style={styles.con}>
             {Object.keys(data).length > 0 && (
                 <>
                     {data?.notice?.text ? (
@@ -249,6 +249,7 @@ export default function RemindMessage({navigation}) {
     );
 }
 const styles = StyleSheet.create({
+    con: {flex: 1, backgroundColor: Colors.bgColor, borderWidth: 0.1, borderColor: '#fff'},
     yellow_wrap_sty: {
         backgroundColor: '#FFF5E5',
         paddingHorizontal: Space.padding,

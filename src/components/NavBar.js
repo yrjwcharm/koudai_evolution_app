@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-09 16:48:07
+ * @LastEditTime: 2022-02-28 19:44:11
  * @Description:头部组件
  */
 
@@ -53,7 +53,7 @@ const NavBar = React.forwardRef((props, ref) => {
                     <TouchableNativeFeedback onPress={onPress} style={styles.btn}>
                         <Icon
                             name={name}
-                            size={px2dp(28)}
+                            size={props?.fontStyle?.fontSize ? props.fontStyle.fontSize : px2dp(28)}
                             color={props.fontStyle ? props.fontStyle.color : Colors.navTitleColor}
                         />
                     </TouchableNativeFeedback>
@@ -63,7 +63,7 @@ const NavBar = React.forwardRef((props, ref) => {
                     <TouchableOpacity onPress={onPress} style={styles.btn}>
                         <Icon
                             name={name}
-                            size={px2dp(26)}
+                            size={props?.fontStyle?.fontSize ? props.fontStyle.fontSize : px2dp(26)}
                             color={props.fontStyle ? props.fontStyle.color : Colors.navTitleColor}
                         />
                     </TouchableOpacity>

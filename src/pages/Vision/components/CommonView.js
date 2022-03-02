@@ -2,7 +2,7 @@
  * @Date: 2021-05-18 12:31:34
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-30 14:32:37
+ * @LastEditTime: 2022-02-15 14:19:37
  * @Description:tab公共模块
  *
  */
@@ -15,7 +15,6 @@ import EmptyTip from '../../../components/EmptyTip';
 import RenderCate from './RenderCate.js';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateVision} from '../../../redux/actions/visionData.js';
-import _ from 'lodash';
 const CommonView = React.forwardRef(({k, scene, type}, ref) => {
     const visionData = useSelector((store) => store.vision).toJS();
     const dispatch = useDispatch();

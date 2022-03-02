@@ -2,7 +2,7 @@
  * @Date: 2020-12-23 16:39:50
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-20 16:48:47
+ * @LastEditTime: 2022-02-25 18:52:52
  * @Description:路由表
  */
 import React from 'react';
@@ -170,6 +170,10 @@ import FollowInvestSetting from '../pages/Assets/FollowInvestSetting'; // 跟投
 import AdviserFee from '../pages/Trade/AdviserFee'; // 投顾服务费
 import WealthTools from '../pages/Assets/WealthTools'; // 财富工具
 import ReportWebView from '../pages/Activity/ReportWebView'; //年报webview
+import LiveList from '../pages/Vision/LiveList'; //直播列表
+import Live from '../pages/Vision/Live'; //直播详情页
+import ArticleList from '../pages/Vision/ArticleList'; //更多文章列表
+import SelectIdentity from '../pages/Vision/SelectIdentity'; // 选择视野中的身份
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -234,7 +238,14 @@ export default function AppStack() {
                 name="Tab"
                 component={TabScreen}
                 options={{
-                    ...TransitionPresets.ScaleFromCenterAndroid,
+                    cardStyleInterpolator: ({current: {progress}}) => ({
+                        cardStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 0.5, 0.9, 1],
+                                outputRange: [0, 0.25, 0.7, 1],
+                            }),
+                        },
+                    }),
                     headerShown: false,
                 }}
             />
@@ -492,7 +503,13 @@ export default function AppStack() {
             />
             <Stack.Screen name="FixedUpdate" component={FixedUpdate} options={{title: '修改计划'}} />
             <Stack.Screen name="AddedBuy" component={AddedBuy} options={{title: ''}} />
-            <Stack.Screen name="RemindMessage" component={RemindMessage} options={{title: '消息提醒'}} />
+            <Stack.Screen
+                name="RemindMessage"
+                component={RemindMessage}
+                options={{
+                    title: '消息提醒',
+                }}
+            />
             <Stack.Screen name="AdjustInformation" component={AdjustInformation} options={{title: ''}} />
             <Stack.Screen name="Settings" component={Settings} options={{title: '个人设置'}} />
             <Stack.Screen name="Profile" component={Profile} options={{title: '个人资料'}} />
@@ -682,6 +699,10 @@ export default function AppStack() {
             <Stack.Screen name="AdviserFee" component={AdviserFee} options={{title: ''}} />
             <Stack.Screen name="WealthTools" component={WealthTools} options={{headerShown: false}} />
             <Stack.Screen name="ReportWebView" component={ReportWebView} options={{headerShown: false}} />
+            <Stack.Screen name="Live" component={Live} options={{headerShown: false}} />
+            <Stack.Screen name="LiveList" component={LiveList} options={{title: '直播'}} />
+            <Stack.Screen name="ArticleList" component={ArticleList} options={{title: ''}} />
+            <Stack.Screen name="SelectIdentity" component={SelectIdentity} options={{title: '请选择视野中的身份'}} />
         </Stack.Navigator>
     );
 }

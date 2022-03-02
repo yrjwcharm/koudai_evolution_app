@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-01-06 11:49:56
+ * @LastEditTime: 2022-03-01 16:45:28
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -156,7 +156,8 @@ function App(props) {
                     if (
                         (!prev.is_login && next.is_login) ||
                         (!prev.has_account && next.has_account) ||
-                        (!prev.buy_status && next.buy_status)
+                        (!prev.buy_status && next.buy_status) ||
+                        (!prev.buy_status_for_vision && next.buy_status_for_vision)
                     ) {
                         getModalData();
                     }
@@ -325,7 +326,6 @@ function App(props) {
                         );
                     jump(navigationRef.current, modal.confirm.url || '');
                 },
-                clickClose: false,
                 confirmText: modal.confirm.text || '',
                 cancelCallBack: () => jump(navigationRef.current, modal.cancel?.url || ''),
                 cancelText: modal.cancel?.text || '',
@@ -413,41 +413,13 @@ function App(props) {
             LogTool(appState);
         }
         if (appState.match(/background/)) {
+            //后台运行app十五分钟杀死
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
-            }, 600000);
+            }, 10 * 60 * 1000);
         } else if (appState.match(/active/)) {
             BackgroundTimer.stopBackgroundTimer();
         }
-    };
-    // const prefix = Linking.makeUrl('/');
-    const linking = {
-        // prefixes: [prefix],
-        config: {
-            screens: {
-                Login: {
-                    path: 'login',
-                },
-                HomeStack: {
-                    path: 'stack',
-                    initialRouteName: 'Home',
-                    screens: {
-                        Home: 'home',
-                        Profile: {
-                            path: 'user/:id/:age',
-                            parse: {
-                                id: (id) => `there, ${id}`,
-                                age: Number,
-                            },
-                            stringify: {
-                                id: (id) => id.replace('there, ', ''),
-                            },
-                        },
-                    },
-                },
-                Settings: 'settings',
-            },
-        },
     };
     const getRouteNameId = (route, routeName, id) => {
         if (route.name == routeName && route.params?.[id]) {
@@ -498,8 +470,7 @@ function App(props) {
                                     LogTool('staytime', null, null, previousRoutePageId, null, staytime);
                                 }
                                 routeNameRef.current = currentRoutePageId;
-                            }}
-                            linking={linking}>
+                            }}>
                             <AppStack />
                         </NavigationContainer>
                     </PersistGate>

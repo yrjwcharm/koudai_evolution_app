@@ -2,11 +2,11 @@
  * @Date: 2021-03-17 17:44:16
  * @Author: dx
  * @LastEditors: yhc
- * @LastEditTime: 2021-07-09 19:19:05
+ * @LastEditTime: 2022-02-23 15:00:25
  * @Description: 登录注册蒙层
  */
 import React, {useState, useRef} from 'react';
-import {Dimensions, StyleSheet, View, findNodeHandle, Platform, ImageBackground} from 'react-native';
+import {Dimensions, StyleSheet, View, findNodeHandle, ImageBackground} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {BlurView} from '@react-native-community/blur';
 import {Button} from './Button';
@@ -20,7 +20,7 @@ const LoginMask = ({scene}) => {
     const [blurRef, setBlurRef] = useState(null);
     const viewRef = useRef(null);
     const inset = useSafeAreaInsets();
-    return Platform.OS == 'android' && scene == 'vision' ? (
+    return scene == 'vision' ? (
         <>
             <ImageBackground
                 source={require('../assets/img/vision/visionMask.jpg')}

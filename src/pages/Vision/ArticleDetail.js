@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-03-18 10:57:45
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-12-14 11:42:21
+ * @LastEditors: yhc
+ * @LastEditTime: 2022-02-24 17:12:52
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -172,7 +172,7 @@ const ArticleDetail = ({navigation, route}) => {
             http.post('/community/favor/20210101', {
                 resource_id: data?.id,
                 resource_cate: 'article',
-                action_type: data?.favor_status ? 0 : 1,
+                action_type: favor_status ? 0 : 1,
             }).then((res) => {
                 if (type !== 'normal') {
                     shareModal.current.toastShow(res.message);
@@ -205,7 +205,7 @@ const ArticleDetail = ({navigation, route}) => {
             http.post('/community/collect/20210101', {
                 resource_id: data?.id,
                 resource_cate: 'article',
-                action_type: data?.collect_status ? 0 : 1,
+                action_type: collect_status ? 0 : 1,
             }).then((res) => {
                 if (type !== 'normal') {
                     shareModal.current.toastShow(res.message);

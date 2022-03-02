@@ -3,44 +3,45 @@
  * @Date: 2021-05-31 10:21:59
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-08-30 14:44:06
+ * @LastEditTime: 2022-02-25 18:47:05
  * @Description:音频模块
  */
 
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {Colors, Style, Font} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import {useJump} from '../hooks';
 import FastImage from 'react-native-fast-image';
-import Praise from '../Praise';
-import Icon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
-import {useSelector, useDispatch} from 'react-redux';
-import {updateVision} from '../../redux/actions/visionData';
 import LazyImage from '../LazyImage';
 const VioceCard = ({data, style, scene}) => {
-    const visionData = useSelector((store) => store.vision).toJS();
     const jump = useJump();
-    const [is_new, setIsNew] = useState(data.is_new);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        setIsNew((pre_new) => {
-            return data.is_new != pre_new ? data.is_new : pre_new;
-        });
-    }, [data.is_new]);
+    //上下布局 默认左右布局 图片资源在右边
+    const isHorizontal = data?.show_mode ? data?.show_mode == 'horizontal' : true;
+    const coverRender = () => {
+        return (
+            <View style={styles.cover_con}>
+                <LazyImage
+                    source={{uri: data?.cover}}
+                    style={styles.cover}
+                    logoStyle={{width: px(30), height: px(32)}}
+                />
+                <View style={[styles.media_duration, Style.flexRow]}>
+                    <Image
+                        source={require('../../assets/img/vision/play.png')}
+                        style={{width: px(14), height: px(14)}}
+                    />
+                    <Text style={styles.duration_text}>{data?.media_duration}</Text>
+                </View>
+            </View>
+        );
+    };
     return (
         <TouchableOpacity
             activeOpacity={0.9}
-            style={[styles.card, style]}
+            style={[styles.card, !isHorizontal && {width: px(162)}, style]}
             onPress={debounce(() => {
-                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
-                if (visionData?.album_update?.includes(data.album_id)) {
-                    let arr = [...visionData?.album_update];
-                    arr.splice(arr?.indexOf(data.album_id), 1);
-                    dispatch(updateVision({album_update: arr}));
-                }
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}>
             <View style={{flexDirection: 'row'}}>
@@ -54,103 +55,27 @@ const VioceCard = ({data, style, scene}) => {
                             <Text style={{fontSize: px(13), color: Colors.lightBlackColor}}>{data?.cate_name}</Text>
                         </View>
                     ) : null}
-                    {data.type == 2 || scene == 'collect' ? (
-                        is_new ? (
-                            <View>
-                                <FastImage
-                                    source={require('../../assets/img/article/voiceUpdate.png')}
-                                    style={styles.new_tag}
-                                />
-                                <Text
-                                    numberOfLines={2}
-                                    style={[
-                                        styles.title,
-                                        {
-                                            color:
-                                                data.view_status == 1 || visionData?.readList?.includes(data.id)
-                                                    ? Colors.lightBlackColor
-                                                    : Colors.defaultColor,
-                                        },
-                                    ]}>
-                                    &emsp;&emsp;
-                                    {data?.title}
-                                </Text>
-                            </View>
-                        ) : (
-                            <Text
-                                numberOfLines={2}
-                                style={[
-                                    styles.title,
-                                    {
-                                        color:
-                                            data.view_status == 1 || visionData?.readList?.includes(data.id)
-                                                ? Colors.lightBlackColor
-                                                : Colors.defaultColor,
-                                    },
-                                ]}>
-                                {data.title}
-                            </Text>
-                        )
-                    ) : (
-                        <>
-                            <View style={Style.flexRow}>
-                                <Text numberOfLines={1} style={[styles.title]}>
-                                    {data.album_name}
-                                </Text>
-                                {visionData?.album_update?.includes(data.album_id) ? (
-                                    <View style={styles.badge} />
-                                ) : null}
-                            </View>
-                            <Text numberOfLines={2} style={styles.detail}>
-                                {data.title}
-                            </Text>
-                        </>
-                    )}
-
-                    <View style={[Style.flexRow, {marginTop: px(12)}]}>
-                        <FastImage source={{uri: data?.author?.avatar}} style={styles.avatar} />
-                        <Text style={{fontSize: px(13), color: Colors.lightBlackColor, marginHorizontal: px(6)}}>
-                            {data?.author?.nickname}
+                    <Text numberOfLines={2} style={styles.detail}>
+                        {data.title}
+                    </Text>
+                    {scene == 'collect' ? null : (
+                        <Text
+                            numberOfLines={1}
+                            style={{marginTop: isHorizontal ? px(24) : px(8), marginBottom: isHorizontal ? 0 : px(12)}}>
+                            {data?.tag_list?.map((item, index) => {
+                                return (
+                                    <Text key={index} style={[styles.light_text]} numberOfLines={1}>
+                                        {item}&nbsp;
+                                    </Text>
+                                );
+                            })}
                         </Text>
-                        {data?.author?.icon ? (
-                            <FastImage source={{uri: data?.author?.icon}} style={{width: px(12), height: px(12)}} />
-                        ) : null}
-                    </View>
+                    )}
                 </View>
-                {data?.cover ? (
-                    <View style={styles.cover_con}>
-                        <LazyImage
-                            source={{uri: data?.cover}}
-                            style={styles.cover}
-                            logoStyle={{width: px(30), height: px(32)}}
-                        />
-                        <LinearGradient
-                            start={{x: 0, y: 0}}
-                            end={{x: 0, y: 1}}
-                            style={[styles.media_duration, {justifyContent: 'flex-end'}]}
-                            colors={['rgba(0, 0, 0, 0)', 'rgba(27, 25, 32, 1)']}>
-                            <View style={[Style.flexRow]}>
-                                <Icon name="md-play-circle-outline" size={px(16)} color="#fff" />
-                                <Text style={styles.duration_text}>{data?.media_duration}</Text>
-                            </View>
-                        </LinearGradient>
-                    </View>
-                ) : null}
+                {data?.cover && isHorizontal ? coverRender() : null}
             </View>
-            {scene == 'collect' ? null : (
-                <View style={[Style.flexBetween, {marginTop: px(8)}]}>
-                    <Text style={styles.light_text}>{data?.view_num}人已收听</Text>
-                    <Praise
-                        noClick={true}
-                        type={'article'}
-                        comment={{
-                            favor_status: data?.favor_status,
-                            favor_num: parseInt(data?.favor_num),
-                            id: data?.id,
-                        }}
-                    />
-                </View>
-            )}
+
+            {data?.cover && !isHorizontal ? coverRender() : null}
         </TouchableOpacity>
     );
 };
@@ -162,19 +87,18 @@ const styles = StyleSheet.create({
         borderRadius: px(8),
         backgroundColor: '#fff',
         paddingHorizontal: px(16),
-        paddingTop: px(15),
-        paddingBottom: px(12),
+        paddingVertical: px(16),
     },
     detail: {
-        fontSize: px(12),
-        color: Colors.lightBlackColor,
-        lineHeight: px(17),
-        height: px(36),
+        color: Colors.defaultColor,
+        fontSize: px(14),
+        lineHeight: px(20),
+        height: px(42),
     },
     title: {
         fontSize: px(14),
-        color: Colors.defaultColor,
-        fontWeight: 'bold',
+        color: Colors.lightBlackColor,
+
         lineHeight: px(20),
         marginBottom: px(12),
     },
@@ -193,15 +117,14 @@ const styles = StyleSheet.create({
         borderRadius: px(6),
     },
     media_duration: {
-        bottom: 0,
-        zIndex: 100,
-        height: px(34),
-        width: px(106),
-        paddingHorizontal: px(8),
+        paddingHorizontal: px(4),
         paddingVertical: px(4),
         position: 'absolute',
-        borderBottomLeftRadius: px(8),
-        borderBottomRightRadius: px(8),
+        bottom: px(7),
+        right: px(7),
+        zIndex: 100,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: px(2),
     },
     avatar: {
         width: px(26),

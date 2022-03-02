@@ -3,13 +3,12 @@
  * @Autor: xjh
  * @Date: 2021-01-18 11:17:19
  * @LastEditors: dx
- * @LastEditTime: 2021-11-09 20:49:56
+ * @LastEditTime: 2022-02-17 10:34:24
  */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {px as text, isIphoneX} from '../../utils/appUtil';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Style, Colors, Font, Space} from '../../common/commonStyle';
 import Html from '../../components/RenderHtml';
 import Http from '../../services';
@@ -109,7 +108,7 @@ class TradeAdjust extends Component {
                                         <View style={[{flex: 1}, Style.flexRow]}>
                                             <Text>{data?.adjust_compare?.title}</Text>
                                         </View>
-                                        <AntDesign name={toggle[0] ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                                        <Icon name={toggle[0] ? 'up' : 'down'} size={12} color={'#9095A5'} />
                                     </View>
                                 </TouchableOpacity>
                                 {toggle[0] && (
@@ -156,7 +155,7 @@ class TradeAdjust extends Component {
                                                                     ? Colors.red
                                                                     : _i.compare == 'lt'
                                                                     ? Colors.green
-                                                                    : '#4E556C';
+                                                                    : Colors.descColor;
                                                             return (
                                                                 <View style={Style.flexRow} key={_i + _d}>
                                                                     <Text
@@ -206,14 +205,8 @@ class TradeAdjust extends Component {
                                     <View style={[Style.flexRow, styles.list_content]}>
                                         <View style={[{flex: 1}, Style.flexRow]}>
                                             <Text>{data?.adjust_hold?.title}</Text>
-                                            {/* <AntDesign
-                                      name={'questioncircleo'}
-                                      size={14}
-                                      color={'#9095A5'}
-                                      style={{marginLeft: text(5)}}
-                                  /> */}
                                         </View>
-                                        <AntDesign name={toggle[1] ? 'up' : 'down'} size={12} color={'#9095A5'} />
+                                        <Icon name={toggle[1] ? 'up' : 'down'} size={12} color={'#9095A5'} />
                                     </View>
                                 </TouchableOpacity>
                                 {toggle[1] && (

@@ -2,49 +2,35 @@
  * @Date: 2021-02-04 14:18:38
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 17:59:00
+ * @LastEditTime: 2022-02-23 17:39:25
  * @Description:用户问答卡片
  */
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors, Style, Space} from '../../common/commonStyle';
 import {px, debounce} from '../../utils/appUtil';
 import FastImage from 'react-native-fast-image';
 import {useJump} from '../hooks';
 import {useSelector} from 'react-redux';
-import Praise from '../Praise';
 export default function QuestionCard({data, scene}) {
     const jump = useJump();
-    const [is_new, setIsNew] = useState(data.is_new);
     const visionData = useSelector((store) => store.vision).toJS();
-    useEffect(() => {
-        setIsNew((pre_new) => {
-            return data.is_new != pre_new ? data.is_new : pre_new;
-        });
-    }, [data.is_new]);
     return (
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={debounce(() => {
-                setIsNew(false);
                 global.LogTool(scene === 'index' ? 'indexRecArticle' : 'visionArticle', data.id);
                 jump(data?.url, scene == 'article' ? 'push' : 'navigate');
             }, 300)}
-            style={[styles.ques_card]}>
+            style={styles.ques_card}>
             <FastImage style={styles.big_ques} source={require('../../assets/img/article/big_ques.png')} />
             <View style={Style.flexRow}>
-                {is_new && (
-                    <FastImage source={require('../../assets/img/article/voiceUpdate.png')} style={styles.new_tag} />
-                )}
-                {data?.phase ? (
-                    <Text style={[styles.article_content, {color: Colors.defaultColor, fontWeight: 'bold'}]}>
-                        {data?.phase}：
-                    </Text>
-                ) : null}
-                <Text style={styles.article_content}>{data?.nickname}</Text>
-            </View>
-            <View style={[Style.flexRow, {marginVertical: px(16), alignItems: 'flex-start'}]}>
                 <FastImage style={styles.ques_img} source={require('../../assets/img/find/question.png')} />
+                {data?.cate_name ? (
+                    <Text style={[styles.article_content, {color: Colors.defaultColor}]}>{data?.cate_name}</Text>
+                ) : null}
+            </View>
+            <View style={[Style.flexRow, {marginVertical: px(8)}]}>
                 <Text
                     numberOfLines={2}
                     style={[
@@ -57,29 +43,26 @@ export default function QuestionCard({data, scene}) {
                                     : Colors.defaultColor,
                         },
                     ]}>
-                    {data?.name}
+                    {data?.title}
                 </Text>
             </View>
             <View style={styles.content}>
                 <Text numberOfLines={2} style={[styles.article_content, {fontSize: px(12)}]}>
                     <Text style={{color: Colors.defaultColor, fontWeight: '700'}}>{data.author_name}：</Text>
-                    {data?.content}
+                    {data?.desc}
                 </Text>
             </View>
-            {scene == 'collect' ? null : (
-                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                    <Text style={styles.light_text}>{data?.view_num}人已阅读</Text>
-                    <Praise
-                        type={'article'}
-                        noClick={true}
-                        comment={{
-                            favor_status: data?.favor_status,
-                            favor_num: parseInt(data?.favor_num),
-                            id: data?.id,
-                        }}
-                    />
+            {scene == 'collect' ? null : data?.tag_list ? (
+                <View style={[Style.flexRow, {marginTop: px(12)}]}>
+                    {data?.tag_list?.map((item, index) => {
+                        return (
+                            <Text key={index} style={[styles.light_text, {marginRight: px(4)}]}>
+                                {item}
+                            </Text>
+                        );
+                    })}
                 </View>
-            )}
+            ) : null}
         </TouchableOpacity>
     );
 }
@@ -94,7 +77,6 @@ const styles = StyleSheet.create({
     article_title: {
         flex: 1,
         fontSize: px(14),
-        fontWeight: '700',
         color: Colors.defaultColor,
         lineHeight: px(20),
     },
@@ -120,7 +102,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: Space.cardPadding,
         paddingTop: px(20),
-        paddingBottom: px(12),
+        paddingBottom: px(16),
         marginBottom: px(12),
     },
     light_text: {
