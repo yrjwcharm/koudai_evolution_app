@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-12-14 20:55:59
  * @Description: 财富工具
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     ScrollView,
     StyleSheet,
@@ -21,7 +21,7 @@ import {useFocusEffect} from '@react-navigation/core';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import {Colors, Font, Style} from '../../common/commonStyle';
+import {Colors, Font, Style, Space} from '../../common/commonStyle';
 import {useJump} from '../../components/hooks';
 import Header from '../../components/NavBar';
 import * as Animatable from 'react-native-animatable';
@@ -31,6 +31,27 @@ import {deviceWidth, px} from '../../utils/appUtil';
 import TextSwiper from './components/TextSwiper';
 import HotRuler from './components/HotRuler';
 import dayjs from 'dayjs';
+const LoadingComponent = () => {
+    return (
+        <View
+            style={{
+                paddingTop: Space.padding,
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#fff',
+                position: 'absolute',
+                zIndex: 99,
+            }}>
+            <Image
+                style={{
+                    flex: 1,
+                }}
+                source={require('../../assets/personal/loading.png')}
+                resizeMode={Image.resizeMode.contain}
+            />
+        </View>
+    );
+};
 
 const defaultItemsFinish = [false, false, false, false];
 const WealthTools = () => {
@@ -41,82 +62,85 @@ const WealthTools = () => {
     const [hasOpen, updateHasOpen] = useState(false); // 工具列表中是否有一个是开启状态
     const [data, setData] = useState({});
     const [loadingData, setLoadingData] = useState({});
+    const [gifLoaded, updategifLoaded] = useState(false);
     const [loadItemsFinish, setLoadItemsFinish] = useState(defaultItemsFinish);
     const [linearColors, setLinearColors] = useState([]);
     const [loadingFinish, setLoadingFinish] = useState(false);
     const now = useRef(dayjs().format('YYYY/MM/DD HH:mm'));
+    const rate = useRef(null);
     const topPartRateRef = useRef(null);
     const topPartHintRef = useRef(null);
     const bottomPartOfLoadingRef = useRef(null);
     const bottomPartOnOpenRef = useRef(null);
+    const getReadyStart = useMemo(() => {
+        return !!(rate.current && gifLoaded);
+    }, [gifLoaded, rate]);
+
     const init = useCallback(() => {
         updatePageLoading(true);
-        let rate = null;
         let rateListener = null;
-        http.get('/tool/manage/detail/20211207')
-            .then(async (res) => {
-                try {
-                    setData(res.result);
-                    if (hasOpen) return;
-                    const hasOpenState = !!res.result.open_list;
-                    updateHasOpen(hasOpenState);
+        http.get('/tool/manage/detail/20211207').then(async (res) => {
+            try {
+                setData(res.result);
+                if (hasOpen) return;
+                const hasOpenState = !!res.result.open_list;
+                updateHasOpen(hasOpenState);
 
-                    // 如果有开启的工具
-                    if (hasOpenState) {
-                        let loadingDataRes = await http.get('/tool/open/animation/detail/20220221');
+                // 如果有开启的工具
+                if (hasOpenState) {
+                    let loadingDataRes = await http.get('/tool/open/animation/detail/20220221');
 
-                        setLinearColors(['#2557F5', '#F5F6F8']);
-                        setLoadingData(loadingDataRes.result);
+                    setLinearColors(['#2557F5', '#F5F6F8']);
+                    setLoadingData(loadingDataRes.result);
 
-                        //  rate increase anmation
-                        rate = new Animated.Value(0);
-                        rateListener = rate.addListener(({value}) => {
-                            value = Math.round(value);
-                            // 依次选择
-                            if (value % 25 === 0) {
-                                let level = value / 25;
-                                setLoadItemsFinish(defaultItemsFinish.map((_) => level-- > 0));
-                            }
-                            topPartRateRef.current?.setNativeProps({text: value + '%'});
-                            if (value === 100) {
-                                // loading动画完成
-                                rate.removeListener(rateListener);
-                                bottomPartOfLoadingRef?.current
-                                    ?.animate('fadeOutUp')
-                                    .then(() => {
-                                        setLoadingFinish(true);
-                                    })
-                                    .then(() => {
-                                        setLinearColors([
-                                            ['#2B7AF3', '#E74949'][res.result?.head_data.status],
-                                            '#F5F6F8',
-                                        ]);
-                                        bottomPartOnOpenRef?.current.animate('fadeInUp');
-                                        topPartHintRef?.current?.animate('fadeIn');
-                                    });
-                            }
-                        });
-                    }
-
-                    updatePageLoading(false);
-                } catch (error) {
-                    console.log(error);
+                    //  rate increase anmation
+                    rate.current = new Animated.Value(0);
+                    rateListener = rate.current.addListener(({value}) => {
+                        value = Math.round(value);
+                        // 依次选择
+                        if (value % 25 === 0) {
+                            let level = value / 25;
+                            setLoadItemsFinish(defaultItemsFinish.map((_) => level-- > 0));
+                        }
+                        topPartRateRef.current?.setNativeProps({text: value + '%'});
+                        if (value === 100) {
+                            // loading动画完成
+                            rate.current.removeListener(rateListener);
+                            bottomPartOfLoadingRef?.current
+                                ?.animate('fadeOutUp')
+                                .then(() => {
+                                    setLoadingFinish(true);
+                                })
+                                .then(() => {
+                                    setLinearColors([['#2B7AF3', '#E74949'][res.result?.head_data.status], '#F5F6F8']);
+                                    bottomPartOnOpenRef?.current.animate('fadeInUp');
+                                    topPartHintRef?.current?.animate('fadeIn');
+                                });
+                        }
+                    });
                 }
-            })
-            .then(() => {
-                // rate animate start
-                rate &&
-                    Animated.timing(rate, {
-                        toValue: 100,
-                        duration: 2000,
-                        useNativeDriver: true,
-                        easing: Easing.inOut(Easing.ease),
-                    }).start();
-            });
 
-        return () => rate?.removeListener?.(rateListener);
+                updatePageLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+
+        return () => rate.current?.removeListener?.(rateListener);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useFocusEffect(init);
+
+    useEffect(() => {
+        // rate animate start
+        getReadyStart &&
+            Animated.timing(rate.current, {
+                toValue: 100,
+                duration: 2000,
+                useNativeDriver: true,
+                easing: Easing.inOut(Easing.ease),
+            }).start();
+    }, [getReadyStart]);
 
     const jumpToolDetail = (url) => {
         jump(url);
@@ -254,172 +278,181 @@ const WealthTools = () => {
     return pageLoading ? (
         <Loading />
     ) : (
-        <View
-            style={[
-                styles.container,
-                {
-                    paddingBottom: insets.bottom + px(8),
-                },
-            ]}>
-            <Header
-                leftIcon="chevron-left"
-                title={hasOpen ? '财富工具' : ''}
-                fontStyle={{
-                    color: hasOpen && scrollY > 0 ? Colors.defaultFontColor : '#fff',
-                }}
-                style={{
-                    opacity: 1,
-                    width: deviceWidth,
-                    backgroundColor: hasOpen && scrollY > 0 ? '#fff' : 'transparent',
-                    position: 'absolute',
-                }}
-            />
-            <ScrollView
-                bounces={false}
-                onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
-                scrollEventThrottle={16}
-                scrollIndicatorInsets={{right: 1}}
-                style={{flex: 1}}>
-                {!hasOpen ? (
-                    <>
-                        {/* 当hasOpen为false时的上半部分 */}
-                        <View>
-                            <Image style={{width: '100%', height: px(279)}} source={{uri: data?.img}} />
-                        </View>
-                        {/* 当hasOpen为false时的工具列表 */}
-                        <View style={styles.toolListOnNotOpen}>
-                            {data?.close_list?.map((item, idx) => closeToolItem(item, idx))}
-                        </View>
-                    </>
-                ) : (
-                    <>
-                        {/* 当hasOpen为true时的上部分 */}
-                        <LinearGradient
-                            style={[
-                                styles.topPartOnOpen,
-                                {
-                                    height: px(loadingFinish ? 283 : 356),
-                                },
-                            ]}
-                            colors={linearColors}
-                            start={{x: 0, y: 0.82}}
-                            end={{x: 0, y: 1}}>
-                            <Animatable.View
-                                ref={(e) => (topPartHintRef.current = e)}
-                                duration={800}
-                                style={{paddingTop: insets.top + px(44)}}>
-                                {loadingFinish ? (
-                                    <View style={{marginTop: px(18)}}>
-                                        <Text
-                                            style={{
-                                                fontSize: px(32),
-                                                fontWeight: '600',
-                                                lineHeight: px(34),
-                                                color: '#fff',
-                                                textAlign: 'center',
-                                            }}>
-                                            {data?.head_data?.title}
-                                        </Text>
-                                        {data?.head_data?.desc.map((item, idx) => (
-                                            <Text
-                                                key={idx}
-                                                style={{
-                                                    fontSize: px(12),
-                                                    fontWeight: '300',
-                                                    lineHeight: px(17),
-                                                    color: 'rgba(245, 246, 248, 0.58);',
-                                                    textAlign: 'center',
-                                                    marginTop: px(idx === 0 ? 12 : 0),
-                                                }}>
-                                                {item}
-                                            </Text>
-                                        ))}
-                                    </View>
-                                ) : (
-                                    <View style={[Style.flexRowCenter, {marginTop: px(18)}]}>
-                                        <Image
-                                            style={{width: px(176), height: px(178)}}
-                                            source={{uri: loadingData?.settings_gif}}
-                                        />
-                                        <TextInput
-                                            editable={false}
-                                            ref={(e) => (topPartRateRef.current = e)}
-                                            style={styles.topPartRate}
-                                        />
-                                    </View>
-                                )}
-                            </Animatable.View>
-                        </LinearGradient>
-                        {/* loading动画的选项列表 */}
-                        {loadingFinish ? null : (
-                            <Animatable.View
-                                ref={(e) => (bottomPartOfLoadingRef.current = e)}
-                                duration={800}
-                                style={styles.bottomPartOfLoading}>
-                                {loadingData?.checking_data?.map((item, idx) => {
-                                    return (
-                                        <View key={idx} style={[styles.bpolItem, {marginTop: px(idx > 0 ? 12 : 0)}]}>
-                                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                                <Image
-                                                    style={{width: px(32), height: px(32)}}
-                                                    source={{
-                                                        uri: item.img,
-                                                    }}
-                                                />
-                                                <Text style={styles.bpolItemText}>{item.desc}</Text>
-                                            </View>
-                                            <View>
-                                                {loadItemsFinish[idx] ? (
-                                                    <Image
-                                                        style={{width: px(20), height: px(20)}}
-                                                        source={{uri: loadingData?.checked_img}}
-                                                    />
-                                                ) : (
-                                                    <Animatable.Image
-                                                        animation={{
-                                                            0: {
-                                                                transform: [{rotate: '0deg'}],
-                                                            },
-                                                            1: {
-                                                                transform: [{rotate: '360deg'}],
-                                                            },
-                                                        }}
-                                                        easing="linear"
-                                                        duration={800}
-                                                        iterationCount="infinite"
-                                                        style={{width: px(20), height: px(20)}}
-                                                        source={{
-                                                            uri: loadingData?.unchecked_img,
-                                                        }}
-                                                    />
-                                                )}
-                                            </View>
-                                        </View>
-                                    );
-                                })}
-                            </Animatable.View>
-                        )}
-                    </>
-                )}
-                <Animatable.View ref={(e) => (bottomPartOnOpenRef.current = e)} duration={1000}>
-                    {/* hasOpen为true时的工具列表 */}
-                    {hasOpen && loadingFinish && (
-                        <View style={styles.toolListOnOpen}>
-                            {data?.open_list?.map((item, idx) => {
-                                return openToolItem(item, idx);
-                            })}
-                            <View style={{marginTop: px(12)}}>
-                                {data?.close_list?.map((item, idx) => {
-                                    return closeToolItem(item, idx);
-                                })}
+        <>
+            {!getReadyStart && <LoadingComponent />}
+            <View
+                style={[
+                    styles.container,
+                    {
+                        paddingBottom: insets.bottom + px(8),
+                        opacity: getReadyStart ? 1 : 0,
+                    },
+                ]}>
+                <Header
+                    leftIcon="chevron-left"
+                    title={hasOpen ? '财富工具' : ''}
+                    fontStyle={{
+                        color: hasOpen && scrollY > 0 ? Colors.defaultFontColor : '#fff',
+                    }}
+                    style={{
+                        opacity: 1,
+                        width: deviceWidth,
+                        backgroundColor: hasOpen && scrollY > 0 ? '#fff' : 'transparent',
+                        position: 'absolute',
+                    }}
+                />
+                <ScrollView
+                    bounces={false}
+                    onScroll={(e) => setScrollY(e.nativeEvent.contentOffset.y)}
+                    scrollEventThrottle={16}
+                    scrollIndicatorInsets={{right: 1}}
+                    style={{flex: 1}}>
+                    {!hasOpen ? (
+                        <>
+                            {/* 当hasOpen为false时的上半部分 */}
+                            <View>
+                                <Image style={{width: '100%', height: px(279)}} source={{uri: data?.img}} />
                             </View>
-                        </View>
+                            {/* 当hasOpen为false时的工具列表 */}
+                            <View style={styles.toolListOnNotOpen}>
+                                {data?.close_list?.map((item, idx) => closeToolItem(item, idx))}
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                            {/* 当hasOpen为true时的上部分 */}
+                            <LinearGradient
+                                style={[
+                                    styles.topPartOnOpen,
+                                    {
+                                        height: px(loadingFinish ? 283 : 356),
+                                    },
+                                ]}
+                                colors={linearColors}
+                                start={{x: 0, y: 0.82}}
+                                end={{x: 0, y: 1}}>
+                                <Animatable.View
+                                    ref={(e) => (topPartHintRef.current = e)}
+                                    duration={800}
+                                    style={{paddingTop: insets.top + px(44)}}>
+                                    {loadingFinish ? (
+                                        <View style={{marginTop: px(18)}}>
+                                            <Text
+                                                style={{
+                                                    fontSize: px(32),
+                                                    fontWeight: '600',
+                                                    lineHeight: px(34),
+                                                    color: '#fff',
+                                                    textAlign: 'center',
+                                                }}>
+                                                {data?.head_data?.title}
+                                            </Text>
+                                            {data?.head_data?.desc.map((item, idx) => (
+                                                <Text
+                                                    key={idx}
+                                                    style={{
+                                                        fontSize: px(12),
+                                                        fontWeight: '300',
+                                                        lineHeight: px(17),
+                                                        color: 'rgba(245, 246, 248, 0.58);',
+                                                        textAlign: 'center',
+                                                        marginTop: px(idx === 0 ? 12 : 0),
+                                                    }}>
+                                                    {item}
+                                                </Text>
+                                            ))}
+                                        </View>
+                                    ) : (
+                                        <View style={[Style.flexRowCenter, {marginTop: px(18)}]}>
+                                            <Image
+                                                onLoadEnd={() => {
+                                                    updategifLoaded(true);
+                                                }}
+                                                style={{width: px(176), height: px(178)}}
+                                                source={{uri: loadingData?.settings_gif}}
+                                            />
+                                            <TextInput
+                                                editable={false}
+                                                ref={(e) => (topPartRateRef.current = e)}
+                                                style={styles.topPartRate}
+                                            />
+                                        </View>
+                                    )}
+                                </Animatable.View>
+                            </LinearGradient>
+                            {/* loading动画的选项列表 */}
+                            {loadingFinish ? null : (
+                                <Animatable.View
+                                    ref={(e) => (bottomPartOfLoadingRef.current = e)}
+                                    duration={800}
+                                    style={styles.bottomPartOfLoading}>
+                                    {loadingData?.checking_data?.map((item, idx) => {
+                                        return (
+                                            <View
+                                                key={idx}
+                                                style={[styles.bpolItem, {marginTop: px(idx > 0 ? 12 : 0)}]}>
+                                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                                    <Image
+                                                        style={{width: px(32), height: px(32)}}
+                                                        source={{
+                                                            uri: item.img,
+                                                        }}
+                                                    />
+                                                    <Text style={styles.bpolItemText}>{item.desc}</Text>
+                                                </View>
+                                                <View>
+                                                    {loadItemsFinish[idx] ? (
+                                                        <Image
+                                                            style={{width: px(20), height: px(20)}}
+                                                            source={{uri: loadingData?.checked_img}}
+                                                        />
+                                                    ) : (
+                                                        <Animatable.Image
+                                                            animation={{
+                                                                0: {
+                                                                    transform: [{rotate: '0deg'}],
+                                                                },
+                                                                1: {
+                                                                    transform: [{rotate: '360deg'}],
+                                                                },
+                                                            }}
+                                                            easing="linear"
+                                                            duration={800}
+                                                            iterationCount="infinite"
+                                                            style={{width: px(20), height: px(20)}}
+                                                            source={{
+                                                                uri: loadingData?.unchecked_img,
+                                                            }}
+                                                        />
+                                                    )}
+                                                </View>
+                                            </View>
+                                        );
+                                    })}
+                                </Animatable.View>
+                            )}
+                        </>
                     )}
-                    {/* 用户数据 */}
-                    {data?.user_data && (hasOpen ? loadingFinish : !loadingFinish) && userData()}
-                </Animatable.View>
-            </ScrollView>
-        </View>
+                    <Animatable.View ref={(e) => (bottomPartOnOpenRef.current = e)} duration={1000}>
+                        {/* hasOpen为true时的工具列表 */}
+                        {hasOpen && loadingFinish && (
+                            <View style={styles.toolListOnOpen}>
+                                {data?.open_list?.map((item, idx) => {
+                                    return openToolItem(item, idx);
+                                })}
+                                <View style={{marginTop: px(12)}}>
+                                    {data?.close_list?.map((item, idx) => {
+                                        return closeToolItem(item, idx);
+                                    })}
+                                </View>
+                            </View>
+                        )}
+                        {/* 用户数据 */}
+                        {data?.user_data && (hasOpen ? loadingFinish : !loadingFinish) && userData()}
+                    </Animatable.View>
+                </ScrollView>
+            </View>
+        </>
     );
 };
 export default WealthTools;
