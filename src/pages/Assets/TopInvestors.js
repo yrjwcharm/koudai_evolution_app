@@ -11,7 +11,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {WebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/AntDesign';
 import HTML from '../../components/RenderHtml';
 import {Chart} from '../../components/Chart';
 import {FixedButton, Button} from '../../components/Button';
