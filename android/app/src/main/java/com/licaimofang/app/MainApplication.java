@@ -10,6 +10,7 @@ package com.licaimofang.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -25,9 +26,9 @@ import java.util.List;
 
 import cn.jiguang.plugins.push.JPushModule;
 import com.licaimofang.readcard.ReadCardPackage;
+import com.licaimofang.oaid.OaidPackage;
 // import com.github.wumke.RNExitApp.RNExitAppPackage;
 public class MainApplication extends Application implements ReactApplication {
-
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
             // packages.add(new MyReactNativePackage());
             packages.add(new WeChatPackage());
             packages.add(new ReadCardPackage());
+            packages.add(new OaidPackage());
             CodePush.getJSBundleFile();
             new CodePush(
 //                              "umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog", // staging

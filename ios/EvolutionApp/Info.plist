@@ -102,6 +102,8 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>NSUserTrackingUsageDescription</key>
+   <string>应用跟踪</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

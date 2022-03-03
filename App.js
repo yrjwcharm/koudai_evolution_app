@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-01 16:45:28
+ * @LastEditTime: 2022-03-03 18:56:13
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -29,7 +29,8 @@ import {px as text, deviceWidth} from './src/utils/appUtil';
 import BackgroundTimer from 'react-native-background-timer';
 import CodePush from 'react-native-code-push';
 import {throttle, debounce, cloneDeep} from 'lodash';
-global.ver = '6.5.1';
+import DeviceInfo from 'react-native-device-info';
+global.ver = DeviceInfo.getVersion();
 const key = Platform.select({
     // ios: 'rRXSnpGD5tVHv9RDZ7fLsRcL5xEV4ksvOXqog',
     // android: 'umln5OVCBk6nTjd37apOaHJDa71g4ksvOXqog',
@@ -137,8 +138,6 @@ function App(props) {
 
         // 监控设备激活/后台状态
         AppState.addEventListener('change', _handleAppStateChange);
-
-        // console.log(__DEV__);
         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
@@ -413,7 +412,6 @@ function App(props) {
             LogTool(appState);
         }
         if (appState.match(/background/)) {
-            //后台运行app十五分钟杀死
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
             }, 10 * 60 * 1000);
