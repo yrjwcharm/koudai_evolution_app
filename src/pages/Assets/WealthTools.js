@@ -63,6 +63,7 @@ const WealthTools = () => {
     const [data, setData] = useState({});
     const [loadingData, setLoadingData] = useState({});
     const [gifLoaded, updategifLoaded] = useState(false);
+    const [headImgLoaded, updateHeadImgLoaded] = useState(false);
     const [loadItemsFinish, setLoadItemsFinish] = useState(defaultItemsFinish);
     const [linearColors, setLinearColors] = useState([]);
     const [loadingFinish, setLoadingFinish] = useState(false);
@@ -73,8 +74,8 @@ const WealthTools = () => {
     const bottomPartOfLoadingRef = useRef(null);
     const bottomPartOnOpenRef = useRef(null);
     const getReadyStart = useMemo(() => {
-        return !!(rate.current && gifLoaded);
-    }, [gifLoaded, rate]);
+        return hasOpen ? !!(rate.current && gifLoaded) : headImgLoaded;
+    }, [gifLoaded, rate, hasOpen, headImgLoaded]);
 
     const init = useCallback(() => {
         updatePageLoading(true);
@@ -82,7 +83,7 @@ const WealthTools = () => {
         http.get('/tool/manage/detail/20211207').then(async (res) => {
             try {
                 setData(res.result);
-                if (hasOpen) return;
+                if (hasOpen) return; // 防止跳回时依旧加载动画
                 const hasOpenState = !!res.result.open_list;
                 updateHasOpen(hasOpenState);
 
@@ -311,7 +312,13 @@ const WealthTools = () => {
                         <>
                             {/* 当hasOpen为false时的上半部分 */}
                             <View>
-                                <Image style={{width: '100%', height: px(279)}} source={{uri: data?.img}} />
+                                <Image
+                                    style={{width: '100%', height: px(279)}}
+                                    source={{uri: data?.img}}
+                                    onLoadEnd={() => {
+                                        updateHeadImgLoaded(true);
+                                    }}
+                                />
                             </View>
                             {/* 当hasOpen为false时的工具列表 */}
                             <View style={styles.toolListOnNotOpen}>
