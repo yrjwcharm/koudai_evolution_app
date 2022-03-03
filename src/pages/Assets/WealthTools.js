@@ -135,6 +135,7 @@ const WealthTools = () => {
     useEffect(() => {
         // rate animate start
         getReadyStart &&
+            rate.current &&
             Animated.timing(rate.current, {
                 toValue: 100,
                 duration: 2000,
