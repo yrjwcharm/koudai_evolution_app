@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-03 18:58:50
+ * @LastEditTime: 2022-03-03 18:59:57
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -138,8 +138,6 @@ function App(props) {
 
         // 监控设备激活/后台状态
         AppState.addEventListener('change', _handleAppStateChange);
-
-        // console.log(__DEV__);
         BackHandler.addEventListener('hardwareBackPress', onBackAndroid);
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', onBackAndroid);
