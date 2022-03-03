@@ -274,8 +274,6 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'com.android.support:multidex:1.0.3' //配置多个dex
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation files('libs/oaid_sdk_1.1.0.aar')
-
     implementation project(':jpush-react-native')  // 添加 jpush 依赖
     implementation project(':jcore-react-native')  // 添加 jcore 依赖
     implementation project(':react-native-wechat-lib') //微信

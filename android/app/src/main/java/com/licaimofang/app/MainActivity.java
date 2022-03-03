@@ -15,7 +15,7 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import com.licaimofang.readcard.ActivityNavigator;
 import com.licaimofang.readcard.utils.PermissionsUtils;
-public class MainActivity extends ReactActivity implements DemoHelper.AppIdsUpdater{
+public class MainActivity extends ReactActivity {
     public static final String TAG = "DemoHelper12";
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -33,8 +33,7 @@ public class MainActivity extends ReactActivity implements DemoHelper.AppIdsUpda
       SplashScreen.show(this,R.style.SplashScreenTheme);  // here
       super.onCreate(savedInstanceState);
       ActivityNavigator.navigator().addActivity(this);
-      DemoHelper demoHelper = new DemoHelper((DemoHelper.AppIdsUpdater) this);
-      demoHelper.getDeviceIds(this);
+
   }
 
   @Override
@@ -44,8 +43,5 @@ public class MainActivity extends ReactActivity implements DemoHelper.AppIdsUpda
     PermissionsUtils.getInstance().onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
-    @Override
-    public void onIdsValid(String ids) {
-        Log.d(TAG, "onSupport: ids: \n" + ids);
-    }
+
 }
