@@ -86,6 +86,7 @@ const LowBuySignalExplain = ({route}) => {
     const [moveDirection, setMoveDirection] = useState('left');
     const [webviewLoaded, setWebviewLoaded] = useState('1');
     const [panelWebviewLoaded, setPanelWebviewLoaded] = useState('1');
+    const [loadSecondWebView, updateLoadSecondWebView] = useState(false);
     const [calcTableLeft, setCalcTableLeft] = useState([]);
     const [calcTableCenter, seCalctTableCenter] = useState([]);
     const [calcTableRight, setCalcTableRight] = useState([]);
@@ -142,6 +143,14 @@ const LowBuySignalExplain = ({route}) => {
             },
         })
     ).current;
+
+    useEffect(() => {
+        if (webviewLoaded === '3') {
+            setTimeout(() => {
+                updateLoadSecondWebView(true);
+            }, 1200);
+        }
+    }, [webviewLoaded]);
 
     const handlerTableInfo = (tableInfo, idx) => {
         return tableInfo.reduce((memo, cur) => {
@@ -326,27 +335,29 @@ const LowBuySignalExplain = ({route}) => {
                                 height: px(285),
                                 paddingTop: px(10),
                             }}>
-                            <WebView
-                                bounces={false}
-                                allowFileAccess
-                                allowFileAccessFromFileURLs
-                                allowUniversalAccessFromFileURLs
-                                javaScriptEnabled
-                                ref={panelChartRef}
-                                scrollEnabled={false}
-                                onMessage={(e) => {
-                                    console.log(e.nativeEvent.data);
-                                }}
-                                onLoadEnd={() => {
-                                    setPanelWebviewLoaded('2');
-                                }}
-                                style={{width: '100%', height: px(260), alignSelf: 'center'}}
-                                renderLoading={() => <LoadingWebview />}
-                                source={panelSource}
-                                startInLoadingState={true}
-                                originWhitelist={['*']}
-                                textZoom={100}
-                            />
+                            {loadSecondWebView && (
+                                <WebView
+                                    bounces={false}
+                                    allowFileAccess
+                                    allowFileAccessFromFileURLs
+                                    allowUniversalAccessFromFileURLs
+                                    javaScriptEnabled
+                                    ref={panelChartRef}
+                                    scrollEnabled={false}
+                                    onMessage={(e) => {
+                                        console.log(e.nativeEvent.data);
+                                    }}
+                                    onLoadEnd={() => {
+                                        setPanelWebviewLoaded('2');
+                                    }}
+                                    style={{width: '100%', height: px(260), alignSelf: 'center'}}
+                                    renderLoading={() => <LoadingWebview />}
+                                    source={panelSource}
+                                    startInLoadingState={true}
+                                    originWhitelist={['*']}
+                                    textZoom={100}
+                                />
+                            )}
                         </View>
                         <View style={{}}>
                             <View style={styles.summaryWrapper}>
