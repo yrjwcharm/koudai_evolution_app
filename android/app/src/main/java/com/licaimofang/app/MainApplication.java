@@ -89,7 +89,6 @@ public class MainApplication extends Application implements ReactApplication {
                 // 获取OAID/AAID失败
             }
         });
-        System.loadLibrary("msaoaidsec");  // TODO （3）加固版本在调用前必须载入SDK安全库
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
         //调用此方法：点击通知让应用从后台切到前台
