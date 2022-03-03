@@ -31,6 +31,8 @@ import {deviceWidth, px} from '../../utils/appUtil';
 import TextSwiper from './components/TextSwiper';
 import HotRuler from './components/HotRuler';
 import dayjs from 'dayjs';
+import {Modal} from '../../components/Modal';
+
 const LoadingComponent = () => {
     return (
         <View
@@ -158,8 +160,22 @@ const WealthTools = () => {
                     activeOpacity={waitOpen ? 0.3 : 0.8}
                     style={[styles.toolItemOnNotOpen, {opacity: waitOpen ? 0.3 : 1}]}
                     onPress={() => {
-                        if (waitOpen) return;
-                        jump(item.button.url);
+                        if (waitOpen) {
+                            if (item.pop) {
+                                Modal.show({
+                                    children: () => (
+                                        <View style={styles.popContentBox}>
+                                            <Text style={styles.popContent}>{item.pop.content}</Text>
+                                        </View>
+                                    ),
+                                    confirmCallBack: () => jump(item.pop.confirm?.url),
+                                    confirmText: item.pop.confirm?.text,
+                                    title: item.pop.title,
+                                });
+                            }
+                        } else {
+                            jump(item.button.url);
+                        }
                     }}>
                     <View style={styles.tionoLeft}>
                         <Image source={{uri: item.icon}} style={{width: px(44), height: px(44)}} />
@@ -565,7 +581,7 @@ const styles = StyleSheet.create({
         fontFamily: Font.numFontFamily,
         fontWeight: 'bold',
         color: Colors.red,
-        lineHeight: px(36),
+        // lineHeight: px(36),
         fontSize: px(36),
     },
     udContentDesc: {
@@ -659,5 +675,16 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#fff',
         lineHeight: px(20),
+    },
+    popContentBox: {
+        marginTop: px(12),
+        marginHorizontal: px(20),
+        marginBottom: px(27),
+    },
+    popContent: {
+        fontSize: Font.textH2,
+        lineHeight: px(20),
+        color: Colors.descColor,
+        textAlign: 'center',
     },
 });

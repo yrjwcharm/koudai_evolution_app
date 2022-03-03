@@ -659,7 +659,7 @@ export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
         },
         axisLabel: {
           show: true,
-          distance: 0,
+          distance: 6,
           color: '#9AA1B2',
           formatter: function (val) {
            let ticks = ${JSON.stringify(ticks)};

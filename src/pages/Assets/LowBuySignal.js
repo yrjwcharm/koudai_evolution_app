@@ -327,6 +327,7 @@ const LowBuySignalExplain = ({route}) => {
                                 paddingTop: px(10),
                             }}>
                             <WebView
+                                bounces={false}
                                 allowFileAccess
                                 allowFileAccessFromFileURLs
                                 allowUniversalAccessFromFileURLs
@@ -942,6 +943,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         lineHeight: px(12),
         textAlign: 'center',
+        width: px(84),
     },
     leftArrow: {
         position: 'absolute',

@@ -153,9 +153,9 @@ const TopInvestors = ({route}) => {
                         <View
                             style={{
                                 height: px(285),
-                                backgroundColor: '#fff',
                             }}>
                             <WebView
+                                bounces={false}
                                 allowFileAccess
                                 allowFileAccessFromFileURLs
                                 allowUniversalAccessFromFileURLs
@@ -168,7 +168,7 @@ const TopInvestors = ({route}) => {
                                 onLoadEnd={() => {
                                     setPanelWebviewLoaded('2');
                                 }}
-                                style={{width: '100%', height: px(260), alignSelf: 'center'}}
+                                style={{width: '100%', alignSelf: 'center'}}
                                 renderLoading={() => <LoadingWebview />}
                                 source={panelSource}
                                 startInLoadingState={true}
