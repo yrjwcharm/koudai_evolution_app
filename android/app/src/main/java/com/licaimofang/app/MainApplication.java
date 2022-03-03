@@ -10,6 +10,7 @@ package com.licaimofang.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -25,9 +26,13 @@ import java.util.List;
 
 import cn.jiguang.plugins.push.JPushModule;
 import com.licaimofang.readcard.ReadCardPackage;
+import com.github.gzuliyujiang.oaid.DeviceIdentifier;
+import com.github.gzuliyujiang.oaid.DeviceID;
+import com.github.gzuliyujiang.oaid.IGetter;
+import com.github.gzuliyujiang.oaid.OAIDLog;
 // import com.github.wumke.RNExitApp.RNExitAppPackage;
 public class MainApplication extends Application implements ReactApplication {
-
+    public static final String TAG = "OAID123";
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
@@ -72,6 +77,19 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        DeviceIdentifier.register(this);
+        // 获取OAID/AAID，异步回调
+        DeviceID.getOAID(this, new IGetter() {
+            public void onOAIDGetComplete(String result) {
+                Log.d(TAG,result);
+                // 不同厂商的OAID/AAID格式是不一样的，可进行MD5、SHA1之类的哈希运算统一
+            }
+
+            public void onOAIDGetError(Exception error) {
+                // 获取OAID/AAID失败
+            }
+        });
+        System.loadLibrary("msaoaidsec");  // TODO （3）加固版本在调用前必须载入SDK安全库
         SoLoader.init(this, /* native exopackage */ false);
         initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
         //调用此方法：点击通知让应用从后台切到前台
