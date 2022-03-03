@@ -236,7 +236,7 @@ const WealthTools = () => {
                         <Image source={{uri: item.icon}} style={styles.toolItemHeaderLeftIconOnOpen} />
                         <Text style={styles.toolItemHeaderLeftTextOnOpen}>{item.title}</Text>
                     </View>
-                    <Text style={styles.toolItemHeaderRightOnOpen}>{now.current}发布</Text>
+                    <Text style={styles.toolItemHeaderRightOnOpen}>{now.current}更新</Text>
                 </View>
                 <View style={styles.toolItemContentOnOpen}>
                     <View>
