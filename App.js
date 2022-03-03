@@ -3,7 +3,7 @@
  * @Date: 2020-11-03 19:28:28
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-03 18:59:57
+ * @LastEditTime: 2022-03-03 19:02:47
  * @Description: app全局入口文件
  */
 import 'react-native-gesture-handler';
@@ -412,7 +412,6 @@ function App(props) {
             LogTool(appState);
         }
         if (appState.match(/background/)) {
-            //后台运行app十五分钟杀死
             BackgroundTimer.runBackgroundTimer(() => {
                 store.dispatch(updateVerifyGesture(false));
             }, 10 * 60 * 1000);
