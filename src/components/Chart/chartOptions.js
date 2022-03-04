@@ -613,6 +613,8 @@ export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
     }, {});
     let valueArea = chart.value_area;
 
+    let badTickValue = chart?.ticks?.[1]?.[0];
+    let axisLabelDistance = badTickValue > 0.3 && badTickValue < 0.7 ? '4' : '0';
     return `
   option = {
     backgroundColor: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: '#fff' }, { offset: 1, color: '#FBFBFC' }]),
@@ -659,7 +661,7 @@ export const LowBuyPanelChart = ({chart: {chart}, desc}) => {
         },
         axisLabel: {
           show: true,
-          distance: 6,
+          distance: ${axisLabelDistance},
           color: '#9AA1B2',
           formatter: function (val) {
            let ticks = ${JSON.stringify(ticks)};
