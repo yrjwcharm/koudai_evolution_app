@@ -32,6 +32,7 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
             <View style={{width: px(343)}} />
             {list?.map((item, idx) => (
                 <View key={idx + item} style={[styles.textItem, idx > 0 && {marginLeft: px(12)}]}>
+                    <View style={{width: px(12)}} />
                     <Image source={{uri: item.icon}} style={{width: px(16), height: px(16)}} />
                     <View
                         style={{
@@ -40,6 +41,7 @@ const TextSwiper = ({list = [], speed = 1500, style = {}}) => {
                         <Html html={item.desc} />
                     </View>
                     <Text style={styles.textItemTime}>{item.order_time}</Text>
+                    <View style={{width: px(12)}} />
                 </View>
             ))}
         </Animatable.View>
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
     textItem: {
         backgroundColor: '#f5F6F8',
         borderRadius: px(20),
-        padding: px(12),
+        paddingVertical: px(12),
         flexDirection: 'row',
         alignItems: 'center',
     },

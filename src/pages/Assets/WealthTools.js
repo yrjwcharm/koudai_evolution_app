@@ -135,6 +135,13 @@ const WealthTools = () => {
     }, []);
     useFocusEffect(init);
 
+    const btns = useMemo(() => {
+        let btnData = data.bottom_data;
+        if (!btnData) return [];
+        btnData.button.title = btnData.button.text;
+        return [btnData.consult, btnData.button];
+    }, [data.bottom_data]);
+
     useEffect(() => {
         // rate animate start
         getReadyStart &&
@@ -475,7 +482,7 @@ const WealthTools = () => {
                         {data?.user_data && (hasOpen ? loadingFinish : !loadingFinish) && userData()}
                     </Animatable.View>
                 </ScrollView>
-                {data?.btns && loadingFinish && <FixedBtn btns={data.btns} />}
+                {data?.bottom_data && loadingFinish && <FixedBtn btns={btns} />}
             </View>
         </>
     );
