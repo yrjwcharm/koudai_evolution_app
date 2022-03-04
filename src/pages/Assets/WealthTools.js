@@ -32,6 +32,7 @@ import TextSwiper from './components/TextSwiper';
 import HotRuler from './components/HotRuler';
 import dayjs from 'dayjs';
 import {Modal} from '../../components/Modal';
+import FixedBtn from '../Portfolio/components/FixedBtn';
 
 const LoadingComponent = () => {
     return (
@@ -302,7 +303,6 @@ const WealthTools = () => {
                 style={[
                     styles.container,
                     {
-                        paddingBottom: insets.bottom + px(8),
                         opacity: getReadyStart ? 1 : 0,
                     },
                 ]}>
@@ -475,6 +475,7 @@ const WealthTools = () => {
                         {data?.user_data && (hasOpen ? loadingFinish : !loadingFinish) && userData()}
                     </Animatable.View>
                 </ScrollView>
+                {data?.btns && loadingFinish && <FixedBtn btns={data.btns} />}
             </View>
         </>
     );
