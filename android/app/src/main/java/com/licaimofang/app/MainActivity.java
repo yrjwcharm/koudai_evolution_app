@@ -26,7 +26,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 public class MainActivity extends ReactActivity {
-    public static final String TAG = "DemoHelper12";
+    public static final String TAG = "Jpush";
     /**消息Id**/
     private static final String KEY_MSGID = "msg_id";
     /**该通知的下发通道**/

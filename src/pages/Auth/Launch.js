@@ -3,7 +3,7 @@
  * @Date: 2021-06-29 15:50:29
  * @Author: yhc
  * @LastEditors: yhc
- * @LastEditTime: 2022-03-03 19:07:39
+ * @LastEditTime: 2022-03-07 11:56:53
  * @Description:
  */
 import React, {useState, useRef, useCallback} from 'react';
@@ -16,6 +16,7 @@ import {
     Platform,
     BackHandler,
     ScrollView,
+    DeviceEventEmitter,
     NativeModules,
 } from 'react-native';
 import {deviceWidth, deviceHeight, px, isIphoneX} from '../../utils/appUtil';
