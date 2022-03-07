@@ -167,7 +167,12 @@ packagingOptions {
                   JPUSH_CHANNEL: "developer-default",       //在此替换你的channel，也可使用默认的
                   JPUSH_PKGNAME:"com.licaimofang.app",
                   XIAOMI_APPKEY:"MI-5931731298226",//小米平台注册的appkey 
-                  XIAOMI_APPID:"MI-2882303761517312226" //小米平台注册的appid
+                  XIAOMI_APPID:"MI-2882303761517312226", //小米平台注册的appid
+                  VIVO_APPKEY: "e1407bc6eabff464e02a2e23c896cfbb", 
+                  VIVO_APPID: "103789828",
+                  OPPO_APPKEY: "OP-74Ie42tnouKo888gswCkscSsw", 
+                  OPPO_APPID: "OP-2328483", 
+                  OPPO_APPSECRET: "OP-10413A7D632631Af41c37FeB09986831",
           ]
         //   "x86_64","x86" 是支持模拟器架构 release可以去掉
         // "armeabi-v7a","arm64-v8a", 支持64位的
